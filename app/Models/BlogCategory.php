@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Models;
+
+use App\Support\Model\ExtendedModel as Model;
+use App\Support\Model\SoftDeletesTrait;
+use App\Traits\HasCreatedRelationTrait;
+use App\Traits\HasDeletedRelationTrait;
+use App\Traits\HasNameSluggableTrait;
+use App\Traits\HasParentRelationTrait;
+use App\Traits\HasUpdatedRelationTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Query\Builder;
+
+/**
+ * {@inheritdoc}
+ * @method Builder childless()
+ */
+class BlogCategory extends Model
+{
+    use SoftDeletesTrait,
+        HasCreatedRelationTrait,
+        HasUpdatedRelationTrait,
+        HasDeletedRelationTrait,
+        HasParentRelationTrait,
+        HasNameSluggableTrait;
+
+    protected $guarded = [
+        'id',
+    ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(FileManager::class, 'image_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function blogs(): HasMany
+    {
+        return $this->hasMany(Blog::class, 'category_id');
+    }
+}

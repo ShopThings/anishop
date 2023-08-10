@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'IRANYekanWeb Light';
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fonts/iranyekanweblight.woff2") format("woff");
+}
+
+@font-face {
+    font-family: 'IRANYekanWeb Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: url("../fonts/iranyekanwebregular.woff2") format("woff");
+}
+
+@font-face {
+    font-family: 'IRANYekanWeb Bold';
+    font-style: normal;
+    font-weight: bold;
+    src: url("../fonts/iranyekanwebbold.woff2") format("woff");
+}
+
+.iranyekan-light {
+    font-family: 'IRANYekanWeb Light', Arial, sans-serif !important;
+}
+
+.iranyekan-regular {
+    font-family: 'IRANYekanWeb Regular', Arial, sans-serif !important;
+}
+
+.iranyekan-bold {
+    font-family: 'IRANYekanWeb Bold', Arial, sans-serif !important;
+}
+
+::-moz-selection {
+    color: #fff;
+    background: var(--dark);
+}
+
+::selection {
+    color: #fff;
+    background: var(--dark);
+}
+
+* {
+    font-family: 'IRANYekanWeb Regular', Arial, sans-serif;
+}

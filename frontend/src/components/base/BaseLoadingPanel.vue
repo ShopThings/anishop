@@ -1,0 +1,46 @@
+<template>
+    <VTransitionSlideFadeDownY mode="out-in">
+        <div v-if="loading" class="px-3 py-6">
+            <component :is="component"/>
+        </div>
+
+        <div v-else>
+            <slot name="content"></slot>
+        </div>
+    </VTransitionSlideFadeDownY>
+</template>
+
+<script setup>
+import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
+import {capitalize, shallowRef, watchEffect} from "vue";
+
+const props = defineProps({
+    type: {
+        type: String,
+        default: 'content',
+        validator(value) {
+            return ['form', 'table', 'chart', 'content', 'circle', 'progress'].indexOf(value) !== -1
+        },
+    },
+    loading: {
+        type: Boolean,
+        default: true,
+    },
+})
+
+const component = shallowRef(null)
+import('./loader/LoaderCircle.vue').then(val => {
+    component.value = val.default
+})
+
+watchEffect(() => {
+    const componentName = 'Loader' + capitalize(props.type)
+    import(`./loader/${componentName}.vue`).then(val => {
+        component.value = val.default
+    })
+})
+</script>
+
+<style scoped>
+
+</style>

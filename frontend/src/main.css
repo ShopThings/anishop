@@ -1,0 +1,82 @@
+@import "../styles/fonts.scss";
+@import 'vue3-carousel/dist/carousel.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@headlessui/tailwindcss;
+
+/* VueRouter active link */
+/*.router-link-active,*/
+/*.router-link-exact-active {*/
+/*    color: #3057d3;*/
+/*}*/
+
+/* FloatingVue */
+.v-popper--theme-dropdown .v-popper__arrow-container {
+    display: none;
+}
+
+.v-popper--theme-tooltip .v-popper__inner {
+    background: rgba(51, 65, 85, .9);
+    color: #fff;
+    border-radius: 6px;
+    padding: 7px 12px 6px;
+    font-size: 90%;
+}
+
+.v-popper--theme-tooltip .v-popper__arrow-outer {
+    /*border-color: rgba(51, 65, 85, .9);*/
+    border-color: transparent;
+}
+
+.v-popper__popper.v-popper__popper--show-from .v-popper__wrapper {
+    transform: scale(.7);
+}
+
+.v-popper__popper.v-popper__popper--show-to .v-popper__wrapper {
+    transform: none;
+    transition: transform .1s;
+}
+
+/* VueToastification */
+.Vue-Toastification__toast--default {
+    background-color: #fff;
+    color: #000;
+}
+
+.Vue-Toastification__toast--default .Vue-Toastification__close-button {
+    color: #000;
+}
+
+.confirmation-toast .Vue-Toastification__icon {
+    display: none;
+}
+
+@media only screen and (min-width: 600px) {
+    @supports not (-moz-appearance: none) {
+        .Vue-Toastification__container.top-left .Vue-Toastification__toast--rtl,
+        .Vue-Toastification__container.bottom-left .Vue-Toastification__toast--rtl {
+            margin-right: auto;
+            margin-left: unset;
+        }
+    }
+    @supports not (-moz-appearance: none) {
+        .Vue-Toastification__container.top-right .Vue-Toastification__toast--rtl,
+        .Vue-Toastification__container.bottom-right .Vue-Toastification__toast--rtl {
+            margin-left: auto;
+            margin-right: unset;
+        }
+    }
+}
+
+/* ContextMenu */
+[dir='rtl'] .mx-context-menu-item .label {
+    padding-right: 0;
+    padding-left: 16px;
+}
+
+[dir='rtl'] .mx-context-menu-item .mx-right-arrow {
+    transform: rotateY(180deg);
+}
