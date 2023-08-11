@@ -24,6 +24,7 @@ export const apiRoutes = {
             createDir: 'api/admin/files/directory',
             rename: 'api/admin/files/rename',
             move: 'api/admin/files/move',
+            copy: 'api/admin/files/copy',
             destroy: 'api/admin/files/{file}',
             batchDestroy: 'api/admin/files/batch',
             upload: 'api/admin/files',

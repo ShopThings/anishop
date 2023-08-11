@@ -6,6 +6,7 @@ use App\Contracts\ServiceInterface;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 interface UserServiceInterface extends ServiceInterface
 {
@@ -24,11 +25,17 @@ interface UserServiceInterface extends ServiceInterface
     ): Collection|LengthAwarePaginator;
 
     /**
+     * @param array $attributes
+     * @return Model
+     */
+    public function create(array $attributes): Model;
+
+    /**
      * @param $id
      * @param bool $permanent
      * @return bool
      */
-    public function deleteUser($id, bool $permanent = false): bool;
+    public function delete($id, bool $permanent = false): bool;
 
     /**
      * @param array $ids

@@ -14,6 +14,7 @@ use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileService extends Service implements FileServiceInterface
 {
@@ -29,7 +30,7 @@ class FileService extends Service implements FileServiceInterface
      */
     public function upload(string $path, $file, string $disk, bool $overwrite = false): bool
     {
-        if (is_null($file) || !($file instanceof UploadedFile)) return false;
+        if (!($file instanceof UploadedFile)) return false;
         return $this->repository->upload($path, $file, $disk, $overwrite);
     }
 
@@ -105,6 +106,16 @@ class FileService extends Service implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
+    public function copy(array $paths, string $destination, string $disk): bool
+    {
+        return $this->repository->copy($paths, $destination, $disk);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws InvalidDiskException
+     * @throws InvalidPathException
+     */
     public function delete(array|FileManager $files, ?string $path, string $disk): bool
     {
         if ($files instanceof FileManager) {
@@ -117,7 +128,7 @@ class FileService extends Service implements FileServiceInterface
 
     /**
      * @inheritDoc
-     * @return mixed|\Symfony\Component\HttpFoundation\StreamedResponse
+     * @return mixed|StreamedResponse
      * @throws InvalidDiskException
      * @throws InvalidFileException
      */
@@ -132,7 +143,11 @@ class FileService extends Service implements FileServiceInterface
      */
     public function exists(string $path, string $disk): bool
     {
-        return $this->repository->fileExists($path, $disk);
+        $hasDisk = $this->repository->checkDiskValidation($disk, false);
+
+        if(!$hasDisk) return false;
+
+        return $this->repository->checkPathExists($path, false);
     }
 
     /**

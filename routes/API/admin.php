@@ -14,7 +14,7 @@ Route::prefix('admin')
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-            Route::get('role', [RoleController::class, 'index'])->name('roles.index');
+            Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
 
             /*
              * user routes
@@ -36,6 +36,8 @@ Route::prefix('admin')
                 ->name('files.rename');
             Route::post('files/move', [FileManagerController::class, 'move'])
                 ->name('files.move');
+            Route::post('files/copy', [FileManagerController::class, 'copy'])
+                ->name('files.copy');
             Route::post('files', [FileManagerController::class, 'store'])->middleware('optimizeImages')
                 ->name('files.store');
             Route::get('files/{file}', [FileManagerController::class, 'download'])

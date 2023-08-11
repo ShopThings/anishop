@@ -189,7 +189,37 @@ class FileManagerController extends Controller
         $this->authorize('update', FileManager::class);
 
         $res = $this->service->move(
-            $request->input('files', ''),
+            $request->input('files', []),
+            $request->input('destination', ''),
+            $request->input('disk', '')
+        );
+
+        if (!$res) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'خطا در جابجایی',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'message' => 'جابجایی با موفقیت انجام شد.',
+        ]);
+    }
+
+    /**
+     * @param FileRequest $request
+     * @return JsonResponse
+     * @throws InvalidDiskException
+     * @throws InvalidPathException
+     * @throws AuthorizationException
+     */
+    public function copy(FileRequest $request): JsonResponse
+    {
+        $this->authorize('update', FileManager::class);
+
+        $res = $this->service->copy(
+            $request->input('files', []),
             $request->input('destination', ''),
             $request->input('disk', '')
         );

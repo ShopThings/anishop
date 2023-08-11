@@ -17,7 +17,7 @@ class RoleController extends Controller
     public function index(RoleServiceInterface $service)
     {
         $roles = $service->getRoles();
-        $status = 200;
+        $status = ResponseCodes::HTTP_OK;
         if (count($roles)) {
             $res = [
                 'type' => ResponseTypesEnum::SUCCESS->value,

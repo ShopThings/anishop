@@ -57,7 +57,13 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        //
+        $user = $this->service->create($request->all());
+
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'message' => 'ایجاد کاربر با موفقیت انجام شد.',
+            'data' => $user,
+        ]);
     }
 
     /**
@@ -99,7 +105,7 @@ class UserController extends Controller
         $this->authorize('delete', $user);
 
         $permanent = $request->user()->id === $user->id;
-        $res = $this->service->deleteUser($user->id, $permanent);
+        $res = $this->service->delete($user->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

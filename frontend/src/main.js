@@ -2,6 +2,7 @@ import {createApp} from 'vue';
 import {createPinia} from 'pinia';
 import Toast, {POSITION} from "vue-toastification";
 import FloatingVue from 'floating-vue';
+import VueLazyLoad from 'vue3-lazyload';
 
 import "vue-toastification/dist/index.css";
 import 'floating-vue/dist/style.css';
@@ -23,6 +24,7 @@ createApp(App)
     .use(pinia)
     .use(router)
     .use(FloatingVue)
+    .use(VueLazyLoad)
     .use(ContextMenu)
     .use(Toast, {
         transition: 'Vue-Toastification__fade',

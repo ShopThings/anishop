@@ -1,9 +1,9 @@
 <template>
-    <Listbox v-model="selected" :name="name">
+    <Listbox v-model="selected" :name="name" :multiple="multiple">
         <div class="relative mt-1">
             <ListboxButton class="relative" :class="btnClass">
                 <slot name="button">
-                    <span class="block truncate">{{ text || '' }}</span>
+                    <span class="block truncate text-right pr-6">{{ selectText || 'انتخاب کنید' }}</span>
 
                     <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                     <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/></span>
@@ -55,16 +55,15 @@ import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui
 import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
 import isObject from "lodash.isobject";
+import isArray from "lodash.isarray";
 
 const props = defineProps({
-    selected: {
-        type: [String, Number],
-        default: '',
-    },
+    selected: [String, Number, Array],
     name: {
         type: String,
         default: 'select',
     },
+    multiple: Boolean,
     text: {
         type: [String, Number],
         default: '',
@@ -81,24 +80,66 @@ const props = defineProps({
     },
     btnClass: {
         type: String,
-        default: 'w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-primary sm:text-sm',
+        default: 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
     },
 })
 const emit = defineEmits(['change'])
 
-const selected = ref(props.selected)
+const selectText = ref(props.text)
+const selected = ref(null)
+if (props.multiple) {
+    if (props.selected) {
+        setToSelected(props.selected)
+    } else {
+        selected.value = []
+    }
+} else {
+    setToSelected(props.selected)
+}
+
+watch(() => props.text, () => {
+    if (props.multiple)
+        selectText.value = [props.text]
+    else
+        selectText.value = props.text
+})
+
+function setToSelected(value) {
+    if (props.multiple) {
+        if (isArray(value)) {
+            for (const a of value) {
+                if (selected.value.indexOf(a) === -1)
+                    selected.value.push(a)
+            }
+        } else {
+            if (selected.value.indexOf(value) === -1)
+                selected.value.push(value)
+        }
+    } else {
+        selected.value = isArray(value) ? value.shift() : value;
+    }
+}
 
 function changeSelected() {
     if (isObject(props.options)) {
         for (const p in props.options) {
             if (props.options.hasOwnProperty(p)) {
-                if (props.options[p][props.optionsKey] === props.selected) {
-                    selected.value = props.options[p]
+                if (props.multiple && isArray(props.selected)) {
+                    for (const a of props.selected) {
+                        if (props.options[p][props.optionsKey] === a) {
+                            setToSelected(props.options[p])
+                        }
+                    }
+                } else {
+                    const tmpSelectedProp = isArray(props.selected) ? props.selected.shift() : props.selected
+                    if (props.options[p][props.optionsKey] === tmpSelectedProp) {
+                        setToSelected(props.options[p])
+                    }
                 }
             }
         }
     } else {
-        selected.value = props.selected
+        setToSelected(props.selected)
     }
 }
 
@@ -109,6 +150,16 @@ watch(() => props.selected, () => {
 })
 
 watch(selected, () => {
+    if (props.multiple) {
+        if (selected.value.length > 2) {
+            selectText.value =  '(' + selected.value.length + ' مورد' + ')'
+        } else {
+            selectText.value =  selected.value.map((item) => item[props.optionsKey]).join(', ')
+        }
+    } else {
+        if (selected.value[props.optionsKey])
+            selectText.value = selected.value[props.optionsKey]
+    }
     emit('change', selected.value)
 })
 </script>

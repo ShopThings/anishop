@@ -7,6 +7,7 @@ use App\Services\Contracts\UserServiceInterface;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 
 class UserService extends Service implements UserServiceInterface
@@ -36,7 +37,15 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function deleteUser($id, bool $permanent = false): bool
+    public function create(array $attributes): Model
+    {
+        return $this->repository->create($attributes);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete($id, bool $permanent = false): bool
     {
         if ($permanent) {
             Gate::authorize('forceDelete', $this->repository->find($id));

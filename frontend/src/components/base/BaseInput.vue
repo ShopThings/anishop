@@ -1,21 +1,20 @@
 <template>
     <div>
-        <label v-if="labelTitle && labelTitle.length"
-               class="mb-1 text-right text-black flex justify-between items-center"
-               :for="labelId"
+        <partial-input-label
+            v-if="labelTitle && labelTitle.length"
+            :title="labelTitle"
+            :id="labelId"
+            :is-optional="isOptional"
+        />
+        <partial-input-label
+            v-else-if="hasLabelSlot"
+            :id="labelId"
+            :is-optional="isOptional"
         >
-            <span class="text-sm">{{ labelTitle }}</span>
-            <span v-if="isOptional" class="text-sm text-gray-400">(اختیاری)</span>
-        </label>
-        <label v-else-if="hasLabelSlot"
-               class="mb-1 text-right text-black flex justify-between items-center"
-               :for="labelId"
-        >
-            <div class="text-sm">
+            <template #label>
                 <slot name="label"></slot>
-            </div>
-            <span v-if="isOptional" class="text-sm text-gray-400">(اختیاری)</span>
-        </label>
+            </template>
+        </partial-input-label>
 
         <div :class="isTypePassword ? 'flex' : ''">
             <div class="flex grow relative">
@@ -32,7 +31,7 @@
                     :type="type"
                     :placeholder="placeholder"
                     :class="[
-                        'block w-full rounded-md border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300',
+                        'block w-full rounded-md border-0 py-3 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300',
                         'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                         klass,
                         isVisiblePassword ? '!ring-amber-500' : '',
@@ -77,12 +76,14 @@ import {EyeIcon, EyeSlashIcon, MinusSmallIcon} from "@heroicons/vue/24/outline"
 import uniqueId from 'lodash.uniqueid'
 import {useField} from "vee-validate";
 import VTransitionSlideFadeLeftX from "../../transitions/VTransitionSlideFadeLeftX.vue";
+import PartialInputLabel from "../partials/PartialInputLabel.vue";
 
 const props = defineProps({
     name: {
         type: String,
         required: true,
     },
+    value: String,
     type: {
         type: String,
         default: 'text',
@@ -108,7 +109,10 @@ const isVisiblePassword = ref(false)
 const inp = ref()
 const labelId = ref(null)
 
-const {value, errorMessage, handleChange} = useField(() => props.name);
+const {value, errorMessage, handleChange} = useField(() => props.name)
+
+if (props.value && props.value.length)
+    value.value = props.value
 
 const isTypePassword = computed(() => {
     return props.type === 'password'

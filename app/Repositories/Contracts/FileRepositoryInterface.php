@@ -68,6 +68,14 @@ interface FileRepositoryInterface extends RepositoryInterface
     public function move(array $paths, string $destination, string $disk): bool;
 
     /**
+     * @param array $paths
+     * @param string $destination
+     * @param string $disk
+     * @return bool
+     */
+    public function copy(array $paths, string $destination, string $disk): bool;
+
+    /**
      * @param array|string $files
      * @return bool
      */
