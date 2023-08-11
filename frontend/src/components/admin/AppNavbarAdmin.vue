@@ -47,16 +47,18 @@ const openClassName = '__sidebar-admin-is-open'
 const triggeredClassName = '__sidebar-admin-btn-triggered'
 
 function toggleSidebar() {
-    if (props.sidebar) {
-        if (!props.sidebar.classList.contains(closeClassName)) {
-            props.sidebar.classList.add(closeClassName)
-            props.sidebar.classList.remove(openClassName)
-            props.sidebar.classList.remove(triggeredClassName)
+    if (props.sidebar.sidebar) {
+        if (!props.sidebar.sidebar.classList.contains(closeClassName)) {
+            props.sidebar.sidebar.classList.add(closeClassName)
+            props.sidebar.sidebar.classList.remove(openClassName)
+            props.sidebar.sidebar.classList.remove(triggeredClassName)
         } else {
-            props.sidebar.classList.add(openClassName)
-            props.sidebar.classList.remove(closeClassName)
-            props.sidebar.classList.add(triggeredClassName)
+            props.sidebar.sidebar.classList.add(openClassName)
+            props.sidebar.sidebar.classList.remove(closeClassName)
+            props.sidebar.sidebar.classList.add(triggeredClassName)
         }
+
+        props.sidebar.setHeight()
     }
 }
 

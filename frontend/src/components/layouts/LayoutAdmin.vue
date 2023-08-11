@@ -3,7 +3,7 @@
         <app-sidebar-admin class="shrink-0" ref="sidebarCom"/>
 
         <div class="grow flex flex-col overflow-auto" ref="pageContainer">
-            <app-navbar-admin :sidebar="sidebar" ref="navbarCom"/>
+            <app-navbar-admin :sidebar="sidebarCom" ref="navbarCom"/>
 
             <div class="p-3 md:container md:mx-auto" ref="extra" v-if="title">
                 <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
@@ -73,7 +73,6 @@ let title = ref(null)
 let breadcrumb = ref(null)
 
 const sidebarCom = ref(null)
-const sidebar = ref(null)
 const pageContainer = ref(null)
 const page = ref(null)
 const footer = ref(null)
@@ -90,7 +89,6 @@ useResizeObserver(pageContainer, () => {
 })
 
 watchEffect(() => {
-    sidebar.value = sidebarCom.value?.sidebar
     navbar.value = navbarCom.value?.navbar
 })
 

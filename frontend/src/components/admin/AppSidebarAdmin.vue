@@ -171,6 +171,7 @@ function setHeight() {
 
 defineExpose({
     sidebar,
+    setHeight,
 })
 </script>
 
