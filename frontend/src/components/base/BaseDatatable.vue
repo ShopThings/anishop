@@ -79,7 +79,7 @@
                 <div class="inline-block min-w-full">
                     <div class="overflow-hidden" ref="tableContainer">
                         <table ref="localTable"
-                               class="text-sm text-left text-gray-500 rtl:text-right"
+                               class="text-sm text-left text-gray-500 rtl:text-right w-full"
                                :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
                         >
                             <thead
