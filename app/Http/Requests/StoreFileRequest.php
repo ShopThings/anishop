@@ -51,7 +51,7 @@ class StoreFileRequest extends FormRequest
                     /**
                      * @var FileServiceInterface $service
                      */
-                    $service = app()->make(FileServiceInterface::class);
+                    $service = app(FileServiceInterface::class);
                     if ($value && !$service->exists($value, $this->input('disk'))) {
                         $fail('مسیر فایل/پوشه نامعتبر می‌باشد.');
                     }

@@ -2,7 +2,7 @@ import BaseConfirm from "../components/base/BaseConfirm.vue";
 import {POSITION, TYPE, useToast} from "vue-toastification";
 import isFunction from "lodash.isfunction";
 
-export const useConfirmToast = (onAccept) => {
+export const useConfirmToast = (onAccept, title, subTitle) => {
     onAccept = isFunction(onAccept) ? onAccept : () => {
     }
 
@@ -10,6 +10,10 @@ export const useConfirmToast = (onAccept) => {
 
     toast({
         component: BaseConfirm,
+        props: {
+            title,
+            subTitle,
+        },
         listeners: {
             accept: onAccept
         },

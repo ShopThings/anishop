@@ -1,5 +1,5 @@
 <template>
-    <div class="h-[64px]" ref="navbar">
+    <div class="h-[64px] relative" ref="navbar">
         <nav class="bg-white w-full shadow-md">
             <div class="md:container md:mx-auto">
                 <div class="h-[64px] py-2 px-6 flex">

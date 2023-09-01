@@ -16,8 +16,11 @@
 
         <template #body>
             <form @submit.prevent>
-                <base-input placeholder="متن جستجو را وارد نمایید..."
-                            name="search" @mount="focusOnInput">
+                <base-input
+                    placeholder="متن جستجو را وارد نمایید..."
+                    name="search"
+                    @mount="focusOnInput"
+                >
                     <template #icon>
                         <MagnifyingGlassCircleIcon class="h-6 w-6 text-gray-300"/>
                     </template>
@@ -50,8 +53,8 @@ defineProps({
 })
 const emit = defineEmits(['open', 'close'])
 
-function focusOnInput(payload) {
-    payload.input.focus()
+function focusOnInput(input) {
+    input.focus()
 }
 </script>
 

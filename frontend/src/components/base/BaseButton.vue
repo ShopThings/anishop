@@ -1,7 +1,7 @@
 <template>
     <button :type="type"
             :class="[
-                'text-white cursor-pointer rounded-md border',
+                'relative text-white cursor-pointer rounded-md border',
                 'py-2 px-3 text-base leading-7 transition hover:bg-opacity-90',
             ]"
             @click="checkButton"

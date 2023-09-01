@@ -27,7 +27,7 @@
                             <slot :name="slot" :value="data.value"></slot>
                         </template>
                         <template v-slot:selection_remover="data">
-                            <BackspaceIcon @click="removeSelectedItem(data.value)"
+                            <BackspaceIcon @click="removeFromSelectedItem(data.value)"
                                            v-tooltip.left="'حذف از انتخاب‌ها'"
                                            class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"/>
                         </template>
@@ -92,6 +92,7 @@
                                             type="checkbox"
                                             class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
                                             v-model="setting.isCheckAll"
+                                            @change="changeCheckAll"
                                         >
                                     </div>
                                 </th>
@@ -175,7 +176,7 @@
                                         :name="'vtl-group-' + groupingIndex"
                                         class="border-b transition"
                                         :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                                        @click="emit('row-clicked', row)"
+                                        @click="emit('row-clicked', row, this)"
                                         @contextmenu="emit('row-context-menu', $event, row)"
                                     >
                                         <td v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5">
@@ -266,7 +267,7 @@
                                         :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
                                         class="border-b transition"
                                         :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                                        @click="emit('row-clicked', row)"
+                                        @click="emit('row-clicked', row, this)"
                                         @contextmenu="emit('row-context-menu', $event, row)"
                                     >
                                         <td v-if="hasCheckbox" class="px-6 py-4">
@@ -278,6 +279,10 @@
                                                             (el) => {
                                                               if(el && hasSelectedItemWithProperty(row)) {
                                                                 el.checked = true;
+                                                                const tr = getParent(el, 'tr');
+                                                                if(tr) {
+                                                                    tr.classList.add('row-is-checked');
+                                                                }
                                                               }
                                                               rowCheckbox.push(el);
                                                             }
@@ -319,6 +324,7 @@
                                             type="checkbox"
                                             class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
                                             v-model="setting.isCheckAll"
+                                            @change="changeCheckAll"
                                         >
                                     </div>
                                 </th>
@@ -370,8 +376,8 @@
                             <span class="text-sm text-gray-500">{{ messages.pageSizeChangeLabel }}</span>
                             <base-select :options="pageOptions"
                                          options-key="value"
-                                         :text="setting.pageSize"
-                                         :selected="setting.pageSize"
+                                         options-text="text"
+                                         :selected="{value: setting.pageSize, text: setting.pageSize}"
                                          options-class="bottom-full mb-1"
                                          @change="(item) => {setting.pageSize = item.value}"
                             >
@@ -383,11 +389,12 @@
 
                         <div class="mx-2" v-if="!setting.isHideSelectPaging">
                             <span class="text-sm text-gray-500">{{ messages.gotoPageLabel }}</span>
-                            <base-select :options="setting.maxPage"
-                                         :text="setting.page"
-                                         :selected="setting.page"
+                            <base-select :options="pageNumberOptions"
+                                         options-key="value"
+                                         options-text="text"
+                                         :selected="{value: setting.page, text: setting.page}"
                                          options-class="bottom-full mb-1"
-                                         @change="(item) => {setting.page = item}"
+                                         @change="(item) => {setting.page = item.value}"
                             >
                             </base-select>
                         </div>
@@ -722,6 +729,17 @@ const setting = reactive({
         }
         return maxPage;
     }),
+    pageNumberOptions: computed(() => {
+        const mp = setting.maxPage
+        const pnObj = []
+        for (let i = 0; i < mp; i++) {
+            pnObj.push({
+                value: i,
+                text: i,
+            })
+        }
+        return pnObj
+    }),
     offset: computed(() => {
         return (setting.page - 1) * setting.pageSize + 1;
     }),
@@ -820,27 +838,7 @@ watch(
                     });
                 }
             }
-            tmpRows.forEach((val) => {
-                if (state) {
-                    if (!hasSelectedItemWithProperty(val))
-                        selectedItems.value.push(val)
-                } else {
-                    removeFromSelectedItem(val)
-                }
-            });
-            rowCheckbox.value.forEach((val) => {
-                if (val) {
-                    val.checked = state;
 
-                    const tr = getParent(val, 'tr');
-                    if (state) {
-                        tr.classList.add('row-is-checked');
-                    } else {
-                        tr.classList.remove('row-is-checked');
-                    }
-                }
-            });
-            //
             // Return the selected data on the screen
             emit("return-checked-rows", isChecked.value);
         }
@@ -858,6 +856,35 @@ watch(
         }
     }
 );
+
+function changeCheckAll(e) {
+    if (props.hasCheckbox) {
+        const state = e.target.checked
+
+        let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
+        tmpRows.forEach((val) => {
+            if (state) {
+                if (!hasSelectedItemWithProperty(val))
+                    selectedItems.value.push(val)
+            } else {
+                removeFromSelectedItem(val)
+            }
+        });
+
+        rowCheckbox.value.forEach((val) => {
+            if (val) {
+                val.checked = state;
+
+                const tr = getParent(val, 'tr');
+                if (state) {
+                    tr.classList.add('row-is-checked');
+                } else {
+                    tr.classList.remove('row-is-checked');
+                }
+            }
+        });
+    }
+}
 
 /**
  * Checkbox click event
@@ -1191,10 +1218,6 @@ function removeFromSelectedItem(row) {
     }
 }
 
-function removeSelectedItem(value) {
-    removeFromSelectedItem(value)
-}
-
 function getParent(el, tagName) {
     tagName = tagName.toLowerCase();
     while (el && el.parentNode) {
@@ -1279,9 +1302,7 @@ defineExpose({
     resetSelection: () => {
         clearSelectedItems()
     },
-    resetSelectionItem: (row) => {
-        removeSelectedItem(row)
-    },
+    resetSelectionItem: removeFromSelectedItem,
 })
 
 onMounted(() => {

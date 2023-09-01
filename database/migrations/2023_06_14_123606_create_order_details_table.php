@@ -16,6 +16,7 @@ return new class extends Migration {
                 ->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('code', 25)->unique();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('mobile');

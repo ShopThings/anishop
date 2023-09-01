@@ -25,7 +25,7 @@
                                     <ChevronLeftIcon class="h-3 w-3"/>
                                 </li>
                                 <li v-if="crumb.link">
-                                    <router-link :to="{name: crumb.link}">
+                                    <router-link :to="calcCrumbLink(crumb)">
                                         {{ crumb.name }}
                                     </router-link>
                                 </li>
@@ -96,6 +96,23 @@ watch(route, (to) => {
     title.value = to.meta?.title || null
     breadcrumb.value = to.meta?.breadcrumb || []
 }, {flush: 'pre', immediate: true, deep: true})
+
+function calcCrumbLink(crumb) {
+    const obj = {name: crumb.link}
+
+    const params = {}
+    if (crumb.params) {
+        for (const i of crumb.params) {
+            if (route.params[i]) {
+                params[i] = route.params[i]
+            }
+        }
+
+        obj.params = params
+    }
+
+    return obj;
+}
 </script>
 
 <style scoped>

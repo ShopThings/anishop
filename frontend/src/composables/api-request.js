@@ -102,7 +102,7 @@ axiosClient.interceptors.response.use(response => {
 }, error => {
     const store = useUserStore()
     const adminStore = useAdminStore()
-    if (error?.response?.status && error.response.status === responseStatuses.HTTP_FORBIDDEN) {
+    if (error?.response?.status === responseStatuses.HTTP_FORBIDDEN) {
         const route = window.location.pathname
         if (route.indexOf('/admin') !== -1) {
             adminStore.$reset()

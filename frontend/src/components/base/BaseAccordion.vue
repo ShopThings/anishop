@@ -5,7 +5,7 @@
         >
             <slot name="button"></slot>
             <ChevronUpIcon
-                :class="open ? 'rotate-0' : ''"
+                :class="open ? 'rotate-0' : '-rotate-0'"
                 class="h-5 w-5 text-violet-500 transition rotate-180 transform"
             />
         </DisclosureButton>

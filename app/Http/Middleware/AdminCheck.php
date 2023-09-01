@@ -19,7 +19,7 @@ class AdminCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::user() && Auth::user()->is_admin) return $next($request);
+        if (Auth::user()?->is_admin) return $next($request);
         if ($request->expectsJson()) throw new AuthenticationException();
         return to_route('login');
     }

@@ -12,7 +12,7 @@
             <li class="my-1">
                 <base-floating-drop-down
                     placement="bottom-start"
-                    :items="storages"
+                    :items="isArray(storages) ? storages : [storages]"
                 >
                     <template #button>
                         <button type="button" v-tooltip.top="'فضای ذخیره سازی'"
@@ -73,8 +73,13 @@
                         :messages="table.messages"
                         @do-search="doSearch"
                         @row-context-menu="onContextMenu"
+                        @row-clicked="handleFileSelection"
                     >
-                        <template #full_name></template>
+                        <template #image="{data}">
+                            <base-lazy-image
+                                :lazy-src="data.image"
+                            ></base-lazy-image>
+                        </template>
                     </base-datatable>
 
                     <base-file-manager-context-menu
@@ -155,6 +160,7 @@ import {useConfirmToast} from "../../composables/toast-confirm.js";
 import BaseFileManagerTreeDirectory from "./filemanager/BaseFileManagerTreeDirectory.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
 import BaseFileManagerRename from "./filemanager/BaseFileManagerRename.vue";
+import BaseLazyImage from "./BaseLazyImage.vue";
 
 const props = defineProps({
     hasCreateFolder: {
@@ -208,7 +214,14 @@ const props = defineProps({
             }
         },
     },
+    extensions: {
+        type: Array,
+        default: () => [],
+    },
+    selectableFiles: Boolean,
 })
+
+const emit = defineEmits(['file-selected'])
 
 const toast = useToast()
 const route = useRoute()
@@ -268,6 +281,11 @@ const table = reactive({
             columnClasses: 'hidden',
         },
         {
+            label: "تصویر",
+            field: "image",
+            sortable: false,
+        },
+        {
             label: "نام",
             field: "name",
             sortable: true,
@@ -298,6 +316,11 @@ const table = reactive({
             isKey: true,
             sortable: false,
             columnClasses: 'hidden',
+        },
+        {
+            label: "تصویر",
+            field: "image",
+            sortable: false,
         },
         {
             label: "نام",
@@ -608,12 +631,12 @@ function renameClicked(item) {
 
 function pasteClicked(item) {
     let url = null
-    if(copiedPath.value.action === 'move')
+    if (copiedPath.value.action === 'move')
         url = apiRoutes.admin.files.move
-    else if(copiedPath.value.action === 'copy')
+    else if (copiedPath.value.action === 'copy')
         url = apiRoutes.admin.files.copy
 
-    if(!url) {
+    if (!url) {
         toast.info('ابتدا فایل/پوشه مورد نظر را برای جابجایی/کپی انتخاب کنید.')
         return
     }
@@ -651,6 +674,7 @@ const doSearch = (offset, limit, order, sort, text) => {
             size: FileSizes.SMALL,
             order,
             sort,
+            extensions: props.extensions,
         },
     }, {
         success: (response) => {
@@ -676,10 +700,21 @@ const doSearch = (offset, limit, order, sort, text) => {
 }
 
 doSearch(0, -1, 'id', 'desc')
+
+function handleFileSelection(file, row) {
+    if (datatable.value && props.selectableFiles && !file.is_dir && row) {
+        datatable.value.table.querySelector('.file-selection').removeClass('file-selection')
+        row.addClass('file-selection')
+
+        emit('file-selected', file)
+    }
+}
 </script>
 
 <style scoped>
-
+.file-selection {
+    background-color: rgba(160, 42, 229, 0.07);
+}
 </style>
 <script setup>
 </script>

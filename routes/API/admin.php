@@ -19,9 +19,11 @@ Route::prefix('admin')
             /*
              * user routes
              */
-            Route::delete('users/batch', [UserController::class, 'batchDestroy'])
-                ->name('users.destroy.batch');
-            Route::apiResource('users', UserController::class)->whereNumber('users');
+            Route::middleware('xss')->group(function () {
+                Route::delete('users/batch', [UserController::class, 'batchDestroy'])
+                    ->name('users.destroy.batch');
+                Route::apiResource('users', UserController::class)->whereNumber('users');
+            });
 
             /*
              * file-manager routes

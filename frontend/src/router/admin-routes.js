@@ -24,7 +24,11 @@ export const adminRoutes = {
                     },
                 })
                 if (from.meta.requiresAuth) {
-                    return next({name: 'admin.login'});
+                    const pushObj = {name: 'admin.login'}
+
+                    if (to.query.redirect) pushObj.query = {redirect: to.query.redirect}
+
+                    return next(pushObj);
                 }
                 location.reload();
             },
@@ -93,6 +97,28 @@ export const adminRoutes = {
                     },
                 },
                 {
+                    path: 'addresses',
+                    name: 'admin.user.addresses',
+                    component: () => import('../views/admin/user/PageUserAddresses.vue'),
+                    meta: {
+                        title: 'آدرس‌های کاربر',
+                        breadcrumb: [
+                            {
+                                name: 'کاربران',
+                                link: 'admin.users',
+                            },
+                            {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'مشاهده آدرس‌ها',
+                            }
+                        ],
+                    },
+                },
+                {
                     path: 'purchases',
                     name: 'admin.user.purchases',
                     component: () => import('../views/admin/user/PageUserPurchases.vue'),
@@ -102,6 +128,11 @@ export const adminRoutes = {
                             {
                                 name: 'کاربران',
                                 link: 'admin.users',
+                            },
+                            {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
                             },
                             {
                                 name: 'مشاهده سفارشات',
@@ -121,6 +152,11 @@ export const adminRoutes = {
                                 link: 'admin.users',
                             },
                             {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
+                            },
+                            {
                                 name: 'مشاهده سبدهای خرید',
                             }
                         ],
@@ -136,6 +172,11 @@ export const adminRoutes = {
                             {
                                 name: 'کاربران',
                                 link: 'admin.users',
+                            },
+                            {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
                             },
                             {
                                 name: 'مشاهده محصولات مورد علاقه',
@@ -598,6 +639,23 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش محصول',
+                            }
+                        ],
+                    },
+                },
+                {
+                    path: '',
+                    name: 'admin.product.detail',
+                    component: () => import('../views/admin/product/PageProductDetail.vue'),
+                    meta: {
+                        title: 'جزئیات محصول',
+                        breadcrumb: [
+                            {
+                                name: 'محصولات',
+                                link: 'admin.products',
+                            },
+                            {
+                                name: 'جزئیات محصول',
                             }
                         ],
                     },

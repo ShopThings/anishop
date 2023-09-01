@@ -17,6 +17,16 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/users/batch',
         },
 
+        addresses: {
+            index: 'api/admin/addresses',
+        },
+
+        orders: {
+            index: 'api/admin/orders/{user?}',
+            show: 'api/admin/orders/{order}',
+            update: 'api/admin/orders/{order}',
+        },
+
         files: {
             show: 'api/admin/files/{file}/{size?}',
             list: 'api/admin/files',
@@ -29,6 +39,12 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/files/batch',
             upload: 'api/admin/files',
             download: 'api/admin/files/{file}'
+        },
+
+        paymentMethods: {
+            index: 'api/admin/payment-method',
+            show: 'api/admin/payment-method/{payment_method}',
+            update: 'api/admin/payment-method/{payment_method}',
         },
     },
 

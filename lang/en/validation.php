@@ -226,7 +226,9 @@ return [
         "time" => "Time",
         "available" => "Available",
         "unavailable" => "Unavailable",
-        "size" => "Size"
+        "size" => "Size",
+        "role" => "Role",
+        "roles" => "Roles",
     ],
 
 ];

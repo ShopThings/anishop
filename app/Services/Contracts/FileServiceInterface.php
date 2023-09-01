@@ -22,6 +22,7 @@ interface FileServiceInterface extends ServiceInterface
      * @param string $disk
      * @param string|null $search
      * @param string|null $fileSize
+     * @param array $extensions
      * @param array $order
      * @return array
      */
@@ -30,6 +31,7 @@ interface FileServiceInterface extends ServiceInterface
         string  $disk,
         ?string $search = null,
         ?string $fileSize = null,
+        array   $extensions = [],
         array   $order = ['name' => 'acs']
     ): array;
 

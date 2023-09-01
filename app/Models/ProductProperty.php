@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
+use Gloudemans\Shoppingcart\Contracts\Buyable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProductProperty extends Model
+class ProductProperty extends Model implements Buyable
 {
     public $timestamps = false;
 
@@ -31,5 +32,20 @@ class ProductProperty extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getBuyableIdentifier($options = null)
+    {
+        return $this->id;
+    }
+
+    public function getBuyableDescription($options = null)
+    {
+        return $this->product()->title;
+    }
+
+    public function getBuyablePrice($options = null)
+    {
+        return $this->price;
     }
 }

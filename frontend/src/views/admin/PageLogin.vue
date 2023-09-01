@@ -377,7 +377,7 @@ const onSubmit = handleSubmit((values, actions) => {
             actions.resetField('password')
             actions.resetField('captcha')
 
-            if (error.errors && Object.keys(error.errors).length > 1)
+            if (error.errors && Object.keys(error.errors).length >= 1)
                 actions.setErrors(error.errors)
 
             err.message = error.message || 'خطا در عملیات ورود!'

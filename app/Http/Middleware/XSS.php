@@ -9,6 +9,17 @@ use Symfony\Component\HttpFoundation\Response;
 class XSS
 {
     /**
+     * Specify inputs that doesn't need XSS prevention
+     *
+     * @var array $except
+     */
+    protected array $except = [
+        'password',
+        'password_confirmation',
+        'description',
+    ];
+
+    /**
      * Handle an incoming request.
      *
      * @param Request $request
@@ -23,8 +34,9 @@ class XSS
 
         $input = $request->all();
 
-        array_walk_recursive($input, function(&$input) {
-            $input = strip_tags($input);
+        array_walk_recursive($input, function (&$input, $key) {
+            if (!in_array($key, $this->except))
+                $input = strip_tags($input);
         });
 
         $request->merge($input);

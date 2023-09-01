@@ -37,4 +37,63 @@ enum GatewaysEnum: string
     case AQAYEPARDAKHT = 'aqayepardakht';
     case AZKI = 'azki';
     case PAYFA = 'payfa';
+
+    /**
+     * @return string[]
+     */
+    private static function translationArray(): array
+    {
+        return [
+            self::LOCAL->value => 'لوکال',
+            self::FANAVACARD->value => 'فناوا کارت',
+            self::ATIPAY->value => 'آتی پی',
+            self::ASANPARDAKHT->value => 'آسان پرداخت',
+            self::BEHPARDAKHT->value => 'به پرداخت',
+            self::DIGIPAY->value => 'دیجی پی',
+            self::ETEBARINO->value => 'اعتبارینو',
+            self::IDPAY->value => 'آی‌دی پی',
+            self::IRANKISH->value => 'ایران کیش',
+            self::NEXTPAY->value => 'نکست پی',
+            self::OMIDPAY->value => 'امید پی',
+            self::PARSIAN->value => 'پارسیان',
+            self::PASARGAD->value => 'پاسارگاد',
+            self::PAYIR->value => 'پی آی‌آر',
+            self::PAYPAL->value => 'پی‌پال',
+            self::PAYPING->value => 'پی پینگ',
+            self::PAYSTAR->value => 'پی استار',
+            self::POOLAM->value => 'پولام',
+            self::SADAD->value => 'سداد',
+            self::SAMAN->value => 'سامان',
+            self::SEP->value => 'سپ',
+            self::SEPEHR->value => 'سپهر',
+            self::WALLETA->value => 'والتا',
+            self::YEKPAY->value => 'یک پی',
+            self::ZARINPAL->value => 'زرینپال',
+            self::ZIBAL->value => 'زیبال',
+            self::SEPORDEH->value => 'سپرده',
+            self::RAYANPAY->value => 'رایان پی',
+            self::SIZPAY->value => 'سیز پی',
+            self::VANDAR->value => 'وندر',
+            self::AQAYEPARDAKHT->value => 'آقای پرداخت',
+            self::AZKI->value => 'از کی',
+            self::PAYFA->value => 'پی‌فا',
+        ];
+    }
+
+    /**
+     * @param array|string $gateways
+     * @return array|string|null
+     */
+    public static function getTranslations(array|string $gateways): array|string|null
+    {
+        $translates = self::translationArray();
+        if (is_array($gateways)) {
+            $newArr = [];
+            foreach ($gateways as $gateway) {
+                $newArr[$gateway] = $translates[$gateway] ?? $gateway;
+            }
+            return count($newArr) ? $newArr : null;
+        }
+        return $translates[$gateways] ?? $gateways;
+    }
 }

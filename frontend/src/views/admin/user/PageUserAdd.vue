@@ -12,7 +12,7 @@
                             <div class="flex flex-wrap">
                                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                                     <base-input label-title="نام کاربری"
-                                                placeholder=" (شماره تلفن همراه می‌باشد)"
+                                                placeholder="(شماره تلفن همراه می‌باشد)"
                                                 name="username">
                                         <template #icon>
                                             <UserIcon class="h-6 w-6 text-gray-400"/>
@@ -43,10 +43,13 @@
                                     <partial-input-label title="نقش کاربر"/>
                                     <base-select-searchable
                                         :options="roles"
-                                        options-key="name"
+                                        options-key="value"
+                                        options-text="name"
                                         name="roles"
                                         :multiple="true"
+                                        @change="roleChange"
                                     />
+                                    <partial-input-error-message :error-message="errors.roles"/>
                                 </div>
                             </div>
 
@@ -94,7 +97,18 @@
 
                             <div class="px-2 py-3">
                                 <base-animated-button
-                                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto">
+                                    type="submit"
+                                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                                    :disabled="isSubmitting"
+                                >
+                                    <VTransitionFade>
+                                        <loader-circle
+                                            v-if="isSubmitting"
+                                            main-container-klass="absolute w-full h-full"
+                                            big-circle-color="border-transparent"
+                                        />
+                                    </VTransitionFade>
+
                                     <template #icon="{klass}">
                                         <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
                                     </template>
@@ -122,10 +136,14 @@ import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import {useRequest} from "../../../composables/api-request.js";
 import {apiRoutes} from "../../../router/api-routes.js";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
+import yup, {transformNumbersToEnglish} from "../../../validation/index.js";
 import {useRouter} from "vue-router";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.vue";
+import isArray from "lodash.isarray";
+import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
+import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "../../../transitions/VTransitionFade.vue";
 
 const loading = ref(true)
 const canSubmit = ref(true)
@@ -133,16 +151,62 @@ const roles = ref({})
 
 const router = useRouter()
 
-const {handleSubmit} = useForm({
-    validationSchema: yup.object().shape({
-        // username: yup.string().required('نام کاربری اجباری می‌باشد.'),
-        // password: yup.string().required('کلمه عبور اجباری می‌باشد.'),
+const selectedRole = ref(null)
 
+function roleChange(selected) {
+    selectedRole.value = selected
+}
+
+const {handleSubmit, errors, isSubmitting} = useForm({
+    validationSchema: yup.object().shape({
+        username: yup.string()
+            .transform(transformNumbersToEnglish)
+            .required('نام کاربری اجباری می‌باشد.'),
+        password: yup.string()
+            .transform(transformNumbersToEnglish)
+            .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
+            .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
+            .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
+            .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
+            .required('کلمه عبور اجباری می‌باشد.'),
+        password_confirmation: yup.string()
+            .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
+        first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام اجباری می‌باشد.'),
+        last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی اجباری می‌باشد.'),
+        national_code: yup.string()
+            .transform(transformNumbersToEnglish)
+            .persianNationalCode('کد ملی نامعتبر است.').required('کد ملی اجباری می‌باشد.'),
+        shaba_number: yup.string()
+            .transform(transformNumbersToEnglish)
+            .optional().nullable(),
     }),
 })
 
 const onSubmit = handleSubmit((values, actions) => {
     if (!canSubmit.value) return
+
+    // validate extra inputs
+    if (!selectedRole.value || selectedRole.value === null || selectedRole.value.length === 0) {
+        actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
+        return
+    }
+
+    if (isArray(selectedRole.value)) {
+        for (let i of selectedRole.value) {
+            if (roles.value.map(val => val.value).indexOf(i.value) === -1) {
+                actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')
+                return
+            }
+        }
+        values.roles = selectedRole.value
+    } else {
+        if (roles.value.map(val => val.value).indexOf(selectedRole.value.value) === -1) {
+            actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')
+            return
+        }
+        values.roles = [selectedRole.value]
+    }
+    //
 
     canSubmit.value = false
 
@@ -150,7 +214,7 @@ const onSubmit = handleSubmit((values, actions) => {
         method: 'POST',
         data: values,
     }, {
-        success: () => {
+        success: (response) => {
             actions.resetForm();
             router.push({name: 'admin.users'})
         },
@@ -158,7 +222,7 @@ const onSubmit = handleSubmit((values, actions) => {
             actions.resetField('password')
             actions.resetField('password_confirmation')
 
-            if (error.errors && Object.keys(error.errors).length > 1)
+            if (error.errors && Object.keys(error.errors).length >= 1)
                 actions.setErrors(error.errors)
 
             return false

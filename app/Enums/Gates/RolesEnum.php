@@ -20,7 +20,7 @@ enum RolesEnum: string
      */
     private static function translationArray(): array
     {
-        return $translates = [
+        return [
             self::DEVELOPER->value => 'توسعه دهنده',
             self::SUPER_ADMIN->value => 'کاربر ویژه',
             self::ADMIN->value => 'ادمین',
@@ -61,12 +61,7 @@ enum RolesEnum: string
     public static function isAdminRole(string $role): bool
     {
         $roleValues = array_map(fn($item) => $item->value, self::getAdminRoles());
-        $similarRoles = self::getSimilarRoleValuesFromString($role);
-        foreach ($similarRoles as $role) {
-            if(in_array($role, $roleValues))
-                return true;
-        }
-        return false;
+        return in_array($role, $roleValues);
     }
 
     /**
@@ -95,7 +90,7 @@ enum RolesEnum: string
         $translates = self::translationArray();
         $arr = [];
         foreach ($translates as $role => $translate) {
-            if(Str::contains($translate, $str, true)) {
+            if (Str::contains($translate, $str, true)) {
                 $arr[] = $role;
             }
         }

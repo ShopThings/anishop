@@ -1,5 +1,5 @@
 <template>
-    <base-sidebar class="text-white " ref="sidebar">
+    <base-sidebar class="text-white" ref="sidebar">
         <button type="button" @click="closeSidebar"
                 class="w-10 h-10 absolute left-0 top-2.5 -translate-x-full rounded-l-lg p-2 bg-indigo-600 group transition hover:bg-opacity-90 lg:hidden">
             <Bars3CenterLeftIcon class="w-6 h-6 group-hover:scale-110 transition"/>
@@ -11,7 +11,7 @@
                     <div class="py-4 bg-gradient-to-b from-[#ffffff4f] mb-0 lg:mb-4">
                         <router-link :to="{name: 'home'}">
                             <img class="h-[28px] mx-auto lg:h-[36px]"
-                                 src="/logo.png"
+                                 src="/logo-with-type-light.png"
                                  alt="لوگو">
                         </router-link>
                     </div>
@@ -139,7 +139,6 @@ watchEffect(() => {
             if (y.value > 0) {
                 if (!sidebar.value?.classList?.contains('__sidebar-admin-top')) {
                     sidebar.value?.classList?.add('__sidebar-admin-top')
-                    setHeight()
                 }
             } else {
                 sidebar.value?.classList?.remove('__sidebar-admin-top')
@@ -153,6 +152,8 @@ watchEffect(() => {
             if ((x.value > 5 || x.value < -5))
                 sidebar.value.style.right = 0
         }
+
+        setHeight()
     }
 })
 
@@ -177,6 +178,6 @@ defineExpose({
 
 <style>
 .__sidebar-admin-top {
-    top: 0;
+    top: 64px;
 }
 </style>

@@ -10,7 +10,7 @@
 defineProps({
     lazySrc: String,
     alt: {
-        type: Stirng,
+        type: String,
         default: '',
     },
 })
@@ -20,13 +20,11 @@ defineProps({
 .app-image {
     max-width: 100%;
     max-height: 100%;
-    width: auto;
-    height: auto;
     vertical-align: middle;
+    object-fit: contain;
 }
 
 .app-image[lazy=loading] {
     width: 100%;
-    height: 300px;
 }
 </style>

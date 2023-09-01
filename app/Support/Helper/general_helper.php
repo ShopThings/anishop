@@ -2,6 +2,19 @@
 
 namespace App\Support\Helper;
 
+if (!function_exists('to_boolean')) {
+    /**
+     * Convert to boolean
+     *
+     * @param $booleable
+     * @return boolean
+     */
+    function to_boolean($booleable): bool
+    {
+        return (bool)filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+}
+
 if (!function_exists('get_color_from_bg')) {
     /**
      * @see https://betterprogramming.pub/generate-contrasting-text-for-your-random-background-color-ac302dc87b4

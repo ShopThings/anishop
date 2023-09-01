@@ -39,6 +39,7 @@ class FileManagerController extends Controller
             $request->input('disk', ''),
             $request->input('search'),
             $request->input('size'),
+            $request->input('extensions', []),
             [$request->input('column', 'name') => $request->input('sort', 'asc')]
         );
 

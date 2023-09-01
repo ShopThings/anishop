@@ -21,6 +21,7 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @param string $disk
      * @param string|null $search
      * @param string $fileSize
+     * @param array $extensions
      * @param array $order
      * @return array
      */
@@ -29,6 +30,7 @@ interface FileRepositoryInterface extends RepositoryInterface
         string  $disk,
         ?string $search = null,
         string  $fileSize = 'original',
+        array   $extensions = [],
         array   $order = []
     ): array;
 

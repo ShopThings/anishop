@@ -50,6 +50,11 @@
     color: #000;
 }
 
+.confirmation-toast {
+    min-width: 400px;
+    padding: 0;
+}
+
 .confirmation-toast .Vue-Toastification__icon {
     display: none;
 }

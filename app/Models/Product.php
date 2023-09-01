@@ -10,6 +10,7 @@ use App\Traits\HasTitleSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Mews\Purifier\Casts\CleanHtml;
 
 class Product extends Model
 {
@@ -24,6 +25,7 @@ class Product extends Model
     ];
 
     protected $casts = [
+        'description' => CleanHtml::class,
         'is_available' => 'boolean',
         'is_commenting_allowed' => 'boolean',
         'is_published' => 'boolean',

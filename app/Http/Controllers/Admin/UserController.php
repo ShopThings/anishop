@@ -57,13 +57,21 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $user = $this->service->create($request->all());
+        $validated = $request->validated();
+        $model = $this->service->create($validated);
 
-        return response()->json([
-            'type' => ResponseTypesEnum::SUCCESS->value,
-            'message' => 'ایجاد کاربر با موفقیت انجام شد.',
-            'data' => $user,
-        ]);
+        if (!is_null($model)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'message' => 'ایجاد کاربر با موفقیت انجام شد.',
+                'data' => $model,
+            ]);
+        } else {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'خطا در ایجاد کاربر',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     /**
@@ -75,8 +83,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', $user);
-
-        //
+        return new UserResource($user);
     }
 
     /**
@@ -90,7 +97,18 @@ class UserController extends Controller
     {
         $this->authorize('update', $user);
 
-        //
+        $validated = $request->validated();
+        unset($validated['username']);
+        $model = $this->service->updateById($user->id, $validated);
+
+        if (!is_null($model)) {
+            return new UserResource($model);
+        } else {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'خطا در ویرایش اطلاعات کاربر',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
     /**

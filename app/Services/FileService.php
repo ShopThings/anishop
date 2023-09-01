@@ -44,6 +44,7 @@ class FileService extends Service implements FileServiceInterface
         string  $disk,
         ?string $search = null,
         ?string $fileSize = null,
+        array   $extensions = [],
         array   $order = ['name' => 'asc']
     ): array
     {
@@ -55,6 +56,7 @@ class FileService extends Service implements FileServiceInterface
             $disk,
             $search,
             $fileSize,
+            $extensions,
             $this->convertOrdersColumnToArray($order)
         );
     }
@@ -145,7 +147,7 @@ class FileService extends Service implements FileServiceInterface
     {
         $hasDisk = $this->repository->checkDiskValidation($disk, false);
 
-        if(!$hasDisk) return false;
+        if (!$hasDisk) return false;
 
         return $this->repository->checkPathExists($path, false);
     }

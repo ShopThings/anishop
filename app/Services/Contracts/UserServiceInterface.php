@@ -25,10 +25,23 @@ interface UserServiceInterface extends ServiceInterface
     ): Collection|LengthAwarePaginator;
 
     /**
-     * @param array $attributes
-     * @return Model
+     * @param $id
+     * @return Collection|Model|null
      */
-    public function create(array $attributes): Model;
+    public function getById($id): Collection|Model|null;
+
+    /**
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function create(array $attributes): ?Model;
+
+    /**
+     * @param $id
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function updateById($id, array $attributes): ?Model;
 
     /**
      * @param $id

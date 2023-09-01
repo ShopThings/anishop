@@ -6,7 +6,7 @@
                     <div class="h-full">
                         <router-link :to="{name: 'home'}">
                             <img class="h-[28px] mt-[10px]"
-                                 src="/logo.png"
+                                 src="/logo-with-type.png"
                                  alt="لوگو">
                         </router-link>
                     </div>

@@ -8,7 +8,7 @@
                             <router-link :to="{name: 'home'}"
                                          class="mb-6 inline-block max-w-[160px]">
                                 <img class="mt-[10px] max-w-full"
-                                     src="/logo.png"
+                                     src="/logo-with-type.png"
                                      alt="لوگو">
                             </router-link>
 

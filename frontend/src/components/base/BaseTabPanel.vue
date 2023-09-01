@@ -1,6 +1,6 @@
 <template>
     <TabGroup :defaultIndex="defaultIndex" @change="changeTab">
-        <TabList class="flex space-x-1 rounded-xl bg-blue-900/20 p-1">
+        <TabList class="flex flex-wrap space-x-1 rounded-md bg-blue-900/20 p-1">
             <Tab
                 v-for="(tab, idx) in tabs"
                 as="template"
@@ -11,11 +11,11 @@
                 <slot name="button">
                     <button
                         :class="[
-                        'w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700',
+                        'grow rounded p-2.5 text-sm font-medium leading-5 text-blue-700',
                         'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-400 focus:outline-none focus:ring-2',
                         selected
                             ? 'bg-white shadow'
-                            : 'text-secondary hover:bg-white/[0.12] hover:text-blue-600',
+                            : 'text-secondary hover:bg-white/[0.2] hover:text-blue-600',
                     ]"
                         v-html="tab.text"
                     >
@@ -29,7 +29,7 @@
                 v-for="tab in Object.keys(tabs)"
                 :key="tab"
                 :class="[
-                    'rounded-xl bg-white p-3',
+                    'rounded-md bg-white p-3',
                     'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-300 focus:outline-none focus:ring-2 border',
                   ]"
             >

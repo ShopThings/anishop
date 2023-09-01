@@ -7,6 +7,7 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Mews\Purifier\Casts\CleanHtml;
 
 class StaticPage extends Model
 {
@@ -20,6 +21,7 @@ class StaticPage extends Model
     ];
 
     protected $casts = [
+        'description' => CleanHtml::class,
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
     ];

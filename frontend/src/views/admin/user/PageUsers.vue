@@ -1,7 +1,7 @@
 <template>
     <new-creation-guide-top route-name="admin.user.add">
         <template #text>
-            با استفاده از ستون عملیات می‌توانید اقدام به حذف و مشاهده کاربر کنید
+            با استفاده از ستون عملیات می‌توانید اقدام به حذف و مشاهده کاربر نمایید
         </template>
         <template #buttonText>
             <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
@@ -61,7 +61,6 @@
             </base-loading-panel>
         </template>
     </partial-card>
-
 </template>
 
 <script setup>

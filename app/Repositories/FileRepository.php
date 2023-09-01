@@ -112,6 +112,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         string  $disk,
         ?string $search = null,
         string  $fileSize = self::ORIGINAL,
+        array   $extensions = [],
         array   $order = []
     ): array
     {
@@ -120,15 +121,11 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $this->checkDiskValidation($disk);
         $this->checkPathExists($path, $disk);
 
-        $listFiles = [];
-        $diskStorage = Storage::disk($disk);
         $where = new WhereBuilder('file_manager');
 
         $hasSearch = !is_null($search) && trim($search) != '';
 
         if ($hasSearch) {
-            $files = $diskStorage->allFiles($path);
-
             $search = $this->getNormalizedPath($search);
 
             $where->whereLike('name', $search)
@@ -138,13 +135,16 @@ class FileRepository extends Repository implements FileRepositoryInterface
                 $where->whereLike('extension', $search);
             }
         } else {
-            $files = $diskStorage->files($path);
-
             $where->whereEqual('path', $path);
         }
 
+        if (count($extensions)) {
+            $where->whereIn('extension', $extensions);
+        }
+
+        $listFiles = [];
         $dbFiles = [];
-        $this->chunk(function (Collection $files) use (&$dbFiles) {
+        $this->chunk(function (Collection $files) use (&$dbFiles, &$listFiles, $hasSearch, $fileSize, $disk) {
             $files->each(function (FileManager $file) use (&$dbFiles) {
                 $dbFiles[] = [
                     'name' => $file->name,
@@ -152,28 +152,29 @@ class FileRepository extends Repository implements FileRepositoryInterface
                     'path' => $file->path,
                 ];
             });
-        }, $where->build());
 
-        $tmpFiles = $this->getSimilarFiles(
-            $files,
-            '^(' . implode('|', array_map(function ($value) {
-                return preg_quote($value);
-            }, Arr::pluck($dbFiles, 'name'))) . ')',
-            $hasSearch ? ['i'] : []
-        );
-        foreach ($tmpFiles as $tmpFile) {
-            if (!in_array($tmpFile, $listFiles)) {
-                $listFiles[] = $tmpFile;
+            $tmpFiles = $this->getSimilarFiles(
+                $files,
+                '(' . implode('|', array_map(function ($value) {
+                    return preg_quote($value);
+                }, Arr::pluck($dbFiles, 'name'))) . ')',
+                $hasSearch ? ['i'] : []
+            );
+            foreach ($tmpFiles as $tmpFile) {
+                if (!in_array($tmpFile, $listFiles)) {
+                    $listFiles[] = $tmpFile;
+                }
             }
-        }
 
-        $tmpFiles = $this->getSpecificThumbnail($listFiles, $fileSize);
+            $tmpFiles = $this->getSpecificThumbnail($listFiles, $fileSize);
 
-        // get file info of fetched files
-        $listFiles = [];
-        foreach ($tmpFiles as $file) {
-            $listFiles[] = $this->getFileInfo($file, $disk);
-        }
+            // get file info of fetched files
+            foreach ($tmpFiles as $file) {
+                $listFiles[] = $this->getFileInfo($file, $disk);
+            }
+
+            $dbFiles = [];
+        }, $where->build());
 
         $treeList = $this->treeList($path, $disk);
 
