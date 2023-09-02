@@ -42,6 +42,9 @@
                                 ></span>
                             </div>
                         </template>
+                        <template v-slot:is_published="{value}">
+
+                        </template>
                         <template v-slot:created_at="{value}">
                             <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
                             <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
@@ -101,14 +104,14 @@ const table = reactive({
             sortable: true,
         },
         {
-            label: "اضافه شده در تاریخ",
+            label: "وضعیت نمایش",
+            field: "is_published",
+        },
+        {
+            label: "تاریخ ایجاد",
             field: "created_at",
             columnClasses: 'whitespace-nowrap',
             sortable: true,
-        },
-        {
-            label: "وضعیت نمایش",
-            field: "is_published",
         },
     ],
     columns: [
@@ -125,14 +128,14 @@ const table = reactive({
             sortable: true,
         },
         {
-            label: "اضافه شده در تاریخ",
+            label: "وضعیت نمایش",
+            field: "is_published",
+        },
+        {
+            label: "تاریخ ایجاد",
             field: "created_at",
             columnClasses: 'whitespace-nowrap',
             sortable: true,
-        },
-        {
-            label: "وضعیت نمایش",
-            field: "is_published",
         },
         {
             label: 'عملیات',
