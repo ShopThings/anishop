@@ -74,7 +74,7 @@ import {useRequest} from "../../../composables/api-request.js";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
-import {useToast, POSITION, TYPE} from "vue-toastification";
+import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "../../../composables/toast-confirm.js";
 
