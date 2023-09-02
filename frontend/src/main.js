@@ -3,11 +3,13 @@ import {createPinia} from 'pinia';
 import Toast, {POSITION} from "vue-toastification";
 import FloatingVue from 'floating-vue';
 import VueLazyLoad from 'vue3-lazyload';
+import Vue3ColorPicker from "vue3-colorpicker";
 
 import "vue-toastification/dist/index.css";
 import 'floating-vue/dist/style.css';
 import 'overlayscrollbars/overlayscrollbars.css';
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
+import "vue3-colorpicker/style.css";
 import './main.css';
 
 import router from "./router";
@@ -17,7 +19,6 @@ import LayoutGuest from './components/layouts/LayoutGuest.vue';
 import LayoutUser from './components/layouts/LayoutUser.vue';
 import LayoutAdmin from './components/layouts/LayoutAdmin.vue';
 import LayoutEmpty from "./components/layouts/LayoutEmpty.vue";
-
 const pinia = createPinia()
 
 createApp(App)
@@ -26,6 +27,7 @@ createApp(App)
     .use(FloatingVue)
     .use(VueLazyLoad)
     .use(ContextMenu)
+    .use(Vue3ColorPicker)
     .use(Toast, {
         transition: 'Vue-Toastification__fade',
         rtl: true,
