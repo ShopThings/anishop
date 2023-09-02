@@ -55,6 +55,15 @@ export const apiRoutes = {
             destroy: 'api/admin/colors/{color}',
             batchDestroy: 'api/admin/colors/batch',
         },
+
+        brands: {
+            index: 'api/admin/brand',
+            show: 'api/admin/brand/{brand}',
+            store: 'api/admin/brands',
+            update: 'api/admin/brand/{brand}',
+            destroy: 'api/admin/brands/{brand}',
+            batchDestroy: 'api/admin/brands/batch',
+        },
     },
 
 
