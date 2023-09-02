@@ -46,6 +46,12 @@ export const apiRoutes = {
             show: 'api/admin/payment-method/{payment_method}',
             update: 'api/admin/payment-method/{payment_method}',
         },
+
+        colors: {
+            index: 'api/admin/color',
+            show: 'api/admin/color/{color}',
+            update: 'api/admin/color/{color}',
+        },
     },
 
 
