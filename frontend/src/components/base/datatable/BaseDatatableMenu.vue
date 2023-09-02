@@ -12,7 +12,10 @@
             </button>
         </template>
 
-        <template #item="{item, hide}">
+        <template
+            v-if="item.id && removals.indexOf(item.id) === -1"
+            #item="{item, hide}"
+        >
             <router-link
                 v-if="item.link.href"
                 @click="itemClick(item, hide)"
@@ -52,6 +55,12 @@ const props = defineProps({
         required: true,
     },
     data: Object,
+    removals: {
+        type: Array,
+        default: () => {
+            return []
+        }
+    },
 })
 
 function itemClick(item, hide) {
