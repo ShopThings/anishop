@@ -50,7 +50,10 @@ export const apiRoutes = {
         colors: {
             index: 'api/admin/color',
             show: 'api/admin/color/{color}',
+            store: 'api/admin/colors',
             update: 'api/admin/color/{color}',
+            destroy: 'api/admin/colors/{color}',
+            batchDestroy: 'api/admin/colors/batch',
         },
     },
 
