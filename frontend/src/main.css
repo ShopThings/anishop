@@ -85,3 +85,18 @@
 [dir='rtl'] .mx-context-menu-item .mx-right-arrow {
     transform: rotateY(180deg);
 }
+
+/* Vue3TagsInput */
+
+.v3ti .v3ti-tag .v3ti-remove-tag {
+    margin: 0 1px;
+    padding: 0 7px 0 5px !important;
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag::before {
+    content: "×" !important;
+}
+
+.v3ti .v3ti-new-tag {
+    box-shadow: none;
+}

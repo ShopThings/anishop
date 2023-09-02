@@ -11,6 +11,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "vue3-colorpicker": "^2.2.2"
+        "vue3-colorpicker": "^2.2.2",
+        "vue3-tags-input": "^1.0.12"
     }
 }
