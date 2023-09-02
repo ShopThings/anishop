@@ -54,7 +54,12 @@
                             <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>
                         </template>
                         <template v-slot:op="{value}">
-                            <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+                            <base-datatable-menu
+                                :items="operations"
+                                :data="value"
+                                :container="getMenuContainer"
+                                :removals="!value.is_deletable ? ['delete'] : []"
+                            />
                         </template>
                     </base-datatable>
                 </template>
@@ -187,6 +192,7 @@ const getMenuContainer = computed(() => {
 
 const operations = [
     {
+        id: 'edit',
         link: {
             text: 'مشاهده و ویرایش',
             icon: 'PencilIcon',
@@ -203,6 +209,7 @@ const operations = [
         },
     },
     {
+        id: 'delete',
         link: {
             text: 'حذف',
             icon: 'TrashIcon',
@@ -212,6 +219,9 @@ const operations = [
             click: (data) => {
                 hideAllPoppers()
                 toast.clear()
+
+                if (!data.is_deletable)
+                    toast.warning('این آیتم قابل حذف نمی‌باشد.')
 
                 useConfirmToast(() => {
                     useRequest(apiReplaceParams(apiRoutes.admin.users.destroy, {user: data.id}), {
