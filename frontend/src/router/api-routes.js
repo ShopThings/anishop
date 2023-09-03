@@ -48,33 +48,40 @@ export const apiRoutes = {
         },
 
         colors: {
-            index: 'api/admin/color',
-            show: 'api/admin/color/{color}',
+            index: 'api/admin/colors',
+            show: 'api/admin/colors/{color}',
             store: 'api/admin/colors',
-            update: 'api/admin/color/{color}',
+            update: 'api/admin/colors/{color}',
             destroy: 'api/admin/colors/{color}',
             batchDestroy: 'api/admin/colors/batch',
         },
 
         brands: {
-            index: 'api/admin/brand',
-            show: 'api/admin/brand/{brand}',
+            index: 'api/admin/brands',
+            show: 'api/admin/brands/{brand}',
             store: 'api/admin/brands',
-            update: 'api/admin/brand/{brand}',
+            update: 'api/admin/brands/{brand}',
             destroy: 'api/admin/brands/{brand}',
             batchDestroy: 'api/admin/brands/batch',
         },
 
         categories: {
-            index: 'api/admin/category',
-            show: 'api/admin/category/{category}',
-            store: 'api/admin/category',
-            update: 'api/admin/category/{category}',
-            destroy: 'api/admin/category/{category}',
-            batchDestroy: 'api/admin/category/batch',
+            index: 'api/admin/categories',
+            show: 'api/admin/categories/{category}',
+            store: 'api/admin/categories',
+            update: 'api/admin/categories/{category}',
+            destroy: 'api/admin/categories/{category}',
+            batchDestroy: 'api/admin/categories/batch',
+        },
+
+        categoryImages: {
+            index: 'api/admin/category-images',
+            show: 'api/admin/category-images/{category_image}',
+            store: 'api/admin/category-images',
+            update: 'api/admin/category-images/{category_image}',
+            destroy: 'api/admin/category-images/{category_image}',
         },
     },
-
 
     // user routes
     user: {
