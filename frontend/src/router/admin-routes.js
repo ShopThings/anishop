@@ -381,75 +381,10 @@ export const adminRoutes = {
                 },
                 {
                     path: 'image',
-                    children: [
-                        {
-                            path: '',
-                            name: 'admin.category_images',
-                            component: () => import('../views/admin/product/PageCategoryImages.vue'),
-                            meta: {
-                                title: 'تصاویر دسته‌بندی‌ها',
-                                breadcrumb: [
-                                    {
-                                        name: 'دسته‌بندی‌ها',
-                                        link: 'admin.categories',
-                                    },
-                                    {
-                                        name: 'تصاویر دسته‌بندی‌ها',
-                                    }
-                                ],
-                            },
-                        },
-                        {
-                            path: 'new',
-                            name: 'admin.category_image.add',
-                            component: () => import('../views/admin/product/PageCategoryImageAdd.vue'),
-                            meta: {
-                                title: 'افزودن تصویر به دسته‌بندی',
-                                breadcrumb: [
-                                    {
-                                        name: 'دسته‌بندی‌ها',
-                                        link: 'admin.categories',
-                                    },
-                                    {
-                                        name: 'تصاویر دسته‌بندی‌ها',
-                                        link: 'admin.category_images',
-                                    },
-                                    {
-                                        name: 'افزودن تصویر به دسته‌بندی',
-                                    }
-                                ],
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            path: 'category/:id(\\d+)',
-            children: [
-                {
-                    path: '',
-                    name: 'admin.category.edit',
-                    component: () => import('../views/admin/product/PageCategoryEdit.vue'),
+                    name: 'admin.category_images',
+                    component: () => import('../views/admin/product/PageCategoryImages.vue'),
                     meta: {
-                        title: 'ویرایش دسته‌بندی',
-                        breadcrumb: [
-                            {
-                                name: 'دسته‌بندی‌ها',
-                                link: 'admin.categories',
-                            },
-                            {
-                                name: 'ویرایش دسته‌بندی',
-                            }
-                        ],
-                    },
-                },
-                {
-                    path: 'image',
-                    name: 'admin.category_image.edit',
-                    component: () => import('../views/admin/product/PageCategoryImageEdit.vue'),
-                    meta: {
-                        title: 'ویرایش تصویر دسته‌بندی',
+                        title: 'تصاویر دسته‌بندی‌ها',
                         breadcrumb: [
                             {
                                 name: 'دسته‌بندی‌ها',
@@ -457,15 +392,28 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'تصاویر دسته‌بندی‌ها',
-                                link: 'admin.category_images',
-                            },
-                            {
-                                name: 'ویرایش تصویر دسته‌بندی',
                             }
                         ],
                     },
                 },
             ],
+        },
+        {
+            path: 'category/:id(\\d+)',
+            name: 'admin.category.edit',
+            component: () => import('../views/admin/product/PageCategoryEdit.vue'),
+            meta: {
+                title: 'ویرایش دسته‌بندی',
+                breadcrumb: [
+                    {
+                        name: 'دسته‌بندی‌ها',
+                        link: 'admin.categories',
+                    },
+                    {
+                        name: 'ویرایش دسته‌بندی',
+                    }
+                ],
+            },
         },
 
         {
