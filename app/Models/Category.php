@@ -20,6 +20,8 @@ class Category extends Model
         HasParentRelationTrait,
         HasNameSluggableTrait;
 
+    public $table = 'categories';
+
     protected $guarded = [
         'id',
     ];
