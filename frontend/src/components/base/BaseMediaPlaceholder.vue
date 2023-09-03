@@ -34,33 +34,44 @@
             </div>
             <div
                 v-else
-                @click="open"
-                class="cursor-pointer w-20 h-20 rounded-lg border-2 flex items-center justify-center border-slate-300 group hover:border-slate-400 transition overflow-hidden bg-gray-100"
-                :class="{
+                class="relative inline-block"
+            >
+                <div
+                    @click="open"
+                    class="cursor-pointer w-20 h-20 rounded-lg border-2 flex items-center justify-center border-slate-300 group hover:border-slate-400 transition overflow-hidden bg-gray-100"
+                    :class="{
                     'bg-violet-500 !border-violet-500 hover:bg-violet-600': type === 'video',
                     'bg-sky-500 !border-sky-500 hover:bg-sky-600': type === 'doc',
                     'bg-emerald-500 !border-emerald-500 hover:bg-emerald-600': type === 'audio',
                 }"
-            >
-                <base-lazy-image
-                    v-if="type === 'image'"
-                    :lazy-src="selectedFile?.image"
-                />
-                <FilmIcon
-                    v-else-if="type === 'video'"
-                    class="w-12 h-12 text-violet-300 group-hover:text-violet-200 group-hover:w-10 group-hover:h-10 transition-all"
-                />
-                <DocumentTextIcon
-                    v-else-if="type === 'doc'"
-                    class="w-12 h-12 text-sky-300 group-hover:text-sky-200 group-hover:w-10 group-hover:h-10 transition-all"
-                />
-                <MusicalNoteIcon
-                    v-else-if="type === 'audio'"
-                    class="w-12 h-12 text-emerald-300 group-hover:text-emerald-200 group-hover:w-10 group-hover:h-10 transition-all"
-                />
-                <QuestionMarkCircleIcon
-                    v-else
-                    class="w-12 h-12 text-amber-300 group-hover:text-amber-200 group-hover:w-10 group-hover:h-10 transition-all"
+                >
+                    <base-lazy-image
+                        v-if="type === 'image'"
+                        :lazy-src="selectedFile?.image"
+                    />
+                    <FilmIcon
+                        v-else-if="type === 'video'"
+                        class="w-12 h-12 text-violet-300 group-hover:text-violet-200 group-hover:w-10 group-hover:h-10 transition-all"
+                    />
+                    <DocumentTextIcon
+                        v-else-if="type === 'doc'"
+                        class="w-12 h-12 text-sky-300 group-hover:text-sky-200 group-hover:w-10 group-hover:h-10 transition-all"
+                    />
+                    <MusicalNoteIcon
+                        v-else-if="type === 'audio'"
+                        class="w-12 h-12 text-emerald-300 group-hover:text-emerald-200 group-hover:w-10 group-hover:h-10 transition-all"
+                    />
+                    <QuestionMarkCircleIcon
+                        v-else
+                        class="w-12 h-12 text-amber-300 group-hover:text-amber-200 group-hover:w-10 group-hover:h-10 transition-all"
+                    />
+                </div>
+
+                <XMarkIcon
+                    v-if="hasClearButton"
+                    v-tooltip.bottom-end="'پاک کردن'"
+                    class="absolute w-6 h-6 left-0 top-0 -translate-x-1/3 -translate-y-1/3 p-1 border rounded-md text-black transition cursor-pointer shadow z-[1] bg-pink-100 border-pink-300 hover:bg-pink-500 hover:text-white"
+                    @click="clearSelectedFile"
                 />
             </div>
         </template>
@@ -112,6 +123,7 @@ import {
     FilmIcon,
     QuestionMarkCircleIcon,
     PlusSmallIcon,
+    XMarkIcon,
 } from "@heroicons/vue/24/outline"
 import BaseFileManager from "./BaseFileManager.vue";
 import BaseDialog from "./BaseDialog.vue";
@@ -127,7 +139,10 @@ const props = defineProps({
         },
     },
     selected: Object,
+    hasClearButton: Boolean,
 })
+
+const emit = defineEmits(['clear-selected-file'])
 
 const toast = useToast()
 
@@ -173,6 +188,12 @@ function checkFileSelection(close) {
         tmpSelectedFile.value = null
         close()
     }
+}
+
+function clearSelectedFile() {
+    const res = emit('clear-selected-file', selectedFile.value)
+    if (res !== false)
+        selectedFile.value = null
 }
 </script>
 
