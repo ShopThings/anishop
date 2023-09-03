@@ -16,7 +16,6 @@ return new class extends Migration {
                 ->constrained('categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('image_id')->nullable()
                 ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
-            $table->text('link');
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
