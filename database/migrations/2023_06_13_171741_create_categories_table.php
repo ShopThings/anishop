@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->integer('priority')->default(0);
             $table->boolean('show_in_menu')->default(true)
                 ->comment('show in main categories menu or not');
-            $table->boolean('show_in_side_menu')->default(true)
+            $table->boolean('show_in_search_side_menu')->default(true)
                 ->comment('neither show in search side panel or not');
             $table->boolean('show_in_slider')->default(true);
             $table->boolean('is_published')->default(true);
