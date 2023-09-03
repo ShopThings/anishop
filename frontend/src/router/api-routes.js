@@ -64,6 +64,15 @@ export const apiRoutes = {
             destroy: 'api/admin/brands/{brand}',
             batchDestroy: 'api/admin/brands/batch',
         },
+
+        categories: {
+            index: 'api/admin/category',
+            show: 'api/admin/category/{category}',
+            store: 'api/admin/category',
+            update: 'api/admin/category/{category}',
+            destroy: 'api/admin/category/{category}',
+            batchDestroy: 'api/admin/category/batch',
+        },
     },
 
 
