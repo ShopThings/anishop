@@ -16,7 +16,7 @@
             <Switch
                 v-model="value"
                 :class="value ? (enabledColor || 'bg-indigo-600') : (disabledColor || 'bg-slate-300')"
-                class="relative flex h-6 w-11 items-center rounded-full"
+                class="relative flex h-6 w-11 items-center rounded-full shrink-0"
             >
                 <span v-if="srText" class="sr-only">{{ srText }}</span>
                 <span
