@@ -8,6 +8,18 @@ import {apiRoutes} from "./api-routes.js";
 
 const routes = [
     {...adminRoutes},
+    {
+        path: '/admin/file-manager/editor',
+        name: 'admin.file_manager.editor',
+        component: () => import('../views/admin/PageFileManagerEditor.vue'),
+        meta: {
+            title: 'مدیریت فایل‌ها',
+            requiresAuth: true,
+            isAdminRoute: true,
+        },
+        layout: 'layout-empty',
+    },
+
     {...userRoutes},
 
     // guest routes
