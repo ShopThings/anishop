@@ -12,30 +12,29 @@
             </button>
         </template>
 
-        <template
-            v-if="item.id && removals.indexOf(item.id) === -1"
-            #item="{item, hide}"
-        >
-            <router-link
-                v-if="item.link.href"
-                @click="itemClick(item, hide)"
-                :to="item.link.href"
-                class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
-                :class="item.link.class"
-            >
-                <component v-if="item.link.icon" :is="outline[item.link.icon]" class="h-5 w-5"/>
-                <span :class="item.link.icon ? 'mr-2' : ''">{{ item.link.text }}</span>
-            </router-link>
-            <a
-                v-else
-                @click.prevent="itemClick(item, hide)"
-                href="javascript:void(0)"
-                class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
-                :class="item.link.class"
-            >
-                <component v-if="item.link.icon" :is="outline[item.link.icon]" class="h-5 w-5"/>
-                <span :class="item.link.icon ? 'mr-2' : ''">{{ item.link.text }}</span>
-            </a>
+        <template #item="{item, hide}">
+            <template v-if="item.id && removals.indexOf(item.id) === -1">
+                <router-link
+                    v-if="item.link.href"
+                    @click="itemClick(item, hide)"
+                    :to="item.link.href"
+                    class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
+                    :class="item.link.class"
+                >
+                    <component v-if="item.link.icon" :is="outline[item.link.icon]" class="h-5 w-5"/>
+                    <span :class="item.link.icon ? 'mr-2' : ''">{{ item.link.text }}</span>
+                </router-link>
+                <a
+                    v-else
+                    @click.prevent="itemClick(item, hide)"
+                    href="javascript:void(0)"
+                    class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
+                    :class="item.link.class"
+                >
+                    <component v-if="item.link.icon" :is="outline[item.link.icon]" class="h-5 w-5"/>
+                    <span :class="item.link.icon ? 'mr-2' : ''">{{ item.link.text }}</span>
+                </a>
+            </template>
         </template>
     </base-floating-drop-down>
 </template>
