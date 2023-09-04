@@ -82,13 +82,28 @@ export const apiRoutes = {
             destroy: 'api/admin/category-images/{category_image}',
         },
 
+        products: {
+            index: 'api/admin/products',
+            show: 'api/admin/products/{product}',
+            store: 'api/admin/products',
+            update: 'api/admin/products/{product}',
+            destroy: 'api/admin/products/{product}',
+            batchDestroy: 'api/admin/products/batch',
+        },
+
         festivals: {
-            index: 'api/admin/festival',
-            show: 'api/admin/festival/{festival}',
-            store: 'api/admin/festival',
-            update: 'api/admin/festival/{festival}',
-            destroy: 'api/admin/festival/{festival}',
-            batchDestroy: 'api/admin/festival/batch',
+            index: 'api/admin/festivals',
+            show: 'api/admin/festivals/{festival}',
+            store: 'api/admin/festivals',
+            update: 'api/admin/festivals/{festival}',
+            destroy: 'api/admin/festivals/{festival}',
+            batchDestroy: 'api/admin/festivals/batch',
+            //
+            products: 'api/admin/festivals/{festival}/products',
+            storeProduct: 'api/admin/festivals/{festival}/{product}',
+            storeCategoryProducts: 'api/admin/festivals/{festival}/{category}',
+            destroyProduct: 'api/admin/festivals/{festival}/{product}',
+            batchDestroyProduct: 'api/admin/festivals/{festival}/batch',
         },
     },
 
