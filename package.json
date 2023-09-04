@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "vue3-colorpicker": "^2.2.2",
+        "vue3-persian-datetime-picker": "^1.2.2",
         "vue3-tags-input": "^1.0.12"
     }
 }
