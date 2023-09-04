@@ -211,9 +211,6 @@ const operations = [
                 hideAllPoppers()
                 toast.clear()
 
-                if (!data.is_deletable)
-                    toast.warning('این آیتم قابل حذف نمی‌باشد.')
-
                 useConfirmToast(() => {
                     useRequest(apiReplaceParams(apiRoutes.admin.festivals.destroy, {festival: data.id}), {
                         method: 'DELETE',
