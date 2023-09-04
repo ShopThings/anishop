@@ -10,7 +10,7 @@
                 <ComboboxInput
                     class="block w-full rounded-md border-0 py-3 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     :displayValue="setDisplayValue"
-                    placeholder="انتخاب کنید یا جستجو نمایید"
+                    :placeholder="placeholder || 'انتخاب کنید یا جستجو نمایید'"
                     @change="handleChangeValue"
                 />
                 <ComboboxButton
@@ -26,7 +26,7 @@
                         <loader-progress v-if="isLoading"/>
 
                         <div
-                            v-if="Object.keys(filteredOptions).length === 0 && query !== ''"
+                            v-if="!isLoading && Object.keys(filteredOptions).length === 0 && query !== ''"
                             class="relative cursor-default select-none py-2 px-4 text-gray-700"
                         >
                             هیچ موردی پیدا نشد.
@@ -117,6 +117,10 @@ const props = defineProps({
     optionsText: {
         type: String,
         required: true,
+    },
+    placeholder: {
+        type: String,
+        default: 'انتخاب کنید یا جستجو نمایید',
     },
     isLoading: {
         type: Boolean,
