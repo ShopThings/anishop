@@ -81,6 +81,15 @@ export const apiRoutes = {
             update: 'api/admin/category-images/{category_image}',
             destroy: 'api/admin/category-images/{category_image}',
         },
+
+        festivals: {
+            index: 'api/admin/festival',
+            show: 'api/admin/festival/{festival}',
+            store: 'api/admin/festival',
+            update: 'api/admin/festival/{festival}',
+            destroy: 'api/admin/festival/{festival}',
+            batchDestroy: 'api/admin/festival/batch',
+        },
     },
 
     // user routes

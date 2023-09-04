@@ -453,20 +453,42 @@ export const adminRoutes = {
         },
         {
             path: 'festival/:id(\\d+)',
-            name: 'admin.festival.edit',
-            component: () => import('../views/admin/shop/PageFestivalEdit.vue'),
-            meta: {
-                title: 'ویرایش جشنواره',
-                breadcrumb: [
-                    {
-                        name: 'جشنواره‌ها',
-                        link: 'admin.festivals',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.festival.edit',
+                    component: () => import('../views/admin/shop/PageFestivalEdit.vue'),
+                    meta: {
+                        title: 'ویرایش جشنواره',
+                        breadcrumb: [
+                            {
+                                name: 'جشنواره‌ها',
+                                link: 'admin.festivals',
+                            },
+                            {
+                                name: 'ویرایش جشنواره',
+                            }
+                        ],
                     },
-                    {
-                        name: 'ویرایش جشنواره',
-                    }
-                ],
-            },
+                },
+                {
+                    path: 'products',
+                    name: 'admin.festival.products',
+                    component: () => import('../views/admin/shop/PageFestivalProducts.vue'),
+                    meta: {
+                        title: 'ویرایش محصولات جشنواره',
+                        breadcrumb: [
+                            {
+                                name: 'جشنواره‌ها',
+                                link: 'admin.festivals',
+                            },
+                            {
+                                name: 'ویرایش محصولات جشنواره',
+                            }
+                        ],
+                    },
+                },
+            ],
         },
 
         {
