@@ -49,9 +49,6 @@
                             <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
                             <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                         </template>
-                        <template v-slot:is_published="{value}">
-
-                        </template>
                         <template v-slot:op="{value}">
                             <base-datatable-menu
                                 :items="operations"
