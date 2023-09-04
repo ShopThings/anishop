@@ -21,7 +21,7 @@
 
                                 <div class="p-2">
                                     <base-switch
-                                        label="عدم نمایش روش برند"
+                                        label="عدم نمایش برند"
                                         on-label="نمایش برند"
                                         name="is_published"
                                         :enabled="true"
