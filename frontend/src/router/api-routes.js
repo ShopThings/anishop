@@ -105,6 +105,15 @@ export const apiRoutes = {
             destroyProduct: 'api/admin/festivals/{festival}/{product}',
             batchDestroyProduct: 'api/admin/festivals/{festival}/batch',
         },
+
+        units: {
+            index: 'api/admin/units',
+            show: 'api/admin/units/{unit}',
+            store: 'api/admin/units',
+            update: 'api/admin/units/{unit}',
+            destroy: 'api/admin/units/{unit}',
+            batchDestroy: 'api/admin/units/batch',
+        },
     },
 
     // user routes
