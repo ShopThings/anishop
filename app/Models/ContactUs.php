@@ -16,6 +16,8 @@ class ContactUs extends Model
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait;
 
+    protected $table = 'contact_us';
+
     protected $guarded = [
         'id',
     ];
