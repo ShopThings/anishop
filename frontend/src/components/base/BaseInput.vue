@@ -38,6 +38,10 @@
                         isVisiblePassword ? '!ring-amber-500' : '',
                         hasIconSlot ? 'pr-10' : '',
                         ]"
+                        :min="min"
+                        :max="max"
+                        :minlength="minLength"
+                        :maxlength="maxLength"
                         @change="handleChange($event, false)"
                         @input="checkInput($event)"
                         @blur="checkInput($event)"
@@ -122,6 +126,10 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    min: Number,
+    max: Number,
+    minLength: Number,
+    maxLength: Number,
 })
 
 const emit = defineEmits([
