@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
 import yup from "../../../validation/index.js";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
@@ -99,6 +99,17 @@ import BaseInput from "../../../components/base/BaseInput.vue";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 import {useRequest} from "../../../composables/api-request.js";
+import {useRoute, useRouter} from "vue-router";
+import {useToast} from "vue-toastification";
+
+const router = useRouter()
+const route = useRoute()
+const toast = useToast()
+const idParam = computed(() => {
+    const id = parseInt(route.params.id, 10)
+    if (isNaN(id)) return route.params.id
+    return id
+})
 
 const loading = ref(false)
 const canSubmit = ref(true)
