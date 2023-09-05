@@ -32,12 +32,13 @@
                         <base-animated-button
                             type="submit"
                             class="bg-purple-500 text-white px-6 w-full sm:w-auto"
+                            :class="{'!cursor-not-allowed': isSubmitting}"
                             :disabled="isSubmitting"
                             @click="handleSubmitOperation('add')"
                         >
                             <VTransitionFade>
                                 <loader-circle
-                                    v-if="isSubmitting"
+                                    v-if="isSubmitting && submitOperation === 'add'"
                                     main-container-klass="absolute w-full h-full"
                                     big-circle-color="border-transparent"
                                 />
@@ -54,12 +55,13 @@
                         <base-animated-button
                             type="submit"
                             class="!text-pink-500 border-pink-500 px-6 w-full sm:w-auto hover:bg-pink-50"
+                            :class="{'!cursor-not-allowed': isSubmitting}"
                             :disabled="isSubmitting"
                             @click="handleSubmitOperation('remove')"
                         >
                             <VTransitionFade>
                                 <loader-circle
-                                    v-if="isSubmitting"
+                                    v-if="isSubmitting && submitOperation === 'remove'"
                                     main-container-klass="absolute w-full h-full"
                                     big-circle-color="border-transparent"
                                 />
