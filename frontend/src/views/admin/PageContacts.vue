@@ -47,7 +47,7 @@ import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "../../composables/toast-confirm.js";
-import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
+import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "../../components/partials/PartialCard.vue";
 import BaseDatatableMenu from "../../components/base/datatable/BaseDatatableMenu.vue";
 import BaseDatatable from "../../components/base/BaseDatatable.vue";
@@ -141,8 +141,8 @@ const getMenuContainer = computed(() => {
 const operations = [
     {
         link: {
-            text: 'ویرایش',
-            icon: 'PencilIcon',
+            text: 'مشاهده جزئیات',
+            icon: 'EyeIcon',
         },
         event: {
             click: (data) => {
