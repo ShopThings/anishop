@@ -114,6 +114,15 @@ export const apiRoutes = {
             destroy: 'api/admin/units/{unit}',
             batchDestroy: 'api/admin/units/batch',
         },
+
+        coupons: {
+            index: 'api/admin/coupons',
+            show: 'api/admin/coupons/{coupon}',
+            store: 'api/admin/coupons',
+            update: 'api/admin/coupons/{coupon}',
+            destroy: 'api/admin/coupons/{coupon}',
+            batchDestroy: 'api/admin/coupons/batch',
+        },
     },
 
     // user routes
