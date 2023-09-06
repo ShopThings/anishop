@@ -55,6 +55,12 @@ const routes = [
         meta: {layout: 'layout-guest'},
     },
     {
+        path: '/pages/:url([a-zA-Z0-9\/]*)',
+        name: 'pages',
+        component: () => import('../views/PagePages.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+    {
         // /search/screens -> /search?q=screens
         path: '/search/:searchText',
         redirect: to => {
