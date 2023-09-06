@@ -6,7 +6,7 @@
         <template #body>
             <div class="p-3">
                 <form @submit.prevent="onSubmit">
-                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                    <div class="p-2">
                         <base-switch
                             label="عدم نمایش سؤال"
                             on-label="نمایش سؤال"
