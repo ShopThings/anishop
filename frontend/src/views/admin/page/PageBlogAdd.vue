@@ -109,7 +109,6 @@
 </template>
 
 <script setup>
-
 import {onMounted, ref} from "vue";
 import BaseMediaPlaceholder from "../../../components/base/BaseMediaPlaceholder.vue";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
