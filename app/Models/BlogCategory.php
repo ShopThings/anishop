@@ -33,14 +33,6 @@ class BlogCategory extends Model
     ];
 
     /**
-     * @return BelongsTo
-     */
-    public function image(): BelongsTo
-    {
-        return $this->belongsTo(FileManager::class, 'image_id');
-    }
-
-    /**
      * @return HasMany
      */
     public function blogs(): HasMany
