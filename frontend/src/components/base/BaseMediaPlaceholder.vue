@@ -142,7 +142,7 @@ const props = defineProps({
     hasClearButton: Boolean,
 })
 
-const emit = defineEmits(['clear-selected-file'])
+const emit = defineEmits(['file-selected', 'clear-selected-file'])
 
 const toast = useToast()
 
@@ -186,6 +186,9 @@ function checkFileSelection(close) {
 
         selectedFile.value = tmpSelectedFile.value
         tmpSelectedFile.value = null
+
+        emit('blogCategories', selectedFile.value)
+
         close()
     }
 }
