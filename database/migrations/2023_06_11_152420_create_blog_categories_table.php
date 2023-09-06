@@ -12,8 +12,6 @@ return new class extends Migration {
     {
         Schema::create('blog_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->nullable()
-                ->constrained('blog_categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
             $table->string('escaped_name');
             $table->string('slug');
