@@ -26,6 +26,8 @@ class BlogCategory extends Model
         HasParentRelationTrait,
         HasNameSluggableTrait;
 
+    protected $table = 'blog_categories';
+
     protected $guarded = [
         'id',
     ];
