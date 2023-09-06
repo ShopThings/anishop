@@ -124,6 +124,24 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/coupons/batch',
         },
 
+        blogs: {
+            index: 'api/admin/blogs',
+            show: 'api/admin/blogs/{blog}',
+            store: 'api/admin/blogs',
+            update: 'api/admin/blogs/{blog}',
+            destroy: 'api/admin/blogs/{blog}',
+            batchDestroy: 'api/admin/blogs/batch',
+        },
+
+        blogCategories: {
+            index: 'api/admin/blog-categories',
+            show: 'api/admin/blog-categories/{blog_category}',
+            store: 'api/admin/blog-categories',
+            update: 'api/admin/blog-categories/{blog_category}',
+            destroy: 'api/admin/blog-categories/{blog_category}',
+            batchDestroy: 'api/admin/blog-categories/batch',
+        },
+
         staticPages: {
             index: 'api/admin/static-pages',
             show: 'api/admin/static-pages/{static_page}',
