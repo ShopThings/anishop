@@ -140,6 +140,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/complaints/batch',
         },
 
+        faqs: {
+            index: 'api/admin/faqs',
+            show: 'api/admin/faqs/{faq}',
+            store: 'api/admin/faqs',
+            update: 'api/admin/faqs/{faq}',
+            destroy: 'api/admin/faqs/{faq}',
+            batchDestroy: 'api/admin/faqs/batch',
+        },
+
         newsletters: {
             index: 'api/admin/newsletters',
             show: 'api/admin/newsletters/{newsletter}',
