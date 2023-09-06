@@ -2,19 +2,23 @@
     <textarea
         :name="name"
         class="content-editor"
-    >{{content}}</textarea>
+        @change="handleChange($event, false)"
+    >{{ value }}</textarea>
+    <partial-input-error-message :error-message="errorMessage"/>
 </template>
 
 <script setup>
-import {onMounted} from "vue";
+import {onMounted, watch} from "vue";
 import {useRouter} from "vue-router";
+import {useField} from "vee-validate";
+import PartialInputErrorMessage from "../partials/PartialInputErrorMessage.vue";
 
 const props = defineProps({
     readonly: {
         type: Boolean,
         default: false,
     },
-    content: String,
+    value: String,
     name: {
         type: String,
         required: true,
@@ -22,6 +26,15 @@ const props = defineProps({
 })
 
 const router = useRouter()
+
+const {value, errorMessage, handleChange} = useField(() => props.name, undefined)
+
+if (props.value && props.value.length)
+    value.value = props.value
+
+watch(() => props.value, () => {
+    value.value = props.value
+})
 
 onMounted(() => {
     tinymce.init({
