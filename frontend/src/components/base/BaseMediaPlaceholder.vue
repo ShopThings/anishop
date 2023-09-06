@@ -115,7 +115,7 @@
 </template>
 
 <script setup>
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {
     PhotoIcon,
     DocumentTextIcon,
@@ -142,16 +142,19 @@ const props = defineProps({
     hasClearButton: Boolean,
 })
 
-const emit = defineEmits(['file-selected', 'clear-selected-file'])
+const emit = defineEmits(['file-selected', 'clear-selected-file', 'update:selected'])
 
 const toast = useToast()
 
 const extensions = ref([])
 const tmpSelectedFile = ref(null)
-const selectedFile = ref(props.selected)
-
-watch(() => props.selected, () => {
-    selectedFile.value = props.selected
+const selectedFile = computed({
+    get() {
+        return props.selected
+    },
+    set(value) {
+        emit('update:selected', value)
+    },
 })
 
 function validExtensions() {
