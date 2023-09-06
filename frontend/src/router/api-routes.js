@@ -124,6 +124,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/coupons/batch',
         },
 
+        staticPages: {
+            index: 'api/admin/static-pages',
+            show: 'api/admin/static-pages/{static_page}',
+            store: 'api/admin/static-pages',
+            update: 'api/admin/static-pages/{static_page}',
+            destroy: 'api/admin/static-pages/{static_page}',
+            batchDestroy: 'api/admin/static-pages/batch',
+        },
+
         contacts: {
             index: 'api/admin/contacts',
             show: 'api/admin/contacts/{contact}',
