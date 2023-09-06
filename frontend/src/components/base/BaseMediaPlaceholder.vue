@@ -187,7 +187,7 @@ function checkFileSelection(close) {
         selectedFile.value = tmpSelectedFile.value
         tmpSelectedFile.value = null
 
-        emit('blogCategories', selectedFile.value)
+        emit('file-selected', selectedFile.value)
 
         close()
     }
