@@ -1,7 +1,8 @@
 <template>
     <textarea
+        :name="name"
         class="content-editor"
-    ></textarea>
+    >{{content}}</textarea>
 </template>
 
 <script setup>
@@ -12,6 +13,11 @@ const props = defineProps({
     readonly: {
         type: Boolean,
         default: false,
+    },
+    content: String,
+    name: {
+        type: String,
+        required: true,
     },
 })
 
