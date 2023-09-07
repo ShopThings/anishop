@@ -5,70 +5,77 @@
         </template>
         <template #body>
             <div class="p-3">
-                <form @submit.prevent="onSubmit">
-                    <div class="p-2">
-                        <base-switch
-                            label="عدم نمایش سؤال"
-                            on-label="نمایش سؤال"
-                            name="is_published"
-                            :enabled="faq?.is_published"
-                            sr-text="نمایش/عدم نمایش سؤال"
-                            @change="(status) => {publishStatus=status}"
-                        />
-                    </div>
-
-                    <div class="p-2">
-                        <base-input
-                            label-title="سؤال"
-                            placeholder="وارد نمایید"
-                            name="question"
-                            :value="faq?.question"
-                        >
-                            <template #icon>
-                                <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                            </template>
-                        </base-input>
-                    </div>
-
-                    <div class="p-2">
-                        <partial-input-label title="کلمات کلیدی"/>
-                        <vue3-tags-input
-                            :tags="tags"
-                            placeholder="کلمات کلیدی خود را وارد نمایید"
-                            @on-tags-changed="(t) => {tags = t}"
-                        />
-                    </div>
-
-                    <div class="p-2">
-                        <partial-input-label title="پاسخ"/>
-                        <base-editor
-                            name="answer"
-                            :value="faq?.description"
-                        />
-                    </div>
-
-                    <div class="px-2 py-3">
-                        <base-animated-button
-                            type="submit"
-                            class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                            :disabled="isSubmitting"
-                        >
-                            <VTransitionFade>
-                                <loader-circle
-                                    v-if="isSubmitting"
-                                    main-container-klass="absolute w-full h-full"
-                                    big-circle-color="border-transparent"
+                <base-loading-panel
+                    :loading="loading"
+                    type="form"
+                >
+                    <template #content>
+                        <form @submit.prevent="onSubmit">
+                            <div class="p-2">
+                                <base-switch
+                                    label="عدم نمایش سؤال"
+                                    on-label="نمایش سؤال"
+                                    name="is_published"
+                                    :enabled="faq?.is_published"
+                                    sr-text="نمایش/عدم نمایش سؤال"
+                                    @change="(status) => {publishStatus=status}"
                                 />
-                            </VTransitionFade>
+                            </div>
 
-                            <template #icon="{klass}">
-                                <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
-                            </template>
+                            <div class="p-2">
+                                <base-input
+                                    label-title="سؤال"
+                                    placeholder="وارد نمایید"
+                                    name="question"
+                                    :value="faq?.question"
+                                >
+                                    <template #icon>
+                                        <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                                    </template>
+                                </base-input>
+                            </div>
 
-                            <span class="ml-auto">ویرایش سؤال</span>
-                        </base-animated-button>
-                    </div>
-                </form>
+                            <div class="p-2">
+                                <partial-input-label title="کلمات کلیدی"/>
+                                <vue3-tags-input
+                                    :tags="tags"
+                                    placeholder="کلمات کلیدی خود را وارد نمایید"
+                                    @on-tags-changed="(t) => {tags = t}"
+                                />
+                            </div>
+
+                            <div class="p-2">
+                                <partial-input-label title="پاسخ"/>
+                                <base-editor
+                                    name="answer"
+                                    :value="faq?.description"
+                                />
+                            </div>
+
+                            <div class="px-2 py-3">
+                                <base-animated-button
+                                    type="submit"
+                                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                                    :disabled="isSubmitting"
+                                >
+                                    <VTransitionFade>
+                                        <loader-circle
+                                            v-if="isSubmitting"
+                                            main-container-klass="absolute w-full h-full"
+                                            big-circle-color="border-transparent"
+                                        />
+                                    </VTransitionFade>
+
+                                    <template #icon="{klass}">
+                                        <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
+                                    </template>
+
+                                    <span class="ml-auto">ویرایش سؤال</span>
+                                </base-animated-button>
+                            </div>
+                        </form>
+                    </template>
+                </base-loading-panel>
             </div>
         </template>
     </partial-card>
@@ -92,6 +99,7 @@ import {useRequest} from "../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
+import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
 
 const route = useRoute()
 const toast = useToast()
@@ -101,6 +109,7 @@ const idParam = computed(() => {
     return id
 })
 
+const loading = ref(false)
 const canSubmit = ref(true)
 
 const faq = ref(null)
