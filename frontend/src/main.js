@@ -11,6 +11,7 @@ import 'floating-vue/dist/style.css';
 import 'overlayscrollbars/overlayscrollbars.css';
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
 import "vue3-colorpicker/style.css";
+import "@vueform/slider/themes/default.css";
 import './main.css';
 
 import router from "./router";
