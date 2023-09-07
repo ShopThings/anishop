@@ -142,6 +142,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/blogs/batch',
         },
 
+        blogComments: {
+            index: 'api/admin/blog-comments',
+            show: 'api/admin/blog-comments/{blog_comment}',
+            store: 'api/admin/blog-comments',
+            update: 'api/admin/blog-comments/{blog_comment}',
+            destroy: 'api/admin/blog-comments/{blog_comment}',
+            batchDestroy: 'api/admin/blog-comments/batch',
+        },
+
         blogCategories: {
             index: 'api/admin/blog-categories',
             show: 'api/admin/blog-categories/{blog_category}',
