@@ -26,7 +26,7 @@
                         <loader-progress v-if="isLoading"/>
 
                         <div
-                            v-if="!isLoading && Object.keys(filteredOptions).length === 0 && query !== ''"
+                            v-if="!isLoading && filteredOptions && Object.keys(filteredOptions).length === 0 && query !== ''"
                             class="relative cursor-default select-none py-2 px-4 text-gray-700"
                         >
                             هیچ موردی پیدا نشد.
