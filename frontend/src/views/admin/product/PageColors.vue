@@ -38,7 +38,7 @@
                                 <span
                                     v-tooltip.top="{message: value.name}"
                                     class="inline-block w-5 h-5 rounded-full border mr-2"
-                                    :style="'background-color:' + value.hex + ' ;'"
+                                    :style="'background-color: ' + value.hex + ';'"
                                 ></span>
                             </div>
                         </template>
