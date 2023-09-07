@@ -1,5 +1,4 @@
 <template>
-
     <partial-card>
         <template #header>
             ویرایش صفحه -
