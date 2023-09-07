@@ -39,7 +39,7 @@
                         <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                             <base-input label-title="نام لاتین"
                                         placeholder="وارد نمایید"
-                                        name="name">
+                                        name="latin_name">
                                 <template #icon>
                                     <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                                 </template>

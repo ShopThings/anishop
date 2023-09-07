@@ -55,7 +55,7 @@
                                     <base-input
                                         label-title="نام لاتین"
                                         placeholder="وارد نمایید"
-                                        name="name"
+                                        name="latin_name"
                                         :value="brand?.latin_name"
                                     >
                                         <template #icon>
