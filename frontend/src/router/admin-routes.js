@@ -51,7 +51,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'کاربران',
-                            }
+                            },
                         ],
                     },
                 },
@@ -68,7 +68,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن کاربر',
-                            }
+                            },
                         ],
                     },
                 },
@@ -92,7 +92,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'مشاهده پروفایل',
-                            }
+                            },
                         ],
                     },
                 },
@@ -114,7 +114,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'مشاهده آدرس‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -136,7 +136,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'مشاهده سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -158,7 +158,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'مشاهده سبدهای خرید',
-                            }
+                            },
                         ],
                     },
                 },
@@ -180,7 +180,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'مشاهده محصولات مورد علاقه',
-                            }
+                            },
                         ],
                     },
                 },
@@ -199,7 +199,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'روش‌های پرداخت',
-                            }
+                            },
                         ],
                     },
                 },
@@ -216,7 +216,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد روش پرداخت',
-                            }
+                            },
                         ],
                     },
                 },
@@ -235,7 +235,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش روش پرداخت',
-                    }
+                    },
                 ],
             },
         },
@@ -252,7 +252,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'رنگ‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -269,7 +269,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن رنگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -288,7 +288,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش رنگ',
-                    }
+                    },
                 ],
             },
         },
@@ -305,7 +305,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'برندها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -322,7 +322,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد برند',
-                            }
+                            },
                         ],
                     },
                 },
@@ -341,7 +341,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش برند',
-                    }
+                    },
                 ],
             },
         },
@@ -358,7 +358,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'دسته‌بندی‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -375,7 +375,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن دسته‌بندی',
-                            }
+                            },
                         ],
                     },
                 },
@@ -392,7 +392,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'تصاویر دسته‌بندی‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -411,7 +411,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش دسته‌بندی',
-                    }
+                    },
                 ],
             },
         },
@@ -428,7 +428,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'جشنواره‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -445,7 +445,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد جشنواره',
-                            }
+                            },
                         ],
                     },
                 },
@@ -467,7 +467,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش جشنواره',
-                            }
+                            },
                         ],
                     },
                 },
@@ -484,7 +484,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش محصولات جشنواره',
-                            }
+                            },
                         ],
                     },
                 },
@@ -503,7 +503,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'واحدها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -520,7 +520,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن واحد محصول',
-                            }
+                            },
                         ],
                     },
                 },
@@ -539,7 +539,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش واحد',
-                    }
+                    },
                 ],
             },
         },
@@ -556,7 +556,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'کوپن‌های تخفیف',
-                            }
+                            },
                         ],
                     },
                 },
@@ -573,7 +573,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد کوپن تخفیف',
-                            }
+                            },
                         ],
                     },
                 },
@@ -592,7 +592,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش کوپن',
-                    }
+                    },
                 ],
             },
         },
@@ -609,7 +609,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'محصولات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -626,7 +626,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد محصول جدید',
-                            }
+                            },
                         ],
                     },
                 },
@@ -639,7 +639,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'ویژگی‌های جستجو',
-                            }
+                            },
                         ],
                     },
                 },
@@ -656,7 +656,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد ویژگی جستجو',
-                            }
+                            },
                         ],
                     },
                 },
@@ -678,7 +678,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش محصول',
-                            }
+                            },
                         ],
                     },
                 },
@@ -695,7 +695,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'جزئیات محصول',
-                            }
+                            },
                         ],
                     },
                 },
@@ -716,7 +716,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش ویژگی جستجو',
-                            }
+                            },
                         ],
                     },
                 }
@@ -735,7 +735,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -748,7 +748,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'برچسب سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -769,7 +769,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن برچسب سفارش',
-                            }
+                            },
                         ],
                     },
                 },
@@ -792,7 +792,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'جزئیات سفارش',
-                            }
+                            },
                         ],
                     },
                 },
@@ -813,7 +813,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش برچسب',
-                            }
+                            },
                         ],
                     },
                 },
@@ -829,7 +829,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'سفارشات مرجوعی',
-                    }
+                    },
                 ],
             },
         },
@@ -846,7 +846,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'جزئیات سفارش مرجوعی',
-                    }
+                    },
                 ],
             },
         },
@@ -863,7 +863,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'گزارش‌گیری کاربران',
-                            }
+                            },
                         ],
                     },
                 },
@@ -876,7 +876,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'گزارش‌گیری محصولات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -889,7 +889,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'گزارش‌گیری سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -908,7 +908,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -925,7 +925,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد بلاگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -942,7 +942,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'برچسب نظرات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -963,7 +963,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن برچسب',
-                            }
+                            },
                         ],
                     },
                 },
@@ -976,7 +976,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'دسته‌بندی‌های بلاگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -993,7 +993,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن دسته‌بندی',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1015,7 +1015,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش بلاگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1036,7 +1036,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش برچسب',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1053,9 +1053,52 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش دسته‌بندی',
-                            }
+                            },
                         ],
                     },
+                },
+                {
+                    path: 'comments',
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.blog.comments',
+                            component: () => import('../views/admin/page/PageBlogComments.vue'),
+                            meta: {
+                                title: 'نظرات بلاگ',
+                                breadcrumb: [
+                                    {
+                                        name: 'بلاگ‌ها',
+                                        link: 'admin.blogs',
+                                    },
+                                    {
+                                        name: 'لیست نظرات بلاگ',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: ':detail(\\d+)',
+                            name: 'admin.blog.comment.detail',
+                            component: () => import('../views/admin/page/PageBlogCommentDetail.vue'),
+                            meta: {
+                                title: 'جزئیات نظر',
+                                breadcrumb: [
+                                    {
+                                        name: 'بلاگ‌ها',
+                                        link: 'admin.blogs',
+                                    },
+                                    {
+                                        name: 'نظرات بلاگ',
+                                        link: 'admin.blog.comments',
+                                    },
+                                    {
+                                        name: 'جزئیات نظر',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
             ],
         },
@@ -1072,7 +1115,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'صفحات ایستا',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1089,7 +1132,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد صفحه ایستا',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1108,7 +1151,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش صفحه ایستا',
-                    }
+                    },
                 ],
             },
         },
@@ -1122,7 +1165,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'تماس‌ها',
-                    }
+                    },
                 ],
             },
         },
@@ -1140,7 +1183,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'جزئیات تماس',
-                    }
+                    },
                 ],
             },
         },
@@ -1154,7 +1197,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'شکایات',
-                    }
+                    },
                 ],
             },
         },
@@ -1172,7 +1215,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'جزئیات شکایت',
-                    }
+                    },
                 ],
             },
         },
@@ -1189,7 +1232,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'سؤالات متداول',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1206,7 +1249,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن سؤال',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1225,7 +1268,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش سؤال',
-                    }
+                    },
                 ],
             },
         },
@@ -1239,7 +1282,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'کاربران خبرنامه',
-                    }
+                    },
                 ],
             },
         },
@@ -1256,7 +1299,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'اسلایدرها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1273,7 +1316,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن اسلایدر',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1292,7 +1335,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش اسلایدر',
-                    }
+                    },
                 ],
             },
         },
@@ -1309,7 +1352,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'منوها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1326,7 +1369,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن منو',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1345,7 +1388,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش منو',
-                    }
+                    },
                 ],
             },
         },
@@ -1362,7 +1405,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'هزینه‌های ارسال',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1383,7 +1426,7 @@ export const adminRoutes = {
                                     },
                                     {
                                         name: 'هزینه ارسال شهرستان',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1404,7 +1447,7 @@ export const adminRoutes = {
                                     },
                                     {
                                         name: 'افزودن هزینه ارسال شهرستان',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1427,7 +1470,7 @@ export const adminRoutes = {
                                     },
                                     {
                                         name: 'هزینه ارسال بر حسب وزن',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1448,7 +1491,7 @@ export const adminRoutes = {
                                     },
                                     {
                                         name: 'افزودن هزینه ارسال بر حسب وزن',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1476,7 +1519,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش هزینه ارسال شهرستان',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1497,7 +1540,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش هزینه ارسال بر حسب وزن',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1513,7 +1556,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'فایل‌ها',
-                    }
+                    },
                 ],
             },
         },
@@ -1527,7 +1570,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'راهنما',
-                    }
+                    },
                 ],
             },
         },
@@ -1541,7 +1584,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'تنظیمات',
-                    }
+                    },
                 ],
             },
         },
