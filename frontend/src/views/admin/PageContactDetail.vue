@@ -59,7 +59,7 @@ const loading = ref(false)
 const contact = ref(null)
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.contacts.show, {contact: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.contacts.show, {contact: idParam.value}), null, {
 //         success: (response) => {
 //             contact.value = response.data
 //

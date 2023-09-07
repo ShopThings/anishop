@@ -122,7 +122,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.colors.show, {color: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.colors.show, {color: idParam.value}), null, {
 //         success: (response) => {
 //             color.value = response.data
 //             pureColor.value = response.data.hex

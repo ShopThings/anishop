@@ -172,7 +172,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.blogs.show, {blog: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.blogs.show, {blog: idParam.value}), null, {
 //         success: (response) => {
 //             blog.value = response.data
 //             selectedCategory.value = response.data.category

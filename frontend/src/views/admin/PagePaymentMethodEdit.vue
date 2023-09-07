@@ -402,7 +402,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 onMounted(() => {
-    // useRequest(apiReplaceParams(apiRoutes.admin.paymentMethods.show, {payment_method: idParam}), null, {
+    // useRequest(apiReplaceParams(apiRoutes.admin.paymentMethods.show, {payment_method: idParam.value}), null, {
     //     success: (response) => {
     //         for (let i of paymentTypes) {
     //             if (response.bank_gateway_type === i.value)

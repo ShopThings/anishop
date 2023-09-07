@@ -142,7 +142,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.staticPages.show, {static_page: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.staticPages.show, {static_page: idParam.value}), null, {
 //         success: (response) => {
 //             page.value = response.data
 //             tags.value = response.data.keywords

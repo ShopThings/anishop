@@ -185,7 +185,7 @@ const operations = [
 
                 useConfirmToast(() => {
                     useRequest(apiReplaceParams(apiRoutes.admin.festivals.destroyProduct, {
-                        festival: idParam,
+                        festival: idParam.value,
                         product: data.product_id,
                     }), {
                         method: 'DELETE',
@@ -229,7 +229,7 @@ const selectionOperations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.festivals.batchDestroy, {festival: idParam}), {
+                    useRequest(apiReplaceParams(apiRoutes.admin.festivals.batchDestroy, {festival: idParam.value}), {
                         method: 'DELETE',
                         data: {
                             ids,
@@ -253,7 +253,7 @@ const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
     text = text || ''
 
-    // useRequest(apiReplaceParams(apiRoutes.admin.festivals.products, {festival: idParam}), {
+    // useRequest(apiReplaceParams(apiRoutes.admin.festivals.products, {festival: idParam.value}), {
     //     params: {limit, offset, order, sort, text},
     // }, {
     //     success: (response) => {

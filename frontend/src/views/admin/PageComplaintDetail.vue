@@ -59,7 +59,7 @@ const loading = ref(false)
 const complaint = ref(null)
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.complaints.show, {complaint: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.complaints.show, {complaint: idParam.value}), null, {
 //         success: (response) => {
 //             complaint.value = response.data
 //

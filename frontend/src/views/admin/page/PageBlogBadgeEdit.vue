@@ -108,7 +108,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.blogBadges.show, {blog_badge: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.blogBadges.show, {blog_badge: idParam.value}), null, {
 //         success: (response) => {
 //             badge.value = response.data
 //             pureColor.value = response.data.color_hex

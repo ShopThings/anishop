@@ -99,7 +99,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.units.show, {unit: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.units.show, {unit: idParam.value}), null, {
 //         success: (response) => {
 //             unit.value = response.data
 //

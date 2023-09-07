@@ -162,7 +162,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.brands.show, {brand: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.brands.show, {brand: idParam.value}), null, {
 //         success: (response) => {
 //             brand.value = response.data
 //             tags.value = response.data.keywords

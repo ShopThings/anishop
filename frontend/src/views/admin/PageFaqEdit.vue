@@ -126,7 +126,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.faqs.show, {faq: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.faqs.show, {faq: idParam.value}), null, {
 //         success: (response) => {
 //             faq.value = response.data
 //             tags.value = response.data.keywords

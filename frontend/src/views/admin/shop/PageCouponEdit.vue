@@ -224,7 +224,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 // onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.coupons.show, {coupon: idParam}), null, {
+//     useRequest(apiReplaceParams(apiRoutes.admin.coupons.show, {coupon: idParam.value}), null, {
 //         success: (response) => {
 //             festival.value = response.data
 //             startDate.value = response.data.start_date
