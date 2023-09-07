@@ -12,7 +12,7 @@
                         :options="categories"
                         options-key="id"
                         options-text="name"
-                        name="product"
+                        name="category"
                         :multiple="true"
                         :is-loading="loading"
                         :is-local-search="false"
