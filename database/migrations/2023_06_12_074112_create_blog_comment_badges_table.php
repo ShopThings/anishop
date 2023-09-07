@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('blog_comment_badges', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 25)->unique();
             $table->string('title');
             $table->string('color_hex', 12);
             $table->boolean('is_starting_badge')->default(false);

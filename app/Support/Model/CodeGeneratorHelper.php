@@ -13,15 +13,6 @@ class CodeGeneratorHelper
      * @param int $length
      * @return string
      */
-    public static function blogCommentBadgeCode(int $length = 12): string
-    {
-        return static::generateCode(BlogCommentBadge::query(), 'code', $length);
-    }
-
-    /**
-     * @param int $length
-     * @return string
-     */
     public static function orderBadgeCode(int $length = 12): string
     {
         return static::generateCode(OrderBadge::query(), 'code', $length);
