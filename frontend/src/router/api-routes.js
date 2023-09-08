@@ -124,6 +124,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/coupons/batch',
         },
 
+        orderBadges: {
+            index: 'api/admin/order-badges',
+            show: 'api/admin/order-badges/{order_badge}',
+            store: 'api/admin/order-badges',
+            update: 'api/admin/order-badges/{order_badge}',
+            destroy: 'api/admin/order-badges/{order_badge}',
+            batchDestroy: 'api/admin/order-badges/batch',
+        },
+
         blogBadges: {
             index: 'api/admin/blog-badges',
             show: 'api/admin/blog-badges/{blog_badge}',
