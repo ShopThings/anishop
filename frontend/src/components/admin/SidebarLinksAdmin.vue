@@ -6,7 +6,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.home'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <WindowIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">داشبورد</span>
@@ -14,7 +14,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.users'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <UsersIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">کاربران</span>
@@ -30,7 +30,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.payment_methods'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <CreditCardIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">روش‌های پرداخت</span>
@@ -38,7 +38,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.colors'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <PaintBrushIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">رنگ‌ها</span>
@@ -46,7 +46,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.brands'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <TagIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">برندها</span>
@@ -54,7 +54,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.categories'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <Square2StackIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">مدیریت دسته‌بندی‌ها</span>
@@ -62,7 +62,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.festivals'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <GiftIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">جشنواره‌ها</span>
@@ -70,7 +70,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.units'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <HashtagIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">واحدها</span>
@@ -78,7 +78,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.coupons'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <ReceiptPercentIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">کوپن‌های تخفیف</span>
@@ -88,7 +88,7 @@
                 <sidebar-link-sub-admin>
                     <template #link>
                         <router-link :to="{name: 'admin.products'}"
-                                     class="rounded-lg py-3 px-3 flex items-center hover:bg-white hover:bg-opacity-10 transition grow">
+                                     class="rounded-lg py-2.5 px-3 flex items-center hover:bg-white hover:bg-opacity-10 transition grow">
                             <ArchiveBoxIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span class="grow">محصولات</span>
                         </router-link>
@@ -97,7 +97,7 @@
                     <template #children>
                         <partial-sidebar-item-admin>
                             <router-link :to="{name: 'admin.products.attrs'}"
-                                         class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                                 <span
                                     class="grow">ویژگی‌های جستجوی محصول</span>
                             </router-link>
@@ -117,7 +117,7 @@
                 <sidebar-link-sub-admin>
                     <template #link>
                         <router-link :to="{name: 'admin.orders'}"
-                                     class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow">
+                                     class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow">
                             <ShoppingBagIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span
                                 class="grow">سفارشات ثبت شده</span>
@@ -127,7 +127,7 @@
                     <template #children>
                         <partial-sidebar-item-admin>
                             <router-link :to="{name: 'admin.orders.badges'}"
-                                         class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                                     <span
                                         class="grow">برچسب وضعیت سفارشات</span>
                             </router-link>
@@ -137,7 +137,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.return_orders'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <ArchiveBoxXMarkIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">سفارشات مرجوعی</span>
@@ -153,7 +153,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.report.users'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <RectangleStackIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">گزارش‌گیری از کاربران</span>
@@ -161,7 +161,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.report.products'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <RectangleStackIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">گزارش‌گیری از محصولات</span>
@@ -169,7 +169,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.report.orders'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <RectangleStackIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">گزارش‌گیری از سفارشات</span>
@@ -187,7 +187,7 @@
                 <sidebar-link-sub-admin>
                     <template #link>
                         <router-link :to="{name: 'admin.blogs'}"
-                                     class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow">
+                                     class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow">
                             <DocumentTextIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span
                                 class="grow">بلاگ</span>
@@ -197,14 +197,14 @@
                     <template #children>
                         <partial-sidebar-item-admin>
                             <router-link :to="{name: 'admin.blogs.badges'}"
-                                         class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                                     <span
                                         class="grow">برچسب نظرات</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                         <partial-sidebar-item-admin>
                             <router-link :to="{name: 'admin.blogs.categories'}"
-                                         class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                                     <span
                                         class="grow">مدیریت دسته‌بندی‌ها</span>
                             </router-link>
@@ -214,7 +214,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.static_pages'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <DocumentIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">صفحات ثابت</span>
@@ -230,7 +230,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.contacts'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <DevicePhoneMobileIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">تماس‌ها</span>
@@ -238,7 +238,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.complaints'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <ScaleIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">شکایات</span>
@@ -246,7 +246,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.faqs'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <QuestionMarkCircleIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">سؤالات متداول</span>
@@ -254,7 +254,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.newsletters'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <NewspaperIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">خبرنامه</span>
@@ -270,7 +270,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.post_prices'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <CurrencyDollarIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">هزینه ارسال</span>
@@ -278,7 +278,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.sliders'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <ViewColumnsIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">مدیریت اسلایدرها</span>
@@ -286,7 +286,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.menus'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <RectangleGroupIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">مدیریت منو‌ها</span>
@@ -294,7 +294,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.file_manager'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <FolderOpenIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">مدیریت فایل‌ها</span>
@@ -302,7 +302,7 @@
             </li>
             <li>
                 <router-link :to="{name: 'admin.guides'}"
-                             class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                     <FlagIcon class="h-6 w-6 ml-2 shrink-0"/>
                     <span
                         class="grow">راهنما</span>

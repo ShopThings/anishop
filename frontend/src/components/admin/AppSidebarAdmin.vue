@@ -45,14 +45,14 @@
 
                         <div class="flex items-center mt-4">
                             <router-link :to="{name: 'home'}" target="_blank"
-                                         class="flex justify-center px-2 py-3 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition">
+                                         class="flex justify-center px-2 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition">
                                 <ComputerDesktopIcon class="h-6 w-6 ml-2"/>
                                 <span>نمایش سایت</span>
                             </router-link>
 
                             <div class="mr-3 shrink-0">
                                 <router-link :to="{name: 'admin.settings'}" v-tooltip.left="'تنظیمات'"
-                                             class="ring-1 ring-white text-center rounded-lg px-3 py-3 hover:bg-white hover:bg-opacity-10 transition block">
+                                             class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block">
                                     <Cog6ToothIcon class="h-6 w-6"/>
                                 </router-link>
                             </div>

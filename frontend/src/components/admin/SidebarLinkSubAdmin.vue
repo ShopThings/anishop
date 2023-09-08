@@ -12,7 +12,7 @@
         </div>
         <VTransitionSlideFadeDownY>
             <MenuItems>
-                <ul class="flex flex-col py-3 pr-3">
+                <ul class="flex flex-col py-2 pr-3">
                     <slot name="children"></slot>
                 </ul>
             </MenuItems>
