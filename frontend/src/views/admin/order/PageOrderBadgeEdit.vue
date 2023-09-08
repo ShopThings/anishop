@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
 import yup from "../../../validation/index.js";
 import PartialCard from "../../../components/partials/PartialCard.vue";
@@ -105,6 +105,10 @@ import BaseSwitch from "../../../components/base/BaseSwitch.vue";
 import BaseInput from "../../../components/base/BaseInput.vue";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import {useToast} from "vue-toastification";
+import {useRoute} from "vue-router";
+import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
+import {useRequest} from "../../../composables/api-request.js";
 
 const route = useRoute()
 const toast = useToast()
@@ -130,16 +134,16 @@ const onSubmit = handleSubmit((values, actions) => {
     if (!canSubmit.value) return
 })
 
-// onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.orderBadges.show, {order_badge: idParam.value}), null, {
-//         success: (response) => {
-//             badge.value = response.data
-//             pureColor.value = response.data.color_hex
-//
-//             loading.value = false
-//         },
-//     })
-// })
+onMounted(() => {
+    useRequest(apiReplaceParams(apiRoutes.admin.orderBadges.show, {order_badge: idParam.value}), null, {
+        success: (response) => {
+            badge.value = response.data
+            pureColor.value = response.data.color_hex
+
+            loading.value = false
+        },
+    })
+})
 </script>
 
 <style scoped>
