@@ -59,8 +59,8 @@ function onUpdate(value) {
 
 <style scoped>
 .slider-blue {
-    --slider-connect-bg: #3B82F6;
-    --slider-tooltip-bg: #3B82F6;
-    --slider-handle-ring-color: #3B82F630;
+    --slider-connect-bg: #4F46E5;
+    --slider-tooltip-bg: #4F46E5;
+    --slider-handle-ring-color: #4F46E530;
 }
 </style>

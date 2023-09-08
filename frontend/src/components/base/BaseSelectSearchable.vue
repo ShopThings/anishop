@@ -15,7 +15,7 @@
                 />
                 <ComboboxButton
                     class="absolute inset-y-0 right-0 flex items-center pr-2">
-                <span class="absolute inset-y-0 right-0 flex items-center px-1 bg-blue-600 rounded-r">
+                <span class="absolute inset-y-0 right-0 flex items-center px-1 bg-indigo-600 rounded-r">
                     <ChevronUpDownIcon class="h-5 w-5 text-white" aria-hidden="true"/></span>
                 </ComboboxButton>
 
