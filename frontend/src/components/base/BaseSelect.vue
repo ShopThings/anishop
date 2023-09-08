@@ -192,6 +192,8 @@ function setSelectedItemsText() {
 }
 
 const fullTextOfSelectedItems = computed(() => {
+    if(!selectedItems.value) return ''
+
     if (props.multiple) {
         return selectedItems.value.map((item) => item[props.optionsText]).join(', ') || '-'
     } else {

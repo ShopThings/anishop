@@ -205,6 +205,8 @@ watch(selectedItems, () => {
 })
 
 function setDisplayValue(item) {
+    if(!item) return ''
+
     if (props.multiple) {
         if (item.length > 2) {
             return '(' + item.length + ' مورد' + ')' + ', '
