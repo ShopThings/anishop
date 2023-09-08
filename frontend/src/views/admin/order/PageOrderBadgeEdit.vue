@@ -134,16 +134,16 @@ const onSubmit = handleSubmit((values, actions) => {
     if (!canSubmit.value) return
 })
 
-onMounted(() => {
-    useRequest(apiReplaceParams(apiRoutes.admin.orderBadges.show, {order_badge: idParam.value}), null, {
-        success: (response) => {
-            badge.value = response.data
-            pureColor.value = response.data.color_hex
-
-            loading.value = false
-        },
-    })
-})
+// onMounted(() => {
+//     useRequest(apiReplaceParams(apiRoutes.admin.orderBadges.show, {order_badge: idParam.value}), null, {
+//         success: (response) => {
+//             badge.value = response.data
+//             pureColor.value = response.data.color_hex
+//
+//             loading.value = false
+//         },
+//     })
+// })
 </script>
 
 <style scoped>
