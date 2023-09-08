@@ -33,6 +33,7 @@
                                 label-title="اولویت"
                                 placeholder="وارد نمایید"
                                 name="priority"
+                                :min="0"
                             >
                                 <template #icon>
                                     <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>

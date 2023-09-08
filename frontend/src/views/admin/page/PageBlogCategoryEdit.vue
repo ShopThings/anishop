@@ -42,6 +42,7 @@
                                         placeholder="وارد نمایید"
                                         name="priority"
                                         :value="blogCategory?.priority"
+                                        :min="0"
                                     >
                                         <template #icon>
                                             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
