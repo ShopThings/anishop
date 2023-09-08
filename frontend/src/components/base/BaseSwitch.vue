@@ -1,7 +1,11 @@
 <template>
     <SwitchGroup>
         <div class="flex items-center">
-            <SwitchLabel v-if="label" class="ml-3 text-sm text-gray-500">{{ label }}</SwitchLabel>
+            <SwitchLabel
+                v-if="label"
+                class="ml-3 text-sm text-gray-500"
+                :class="{'grow sm:grow-0': !onLabel}"
+            >{{ label }}</SwitchLabel>
 
             <input
                 type="checkbox"
@@ -24,7 +28,11 @@
                     class="inline-block h-4 w-4 transform rounded-full bg-white transition"
                 />
             </Switch>
-            <SwitchLabel v-if="onLabel" class="mr-3 text-sm text-gray-500">{{ onLabel }}</SwitchLabel>
+            <SwitchLabel
+                v-if="onLabel"
+                class="mr-3 text-sm text-gray-500"
+                :class="{'grow sm:grow-0': !label}"
+            >{{ onLabel }}</SwitchLabel>
         </div>
     </SwitchGroup>
 </template>
