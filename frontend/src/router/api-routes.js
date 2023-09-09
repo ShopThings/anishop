@@ -25,20 +25,9 @@ export const apiRoutes = {
             index: 'api/admin/orders/{user?}',
             show: 'api/admin/orders/{order}',
             update: 'api/admin/orders/{order}',
-        },
-
-        files: {
-            show: 'api/admin/files/{file}/{size?}',
-            list: 'api/admin/files',
-            tree: 'api/admin/files/tree',
-            createDir: 'api/admin/files/directory',
-            rename: 'api/admin/files/rename',
-            move: 'api/admin/files/move',
-            copy: 'api/admin/files/copy',
-            destroy: 'api/admin/files/{file}',
-            batchDestroy: 'api/admin/files/batch',
-            upload: 'api/admin/files',
-            download: 'api/admin/files/{file}'
+            destroy: 'api/admin/orders/{order}',
+            paymentStatuses: 'api/admin/orders/payment-statuses',
+            sendStatuses: 'api/admin/orders/send-statuses',
         },
 
         paymentMethods: {
@@ -209,6 +198,20 @@ export const apiRoutes = {
             store: 'api/admin/newsletters',
             destroy: 'api/admin/newsletters/{newsletter}',
             batchDestroy: 'api/admin/newsletters/batch',
+        },
+
+        files: {
+            show: 'api/admin/files/{file}/{size?}',
+            list: 'api/admin/files',
+            tree: 'api/admin/files/tree',
+            createDir: 'api/admin/files/directory',
+            rename: 'api/admin/files/rename',
+            move: 'api/admin/files/move',
+            copy: 'api/admin/files/copy',
+            destroy: 'api/admin/files/{file}',
+            batchDestroy: 'api/admin/files/batch',
+            upload: 'api/admin/files',
+            download: 'api/admin/files/{file}'
         },
     },
 
