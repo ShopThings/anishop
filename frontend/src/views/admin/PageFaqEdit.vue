@@ -61,7 +61,7 @@
                                     <VTransitionFade>
                                         <loader-circle
                                             v-if="isSubmitting"
-                                            main-container-klass="absolute w-full h-full"
+                                            main-container-klass="absolute w-full h-full top-0 left-0"
                                             big-circle-color="border-transparent"
                                         />
                                     </VTransitionFade>
