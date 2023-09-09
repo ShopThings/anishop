@@ -20,6 +20,15 @@
                     <ListboxOptions :class="optionsClass"
                                     class="absolute z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                     >
+                        <loader-progress v-if="isLoading"/>
+
+                        <div
+                            v-if="!isLoading && options && Object.keys(options).length === 0"
+                            class="relative cursor-default select-none py-2 px-4 text-gray-700"
+                        >
+                            هیچ موردی پیدا نشد.
+                        </div>
+
                         <ListboxOption
                             v-slot="{ active, selected }"
                             v-for="item in options"
@@ -74,12 +83,13 @@
 
 <script setup>
 import {computed, ref, watch} from "vue"
-import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue"
+import {ComboboxOptions, Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue"
 import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
 import isArray from "lodash.isarray";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import isObject from "lodash.isobject";
+import LoaderProgress from "./loader/LoaderProgress.vue";
 
 const props = defineProps({
     selected: {
@@ -120,6 +130,10 @@ const props = defineProps({
     isEditable: {
         type: Boolean,
         default: true,
+    },
+    isLoading: {
+        type: Boolean,
+        default: false,
     },
 })
 const emit = defineEmits(['change'])
