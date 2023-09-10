@@ -632,7 +632,7 @@ export const adminRoutes = {
                 },
                 {
                     path: 'attributes',
-                    name: 'admin.products.attrs',
+                    name: 'admin.product.attrs',
                     component: () => import('../views/admin/product/PageProductsAttributes.vue'),
                     meta: {
                         title: 'ویژگی‌های جستجو',
@@ -652,13 +652,52 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'ویژگی‌های جستجو',
-                                link: 'admin.products.attrs',
+                                link: 'admin.product.attrs',
                             },
                             {
                                 name: 'ایجاد ویژگی جستجو',
                             },
                         ],
                     },
+                },
+                {
+                    path: ':ids([\\d\/]+)',
+                    children: [
+                        {
+                            path: 'change-price',
+                            name: 'admin.products.change.price',
+                            component: () => import('../views/admin/product/PageProductMultipleChangePrice.vue'),
+                            meta: {
+                                title: 'تغییر دسته‌جمعی قیمت محصولات',
+                                breadcrumb: [
+                                    {
+                                        name: 'محصولات',
+                                        link: 'admin.products',
+                                    },
+                                    {
+                                        name: 'تغییر دسته‌جمعی قیمت محصولات',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: 'change-info',
+                            name: 'admin.products.change.info',
+                            component: () => import('../views/admin/product/PageProductMultipleChangeInfo.vue'),
+                            meta: {
+                                title: 'تغییر دسته‌جمعی مشخصات محصولات',
+                                breadcrumb: [
+                                    {
+                                        name: 'محصولات',
+                                        link: 'admin.products',
+                                    },
+                                    {
+                                        name: 'تغییر دسته‌جمعی مشخصات محصولات',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
             ],
         },
@@ -712,14 +751,53 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویژگی‌های جستجو',
-                                link: 'admin.products.attrs',
+                                link: 'admin.product.attrs',
                             },
                             {
                                 name: 'ویرایش ویژگی جستجو',
                             },
                         ],
                     },
-                }
+                },
+                {
+                    path: 'comments',
+                    name: 'admin.product.comments',
+                    component: () => import('../views/admin/product/PageProductComments.vue'),
+                    meta: {
+                        title: 'نظرات محصول',
+                        breadcrumb: [
+                            {
+                                name: 'محصولات',
+                                link: 'admin.products',
+                            },
+                            {
+                                name: 'نظرات محصول',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'comment/:detail(\\d+)',
+                    name: 'admin.product.comment.detail',
+                    component: () => import('../views/admin/product/PageProductCommentDetail.vue'),
+                    meta: {
+                        title: 'جزئیات نظر محصول',
+                        breadcrumb: [
+                            {
+                                name: 'محصولات',
+                                link: 'admin.products',
+                            },
+                            {
+                                name: 'نظرات محصول',
+                                link: 'admin.product.comments',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'جزئیات نظر',
+                            },
+                        ],
+                    },
+                },
             ],
         },
 
