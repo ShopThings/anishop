@@ -96,7 +96,7 @@
 
                     <template #children>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.products.attrs'}"
+                            <router-link :to="{name: 'admin.product.attrs'}"
                                          class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                                 <span
                                     class="grow">ویژگی‌های جستجوی محصول</span>
