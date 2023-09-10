@@ -683,7 +683,7 @@ export const adminRoutes = {
                     },
                 },
                 {
-                    path: '',
+                    path: 'detail',
                     name: 'admin.product.detail',
                     component: () => import('../views/admin/product/PageProductDetail.vue'),
                     meta: {
