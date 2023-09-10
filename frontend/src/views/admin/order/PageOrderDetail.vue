@@ -366,10 +366,6 @@ const table = reactive({
     },
 })
 
-const getMenuContainer = computed(() => {
-    return datatable.value?.tableContainer ?? 'body'
-})
-
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
     text = text || ''
