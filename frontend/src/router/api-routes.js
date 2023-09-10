@@ -21,15 +21,6 @@ export const apiRoutes = {
             index: 'api/admin/addresses',
         },
 
-        orders: {
-            index: 'api/admin/orders/{user?}',
-            show: 'api/admin/orders/{order}',
-            update: 'api/admin/orders/{order}',
-            destroy: 'api/admin/orders/{order}',
-            paymentStatuses: 'api/admin/orders/payment-statuses',
-            sendStatuses: 'api/admin/orders/send-statuses',
-        },
-
         paymentMethods: {
             index: 'api/admin/payment-method',
             show: 'api/admin/payment-method/{payment_method}',
@@ -113,6 +104,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/coupons/batch',
         },
 
+        orders: {
+            index: 'api/admin/orders/{user?}',
+            show: 'api/admin/orders/{order}',
+            update: 'api/admin/orders/{order}',
+            destroy: 'api/admin/orders/{order}',
+            paymentStatuses: 'api/admin/orders/payment-statuses',
+            sendStatuses: 'api/admin/orders/send-statuses',
+        },
+
         orderBadges: {
             index: 'api/admin/order-badges',
             show: 'api/admin/order-badges/{order_badge}',
@@ -120,6 +120,13 @@ export const apiRoutes = {
             update: 'api/admin/order-badges/{order_badge}',
             destroy: 'api/admin/order-badges/{order_badge}',
             batchDestroy: 'api/admin/order-badges/batch',
+        },
+
+        returnOrders: {
+            index: 'api/admin/return-orders',
+            show: 'api/admin/return-orders/{return_order}',
+            update: 'api/admin/return-orders/{return_order}',
+            destroy: 'api/admin/return-orders/{return_order}',
         },
 
         blogBadges: {
