@@ -15,7 +15,7 @@
                         :is-loading="table.isLoading"
                         :columns="table.columns"
                         :rows="table.rows"
-                        :has-checkbox="true"
+                        :has-checkbox="false"
                         :total="table.totalRecordCount"
                         :sortable="table.sortable"
                         @do-search="doSearch"
