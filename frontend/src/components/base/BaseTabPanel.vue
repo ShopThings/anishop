@@ -1,5 +1,5 @@
 <template>
-    <TabGroup :defaultIndex="defaultIndex" @change="changeTab">
+    <TabGroup :defaultIndex="defaultIdx" @change="changeTab">
         <TabList class="flex flex-wrap space-x-1 rounded-md bg-blue-900/20 p-1">
             <Tab
                 v-for="(tab, idx) in tabs"
@@ -41,6 +41,7 @@
 
 <script setup>
 import {Tab, TabGroup, TabList, TabPanel, TabPanels} from "@headlessui/vue"
+import {computed} from "vue";
 
 const props = defineProps({
     tabs: {
@@ -51,10 +52,18 @@ const props = defineProps({
         default: 0,
     },
 })
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change', 'update:defaultIndex'])
+
+const defaultIdx = computed({
+    get() {
+        return props.defaultIndex
+    },
+    set(value) {
+        emit('update:defaultIndex', value)
+    },
+})
 
 function changeTab(index) {
-    if (props.defaultIndex.value) props.defaultIndex.value = index
     emit('change', index)
 }
 </script>
