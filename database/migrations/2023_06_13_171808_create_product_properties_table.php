@@ -25,7 +25,7 @@ return new class extends Migration {
             $table->unsignedBigInteger('discounted_price');
             $table->timestamp('discounted_until')->nullable();
             $table->unsignedDecimal('tax_rate')->nullable();
-            $table->unsignedInteger('stock-count');
+            $table->unsignedInteger('stock_count');
             $table->unsignedInteger('max_cart_count');
             $table->boolean('is_special')->default(true);
             $table->boolean('is_available')->default(true);
