@@ -4,7 +4,7 @@
     >
         <template #button="{open}">
             <div
-                v-if="!selectedFile"
+                v-if="!selectedFile || !selectedFile.value"
                 @click="open"
                 class="cursor-pointer w-20 h-20 rounded-lg border-2 border-dashed flex items-center justify-center border-slate-400 group hover:border-slate-500 transition relative"
             >
