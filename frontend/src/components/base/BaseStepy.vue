@@ -23,6 +23,7 @@
                         'w-6 h-6 transition',
                         currStepIdx === idx ? 'text-indigo-600' : 'text-slate-400',
                         idx < currStepIdx ? 'opacity-60 scale-90' : '',
+                        step?.iconClass,
                     ]"
                 />
                 <outline.CheckCircleIcon
@@ -35,6 +36,7 @@
                         'absolute left-1/2 top-full translate-y-full -translate-x-1/2 text-xs whitespace-nowrap',
                         currStepIdx === idx ? 'text-indigo-600' : '',
                         idx > currStepIdx ? 'text-slate-500' : '',
+                        step?.textClass,
                     ]"
                 >{{ step.text }}</label>
             </div>
