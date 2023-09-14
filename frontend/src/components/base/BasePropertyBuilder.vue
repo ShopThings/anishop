@@ -6,13 +6,10 @@
                 :key="idx"
                 class="p-2 border-2 border-dashed rounded-lg border-indigo-400 mb-3 relative"
             >
-                <base-button
-                    v-if="idx > 0 || properties.length > 1"
-                    class="!absolute top-0 left-0 -translate-y-1/3 -translate-x-1/3 bg-rose-500 rounded !p-1"
+                <partial-builder-remove-btn
+                    v-if="properties.length > 1"
                     @click="handleRemoveProperty(idx)"
-                >
-                    <TrashIcon class="h-5 w-5"/>
-                </base-button>
+                />
 
                 <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
                     <base-input
@@ -51,6 +48,7 @@ import BaseInput from "./BaseInput.vue";
 import BaseButton from "./BaseButton.vue";
 import {PlusIcon, TrashIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialBabyPropertyBuilder from "../partials/PartialBabyPropertyBuilder.vue";
+import PartialBuilderRemoveBtn from "../partials/PartialBuilderRemoveBtn.vue";
 
 const properties = ref([{
     title: '',
