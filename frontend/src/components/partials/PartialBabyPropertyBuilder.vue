@@ -5,13 +5,10 @@
             :key="idx"
             class="p-2 border-2 border-dashed rounded-lg border-indigo-200 mb-3 relative"
         >
-            <base-button
-                v-if="idx > 0 || internalProperties.length > 1"
-                class="!absolute top-0 left-0 -translate-y-1/4 -translate-x-1/4 bg-rose-500 rounded !p-1"
+            <partial-builder-remove-btn
+                v-if="internalProperties.length > 1"
                 @click="handleRemoveProperty(idx)"
-            >
-                <TrashIcon class="h-5 w-5"/>
-            </base-button>
+            />
 
             <div class="flex flex-wrap grow">
                 <div class="p-2 w-full sm:w-1/3 xl:w-1/3">
@@ -48,11 +45,12 @@
 
 <script setup>
 import {computed} from "vue";
-import {PlusIcon, TrashIcon} from "@heroicons/vue/24/outline/index.js";
+import {PlusIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "../base/BaseButton.vue";
 import BaseInput from "../base/BaseInput.vue";
 import Vue3TagsInput from "vue3-tags-input";
 import PartialInputLabel from "./PartialInputLabel.vue";
+import PartialBuilderRemoveBtn from "./PartialBuilderRemoveBtn.vue";
 
 
 const props = defineProps({
