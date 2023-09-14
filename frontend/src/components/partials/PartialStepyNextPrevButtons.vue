@@ -40,7 +40,10 @@
         </base-button>
         <base-button
             v-else
-            class="bg-emerald-500 text-white my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group"
+            :class="[
+                'bg-emerald-500 text-white my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
+                loading ? '!cursor-not-allowed !text-opacity-50 !bg-opacity-50' : '',
+            ]"
             @click="handleFinishClick"
         >
             <span class="mr-auto text-sm">اتمام</span>
