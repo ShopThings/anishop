@@ -2,12 +2,12 @@
     <div class="p-2">
         <TransitionGroup name="fade-group">
             <div
-                v-for="(property, idx) in properties"
+                v-for="(property, idx) in internalProperties"
                 :key="idx"
                 class="p-2 border-2 border-dashed rounded-lg border-indigo-400 mb-3 relative"
             >
                 <partial-builder-remove-btn
-                    v-if="properties.length > 1"
+                    v-if="internalProperties.length > 1"
                     @click="handleRemoveProperty(idx)"
                 />
 
@@ -43,25 +43,41 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import BaseInput from "./BaseInput.vue";
 import BaseButton from "./BaseButton.vue";
 import {PlusIcon, TrashIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialBabyPropertyBuilder from "../partials/PartialBabyPropertyBuilder.vue";
 import PartialBuilderRemoveBtn from "../partials/PartialBuilderRemoveBtn.vue";
 
-const properties = ref([{
-    title: '',
-    children: [
-        {
-            title: '',
-            tags: [],
-        },
-    ],
-}])
+const props = defineProps({
+    properties: Array,
+})
+const emit = defineEmits(['update:properties', 'remove', 'add'])
+
+const internalProperties = computed({
+    get() {
+        return props.properties
+    },
+    set(value) {
+        emit('update:properties', value)
+    },
+})
+
+if (!props.properties || !props.properties.length) {
+    internalProperties.value = [{
+        title: '',
+        children: [
+            {
+                title: '',
+                tags: [],
+            },
+        ],
+    }]
+}
 
 function handlePropertyClick() {
-    properties.value.push({
+    internalProperties.value.push({
         title: '',
         children: [
             {
@@ -70,10 +86,14 @@ function handlePropertyClick() {
             },
         ],
     })
+
+    emit('add', internalProperties.value)
 }
 
 function handleRemoveProperty(idx) {
-    properties.value.splice(idx, 1)
+    internalProperties.value.splice(idx, 1)
+
+    emit('remove', internalProperties.value)
 }
 </script>
 
