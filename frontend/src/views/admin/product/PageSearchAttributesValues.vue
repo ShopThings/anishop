@@ -1,17 +1,17 @@
 <template>
-    <new-creation-guide-top route-name="admin.search.attr.add">
+    <new-creation-guide-top route-name="admin.search.attr.value.new">
         <template #text>
-            با استفاده از ستون عملیات می‌توانید اقدام به حذف، ویرایش و تغییر مقادیر ویژگی نمایید
+            با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش مقدار ویژگی نمایید
         </template>
         <template #buttonText>
             <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
-            افزودن ویژگی جستجوی جدید
+            افزودن مقدار جدید
         </template>
     </new-creation-guide-top>
 
     <partial-card ref="tableContainer">
         <template #header>
-            لیست ویژگی‌های جستجو
+            لیست مقادیر ویژگی‌های جستجو
         </template>
 
         <template #body>
@@ -32,9 +32,6 @@
                         :sortable="table.sortable"
                         @do-search="doSearch"
                     >
-                        <template v-slot:type="{value}">
-
-                        </template>
                         <template v-slot:created_at="{value}">
                             <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
                             <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
@@ -59,13 +56,19 @@ import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 import {useRequest} from "../../../composables/api-request.js";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import PartialCard from "../../../components/partials/PartialCard.vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "../../../composables/toast-confirm.js";
 
 const router = useRouter()
+const route = useRoute()
 const toast = useToast()
+const idParam = computed(() => {
+    const id = parseInt(route.params.id, 10)
+    if (isNaN(id)) return route.params.id
+    return id
+})
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -81,8 +84,8 @@ const table = reactive({
             sortable: true,
         },
         {
-            label: "نوع",
-            field: "type",
+            label: "مقدار",
+            field: "attribute_value",
         },
         {
             label: "تاریخ ایجاد",
@@ -100,9 +103,8 @@ const table = reactive({
             isKey: true,
         },
         {
-            label: "نوع",
-            field: "type",
-            sortable: true,
+            label: "مقدار",
+            field: "attribute_value",
         },
         {
             label: "تاریخ ایجاد",
@@ -137,25 +139,10 @@ const operations = [
         event: {
             click: (data) => {
                 router.push({
-                    name: 'admin.search.attr.edit',
+                    name: 'admin.search.attr.value.edit',
                     params: {
-                        id: data.id,
-                    }
-                })
-            },
-        },
-    },
-    {
-        link: {
-            text: 'مقادیر ویژگی',
-            icon: 'ListBulletIcon',
-        },
-        event: {
-            click: (data) => {
-                router.push({
-                    name: 'admin.search.attr.values',
-                    params: {
-                        id: data.id,
+                        id: idParam.value,
+                        val: data.id,
                     }
                 })
             },
@@ -173,7 +160,7 @@ const operations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.productAttributes.destroy, {product_attribute: data.id}), {
+                    useRequest(apiReplaceParams(apiRoutes.admin.productAttributeValues.destroy, {product_attribute_value: data.id}), {
                         method: 'DELETE',
                     }, {
                         success: () => {
@@ -215,7 +202,7 @@ const selectionOperations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiRoutes.admin.productAttributes.batchDestroy, {
+                    useRequest(apiRoutes.admin.productAttributeValues.batchDestroy, {
                         method: 'DELETE',
                         data: {
                             ids,
@@ -239,7 +226,7 @@ const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
     text = text || ''
 
-    // useRequest(apiRoutes.admin.productAttributes.index, {
+    // useRequest(apiRoutes.admin.productAttributeValues.index, {
     //     params: {limit, offset, order, sort, text},
     // }, {
     //     success: (response) => {
