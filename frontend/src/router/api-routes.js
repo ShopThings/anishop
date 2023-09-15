@@ -104,6 +104,25 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/products/batch',
         },
 
+        productAttributes: {
+            index: 'api/admin/product-attributes',
+            show: 'api/admin/product-attributes/{product_attribute}',
+            store: 'api/admin/product-attributes',
+            update: 'api/admin/product-attributes/{product_attribute}',
+            destroy: 'api/admin/product-attributes/{product_attribute}',
+            batchDestroy: 'api/admin/product-attributes/batch',
+        },
+
+        productAttributeValues: {
+            index: 'api/admin/product-attribute-values',
+            show: 'api/admin/product-attribute-values/{product_attribute_value}',
+            store: 'api/admin/product-attribute-values',
+            update: 'api/admin/product-attribute-values/{product_attribute_value}',
+            destroy: 'api/admin/product-attribute-values/{product_attribute_value}',
+            batchDestroy: 'api/admin/product-attribute-values/batch',
+            types: 'api/admin/product-attribute-types'
+        },
+
         orders: {
             index: 'api/admin/orders/{user?}',
             show: 'api/admin/orders/{order}',
