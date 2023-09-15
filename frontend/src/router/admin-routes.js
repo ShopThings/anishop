@@ -800,6 +800,49 @@ export const adminRoutes = {
                         ],
                     },
                 },
+                {
+                    path: 'categories',
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.search.attrs.categories',
+                            component: () => import('../views/admin/product/PageAttributeCategories.vue'),
+                            meta: {
+                                title: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: 'new',
+                            name: 'admin.search.attr.category.new',
+                            component: () => import('../views/admin/product/PageAttributeCategoryAdd.vue'),
+                            meta: {
+                                title: 'تخصیص ویژگی جستجو به دسته‌بندی',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs.categories',
+                                    },
+                                    {
+                                        name: 'تخصیص ویژگی جستجو به دسته‌بندی',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
             ],
         },
 
@@ -866,31 +909,48 @@ export const adminRoutes = {
         },
 
         {
-            path: 'attribute/:id(\\d+)/value/:val(\\d+)',
-            children: [
-                {
-                    path: '',
-                    name: 'admin.search.attr.value.edit',
-                    component: () => import('../views/admin/product/PageSearchAttributeValueEdit.vue'),
-                    meta: {
-                        title: 'ویرایش مقدار ویژگی جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                                link: 'admin.search.attrs',
-                            },
-                            {
-                                name: 'مقادیر ویژگی‌های جستجو',
-                                link: 'admin.search.attr.values',
-                                params: ['id'],
-                            },
-                            {
-                                name: 'ویرایش مقدار ویژگی جستجو',
-                            },
-                        ],
+            path: 'attribute/category/:id(\\d+)',
+            name: 'admin.search.attr.category.edit',
+            component: () => import('../views/admin/product/PageAttributeCategoryEdit.vue'),
+            meta: {
+                title: 'ویرایش تخصیص ویژگی جستجو به دسته‌بندی',
+                breadcrumb: [
+                    {
+                        name: 'ویژگی‌های جستجو',
+                        link: 'admin.search.attrs',
                     },
-                },
-            ],
+                    {
+                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                        link: 'admin.search.attrs.categories',
+                    },
+                    {
+                        name: 'ویرایش تخصیص ویژگی جستجو به دسته‌بندی',
+                    },
+                ],
+            },
+        },
+
+        {
+            path: 'attribute/:id(\\d+)/value/:val(\\d+)',
+            name: 'admin.search.attr.value.edit',
+            component: () => import('../views/admin/product/PageSearchAttributeValueEdit.vue'),
+            meta: {
+                title: 'ویرایش مقدار ویژگی جستجو',
+                breadcrumb: [
+                    {
+                        name: 'ویژگی‌های جستجو',
+                        link: 'admin.search.attrs',
+                    },
+                    {
+                        name: 'مقادیر ویژگی‌های جستجو',
+                        link: 'admin.search.attr.values',
+                        params: ['id'],
+                    },
+                    {
+                        name: 'ویرایش مقدار ویژگی جستجو',
+                    },
+                ],
+            },
         },
 
         {
