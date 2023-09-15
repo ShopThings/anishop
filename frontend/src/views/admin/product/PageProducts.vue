@@ -253,7 +253,7 @@ const operations = [
         event: {
             click: (data) => {
                 router.push({
-                    name: 'admin.product.attrs',
+                    name: 'admin.product.attrs.edit',
                     params: {
                         id: data.id,
                     }
