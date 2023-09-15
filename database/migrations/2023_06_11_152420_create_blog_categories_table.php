@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('escaped_name');
             $table->string('slug');
             $table->text('ancestry')->nullable();
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->text('keywords');
             $table->boolean('is_published')->default(true);
             $table->boolean('show_in_menu')->default(true);

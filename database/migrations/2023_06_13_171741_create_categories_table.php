@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->text('image')->nullable();
             $table->text('ancestry')->nullable();
             $table->unsignedInteger('level')->default(0);
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->boolean('show_in_menu')->default(true)
                 ->comment('show in main categories menu or not');
             $table->boolean('show_in_search_side_menu')->default(true)

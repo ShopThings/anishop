@@ -18,7 +18,7 @@ return new class extends Migration {
                 ->constrained('menu_items')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('title');
             $table->text('link')->default('#');
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->boolean('can_have_children')->default(true);
             $table->boolean('is_published')->default(true);
             $table->softDeletes();

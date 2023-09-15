@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('slider_id')
                 ->constrained('sliders')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->jsonb('options')->default('[]');
             $table->boolean('is_published')->default(true);
             $table->softDeletes();
