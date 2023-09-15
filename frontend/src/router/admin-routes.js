@@ -631,36 +631,6 @@ export const adminRoutes = {
                     },
                 },
                 {
-                    path: 'attributes',
-                    name: 'admin.product.attrs',
-                    component: () => import('../views/admin/product/PageProductsAttributes.vue'),
-                    meta: {
-                        title: 'ویژگی‌های جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                            },
-                        ],
-                    },
-                },
-                {
-                    path: 'attributes/new',
-                    name: 'admin.product.attr.add',
-                    component: () => import('../views/admin/product/PageProductAttributeAdd.vue'),
-                    meta: {
-                        title: 'ایجاد ویژگی جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                                link: 'admin.product.attrs',
-                            },
-                            {
-                                name: 'ایجاد ویژگی جستجو',
-                            },
-                        ],
-                    },
-                },
-                {
                     path: ':ids([\\d\/]+)',
                     children: [
                         {
@@ -740,21 +710,17 @@ export const adminRoutes = {
                 },
                 {
                     path: 'attribute',
-                    name: 'admin.product.attr.edit',
+                    name: 'admin.product.attrs.edit',
                     component: () => import('../views/admin/product/PageProductAttributeEdit.vue'),
                     meta: {
-                        title: 'ویرایش ویژگی جستجو',
+                        title: 'ویرایش ویژگی جستجو محصول',
                         breadcrumb: [
                             {
                                 name: 'محصولات',
                                 link: 'admin.products',
                             },
                             {
-                                name: 'ویژگی‌های جستجو',
-                                link: 'admin.product.attrs',
-                            },
-                            {
-                                name: 'ویرایش ویژگی جستجو',
+                                name: 'ویرایش ویژگی جستجو محصول',
                             },
                         ],
                     },
@@ -794,6 +760,132 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'جزئیات نظر',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+
+        {
+            path: 'attributes',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.search.attrs',
+                    component: () => import('../views/admin/product/PageSearchAttributes.vue'),
+                    meta: {
+                        title: 'ویژگی‌های جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'new',
+                    name: 'admin.search.attr.add',
+                    component: () => import('../views/admin/product/PageAttributeAdd.vue'),
+                    meta: {
+                        title: 'ایجاد ویژگی جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'ایجاد ویژگی جستجو',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+
+        {
+            path: 'attribute/:id(\\d+)',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.search.attr.edit',
+                    component: () => import('../views/admin/product/PageAttributeEdit.vue'),
+                    meta: {
+                        title: 'ویرایش ویژگی جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'ویرایش ویژگی جستجو',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'values',
+                    name: 'admin.search.attr.values',
+                    component: () => import('../views/admin/product/PageSearchAttributesValues.vue'),
+                    meta: {
+                        title: 'مقادیر ویژگی‌های جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'مقادیر ویژگی‌های جستجو',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'values/new',
+                    name: 'admin.search.attr.value.new',
+                    component: () => import('../views/admin/product/PageSearchAttributeValueAdd.vue'),
+                    meta: {
+                        title: 'ایجاد مقدار ویژگی جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'مقادیر ویژگی‌های جستجو',
+                                link: 'admin.search.attr.values',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'ایجاد مقدار ویژگی جستجو',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+
+        {
+            path: 'attribute/:id(\\d+)/value/:val(\\d+)',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.search.attr.value.edit',
+                    component: () => import('../views/admin/product/PageSearchAttributeValueEdit.vue'),
+                    meta: {
+                        title: 'ویرایش مقدار ویژگی جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'مقادیر ویژگی‌های جستجو',
+                                link: 'admin.search.attr.values',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'ویرایش مقدار ویژگی جستجو',
                             },
                         ],
                     },
