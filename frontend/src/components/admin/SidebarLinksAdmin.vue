@@ -101,6 +101,11 @@
                                 <span
                                     class="grow">ویژگی‌های جستجوی محصول</span>
                             </router-link>
+                            <router-link :to="{name: 'admin.search.attrs.categories'}"
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                <span
+                                    class="grow">دسته‌بندی‌ها و ویژگی‌های جستجوی</span>
+                            </router-link>
                         </partial-sidebar-item-admin>
                     </template>
                 </sidebar-link-sub-admin>
