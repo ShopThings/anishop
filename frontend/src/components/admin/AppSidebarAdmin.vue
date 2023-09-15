@@ -60,7 +60,7 @@
                     </div>
                 </div>
 
-                <div class="px-3 pb-3">
+                <div class="px-3 pb-3 text-sm">
                     <sidebar-links-admin/>
                 </div>
             </div>
