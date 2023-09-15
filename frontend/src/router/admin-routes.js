@@ -669,6 +669,84 @@ export const adminRoutes = {
                         },
                     ],
                 },
+                {
+                    path: 'attributes',
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.search.attrs',
+                            component: () => import('../views/admin/product/PageSearchAttributes.vue'),
+                            meta: {
+                                title: 'ویژگی‌های جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: 'new',
+                            name: 'admin.search.attr.add',
+                            component: () => import('../views/admin/product/PageAttributeAdd.vue'),
+                            meta: {
+                                title: 'ایجاد ویژگی جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'ایجاد ویژگی جستجو',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
+                {
+                    path: 'attributes/categories',
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.search.attrs.categories',
+                            component: () => import('../views/admin/product/PageAttributeCategories.vue'),
+                            meta: {
+                                title: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: 'new',
+                            name: 'admin.search.attr.category.new',
+                            component: () => import('../views/admin/product/PageAttributeCategoryAdd.vue'),
+                            meta: {
+                                title: 'تخصیص ویژگی جستجو به دسته‌بندی',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs.categories',
+                                    },
+                                    {
+                                        name: 'تخصیص ویژگی جستجو به دسته‌بندی',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
+                },
             ],
         },
         {
@@ -763,85 +841,6 @@ export const adminRoutes = {
                             },
                         ],
                     },
-                },
-            ],
-        },
-
-        {
-            path: 'attributes',
-            children: [
-                {
-                    path: '',
-                    name: 'admin.search.attrs',
-                    component: () => import('../views/admin/product/PageSearchAttributes.vue'),
-                    meta: {
-                        title: 'ویژگی‌های جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                            },
-                        ],
-                    },
-                },
-                {
-                    path: 'new',
-                    name: 'admin.search.attr.add',
-                    component: () => import('../views/admin/product/PageAttributeAdd.vue'),
-                    meta: {
-                        title: 'ایجاد ویژگی جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                                link: 'admin.search.attrs',
-                            },
-                            {
-                                name: 'ایجاد ویژگی جستجو',
-                            },
-                        ],
-                    },
-                },
-                {
-                    path: 'categories',
-                    children: [
-                        {
-                            path: '',
-                            name: 'admin.search.attrs.categories',
-                            component: () => import('../views/admin/product/PageAttributeCategories.vue'),
-                            meta: {
-                                title: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
-                                breadcrumb: [
-                                    {
-                                        name: 'ویژگی‌های جستجو',
-                                        link: 'admin.search.attrs',
-                                    },
-                                    {
-                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
-                                    },
-                                ],
-                            },
-                        },
-                        {
-                            path: 'new',
-                            name: 'admin.search.attr.category.new',
-                            component: () => import('../views/admin/product/PageAttributeCategoryAdd.vue'),
-                            meta: {
-                                title: 'تخصیص ویژگی جستجو به دسته‌بندی',
-                                breadcrumb: [
-                                    {
-                                        name: 'ویژگی‌های جستجو',
-                                        link: 'admin.search.attrs',
-                                    },
-                                    {
-                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
-                                        link: 'admin.search.attrs.categories',
-                                    },
-                                    {
-                                        name: 'تخصیص ویژگی جستجو به دسته‌بندی',
-                                    },
-                                ],
-                            },
-                        },
-                    ],
                 },
             ],
         },
