@@ -25,6 +25,19 @@
                                         </template>
                                     </base-input>
                                 </div>
+                                <div class="w-full p-2 sm:w-1/2">
+                                    <base-input
+                                        type="number"
+                                        :min="0"
+                                        label-title="اولویت"
+                                        placeholder="وارد نمایید"
+                                        name="priority"
+                                    >
+                                        <template #icon>
+                                            <HashtagIcon class="h-6 w-6 text-gray-400"/>
+                                        </template>
+                                    </base-input>
+                                </div>
                             </div>
 
                             <div class="px-2 py-3">
@@ -62,7 +75,7 @@ import {useForm} from "vee-validate";
 import yup from "../../../validation/index.js";
 import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, HashtagIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import BaseInput from "../../../components/base/BaseInput.vue";
