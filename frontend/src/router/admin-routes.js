@@ -726,7 +726,7 @@ export const adminRoutes = {
                         },
                         {
                             path: 'new',
-                            name: 'admin.search.attr.category.new',
+                            name: 'admin.search.attr.category.add',
                             component: () => import('../views/admin/product/PageAttributeCategoryAdd.vue'),
                             meta: {
                                 title: 'تخصیص ویژگی جستجو به دسته‌بندی',
