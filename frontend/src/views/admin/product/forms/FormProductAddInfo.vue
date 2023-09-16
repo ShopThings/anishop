@@ -2,7 +2,7 @@
     <form>
         <partial-card class="mb-3 p-3 relative">
             <template #body>
-                <loader-circle
+                <loader-dot-orbit
                     v-if="isSubmitting"
                     main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
                     container-bg-color="bg-blue-50 opacity-40"
@@ -145,9 +145,9 @@ import {useForm} from "vee-validate";
 import yup from "../../../../validation/index.js";
 import BaseSelectSearchable from "../../../../components/base/BaseSelectSearchable.vue";
 import Vue3TagsInput from "vue3-tags-input";
-import LoaderCircle from "../../../../components/base/loader/LoaderCircle.vue";
 import PartialBabyPropertyBuilder from "../../../../components/partials/PartialBabyPropertyBuilder.vue";
 import BaseSwitch from "../../../../components/base/BaseSwitch.vue";
+import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
 
 defineProps({
     options: {

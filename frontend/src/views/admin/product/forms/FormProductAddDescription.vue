@@ -2,7 +2,7 @@
     <form>
         <partial-card class="mb-3 p-3 relative">
             <template #body>
-                <loader-circle
+                <loader-dot-orbit
                     v-if="isSubmitting"
                     main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
                     container-bg-color="bg-blue-50 opacity-40"
@@ -41,9 +41,9 @@ import PartialCard from "../../../../components/partials/PartialCard.vue";
 import PartialStepyNextPrevButtons from "../../../../components/partials/PartialStepyNextPrevButtons.vue";
 import {useForm} from "vee-validate";
 import yup from "../../../../validation/index.js";
-import LoaderCircle from "../../../../components/base/loader/LoaderCircle.vue";
 import BaseEditor from "../../../../components/base/BaseEditor.vue";
 import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
+import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
 
 defineProps({
     options: {
