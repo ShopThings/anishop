@@ -95,5 +95,3 @@ const onSubmit = handleSubmit((values, actions) => {
 <style scoped>
 
 </style>
-<script setup>
-</script>
