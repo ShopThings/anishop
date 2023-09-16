@@ -123,6 +123,15 @@ export const apiRoutes = {
             types: 'api/admin/product-attribute-types'
         },
 
+        productAttributeCategories: {
+            index: 'api/admin/product-attribute-categories',
+            show: 'api/admin/product-attribute-categories/{product_attribute_category}',
+            store: 'api/admin/product-attribute-categories',
+            update: 'api/admin/product-attribute-categories/{product_attribute_category}',
+            destroy: 'api/admin/product-attribute-categories/{product_attribute_category}',
+            batchDestroy: 'api/admin/product-attribute-categories/batch',
+        },
+
         orders: {
             index: 'api/admin/orders/{user?}',
             show: 'api/admin/orders/{order}',
