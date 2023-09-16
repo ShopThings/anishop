@@ -132,6 +132,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/product-attribute-categories/batch',
         },
 
+        comments: {
+            index: 'api/admin/comments',
+            show: 'api/admin/comments/{comment}',
+            store: 'api/admin/comments',
+            update: 'api/admin/comments/{comment}',
+            destroy: 'api/admin/comments/{comment}',
+            batchDestroy: 'api/admin/comments/batch',
+        },
+
         orders: {
             index: 'api/admin/orders/{user?}',
             show: 'api/admin/orders/{order}',
