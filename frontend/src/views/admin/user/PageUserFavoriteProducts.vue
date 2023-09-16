@@ -20,16 +20,18 @@
                         <div class="flex items-center md:flex-col">
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="p-2 shrink-0"
                             >
                                 <base-lazy-image
                                     alt="تصویر محصول"
                                     lazy-src="/src/assets/products/p1.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition"
+                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
                                 />
                             </router-link>
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
                             >
                                 لپتاپ خیلی باحال و کاربردی عمو فردوس
@@ -42,12 +44,13 @@
                         <div class="flex items-center md:flex-col">
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="p-2 shrink-0"
                             >
                                 <base-lazy-image
                                     alt="تصویر محصول"
                                     lazy-src="/src/assets/products/p2.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition"
+                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
                                 />
                             </router-link>
                             <router-link
@@ -64,6 +67,7 @@
                         <div class="flex items-center md:flex-col">
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="p-2 shrink-0"
                             >
                                 <base-lazy-image
@@ -74,6 +78,7 @@
                             </router-link>
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
                             >
                                 لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با گرافیک بسیار زیاد را دارا می‌باشد.
@@ -86,16 +91,18 @@
                         <div class="flex items-center md:flex-col">
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="p-2 shrink-0"
                             >
                                 <base-lazy-image
                                     alt="تصویر محصول"
                                     lazy-src="/src/assets/products/p4.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition"
+                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
                                 />
                             </router-link>
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
                             >
                                 لپتاپ خیلی باحال و کاربردی عمو فردوس
@@ -108,16 +115,18 @@
                         <div class="flex items-center md:flex-col">
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="p-2 shrink-0"
                             >
                                 <base-lazy-image
                                     alt="تصویر محصول"
                                     lazy-src="/src/assets/products/p5.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition"
+                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
                                 />
                             </router-link>
                             <router-link
                                 :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                target="_blank"
                                 class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
                             >
                                 لپتاپ خیلی باحال و کاربردی عمو فردوس
