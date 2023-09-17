@@ -1626,20 +1626,6 @@ export const adminRoutes = {
             path: 'post-prices',
             children: [
                 {
-                    path: '',
-                    name: 'admin.post_prices',
-                    component: () => import('../views/admin/other/PagePostPrices.vue'),
-                    meta: {
-                        title: 'مدیریت هزینه ارسال',
-                        breadcrumb: [
-                            {
-                                name: 'هزینه‌های ارسال',
-                            },
-                        ],
-                    },
-                },
-
-                {
                     path: 'cities',
                     children: [
                         {
@@ -1649,10 +1635,6 @@ export const adminRoutes = {
                             meta: {
                                 title: 'مدیریت هزینه ارسال شهرستان',
                                 breadcrumb: [
-                                    {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
                                     {
                                         name: 'هزینه ارسال شهرستان',
                                     },
@@ -1666,10 +1648,6 @@ export const adminRoutes = {
                             meta: {
                                 title: 'افزودن هزینه ارسال شهرستان',
                                 breadcrumb: [
-                                    {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
                                     {
                                         name: 'هزینه ارسال شهرستان',
                                         link: 'admin.post_prices.cities',
@@ -1694,10 +1672,6 @@ export const adminRoutes = {
                                 title: 'هزینه ارسال بر حسب وزن',
                                 breadcrumb: [
                                     {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
-                                    {
                                         name: 'هزینه ارسال بر حسب وزن',
                                     },
                                 ],
@@ -1710,10 +1684,6 @@ export const adminRoutes = {
                             meta: {
                                 title: 'افزودن هزینه ارسال بر حسب وزن',
                                 breadcrumb: [
-                                    {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
                                     {
                                         name: 'هزینه ارسال بر حسب وزن',
                                         link: 'admin.post_prices.weights',
@@ -1739,10 +1709,6 @@ export const adminRoutes = {
                         title: 'ویرایش هزینه ارسال شهرستان',
                         breadcrumb: [
                             {
-                                name: 'هزینه‌های ارسال',
-                                link: 'admin.post_prices',
-                            },
-                            {
                                 name: 'هزینه ارسال شهرستان',
                                 link: 'admin.post_prices.cities',
                             },
@@ -1759,10 +1725,6 @@ export const adminRoutes = {
                     meta: {
                         title: 'ویرایش هزینه ارسال بر حسب وزن',
                         breadcrumb: [
-                            {
-                                name: 'هزینه‌های ارسال',
-                                link: 'admin.post_prices',
-                            },
                             {
                                 name: 'هزینه ارسال بر حسب وزن',
                                 link: 'admin.post_prices.weights',
