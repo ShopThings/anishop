@@ -79,7 +79,7 @@
                             name="is_published"
                             :enabled="true"
                             sr-text="نمایش/عدم نمایش تمامی محصولات"
-                            @change="(status) => {publishStatus = stauts}"
+                            @change="(status) => {publishStatus = status}"
                         />
                     </div>
                     <div class="p-2 w-full sm:w-auto sm:grow">
