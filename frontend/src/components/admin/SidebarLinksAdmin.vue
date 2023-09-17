@@ -274,12 +274,32 @@
                 سایر
             </li>
             <li>
-                <router-link :to="{name: 'admin.post_prices'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <CurrencyDollarIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">هزینه ارسال</span>
-                </router-link>
+                <sidebar-link-sub-admin>
+                    <template #link>
+                        <a class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition w-full">
+                            <CurrencyDollarIcon class="h-6 w-6 ml-2 shrink-0"/>
+                            <span
+                                class="grow">هزینه ارسال</span>
+                        </a>
+                    </template>
+
+                    <template #children>
+                        <partial-sidebar-item-admin>
+                            <router-link :to="{name: 'admin.post_prices.cities'}"
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                    <span
+                                        class="grow">هزینه ارسال برحسب مکان</span>
+                            </router-link>
+                        </partial-sidebar-item-admin>
+                        <partial-sidebar-item-admin>
+                            <router-link :to="{name: 'admin.post_prices.weights'}"
+                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                                    <span
+                                        class="grow">هزینه ارسال برحسب وزن</span>
+                            </router-link>
+                        </partial-sidebar-item-admin>
+                    </template>
+                </sidebar-link-sub-admin>
             </li>
             <li>
                 <router-link :to="{name: 'admin.sliders'}"
