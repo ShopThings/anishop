@@ -6,7 +6,7 @@
             :multiple="multiple"
             :by="optionsKey"
         >
-            <div class="relative mt-1">
+            <div class="relative">
                 <ListboxButton class="relative" :class="btnClass">
                     <slot name="button">
                         <span class="block truncate text-right pr-6">{{ selectText || 'انتخاب کنید' }}</span>
