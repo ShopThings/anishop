@@ -202,35 +202,34 @@
                         <div class="sm:grow sm:flex">
                             <div class="p-2">
                                 <div class="flex items-center mb-4">
-                                    <input
+                                    <base-radio
+                                        name="increase_decrease_radio"
                                         checked
                                         id="increaseDecreaseRadio1"
-                                        type="radio"
-                                        name="increase_decrease_radio"
-                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                                        :show-label="false"
                                         value="increase"
                                         v-model="increaseDecreaseRadio"
-                                    >
+                                    />
                                     <label
                                         for="increaseDecreaseRadio1"
-                                        class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer">
                                         افزایش قیمت
                                     </label>
                                 </div>
                             </div>
                             <div class="p-2">
                                 <div class="flex items-center mb-4">
-                                    <input
-                                        id="increaseDecreaseRadio2"
-                                        type="radio"
+                                    <base-radio
                                         name="increase_decrease_radio"
-                                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                                        checked
+                                        id="increaseDecreaseRadio2"
+                                        :show-label="false"
                                         value="decrease"
                                         v-model="increaseDecreaseRadio"
-                                    >
+                                    />
                                     <label
                                         for="increaseDecreaseRadio2"
-                                        class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer">
                                         کاهش قیمت
                                     </label>
                                 </div>
@@ -282,6 +281,7 @@ import BaseAccordion from "../../../components/base/BaseAccordion.vue";
 import BaseButtonClose from "../../../components/base/BaseButtonClose.vue";
 import {useRequest} from "../../../composables/api-request.js";
 import {apiRoutes} from "../../../router/api-routes.js";
+import BaseRadio from "../../../components/base/BaseRadio.vue";
 
 const route = useRoute()
 const idsParam = computed(() => {

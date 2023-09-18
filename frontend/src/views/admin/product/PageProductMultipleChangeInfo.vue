@@ -260,12 +260,11 @@
                         <label for="dismissAvailability" class="ml-2 cursor-pointer grow">
                             عدم در نظر گرفتن موجود بودن
                         </label>
-                        <input
+                        <base-checkbox
                             id="dismissAvailability"
-                            type="checkbox"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                            name="dismiss_availability"
                             v-model="dismissAvailableStatus"
-                        >
+                        />
                     </div>
 
                     <div class="p-2 w-full sm:w-auto sm:grow">
@@ -286,12 +285,11 @@
                         <label for="dismissPublish" class="ml-2 cursor-pointer grow">
                             عدم در نظر گرفتن وضعیت نمایش
                         </label>
-                        <input
+                        <base-checkbox
                             id="dismissPublish"
-                            type="checkbox"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                            name="dismiss_publish"
                             v-model="dismissPublishStatus"
-                        >
+                        />
                     </div>
 
                     <div class="p-2 w-full sm:w-auto sm:grow">
@@ -312,12 +310,11 @@
                         <label for="dismissCommenting" class="ml-2 cursor-pointer grow">
                             عدم در نظر گرفتن اجازه ارسال نظر
                         </label>
-                        <input
+                        <base-checkbox
                             id="dismissCommenting"
-                            type="checkbox"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                            name="dismiss_commenting"
                             v-model="dismissAllowCommentingStatus"
-                        >
+                        />
                     </div>
 
                     <div class="p-2 w-full sm:w-auto sm:grow">
@@ -382,6 +379,7 @@ import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.
 import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseSwitch from "../../../components/base/BaseSwitch.vue";
+import BaseCheckbox from "../../../components/base/BaseCheckbox.vue";
 
 const route = useRoute()
 const idsParam = computed(() => {
