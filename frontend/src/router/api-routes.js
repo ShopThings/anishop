@@ -244,6 +244,26 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/newsletters/batch',
         },
 
+        cityPostPrices: {
+            index: 'api/admin/city-post-prices',
+            show: 'api/admin/city-post-prices/{city_post_price}',
+            store: 'api/admin/city-post-prices',
+            update: 'api/admin/city-post-prices/{city_post_price}',
+            destroy: 'api/admin/city-post-prices/{city_post_price}',
+            batchDestroy: 'api/admin/city-post-prices/batch',
+            provinces: 'api/admin/provinces',
+            cities: 'api/admin/cities',
+        },
+
+        weightPostPrices: {
+            index: 'api/admin/weight-post-prices',
+            show: 'api/admin/weight-post-prices/{weight_post_price}',
+            store: 'api/admin/weight-post-prices',
+            update: 'api/admin/weight-post-prices/{weight_post_price}',
+            destroy: 'api/admin/weight-post-prices/{weight_post_price}',
+            batchDestroy: 'api/admin/weight-post-prices/batch',
+        },
+
         files: {
             show: 'api/admin/files/{file}/{size?}',
             list: 'api/admin/files',
