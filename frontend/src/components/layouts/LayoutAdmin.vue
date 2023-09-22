@@ -5,7 +5,7 @@
         <div class="grow flex flex-col overflow-auto" ref="pageContainer">
             <app-navbar-admin :sidebar="sidebarCom" ref="navbarCom"/>
 
-            <div class="p-3 md:container md:mx-auto" ref="extra" v-if="title">
+            <div class="p-3" ref="extra" v-if="title">
                 <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
                     <h1 class="flex items-center">
                         <ArrowLeftCircleIcon class="h-5 w-5 ml-2 text-emerald-500"/>
@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="md:container md:mx-auto px-3 pb-3" ref="page">
+            <div class="px-3 pb-3" ref="page">
                 <router-view v-slot="{ Component, route }">
                     <VTransitionSlideFadeUpY>
                         <div>
@@ -49,7 +49,7 @@
             </div>
 
             <div class="bg-gradient-to-t from-indigo-200">
-                <div class="md:container md:mx-auto" ref="footer">
+                <div ref="footer">
                     <app-footer-admin/>
                 </div>
             </div>
