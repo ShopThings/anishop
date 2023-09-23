@@ -37,9 +37,9 @@
                                     </template>
                                     <template #panel="{close}">
                                         <div class="mb-3 flex items-center">
-                                    <span class="ml-auto text-sm text-gray-400">
-                                        منو
-                                    </span>
+                                            <span class="ml-auto text-sm text-gray-400">
+                                                منو
+                                            </span>
                                             <button @click="close" type="button"
                                                     class="w-[45] h-[45] border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 rounded-lg active:bg-gray-200 focus:bg-sky-50 transition-all">
                                                 <XMarkIcon class="h-6 w-6"/>
