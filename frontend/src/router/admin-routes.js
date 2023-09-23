@@ -1585,23 +1585,6 @@ export const adminRoutes = {
                         ],
                     },
                 },
-                {
-                    path: 'new',
-                    name: 'admin.menu.add',
-                    component: () => import('../views/admin/other/PageMenuAdd.vue'),
-                    meta: {
-                        title: 'افزودن منو',
-                        breadcrumb: [
-                            {
-                                name: 'منوها',
-                                link: 'admin.menus',
-                            },
-                            {
-                                name: 'افزودن منو',
-                            },
-                        ],
-                    },
-                },
             ],
         },
         {
