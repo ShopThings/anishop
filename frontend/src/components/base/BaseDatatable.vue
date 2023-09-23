@@ -402,7 +402,7 @@
                 </div>
 
                 <div class="mt-3" v-if="setting.maxPage > 1">
-                    <ul class="flex justify-center text-center rtl:flex-row-reverse whitespace-nowrap no-underline">
+                    <ul class="flex justify-center text-center rtl:flex-row-reverse whitespace-nowrap no-underline flex-wrap">
                         <li>
                             <a v-tooltip.top="'صفحه اول'"
                                class="cursor-pointer relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
