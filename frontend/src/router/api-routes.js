@@ -264,6 +264,15 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/weight-post-prices/batch',
         },
 
+        menus: {
+            index: 'api/admin/menus',
+            show: 'api/admin/menus/{menu}',
+            store: 'api/admin/menus',
+            update: 'api/admin/menus/{menu}',
+            destroy: 'api/admin/menus/{menu}',
+            batchDestroy: 'api/admin/menus/batch',
+        },
+
         files: {
             show: 'api/admin/files/{file}/{size?}',
             list: 'api/admin/files',
