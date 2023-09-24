@@ -1,8 +1,6 @@
 <template>
-    <div
-         class="w-72 fixed invisible -right-full h-screen z-10 lg:w-80 lg:top-0 lg:relative lg:block">
-        <nav :class="bg"
-             class="w-full">
+    <div class="relative h-full">
+        <nav class="w-20 sticky top-0 hidden md:block" :class="bg">
             <slot/>
         </nav>
     </div>
@@ -12,8 +10,8 @@
 defineProps({
     bg: {
         type: String,
-        default: 'bg-indigo-600'
-    }
+        default: 'bg-indigo-600 text-white'
+    },
 })
 </script>
 

@@ -1,6 +1,8 @@
 <template>
-    <div class="flex">
-        <app-sidebar-admin class="shrink-0" ref="sidebarCom"/>
+    <div class="flex items-stretch relative">
+        <div class="shrink-0 flex">
+            <app-sidebar-admin ref="sidebarCom"/>
+        </div>
 
         <div class="grow flex flex-col overflow-auto" ref="pageContainer">
             <app-navbar-admin :sidebar="sidebarCom" ref="navbarCom"/>

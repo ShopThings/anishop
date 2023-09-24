@@ -1,7 +1,7 @@
 <template>
-    <Popover class="relative" v-slot="{close}">
-        <PopoverButton as="template">
-            <slot name="button" :close="close"></slot>
+    <Popover class="relative" v-slot="{close, open}">
+        <PopoverButton ref="button" as="button">
+            <slot name="button" :close="close" :open="open"></slot>
         </PopoverButton>
         <TransitionChild
             as="template"
@@ -12,7 +12,10 @@
             leave-from="opacity-100"
             leave-to="opacity-0"
         >
-            <PopoverOverlay class="fixed z-20 inset-0 bg-black bg-opacity-25"/>
+            <PopoverOverlay
+                class="fixed z-[19] inset-0 bg-black bg-opacity-25"
+                @click.self="handleClose(close)"
+            />
         </TransitionChild>
 
         <TransitionChild
@@ -25,15 +28,44 @@
             leave-to="opacity-0 translate-x-20"
         >
             <PopoverPanel
-                class="fixed z-20 bg-white w-4/5 h-screen top-0 right-0 py-3 pr-6 pl-3 sm:w-80">
-                <slot name="panel" :close="close"></slot>
+                class="fixed z-20 bg-white w-4/5 h-screen top-0 right-0 sm:w-80"
+                :class="panelClass"
+            >
+                <slot name="panel" :close="close" :open="open"></slot>
             </PopoverPanel>
         </TransitionChild>
     </Popover>
 </template>
 
 <script setup>
-import {Popover, PopoverButton, PopoverOverlay, PopoverPanel, TransitionChild} from "@headlessui/vue";
+import {ref, watchEffect} from "vue";
+import {
+    Popover,
+    PopoverButton,
+    PopoverOverlay,
+    PopoverPanel,
+    TransitionChild,
+} from "@headlessui/vue";
+
+const props = defineProps({
+    open: {
+        type: Boolean,
+        default: false,
+    },
+    panelClass: {
+        type: String,
+        default: 'py-3 pr-6 pl-3',
+    },
+})
+const emit = defineEmits(['update:open'])
+
+const button = ref(null)
+
+watchEffect(() => {
+    if (props.open && button.value && button.value?.el) {
+        button.value.el.click()
+    }
+})
 </script>
 
 <style scoped>

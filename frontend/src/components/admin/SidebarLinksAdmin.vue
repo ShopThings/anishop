@@ -1,23 +1,38 @@
 <template>
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                اصلی
+            <li
+                v-tooltip.left="'' + (mini ? 'اصلی' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>اصلی</span>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'داشبورد' : '') + ''">
                 <router-link :to="{name: 'admin.home'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <WindowIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">داشبورد</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <WindowIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">داشبورد</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'کاربران' : '') + ''">
                 <router-link :to="{name: 'admin.users'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <UsersIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">کاربران</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <UsersIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">کاربران</span>
                 </router-link>
             </li>
         </ul>
@@ -25,86 +40,141 @@
 
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                فروشگاه
+            <li
+                v-tooltip.left="'' + (mini ? 'فروشگاه' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>فروشگاه</span>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'روش‌های پرداخت' : '') + ''">
                 <router-link :to="{name: 'admin.payment_methods'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <CreditCardIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">روش‌های پرداخت</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <CreditCardIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">روش‌های پرداخت</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'رنگ‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.colors'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <PaintBrushIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">رنگ‌ها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <PaintBrushIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">رنگ‌ها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'برندها' : '') + ''">
                 <router-link :to="{name: 'admin.brands'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <TagIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">برندها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <TagIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">برندها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'مدیریت دسته‌بندی‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.categories'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <Square2StackIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">مدیریت دسته‌بندی‌ها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <Square2StackIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">مدیریت دسته‌بندی‌ها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'جشنواره‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.festivals'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <GiftIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">جشنواره‌ها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <GiftIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">جشنواره‌ها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'واحدها' : '') + ''">
                 <router-link :to="{name: 'admin.units'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <HashtagIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">واحدها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <HashtagIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">واحدها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'کوپن‌های تخفیف' : '') + ''">
                 <router-link :to="{name: 'admin.coupons'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <ReceiptPercentIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">کوپن‌های تخفیف</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <ReceiptPercentIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">کوپن‌های تخفیف</span>
                 </router-link>
             </li>
             <li>
-                <sidebar-link-sub-admin>
-                    <template #link>
+                <sidebar-link-sub-admin :mini="mini">
+                    <template #link="{open}">
                         <router-link :to="{name: 'admin.products'}"
-                                     class="rounded-lg py-2.5 px-3 flex items-center hover:bg-white hover:bg-opacity-10 transition grow">
-                            <ArchiveBoxIcon class="h-6 w-6 ml-2 shrink-0"/>
-                            <span class="grow">محصولات</span>
+                                     class="rounded-lg py-2.5 px-3 flex items-center hover:bg-white hover:bg-opacity-10 transition grow"
+                                     :class="{'justify-center w-full': mini, 'bg-white bg-opacity-10': open}"
+                        >
+                            <ArchiveBoxIcon
+                                class="h-6 w-6 shrink-0"
+                                :class="{'ml-2': !mini}"
+                            />
+                            <span v-if="!mini" class="grow">محصولات</span>
                         </router-link>
                     </template>
 
                     <template #children>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.search.attrs'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                <span
-                                    class="grow">ویژگی‌های جستجوی محصول</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'ویژگی‌های جستجوی محصول' : '') + ''"
+                                :to="{name: 'admin.search.attrs'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">ویژگی‌های جستجوی محصول</span>
                             </router-link>
-                            <router-link :to="{name: 'admin.search.attrs.categories'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                <span
-                                    class="grow">دسته‌بندی‌ها و ویژگی‌های جستجوی</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'دسته‌بندی‌ها و ویژگی‌های جستجوی' : '') + ''"
+                                :to="{name: 'admin.search.attrs.categories'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">دسته‌بندی‌ها و ویژگی‌های جستجوی</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                     </template>
@@ -115,37 +185,59 @@
 
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                مدیریت سفارشات
+            <li
+                v-tooltip.left="'' + (mini ? 'مدیریت سفارشات' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>مدیریت سفارشات</span>
             </li>
             <li>
-                <sidebar-link-sub-admin>
-                    <template #link>
-                        <router-link :to="{name: 'admin.orders'}"
-                                     class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow">
-                            <ShoppingBagIcon class="h-6 w-6 ml-2 shrink-0"/>
-                            <span
-                                class="grow">سفارشات ثبت شده</span>
+                <sidebar-link-sub-admin :mini="mini">
+                    <template #link="{open}">
+                        <router-link
+                            v-tooltip.left="'' + (mini ? 'سفارشات ثبت شده' : '') + ''"
+                            :to="{name: 'admin.orders'}"
+                            class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow"
+                            :class="{'justify-center w-full': mini, 'bg-white bg-opacity-10': open}"
+                        >
+                            <ShoppingBagIcon
+                                class="h-6 w-6 shrink-0"
+                                :class="{'ml-2': !mini}"
+                            />
+                            <span v-if="!mini"
+                                  class="grow">سفارشات ثبت شده</span>
                         </router-link>
                     </template>
 
                     <template #children>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.orders.badges'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                    <span
-                                        class="grow">برچسب وضعیت سفارشات</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'برچسب وضعیت سفارشات' : '') + ''"
+                                :to="{name: 'admin.orders.badges'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">برچسب وضعیت سفارشات</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                     </template>
                 </sidebar-link-sub-admin>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'سفارشات مرجوعی' : '') + ''">
                 <router-link :to="{name: 'admin.return_orders'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <ArchiveBoxXMarkIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">سفارشات مرجوعی</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <ArchiveBoxXMarkIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">سفارشات مرجوعی</span>
                 </router-link>
             </li>
         </ul>
@@ -153,31 +245,51 @@
 
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                گزارش گیری
+            <li
+                v-tooltip.left="'' + (mini ? 'گزارش گیری' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>گزارش گیری</span>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'گزارش‌گیری از کاربران' : '') + ''">
                 <router-link :to="{name: 'admin.report.users'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <RectangleStackIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">گزارش‌گیری از کاربران</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <RectangleStackIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">گزارش‌گیری از کاربران</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'گزارش‌گیری از محصولات' : '') + ''">
                 <router-link :to="{name: 'admin.report.products'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <RectangleStackIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">گزارش‌گیری از محصولات</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <RectangleStackIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">گزارش‌گیری از محصولات</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'گزارش‌گیری از سفارشات' : '') + ''">
                 <router-link :to="{name: 'admin.report.orders'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <RectangleStackIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">گزارش‌گیری از سفارشات</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <RectangleStackIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">گزارش‌گیری از سفارشات</span>
                 </router-link>
             </li>
         </ul>
@@ -185,44 +297,71 @@
 
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                صفحات
+            <li
+                v-tooltip.left="'' + (mini ? 'صفحات' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>صفحات</span>
             </li>
             <li>
-                <sidebar-link-sub-admin>
-                    <template #link>
-                        <router-link :to="{name: 'admin.blogs'}"
-                                     class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow">
-                            <DocumentTextIcon class="h-6 w-6 ml-2 shrink-0"/>
-                            <span
-                                class="grow">بلاگ</span>
+                <sidebar-link-sub-admin :mini="mini">
+                    <template #link="{open}">
+                        <router-link
+                            v-tooltip.left="'' + (mini ? 'بلاگ' : '') + ''"
+                            :to="{name: 'admin.blogs'}"
+                            class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition grow"
+                            :class="{'justify-center w-full': mini, 'bg-white bg-opacity-10': open}"
+                        >
+                            <DocumentTextIcon
+                                class="h-6 w-6 shrink-0"
+                                :class="{'ml-2': !mini}"
+                            />
+                            <span v-if="!mini"
+                                  class="grow">بلاگ</span>
                         </router-link>
                     </template>
 
                     <template #children>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.blogs.badges'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                    <span
-                                        class="grow">برچسب نظرات</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'برچسب نظرات' : '') + ''"
+                                :to="{name: 'admin.blogs.badges'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">برچسب نظرات</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.blogs.categories'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                    <span
-                                        class="grow">مدیریت دسته‌بندی‌ها</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'مدیریت دسته‌بندی‌ها' : '') + ''"
+                                :to="{name: 'admin.blogs.categories'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">مدیریت دسته‌بندی‌ها</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                     </template>
                 </sidebar-link-sub-admin>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'صفحات ثابت' : '') + ''">
                 <router-link :to="{name: 'admin.static_pages'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <DocumentIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">صفحات ثابت</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <DocumentIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">صفحات ثابت</span>
                 </router-link>
             </li>
         </ul>
@@ -230,39 +369,64 @@
 
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                ارتباطات
+            <li
+                v-tooltip.left="'' + (mini ? 'ارتباطات' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>ارتباطات</span>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'تماس‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.contacts'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <DevicePhoneMobileIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">تماس‌ها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <DevicePhoneMobileIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">تماس‌ها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'شکایات' : '') + ''">
                 <router-link :to="{name: 'admin.complaints'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <ScaleIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">شکایات</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <ScaleIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">شکایات</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'سؤالات متداول' : '') + ''">
                 <router-link :to="{name: 'admin.faqs'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <QuestionMarkCircleIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">سؤالات متداول</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <QuestionMarkCircleIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">سؤالات متداول</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'خبرنامه' : '') + ''">
                 <router-link :to="{name: 'admin.newsletters'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <NewspaperIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">خبرنامه</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <NewspaperIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">خبرنامه</span>
                 </router-link>
             </li>
         </ul>
@@ -270,67 +434,108 @@
 
     <div>
         <ul class="flex flex-col">
-            <li class="text-white opacity-70 text-xs px-3 mb-1 mt-5">
-                سایر
+            <li
+                v-tooltip.left="'' + (mini ? 'سایر' : '') + ''"
+                class="text-white opacity-70 text-xs px-3 mb-1 mt-5"
+                :class="{'text-center': mini}"
+            >
+                <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
+                <span v-else>سایر</span>
             </li>
             <li>
-                <sidebar-link-sub-admin>
-                    <template #link>
-                        <a class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition w-full">
-                            <CurrencyDollarIcon class="h-6 w-6 ml-2 shrink-0"/>
-                            <span
-                                class="grow">هزینه ارسال</span>
+                <sidebar-link-sub-admin :mini="mini">
+                    <template #link="{open}">
+                        <a
+                            class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition w-full"
+                            :class="{'justify-center': mini, 'bg-white bg-opacity-10': open}"
+                        >
+                            <CurrencyDollarIcon
+                                class="h-6 w-6 shrink-0"
+                                :class="{'ml-2': !mini}"
+                            />
+                            <span v-if="!mini"
+                                  class="grow">هزینه ارسال</span>
                         </a>
                     </template>
 
                     <template #children>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.post_prices.cities'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                    <span
-                                        class="grow">هزینه ارسال برحسب مکان</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'هزینه ارسال برحسب مکان' : '') + ''"
+                                :to="{name: 'admin.post_prices.cities'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">هزینه ارسال برحسب مکان</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                         <partial-sidebar-item-admin>
-                            <router-link :to="{name: 'admin.post_prices.weights'}"
-                                         class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                                    <span
-                                        class="grow">هزینه ارسال برحسب وزن</span>
+                            <router-link
+                                v-tooltip.left="'' + (mini ? 'هزینه ارسال برحسب وزن' : '') + ''"
+                                :to="{name: 'admin.post_prices.weights'}"
+                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="{'justify-center': mini}"
+                            >
+                                <ListBulletIcon v-if="mini" class="w-5 h-5"/>
+                                <span v-else
+                                      class="grow">هزینه ارسال برحسب وزن</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                     </template>
                 </sidebar-link-sub-admin>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'مدیریت اسلایدرها' : '') + ''">
                 <router-link :to="{name: 'admin.sliders'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <ViewColumnsIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">مدیریت اسلایدرها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <ViewColumnsIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">مدیریت اسلایدرها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'مدیریت منو‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.menus'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <RectangleGroupIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">مدیریت منو‌ها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <RectangleGroupIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">مدیریت منو‌ها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'مدیریت فایل‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.file_manager'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <FolderOpenIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">مدیریت فایل‌ها</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <FolderOpenIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">مدیریت فایل‌ها</span>
                 </router-link>
             </li>
-            <li>
+            <li v-tooltip.left="'' + (mini ? 'راهنما' : '') + ''">
                 <router-link :to="{name: 'admin.guides'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
-                    <FlagIcon class="h-6 w-6 ml-2 shrink-0"/>
-                    <span
-                        class="grow">راهنما</span>
+                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="{'justify-center': mini}"
+                >
+                    <FlagIcon
+                        class="h-6 w-6 shrink-0"
+                        :class="{'ml-2': !mini}"
+                    />
+                    <span v-if="!mini"
+                          class="grow">راهنما</span>
                 </router-link>
             </li>
         </ul>
@@ -344,10 +549,17 @@ import {
     ArchiveBoxIcon, ShoppingBagIcon, ArchiveBoxXMarkIcon, RectangleStackIcon,
     DocumentTextIcon, DocumentIcon, DevicePhoneMobileIcon, ScaleIcon,
     QuestionMarkCircleIcon, NewspaperIcon, CurrencyDollarIcon, RectangleGroupIcon,
-    ViewColumnsIcon, FolderOpenIcon, FlagIcon,
-} from "@heroicons/vue/24/outline"
+    ViewColumnsIcon, FolderOpenIcon, FlagIcon, ListBulletIcon,
+} from "@heroicons/vue/24/outline/index.js"
 import SidebarLinkSubAdmin from "./SidebarLinkSubAdmin.vue";
 import PartialSidebarItemAdmin from "../partials/PartialSidebarItemAdmin.vue";
+
+defineProps({
+    mini: {
+        type: Boolean,
+        default: false,
+    },
+})
 </script>
 
 <style scoped>
