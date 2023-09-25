@@ -7,8 +7,6 @@
         :group="{ name: 'menus' }"
         handle=".handle"
         ghost-class="ghost"
-        @start="isDragged = true"
-        @end="isDragged = false"
     >
         <template #item="{ element, index }">
             <li class="pt-6 px-2 border-2 border-dashed border-slate-300 rounded-lg mb-3">
@@ -133,8 +131,6 @@ const props = defineProps({
         default: 1,
     },
 })
-
-const isDragged = ref(false)
 
 function removeMenuHandler(idx) {
     if (props.menus[idx])
