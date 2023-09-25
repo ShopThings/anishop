@@ -1,4 +1,5 @@
 import {createApp} from 'vue';
+import { createHead } from '@unhead/vue'
 import {createPinia} from 'pinia';
 import Toast, {POSITION} from "vue-toastification";
 import FloatingVue from 'floating-vue';
@@ -22,9 +23,11 @@ import LayoutUser from './components/layouts/LayoutUser.vue';
 import LayoutAdmin from './components/layouts/LayoutAdmin.vue';
 import LayoutEmpty from "./components/layouts/LayoutEmpty.vue";
 
+const head = createHead()
 const pinia = createPinia()
 
 createApp(App)
+    .use(head)
     .use(pinia)
     .use(router)
     .use(FloatingVue)
