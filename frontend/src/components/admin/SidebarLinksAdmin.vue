@@ -11,8 +11,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'داشبورد' : '') + ''">
                 <router-link :to="{name: 'admin.home'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <WindowIcon
                         class="h-6 w-6 shrink-0"
@@ -24,8 +24,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'کاربران' : '') + ''">
                 <router-link :to="{name: 'admin.users'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <UsersIcon
                         class="h-6 w-6 shrink-0"
@@ -50,8 +50,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'روش‌های پرداخت' : '') + ''">
                 <router-link :to="{name: 'admin.payment_methods'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <CreditCardIcon
                         class="h-6 w-6 shrink-0"
@@ -63,8 +63,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'رنگ‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.colors'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <PaintBrushIcon
                         class="h-6 w-6 shrink-0"
@@ -76,8 +76,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'برندها' : '') + ''">
                 <router-link :to="{name: 'admin.brands'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <TagIcon
                         class="h-6 w-6 shrink-0"
@@ -89,8 +89,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'مدیریت دسته‌بندی‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.categories'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <Square2StackIcon
                         class="h-6 w-6 shrink-0"
@@ -102,8 +102,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'جشنواره‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.festivals'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <GiftIcon
                         class="h-6 w-6 shrink-0"
@@ -115,8 +115,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'واحدها' : '') + ''">
                 <router-link :to="{name: 'admin.units'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <HashtagIcon
                         class="h-6 w-6 shrink-0"
@@ -128,8 +128,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'کوپن‌های تخفیف' : '') + ''">
                 <router-link :to="{name: 'admin.coupons'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <ReceiptPercentIcon
                         class="h-6 w-6 shrink-0"
@@ -161,8 +161,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'ویژگی‌های جستجوی محصول' : '') + ''"
                                 :to="{name: 'admin.search.attrs'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -171,8 +171,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'دسته‌بندی‌ها و ویژگی‌های جستجوی' : '') + ''"
                                 :to="{name: 'admin.search.attrs.categories'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -218,8 +218,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'برچسب وضعیت سفارشات' : '') + ''"
                                 :to="{name: 'admin.orders.badges'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -231,8 +231,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'سفارشات مرجوعی' : '') + ''">
                 <router-link :to="{name: 'admin.return_orders'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <ArchiveBoxXMarkIcon
                         class="h-6 w-6 shrink-0"
@@ -257,8 +257,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'گزارش‌گیری از کاربران' : '') + ''">
                 <router-link :to="{name: 'admin.report.users'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <RectangleStackIcon
                         class="h-6 w-6 shrink-0"
@@ -270,8 +270,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'گزارش‌گیری از محصولات' : '') + ''">
                 <router-link :to="{name: 'admin.report.products'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <RectangleStackIcon
                         class="h-6 w-6 shrink-0"
@@ -283,8 +283,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'گزارش‌گیری از سفارشات' : '') + ''">
                 <router-link :to="{name: 'admin.report.orders'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <RectangleStackIcon
                         class="h-6 w-6 shrink-0"
@@ -330,8 +330,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'برچسب نظرات' : '') + ''"
                                 :to="{name: 'admin.blogs.badges'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -342,8 +342,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'مدیریت دسته‌بندی‌ها' : '') + ''"
                                 :to="{name: 'admin.blogs.categories'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -355,8 +355,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'صفحات ثابت' : '') + ''">
                 <router-link :to="{name: 'admin.static_pages'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <DocumentIcon
                         class="h-6 w-6 shrink-0"
@@ -381,8 +381,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'تماس‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.contacts'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <DevicePhoneMobileIcon
                         class="h-6 w-6 shrink-0"
@@ -394,8 +394,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'شکایات' : '') + ''">
                 <router-link :to="{name: 'admin.complaints'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <ScaleIcon
                         class="h-6 w-6 shrink-0"
@@ -407,8 +407,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'سؤالات متداول' : '') + ''">
                 <router-link :to="{name: 'admin.faqs'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <QuestionMarkCircleIcon
                         class="h-6 w-6 shrink-0"
@@ -420,8 +420,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'خبرنامه' : '') + ''">
                 <router-link :to="{name: 'admin.newsletters'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <NewspaperIcon
                         class="h-6 w-6 shrink-0"
@@ -466,8 +466,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'هزینه ارسال برحسب مکان' : '') + ''"
                                 :to="{name: 'admin.post_prices.cities'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -478,8 +478,8 @@
                             <router-link
                                 v-tooltip.left="'' + (mini ? 'هزینه ارسال برحسب وزن' : '') + ''"
                                 :to="{name: 'admin.post_prices.weights'}"
-                                class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                                :class="{'justify-center': mini}"
+                                class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                                :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
@@ -491,8 +491,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'مدیریت اسلایدرها' : '') + ''">
                 <router-link :to="{name: 'admin.sliders'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <ViewColumnsIcon
                         class="h-6 w-6 shrink-0"
@@ -504,8 +504,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'مدیریت منو‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.menus'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <RectangleGroupIcon
                         class="h-6 w-6 shrink-0"
@@ -517,8 +517,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'مدیریت فایل‌ها' : '') + ''">
                 <router-link :to="{name: 'admin.file_manager'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <FolderOpenIcon
                         class="h-6 w-6 shrink-0"
@@ -530,8 +530,8 @@
             </li>
             <li v-tooltip.left="'' + (mini ? 'راهنما' : '') + ''">
                 <router-link :to="{name: 'admin.guides'}"
-                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
-                             :class="{'justify-center': mini}"
+                             class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
+                             :class="[mini ? 'justify-center px-2' : 'px-3']"
                 >
                     <FlagIcon
                         class="h-6 w-6 shrink-0"
