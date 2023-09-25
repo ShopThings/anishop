@@ -17,7 +17,7 @@ import {computed, reactive} from "vue";
 import Slider from "@vueform/slider";
 
 const props = defineProps({
-    modelValue: [String, Array, Object],
+    modelValue: [String, Array, Object, Number],
     format: Function,
     min: Number,
     max: Number,
@@ -27,6 +27,13 @@ const props = defineProps({
             return ['horizontal', 'vertical'].indexOf(value) !== -1
         },
         default: 'horizontal',
+    },
+    showTooltip: {
+        type: String,
+        default: 'drag',
+        validator: (value) => {
+            return ['always', 'focus', 'drag'].indexOf(value) !== -1
+        },
     },
 })
 const emit = defineEmits(['update:modelValue', 'change', 'update'])
@@ -44,8 +51,8 @@ const settings = reactive({
     max: props.max,
     format: props.format,
     orientation: props.orientation,
-    showTooltip: 'drag',
-    class: 'slider-blue',
+    showTooltip: props.showTooltip, // [always, focus, drag]
+    class: 'slider-indigo',
 })
 
 function onChange(value) {
@@ -58,7 +65,7 @@ function onUpdate(value) {
 </script>
 
 <style scoped>
-.slider-blue {
+.slider-indigo {
     --slider-connect-bg: #4F46E5;
     --slider-tooltip-bg: #4F46E5;
     --slider-handle-ring-color: #4F46E530;
