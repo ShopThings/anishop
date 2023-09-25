@@ -17,13 +17,8 @@ return new class extends Migration {
             $table->unsignedInteger('priority')->default(0);
             $table->jsonb('options')->default('[]');
             $table->boolean('is_published')->default(true);
-            $table->softDeletes();
-            $table->foreignId('deleted_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent()->nullable();
             $table->foreignId('created_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
         });
     }

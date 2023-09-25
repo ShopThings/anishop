@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MenuItem extends Model
 {
-    use SoftDeletesTrait,
-        HasDeletedRelationTrait,
-        HasCreatedRelationTrait,
-        HasUpdatedRelationTrait,
+    use HasCreatedRelationTrait,
         HasParentRelationTrait;
+
+    public $timestamps = false;
+
+    protected $hasUpdatedBy = false;
 
     protected $guarded = [
         'id',
@@ -25,6 +26,7 @@ class MenuItem extends Model
     protected $casts = [
         'can_have_children' => 'boolean',
         'is_published' => 'boolean',
+        'created_at' => 'datetime',
     ];
 
     /**
