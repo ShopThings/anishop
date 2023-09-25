@@ -142,9 +142,11 @@
             <li>
                 <sidebar-link-sub-admin :mini="mini">
                     <template #link="{open}">
-                        <router-link :to="{name: 'admin.products'}"
-                                     class="rounded-lg py-2.5 px-3 flex items-center hover:bg-white hover:bg-opacity-10 transition grow"
-                                     :class="{'justify-center w-full': mini, 'bg-white bg-opacity-10': open}"
+                        <router-link
+                            v-tooltip.left="'' + (mini ? 'محصولات' : '') + ''"
+                            :to="{name: 'admin.products'}"
+                            class="rounded-lg py-2.5 px-3 flex items-center hover:bg-white hover:bg-opacity-10 transition grow"
+                            :class="{'justify-center w-full': mini, 'bg-white bg-opacity-10': open}"
                         >
                             <ArchiveBoxIcon
                                 class="h-6 w-6 shrink-0"
@@ -446,6 +448,7 @@
                 <sidebar-link-sub-admin :mini="mini">
                     <template #link="{open}">
                         <a
+                            v-tooltip.left="'' + (mini ? 'هزینه ارسال' : '') + ''"
                             class="rounded-lg py-2.5 px-3 flex hover:bg-white hover:bg-opacity-10 transition w-full"
                             :class="{'justify-center': mini, 'bg-white bg-opacity-10': open}"
                         >
