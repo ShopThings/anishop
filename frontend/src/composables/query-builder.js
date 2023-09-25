@@ -21,6 +21,7 @@ export const INPUTS = {
     DATE: 'date',
     TIME: 'time',
     COLOR: 'color',
+    RANGE: 'range',
 }
 
 export const operatorsMap = {

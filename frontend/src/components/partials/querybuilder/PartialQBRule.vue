@@ -82,6 +82,14 @@
                                     <HashtagIcon class="h-6 w-6 text-gray-400"/>
                                 </template>
                             </base-input>
+                            <base-range-slider
+                                v-else-if="INPUTS.RANGE === getInput?.type"
+                                :min="getInput?.min"
+                                :max="getInput?.max"
+                                show-tooltip="always"
+                                tooltip-position="bottom"
+                                v-model="rule.value"
+                            />
                             <base-textarea
                                 v-else-if="INPUTS.TEXTAREA === getInput?.type"
                                 :name="selectedColumn.value"
@@ -129,7 +137,7 @@
                         <template
                             v-if="hasTwoValues.indexOf(selectedOperator.value) !== -1"
                         >
-                            <span class="text-center block sm:inline-block">و</span>
+                            <span class="text-center block sm:inline-block mx-2">و</span>
 
                             <div class="p-2 grow">
                                 <base-input
@@ -157,6 +165,14 @@
                                         <HashtagIcon class="h-6 w-6 text-gray-400"/>
                                     </template>
                                 </base-input>
+                                <base-range-slider
+                                    v-else-if="INPUTS.RANGE === getInput?.type"
+                                    :min="getInput?.min"
+                                    :max="getInput?.max"
+                                    show-tooltip="always"
+                                    tooltip-position="bottom"
+                                    v-model="rule.value2"
+                                />
                                 <base-textarea
                                     v-else-if="INPUTS.TEXTAREA === getInput?.type"
                                     :name="selectedColumn.value + '_2'"
@@ -228,6 +244,7 @@ import {
     ArrowLeftCircleIcon,
     HashtagIcon,
 } from "@heroicons/vue/24/outline/index.js";
+import BaseRangeSlider from "../../base/BaseRangeSlider.vue";
 
 const props = defineProps({
     modelValue: {
