@@ -40,7 +40,7 @@ const props = defineProps({
         type: String,
         default: 'top',
         validator: (value) => {
-            ['top', 'bottom', 'left', 'right'].indexOf(value) !== -1
+            return ['top', 'bottom', 'left', 'right'].indexOf(value) !== -1
         },
     },
 })
