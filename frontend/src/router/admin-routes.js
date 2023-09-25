@@ -1553,20 +1553,42 @@ export const adminRoutes = {
         },
         {
             path: 'slider/:id(\\d+)',
-            name: 'admin.slider.edit',
-            component: () => import('../views/admin/other/PageSliderEdit.vue'),
-            meta: {
-                title: 'ویرایش اسلایدر',
-                breadcrumb: [
-                    {
-                        name: 'اسلایدرها',
-                        link: 'admin.sliders',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.slider.edit',
+                    component: () => import('../views/admin/other/PageSliderEdit.vue'),
+                    meta: {
+                        title: 'ویرایش اسلایدر',
+                        breadcrumb: [
+                            {
+                                name: 'اسلایدرها',
+                                link: 'admin.sliders',
+                            },
+                            {
+                                name: 'ویرایش اسلایدر',
+                            },
+                        ],
                     },
-                    {
-                        name: 'ویرایش اسلایدر',
+                },
+                {
+                    path: '/slides',
+                    name: 'admin.slider.slides.edit',
+                    component: () => import('../views/admin/other/PageSliderSlidesEdit.vue'),
+                    meta: {
+                        title: 'ویرایش اسلایدها',
+                        breadcrumb: [
+                            {
+                                name: 'اسلایدرها',
+                                link: 'admin.sliders',
+                            },
+                            {
+                                name: 'ویرایش اسلایدها',
+                            },
+                        ],
                     },
-                ],
-            },
+                },
+            ],
         },
 
         {
