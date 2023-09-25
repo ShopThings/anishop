@@ -1572,7 +1572,7 @@ export const adminRoutes = {
                     },
                 },
                 {
-                    path: '/slides',
+                    path: 'slides',
                     name: 'admin.slider.slides.edit',
                     component: () => import('../views/admin/other/PageSliderSlidesEdit.vue'),
                     meta: {
