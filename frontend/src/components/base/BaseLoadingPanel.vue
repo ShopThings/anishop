@@ -34,7 +34,8 @@ import('./loader/LoaderCircle.vue').then(val => {
 })
 
 watchEffect(() => {
-    const componentName = 'Loader' + capitalize(props.type)
+    let nameArr = props.type.split('-')
+    const componentName = 'Loader' + nameArr.map(value => capitalize(value)).join('')
     import(`./loader/${componentName}.vue`).then(val => {
         component.value = val.default
     })
