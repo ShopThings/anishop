@@ -5,6 +5,7 @@
         :min="settings.min"
         :max="settings.max"
         :showTooltip="settings.showTooltip"
+        :tooltipPosition="settings.tooltipPosition"
         :orientation="settings.orientation"
         :class="settings.class"
         @change="onChange"
@@ -35,6 +36,13 @@ const props = defineProps({
             return ['always', 'focus', 'drag'].indexOf(value) !== -1
         },
     },
+    tooltipPosition: {
+        type: String,
+        default: 'top',
+        validator: (value) => {
+            ['top', 'bottom', 'left', 'right'].indexOf(value) !== -1
+        },
+    },
 })
 const emit = defineEmits(['update:modelValue', 'change', 'update'])
 
@@ -51,7 +59,8 @@ const settings = reactive({
     max: props.max,
     format: props.format,
     orientation: props.orientation,
-    showTooltip: props.showTooltip, // [always, focus, drag]
+    showTooltip: props.showTooltip, // ['always', 'focus', 'drag']
+    tooltipPosition: props.tooltipPosition, // ['top', 'bottom', 'left', 'right']
     class: 'slider-indigo',
 })
 
