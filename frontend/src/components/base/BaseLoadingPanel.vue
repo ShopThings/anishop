@@ -2,6 +2,8 @@
     <VTransitionSlideFadeDownY mode="out-in">
         <div v-if="loading" class="px-3 py-6">
             <component :is="component"/>
+            <span v-if="loadingText"
+                  class="text-center block mt-3 text-gray-400 text-sm">{{ loadingText }}</span>
         </div>
 
         <div v-else>
@@ -26,6 +28,7 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    loadingText: String,
 })
 
 const component = shallowRef(null)
