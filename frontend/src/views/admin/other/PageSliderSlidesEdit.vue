@@ -184,15 +184,7 @@ const loading = ref(false)
 const canSubmit = ref(true)
 
 const slider = ref(null)
-const slides = reactive([
-    {
-        id: parseInt(uniqueId()),
-        title: '',
-        sub_title: '',
-        link: '',
-        image: null,
-    },
-])
+const slides = reactive([])
 
 const {handleSubmit, errors, isSubmitting} = useForm({
     validationSchema: yup.object().shape({}),
