@@ -166,6 +166,15 @@ export const apiRoutes = {
             destroy: 'api/admin/return-orders/{return_order}',
         },
 
+        reports: {
+            usersQueryBuilder: 'api/admin/users/query-builder',
+            productsQueryBuilder: 'api/admin/products/query-builder',
+            ordersQueryBuilder: 'api/admin/orders/query-builder',
+            users: 'api/admin/reports/users',
+            products: 'api/admin/reports/products',
+            orders: 'api/admin/reports/orders',
+        },
+
         blogBadges: {
             index: 'api/admin/blog-badges',
             show: 'api/admin/blog-badges/{blog_badge}',
