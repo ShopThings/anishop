@@ -102,6 +102,7 @@ export const apiRoutes = {
             update: 'api/admin/products/{product}',
             destroy: 'api/admin/products/{product}',
             batchDestroy: 'api/admin/products/batch',
+            showMain: 'api/admin/products/{product}/main-info',
         },
 
         productAttributes: {
