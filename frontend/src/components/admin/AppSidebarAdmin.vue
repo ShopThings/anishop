@@ -188,14 +188,20 @@ const sidebar = ref(null)
 const store = useAdminStore()
 const user = store.getUser
 
-const isMini = ref(true)
+const isMini = ref(false)
 
-const { width } = useWindowSize()
+const {width} = useWindowSize()
 
-watch(width, () => {
-    if(width.value <= 1280) {
+function checkWindowSize() {
+    if (width.value <= 1280) {
         isMini.value = true
     }
+}
+
+checkWindowSize()
+
+watch(width, () => {
+    checkWindowSize()
 })
 
 watchEffect(() => {
