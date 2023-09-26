@@ -4,11 +4,11 @@
             <div class="h-[64px] py-2 px-6 flex">
                 <div class="h-full grow flex justify-between">
                     <ul class="flex mt-[4px] space-x-reverse">
-                        <li class="px-1">
+                        <li class="px-1 xl:hidden">
                             <base-popover-side panel-class="">
                                 <template #button>
                                     <button type="button"
-                                            class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 active:bg-gray-200 focus:bg-sky-50 transition-all flex justify-between items-center">
+                                            class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 active:bg-gray-200 focus:bg-sky-50 transition-all flex justify-between items-center z-[1]">
                                         <Bars3BottomRightIcon class="w-6 h-6"/>
                                     </button>
                                 </template>
@@ -133,7 +133,6 @@ import {useAdminStore} from "../../store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
 
 const props = defineProps({
-    sidebar: Object,
     sidebarBgColor: {
         type: String,
         default: 'bg-indigo-600 text-white',

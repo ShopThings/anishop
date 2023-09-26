@@ -1,11 +1,11 @@
 <template>
     <div class="flex items-stretch relative">
         <div class="shrink-0 flex">
-            <app-sidebar-admin ref="sidebarCom"/>
+            <app-sidebar-admin/>
         </div>
 
         <div class="grow flex flex-col overflow-auto" ref="pageContainer">
-            <app-navbar-admin :sidebar="sidebarCom" ref="navbarCom"/>
+            <app-navbar-admin ref="navbarCom"/>
 
             <div class="p-3" ref="extra" v-if="title">
                 <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
@@ -74,7 +74,6 @@ const route = useRoute()
 let title = ref(null)
 let breadcrumb = ref(null)
 
-const sidebarCom = ref(null)
 const pageContainer = ref(null)
 const page = ref(null)
 const footer = ref(null)
