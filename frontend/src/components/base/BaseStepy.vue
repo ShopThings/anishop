@@ -124,7 +124,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    allowChangeStepsByClick: Boolean,
+    allowChangeStepsByClick: {
+        type: Boolean,
+        default: true,
+    },
     allowNextStep: {
         type: Boolean,
         default: true,
