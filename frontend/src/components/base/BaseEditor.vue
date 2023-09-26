@@ -1,14 +1,14 @@
 <template>
     <textarea
         :name="name"
-        class="content-editor"
+        class="content-editor hidden"
         @change="handleChange($event, false)"
     >{{ value }}</textarea>
     <partial-input-error-message :error-message="errorMessage"/>
 </template>
 
 <script setup>
-import {onMounted, watch} from "vue";
+import {onMounted, onUnmounted, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useField} from "vee-validate";
 import PartialInputErrorMessage from "../partials/PartialInputErrorMessage.vue";
@@ -71,6 +71,10 @@ onMounted(() => {
             });
         },
     });
+})
+
+onUnmounted(() => {
+    tinymce.remove(".content-editor");
 })
 </script>
 
