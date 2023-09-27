@@ -8,3 +8,14 @@ export const SLIDER_PLACES = {
         text: 'اسلایدرهای محصول',
     },
 }
+
+export const PRODUCT_ATTRIBUTE_TYPES = {
+    MULTI_SELECT: {
+        value: 'multi_select',
+        text: 'چند انتخابی',
+    },
+    SINGLE_SELECT: {
+        value: 'single_select',
+        text: 'تک انتخابی',
+    },
+}
