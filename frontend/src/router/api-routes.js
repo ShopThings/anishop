@@ -112,6 +112,7 @@ export const apiRoutes = {
             update: 'api/admin/product-attributes/{product_attribute}',
             destroy: 'api/admin/product-attributes/{product_attribute}',
             batchDestroy: 'api/admin/product-attributes/batch',
+            showProductMain: 'api/admin/product-attributes/{product}/main-info',
         },
 
         productAttributeValues: {
@@ -130,6 +131,10 @@ export const apiRoutes = {
             update: 'api/admin/product-attribute-categories/{product_attribute_category}',
             destroy: 'api/admin/product-attribute-categories/{product_attribute_category}',
             batchDestroy: 'api/admin/product-attribute-categories/batch',
+        },
+
+        productAttributeProducts: {
+            update: 'api/admin/product-attribute-products/{product_attribute_product}',
         },
 
         comments: {
