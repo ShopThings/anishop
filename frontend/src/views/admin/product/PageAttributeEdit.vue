@@ -34,7 +34,6 @@
                                         :options="types"
                                         options-key="value"
                                         options-text="name"
-                                        :is-loading="typeLoading"
                                         :selected="selectedType"
                                         name="type"
                                         @change="(t) => {selectedType = t}"
@@ -90,6 +89,7 @@ import {useRoute, useRouter} from "vue-router";
 import BaseSelect from "../../../components/base/BaseSelect.vue";
 import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
+import {PRODUCT_ATTRIBUTE_TYPES} from "../../../composables/constants.js";
 
 const router = useRouter()
 const route = useRoute()
@@ -105,8 +105,16 @@ const canSubmit = ref(true)
 
 const attribute = ref(null)
 
-const types = ref([])
-const typeLoading = ref(true)
+const types = ref([
+    {
+        value: PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value,
+        name: PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.text,
+    },
+    {
+        value: PRODUCT_ATTRIBUTE_TYPES.SINGLE_SELECT.value,
+        name: PRODUCT_ATTRIBUTE_TYPES.SINGLE_SELECT.text,
+    },
+])
 const selectedType = ref(null)
 
 const {handleSubmit, errors, isSubmitting} = useForm({
@@ -118,14 +126,6 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 onMounted(() => {
-    // useRequest(apiRoutes.admin.productAttributeValues.types, null, {
-    //     success: (response) => {
-    //         types.value = response.data
-    //
-    //         typeLoading.value = false
-    //     },
-    // })
-
     // useRequest(apiReplaceParams(apiRoutes.admin.productAttributeValues.show, {product_attribute_value: idParam.value}), null, {
     //     success: (response) => {
     //         attribute.value = response.data
