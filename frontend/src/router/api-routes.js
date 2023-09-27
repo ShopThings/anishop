@@ -121,7 +121,6 @@ export const apiRoutes = {
             update: 'api/admin/product-attribute-values/{product_attribute_value}',
             destroy: 'api/admin/product-attribute-values/{product_attribute_value}',
             batchDestroy: 'api/admin/product-attribute-values/batch',
-            types: 'api/admin/product-attribute-types'
         },
 
         productAttributeCategories: {
