@@ -6,6 +6,7 @@ import FloatingVue from 'floating-vue';
 import VueLazyLoad from 'vue3-lazyload';
 import Vue3ColorPicker from "vue3-colorpicker";
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
+import VueEasyLightbox from "vue-easy-lightbox";
 
 import "vue-toastification/dist/index.css";
 import 'floating-vue/dist/style.css';
@@ -13,6 +14,7 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css';
 import "vue3-colorpicker/style.css";
 import "@vueform/slider/themes/default.css";
+import 'vue-easy-lightbox/external-css/vue-easy-lightbox.css'
 import './main.css';
 
 import router from "./router";
@@ -34,6 +36,7 @@ createApp(App)
     .use(VueLazyLoad)
     .use(ContextMenu)
     .use(Vue3ColorPicker)
+    .use(VueEasyLightbox)
     .use(Vue3PersianDatetimePicker, {
         name: 'DatePicker',
         props: {
