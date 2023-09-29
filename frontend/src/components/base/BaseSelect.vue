@@ -155,27 +155,26 @@ function resetSelectedItems() {
     if (props.multiple) {
         selectedItems.value = []
     }
-    if (props.selected) {
-        setToSelectedItems(props.selected)
-    }
+    setToSelectedItems(props.selected)
 }
 
 function setToSelectedItems(value) {
     if (
-        !value ||
         (isArray(value) && value.length === 0) ||
         (isObject(value) && Object.keys(value).length === 0)
     ) return
 
     if (props.multiple) {
-        if (isArray(value)) {
-            for (const a of value) {
-                if (selectedItems.value.indexOf(a) === -1)
-                    selectedItems.value.push(a)
+        if (value) {
+            if (isArray(value)) {
+                for (const a of value) {
+                    if (selectedItems.value.indexOf(a) === -1)
+                        selectedItems.value.push(a)
+                }
+            } else {
+                if (selectedItems.value.indexOf(value) === -1)
+                    selectedItems.value.push(value)
             }
-        } else {
-            if (selectedItems.value.indexOf(value) === -1)
-                selectedItems.value.push(value)
         }
     } else {
         selectedItems.value = isArray(value) ? value.shift() : value;
@@ -191,6 +190,8 @@ watch(() => props.selected, () => {
 })
 
 function setSelectedItemsText() {
+    selectText.value = ''
+
     if (!selectedItems.value) return
 
     if (props.multiple) {

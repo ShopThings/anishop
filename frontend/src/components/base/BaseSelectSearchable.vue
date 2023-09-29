@@ -174,20 +174,21 @@ function resetSelectedItems() {
 
 function setToSelectedItems(value) {
     if (
-        !value ||
         (isArray(value) && value.length === 0) ||
         (isObject(value) && Object.keys(value).length === 0)
     ) return
 
     if (props.multiple) {
-        if (isArray(value)) {
-            for (const a of value) {
-                if (selectedItems.value.indexOf(a) === -1)
-                    selectedItems.value.push(a)
+        if (value) {
+            if (isArray(value)) {
+                for (const a of value) {
+                    if (selectedItems.value.indexOf(a) === -1)
+                        selectedItems.value.push(a)
+                }
+            } else {
+                if (selectedItems.value.indexOf(value) === -1)
+                    selectedItems.value.push(value)
             }
-        } else {
-            if (selectedItems.value.indexOf(value) === -1)
-                selectedItems.value.push(value)
         }
     } else {
         selectedItems.value = isArray(value) ? value.shift() : value;
@@ -205,7 +206,7 @@ watch(selectedItems, () => {
 })
 
 function setDisplayValue(item) {
-    if(!item) return ''
+    if (!item) return ''
 
     if (props.multiple) {
         if (item.length > 2) {
@@ -222,10 +223,14 @@ function setDisplayValue(item) {
 }
 
 const fullTextOfSelectedItems = computed(() => {
+    if (!selectedItems.value) return ''
+
     if (props.multiple) {
-        return selectedItems.value.length ? selectedItems.value.map((i) => i[props.optionsText]).join(', ') : '-'
+        return (selectedItems.value && selectedItems.value.length)
+            ? selectedItems.value.map((i) => i[props.optionsText]).join(', ')
+            : '-'
     } else {
-        if (selectedItems.value[props.optionsText])
+        if (selectedItems.value && selectedItems.value[props.optionsText])
             return selectedItems.value[props.optionsText]
     }
 })
