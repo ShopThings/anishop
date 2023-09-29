@@ -191,7 +191,7 @@ watch(() => props.selected, () => {
 })
 
 function setSelectedItemsText() {
-    if(!selectedItems.value) return
+    if (!selectedItems.value) return
 
     if (props.multiple) {
         if (selectedItems.value.length > 2) {
@@ -206,7 +206,7 @@ function setSelectedItemsText() {
 }
 
 const fullTextOfSelectedItems = computed(() => {
-    if(!selectedItems.value) return ''
+    if (!selectedItems.value) return ''
 
     if (props.multiple) {
         return selectedItems.value.map((item) => item[props.optionsText]).join(', ') || '-'
