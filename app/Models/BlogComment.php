@@ -9,6 +9,7 @@ use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BlogComment extends Model
 {
@@ -55,6 +56,14 @@ class BlogComment extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(BlogComment::class, 'comment_id');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function answerTo(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'answer_to');
     }
 
     /**

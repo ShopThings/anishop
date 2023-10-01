@@ -48,20 +48,4 @@ class Comment extends Model
     {
         return $this->belongsTo(Comment::class, 'comment_id');
     }
-
-    /**
-     * @return HasMany
-     */
-    public function children(): HasMany
-    {
-        return $this->hasMany(Comment::class, 'comment_id');
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function allChildren(): HasMany
-    {
-        return $this->children()->with('allChildren');
-    }
 }

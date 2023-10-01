@@ -16,12 +16,12 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('comment_id')->nullable()
-                ->constrained('comments')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('condition', array_map(fn($item) => $item->name, CommentConditionsEnum::cases()))
                 ->comment('show comment condition like if it is accepted or not');
             $table->enum('status', array_map(fn($item) => $item->name, CommentStatusesEnum::cases()))
                 ->comment('show comment status like if it is read or not');
+            $table->text('pros')->comment('positive sides');
+            $table->text('cons')->comment('negative sides');
             $table->text('description');
             $table->unsignedBigInteger('flag_count')->default(0);
             $table->boolean('is_published')->default(true);
