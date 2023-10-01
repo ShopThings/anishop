@@ -39,6 +39,7 @@
     "vue3-colorpicker": "^2.2.2",
     "vue3-lazyload": "^0.3.6",
     "vue3-persian-datetime-picker": "^1.2.2",
+    "vue3-sticky-sidebar": "^2.0.0",
     "vue3-tags-input": "^1.0.12",
     "vuedraggable": "^4.1.0"
   },
