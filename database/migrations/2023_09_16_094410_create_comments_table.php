@@ -24,6 +24,8 @@ return new class extends Migration {
             $table->text('cons')->comment('negative sides');
             $table->text('description');
             $table->unsignedBigInteger('flag_count')->default(0);
+            $table->unsignedBigInteger('up_vote_count')->default(0);
+            $table->unsignedBigInteger('down_vote_count')->default(0);
             $table->boolean('is_published')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
