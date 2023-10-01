@@ -78,6 +78,24 @@ const routes = [
         component: () => import('../views/PageSearch.vue'),
         meta: {layout: 'layout-guest'},
     },
+    {
+        path: '/product-detail/:id(\\d+)',
+        name: 'product_detail',
+        component: () => import('../views/PageProductDetail.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+    {
+        path: '/brands',
+        name: 'brands',
+        component: () => import('../views/PageBrands.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+    {
+        path: '/categories',
+        name: 'categories',
+        component: () => import('../views/PageCategories.vue'),
+        meta: {layout: 'layout-guest'},
+    },
     //
 
     {
