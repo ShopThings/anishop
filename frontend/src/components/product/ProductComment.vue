@@ -70,7 +70,7 @@
                                         class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
                                         @click="hide()"
                                     >
-                                        <FlagIcon :class="klass" class="w-5 h-5 text-rose-500 ml-2"/>
+                                        <FlagIcon class="w-5 h-5 text-rose-500 ml-2"/>
                                         <span class="text-sm">{{ item.text }}</span>
                                     </a>
                                 </template>
