@@ -1,55 +1,70 @@
 <template>
-    <Carousel
-        :items-to-show="itemsToShow"
-        :wrap-around="wrapAround"
-        :transition="transition"
-        :snap-align="snapAlign"
-        :autoplay="autoplay"
-        :breakpoints="breakpoints"
-        :dir="dir"
-        :pause-autoplay-on-hover="pauseAutoplayOnHover"
-        :i18n="i18n"
-        v-model="currentSlide"
-        ref="carousel"
-        @before-init="emit('before-init')"
-        @init="emit('init')"
-        @slide-start="emit('slide-start')"
-        @slide-end="emit('slide-end')"
-        @loop="emit('loop')"
+    <div
+        ref="carouselContainer"
     >
-        <template #slides>
-            <Slide v-for="(slide, idx) in slides" :key="idx">
-                <div v-if="useSlideEffect" class="carousel__item">
-                    <slot :slide="slide" :index="idx"></slot>
-                </div>
-                <template v-else>
-                    <slot :slide="slide" :index="idx"></slot>
-                </template>
-            </Slide>
-        </template>
+        <Carousel
+            :mouse-drag="mouseDrag"
+            :touch-drag="touchDrag"
+            :items-to-show="itemsToShow"
+            :items-to-scroll="itemsToScroll"
+            :wrap-around="wrapAround"
+            :transition="transition"
+            :snap-align="snapAlign"
+            :autoplay="autoplay"
+            :breakpoints="breakpoints"
+            :dir="dir"
+            :pause-autoplay-on-hover="pauseAutoplayOnHover"
+            :i18n="i18n"
+            v-model="currentSlide"
+            ref="carousel"
+            @before-init="emit('before-init')"
+            @init="emit('init')"
+            @slide-start="emit('slide-start')"
+            @slide-end="emit('slide-end')"
+            @loop="emit('loop')"
+        >
+            <template #slides>
+                <Slide v-for="(slide, idx) in slides" :key="idx">
+                    <div v-if="useSlideEffect" class="carousel__item w-full">
+                        <slot :slide="slide" :index="idx"></slot>
+                    </div>
+                    <template v-else>
+                        <slot :slide="slide" :index="idx"></slot>
+                    </template>
+                </Slide>
+            </template>
 
-        <template #addons="{slideWidth, currentSlide, slidesCount}">
-            <PartialCarouselNavigation
-                v-if="hasNavigation && slidesCount > 1 && carousel"
-                :carousel="carousel"
-                :slide-width="slideWidth"
-                :current-slide="currentSlide"
-                :slides-count="slidesCount"
-                :has-pagination="hasPagination"
-            />
-            <PartialCarouselPagination
-                v-if="hasPagination && carousel"
-                :carousel="carousel"
-                :slide-width="slideWidth"
-                :current-slide="currentSlide"
-                :slides-count="slidesCount"
-            />
-        </template>
-    </Carousel>
+            <template #addons="{slideWidth, currentSlide, slidesCount}">
+                <PartialCarouselNavigation
+                    v-if="hasNavigation && slidesCount > 1 && carousel"
+                    :carousel="carousel"
+                    :slide-width="slideWidth"
+                    :current-slide="currentSlide"
+                    :slides-count="slidesCount"
+                    :has-pagination="hasPagination"
+                    :position="navigationPosition"
+                    :display="navigationDisplay"
+                    :always-show-buttons="alwaysShowNavigationButtons"
+                    :items-to-scroll="itemsToScroll"
+                    :breakpoints="breakpoints"
+                />
+                <PartialCarouselPagination
+                    v-if="hasPagination && slidesCount > 1 && carousel"
+                    :carousel="carousel"
+                    :slide-width="slideWidth"
+                    :current-slide="currentSlide"
+                    :slides-count="slidesCount"
+                    :items-to-scroll="itemsToScroll"
+                    :breakpoints="breakpoints"
+                />
+            </template>
+        </Carousel>
+    </div>
 </template>
 
 <script setup>
 import {computed, ref} from "vue";
+import {useResizeObserver} from "@vueuse/core";
 import {Carousel, Slide} from 'vue3-carousel'
 import PartialCarouselNavigation from "../partials/PartialCarouselNavigation.vue";
 import PartialCarouselPagination from "../partials/PartialCarouselPagination.vue";
@@ -64,10 +79,28 @@ const props = defineProps({
         default: 0,
     },
     useSlideEffect: Boolean,
+    mouseDrag: {
+        type: Boolean,
+        default: true,
+    },
+    touchDrag: {
+        type: Boolean,
+        default: true,
+    },
     hasNavigation: Boolean,
+    navigationPosition: String,
+    navigationDisplay: String,
+    alwaysShowNavigationButtons: {
+        type: Boolean,
+        default: true,
+    },
     hasPagination: Boolean,
     itemsToShow: {
         type: [Function, Number],
+        default: 1,
+    },
+    itemsToScroll: {
+        type: Number,
         default: 1,
     },
     snapAlign: {
@@ -121,7 +154,13 @@ const emit = defineEmits([
     'loop',
 ])
 
+const carouselContainer = ref(null)
 const carousel = ref(null)
+
+useResizeObserver(carouselContainer, () => {
+    if (carousel.value)
+        carousel.value.updateSlideWidth()
+})
 
 const slides = computed({
     get() {
