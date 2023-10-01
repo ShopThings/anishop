@@ -3,7 +3,7 @@
         v-if="type === 'link'"
         :to="to"
         :class="[
-            'relative text-white cursor-pointer rounded-md border',
+            'relative text-white cursor-pointer rounded-md border text-center',
             'py-2 px-3 text-base leading-7 transition hover:bg-opacity-90',
         ]"
         @click="checkButton"
@@ -14,7 +14,7 @@
         v-else
         :type="type"
         :class="[
-            'relative text-white cursor-pointer rounded-md border',
+            'relative text-white cursor-pointer rounded-md border text-center',
             'py-2 px-3 text-base leading-7 transition hover:bg-opacity-90',
         ]"
         @click="checkButton"
