@@ -48,7 +48,35 @@
                     v-for="comment in comments"
                     class="divide-y divide-gray-100 space-y-3 pt-3"
                 >
-                    <div class="py-2 text-sm flex flex-wrap items-center gap-3">
+                    <div class="py-2 text-sm flex flex-wrap items-center gap-3 pl-10 relative">
+                        <div class="absolute left-0 top-0">
+                            <base-floating-drop-down
+                                placement="right-start"
+                                :shift="false"
+                                :items="[{
+                                    text: 'گزارش نظر',
+                                }]"
+                            >
+                                <template #button>
+                                    <button type="button"
+                                            class="text-gray-500 p-1 transition hover:text-black">
+                                        <EllipsisVerticalIcon class="h-6 w-6"/>
+                                    </button>
+                                </template>
+
+                                <template #item="{item, hide}">
+                                    <a
+                                        href="javascript:void(0)"
+                                        class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
+                                        @click="hide()"
+                                    >
+                                        <FlagIcon :class="klass" class="w-5 h-5 text-rose-500 ml-2"/>
+                                        <span class="text-sm">{{ item.text }}</span>
+                                    </a>
+                                </template>
+                            </base-floating-drop-down>
+                        </div>
+
                         <div class="flex flex-wrap items-center gap-3">
                             <span class="text-gray-400">ارسال شده در تاریخ</span>
                             <span class="text-gray-500">{{ comment.created_at }}</span>
@@ -61,7 +89,7 @@
                         </div>
                     </div>
 
-                    <div class="pt-3">
+                    <div class="pt-5 pb-2">
                         <p>{{ comment.description }}</p>
 
                         <div
@@ -163,9 +191,14 @@ import {
     HandThumbUpIcon,
     MinusSmallIcon,
     PlusSmallIcon,
+    EllipsisVerticalIcon,
+    FlagIcon,
 } from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import BaseButton from "../base/BaseButton.vue";
+import BaseFloatingDropDown from "../base/BaseFloatingDropDown.vue";
+import BaseAnimatedButton from "../base/BaseAnimatedButton.vue";
+import * as outline from "@heroicons/vue/24/outline/index.js";
 
 defineProps({
     productId: {
