@@ -15,10 +15,7 @@ export const apiRoutes = {
             update: 'api/admin/users/{user}',
             destroy: 'api/admin/users/{user}',
             batchDestroy: 'api/admin/users/batch',
-        },
-
-        addresses: {
-            index: 'api/admin/users/{user}/addresses',
+            addresses: 'api/admin/users/{user}/addresses',
         },
 
         paymentMethods: {
