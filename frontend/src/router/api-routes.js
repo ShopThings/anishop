@@ -18,7 +18,7 @@ export const apiRoutes = {
         },
 
         addresses: {
-            index: 'api/admin/addresses',
+            index: 'api/admin/users/{user}/addresses',
         },
 
         paymentMethods: {
