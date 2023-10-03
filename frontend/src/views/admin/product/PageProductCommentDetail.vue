@@ -102,9 +102,9 @@ import PartialInputLabel from "../../../components/partials/PartialInputLabel.vu
 const router = useRouter()
 const route = useRoute()
 const idParam = computed(() => {
-    const detail = parseInt(route.params.detail, 10)
-    if (isNaN(detail)) return route.params.detail
-    return detail
+    const id = parseInt(route.params.id, 10)
+    if (isNaN(id)) return route.params.id
+    return id
 })
 const commentId = computed(() => {
     const detail = parseInt(route.params.detail, 10)
@@ -127,7 +127,12 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 onMounted(() => {
-    // useRequest(apiReplaceParams(apiRoutes.admin.comments.show, {comment: commentId.value}), null, {
+    // useRequest(
+    // apiReplaceParams(apiRoutes.admin.comments.show, {
+    // comment: commentId.value,
+    // product: idParam.value,
+    // }
+    // ), null, {
     //     success: (response) => {
     //         comment.value = response.data
     //
