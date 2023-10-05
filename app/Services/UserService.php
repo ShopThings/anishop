@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Enums\Gates\RolesEnum;
 use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Services\Contracts\RoleServiceInterface;
 use App\Services\Contracts\UserServiceInterface;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

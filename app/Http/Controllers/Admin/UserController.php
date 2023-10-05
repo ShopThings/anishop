@@ -158,4 +158,24 @@ class UserController extends Controller
                 'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    public function addresses()
+    {
+
+    }
+
+    public function favoriteProducts()
+    {
+
+    }
+
+    public function purchases()
+    {
+
+    }
+
+    public function carts()
+    {
+
+    }
 }
