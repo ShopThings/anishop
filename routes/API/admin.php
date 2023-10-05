@@ -56,14 +56,14 @@ Route::prefix('admin')
                 Route::delete('users/batch', [UserController::class, 'batchDestroy'])
                     ->name('users.destroy.batch');
                 Route::apiResource('users', UserController::class)->whereNumber('users');
-                Route::get('users/{users}/addresses', [UserController::class, 'addresses'])->whereNumber('users')
-                    ->name('users.addresses');
-                Route::get('users/{users}/favoriteProducts', [UserController::class, 'favoriteProducts'])
-                    ->whereNumber('users')->name('users.addresses');
-                Route::get('users/{users}/purchases', [UserController::class, 'purchases'])
-                    ->whereNumber('users')->name('users.addresses');
-                Route::get('users/{users}/carts', [UserController::class, 'carts'])
-                    ->whereNumber('users')->name('users.addresses');
+                Route::get('users/{user}/addresses', [UserController::class, 'addresses'])
+                    ->whereNumber('user')->name('users.addresses');
+                Route::get('users/{user}/favoriteProducts', [UserController::class, 'favoriteProducts'])
+                    ->whereNumber('user')->name('users.addresses');
+                Route::get('users/{user}/purchases', [UserController::class, 'purchases'])
+                    ->whereNumber('user')->name('users.addresses');
+                Route::get('users/{user}/carts', [UserController::class, 'carts'])
+                    ->whereNumber('user')->name('users.addresses');
 
                 /*
                  * payment method routes
