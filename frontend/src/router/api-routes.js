@@ -16,12 +16,18 @@ export const apiRoutes = {
             destroy: 'api/admin/users/{user}',
             batchDestroy: 'api/admin/users/batch',
             addresses: 'api/admin/users/{user}/addresses',
+            favoriteProducts: 'api/admin/users/{user}/favorite-product',
+            purchases: 'api/admin/users/{user}/purchases',
+            carts: 'api/admin/users/{user}/carts',
         },
 
         paymentMethods: {
             index: 'api/admin/payment-method',
-            show: 'api/admin/payment-method/{payment_method}',
-            update: 'api/admin/payment-method/{payment_method}',
+            show: 'api/admin/payment-methods/{payment_method}',
+            store: 'api/admin/payment-methods/{payment_method}',
+            update: 'api/admin/payment-methods/{payment_method}',
+            destroy: 'api/admin/payment-methods/{payment_method}',
+            batchDestroy: 'api/admin/payment-methods/batch',
         },
 
         colors: {
@@ -135,12 +141,11 @@ export const apiRoutes = {
         },
 
         comments: {
-            index: 'api/admin/comments',
-            show: 'api/admin/comments/{comment}',
-            store: 'api/admin/comments',
-            update: 'api/admin/comments/{comment}',
-            destroy: 'api/admin/comments/{comment}',
-            batchDestroy: 'api/admin/comments/batch',
+            index: 'api/admin/products/{product}/comments',
+            show: 'api/admin/products/{product}/comments/{comment}',
+            update: 'api/admin/products/{product}/comments/{comment}',
+            destroy: 'api/admin/products/{product}/comments/{comment}',
+            batchDestroy: 'api/admin/products/{product}/comments/batch',
         },
 
         orders: {
@@ -196,12 +201,12 @@ export const apiRoutes = {
         },
 
         blogComments: {
-            index: 'api/admin/blog-comments',
-            show: 'api/admin/blog-comments/{blog_comment}',
-            store: 'api/admin/blog-comments',
-            update: 'api/admin/blog-comments/{blog_comment}',
-            destroy: 'api/admin/blog-comments/{blog_comment}',
-            batchDestroy: 'api/admin/blog-comments/batch',
+            index: 'api/admin/blogs/{blog}/comments',
+            show: 'api/admin/blogs/{blog}/comments/{comment}',
+            store: 'api/admin/blogs/{blog}/comments',
+            update: 'api/admin/blogs/{blog}/comments/{comment}',
+            destroy: 'api/admin/blogs/{blog}/comments/{comment}',
+            batchDestroy: 'api/admin/blogs/{blog}/comments/batch',
         },
 
         blogCategories: {
@@ -282,7 +287,6 @@ export const apiRoutes = {
             update: 'api/admin/sliders/{slider}',
             destroy: 'api/admin/sliders/{slider}',
             batchDestroy: 'api/admin/sliders/batch',
-            places: 'api/admin/sliders-place',
         },
 
         menus: {

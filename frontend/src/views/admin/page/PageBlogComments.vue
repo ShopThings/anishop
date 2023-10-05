@@ -206,7 +206,10 @@ const operations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.blogComments.destroy, {blog_comment: data.id}), {
+                    useRequest(apiReplaceParams(apiRoutes.admin.blogComments.destroy, {
+                        blog: blogId.value,
+                        comment: data.id
+                    }), {
                         method: 'DELETE',
                     }, {
                         success: () => {
@@ -248,7 +251,7 @@ const selectionOperations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiRoutes.admin.blogComments.batchDestroy, {
+                    useRequest(apiReplaceParams(apiRoutes.admin.blogComments.batchDestroy, {blog: blogId.value}), {
                         method: 'DELETE',
                         data: {
                             ids,
@@ -272,7 +275,7 @@ const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
     text = text || ''
 
-    // useRequest(apiRoutes.admin.blogComments.index, {
+    // useRequest(apiReplaceParams(apiRoutes.admin.blogComments.index, {blog: blogId.value}), {
     //     params: {limit, offset, order, sort, text},
     // }, {
     //     success: (response) => {

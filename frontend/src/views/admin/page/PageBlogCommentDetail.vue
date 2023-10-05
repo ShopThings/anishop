@@ -129,7 +129,8 @@ const onSubmit = handleSubmit((values, actions) => {
 // onMounted(() => {
 //     useRequest(
 //     apiReplaceParams(apiRoutes.admin.blogComments.show, {
-//     blog_comment: commentId.value
+//     blog: idParam.value,
+//     comment: commentId.value
 //     blog: idParam.value
 //     }
 //     ), null, {
