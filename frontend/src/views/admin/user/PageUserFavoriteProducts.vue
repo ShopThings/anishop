@@ -14,127 +14,41 @@
                     }}</span>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-                <partial-card>
-                    <template #body>
-                        <div class="flex items-center md:flex-col">
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="p-2 shrink-0"
-                            >
-                                <base-lazy-image
-                                    alt="تصویر محصول"
-                                    lazy-src="/src/assets/products/p1.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                />
-                            </router-link>
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
-                            >
-                                لپتاپ خیلی باحال و کاربردی عمو فردوس
-                            </router-link>
-                        </div>
-                    </template>
-                </partial-card>
-                <partial-card>
-                    <template #body>
-                        <div class="flex items-center md:flex-col">
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="p-2 shrink-0"
-                            >
-                                <base-lazy-image
-                                    alt="تصویر محصول"
-                                    lazy-src="/src/assets/products/p2.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                />
-                            </router-link>
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
-                            >
-                                لپتاپ خیلی باحال و کاربردی عمو فردوس
-                            </router-link>
-                        </div>
-                    </template>
-                </partial-card>
-                <partial-card>
-                    <template #body>
-                        <div class="flex items-center md:flex-col">
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="p-2 shrink-0"
-                            >
-                                <base-lazy-image
-                                    alt="تصویر محصول"
-                                    lazy-src="/src/assets/products/p3.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                />
-                            </router-link>
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
-                            >
-                                لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با گرافیک بسیار زیاد را دارا می‌باشد.
-                            </router-link>
-                        </div>
-                    </template>
-                </partial-card>
-                <partial-card>
-                    <template #body>
-                        <div class="flex items-center md:flex-col">
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="p-2 shrink-0"
-                            >
-                                <base-lazy-image
-                                    alt="تصویر محصول"
-                                    lazy-src="/src/assets/products/p4.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                />
-                            </router-link>
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
-                            >
-                                لپتاپ خیلی باحال و کاربردی عمو فردوس
-                            </router-link>
-                        </div>
-                    </template>
-                </partial-card>
-                <partial-card>
-                    <template #body>
-                        <div class="flex items-center md:flex-col">
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="p-2 shrink-0"
-                            >
-                                <base-lazy-image
-                                    alt="تصویر محصول"
-                                    lazy-src="/src/assets/products/p5.jpg"
-                                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                />
-                            </router-link>
-                            <router-link
-                                :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                target="_blank"
-                                class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
-                            >
-                                لپتاپ خیلی باحال و کاربردی عمو فردوس
-                            </router-link>
-                        </div>
-                    </template>
-                </partial-card>
-            </div>
+            <base-paginator
+                container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+                :items="favoriteProducts"
+            >
+                <template #item="{item}">
+                    <partial-card class="h-full">
+                        <template #body>
+                            <div class="flex items-center md:flex-col">
+                                <router-link
+                                    :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                    target="_blank"
+                                    class="p-2 shrink-0"
+                                >
+                                    <base-lazy-image
+                                        alt="تصویر محصول"
+                                        :lazy-src="item.image.path"
+                                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
+                                    />
+                                </router-link>
+                                <router-link
+                                    :to="{name: 'admin.product.detail', params: {id: 1}}"
+                                    target="_blank"
+                                    class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
+                                >
+                                    {{ item.title }}
+                                </router-link>
+                            </div>
+                        </template>
+                    </partial-card>
+                </template>
+
+                <template #loading>
+                    <loader-card/>
+                </template>
+            </base-paginator>
         </template>
     </base-loading-panel>
 </template>
@@ -147,6 +61,8 @@ import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import {useRequest} from "../../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 import BaseLazyImage from "../../../components/base/BaseLazyImage.vue";
+import BasePaginator from "../../../components/base/BasePaginator.vue";
+import LoaderCard from "../../../components/base/loader/LoaderCard.vue";
 
 const loading = ref(false)
 
@@ -158,6 +74,38 @@ const idParam = computed(() => {
 })
 
 const user = ref(null)
+const favoriteProducts = ref([
+    {
+        image: {
+            path: '/src/assets/products/p1.jpg',
+        },
+        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    },
+    {
+        image: {
+            path: '/src/assets/products/p2.jpg',
+        },
+        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    },
+    {
+        image: {
+            path: '/src/assets/products/p3.jpg',
+        },
+        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با گرافیک بسیار زیاد را دارا می‌باشد',
+    },
+    {
+        image: {
+            path: '/src/assets/products/p4.jpg',
+        },
+        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    },
+    {
+        image: {
+            path: '/src/assets/products/p5.jpg',
+        },
+        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    },
+])
 
 onMounted(() => {
     useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
