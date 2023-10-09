@@ -57,7 +57,6 @@ class PaymentMethodController extends Controller
      */
     public function store(StorePaymentMethodRequest $request)
     {
-
         $this->authorize('create', User::class);
 
         $validated = $request->validated();
