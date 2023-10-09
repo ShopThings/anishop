@@ -146,7 +146,7 @@ class PaymentMethodController extends Controller
      */
     public function batchDestroy(Request $request)
     {
-        $this->authorize('batchDelete', PaymentMethod::class);
+        $this->authorize('batchDelete', User::class);
 
         $ids = $request->input('ids', []);
 
