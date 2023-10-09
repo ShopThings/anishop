@@ -63,7 +63,6 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
             'is_published' => to_boolean($attributes['is_published']),
         ];
 
-        //-----
         return $this->repository->create($attrs);
     }
 
