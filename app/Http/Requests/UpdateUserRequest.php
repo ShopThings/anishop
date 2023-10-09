@@ -20,8 +20,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()
-            ?->can(PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::USER));
+        return true;
     }
 
     /**
