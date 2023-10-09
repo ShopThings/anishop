@@ -16,7 +16,8 @@ return new class extends Migration {
             $table->string('latin_name');
             $table->string('escaped_name');
             $table->string('slug');
-            $table->text('image')->nullable();
+            $table->foreignId('image_id')->nullable()
+                ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
             $table->text('keywords')->nullable();
             $table->boolean('show_in_slider')->default(true);
             $table->boolean('is_published')->default(true);
