@@ -2,19 +2,28 @@
 
 namespace App\Contracts;
 
-interface ServiceInterface
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+interface ServiceInterface extends VersionInterface
 {
     /**
-     * A version like semantic versioning
-     *
-     * @return string
+     * @param $id
+     * @return Collection|Model|null
      */
-    public static function version(): string;
+    public function getById($id): Collection|Model|null;
 
     /**
-     * A version like semantic versioning
-     *
-     * @return string
+     * @param $id
+     * @param bool $permanent
+     * @return bool
      */
-    public function getVersion(): string;
+    public function deleteById($id, bool $permanent = false): bool;
+
+    /**
+     * @param array $ids
+     * @param bool $permanent
+     * @return bool
+     */
+    public function batchDeleteByIds(array $ids, bool $permanent = false): bool;
 }

@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->string('first_name');
             $table->string('last_name');
             $table->string('mobile');
+            $table->string('province', 100);
+            $table->string('city', 100);
             $table->string('address');
             $table->string('postal_code', 15);
             $table->string('receiver_name');

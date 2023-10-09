@@ -34,6 +34,14 @@ class OrderDetail extends Model
     }
 
     /**
+     * @return HasOne
+     */
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'user_id');
+    }
+
+    /**
      * @return BelongsToMany
      */
     public function orders(): BelongsToMany

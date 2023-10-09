@@ -21,7 +21,10 @@ class StoreUserRequest extends FormRequest
     public function authorize(): bool
     {
         return Auth::user()
-            ?->can(PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::USER));
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::USER
+            ));
     }
 
     /**
@@ -54,19 +57,21 @@ class StoreUserRequest extends FormRequest
             'roles' => [
                 'required',
                 'min:1',
-                function ($attribute, $value, $fail) use($roles) {
-                    if(!is_array($value)) $value = [$value];
+                function ($attribute, $value, $fail) use ($roles) {
+                    if (!is_array($value)) $value = [$value];
 
                     $arr = array_map(function ($v) {
                         return $v['value'] ?? $v;
                     }, $value);
                     $uniqueArr = array_unique($arr);
 
-                    if (count($uniqueArr) != count($arr)) {
+                    if(!count($uniqueArr)) {
+                        $fail('انتخاب حداقل یک نقش الزامی می‌باشد.');
+                    } elseif (count($uniqueArr) != count($arr)) {
                         $fail('نقش باید دارای موارد یکتا باشد.');
                     } else {
                         foreach ($uniqueArr as $item) {
-                            if(!in_array($item, $roles)) {
+                            if (!in_array($item, $roles)) {
                                 $fail('نقش انتخاب شده نامعتبر می‌باشد.');
                                 break;
                             }

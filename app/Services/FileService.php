@@ -157,7 +157,7 @@ class FileService extends Service implements FileServiceInterface
      */
     public function find($file): Model|null
     {
-        $where = new WhereBuilder();
+        $where = new WhereBuilder('file_manager');
         $where->orWhereEqual('id', $file)
             ->orWhereEqual('CONCAT(file_manager.path, \'/\', file_manager.name)', $file);
         return $this->repository->findWhere($where->build());
@@ -180,8 +180,8 @@ class FileService extends Service implements FileServiceInterface
         ) {
             $files = $this->repository->fileExists($dbFile->path, $disk, true);
         } else {
-            $disk = $this->repository::STORAGE_DISK_LOCAL;
-            $files = $this->repository->fileExists($dbFile->path, $this->repository::STORAGE_DISK_PUBLIC, true, $size);
+            $disk = $this->repository::STORAGE_DISK_PUBLIC;
+            $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);
             if (!count($files)) {
                 $disk = $this->repository::STORAGE_DISK_LOCAL;
                 $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);

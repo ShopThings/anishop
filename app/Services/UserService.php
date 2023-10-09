@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Enums\Gates\RolesEnum;
+use App\Models\User;
+use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\UserServiceInterface;
 use App\Support\Service;
@@ -16,7 +18,10 @@ use function App\Support\Helper\to_boolean;
 
 class UserService extends Service implements UserServiceInterface
 {
-    public function __construct(protected UserRepositoryInterface $repository)
+    public function __construct(
+        protected UserRepositoryInterface $repository,
+        protected CartRepositoryInterface $cartRepository,
+    )
     {
     }
 
@@ -41,9 +46,69 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function getById($id): Collection|Model|null
+    public function getUserAddresses(
+        User    $user,
+        ?string $searchText = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = ['id' => 'desc']
+    ): Collection|LengthAwarePaginator
     {
-        return $this->repository->findOrFail($id);
+        return $this->repository->getUserAddressesSearchFilterPaginated(
+            user: $user,
+            search: trim($searchText ?? ''),
+            limit: $limit,
+            page: $page,
+            order: $this->convertOrdersColumnToArray($order)
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserFavoriteProduct(
+        User    $user,
+        ?string $searchText = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = ['id' => 'desc']
+    ): Collection|LengthAwarePaginator
+    {
+        return $this->repository->getUserFavoriteProductsSearchFilterPaginated(
+            user: $user,
+            search: $searchText,
+            limit: $limit,
+            page: $page,
+            order: $this->convertOrdersColumnToArray($order)
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserPurchases(
+        User    $user,
+        ?string $searchText = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = ['id' => 'desc']
+    ): Collection|LengthAwarePaginator
+    {
+        return $this->repository->getUserPurchasesSearchFilterPaginated(
+            user: $user,
+            search: $searchText,
+            limit: $limit,
+            page: $page,
+            order: $this->convertOrdersColumnToArray($order)
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserCarts(User $user)
+    {
+        return $this->cartRepository->getUserCarts($user);
     }
 
     /**
@@ -155,30 +220,5 @@ class UserService extends Service implements UserServiceInterface
         }
 
         return $user;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete($id, bool $permanent = false): bool
-    {
-        if ($permanent) {
-            Gate::authorize('forceDelete', $this->repository->find($id));
-        }
-
-        return (bool)$this->repository->delete($id, $permanent);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function batchDelete(array $ids, bool $permanent = false): bool
-    {
-        if ($permanent) {
-            Gate::authorize('forceDelete', $this->repository->find($ids));
-        }
-
-        if (!count($ids)) return true;
-        return (bool)$this->repository->deleteBatch($ids, $permanent);
     }
 }

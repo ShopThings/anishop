@@ -2,9 +2,9 @@
 
 namespace App\Services\Contracts;
 
-use App\Contracts\ServiceInterface;
+use App\Contracts\VersionInterface;
 
-interface RoleServiceInterface extends ServiceInterface
+interface RoleServiceInterface extends VersionInterface
 {
     /**
      * @return array

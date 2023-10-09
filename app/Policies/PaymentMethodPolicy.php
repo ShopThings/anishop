@@ -2,7 +2,12 @@
 
 namespace App\Policies;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Exceptions\NotDeletableException;
+use App\Models\PaymentMethod;
 use App\Models\User;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Database\Eloquent\Collection;
 
 class PaymentMethodPolicy
@@ -12,15 +17,25 @@ class PaymentMethodPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, PaymentMethod $model): bool
     {
-        return false;
+        if ($user->id === $model->creator()?->id) return true;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
@@ -28,39 +43,65 @@ class PaymentMethodPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, PaymentMethod $model): bool
     {
-        return false;
+        if ($user->id === $model->creator()?->id) return true;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, PaymentMethod $model): bool
     {
-        return false;
+        if (!$model->is_deletable) {
+            throw new NotDeletableException();
+            return false;
+        }
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::DELETE,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, User $model): bool
+    public function restore(User $user, PaymentMethod $model): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, User|Collection $model): bool
+    public function forceDelete(User $user, PaymentMethod|Collection $model): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::PERMANENT_DELETE,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 
     /**
@@ -68,6 +109,10 @@ class PaymentMethodPolicy
      */
     public function batchDelete(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::DELETE,
+                PermissionPlacesEnum::PAYMENT_METHOD)
+        );
     }
 }

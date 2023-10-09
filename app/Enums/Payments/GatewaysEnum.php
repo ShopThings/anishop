@@ -2,8 +2,12 @@
 
 namespace App\Enums\Payments;
 
+use App\Traits\EnumTranslateTrait;
+
 enum GatewaysEnum: string
 {
+    use EnumTranslateTrait;
+
     case LOCAL = 'local';
     case FANAVACARD = 'fanavacard';
     case ATIPAY = 'atipay';
@@ -41,7 +45,7 @@ enum GatewaysEnum: string
     /**
      * @return string[]
      */
-    private static function translationArray(): array
+    protected static function translationArray(): array
     {
         return [
             self::LOCAL->value => 'لوکال',
@@ -78,22 +82,5 @@ enum GatewaysEnum: string
             self::AZKI->value => 'از کی',
             self::PAYFA->value => 'پی‌فا',
         ];
-    }
-
-    /**
-     * @param array|string $gateways
-     * @return array|string|null
-     */
-    public static function getTranslations(array|string $gateways): array|string|null
-    {
-        $translates = self::translationArray();
-        if (is_array($gateways)) {
-            $newArr = [];
-            foreach ($gateways as $gateway) {
-                $newArr[$gateway] = $translates[$gateway] ?? $gateway;
-            }
-            return count($newArr) ? $newArr : null;
-        }
-        return $translates[$gateways] ?? $gateways;
     }
 }

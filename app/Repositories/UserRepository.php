@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\DatabaseEnum;
 use App\Enums\Gates\RolesEnum;
+use App\Enums\Payments\PaymentStatusesEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Support\Repository;
@@ -33,7 +34,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $query = $this->model->newQuery();
         $query->when($search, function (Builder $query, string $search) {
             $query
-                ->when(RolesEnum::getSimilarRoleValuesFromString($search), function (Builder $builder, array $roles) {
+                ->when(RolesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $roles) {
                     $builder->withWhereHas('roles', function ($q) use ($roles) {
                         $q->whereIn('name', $roles);
                     });
@@ -47,17 +48,121 @@ class UserRepository extends Repository implements UserRepositoryInterface
                 ], $search);
         });
 
-        if (count($order)) {
-            foreach ($order as $column => $sort) {
-                $query->orderBy($column, $sort);
-            }
-        }
+        return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
 
-        if($limit > 0) {
-            return $query->paginate(perPage: $limit, columns: $columns, page: $page);
-        } else {
-            return $query->get($columns);
-        }
+    /**
+     * @inheritDoc
+     */
+    public function getUserAddressesSearchFilterPaginated(
+        User    $user,
+        array   $columns = ['*'],
+        ?string $search = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = []
+    ): Collection|LengthAwarePaginator
+    {
+        $query = $user->addresses();
+        $query->when($search, function (Builder $query, string $search) {
+            $query
+                ->where(function (Builder $builder) use ($search) {
+                    $builder
+                        ->withWhereHas('city', function ($q) use ($search) {
+                            $q->where('name', $search);
+                        })
+                        ->withWhereHas('province', function ($q) use ($search) {
+                            $q->where('name', $search);
+                        });
+                })
+                ->orWhereLike([
+                    'address_user.full_name',
+                    'address_user.mobile',
+                    'address_user.address',
+                    'address_user.postal_code',
+                ], $search);
+        });
+
+        return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserFavoriteProductsSearchFilterPaginated(
+        User    $user,
+        array   $columns = ['*'],
+        ?string $search = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = []
+    ): Collection|LengthAwarePaginator
+    {
+        $query = $user->favoriteProducts();
+        $query->when($search, function (Builder $query, string $search) {
+            $query
+                ->where(function (Builder $builder) use ($search) {
+                    $builder
+                        ->withWhereHas('product', function ($q) use ($search) {
+                            $q->orWhereLike([
+                                'title',
+                                'escaped_title',
+                            ], $search);
+                        });
+                });
+        });
+
+        return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserPurchasesSearchFilterPaginated(
+        User    $user,
+        array   $columns = ['*'],
+        ?string $search = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = []
+    ): Collection|LengthAwarePaginator
+    {
+        $query = $user->orders();
+        $query->when($search, function (Builder $query, string $search) {
+            $query
+                ->where(function (Builder $builder) use ($search) {
+                    $builder
+                        ->withWhereHas('orders', function ($q) use ($search) {
+                            $q
+                                ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function (Builder $q2, array $statuses) {
+                                    $q2->orWhereIn('payment_status', $statuses);
+                                })
+                                ->withWhereHas('items', function ($q2) use ($search) {
+                                    $q2->orWhereLike([
+                                        'order_items.product_title',
+                                        'order_items.color_name',
+                                        'order_items.size',
+                                        'order_items.guarantee',
+                                    ], $search);
+                                })
+                                ->orWhereLike('orders.payment_method_title', $search);
+                        })
+                        ->orWhereLike([
+                            'order_details.first_name',
+                            'order_details.last_name',
+                            'order_details.mobile',
+                            'order_details.province',
+                            'order_details.city',
+                            'order_details.address',
+                            'order_details.postal_code',
+                            'order_details.receiver_name',
+                            'order_details.receiver_mobile',
+                            'order_details.send_status_title',
+                        ], $search);
+                });
+        });
+
+        return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }
 
     /**
@@ -68,5 +173,34 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $where = new WhereBuilder('users');
         $where->whereIn('id', $ids)->whereEqual('is_deletable', DatabaseEnum::DB_YES);
         return $this->deleteWhere($where->build(), $permanent);
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $columns
+     * @param int $limit
+     * @param int $page
+     * @param array $order
+     * @return LengthAwarePaginator|Collection
+     */
+    protected function _paginateWithOrder(
+        Builder $query,
+        array   $columns = ['*'],
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = []
+    )
+    {
+        if (count($order)) {
+            foreach ($order as $column => $sort) {
+                $query->orderBy($column, $sort);
+            }
+        }
+
+        if ($limit > 0) {
+            return $query->paginate(perPage: $limit, columns: $columns, page: $page);
+        } else {
+            return $query->get($columns);
+        }
     }
 }

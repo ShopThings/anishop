@@ -2,10 +2,12 @@
 
 namespace App\Enums\Gates;
 
-use Illuminate\Support\Str;
+use App\Traits\EnumTranslateTrait;
 
 enum RolesEnum: string
 {
+    use EnumTranslateTrait;
+
     case DEVELOPER = 'developer';
     case SUPER_ADMIN = 'super_admin';
     case ADMIN = 'admin';
@@ -18,7 +20,7 @@ enum RolesEnum: string
     /**
      * @return string[]
      */
-    private static function translationArray(): array
+    protected static function translationArray(): array
     {
         return [
             self::DEVELOPER->value => 'توسعه دهنده',
@@ -62,38 +64,5 @@ enum RolesEnum: string
     {
         $roleValues = array_map(fn($item) => $item->value, self::getAdminRoles());
         return in_array($role, $roleValues);
-    }
-
-    /**
-     * @param array|string $roles
-     * @return array|string|null
-     */
-    public static function getTranslations(array|string $roles): array|string|null
-    {
-        $translates = self::translationArray();
-        if (is_array($roles)) {
-            $newArr = [];
-            foreach ($roles as $role) {
-                $newArr[$role] = $translates[$role] ?? $role;
-            }
-            return count($newArr) ? $newArr : null;
-        }
-        return $translates[$roles] ?? $roles;
-    }
-
-    /**
-     * @param string $str
-     * @return array
-     */
-    public static function getSimilarRoleValuesFromString(string $str): array
-    {
-        $translates = self::translationArray();
-        $arr = [];
-        foreach ($translates as $role => $translate) {
-            if (Str::contains($translate, $str, true)) {
-                $arr[] = $role;
-            }
-        }
-        return $arr;
     }
 }

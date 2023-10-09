@@ -2,8 +2,12 @@
 
 namespace App\Enums\Payments;
 
+use App\Traits\EnumTranslateTrait;
+
 enum PaymentTypesEnum: string
 {
+    use EnumTranslateTrait;
+
     case BANK_GATEWAY = 'bank_gateway';
     case IN_PLACE = 'in_place';
     case WALLET = 'wallet';
@@ -12,7 +16,7 @@ enum PaymentTypesEnum: string
     /**
      * @return string[]
      */
-    private static function translationArray(): array
+    protected static function translationArray(): array
     {
         return [
             self::BANK_GATEWAY->value => 'درگاه بانک',
@@ -20,22 +24,5 @@ enum PaymentTypesEnum: string
             self::WALLET->value => 'کیف پول',
             self::RECEIPT->value => 'فیش واریز',
         ];
-    }
-
-    /**
-     * @param array|string $types
-     * @return array|string|null
-     */
-    public static function getTranslations(array|string $types): array|string|null
-    {
-        $translates = self::translationArray();
-        if (is_array($types)) {
-            $newArr = [];
-            foreach ($types as $type) {
-                $newArr[$type] = $translates[$type] ?? $type;
-            }
-            return count($newArr) ? $newArr : null;
-        }
-        return $translates[$types] ?? $types;
     }
 }

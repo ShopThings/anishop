@@ -6,9 +6,13 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\AddressResource;
+use App\Http\Resources\FavoriteProductResource;
+use App\Http\Resources\PurchaseResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\Contracts\UserServiceInterface;
+use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,6 +22,8 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserController extends Controller
 {
+    use ControllerPaginateTrait;
+
     /**
      * @param UserServiceInterface $service
      */
@@ -38,19 +44,18 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
 
-        $limit = $request->input('limit', 10);
-        $offset = $request->input('offset', 0);
-        $page = floor($offset / $limit) + 1;
-        $order = [$request->input('column', 'id') => $request->input('sort', 'desc')];
-        $text = $request->input('text', '');
+        $params = $this->getPaginateParameters($request);
 
-        return UserResource::collection($this->service->getUsers($text, $limit, $page, $order));
+        return UserResource::collection($this->service->getUsers(
+            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
+        ));
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param StoreUserRequest $request
+     * @return JsonResponse
      * @throws AuthorizationException
      */
     public function store(StoreUserRequest $request)
@@ -78,6 +83,7 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param User $user
+     * @return UserResource
      * @throws AuthorizationException
      */
     public function show(User $user)
@@ -91,6 +97,7 @@ class UserController extends Controller
      *
      * @param UpdateUserRequest $request
      * @param User $user
+     * @return UserResource|JsonResponse
      * @throws AuthorizationException
      */
     public function update(UpdateUserRequest $request, User $user)
@@ -114,6 +121,7 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param Request $request
      * @param User $user
      * @return JsonResponse
      * @throws AuthorizationException
@@ -123,7 +131,7 @@ class UserController extends Controller
         $this->authorize('delete', $user);
 
         $permanent = $request->user()->id === $user->id;
-        $res = $this->service->delete($user->id, $permanent);
+        $res = $this->service->deleteById($user->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
@@ -149,7 +157,7 @@ class UserController extends Controller
             return $value != $request->user()?->id;
         });
 
-        $res = $this->service->batchDelete($ids);
+        $res = $this->service->batchDeleteByIds($ids);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
@@ -159,23 +167,69 @@ class UserController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function addresses()
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function addresses(Request $request, User $user)
     {
+        $this->authorize('view', $user);
 
+        $params = $this->getPaginateParameters($request);
+
+        return AddressResource::collection($this->service->getUserAddresses(
+            user: $user, searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
+        ));
     }
 
-    public function favoriteProducts()
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function favoriteProducts(Request $request, User $user)
     {
+        $this->authorize('view', $user);
 
+        $params = $this->getPaginateParameters($request);
+
+        return FavoriteProductResource::collection($this->service->getUserFavoriteProduct(
+            user: $user, searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
+        ));
     }
 
-    public function purchases()
+    /**
+     * @param Request $request
+     * @param User $user
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function purchases(Request $request, User $user)
     {
+        $this->authorize('view', $user);
 
+        $params = $this->getPaginateParameters($request);
+
+        return PurchaseResource::collection($this->service->getUserPurchases(
+            user: $user, searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
+        ));
     }
 
-    public function carts()
+    /**
+     * @param User $user
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function carts(User $user)
     {
+        $this->authorize('view', $user);
 
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getUserCarts($user),
+        ]);
     }
 }
