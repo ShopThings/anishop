@@ -41,12 +41,12 @@ if (!function_exists('get_color_from_bg')) {
     }
 }
 
-if (!function_exists('get_db_comma_regex_string')) {
+if (!function_exists('get_db_ancestry_regex_string')) {
     /**
      * @param $needle
      * @return string
      */
-    function get_db_comma_regex_string($needle): string
+    function get_db_ancestry_regex_string($needle): string
     {
         return '([^0-9]|^)' . preg_quote($needle) . '([^0-9]|$)';
     }

@@ -65,7 +65,7 @@ class StoreUserRequest extends FormRequest
                     }, $value);
                     $uniqueArr = array_unique($arr);
 
-                    if(!count($uniqueArr)) {
+                    if (!count($uniqueArr)) {
                         $fail('انتخاب حداقل یک نقش الزامی می‌باشد.');
                     } elseif (count($uniqueArr) != count($arr)) {
                         $fail('نقش باید دارای موارد یکتا باشد.');
@@ -95,6 +95,13 @@ class StoreUserRequest extends FormRequest
                 'nullable',
                 'max:30'
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'shaba_number' => 'شماره شبا',
         ];
     }
 }

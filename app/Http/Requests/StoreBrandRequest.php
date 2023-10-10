@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\FileManager;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBrandRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreBrandRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,36 @@ class StoreBrandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+                'max:250'
+            ],
+            'latin_name' => [
+                'required',
+                'max:250',
+            ],
+            'image_id' => [
+                'required',
+                'exists:' . FileManager::class . ',id',
+            ],
+            'keywords' => [
+                'array',
+            ],
+            'show_in_slider' => [
+                'required',
+                'boolean',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'show_in_slider' => 'وضعیت نمایش در اسلایدر',
         ];
     }
 }

@@ -35,7 +35,7 @@ class UpdatePaymentMethodRequest extends FormRequest
                 'sometimes',
                 'max:250',
             ],
-            'image_id' => [
+            'image' => [
                 'sometimes',
                 'exists:' . FileManager::class . ',id',
             ],
@@ -56,6 +56,15 @@ class UpdatePaymentMethodRequest extends FormRequest
                 'sometimes',
                 'boolean',
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'type' => 'نوع روش پرداخت',
+            'bank_gateway_type' => 'نوع درگاه',
+            'options' => 'اطلاعات تکمیلی درگاه',
         ];
     }
 }

@@ -100,4 +100,13 @@ class UpdateUserRequest extends FormRequest
             ],
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'shaba_number' => 'شماره شبا',
+            'is_banned' => 'وضعیت عدم فعالیت',
+            'ban_desc' => 'علت عدم فعالیت',
+        ];
+    }
 }

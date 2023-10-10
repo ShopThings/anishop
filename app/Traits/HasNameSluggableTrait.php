@@ -10,13 +10,28 @@ trait HasNameSluggableTrait
     use HasSlug;
 
     /**
+     * @return string
+     */
+    protected function getSluggableField(): string
+    {
+        return $this?->sluggableField ?? 'name';
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSlugField(): string
+    {
+        return $this?->slugField ?? 'slug';
+    }
+
+    /**
      * Get the options for generating the slug.
      */
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
-            ->generateSlugsFrom('name')
-            ->saveSlugsTo('slug')
-            ->allowDuplicateSlugs();
+            ->generateSlugsFrom($this->getSluggableField())
+            ->saveSlugsTo($this->getSlugField());
     }
 }

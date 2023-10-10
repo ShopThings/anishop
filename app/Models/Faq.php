@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\StringToArray;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -20,6 +21,7 @@ class Faq extends Model
     ];
 
     protected $casts = [
+        'keywords' => StringToArray::class,
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
     ];

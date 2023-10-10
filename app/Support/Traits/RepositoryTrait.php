@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Support\Traits;
+
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+
+trait RepositoryTrait
+{
+    /**
+     * @param Builder $query
+     * @param array $columns
+     * @param int $limit
+     * @param int $page
+     * @param array $order
+     * @return LengthAwarePaginator|Collection
+     */
+    protected function _paginateWithOrder(
+        Builder $query,
+        array   $columns = ['*'],
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = []
+    )
+    {
+        if (count($order)) {
+            foreach ($order as $column => $sort) {
+                $query->orderBy($column, $sort);
+            }
+        }
+
+        if ($limit > 0) {
+            return $query->paginate(perPage: $limit, columns: $columns, page: $page);
+        } else {
+            return $query->get($columns);
+        }
+    }
+}

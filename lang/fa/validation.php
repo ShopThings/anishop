@@ -194,6 +194,7 @@ return [
 
     'attributes' => [
         "name" => "نام",
+        "latin_name" => "نام لاتین",
         "username" => "نام کاربری",
         "email" => "آدرس ایمیل",
         "first_name" => "نام",
@@ -201,6 +202,8 @@ return [
         "family" => "نام خانوادگی",
         "password" => "کلمه عبور",
         "password_confirmation" => "تاییدیه کلمه عبور",
+        "keywords" => "کلمات کلیدی",
+        "province" => "استان",
         "city" => "شهر",
         "country" => "کشور",
         "address" => "نشانی",
@@ -235,6 +238,12 @@ return [
         "size" => "اندازه",
         "role" => "نقش",
         "roles" => "نقش",
+        "parent" => "والد",
+        "image" => "تصویر",
+        "level" => "سطح",
+        "priority" => "اولویت",
+        "is_published" => "وضعیت نمایش",
+        "is_deletable" => "وضعیت قابل حذف بودن",
     ],
 
 ];

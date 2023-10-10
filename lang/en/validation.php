@@ -193,6 +193,7 @@ return [
 
     'attributes' => [
         "name" => "Name",
+        "latin_name" => "Latin Name",
         "username" => "User Name",
         "email" => "Email Address",
         "first_name" => "First Name",
@@ -200,6 +201,8 @@ return [
         "family" => "Last Name",
         "password" => "Password",
         "password_confirmation" => "Password Confirmation",
+        "keywords" => "Keywords",
+        "province" => "Province",
         "city" => "City",
         "country" => "Country",
         "address" => "Address",
@@ -229,6 +232,12 @@ return [
         "size" => "Size",
         "role" => "Role",
         "roles" => "Roles",
+        "parent" => "Parent",
+        "image" => "Image",
+        "level" => "Level",
+        "priority" => "Priority",
+        "is_published" => "Publish Status",
+        "is_deletable" => "Deletable Status",
     ],
 
 ];

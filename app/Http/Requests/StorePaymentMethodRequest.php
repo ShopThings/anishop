@@ -38,7 +38,7 @@ class StorePaymentMethodRequest extends FormRequest
                 'required',
                 'max:250',
             ],
-            'image_id' => [
+            'image' => [
                 'required',
                 'exists:' . FileManager::class . ',id',
             ],
@@ -58,6 +58,15 @@ class StorePaymentMethodRequest extends FormRequest
                 'required',
                 'boolean',
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'type' => 'نوع روش پرداخت',
+            'bank_gateway_type' => 'نوع درگاه',
+            'options' => 'اطلاعات تکمیلی درگاه',
         ];
     }
 }

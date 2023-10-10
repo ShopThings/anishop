@@ -8,6 +8,7 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Support\Repository;
+use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,6 +16,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository extends Repository implements UserRepositoryInterface
 {
+    use RepositoryTrait;
+
     public function __construct(User $model)
     {
         parent::__construct($model);
@@ -173,34 +176,5 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $where = new WhereBuilder('users');
         $where->whereIn('id', $ids)->whereEqual('is_deletable', DatabaseEnum::DB_YES);
         return $this->deleteWhere($where->build(), $permanent);
-    }
-
-    /**
-     * @param Builder $query
-     * @param array $columns
-     * @param int $limit
-     * @param int $page
-     * @param array $order
-     * @return LengthAwarePaginator|Collection
-     */
-    protected function _paginateWithOrder(
-        Builder $query,
-        array   $columns = ['*'],
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
-    )
-    {
-        if (count($order)) {
-            foreach ($order as $column => $sort) {
-                $query->orderBy($column, $sort);
-            }
-        }
-
-        if ($limit > 0) {
-            return $query->paginate(perPage: $limit, columns: $columns, page: $page);
-        } else {
-            return $query->get($columns);
-        }
     }
 }

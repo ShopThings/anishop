@@ -18,7 +18,10 @@ class StoreFileRequest extends FormRequest
     public function authorize(): bool
     {
         return Auth::user()
-            ?->can(PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::USER));
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::USER
+            ));
     }
 
     /**
@@ -57,6 +60,15 @@ class StoreFileRequest extends FormRequest
                     }
                 },
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'file' => 'فایل',
+            'disk' => 'محل ذخیره‌سازی',
+            'path' => 'مسیر فایل/پوشه',
         ];
     }
 }
