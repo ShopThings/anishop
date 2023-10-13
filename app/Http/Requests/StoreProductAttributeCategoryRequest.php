@@ -2,7 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\Category;
+use App\Models\ProductAttribute;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreProductAttributeCategoryRequest extends FormRequest
 {
@@ -11,7 +17,11 @@ class StoreProductAttributeCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::PRODUCT_ATTRIBUTE
+            ));
     }
 
     /**
@@ -22,7 +32,21 @@ class StoreProductAttributeCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product_attribute' => [
+                'required',
+                'exists:' . ProductAttribute::class . ',id',
+            ],
+            'category' => [
+                'required',
+                'exists:' . Category::class . ',id',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'product_attribute' => 'ویژگی محصول',
         ];
     }
 }

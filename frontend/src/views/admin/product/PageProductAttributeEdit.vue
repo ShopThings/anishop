@@ -108,7 +108,7 @@ onMounted(() => {
     //     },
     // })
     //
-    // useRequest(apiReplaceParams(apiRoutes.admin.productAttributes.showProductMain, {product: idParam.value}), null, {
+    // useRequest(apiReplaceParams(apiRoutes.admin.productAttributes.show, {product: idParam.value}), null, {
     //     success: (response) => {
     //         productAttributes.value = response.data
     //

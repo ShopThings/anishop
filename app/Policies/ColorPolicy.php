@@ -97,11 +97,26 @@ class ColorPolicy
      */
     public function forceDelete(User $user, Color|Collection $model): bool
     {
-        return $user->hasPermissionTo(
+        if ($user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::PERMANENT_DELETE,
                 PermissionPlacesEnum::COLOR)
-        );
+        )) {
+            return true;
+        } else {
+            if ($model instanceof Color) {
+                if ($user->id === $model->creator()?->id)
+                    return true;
+            } else {
+                $tmp = $model->filter(function ($item) use ($user) {
+                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
+                });
+
+                if (!$tmp->count())
+                    return true;
+            }
+            return false;
+        }
     }
 
     /**

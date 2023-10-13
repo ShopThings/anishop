@@ -2,7 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\Category;
+use App\Models\FileManager;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreCategoryImageRequest extends FormRequest
 {
@@ -11,7 +17,11 @@ class StoreCategoryImageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::CATEGORY_IMAGE
+            ));
     }
 
     /**
@@ -22,7 +32,14 @@ class StoreCategoryImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'category' => [
+                'sometimes',
+                'exists:' . Category::class . ',id',
+            ],
+            'image' => [
+                'sometimes',
+                'exists:' . FileManager::class . ',id',
+            ],
         ];
     }
 }

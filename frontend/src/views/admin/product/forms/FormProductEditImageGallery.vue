@@ -155,7 +155,7 @@ const onSubmit = handleSubmit((values, actions) => {
 })
 
 onMounted(() => {
-    // useRequest(apiReplaceParams(apiRoutes.admin.products.showMain, {product: idParam.value}), null, {
+    // useRequest(apiReplaceParams(apiRoutes.admin.products.show, {product: idParam.value}), null, {
     //     success: (response) => {
     //         images.value = response.data.images
     //

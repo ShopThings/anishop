@@ -10,6 +10,7 @@ use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use App\Models\User;
 use App\Services\Contracts\BrandServiceInterface;
+use App\Traits\ControllerBatchDestroyTrait;
 use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,8 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BrandController extends Controller
 {
-    use ControllerPaginateTrait;
+    use ControllerPaginateTrait,
+        ControllerBatchDestroyTrait;
 
     /**
      * @param BrandServiceInterface $service
@@ -132,27 +134,6 @@ class BrandController extends Controller
 
         $permanent = $request->user()->id === $brand->creator()?->id;
         $res = $this->service->deleteById($brand->id, $permanent);
-        if ($res)
-            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws AuthorizationException
-     */
-    public function batchDestroy(Request $request)
-    {
-        $this->authorize('batchDelete', User::class);
-
-        $ids = $request->input('ids', []);
-
-        $res = $this->service->batchDeleteByIds($ids);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

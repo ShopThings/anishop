@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\FileManager;
+use App\Models\Unit;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -11,18 +15,63 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return [
+            'brand' => [
+                'sometimes',
+                'exists:' . Brand::class . ',id',
+            ],
+            'category' => [
+                'sometimes',
+                'exists:' . Category::class . ',id',
+            ],
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'image' => [
+                'sometimes',
+                'exists:' . FileManager::class . ',id',
+            ],
+            'properties' => [
+                'sometimes',
+                'array',
+            ],
+            'quick_properties' => [
+                'sometimes',
+                'array',
+            ],
+            'unit' => [
+                'sometimes',
+                'exists:' . Unit::class . ',id',
+            ],
+            'description' => [
+                'sometimes',
+            ],
+            'keywords' => [
+                'sometimes',
+                'array',
+            ],
+            'is_available' => [
+                'sometimes',
+                'boolean',
+            ],
+            'is_commenting_allowed' => [
+                'sometimes',
+                'boolean',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
-    public function rules(): array
+    public function attributes()
     {
         return [
-            //
+            'quick_properties' => 'ویژگی‌های سریع',
+            'unit' => 'واحد محصول',
+            'is_commenting_allowed' => 'اجازه ارسال نظر',
         ];
     }
 }

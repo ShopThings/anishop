@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
@@ -11,6 +12,11 @@ use Illuminate\Database\Eloquent\Collection;
 class CategoryRepository extends Repository implements CategoryRepositoryInterface
 {
     use RepositoryTrait;
+
+    public function __construct(Category $model)
+    {
+        parent::__construct($model);
+    }
 
     /**
      * @inheritDoc

@@ -7,7 +7,7 @@ use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasNameSluggableTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasParentRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,7 +24,7 @@ class BlogCategory extends Model
         HasUpdatedRelationTrait,
         HasDeletedRelationTrait,
         HasParentRelationTrait,
-        HasNameSluggableTrait;
+        HasSluggableTrait;
 
     protected $table = 'blog_categories';
 
@@ -35,6 +35,8 @@ class BlogCategory extends Model
     protected $casts = [
         'keywords' => StringToArray::class,
     ];
+
+    protected $sluggableField = 'escaped_name';
 
     /**
      * @return HasMany

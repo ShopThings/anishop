@@ -44,4 +44,22 @@ abstract class Service implements ServiceInterface
         if (!count($ids)) return true;
         return (bool)$this->repository->deleteBatch($ids, $permanent);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function create(array $attributes): ?Model
+    {
+        // empty implementation
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateById($id, array $attributes): ?Model
+    {
+        // empty implementation
+        return null;
+    }
 }

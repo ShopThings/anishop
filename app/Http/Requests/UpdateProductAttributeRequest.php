@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Products\ProductAttributeTypesEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateProductAttributeRequest extends FormRequest
 {
@@ -22,7 +24,21 @@ class UpdateProductAttributeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'type' => [
+                'sometimes',
+                new Enum(ProductAttributeTypesEnum::class),
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'type' => 'نوع ویژگی',
         ];
     }
 }

@@ -7,6 +7,7 @@ use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasTitleSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +20,7 @@ class Product extends Model
         HasDeletedRelationTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasTitleSluggableTrait;
+        HasSluggableTrait;
 
     protected $guarded = [
         'id',
@@ -32,6 +33,8 @@ class Product extends Model
         'is_commenting_allowed' => 'boolean',
         'is_published' => 'boolean',
     ];
+
+    protected $sluggableField = 'escaped_title';
 
     /**
      * @return BelongsTo
@@ -102,7 +105,7 @@ class Product extends Model
      */
     public function productAttrValues(): HasMany
     {
-        return $this->hasMany(ProductAttributeProduct::class, 'product_attribute_value_id');
+        return $this->hasMany(ProductAttributeProduct::class, 'product_id');
     }
 
     /**

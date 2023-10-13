@@ -57,6 +57,14 @@ enum RolesEnum: string
     }
 
     /**
+     * @return RolesEnum[]
+     */
+    public static function getPrivilegedRoles(): array
+    {
+        return [self::DEVELOPER, self::SUPER_ADMIN];
+    }
+
+    /**
      * @param string $role
      * @return bool
      */

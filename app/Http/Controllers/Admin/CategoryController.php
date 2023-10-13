@@ -8,6 +8,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\User;
 use App\Services\Contracts\CategoryServiceInterface;
+use App\Traits\ControllerBatchDestroyTrait;
 use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -17,8 +18,12 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CategoryController extends Controller
 {
-    use ControllerPaginateTrait;
+    use ControllerPaginateTrait,
+        ControllerBatchDestroyTrait;
 
+    /**
+     * @param CategoryServiceInterface $service
+     */
     public function __construct(
         protected CategoryServiceInterface $service
     )
@@ -124,27 +129,6 @@ class CategoryController extends Controller
 
         $permanent = $request->user()->id === $category->creator()?->id;
         $res = $this->service->deleteById($category->id, $permanent);
-        if ($res)
-            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws AuthorizationException
-     */
-    public function batchDestroy(Request $request)
-    {
-        $this->authorize('batchDelete', User::class);
-
-        $ids = $request->input('ids', []);
-
-        $res = $this->service->batchDeleteByIds($ids);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

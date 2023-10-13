@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->unsignedInteger('weight')
                 ->comment('it is in grams');
             $table->unsignedBigInteger('price');
-            $table->unsignedBigInteger('discounted_price');
+            $table->unsignedBigInteger('discounted_price')->nullable();
             $table->timestamp('discounted_until')->nullable();
             $table->unsignedDecimal('tax_rate')->nullable();
             $table->unsignedInteger('stock_count');

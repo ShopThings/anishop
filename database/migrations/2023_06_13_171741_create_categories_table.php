@@ -17,8 +17,6 @@ return new class extends Migration {
             $table->string('name');
             $table->string('escaped_name');
             $table->string('slug');
-            $table->foreignId('image_id')->nullable()
-                ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
             $table->text('ancestry')->nullable();
             $table->unsignedInteger('level')->default(0);
             $table->unsignedInteger('priority')->default(0);

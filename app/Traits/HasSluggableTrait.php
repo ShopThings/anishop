@@ -5,7 +5,7 @@ namespace App\Traits;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-trait HasNameSluggableTrait
+trait HasSluggableTrait
 {
     use HasSlug;
 

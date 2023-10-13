@@ -2,7 +2,11 @@
 
 namespace App\Policies;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\CategoryImage;
 use App\Models\User;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Database\Eloquent\Collection;
 
 class CategoryImagePolicy
@@ -12,15 +16,25 @@ class CategoryImagePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::CATEGORY_IMAGE)
+        );
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, CategoryImage $model): bool
     {
-        return false;
+        if ($user->id === $model->creator()?->id) return true;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::CATEGORY_IMAGE)
+        );
     }
 
     /**
@@ -28,46 +42,63 @@ class CategoryImagePolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::CATEGORY_IMAGE)
+        );
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, CategoryImage $model): bool
     {
-        return false;
+        if ($user->id === $model->creator()?->id) return true;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::CATEGORY_IMAGE)
+        );
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, CategoryImage $model): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, User $model): bool
-    {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::DELETE,
+                PermissionPlacesEnum::CATEGORY_IMAGE)
+        );
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, User|Collection $model): bool
+    public function forceDelete(User $user, CategoryImage|Collection $model): bool
     {
-        return false;
-    }
+        if ($user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::PERMANENT_DELETE,
+                PermissionPlacesEnum::CATEGORY_IMAGE)
+        )) {
+            return true;
+        } else {
+            if ($model instanceof CategoryImage) {
+                if ($user->id === $model->creator()?->id)
+                    return true;
+            } else {
+                $tmp = $model->filter(function ($item) use ($user) {
+                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
+                });
 
-    /**
-     * Determine whether the user can batch delete.
-     */
-    public function batchDelete(User $user): bool
-    {
-        return false;
+                if (!$tmp->count())
+                    return true;
+            }
+            return false;
+        }
     }
 }

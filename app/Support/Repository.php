@@ -124,7 +124,7 @@ abstract class Repository implements RepositoryInterface
         array $columns = ['*'],
         bool $withTrashed = false,
         bool $onlyTrashed = false
-    ): Collection|Model
+    ): Collection|Model|null
     {
         $query = $this->model->newQuery();
 
@@ -151,10 +151,12 @@ abstract class Repository implements RepositoryInterface
     {
         $query = $this->model->newQuery();
 
-        if ($onlyTrashed) {
-            $query->onlyTrashed();
-        } elseif ($withTrashed) {
-            $query->withTrashed();
+        if ($this->useSoftDeletes) {
+            if ($onlyTrashed) {
+                $query->onlyTrashed();
+            } elseif ($withTrashed) {
+                $query->withTrashed();
+            }
         }
 
         return $query->findOrFail($id, $columns);

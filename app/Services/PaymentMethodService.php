@@ -17,7 +17,9 @@ use function App\Support\Helper\to_boolean;
 
 class PaymentMethodService extends Service implements PaymentMethodServiceInterface
 {
-    public function __construct(protected PaymentMethodRepositoryInterface $repository)
+    public function __construct(
+        protected PaymentMethodRepositoryInterface $repository
+    )
     {
     }
 
@@ -56,7 +58,7 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
         $attrs = [
             'code' => CodeGeneratorHelper::PaymentMethodCode(),
             'title' => $attributes['title'],
-            'image_id' => $attributes['image_id'],
+            'image_id' => $attributes['image'],
             'type' => $attributes['type'],
             'bank_gateway_type' => $attributes['bank_gateway_type'],
             'options' => $attributes['options'],
@@ -79,8 +81,8 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
         if (isset($attributes['title'])) {
             $updateAttributes['title'] = $attributes['title'];
         }
-        if (isset($attributes['image_id'])) {
-            $updateAttributes['image_id'] = $attributes['image_id'];
+        if (isset($attributes['image'])) {
+            $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['type'])) {
             $updateAttributes['type'] = $attributes['type'];

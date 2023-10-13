@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
+use App\Models\ProductAttribute;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductAttributeCategoryRequest extends FormRequest
@@ -22,7 +24,21 @@ class UpdateProductAttributeCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product_attribute' => [
+                'sometimes',
+                'exists:' . ProductAttribute::class . ',id',
+            ],
+            'category' => [
+                'sometimes',
+                'exists:' . Category::class . ',id',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'product_attribute' => 'ویژگی محصول',
         ];
     }
 }

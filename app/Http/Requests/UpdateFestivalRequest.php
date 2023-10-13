@@ -22,7 +22,32 @@ class UpdateFestivalRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'start_at' => [
+                'sometimes',
+                'date-format:YYYY-MM-DD HH:mm',
+                'before:end_at',
+            ],
+            'end_at' => [
+                'sometimes',
+                'date-format:YYYY-MM-DD HH:mm',
+                'after:start_at',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'start_at' => 'تاریخ شروع',
+            'end_at' => 'تاریخ پایان',
         ];
     }
 }

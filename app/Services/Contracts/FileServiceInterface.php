@@ -6,7 +6,7 @@ use App\Contracts\ServiceInterface;
 use App\Models\FileManager;
 use Illuminate\Database\Eloquent\Model;
 
-interface FileServiceInterface extends ServiceInterface
+interface FileServiceInterface
 {
     /**
      * @param string $path

@@ -52,7 +52,7 @@ class BrandService extends Service implements BrandServiceInterface
             'name' => $attributes['name'],
             'latin_name' => $attributes['latin_name'],
             'escaped_name' => NumberConverter::toEnglish($attributes['name']),
-            'image_id' => $attributes['image_id'],
+            'image_id' => $attributes['image'],
             'keywords' => $attributes['keywords'],
             'show_in_slider' => to_boolean($attributes['show_in_slider']),
             'is_published' => to_boolean($attributes['is_published']),
@@ -77,8 +77,8 @@ class BrandService extends Service implements BrandServiceInterface
         if (isset($attributes['escaped_name'])) {
             $updateAttributes['escaped_name'] = $attributes['escaped_name'];
         }
-        if (isset($attributes['image_id'])) {
-            $updateAttributes['image_id'] = $attributes['image_id'];
+        if (isset($attributes['image'])) {
+            $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['keywords'])) {
             $updateAttributes['keywords'] = $attributes['keywords'];

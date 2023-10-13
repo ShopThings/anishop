@@ -26,4 +26,17 @@ interface ServiceInterface extends VersionInterface
      * @return bool
      */
     public function batchDeleteByIds(array $ids, bool $permanent = false): bool;
+
+    /**
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function create(array $attributes): ?Model;
+
+    /**
+     * @param $id
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function updateById($id, array $attributes): ?Model;
 }

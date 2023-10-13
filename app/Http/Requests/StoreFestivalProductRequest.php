@@ -4,11 +4,13 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
+use App\Models\Category;
+use App\Models\Product;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreUnitRequest extends FormRequest
+class StoreFestivalProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +20,7 @@ class StoreUnitRequest extends FormRequest
         return Auth::user()
             ?->can(PermissionHelper::permission(
                 PermissionsEnum::CREATE,
-                PermissionPlacesEnum::UNIT
+                PermissionPlacesEnum::FESTIVAL
             ));
     }
 
@@ -30,14 +32,26 @@ class StoreUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
-                'required',
-                'max:250',
+            'category' => [
+                'sometimes',
+                'exists:' . Category::class . ',id',
             ],
-            'is_published' => [
-                'required',
-                'boolean',
+            'product' => [
+                'sometimes',
+                'exists:' . Product::class . ',id',
             ],
+            'discount_percentage' => [
+                'required',
+                'min:1',
+                'max:100',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'discount_percentage' => 'درصد تخفیف',
         ];
     }
 }

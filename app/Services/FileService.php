@@ -11,13 +11,16 @@ use App\Repositories\FileRepository;
 use App\Services\Contracts\FileServiceInterface;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
+use App\Traits\VersionTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FileService extends Service implements FileServiceInterface
+class FileService implements FileServiceInterface
 {
+    use VersionTrait;
+
     public function __construct(protected FileRepository $repository)
     {
     }

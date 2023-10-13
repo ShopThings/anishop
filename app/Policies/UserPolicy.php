@@ -109,11 +109,26 @@ class UserPolicy
      */
     public function forceDelete(User $user, User|Collection $model): bool
     {
-        return $user->hasPermissionTo(
+        if ($user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::PERMANENT_DELETE,
                 PermissionPlacesEnum::USER)
-        );
+        )) {
+            return true;
+        } else {
+            if ($model instanceof User) {
+                if ($user->id === $model->creator()?->id)
+                    return true;
+            } else {
+                $tmp = $model->filter(function ($item) use ($user) {
+                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
+                });
+
+                if (!$tmp->count())
+                    return true;
+            }
+            return false;
+        }
     }
 
     /**

@@ -44,11 +44,10 @@ class CategoryService extends Service implements CategoryServiceInterface
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'parent_id' => $attributes['parent_id'],
+            'parent_id' => $attributes['parent'] ?? null,
             'name' => $attributes['name'],
             'escaped_name' => NumberConverter::toEnglish($attributes['name']),
-            'image_id' => $attributes['image_id'],
-            'ancestry' => $this->_getAncestry($attributes['parent_id']),
+            'ancestry' => $this->_getAncestry($attributes['parent'] ?? null),
             'level' => $attributes['level'],
             'priority' => $attributes['priority'],
             'show_in_menu' => to_boolean($attributes['show_in_menu']),
@@ -67,16 +66,13 @@ class CategoryService extends Service implements CategoryServiceInterface
     {
         $updateAttributes = [];
 
-        if (isset($attributes['parent_id'])) {
-            $updateAttributes['parent_id'] = $attributes['parent_id'];
-            $updateAttributes['ancestry'] = $this->_getAncestry($attributes['parent_id']);
+        if (isset($attributes['parent'])) {
+            $updateAttributes['parent_id'] = $attributes['parent'];
+            $updateAttributes['ancestry'] = $this->_getAncestry($attributes['parent']);
         }
         if (isset($attributes['name'])) {
             $updateAttributes['name'] = $attributes['name'];
             $updateAttributes['escaped_name'] = NumberConverter::toEnglish($attributes['name']);
-        }
-        if (isset($attributes['image_id'])) {
-            $updateAttributes['image_id'] = $attributes['image_id'];
         }
         if (isset($attributes['level'])) {
             $updateAttributes['level'] = $attributes['level'];

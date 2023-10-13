@@ -5,7 +5,6 @@ namespace App\Services\Contracts;
 use App\Contracts\ServiceInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 interface ColorServiceInterface extends ServiceInterface
 {
@@ -22,17 +21,4 @@ interface ColorServiceInterface extends ServiceInterface
         int     $page = 1,
         array   $order = ['column' => 'id', 'sort' => 'desc']
     ): Collection|LengthAwarePaginator;
-
-    /**
-     * @param array $attributes
-     * @return Model|null
-     */
-    public function create(array $attributes): ?Model;
-
-    /**
-     * @param $id
-     * @param array $attributes
-     * @return Model|null
-     */
-    public function updateById($id, array $attributes): ?Model;
 }

@@ -32,10 +32,6 @@ class UpdateCategoryRequest extends FormRequest
                 'sometimes',
                 'max:250',
             ],
-            'image' => [
-                'sometimes',
-                'exists:' . FileManager::class . ',id',
-            ],
             'level' => [
                 'sometimes',
                 'numeric',

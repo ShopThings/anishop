@@ -40,10 +40,6 @@ class StoreCategoryRequest extends FormRequest
                 'required',
                 'max:250',
             ],
-            'image' => [
-                'required',
-                'exists:' . FileManager::class . ',id',
-            ],
             'level' => [
                 'required',
                 'numeric',

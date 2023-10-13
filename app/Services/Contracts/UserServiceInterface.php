@@ -7,7 +7,6 @@ use App\Models\User;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 interface UserServiceInterface extends ServiceInterface
 {
@@ -78,17 +77,4 @@ interface UserServiceInterface extends ServiceInterface
      * @return Collection
      */
     public function getUserCarts(User $user);
-
-    /**
-     * @param array $attributes
-     * @return Model|null
-     */
-    public function create(array $attributes): ?Model;
-
-    /**
-     * @param $id
-     * @param array $attributes
-     * @return Model|null
-     */
-    public function updateById($id, array $attributes): ?Model;
 }

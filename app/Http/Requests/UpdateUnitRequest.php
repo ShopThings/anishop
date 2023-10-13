@@ -22,7 +22,14 @@ class UpdateUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'sometimes',
+                'max:250',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
         ];
     }
 }

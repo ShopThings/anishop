@@ -2,7 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\FileManager;
+use App\Models\Unit;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreProductRequest extends FormRequest
 {
@@ -11,7 +19,11 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::PRODUCT
+            ));
     }
 
     /**
@@ -22,7 +34,55 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'brand' => [
+                'required',
+                'exists:' . Brand::class . ',id',
+            ],
+            'category' => [
+                'required',
+                'exists:' . Category::class . ',id',
+            ],
+            'title' => [
+                'required',
+                'max:250',
+            ],
+            'image' => [
+                'required',
+                'exists:' . FileManager::class . ',id',
+            ],
+            'quick_properties' => [
+                'required',
+                'array',
+            ],
+            'unit' => [
+                'required',
+                'exists:' . Unit::class . ',id',
+            ],
+            'keywords' => [
+                'required',
+                'array',
+            ],
+            'is_available' => [
+                'required',
+                'boolean',
+            ],
+            'is_commenting_allowed' => [
+                'required',
+                'boolean',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'quick_properties' => 'ویژگی‌های سریع',
+            'unit' => 'واحد محصول',
+            'is_commenting_allowed' => 'اجازه ارسال نظر',
         ];
     }
 }

@@ -6,7 +6,7 @@ use App\Enums\Times\TimeFormatsEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class ProductSingleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -32,6 +32,12 @@ class ProductResource extends JsonResource
             'quick_properties' => $this->quick_properties,
             'unit_name' => $this->unit_name,
             'keywords' => $this->keywords,
+            'items' => $this->whenLoaded('items'),
+            'festivals' => $this->whenLoaded('festivals'),
+            'related_products' => $this->whenLoaded('relatedProducts'),
+            'related_product_items' => $this->whenLoaded('relatedProductItems'),
+            'product_attr_values' => $this->whenLoaded('productAttrValues'),
+            'favorite_products' => $this->whenLoaded('favoriteProducts'),
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'is_published' => $this->is_published,

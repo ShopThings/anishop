@@ -7,7 +7,7 @@ use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasNameSluggableTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,7 +18,7 @@ class Brand extends Model
         HasDeletedRelationTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasNameSluggableTrait;
+        HasSluggableTrait;
 
     protected $guarded = [
         'id',

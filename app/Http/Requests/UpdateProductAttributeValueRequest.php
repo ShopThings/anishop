@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\ProductAttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductAttributeValueRequest extends FormRequest
@@ -22,7 +23,26 @@ class UpdateProductAttributeValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product_attribute' => [
+                'sometimes',
+                'exists:' . ProductAttributeValue::class . ',id',
+            ],
+            'attribute_value' => [
+                'sometimes',
+                'max:250',
+            ],
+            'priority' => [
+                'sometimes',
+                'numeric',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'product_attribute' => 'ویژگی محصول',
+            'attribute_value' => 'مثدار ویژگی',
         ];
     }
 }

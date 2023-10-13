@@ -10,6 +10,7 @@ use App\Http\Resources\PaymentMethodResource;
 use App\Models\PaymentMethod;
 use App\Models\User;
 use App\Services\Contracts\PaymentMethodServiceInterface;
+use App\Traits\ControllerBatchDestroyTrait;
 use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -19,7 +20,8 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class PaymentMethodController extends Controller
 {
-    use ControllerPaginateTrait;
+    use ControllerPaginateTrait,
+        ControllerBatchDestroyTrait;
 
     /**
      * @param PaymentMethodServiceInterface $service
@@ -130,27 +132,6 @@ class PaymentMethodController extends Controller
 
         $permanent = $request->user()->id === $paymentMethod->creator()?->id;
         $res = $this->service->deleteById($paymentMethod->id, $permanent);
-        if ($res)
-            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws AuthorizationException
-     */
-    public function batchDestroy(Request $request)
-    {
-        $this->authorize('batchDelete', User::class);
-
-        $ids = $request->input('ids', []);
-
-        $res = $this->service->batchDeleteByIds($ids);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

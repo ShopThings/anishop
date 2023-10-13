@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
+use App\Models\FileManager;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCategoryImageRequest extends FormRequest
@@ -22,7 +24,14 @@ class UpdateCategoryImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'category' => [
+                'required',
+                'exists:' . Category::class . ',id',
+            ],
+            'image' => [
+                'required',
+                'exists:' . FileManager::class . ',id',
+            ],
         ];
     }
 }

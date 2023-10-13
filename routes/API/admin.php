@@ -142,10 +142,10 @@ Route::prefix('admin')
                  */
                 Route::apiResource('products', ProductController::class)
                     ->whereNumber('product');
+                Route::post('/products/{product}/modify', [ProductController::class, 'modifyProducts'])
+                    ->whereNumber('product')->name('products.modify-products');
                 Route::delete('products/batch', [ProductController::class, 'batchDestroy'])
                     ->name('products.destroy.batch');
-                Route::get('products/{product}/main-info', [ProductController::class, 'mainInfo'])
-                    ->name('products.index.main-info');
 
                 /*
                  * product attribute routes
@@ -154,8 +154,6 @@ Route::prefix('admin')
                     ->whereNumber('product_attribute');
                 Route::delete('product-attributes/batch', [ProductAttributeController::class, 'batchDestroy'])
                     ->name('product-attributes.destroy.batch');
-                Route::get('product-attributes/{product}/main-info', [ProductAttributeController::class, 'showProductMain'])
-                    ->whereNumber('product')->name('product-attributes.show.product');
 
                 /*
                  * product attribute value routes
@@ -176,8 +174,10 @@ Route::prefix('admin')
                 /*
                  * product attribute product routes
                  */
-                Route::put('product-attribute-products/{product_attribute_product}', [ProductAttributeProductController::class, 'update'])
-                    ->whereNumber('product_attribute_product')->name('product-attribute-products.update');
+                Route::get('product-attribute-products/{product}', [ProductAttributeProductController::class, 'show'])
+                    ->whereNumber('product_attribute_product')->name('product-attribute-products.show');
+                Route::post('product-attribute-products/{product}', [ProductAttributeProductController::class, 'store'])
+                    ->whereNumber('product_attribute_product')->name('product-attribute-products.store');
 
                 /*
                  * comment routes
@@ -312,13 +312,13 @@ Route::prefix('admin')
                 /*
                  * city routes
                  */
-                Route::delete('cities', [CityController::class, 'index'])
+                Route::get('cities', [CityController::class, 'index'])
                     ->name('cities.index');
 
                 /*
                  * province routes
                  */
-                Route::delete('provinces', [ProvinceController::class, 'index'])
+                Route::get('provinces', [ProvinceController::class, 'index'])
                     ->name('provinces.index');
 
                 /*

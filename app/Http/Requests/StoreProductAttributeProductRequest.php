@@ -4,11 +4,13 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
+use App\Models\Category;
+use App\Models\ProductAttributeValue;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class StoreUnitRequest extends FormRequest
+class StoreProductAttributeProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,7 +20,7 @@ class StoreUnitRequest extends FormRequest
         return Auth::user()
             ?->can(PermissionHelper::permission(
                 PermissionsEnum::CREATE,
-                PermissionPlacesEnum::UNIT
+                PermissionPlacesEnum::PRODUCT_ATTRIBUTE
             ));
     }
 
@@ -30,14 +32,22 @@ class StoreUnitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => [
+            'values' => [
                 'required',
-                'max:250',
+                'array',
             ],
-            'is_published' => [
+            'values.*.id' => [
                 'required',
-                'boolean',
+                'exists:' . ProductAttributeValue::class . ',id',
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'values' => 'مقادیر ویژگی‌ها',
+            'values.*.id' => 'شناسه مقدار ویژگی',
         ];
     }
 }

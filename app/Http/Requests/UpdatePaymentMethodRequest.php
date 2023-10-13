@@ -11,6 +11,7 @@ use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdatePaymentMethodRequest extends FormRequest
 {
@@ -41,11 +42,11 @@ class UpdatePaymentMethodRequest extends FormRequest
             ],
             'type' => [
                 'sometimes',
-                Rule::in(PaymentTypesEnum::cases()),
+                new Enum(PaymentTypesEnum::class),
             ],
             'bank_gateway_type' => [
                 'sometimes',
-                Rule::in(GatewaysEnum::cases()),
+                new Enum(GatewaysEnum::class),
             ],
             'options' => [
                 'sometimes',

@@ -8,6 +8,7 @@ use App\Repositories\BlogCategoryRepository;
 use App\Repositories\BlogCommentRepository;
 use App\Repositories\BlogRepository;
 use App\Repositories\BrandRepository;
+use App\Repositories\CartRepository;
 use App\Repositories\CategoryImageRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CityPostPriceRepository;
@@ -21,6 +22,7 @@ use App\Repositories\Contracts\BlogCategoryRepositoryInterface;
 use App\Repositories\Contracts\BlogCommentRepositoryInterface;
 use App\Repositories\Contracts\BlogRepositoryInterface;
 use App\Repositories\Contracts\BrandRepositoryInterface;
+use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\Contracts\CategoryImageRepositoryInterface;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Contracts\CityPostPriceRepositoryInterface;
@@ -210,6 +212,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SliderRepositoryInterface::class, SliderRepository::class);
         $this->app->bind(MenuRepositoryInterface::class, MenuRepository::class);
         $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
+        $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
     }
 
     /**
