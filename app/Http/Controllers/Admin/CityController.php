@@ -3,16 +3,36 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CityResource;
 use App\Models\City;
+use App\Models\Province;
+use App\Models\User;
+use App\Services\Contracts\CityServiceInterface;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class CityController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @param CityServiceInterface $service
      */
-    public function index()
+    public function __construct(
+        protected CityServiceInterface $service
+    )
     {
-        //
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Province $province
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function index(Province $province)
+    {
+        $this->authorize('viewAny', User::class);
+        return CityResource::collection($this->service->getCities($province->id));
     }
 }

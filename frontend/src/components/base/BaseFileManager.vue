@@ -662,7 +662,6 @@ function pasteClicked(item) {
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     table.searchText = text
 

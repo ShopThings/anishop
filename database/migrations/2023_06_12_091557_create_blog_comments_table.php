@@ -15,7 +15,6 @@ return new class extends Migration {
         Schema::create('blog_comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('blog_id')->constrained('blogs')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('badge_id')
                 ->constrained('blog_comment_badges')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('comment_id')->nullable()
@@ -28,13 +27,12 @@ return new class extends Migration {
                 ->comment('show comment status like if it is read or not');
             $table->text('description');
             $table->unsignedBigInteger('flag_count')->default(0);
-            $table->boolean('is_published')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->timestamps();
-            $table->foreignId('created_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('created_by')
+                ->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
         });

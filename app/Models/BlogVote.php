@@ -19,6 +19,7 @@ class BlogVote extends Model
 
     protected $casts = [
         'is_voted' => 'boolean',
+        'created_at' => 'datetime',
     ];
 
     /**

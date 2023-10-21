@@ -7,7 +7,8 @@ use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class CategoryRepository extends Repository implements CategoryRepositoryInterface
 {

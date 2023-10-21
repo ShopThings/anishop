@@ -16,7 +16,7 @@ enum PaymentTypesEnum: string
     /**
      * @return string[]
      */
-    protected static function translationArray(): array
+    public static function translationArray(): array
     {
         return [
             self::BANK_GATEWAY->value => 'درگاه بانک',

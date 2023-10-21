@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Models\ProductAttributeProduct;
 use App\Repositories\Contracts\ProductAttributeProductRepositoryInterface;
 use App\Support\Repository;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductAttributeProductRepository extends Repository implements ProductAttributeProductRepositoryInterface

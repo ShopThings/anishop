@@ -5,7 +5,7 @@ namespace App\Repositories\Contracts;
 use App\Contracts\RepositoryInterface;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface UserRepositoryInterface extends RepositoryInterface
 {

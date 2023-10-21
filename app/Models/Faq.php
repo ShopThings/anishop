@@ -8,6 +8,7 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Mews\Purifier\Casts\CleanHtml;
 
 class Faq extends Model
 {
@@ -21,6 +22,7 @@ class Faq extends Model
     ];
 
     protected $casts = [
+        'answer' => CleanHtml::class,
         'keywords' => StringToArray::class,
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',

@@ -14,7 +14,7 @@ trait ControllerPaginateTrait
         $offset = $request->input('offset', 0);
         $page = floor($offset / $limit) + 1;
         $order = [$request->input('column', 'id') => $request->input('sort', 'desc')];
-        $text = $request->input('text', '');
+        $text = $request->input('text', null);
 
         return compact('limit', 'page', 'order', 'text');
     }

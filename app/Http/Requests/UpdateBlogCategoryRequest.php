@@ -22,7 +22,38 @@ class UpdateBlogCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'sometimes',
+                'max:250',
+            ],
+            'priority' => [
+                'sometimes',
+                'numeric',
+            ],
+            'keywords' => [
+                'sometimes',
+                'array',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+            'show_in_menu' => [
+                'sometimes',
+                'boolean',
+            ],
+            'show_in_side_menu' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'show_in_menu' => 'نمایش در منوی اصلی',
+            'show_in_side_menu' => 'نمایش در منوی کناری',
         ];
     }
 }

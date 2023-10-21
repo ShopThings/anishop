@@ -2,7 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\Menu;
+use App\Models\MenuItem;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreMenuItemRequest extends FormRequest
 {
@@ -11,7 +17,11 @@ class StoreMenuItemRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::MENU
+            ));
     }
 
     /**
@@ -22,7 +32,71 @@ class StoreMenuItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'menus' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'menus.*.menu' => [
+                'required',
+                'exists:' . Menu::class . ',id',
+            ],
+            'menus.*.parent' => [
+                'required',
+                'exists:' . MenuItem::class . ',id',
+            ],
+            'menus.*.title' => [
+                'required',
+                'max:250',
+            ],
+            'menus.*.link' => [
+                'required',
+                'url:http,https',
+            ],
+            'menus.*.priority' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+            'menus.*.is_published' => [
+                'required',
+                'boolean',
+            ],
+            'menus.*.children' => [
+                'sometimes',
+                'array',
+                'min:1',
+            ],
+            'menus.*.children.*.title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'menus.*.children.*.link' => [
+                'sometimes',
+                'url:http,https',
+            ],
+            'menus.*.children.*.priority' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+            ],
+            'menus.*.children.*.is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'menus' => 'منو',
+            'menus.*.menu' => 'منو',
+            'menus.*.parent' => 'منوی والد',
+            'menus.*.link' => 'لینک',
+            'menus.*.children.*.menu' => 'منو',
+            'menus.*.children.*.parent' => 'منوی والد',
+            'menus.*.children.*.link' => 'لینک',
         ];
     }
 }

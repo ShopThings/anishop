@@ -2,7 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Rules\ColorRule;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreOrderBadgeRequest extends FormRequest
 {
@@ -11,7 +16,11 @@ class StoreOrderBadgeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::ORDER_BADGE
+            ));
     }
 
     /**
@@ -22,7 +31,31 @@ class StoreOrderBadgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'required',
+                'max:250',
+            ],
+            'color_hex' => [
+                'required',
+                'max:12',
+                new ColorRule(),
+            ],
+            'should_return_order_product' => [
+                'required',
+                'boolean',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'color_hex' => 'کد رنگ',
+            'should_return_order_product' => 'وضعیت بازگشت محصولات به انبار',
         ];
     }
 }

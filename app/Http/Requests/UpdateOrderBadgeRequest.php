@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ColorRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateOrderBadgeRequest extends FormRequest
@@ -22,7 +23,36 @@ class UpdateOrderBadgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'color_hex' => [
+                'sometimes',
+                'max:12',
+                new ColorRule(),
+            ],
+            'is_starting_badge' => [
+                'sometimes',
+                'boolean',
+            ],
+            'should_return_order_product' => [
+                'sometimes',
+                'boolean',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'color_hex' => 'کد رنگ',
+            'is_starting_badge' => 'برچسب شروع',
+            'should_return_order_product' => 'وضعیت بازگشت محصولات به انبار',
         ];
     }
 }

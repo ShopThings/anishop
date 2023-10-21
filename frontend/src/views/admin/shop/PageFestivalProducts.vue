@@ -251,7 +251,6 @@ const selectionOperations = [
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     // useRequest(apiReplaceParams(apiRoutes.admin.festivals.products, {festival: idParam.value}), {
     //     params: {limit, offset, order, sort, text},

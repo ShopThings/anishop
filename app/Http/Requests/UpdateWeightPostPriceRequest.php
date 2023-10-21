@@ -22,7 +22,32 @@ class UpdateWeightPostPriceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'min_weight' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+                'lt:max_weight',
+            ],
+            'max_weight' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+                'gt:min_weight',
+            ],
+            'post_price' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'min_weight' => 'حداقل وزن مرسولات',
+            'max_weight' => 'حداکثر وزن مرسولات',
+            'post_price' => 'هزینه ارسال',
         ];
     }
 }

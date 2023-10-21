@@ -14,6 +14,6 @@ class CartRepository implements CartRepositoryInterface
      */
     public function getUserCarts(User $user): Collection
     {
-        return Cart::inatance('temp')->restore($user->username)->content();
+        return Cart::instance('temp')->restore($user->username)->content();
     }
 }

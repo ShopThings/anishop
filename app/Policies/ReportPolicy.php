@@ -2,72 +2,19 @@
 
 namespace App\Policies;
 
+use App\Enums\Gates\RolesEnum;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 
 class ReportPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function canReport(User $user): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, User|Collection $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can batch delete.
-     */
-    public function batchDelete(User $user): bool
-    {
-        return false;
+        return $user->hasAnyRole([
+            RolesEnum::DEVELOPER->value,
+            RolesEnum::SUPER_ADMIN->value,
+        ]);
     }
 }

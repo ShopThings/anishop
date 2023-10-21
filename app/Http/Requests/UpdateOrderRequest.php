@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Payments\PaymentStatusesEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateOrderRequest extends FormRequest
 {
@@ -22,7 +24,17 @@ class UpdateOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'payment_status' => [
+                'sometimes',
+                new Enum(PaymentStatusesEnum::class),
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'payment_status' => 'وضعیت پرداخت',
         ];
     }
 }

@@ -45,7 +45,7 @@ enum GatewaysEnum: string
     /**
      * @return string[]
      */
-    protected static function translationArray(): array
+    public static function translationArray(): array
     {
         return [
             self::LOCAL->value => 'لوکال',

@@ -250,7 +250,6 @@ const selectionOperations = [
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     // useRequest(apiRoutes.admin.colors.index, {
     //     params: {limit, offset, order, sort, text},

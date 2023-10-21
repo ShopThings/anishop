@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\BlogCategory;
+use App\Models\FileManager;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBlogRequest extends FormRequest
@@ -22,7 +24,40 @@ class UpdateBlogRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'category' => [
+                'sometimes',
+                'exists:' . BlogCategory::class . ',id',
+            ],
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'image' => [
+                'sometimes',
+                'exists:' . FileManager::class . ',id',
+            ],
+            'description' => [
+                'sometimes',
+            ],
+            'keywords' => [
+                'sometimes',
+                'array',
+            ],
+            'is_commenting_allowed' => [
+                'sometimes',
+                'boolean',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'is_commenting_allowed' => 'اجازه ارسال نظر',
         ];
     }
 }

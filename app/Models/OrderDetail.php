@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Support\Model\ExtendedModel as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderDetail extends Model
@@ -49,9 +50,17 @@ class OrderDetail extends Model
         return $this->belongsToMany(
             Order::class,
             'orders',
-            'order_key_id',
+            'id',
             'key_id'
         );
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'order_key_id', 'id');
     }
 
     /**

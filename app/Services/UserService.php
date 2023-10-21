@@ -9,9 +9,8 @@ use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\UserServiceInterface;
 use App\Support\Service;
-use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -37,7 +36,7 @@ class UserService extends Service implements UserServiceInterface
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getUsersSearchFilterPaginated(
-            search: trim($searchText ?? ''),
+            search: $searchText,
             limit: $limit,
             page: $page,
             order: $this->convertOrdersColumnToArray($order)
@@ -57,7 +56,7 @@ class UserService extends Service implements UserServiceInterface
     {
         return $this->repository->getUserAddressesSearchFilterPaginated(
             user: $user,
-            search: trim($searchText ?? ''),
+            search: $searchText,
             limit: $limit,
             page: $page,
             order: $this->convertOrdersColumnToArray($order)

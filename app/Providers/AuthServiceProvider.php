@@ -23,6 +23,7 @@ use App\Models\Menu;
 use App\Models\Newsletter;
 use App\Models\Order;
 use App\Models\OrderBadge;
+use App\Models\OrderDetail;
 use App\Models\PaymentMethod;
 use App\Models\Product;
 use App\Models\ProductAttribute;
@@ -54,6 +55,7 @@ use App\Policies\FilePolicy;
 use App\Policies\MenuPolicy;
 use App\Policies\NewsletterPolicy;
 use App\Policies\OrderBadgePolicy;
+use App\Policies\OrderDetailPolicy;
 use App\Policies\OrderPolicy;
 use App\Policies\PaymentMethodPolicy;
 use App\Policies\ProductAttributeCategoryPolicy;
@@ -96,10 +98,10 @@ class AuthServiceProvider extends ServiceProvider
         ProductAttributeCategory::class => ProductAttributeCategoryPolicy::class,
         ProductAttributeProduct::class => ProductAttributeProductPolicy::class,
         Comment::class => ProductCommentPolicy::class,
+        OrderDetail::class => OrderDetailPolicy::class,
         Order::class => OrderPolicy::class,
         OrderBadge::class => OrderBadgePolicy::class,
         ReturnOrderRequest::class => ReturnOrderPolicy::class,
-        Report::class => ReportPolicy::class,
         BlogCommentBadge::class => BlogBadgePolicy::class,
         BlogComment::class => BlogCommentPolicy::class,
         BlogCategory::class => BlogCategoryPolicy::class,
@@ -123,10 +125,17 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
+        $this->registerCustomPolicies();
 
         // Implicitly grant "Developer" role all permission checks using can()
         Gate::before(function (User $user, $ability) {
             return $user->hasAnyRole([RolesEnum::DEVELOPER->value]) ? true : null;
         });
+    }
+
+    protected function registerCustomPolicies(): void
+    {
+        // Ability to report admin stuffs
+        Gate::define('canReport', [ReportPolicy::class, 'canReport']);
     }
 }

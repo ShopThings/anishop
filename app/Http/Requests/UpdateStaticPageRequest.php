@@ -22,7 +22,32 @@ class UpdateStaticPageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'description' => [
+                'sometimes',
+            ],
+            'url' => [
+                'sometimes',
+                'regex:/[a-z]+[a-z\\\-][a-z]+/i',
+            ],
+            'keywords' => [
+                'sometimes',
+                'array',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'url' => 'آدرس صفحه',
         ];
     }
 }

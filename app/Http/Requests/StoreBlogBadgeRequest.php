@@ -2,7 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Rules\ColorRule;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreBlogBadgeRequest extends FormRequest
 {
@@ -11,7 +16,11 @@ class StoreBlogBadgeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::BLOG_COMMENT_BADGE
+            ));
     }
 
     /**
@@ -22,7 +31,26 @@ class StoreBlogBadgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'required',
+                'max:250',
+            ],
+            'color_hex' => [
+                'required',
+                'max:12',
+                new ColorRule(),
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'color_hex' => 'کد رنگ',
         ];
     }
 }

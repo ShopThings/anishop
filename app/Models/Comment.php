@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\StringToArray;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -22,7 +23,8 @@ class Comment extends Model
     ];
 
     protected $casts = [
-        'is_published' => 'boolean',
+        'pros' => StringToArray::class,
+        'cons' => StringToArray::class,
     ];
 
     /**
@@ -31,14 +33,6 @@ class Comment extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function author(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**

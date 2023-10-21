@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use App\Models\Category;
-use App\Models\FileManager;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCategoryRequest extends FormRequest

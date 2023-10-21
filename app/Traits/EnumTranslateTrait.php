@@ -9,10 +9,10 @@ trait EnumTranslateTrait
     /**
      * @return string[]
      */
-    abstract protected static function translationArray(): array;
+    abstract public static function translationArray(): array;
 
     /**
-     * @param array|string $statuses
+     * @param array|string $needed
      * @return array|string|null
      */
     public static function getTranslations(array|string $needed): array|string|null

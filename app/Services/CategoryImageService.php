@@ -6,9 +6,8 @@ use App\Repositories\Contracts\CategoryImageRepositoryInterface;
 use App\Services\Contracts\CategoryImageServiceInterface;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class CategoryImageService extends Service implements CategoryImageServiceInterface
 {
@@ -29,7 +28,7 @@ class CategoryImageService extends Service implements CategoryImageServiceInterf
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getCategoryImagesSearchFilterPaginated(
-            search: trim($searchText ?? ''),
+            search: $searchText,
             limit: $limit,
             page: $page,
             order: $this->convertOrdersColumnToArray($order)

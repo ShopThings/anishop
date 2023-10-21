@@ -6,7 +6,7 @@ use App\Repositories\Contracts\ProductAttributeCategoryRepositoryInterface;
 use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductAttributeCategoryService extends Service implements ProductAttributeCategoryServiceInterface
@@ -28,7 +28,7 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getAttributeCategoriesSearchFilterPaginated(
-            search: trim($searchText ?? ''),
+            search: $searchText,
             limit: $limit,
             page: $page,
             order: $this->convertOrdersColumnToArray($order)

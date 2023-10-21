@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Comments\CommentConditionsEnum;
+use App\Enums\Comments\CommentStatusesEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateProductCommentRequest extends FormRequest
 {
@@ -22,7 +25,22 @@ class UpdateProductCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'condition' => [
+                'sometimes',
+                new Enum(CommentConditionsEnum::class),
+            ],
+            'status' => [
+                'sometimes',
+                new Enum(CommentStatusesEnum::class),
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'condition' => 'وضعیت نظر',
+            'status' => 'وضعیت خوانده شدن',
         ];
     }
 }

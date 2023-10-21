@@ -2,15 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Gates\PermissionPlacesEnum;
-use App\Enums\Gates\PermissionsEnum;
-use App\Models\User;
 use App\Rules\PersianNameRule;
 use App\Rules\PersianNationalCodeRule;
 use App\Services\Contracts\RoleServiceInterface;
-use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
 
 class UpdateUserRequest extends FormRequest

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\City;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCityPostPriceRequest extends FormRequest
@@ -22,7 +23,22 @@ class UpdateCityPostPriceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'city' => [
+                'sometimes',
+                'exists:' . City::class . ',id',
+            ],
+            'post_price' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'post_price' => 'هزینه ارسال',
         ];
     }
 }

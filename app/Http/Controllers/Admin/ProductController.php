@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductPropertyRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductPropertyResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSingleResource;
 use App\Models\Product;
@@ -84,7 +85,7 @@ class ProductController extends Controller
      * Display the specified resource.
      *
      * @param Product $product
-     * @return ProductResource
+     * @return ProductSingleResource
      * @throws AuthorizationException
      */
     public function show(Product $product)
@@ -136,8 +137,18 @@ class ProductController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
 
+    /**
+     * @param StoreProductPropertyRequest $request
+     * @param Product $product
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
     public function modifyProducts(StoreProductPropertyRequest $request, Product $product)
     {
+        $this->authorize('create', User::class);
 
+        $validated = $request->validated();
+
+        return ProductPropertyResource::collection($this->service->modifyProducts($product->id, $validated['products']));
     }
 }

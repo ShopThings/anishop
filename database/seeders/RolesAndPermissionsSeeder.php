@@ -453,6 +453,32 @@ class RolesAndPermissionsSeeder extends Seeder
             PermissionPlacesEnum::PRODUCT
         ));
 
+        // create product comment permissions
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::CREATE,
+            PermissionPlacesEnum::PRODUCT_COMMENT
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::READ,
+            PermissionPlacesEnum::PRODUCT_COMMENT
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::UPDATE,
+            PermissionPlacesEnum::PRODUCT_COMMENT
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::DELETE,
+            PermissionPlacesEnum::PRODUCT_COMMENT
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::PERMANENT_DELETE,
+            PermissionPlacesEnum::PRODUCT_COMMENT
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::PUBLISH,
+            PermissionPlacesEnum::PRODUCT_COMMENT
+        ));
+
         // create product attribute permissions
         $this->createPermission(PermissionHelper::permission(
             PermissionsEnum::CREATE,
@@ -795,6 +821,12 @@ class RolesAndPermissionsSeeder extends Seeder
             PermissionHelper::permission(PermissionsEnum::PERMANENT_DELETE, PermissionPlacesEnum::PRODUCT),
             PermissionHelper::permission(PermissionsEnum::PUBLISH, PermissionPlacesEnum::PRODUCT),
             PermissionHelper::permission(PermissionsEnum::EXPORT, PermissionPlacesEnum::PRODUCT),
+            PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::PRODUCT_COMMENT),
+            PermissionHelper::permission(PermissionsEnum::READ, PermissionPlacesEnum::PRODUCT_COMMENT),
+            PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::PRODUCT_COMMENT),
+            PermissionHelper::permission(PermissionsEnum::DELETE, PermissionPlacesEnum::PRODUCT_COMMENT),
+            PermissionHelper::permission(PermissionsEnum::PERMANENT_DELETE, PermissionPlacesEnum::PRODUCT_COMMENT),
+            PermissionHelper::permission(PermissionsEnum::PUBLISH, PermissionPlacesEnum::PRODUCT_COMMENT),
             PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::PRODUCT_ATTRIBUTE),
             PermissionHelper::permission(PermissionsEnum::READ, PermissionPlacesEnum::PRODUCT_ATTRIBUTE),
             PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::PRODUCT_ATTRIBUTE),

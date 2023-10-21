@@ -4,7 +4,7 @@ namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 interface ProductRepositoryInterface extends RepositoryInterface

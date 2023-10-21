@@ -15,7 +15,6 @@ return new class extends Migration {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('condition', array_map(fn($item) => $item->name, CommentConditionsEnum::cases()))
                 ->comment('show comment condition like if it is accepted or not');
             $table->enum('status', array_map(fn($item) => $item->name, CommentStatusesEnum::cases()))
@@ -26,13 +25,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('flag_count')->default(0);
             $table->unsignedBigInteger('up_vote_count')->default(0);
             $table->unsignedBigInteger('down_vote_count')->default(0);
-            $table->boolean('is_published')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->timestamps();
-            $table->foreignId('created_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('created_by')
+                ->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
         });

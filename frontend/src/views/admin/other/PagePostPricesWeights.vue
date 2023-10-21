@@ -248,7 +248,6 @@ const selectionOperations = [
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     // useRequest(apiRoutes.admin.cityPostPrices.index, {
     //     params: {limit, offset, order, sort, text},

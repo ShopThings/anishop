@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('ip_address')->nullable();
             $table->string('user_agent', 300)->nullable();
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('created_at')->useCurrent()->nullable();
         });
     }
 

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 trait RepositoryTrait
 {
     /**
-     * @param Builder $query
+     * @param $query
      * @param array $columns
      * @param int $limit
      * @param int $page
@@ -17,7 +17,7 @@ trait RepositoryTrait
      * @return LengthAwarePaginator|Collection
      */
     protected function _paginateWithOrder(
-        Builder $query,
+        $query,
         array   $columns = ['*'],
         int     $limit = 15,
         int     $page = 1,

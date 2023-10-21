@@ -211,7 +211,6 @@ const table = reactive({
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     useRequest(apiRoutes.admin.users.index, {
         params: {limit, offset, order, sort, text},

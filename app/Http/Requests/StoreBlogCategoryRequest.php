@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreBlogCategoryRequest extends FormRequest
 {
@@ -11,7 +15,11 @@ class StoreBlogCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::BLOG_CATEGORY
+            ));
     }
 
     /**
@@ -22,7 +30,37 @@ class StoreBlogCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+                'max:250',
+            ],
+            'priority' => [
+                'required',
+                'numeric',
+            ],
+            'keywords' => [
+                'array',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+            'show_in_menu' => [
+                'required',
+                'boolean',
+            ],
+            'show_in_side_menu' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'show_in_menu' => 'نمایش در منوی اصلی',
+            'show_in_side_menu' => 'نمایش در منوی کناری',
         ];
     }
 }

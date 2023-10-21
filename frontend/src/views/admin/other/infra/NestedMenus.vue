@@ -1,6 +1,6 @@
 <template>
     <draggable
-        item-key="id"
+        item-key="tmp_id"
         tag="ul"
         :animation="200"
         :list="menus"
@@ -93,8 +93,8 @@
                 </div>
 
                 <nested-menus
-                    v-if="element.menus && element.menus.length"
-                    :menus="element.menus"
+                    v-if="element.children && element.children.length"
+                    :menus="element.children"
                     :level="level + 1"
                     :max-level="maxLevel"
                 />
@@ -104,7 +104,6 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
 import draggable from "vuedraggable";
 import {
     Bars2Icon,
@@ -138,17 +137,18 @@ function removeMenuHandler(idx) {
 }
 
 function handleNewSubMenuClick(menu) {
-    if (!menu.menus) menu.menus = []
+    if (!menu.children) menu.children = []
 
-    menu.menus.push({
-        id: parseInt(uniqueId()),
+    menu.children.push({
+        tmp_id: parseInt(uniqueId()),
+        id: null,
         parent_id: null,
         title: '',
         link: '',
-        priority: menu.menus.length + 1 + '',
+        priority: menu.children.length + 1 + '',
         can_have_children: true,
         is_published: true,
-        menus: [],
+        children: [],
     })
 }
 </script>

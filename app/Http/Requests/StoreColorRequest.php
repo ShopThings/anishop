@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
+use App\Rules\ColorRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -37,7 +38,7 @@ class StoreColorRequest extends FormRequest
             'hex' => [
                 'required',
                 'max:12',
-                'regex:/^(#(?:[0-9a-f]{2}){2,4}|#[0-9a-f]{3}|(?:rgba?|hsla?)\((?:\d+%?(?:deg|rad|grad|turn)?(?:,|\s)+){2,3}[\s\/]*[\d\.]+%?\))$/i',
+                new ColorRule(),
             ],
             'is_published' => [
                 'required',

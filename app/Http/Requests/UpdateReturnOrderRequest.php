@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Orders\ReturnOrderStatusesEnum;
+use App\Models\ReturnOrderRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateReturnOrderRequest extends FormRequest
 {
@@ -22,7 +25,27 @@ class UpdateReturnOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'not_accepted_description' => [
+                'sometimes',
+                'min:1',
+            ],
+            'status' => [
+                'sometimes',
+                new Enum(ReturnOrderStatusesEnum::class),
+            ],
+            'seen_status' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'not_accepted_description' => 'علت عدم تایید',
+            'status' => 'وضعیت بررسی',
+            'seen_status' => 'وضعیت بازدید',
         ];
     }
 }

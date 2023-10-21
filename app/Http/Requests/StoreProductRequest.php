@@ -59,7 +59,6 @@ class StoreProductRequest extends FormRequest
                 'exists:' . Unit::class . ',id',
             ],
             'keywords' => [
-                'required',
                 'array',
             ],
             'is_available' => [

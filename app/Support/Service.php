@@ -4,7 +4,7 @@ namespace App\Support;
 
 use App\Contracts\ServiceInterface;
 use App\Support\Traits\ServiceTrait;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
 

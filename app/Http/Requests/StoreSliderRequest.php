@@ -2,7 +2,12 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\SliderPlace;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreSliderRequest extends FormRequest
 {
@@ -11,7 +16,11 @@ class StoreSliderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::SLIDER
+            ));
     }
 
     /**
@@ -22,7 +31,34 @@ class StoreSliderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'slider_place' => [
+                'required',
+                'exists:' . SliderPlace::class . ',id',
+            ],
+            'title' => [
+                'required',
+                'max:250',
+            ],
+            'priority' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+            'options' => [
+                'array',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'slider_place' => 'محل نمایش',
+            'options' => 'اطلاعات اضافی',
         ];
     }
 }

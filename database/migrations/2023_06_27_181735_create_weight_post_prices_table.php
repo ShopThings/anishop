@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->unsignedInteger('min_weight');
             $table->unsignedInteger('max_weight');
-            $table->unsignedBigInteger('post_price');
+            $table->unsignedBigInteger('post_price')->default(0);
+            $table->timestamps();
         });
     }
 

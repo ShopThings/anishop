@@ -14,7 +14,7 @@ enum ProductAttributeTypesEnum: string
     /**
      * @return string[]
      */
-    protected static function translationArray(): array
+    public static function translationArray(): array
     {
         return [
             self::MULTI_SELECT->value => 'چند انتخابی',

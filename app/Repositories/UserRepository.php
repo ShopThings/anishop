@@ -12,7 +12,7 @@ use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class UserRepository extends Repository implements UserRepositoryInterface
 {

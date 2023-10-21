@@ -22,7 +22,17 @@ class UpdateContactUsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'is_seen' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'is_seen' => 'وضعیت بازدید',
         ];
     }
 }

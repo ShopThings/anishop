@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasDeletedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Mews\Purifier\Casts\CleanHtml;
 
 class ReturnOrderRequest extends Model
 {
@@ -25,11 +27,21 @@ class ReturnOrderRequest extends Model
     ];
 
     protected $casts = [
+        'not_accepted_description' => CleanHtml::class,
+        'status' => ReturnOrderStatusesEnum::class,
         'seen_status' => 'boolean',
         'status_changed_at' => 'datetime',
         'responded_at' => 'datetime',
         'requested_at' => 'datetime',
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     /**
      * @return BelongsTo
@@ -45,5 +57,13 @@ class ReturnOrderRequest extends Model
     public function returnOrderItems(): HasMany
     {
         return $this->hasMany(ReturnOrderRequestItem::class, 'return_code', 'code');
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function responder(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'responded_by');
     }
 }

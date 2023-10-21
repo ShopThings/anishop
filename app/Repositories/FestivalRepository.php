@@ -7,7 +7,8 @@ use App\Repositories\Contracts\FestivalRepositoryInterface;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 class FestivalRepository extends Repository implements FestivalRepositoryInterface
 {
@@ -19,13 +20,7 @@ class FestivalRepository extends Repository implements FestivalRepositoryInterfa
     }
 
     /**
-     * @param int $festivalId
-     * @param array $columns
-     * @param string|null $search
-     * @param int $limit
-     * @param int $page
-     * @param array $order
-     * @return Collection|LengthAwarePaginator
+     * @inheritDoc
      */
     public function getFestivalProductsSearchFilterPaginated(
         int     $festivalId,

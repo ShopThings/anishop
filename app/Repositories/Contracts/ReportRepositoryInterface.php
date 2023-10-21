@@ -2,9 +2,20 @@
 
 namespace App\Repositories\Contracts;
 
-use App\Contracts\RepositoryInterface;
-
-interface ReportRepositoryInterface extends RepositoryInterface
+interface ReportRepositoryInterface
 {
+    /**
+     * @return array
+     */
+    public function getUsersQueryBuilderInfo(): array;
 
+    /**
+     * @return array
+     */
+    public function getProductsQueryBuilderInfo(): array;
+
+    /**
+     * @return array
+     */
+    public function getOrdersQueryBuilderInfo(): array;
 }

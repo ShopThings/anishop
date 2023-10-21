@@ -183,17 +183,19 @@ Route::prefix('admin')
                  * comment routes
                  */
                 Route::apiResource('products.comments', CommentController::class)->except(['store'])
-                    ->whereNumber(['product', 'comment']);//->shallow();
-                Route::delete('products/{product}/comments/{comment}/batch', [CommentController::class, 'batchDestroy'])
-                    ->whereNumber(['product', 'comment'])->name('products.comments.destroy.batch');
+                    ->whereNumber(['product', 'comment'])->shallow();
+                Route::delete('products/{product}/comments/batch', [CommentController::class, 'batchDestroy'])
+                    ->whereNumber('product')->name('products.comments.destroy.batch');
 
                 /*
                  * order routes
                  */
                 Route::get('orders/{user?}', [OrderController::class, 'index'])
                     ->whereNumber('user')->name('orders.index');
-                Route::apiResource('orders', ReturnOrderRequestController::class)->except(['index', 'store'])
+                Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
                     ->whereNumber('order');
+                Route::put('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
+                    ->whereNumber('order')->name('orders.update-payment');
                 Route::get('orders/payment-statuses', [OrderController::class, 'paymentStatuses'])
                     ->name('orders.payment-statuses');
                 Route::get('orders/send-statuses', [OrderController::class, 'sendStatuses'])
@@ -212,6 +214,8 @@ Route::prefix('admin')
                  */
                 Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['store'])
                     ->whereNumber('return_order');
+                Route::put('return-orders/{return_order}/{return_order_item}/modify-item', [ReturnOrderRequestController::class, 'modifyItem'])
+                    ->whereNumber('return_order')->name('return-orders.modify-item');
 
                 /*
                  * report routes
@@ -248,8 +252,8 @@ Route::prefix('admin')
                 /*
                  * blog comment routes
                  */
-                Route::apiResource('blogs.comments', BlogCommentController::class)->except(['store'])
-                    ->whereNumber(['blog', 'comment']);//->shallow();
+                Route::apiResource('blogs.comments', BlogCommentController::class)
+                    ->whereNumber(['blog', 'comment'])->shallow();
                 Route::delete('blogs/{blog}/comments/{comment}/batch', [BlogCommentController::class, 'batchDestroy'])
                     ->name('blogs.comments.destroy.batch');
 
@@ -312,8 +316,8 @@ Route::prefix('admin')
                 /*
                  * city routes
                  */
-                Route::get('cities', [CityController::class, 'index'])
-                    ->name('cities.index');
+                Route::get('cities/{province}', [CityController::class, 'index'])
+                    ->whereNumber('province')->name('cities.index');
 
                 /*
                  * province routes
@@ -334,16 +338,18 @@ Route::prefix('admin')
                  */
                 Route::apiResource('sliders', SliderController::class)
                     ->whereNumber('slider');
+                Route::post('/sliders/{slider}/modify', [SliderController::class, 'modifySlides'])
+                    ->whereNumber('slider')->name('sliders.modify-slides');
                 Route::delete('sliders/batch', [SliderController::class, 'batchDestroy'])
                     ->name('sliders.destroy.batch');
 
                 /*
                  * menu routes
                  */
-                Route::apiResource('menus', MenuController::class)
+                Route::apiResource('menus', MenuController::class)->except(['store', 'update', 'destroy'])
                     ->whereNumber('menu');
-                Route::delete('menus/batch', [MenuController::class, 'batchDestroy'])
-                    ->name('menus.destroy.batch');
+                Route::post('/menus/{menu}/modify', [MenuController::class, 'modifyMenus'])
+                    ->whereNumber('menu')->name('menus.modify-menus');
             });
 
             /*

@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreFaqRequest extends FormRequest
 {
@@ -11,7 +15,11 @@ class StoreFaqRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::FAQ
+            ));
     }
 
     /**
@@ -22,7 +30,19 @@ class StoreFaqRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'question' => [
+                'required',
+            ],
+            'answer' => [
+                'required',
+            ],
+            'keywords' => [
+                'array',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
         ];
     }
 }

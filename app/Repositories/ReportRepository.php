@@ -3,9 +3,30 @@
 namespace App\Repositories;
 
 use App\Repositories\Contracts\ReportRepositoryInterface;
-use App\Support\Repository;
 
-class ReportRepository extends Repository implements ReportRepositoryInterface
+class ReportRepository implements ReportRepositoryInterface
 {
+    /**
+     * @inheritDoc
+     */
+    public function getUsersQueryBuilderInfo(): array
+    {
+        return [];
+    }
 
+    /**
+     * @inheritDoc
+     */
+    public function getProductsQueryBuilderInfo(): array
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrdersQueryBuilderInfo(): array
+    {
+        return [];
+    }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Payments\PaymentStatusesEnum;
+use App\Enums\Payments\PaymentTypesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,12 +14,13 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('key_id', 25)
+            $table->foreignId('key_id')
+                ->constrained('order_details')->cascadeOnDelete()->cascadeOnUpdate()
                 ->comment('for make more than one order relate to another');
             $table->string('code', 25)->unique();
             $table->string('payment_method_code', 25);
             $table->string('payment_method_title');
-            $table->string('payment_method_type');
+            $table->enum('payment_method_type', array_map(fn($item) => $item->name, PaymentTypesEnum::cases()));
             $table->enum('payment_status', array_map(fn($item) => $item->name, PaymentStatusesEnum::cases()));
             $table->timestamp('payment_status_changed_at')->nullable();
             $table->foreignId('payment_status_changed_by')->nullable()

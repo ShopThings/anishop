@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreStaticPageRequest extends FormRequest
 {
@@ -11,7 +15,11 @@ class StoreStaticPageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::user()
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::STATIC_PAGE
+            ));
     }
 
     /**
@@ -22,7 +30,31 @@ class StoreStaticPageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'required',
+                'max:250',
+            ],
+            'description' => [
+                'required',
+            ],
+            'url' => [
+                'required',
+                'regex:/[a-z]+[a-z\\\-][a-z]+/i',
+            ],
+            'keywords' => [
+                'array',
+            ],
+            'is_published' => [
+                'required',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'url' => 'آدرس صفحه',
         ];
     }
 }

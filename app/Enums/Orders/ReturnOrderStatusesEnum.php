@@ -2,8 +2,12 @@
 
 namespace App\Enums\Orders;
 
+use App\Traits\EnumTranslateTrait;
+
 enum ReturnOrderStatusesEnum: string
 {
+    use EnumTranslateTrait;
+
     case CHECKING = 'checking';
     case DENIED_BY_USER = 'denied_by_user';
     case ACCEPT = 'accept';
@@ -29,19 +33,14 @@ enum ReturnOrderStatusesEnum: string
     }
 
     /**
-     * @param array|string $statuses
-     * @return array|string|null
+     * @return array
      */
-    public static function getTranslations(array|string $statuses): array|string|null
+    public static function getDeletableStatuses(): array
     {
-        $translates = self::translationArray();
-        if (is_array($statuses)) {
-            $newArr = [];
-            foreach ($statuses as $status) {
-                $newArr[$status] = $translates[$status] ?? $status;
-            }
-            return count($newArr) ? $newArr : null;
-        }
-        return $translates[$statuses] ?? $statuses;
+        return [
+            self::CHECKING->value,
+            self::DENIED_BY_USER->value,
+            self::DENIED->value,
+        ];
     }
 }

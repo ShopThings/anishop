@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\SliderPlace;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateSliderRequest extends FormRequest
@@ -22,7 +23,34 @@ class UpdateSliderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'slider_place' => [
+                'sometimes',
+                'exists:' . SliderPlace::class . ',id',
+            ],
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'priority' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+            ],
+            'options' => [
+                'array',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'slider_place' => 'محل نمایش',
+            'options' => 'اطلاعات اضافی',
         ];
     }
 }

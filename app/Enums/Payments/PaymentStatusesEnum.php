@@ -18,7 +18,7 @@ enum PaymentStatusesEnum: int
     /**
      * @return string[]
      */
-    protected static function translationArray(): array
+    public static function translationArray(): array
     {
         return [
             self::SUCCESS->value => 'پرداخت موفق',

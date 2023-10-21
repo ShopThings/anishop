@@ -8,7 +8,7 @@ use App\Enums\Gates\RolesEnum;
 use App\Exceptions\NotDeletableException;
 use App\Models\User;
 use App\Support\Gate\PermissionHelper;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class UserPolicy
 {
@@ -83,7 +83,6 @@ class UserPolicy
     {
         if (!$model->is_deletable) {
             throw new NotDeletableException();
-            return false;
         }
         return $user->hasPermissionTo(
             PermissionHelper::permission(

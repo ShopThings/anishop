@@ -14,6 +14,10 @@ class ProvinceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'is_published' => $this->is_published,
+        ];
     }
 }

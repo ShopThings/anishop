@@ -44,15 +44,7 @@ class Order extends Model
      */
     public function detail(): HasOne
     {
-        return $this->hasOne(OrderDetail::class, 'order_key_id', 'key_id');
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderItem::class, 'order_key_id', 'key_id');
+        return $this->hasOne(OrderDetail::class, 'id', 'key_id');
     }
 
     /**

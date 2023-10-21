@@ -22,7 +22,20 @@ class UpdateFaqRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'question' => [
+                'sometimes',
+            ],
+            'answer' => [
+                'sometimes',
+            ],
+            'keywords' => [
+                'sometimes',
+                'array',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
         ];
     }
 }

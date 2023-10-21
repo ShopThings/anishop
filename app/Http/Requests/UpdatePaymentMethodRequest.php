@@ -2,15 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Gates\PermissionPlacesEnum;
-use App\Enums\Gates\PermissionsEnum;
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Models\FileManager;
-use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class UpdatePaymentMethodRequest extends FormRequest

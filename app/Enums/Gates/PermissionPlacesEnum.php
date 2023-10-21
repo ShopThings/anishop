@@ -25,6 +25,7 @@ enum PermissionPlacesEnum: string
     case ORDER_BADGE = 'order_badge';
     case PAYMENT_METHOD = 'payment_method';
     case PRODUCT = 'product';
+    case PRODUCT_COMMENT = 'product_comment';
     case PRODUCT_ATTRIBUTE = 'product_attribute';
     case RETURN_ORDER_REQUEST = 'return_order_request';
     case SETTING = 'setting';

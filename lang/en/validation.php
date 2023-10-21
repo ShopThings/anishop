@@ -162,6 +162,7 @@ return [
     'persian_name' => 'The :attribute must contains only persian letters.',
     'persian_mobile' => 'The :attribute is not a valid persian mobile number.',
     'persian_national_code' => 'The :attribute is not a valid persian national code.',
+    'color' => 'Color code is invalid.',
 
     /*
     |--------------------------------------------------------------------------
@@ -247,6 +248,12 @@ return [
         "guarantee" => "Guarantee",
         "weight" => "Weight",
         "type" => "Type",
+        "blog" => "Blog",
+        "comment" => "Comment",
+        "answer" => "Answer",
+        "question" => "Question",
+        "zip_code" => "Zip Code",
+        "postal_code" => "Zip Code",
     ],
 
 ];

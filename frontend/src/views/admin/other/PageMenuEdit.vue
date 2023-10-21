@@ -62,7 +62,7 @@
                             </div>
 
                             <div class="p-2">
-                                <nested-menus v-if="menu && menu.menus" :menus="menu.menus"/>
+                                <nested-menus v-if="menu && menu.children" :menus="menu.children"/>
 
                                 <div
                                     v-if="menu?.can_have_children"
@@ -143,17 +143,18 @@ const canSubmit = ref(true)
 const menu = reactive(null)
 
 function handleNewMenuClick() {
-    if (!menu.menus) menu.menus = []
+    if (!menu.children) menu.children = []
 
-    menu.menus.push({
-        id: parseInt(uniqueId()),
+    menu.children.push({
+        tmp_id: parseInt(uniqueId()),
+        id: null,
         parent_id: null,
         title: '',
         link: '',
-        priority: menu.menus.length + 1 + '',
+        priority: menu.children.length + 1 + '',
         can_have_children: true,
         is_published: true,
-        menus: [],
+        children: [],
     })
 }
 

@@ -2,8 +2,11 @@
 
 namespace App\Policies;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Models\Menu;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use App\Support\Gate\PermissionHelper;
 
 class MenuPolicy
 {
@@ -12,62 +15,24 @@ class MenuPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::MENU)
+        );
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, Menu $model): bool
     {
-        return false;
-    }
+        if ($user->id === $model->creator()?->id) return true;
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, User $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, User|Collection $model): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can batch delete.
-     */
-    public function batchDelete(User $user): bool
-    {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::MENU)
+        );
     }
 }

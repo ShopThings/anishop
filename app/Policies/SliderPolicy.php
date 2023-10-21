@@ -2,7 +2,12 @@
 
 namespace App\Policies;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Exceptions\NotDeletableException;
+use App\Models\Slider;
 use App\Models\User;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Database\Eloquent\Collection;
 
 class SliderPolicy
@@ -12,15 +17,25 @@ class SliderPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, User $model): bool
+    public function view(User $user, Slider $model): bool
     {
-        return false;
+        if ($user->id === $model->creator()?->id) return true;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 
     /**
@@ -28,39 +43,79 @@ class SliderPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, User $model): bool
+    public function update(User $user, Slider $model): bool
     {
-        return false;
+        if ($user->id === $model->creator()?->id) return true;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, User $model): bool
+    public function delete(User $user, Slider $model): bool
     {
-        return false;
+        if (!$model->is_deletable) {
+            throw new NotDeletableException();
+        }
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::DELETE,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, User $model): bool
+    public function restore(User $user, Slider $model): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, User|Collection $model): bool
+    public function forceDelete(User $user, Slider|Collection $model): bool
     {
-        return false;
+        if ($user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::PERMANENT_DELETE,
+                PermissionPlacesEnum::SLIDER)
+        )) {
+            return true;
+        } else {
+            if ($model instanceof Slider) {
+                if ($user->id === $model->creator()?->id)
+                    return true;
+            } else {
+                $tmp = $model->filter(function ($item) use ($user) {
+                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
+                });
+
+                if (!$tmp->count())
+                    return true;
+            }
+            return false;
+        }
     }
 
     /**
@@ -68,6 +123,10 @@ class SliderPolicy
      */
     public function batchDelete(User $user): bool
     {
-        return false;
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::DELETE,
+                PermissionPlacesEnum::SLIDER)
+        );
     }
 }

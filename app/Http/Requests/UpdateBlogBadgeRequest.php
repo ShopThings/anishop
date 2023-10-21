@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\ColorRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBlogBadgeRequest extends FormRequest
@@ -22,7 +23,26 @@ class UpdateBlogBadgeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => [
+                'sometimes',
+                'max:250',
+            ],
+            'color_hex' => [
+                'sometimes',
+                'max:12',
+                new ColorRule(),
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'color_hex' => 'کد رنگ',
         ];
     }
 }

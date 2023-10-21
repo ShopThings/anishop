@@ -22,24 +22,12 @@ class BlogComment extends Model
         'id',
     ];
 
-    protected $casts = [
-        'is_published' => 'boolean',
-    ];
-
     /**
      * @return BelongsTo
      */
     public function blog(): BelongsTo
     {
         return $this->belongsTo(Blog::class);
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function author(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**

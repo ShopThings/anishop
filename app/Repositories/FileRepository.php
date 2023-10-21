@@ -13,7 +13,7 @@ use App\Support\Repository;
 use App\Support\Traits\FileTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
@@ -154,7 +154,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
             });
 
             $tmpFiles = $this->getSimilarFiles(
-                $files,
+                $files->toArray(),
                 '(' . implode('|', array_map(function ($value) {
                     return preg_quote($value);
                 }, Arr::pluck($dbFiles, 'name'))) . ')',
@@ -466,10 +466,10 @@ class FileRepository extends Repository implements FileRepositoryInterface
             'is_dir' => is_dir($path),
             'size' => $this->formatBytes($diskStorage->size($file)),
             'url' => $diskStorage->url($path),
-            'mime_type' => $info->isFile() ? $diskStorage->mimeType($file) : null,
+            'mime_type' => is_file($path) ? $diskStorage->mimeType($file) : null,
             'visibility' => $diskStorage->getVisibility($path),
             'created_at' => $createdAt
-                ? verta(Carbon::createFromTimestamp($createdAt)->format())
+                ? verta(Carbon::createFromTimestamp($createdAt))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'last_modified' => $diskStorage->lastModified('file.jpg'),

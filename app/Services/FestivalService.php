@@ -9,7 +9,7 @@ use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use function App\Support\Helper\to_boolean;
 
@@ -106,7 +106,7 @@ class FestivalService extends Service implements FestivalServiceInterface
     {
         return $this->repository->getFestivalProductsSearchFilterPaginated(
             festivalId: $festivalId,
-            search: trim($searchText ?? ''),
+            search: $searchText,
             limit: $limit,
             page: $page,
             order: $this->convertOrdersColumnToArray($order)

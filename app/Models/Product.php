@@ -8,7 +8,6 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasSluggableTrait;
-use App\Traits\HasTitleSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;

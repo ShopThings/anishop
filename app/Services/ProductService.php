@@ -11,7 +11,7 @@ use App\Services\Contracts\ProductServiceInterface;
 use App\Support\Converters\NumberConverter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 use function App\Support\Helper\to_boolean;
@@ -37,7 +37,7 @@ class ProductService extends Service implements ProductServiceInterface
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getProductsSearchFilterPaginated(
-            search: trim($searchText ?? ''),
+            search: $searchText,
             limit: $limit,
             page: $page,
             order: $this->convertOrdersColumnToArray($order)
@@ -133,6 +133,7 @@ class ProductService extends Service implements ProductServiceInterface
         foreach ($products as &$product) {
             $product['product_id'] = $productId;
         }
+
         return $this->repository->updateOrCreateProducts($products);
     }
 
@@ -140,7 +141,7 @@ class ProductService extends Service implements ProductServiceInterface
      * @param array $products
      * @return array
      */
-    protected function _refineProducts(array $products): array
+    private function _refineProducts(array $products): array
     {
         $refined = [];
         foreach ($products as $product) {
@@ -168,7 +169,7 @@ class ProductService extends Service implements ProductServiceInterface
      * @param array $properties
      * @return array
      */
-    protected function _refineProperties(array $properties): array
+    private function _refineProperties(array $properties): array
     {
         if (!count($properties)) return [];
 
@@ -204,7 +205,7 @@ class ProductService extends Service implements ProductServiceInterface
      * @param array $quickProperties
      * @return array
      */
-    protected function _refineQuickProperties(array $quickProperties): array
+    private function _refineQuickProperties(array $quickProperties): array
     {
         if (!count($quickProperties)) return [];
 

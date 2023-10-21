@@ -126,7 +126,6 @@ function showDetails(value) {
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     // useRequest(apiReplaceParams(apiRoutes.admin.users.addresses, {user: idParam.value}), {
     //     params: {limit, offset, order, sort, text},

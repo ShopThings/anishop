@@ -18,12 +18,17 @@ class ContactUs extends Model
 
     protected $table = 'contact_us';
 
+    public $timestamps = false;
+
+    protected $hasUpdatedBy = false;
+
     protected $guarded = [
         'id',
     ];
 
     protected $casts = [
         'is_seen' => 'boolean',
+        'created_at' => 'datetime',
     ];
 
     /**
