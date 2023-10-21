@@ -71,7 +71,6 @@ class BrandPolicy
     {
         if (!$model->is_deletable) {
             throw new NotDeletableException();
-            return false;
         }
         return $user->hasPermissionTo(
             PermissionHelper::permission(
