@@ -81,7 +81,7 @@ class UpdateProductRequest extends FormRequest
         return [
             'quick_properties' => 'ویژگی‌های سریع',
             'unit' => 'واحد محصول',
-            'is_commenting_allowed' => 'اجازه ارسال نظر',
+            'is_commenting_allowed' => 'اجازه ارسال دیدگاه',
         ];
     }
 }

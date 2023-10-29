@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Mews\Purifier\Casts\CleanHtml;
 
 class OrderDetail extends Model
 {
@@ -21,6 +22,8 @@ class OrderDetail extends Model
     ];
 
     protected $casts = [
+        'description' => CleanHtml::class,
+        'is_needed_factor' => 'boolean',
         'is_in_place_delivery' => 'boolean',
         'is_product_returned_to_stock' => 'boolean',
         'ordered_at' => 'datetime',
@@ -43,16 +46,11 @@ class OrderDetail extends Model
     }
 
     /**
-     * @return BelongsToMany
+     * @return HasMany
      */
-    public function orders(): BelongsToMany
+    public function orders(): HasMany
     {
-        return $this->belongsToMany(
-            Order::class,
-            'orders',
-            'id',
-            'key_id'
-        );
+        return $this->hasMany(Order::class, 'key_id');
     }
 
     /**

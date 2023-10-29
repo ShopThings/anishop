@@ -38,6 +38,7 @@ class PurchaseResource extends JsonResource
                 verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'send_status_changed_by' => $this->when($this->send_status_changed_by, $this->sendStatusChanger()),
+            'is_needed_factor' => $this->is_needed_factor,
             'is_in_place_delivery' => $this->is_in_place_delivery,
             'ordered_at' => $this->ordered_at
                 ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

@@ -128,11 +128,12 @@
                         class="flex flex-wrap mt-3 items-center"
                     >
                         <div class="ml-3 text-xl my-1">
-                            {{ selectedProduct.discounted_price }}
+                            {{ selectedProduct.discounted_price ?? selectedProduct.price }}
                             <span class="text-xs text-gray-400">تومان</span>
                         </div>
 
-                        <template v-if="selectedProduct.discounted_price < selectedProduct.price">
+                        <template
+                            v-if="selectedProduct.discounted_price && selectedProduct.discounted_price < selectedProduct.price">
                             <div class="relative ml-3 my-1">
                                 <span
                                     class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
@@ -334,8 +335,8 @@
                             <span
                                 class="block py-3 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center"
                             >
-                            1
-                        </span>
+                                1
+                            </span>
                             <base-button
                                 class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0"
                             >
@@ -367,11 +368,7 @@
     ></vue-easy-lightbox>
 
     <div class="mt-3">
-        <div class="mb-2 p-2">
-            <h2 class="mt-6 text-lg border-b-2 border-primary inline-block pb-2">
-                محصولات مرتبط
-            </h2>
-        </div>
+        <partial-general-title title="محصولات مرتبط"/>
 
         <product-carousel :products="relatedProducts"/>
     </div>
@@ -553,8 +550,8 @@
                             class="flex flex-col mb-2 shadow md:shadow-none md:mb-0 md:grid md:grid-cols-3"
                         >
                             <div
-                                class="p-2 text-center text-sm bg-slate-100 text-slate-500 md:bg-transparent md:text-right md:rounded-l-none md:col-span-1"
-                                :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : ''"
+                                class="p-2 text-center text-sm bg-slate-100 text-slate-500  md:text-right md:rounded-l-none md:col-span-1"
+                                :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : 'md:bg-transparent'"
                             >
                                 {{ child.title }}
                             </div>
@@ -576,7 +573,10 @@
             </template>
 
             <template #comments>
-                <product-comment :product-id="currentMainProduct.id"/>
+                <product-comment
+                    :product-id="currentMainProduct.id"
+                    :show-add-comment="showAddComment"
+                />
             </template>
         </base-tab-panel>
     </div>
@@ -607,6 +607,7 @@ import BaseSelect from "./../base/BaseSelect.vue";
 import ProductCarousel from "./ProductCarousel.vue";
 import BaseTabPanel from "../base/BaseTabPanel.vue";
 import ProductComment from "./ProductComment.vue";
+import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
 
 defineProps({
     showProductExtraOption: {
@@ -614,6 +615,10 @@ defineProps({
         default: true,
     },
     showAddToCart: {
+        type: Boolean,
+        default: true,
+    },
+    showAddComment: {
         type: Boolean,
         default: true,
     },
@@ -1337,7 +1342,7 @@ if (
 }
 
 tabs['comments'] = {
-    text: 'نظرات کاربران',
+    text: 'دیدگاه کاربران',
     hash: 'comments',
     button: {
         badgeCount: 10,

@@ -56,7 +56,6 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'code' => CodeGeneratorHelper::PaymentMethodCode(),
             'title' => $attributes['title'],
             'image_id' => $attributes['image'],
             'type' => $attributes['type'],
@@ -75,9 +74,6 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
     {
         $updateAttributes = [];
 
-        if (isset($attributes['code'])) {
-            $updateAttributes['code'] = $attributes['code'];
-        }
         if (isset($attributes['title'])) {
             $updateAttributes['title'] = $attributes['title'];
         }

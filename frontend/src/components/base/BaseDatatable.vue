@@ -24,7 +24,7 @@
                         :total="items.length"
                     >
                         <template v-for="(slot, index) of Object.keys(slots)" :key="index" v-slot:[slot]="data">
-                            <slot :name="slot" :value="data.value"></slot>
+                            <slot :name="slot" :value="data.value" :index="index + setting.offset"></slot>
                         </template>
                         <template v-slot:selection_remover="data">
                             <BackspaceIcon @click="removeFromSelectedItem(data.value)"
@@ -75,7 +75,7 @@
                 </slot>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="my-custom-scrollbar overflow-x-auto">
                 <div class="inline-block min-w-full">
                     <div class="overflow-hidden" ref="tableContainer">
                         <table ref="localTable"
@@ -209,7 +209,11 @@
                                             <div v-if="col.display" v-html="col.display(row)"></div>
                                             <div v-else>
                                                 <div v-if="setting.isSlotMode && slots[col.field]">
-                                                    <slot :name="col.field" :value="row"></slot>
+                                                    <slot
+                                                        :name="col.field"
+                                                        :value="row"
+                                                        :index="i + setting.offset"
+                                                    ></slot>
                                                 </div>
                                                 <span v-else>{{ row[col.field] }}</span>
                                             </div>
@@ -304,7 +308,11 @@
                                             <div v-if="col.display" v-html="col.display(row)"></div>
                                             <div v-else>
                                                 <div v-if="setting.isSlotMode && slots[col.field]">
-                                                    <slot :name="col.field" :value="row"></slot>
+                                                    <slot
+                                                        :name="col.field"
+                                                        :value="row"
+                                                        :index="i + setting.offset"
+                                                    ></slot>
                                                 </div>
                                                 <span v-else>{{ row[col.field] }}</span>
                                             </div>
@@ -402,76 +410,15 @@
                 </div>
 
                 <div class="mt-3" v-if="setting.maxPage > 1">
-                    <ul class="flex justify-center text-center rtl:flex-row-reverse whitespace-nowrap no-underline flex-wrap">
-                        <li>
-                            <a v-tooltip.top="'صفحه اول'"
-                               class="cursor-pointer relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page <= 1}"
-                               :disabled="setting.page <= 1"
-                               aria-label="First"
-                               @click.prevent="setting.page = 1"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronDoubleLeftIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه اول</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a v-tooltip.top="'صفحه قبل'"
-                               class="cursor-pointer relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page <= 1}"
-                               :disabled="setting.page <= 1"
-                               aria-label="Previous"
-                               @click.prevent="prevPage"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronLeftIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه قبل</span>
-                            </a>
-                        </li>
-                        <li v-for="n in setting.paging"
-                            :key="n"
-                        >
-                            <a v-tooltip.top="'صفحه ' + n"
-                               class="cursor-pointer relative inline-flex items-center px-4 py-2 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-primary !text-white !ring-primary': setting.page === n}"
-                               :disabled="setting.page === n"
-                               @click.prevent="movePage(n)"
-                            >
-                                {{ n }}
-                            </a>
-                        </li>
-                        <li>
-                            <a v-tooltip.top="'صفحه بعد'"
-                               class="cursor-pointer relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page >= setting.maxPage}"
-                               :disabled="setting.page >= setting.maxPage"
-                               aria-label="Next"
-                               @click.prevent="nextPage"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronRightIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه بعد</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a v-tooltip.top="'صفحه آخر'"
-                               class="cursor-pointer relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page >= setting.maxPage}"
-                               :disabled="setting.page >= setting.maxPage"
-                               aria-label="Last"
-                               @click.prevent="setting.page = setting.maxPage"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronDoubleRightIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه آخر</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <base-pagination
+                        :theme="paginationTheme"
+                        :next-page="nextPage"
+                        :move-page="movePage"
+                        :prev-page="prevPage"
+                        v-model:max-page="setting.maxPage"
+                        v-model:paging="setting.paging"
+                        v-model:current-page="setting.page"
+                    />
                 </div>
             </template>
         </div>
@@ -489,16 +436,15 @@
 <script setup>
 import {computed, nextTick, onBeforeUpdate, onMounted, reactive, ref, useSlots, watch} from "vue"
 import {
-    ChevronDownIcon, ArrowSmallUpIcon, ArrowSmallDownIcon, ArrowsUpDownIcon,
-    ChevronLeftIcon, ChevronRightIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon,
-    XCircleIcon, BackspaceIcon,
+    ChevronDownIcon, ArrowSmallUpIcon, ArrowSmallDownIcon,
+    ArrowsUpDownIcon, XCircleIcon, BackspaceIcon,
 } from '@heroicons/vue/24/outline'
 import BaseSelect from "./BaseSelect.vue";
 import LoaderCircle from "./loader/LoaderCircle.vue";
 import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseDatatableMultiOperation from "./datatable/BaseDatatableMultiOperation.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
-import BaseButton from "./BaseButton.vue";
+import BasePagination from "./BasePagination.vue";
 
 const props = defineProps({
     isLoading: {
@@ -654,6 +600,7 @@ const props = defineProps({
             return [];
         },
     },
+    paginationTheme: String,
 })
 const emit = defineEmits([
     "return-checked-rows",

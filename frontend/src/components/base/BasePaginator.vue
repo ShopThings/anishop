@@ -1,5 +1,8 @@
 <template>
-    <div class="py-3 flex flex-col">
+    <div
+        v-if="showSearch || (order && order.length)"
+        class="py-3 flex flex-col"
+    >
         <div v-if="showSearch">
             <base-datatable-search
                 class="!p-0"
@@ -46,68 +49,15 @@
     </div>
 
     <div v-if="showPagination && maxPage > 1" class="mt-3">
-        <ul class="flex justify-center text-center rtl:flex-row-reverse whitespace-nowrap no-underline flex-wrap">
-            <li>
-                <a v-tooltip.top="'صفحه اول'"
-                   class="cursor-pointer bg-white relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                   :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': currentPage <= 1}"
-                   :disabled="currentPage <= 1"
-                   aria-label="First"
-                   @click.prevent="currentPage = 1"
-                >
-                    <span aria-hidden="true"><ChevronDoubleLeftIcon class="w-4 h-4"/></span>
-                    <span class="sr-only">صفحه اول</span>
-                </a>
-            </li>
-            <li>
-                <a v-tooltip.top="'صفحه قبل'"
-                   class="cursor-pointer bg-white relative inline-flex items-center px-4 py-2 text-sm text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                   :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': currentPage <= 1}"
-                   :disabled="currentPage <= 1"
-                   aria-label="Previous"
-                   @click.prevent="prevPage"
-                >
-                    <span aria-hidden="true"><ChevronLeftIcon class="w-4 h-4"/></span>
-                    <span class="sr-only">صفحه قبل</span>
-                </a>
-            </li>
-            <li v-for="n in paging"
-                :key="n"
-            >
-                <a v-tooltip.top="'صفحه ' + n"
-                   class="cursor-pointer bg-white relative inline-flex items-center px-4 py-2 text-xs text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                   :class="{'!cursor-not-allowed !bg-primary !text-white !ring-primary': currentPage === n}"
-                   :disabled="currentPage === n"
-                   @click.prevent="movePage(n)"
-                >
-                    {{ n }}
-                </a>
-            </li>
-            <li>
-                <a v-tooltip.top="'صفحه بعد'"
-                   class="cursor-pointer bg-white relative inline-flex items-center px-4 py-2 text-sm text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                   :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': currentPage >= maxPage}"
-                   :disabled="currentPage >= maxPage"
-                   aria-label="Next"
-                   @click.prevent="nextPage"
-                >
-                    <span aria-hidden="true"><ChevronRightIcon class="w-4 h-4"/></span>
-                    <span class="sr-only">صفحه بعد</span>
-                </a>
-            </li>
-            <li>
-                <a v-tooltip.top="'صفحه آخر'"
-                   class="cursor-pointer bg-white relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                   :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': currentPage >= maxPage}"
-                   :disabled="currentPage >= maxPage"
-                   aria-label="Last"
-                   @click.prevent="currentPage = maxPage"
-                >
-                    <span aria-hidden="true"><ChevronDoubleRightIcon class="w-4 h-4"/></span>
-                    <span class="sr-only">صفحه آخر</span>
-                </a>
-            </li>
-        </ul>
+        <base-pagination
+            :theme="paginationTheme"
+            :next-page="nextPage"
+            :move-page="movePage"
+            :prev-page="prevPage"
+            v-model:max-page="maxPage"
+            v-model:paging="paging"
+            v-model:current-page="currentPage"
+        />
     </div>
 </template>
 
@@ -123,6 +73,7 @@ import {useRequest} from "../../composables/api-request.js";
 import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
+import BasePagination from "./BasePagination.vue";
 
 const props = defineProps({
     containerClass: String,
@@ -153,14 +104,15 @@ const props = defineProps({
         },
     },
     searchText: String,
-    searchFilterHandler: Function,
+    localSearchFilterHandler: Function,
     showSearch: Boolean,
     showPagination: {
         type: Boolean,
         default: true,
     },
+    paginationTheme: String,
 })
-const emit = defineEmits(['update:items', 'update:searchText', 'search', 'page-changed'])
+const emit = defineEmits(['update:items', 'update:searchText'])
 
 const loading = ref(true)
 
@@ -290,9 +242,9 @@ function goToPage(page) {
         new Promise((resolve) => {
             let rows = props.items
 
-            if (isFunction(props.searchFilterHandler)) {
+            if (isFunction(props.localSearchFilterHandler)) {
                 rows = rows.filter((item) => {
-                    return props.searchFilterHandler.call(null, item, params.text)
+                    return props.localSearchFilterHandler.call(null, item, params.text)
                 });
             }
 

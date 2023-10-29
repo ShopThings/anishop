@@ -48,36 +48,50 @@
             </partial-card>
 
             <div class="mb-3">
-                <base-accordion
-                    :open="false"
-                    btn-class="text-white bg-blue-600 hover:bg-blue-500 focus-visible:ring-blue-800"
-                    btn-icon-class="text-white"
-                    panel-class="bg-white mt-3 rounded-lg !p-4"
-                >
+                <base-accordion :open="false">
                     <template #button>
                         جزئیات درخواست
                     </template>
                     <template #panel>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="کد مرجوعی"/>
-                                <span class="text-teal-600 mt-1">818308177278782</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded sm:flex sm:items-center">
-                                <partial-input-label title="وضعیت ارجاع"/>
-                                <div class="mt-1 sm:mt-0 sm:mr-2 sm:grow">
-                                    <span
-                                        class="bg-green-600 rounded text-white py-1 px-2 block text-center">تایید شده</span>
-                                </div>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded sm:col-span-2">
-                                <partial-input-label title="تاریخ درخواست"/>
-                                <span class="text-teal-600 mt-1">۳۰ مرداد ۱۴۰۲ در ساعت ۱۹ و ۳۴ دقیقه</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded sm:col-span-2 bg-indigo-50">
-                                <partial-input-label title="توضیحات کاربر"/>
-                                <span class="text-teal-600 mt-1">چون یزد است و چند روز طول می کشه</span>
-                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">کد مرجوعی:</span>
+                                        <div class="text-black tracking-widest">818308177278782</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">وضعیت ارجاع:</span>
+                                        <div class="text-black ">
+                                            <partial-badge-status-return-order/>
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">تاریخ درخواست:</span>
+                                        <div class="text-black">
+                                            ۳۰ مرداد ۱۴۰۲ در ساعت ۱۹ و ۳۴ دقیقه
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3 sm:col-span-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">توضیحات کاربر:</span>
+                                        <div class="text-black">
+                                            چون یزد است و چند روز طول می کشه
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
                         </div>
                     </template>
                 </base-accordion>
@@ -135,8 +149,8 @@ import {useRequest} from "../../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import BaseAccordion from "../../../components/base/BaseAccordion.vue";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseDatatable from "../../../components/base/BaseDatatable.vue";
+import PartialBadgeStatusReturnOrder from "../../../components/partials/PartialBadgeStatusReturnOrder.vue";
 
 const route = useRoute()
 const toast = useToast()

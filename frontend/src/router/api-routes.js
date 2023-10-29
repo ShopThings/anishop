@@ -153,6 +153,8 @@ export const apiRoutes = {
             show: 'api/admin/orders/{order}',
             update: 'api/admin/orders/{order}',
             destroy: 'api/admin/orders/{order}',
+            //
+            updatePayment: 'api/admin/orders/{order}/payment',
             paymentStatuses: 'api/admin/orders/payment-statuses',
             sendStatuses: 'api/admin/orders/send-statuses',
         },
@@ -315,7 +317,44 @@ export const apiRoutes = {
 
     // user routes
     user: {
+        login: 'api/user/login',
         logout: 'api/user/logout',
+
+        orders: {
+            index: 'api/user/orders',
+            show: 'api/user/orders/{order}',
+            update: 'api/user/orders/{order}',
+            destroy: 'api/user/orders/{order}',
+        },
+
+        returnOrders: {
+            index: 'api/user/return-orders',
+            show: 'api/user/return-orders/{return_order}',
+            store: 'api/user/return-orders/{order}',
+            update: 'api/user/return-orders/{return_order}',
+            destroy: 'api/user/return-orders/{return_order}',
+        },
+
+        comments: {
+            index: 'api/user/comments',
+            show: 'api/user/comments/{comment}',
+            store: 'api/user/comments/{product}',
+            update: 'api/user/comments/{comment}',
+            destroy: 'api/user/comments/{comment}',
+        },
+
+        favoriteProducts: {
+            index: 'api/user/favorite-products',
+            destroy: 'api/user/favorite-products/{product}',
+        },
+
+        addresses: {
+            index: 'api/user/addresses',
+            show: 'api/user/addresses/{address}',
+            store: 'api/user/addresses',
+            update: 'api/user/addresses/{address}',
+            destroy: 'api/user/addresses/{address}',
+        },
     },
 
     // general routes

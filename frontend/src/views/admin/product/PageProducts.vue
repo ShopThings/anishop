@@ -263,7 +263,7 @@ const operations = [
     },
     {
         link: {
-            text: 'مشاهده نظرات',
+            text: 'مشاهده دیدگاه‌ها',
             icon: 'ChatBubbleLeftRightIcon',
         },
         event: {

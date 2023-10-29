@@ -21,7 +21,11 @@ const props = defineProps({
         type: String,
         default: 'content',
         validator(value) {
-            return ['form', 'table', 'chart', 'content', 'circle', 'progress', 'dot-orbit'].indexOf(value) !== -1
+            return [
+                'form', 'table', 'chart', 'content',
+                'circle', 'progress', 'dot-orbit',
+                'text', 'list', 'list-single',
+            ].indexOf(value) !== -1
         },
     },
     loading: {

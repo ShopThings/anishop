@@ -1,7 +1,7 @@
 <template>
     <partial-card ref="tableContainer">
         <template #header>
-            لیست نظرات محصول -
+            لیست دیدگاه‌ها محصول -
             <span
                 v-if="product?.id"
                 class="text-teal-600"

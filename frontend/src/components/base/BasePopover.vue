@@ -17,7 +17,7 @@
                 :class="[
                     'absolute z-[10] origin-top-right rounded-md overflow-y-auto max-h-96',
                     'bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none',
-                    panelKlass
+                    panelKlass,
                 ]">
                 <slot name="panel" :close="close"></slot>
             </PopoverPanel>
@@ -32,7 +32,7 @@ defineProps({
     panelKlass: {
         type: String,
         default: 'right-0 top-full mt-3 w-80'
-    }
+    },
 })
 </script>
 

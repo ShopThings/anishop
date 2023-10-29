@@ -254,7 +254,7 @@ return [
         "weight" => "وزن",
         "type" => "نوع",
         "blog" => "بلاگ",
-        "comment" => "نظر",
+        "comment" => "دیدگاه",
         "answer" => "پاسخ",
         "question" => "سؤال",
         "zip_code" => "کد پستی",

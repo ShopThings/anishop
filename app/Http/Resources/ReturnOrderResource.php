@@ -20,6 +20,7 @@ class ReturnOrderResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'user' => $this->whenLoaded('user'),
+            'order_detail_id' => $this->order_detail_id,
             'code' => $this->code,
             'description' => $this->description,
             'not_accepted_description' => $this->not_accepted_description,

@@ -57,7 +57,7 @@ class UpdateBlogRequest extends FormRequest
     public function attributes()
     {
         return [
-            'is_commenting_allowed' => 'اجازه ارسال نظر',
+            'is_commenting_allowed' => 'اجازه ارسال دیدگاه',
         ];
     }
 }

@@ -31,7 +31,7 @@
                                 <base-popover-side>
                                     <template #button>
                                         <button type="button"
-                                                class="relative w-[45] h-[45] border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 rounded-lg active:bg-gray-200 focus:bg-sky-50 transition-all flex justify-between items-center">
+                                                class="relative w-[45] h-[45] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
                                             <Bars3Icon class="h-6 w-6"/>
                                         </button>
                                     </template>
@@ -41,7 +41,7 @@
                                                 منو
                                             </span>
                                             <button @click="close" type="button"
-                                                    class="w-[45] h-[45] border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 rounded-lg active:bg-gray-200 focus:bg-sky-50 transition-all">
+                                                    class="w-[45] h-[45] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
                                                 <XMarkIcon class="h-6 w-6"/>
                                             </button>
                                         </div>

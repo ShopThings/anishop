@@ -21,8 +21,8 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'key_id' => $this->key_id,
             'order_detail' => $this->whenLoaded('detail'),
-            'code' => $this->code,
-            'payment_method_code' => $this->payment_method_code,
+            'payments' => $this->whenLoaded('payments'),
+            'must_pay_price' => $this->must_pay_price,
             'payment_method_title' => $this->payment_method_title,
             'payment_method_type' => [
                 'text' => $this->payment_method_type,
@@ -33,11 +33,10 @@ class OrderResource extends JsonResource
                 'value' => PaymentStatusesEnum::getTranslations($this->payment_status),
             ],
             'payment_status_changed_at' => $this->payment_status_changed_at,
-            'payment_status_changed_by' => $this->payment_status_changed_by,
+            'payment_status_changed_by' => $this->whenLoaded('paymentStatusChanger'),
             'payed_at' => $this->payed_at
                 ? verta($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'must_delete_later' => $this->must_delete_later,
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

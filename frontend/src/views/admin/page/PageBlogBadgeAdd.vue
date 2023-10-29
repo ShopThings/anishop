@@ -1,7 +1,7 @@
 <template>
     <partial-card>
         <template #header>
-            ایجاد برچسب نظر جدید
+            ایجاد برچسب دیدگاه جدید
         </template>
         <template #body>
             <div class="p-3">
@@ -12,7 +12,7 @@
                             on-label="نمایش برچسب"
                             name="is_published"
                             :enabled="true"
-                            sr-text="نمایش/عدم نمایش برچسب نظر"
+                            sr-text="نمایش/عدم نمایش برچسب دیدگاه"
                             @change="(status) => {publishStatus=status}"
                         />
                     </div>

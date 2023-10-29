@@ -17,7 +17,7 @@
         <div class="px-2 py-3 text-left">
             <base-button
                 type="submit"
-                class="bg-lime-500 text-white mr-auto px-6 w-full sm:w-auto"
+                class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
                 :disabled="isSubmitting"
             >
                 <VTransitionFade>

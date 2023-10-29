@@ -5,7 +5,7 @@
             class="min-h-[400px] w-full h-full p-3 border bg-white rounded-lg shadow-lg"
         >
             <router-link
-                :to="{name: 'product_detail', params: {id: product.id}}"
+                :to="{name: 'product.detail', params: {id: product.id}}"
                 target="_blank"
                 class="group"
             >
@@ -18,7 +18,7 @@
 
             <div class="mt-3 flex flex-col justify-center">
                 <router-link
-                    :to="{name: 'product_detail', params: {id: product.id}}"
+                    :to="{name: 'product.detail', params: {id: product.id}}"
                     target="_blank"
                     class="text-sm leading-loose h-[52px] ellipsis-2 hover:text-indigo-600 transition"
                     :title="product.title"

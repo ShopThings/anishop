@@ -1,11 +1,11 @@
 <template>
     <partial-card ref="tableContainer">
         <template #header>
-            لیست نظرات بلاگ -
-            <span
-                v-if="blog?.id"
-                class="text-teal-600"
-            >{{ blog?.title }}</span>
+          لیست دیدگاه‌های بلاگ -
+          <span
+              v-if="blog?.id"
+              class="text-teal-600"
+          >{{ blog?.title }}</span>
         </template>
 
         <template #body>

@@ -808,14 +808,14 @@ export const adminRoutes = {
                     name: 'admin.product.comments',
                     component: () => import('../views/admin/product/PageProductComments.vue'),
                     meta: {
-                        title: 'نظرات محصول',
+                        title: 'دیدگاه‌های محصول',
                         breadcrumb: [
                             {
                                 name: 'محصولات',
                                 link: 'admin.products',
                             },
                             {
-                                name: 'نظرات محصول',
+                                name: 'دیدگاه‌های محصول',
                             },
                         ],
                     },
@@ -825,19 +825,19 @@ export const adminRoutes = {
                     name: 'admin.product.comment.detail',
                     component: () => import('../views/admin/product/PageProductCommentDetail.vue'),
                     meta: {
-                        title: 'جزئیات نظر محصول',
+                        title: 'جزئیات دیدگاه محصول',
                         breadcrumb: [
                             {
                                 name: 'محصولات',
                                 link: 'admin.products',
                             },
                             {
-                                name: 'نظرات محصول',
+                                name: 'دیدگاه‌های محصول',
                                 link: 'admin.product.comments',
                                 params: ['id'],
                             },
                             {
-                                name: 'جزئیات نظر',
+                                name: 'جزئیات دیدگاه',
                             },
                         ],
                     },
@@ -1163,14 +1163,14 @@ export const adminRoutes = {
                     name: 'admin.blogs.badges',
                     component: () => import('../views/admin/page/PageBlogsBadges.vue'),
                     meta: {
-                        title: 'برچسب نظرات',
+                        title: 'برچسب دیدگاه‌ها',
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
                                 link: 'admin.blogs',
                             },
                             {
-                                name: 'برچسب نظرات',
+                                name: 'برچسب دیدگاه‌ها',
                             },
                         ],
                     },
@@ -1180,7 +1180,7 @@ export const adminRoutes = {
                     name: 'admin.blog.badge.add',
                     component: () => import('../views/admin/page/PageBlogBadgeAdd.vue'),
                     meta: {
-                        title: 'افزودن برچسب نظر',
+                        title: 'افزودن برچسب دیدگاه',
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
@@ -1253,7 +1253,7 @@ export const adminRoutes = {
                     name: 'admin.blog.badge.edit',
                     component: () => import('../views/admin/page/PageBlogBadgeEdit.vue'),
                     meta: {
-                        title: 'ویرایش برچسب نظر بلاگ',
+                        title: 'ویرایش برچسب دیدگاه بلاگ',
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
@@ -1294,14 +1294,14 @@ export const adminRoutes = {
                             name: 'admin.blog.comments',
                             component: () => import('../views/admin/page/PageBlogComments.vue'),
                             meta: {
-                                title: 'نظرات بلاگ',
+                                title: 'دیدگاه‌های بلاگ',
                                 breadcrumb: [
                                     {
                                         name: 'بلاگ‌ها',
                                         link: 'admin.blogs',
                                     },
                                     {
-                                        name: 'لیست نظرات بلاگ',
+                                        name: 'لیست دیدگاه‌های بلاگ',
                                     },
                                 ],
                             },
@@ -1311,18 +1311,18 @@ export const adminRoutes = {
                             name: 'admin.blog.comment.detail',
                             component: () => import('../views/admin/page/PageBlogCommentDetail.vue'),
                             meta: {
-                                title: 'جزئیات نظر',
+                                title: 'جزئیات دیدگاه',
                                 breadcrumb: [
                                     {
                                         name: 'بلاگ‌ها',
                                         link: 'admin.blogs',
                                     },
                                     {
-                                        name: 'نظرات بلاگ',
+                                        name: 'دیدگاه‌های بلاگ',
                                         link: 'admin.blog.comments',
                                     },
                                     {
-                                        name: 'جزئیات نظر',
+                                        name: 'جزئیات دیدگاه',
                                     },
                                 ],
                             },

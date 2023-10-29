@@ -32,7 +32,6 @@
                         'ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600',
                         'sm:text-sm sm:leading-6 min-h-[8rem]',
                         klass,
-                        isVisiblePassword ? '!ring-amber-500' : '',
                         hasIconSlot ? 'pr-10' : '',
                         ]"
                 @change="handleChange($event, false)"
@@ -107,7 +106,6 @@ const slots = useSlots()
 
 const hasIconSlot = !!slots['icon']
 const hasLabelSlot = !!slots['label']
-const isVisiblePassword = ref(false)
 const inp = ref()
 const labelId = ref(null)
 

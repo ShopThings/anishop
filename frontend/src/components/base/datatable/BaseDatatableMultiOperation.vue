@@ -51,7 +51,7 @@
                             v-tooltip.top="operation.btn.tooltip ? operation.btn.tooltip : ''"
                             class="text-sm mt-3 flex items-center"
                             :class="[
-                                key != props.operations.length - 1 ? 'rounded-none' : 'rounded-l-lg rounded-r-none',
+                                key !== props.operations.length - 1 ? 'rounded-none' : 'rounded-l-lg rounded-r-none',
                                 operation.btn.class ? operation.btn.class : '',
                             ]"
                         >

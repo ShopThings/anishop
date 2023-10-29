@@ -36,7 +36,7 @@
                                 <router-link
                                     :to="{name: 'admin.product.detail', params: {id: 1}}"
                                     target="_blank"
-                                    class="px-3 py-2 text-primary hover:text-opacity-90 md:border-t"
+                                    class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
                                 >
                                     {{ item.title }}
                                 </router-link>
@@ -119,5 +119,3 @@ onMounted(() => {
 <style scoped>
 
 </style>
-<script setup>
-</script>

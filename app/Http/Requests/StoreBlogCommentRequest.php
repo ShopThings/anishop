@@ -62,9 +62,9 @@ class StoreBlogCommentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'blog' => 'بلاگ برای ثبت نظر',
-            'badge' => 'برچسب نظر',
-            'comment' => 'نظر مورد پاسخ',
+            'blog' => 'بلاگ برای ثبت دیدگاه',
+            'badge' => 'برچسب دیدگاه',
+            'comment' => 'دیدگاه مورد پاسخ',
             'answer_to' => 'پاسخ گیرنده',
         ];
     }

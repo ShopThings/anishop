@@ -91,7 +91,7 @@ const table = reactive({
             isKey: true,
         },
         {
-            label: "شماره فاکتور",
+            label: "کد سفارش",
             field: "code",
             columnClasses: 'whitespace-nowrap',
             sortable: true,

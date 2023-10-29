@@ -29,10 +29,10 @@ class OrderDetailResource extends JsonResource
             'postal_code' => $this->postal_code,
             'receiver_name' => $this->receiver_name,
             'receiver_mobile' => $this->receiver_mobile,
+            'description' => $this->description,
             'coupon_code' => $this->coupon_code,
             'coupon_price' => $this->coupon_price,
-            'city_shipping_price' => $this->city_shipping_price,
-            'weight_shipping_price' => $this->weight_shipping_price,
+            'shipping_price' => $this->shipping_price,
             'discount_price' => $this->discount_price,
             'final_price' => $this->final_price,
             'total_price' => $this->total_price,
@@ -42,12 +42,14 @@ class OrderDetailResource extends JsonResource
                 ? verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'send_status_changed_by' => $this->whenLoaded('sendStatusChanger'),
+            'is_needed_factor' => $this->is_needed_factor,
             'is_in_place_delivery' => $this->is_in_place_delivery,
             'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
             'ordered_at' => $this->ordered_at
                 ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'orders' => $this->whenLoaded('orders'),
+            'payments' => $this->whenLoaded('orders.payments'),
             'items' => $this->whenLoaded('items'),
             'return_order' => $this->whenLoaded('returnOrder'),
         ];

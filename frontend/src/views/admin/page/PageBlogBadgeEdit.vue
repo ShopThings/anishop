@@ -1,7 +1,7 @@
 <template>
     <partial-card>
         <template #header>
-            ویرایش برچسب نظر
+            ویرایش برچسب دیدگاه
         </template>
         <template #body>
             <div class="p-3">
@@ -17,7 +17,7 @@
                                     on-label="نمایش برچسب"
                                     name="is_published"
                                     :enabled="badge?.is_published"
-                                    sr-text="نمایش/عدم نمایش برچسب نظر"
+                                    sr-text="نمایش/عدم نمایش برچسب دیدگاه"
                                     @change="(status) => {publishStatus=status}"
                                 />
                             </div>

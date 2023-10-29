@@ -59,6 +59,7 @@ const props = defineProps({
         required: true,
     },
     defaultIndex: {
+        type: [Number, String],
         default: 0,
     },
     tabButtonExtraClass: String,

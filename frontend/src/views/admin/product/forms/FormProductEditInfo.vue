@@ -96,10 +96,10 @@
                             </div>
                             <div class="p-2 w-full sm:w-auto sm:grow">
                                 <base-switch
-                                    label="اجازه ارسال نظر"
+                                    label="اجازه ارسال دیدگاه"
                                     name="is_commenting_allowed"
                                     :enabled="info?.is_commenting_allowed"
-                                    sr-text="اجازه/عدم اجازه ارسال نظر"
+                                    sr-text="اجازه/عدم اجازه ارسال دیدگاه"
                                     @change="(status) => {allowCommentingStatus = status}"
                                 />
                             </div>

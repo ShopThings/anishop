@@ -56,6 +56,9 @@ class UpdateOrderDetailRequest extends FormRequest
                 'sometimes',
                 'exists:' . OrderBadge::class . ',id',
             ],
+            'description' => [
+                'sometimes',
+            ],
         ];
     }
 

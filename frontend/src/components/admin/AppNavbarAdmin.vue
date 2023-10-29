@@ -8,13 +8,13 @@
                             <base-popover-side panel-class="">
                                 <template #button>
                                     <button type="button"
-                                            class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 active:bg-gray-200 focus:bg-sky-50 transition-all flex justify-between items-center z-[1]">
+                                            class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]">
                                         <Bars3BottomRightIcon class="w-6 h-6"/>
                                     </button>
                                 </template>
 
                                 <template #panel="{close}">
-                                    <nav :class="sidebarBgColor" ref="sidebar">
+                                    <nav class="h-full" :class="sidebarBgColor" ref="sidebar">
                                         <button
                                             type="button"
                                             class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
@@ -52,7 +52,8 @@
                                                                 <template v-if="user.roles">
                                                                     <span v-for="(role, key, idx) in user.roles">
                                                                         {{ role }}
-                                                                        <span v-if="idx != Object.keys(user.roles).length - 1">, </span>
+                                                                        <span
+                                                                            v-if="idx !== Object.keys(user.roles).length - 1">, </span>
                                                                     </span>
                                                                 </template>
                                                                 <template v-else>

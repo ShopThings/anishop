@@ -93,6 +93,9 @@ class OrderService extends Service implements OrderServiceInterface
                 $updateAttributes['send_status_changed_by'] = Auth::user()?->id;
             }
         }
+        if (isset($attributes['description'])) {
+            $updateAttributes['description'] = $attributes['description'];
+        }
 
         $res = $this->repository->update($id, $updateAttributes);
 

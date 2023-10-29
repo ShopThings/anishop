@@ -5,14 +5,6 @@
     >
         <template #content>
             <div class="bg-white mb-3 rounded-lg border p-3">
-                جزئیات سفارش -
-                <span
-                    v-if="order?.id"
-                    class="text-teal-600"
-                >{{ order?.code }}</span>
-            </div>
-
-            <div class="bg-white mb-3 rounded-lg border p-3">
                 سفارش دهنده -
                 <router-link
                     v-if="order?.user.id"
@@ -20,169 +12,354 @@
                     class="text-blue-600 hover:text-opacity-90"
                 >{{
                         (order?.user?.first_name || order?.user?.last_name) ? (order?.user?.first_name + ' ' + order?.user?.last_name).trim() : order?.user.username
-                    }}</router-link>
+                    }}
+                </router-link>
             </div>
 
-            <div class="lg:flex lg:flex-wrap lg:gap-3">
-                <partial-card class="mb-3 lg:grow">
-                    <template #header>
-                        تغییر وضعیت پرداخت
-                    </template>
+            <div class="md:flex md:gap-3">
+                <partial-card class="mb-3 md:max-w-xs">
                     <template #body>
                         <div class="p-3">
-                            <form-order-change-payment-status
-                                v-model:selected="paymentStatus"
-                            />
+                            <div class="text-gray-500">
+                                خلاصه سفارش
+                            </div>
+
+                            <div class="mt-2 text-sm divide-y w-full">
+                                <div class="flex gap-2 items-center py-1">
+                                    <partial-badge-status-send class="w-full"/>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">کد سفارش</span>
+                                    <div class="tracking-widest grow">172584328151083</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">نام گیرنده:</span>
+                                    <div class="grow truncate">مهران مرادی</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">شماره تماس:</span>
+                                    <div class="tracking-widest grow">۰۹۹۳۸۳۰۶۱۹۸</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">استان:</span>
+                                    <div class="grow">کرمانشاه</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">شهر:</span>
+                                    <div class="grow">قصر شیرین</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">درخواست فاکتور:</span>
+                                    <div class="grow">خیر</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-gray-400 shrink-0">تحویل حضوری:</span>
+                                    <div class="grow">خیر</div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-emerald-400 shrink-0">مبلغ قابل پرداخت:</span>
+                                    <div class="grow text-emerald-600">
+                                        <span class="tracking-widest">۶۷۹,۰۰۰</span>
+                                        <span class="text-xs mr-1">تومان</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2 items-center py-1">
+                                    <span class="text-xs text-emerald-400 shrink-0">پرداخت شده تاکنون:</span>
+                                    <div class="grow text-emerald-600">
+                                        <span class="tracking-widest">۶۷۹,۰۰۰</span>
+                                        <span class="text-xs mr-1">تومان</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </template>
                 </partial-card>
 
-                <partial-card class="mb-3 lg:grow">
-                    <template #header>
-                        تغییر وضعیت ارسال
-                    </template>
+                <partial-card class="mb-3 md:grow">
                     <template #body>
                         <div class="p-3">
-                            <form-order-change-send-status
-                                v-model:selected="sendStatus"
-                            />
+                            <div class="text-gray-500">
+                                وضعیت پرداخت
+                            </div>
+
+                            <div class="max-h-72 mt-2 my-custom-scrollbar">
+                                <base-loading-panel type="table" :loading="ordersTableSetting.isLoading">
+                                    <template #content>
+                                        <base-semi-datatable
+                                            :is-loading="ordersTableSetting.isLoading"
+                                            :columns="ordersTableSetting.columns"
+                                            :rows="ordersTableSetting.rows"
+                                            :total="ordersTableSetting.total"
+                                        >
+                                            <template #payment_status="{value}">
+                                                <partial-badge-status-payment/>
+                                            </template>
+
+                                            <template #payed_at="{value}">
+                                                <span class="text-sm">{{ value.payed_at }}</span>
+                                            </template>
+
+                                            <template #created_at="{value}">
+                                                <span class="text-sm">{{ value.created_at }}</span>
+                                            </template>
+
+                                            <template #must_pay_price="{value}">
+                                                <span class="text-sm">{{ value.must_pay_price }}</span>
+                                            </template>
+
+                                            <template #gateway_type="{value}">
+                                                <span class="text-sm">{{ value.gateway_type }}</span>
+                                            </template>
+
+                                            <template #payment_status_changed_at="{value}">
+                                                <span class="text-sm">{{ value.payment_status_changed_at }}</span>
+                                            </template>
+
+                                            <template #payment_status_changed_by="{value}">
+                                                <span class="text-sm">{{ value.payment_status_changed_by }}</span>
+                                            </template>
+
+                                            <template #op_1="{value}">
+                                                <base-select
+                                                    options-text="text"
+                                                    options-key="value"
+                                                    options="paymentStatuses"
+                                                    :selected="value.payment_status"
+                                                    @change="(selected) => {changePaymentStatus(selected, value)}"
+                                                />
+                                            </template>
+
+                                            <template #op_2="{value}">
+                                                <a
+                                                    href="javascript:void(0)"
+                                                    class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
+                                                    @click="() => {showOrderPaymentDetail(value)}"
+                                                >
+                                                    مشاهده جزئیات پرداخت
+                                                </a>
+                                            </template>
+                                        </base-semi-datatable>
+                                    </template>
+                                </base-loading-panel>
+                            </div>
                         </div>
+
+                        <partial-dialog
+                            v-model:open="orderPaymentDetailOpen"
+                            container-klass="overflow-auto"
+                        >
+                            <template #title>
+                                جزئیات پرداخت
+                            </template>
+
+                            <template #body>
+                                <base-datatable
+                                    :is-loading="false"
+                                    :is-static-mode="true"
+                                    :is-slot-mode="true"
+                                    :columns="orderPaymentsTableSetting.columns"
+                                    :rows="orderPaymentsTableSetting.rows"
+                                >
+                                    <template #id="{value, index}">
+                                        {{ index }}
+                                    </template>
+                                    <template #status="{value}">
+                                        {{ value.status }}
+                                    </template>
+                                    <template #receipt="{value}">
+                                        {{ value.receipt }}
+                                    </template>
+                                    <template #message="{value}">
+                                        {{ value.message }}
+                                    </template>
+                                    <template #gateway_type="{value}">
+                                        {{ value.gateway_type }}
+                                    </template>
+                                    <template #payed_at="{value}">
+                                        {{ value.payed_at }}
+                                    </template>
+                                    <template #created_at="{value}">
+                                        {{ value.created_at }}
+                                    </template>
+                                </base-datatable>
+                            </template>
+                        </partial-dialog>
                     </template>
                 </partial-card>
             </div>
+
+            <partial-card class="mb-3 lg:grow">
+                <template #header>
+                    تغییر وضعیت ارسال
+                </template>
+                <template #body>
+                    <div class="p-3">
+                        <form-order-change-send-status
+                            v-model:selected="sendStatus"
+                        />
+                    </div>
+                </template>
+            </partial-card>
 
             <div class="mb-3">
-                <base-accordion
-                    :open="false"
-                    btn-class="text-white bg-pink-600 hover:bg-pink-500 focus-visible:ring-pink-800"
-                    btn-icon-class="text-white"
-                    panel-class="bg-white mt-3 rounded-lg !p-4"
-                >
+                <base-accordion :open="false">
                     <template #button>
                         اطلاعات گیرنده
                     </template>
                     <template #panel>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="نام"/>
-                                <span class="text-teal-600 mt-1">مهران مرادی</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="کد ملی"/>
-                                <span class="text-teal-600 mt-1">۳۳۶۰۳۶۵۸۸۷</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="شماره تماس"/>
-                                <span class="text-teal-600 mt-1">۰۹۹۳۸۳۰۶۱۹۸</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="استان"/>
-                                <span class="text-teal-600 mt-1">کرمانشاه</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="شهر"/>
-                                <span class="text-teal-600 mt-1">قصر شیرین</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="کدپستی"/>
-                                <span class="text-teal-600 mt-1">۶۷۷۴۱۱۶۱۹۵</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded sm:col-span-2">
-                                <partial-input-label title="آدرس"/>
-                                <span class="text-teal-600 mt-1">کرمانشاه قصرشیرین قصرجدید فاز1</span>
-                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">نام:</span>
+                                        <div class="text-black">مهران مرادی</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">کد ملی:</span>
+                                        <div class="text-black tracking-widest">۳۳۶۰۳۶۵۸۸۷</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">شماره تماس:</span>
+                                        <span class="text-black tracking-widest">۰۹۹۳۸۳۰۶۱۹۸</span>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">استان:</span>
+                                        <div class="text-black">کرمانشاه</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">شهر:</span>
+                                        <div class="text-black">قصر شیرین</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
+                                        <div class="text-black tracking-widest">۶۷۷۴۱۱۶۱۹۵</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3 sm:col-span-2 lg:col-span-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">آدرس:</span>
+                                        <div class="text-black">
+                                            کرمانشاه قصرشیرین قصرجدید فاز 1
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
                         </div>
                     </template>
                 </base-accordion>
             </div>
 
             <div class="mb-3">
-                <base-accordion
-                    :open="false"
-                    btn-class="text-white bg-fuchsia-600 hover:bg-fuchsia-500 focus-visible:ring-fuchsia-800"
-                    btn-icon-class="text-white"
-                    panel-class="bg-white mt-3 rounded-lg !p-4"
-                >
+                <base-accordion :open="false">
                     <template #button>
                         جزئیات سفارش
                     </template>
                     <template #panel>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="شماره فاکتور"/>
-                                <span class="text-teal-600 mt-1">172584328151083</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="مبلغ قابل پرداخت"/>
-                                <span class="text-teal-600 mt-1">۶۷۹,۰۰۰ تومان</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="تاریخ ثبت سفارش"/>
-                                <span class="text-teal-600 mt-1">۱۷ شهریور ۱۴۰۲ در ساعت ۱۹ و ۳۴ دقیقه</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="وضعیت سفارش"/>
-                                <div class="mt-1">
-                                    <span
-                                        class="bg-cyan-600 rounded text-white py-1 px-2 inline-block">در صف بررسی</span>
-                                </div>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="طریقه ارسال"/>
-                                <span class="text-teal-600 mt-1">پست</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="هزینه ارسال"/>
-                                <span class="text-teal-600 mt-1">۴۴,۰۰۰ تومان</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="تحویل حضوری"/>
-                                <span class="text-teal-600 mt-1">خیر</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="عنوان کوپن"/>
-                                <span class="text-teal-600 mt-1">-</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="مبلغ کوپن"/>
-                                <span class="text-teal-600 mt-1">-</span>
-                            </div>
-                        </div>
-                    </template>
-                </base-accordion>
-            </div>
-
-            <div class="mb-3">
-                <base-accordion
-                    :open="false"
-                    btn-class="text-white bg-purple-600 hover:bg-purple-500 focus-visible:ring-pink-800"
-                    btn-icon-class="text-white"
-                    panel-class="bg-white mt-3 rounded-lg !p-4"
-                >
-                    <template #button>
-                        وضعیت مالی
-                    </template>
-                    <template #panel>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="وضعیت پرداخت"/>
-                                <div class="mt-1">
-                                    <span
-                                        class="bg-red-600 rounded text-white py-1 px-2 inline-block">پرداخت نشده</span>
-                                </div>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="کد رهگیری"/>
-                                <span class="text-teal-600 mt-1">-</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="تاریخ پرداخت"/>
-                                <span class="text-teal-600 mt-1">-</span>
-                            </div>
-                            <div class="py-1 px-3 border border-slate-300 rounded">
-                                <partial-input-label title="شیوه پرداخت"/>
-                                <span class="text-teal-600 mt-1">پرداخت الکترونیک سداد</span>
-                            </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">کد سفارش:</span>
+                                        <div class="text-black tracking-widest">172584328151083</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">مبلغ قابل پرداخت:</span>
+                                        <div class="text-black">
+                                            <span class="tracking-widest">۶۷۹,۰۰۰</span>
+                                            <span class="text-xs mr-1">تومان</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">تاریخ ثبت سفارش:</span>
+                                        <div class="text-black">
+                                            ۱۷ شهریور ۱۴۰۲ در ساعت ۱۹ و ۳۴ دقیقه
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">وضعیت سفارش:</span>
+                                        <div class="text-black">
+                                            <partial-badge-status-send/>
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">هزینه ارسال:</span>
+                                        <div class="text-black">
+                                            <span class="tracking-widest">۴۴,۰۰۰</span>
+                                            <span class="text-xs mr-1">تومان</span>
+                                        </div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">درخواست فاکتور:</span>
+                                        <div class="text-black">خیر</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">تحویل حضوری:</span>
+                                        <div class="text-black">خیر</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">کد کوپن:</span>
+                                        <div class="text-black">-</div>
+                                    </div>
+                                </template>
+                            </partial-card>
+                            <partial-card class="p-3">
+                                <template #body>
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-gray-400 mb-1">مبلغ کوپن:</span>
+                                        <div class="text-black">-</div>
+                                    </div>
+                                </template>
+                            </partial-card>
                         </div>
                     </template>
                 </base-accordion>
@@ -265,15 +442,18 @@ import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 import {useRequest} from "../../../composables/api-request.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseAccordion from "../../../components/base/BaseAccordion.vue";
-import FormOrderChangePaymentStatus from "./forms/FormOrderChangePaymentStatus.vue";
 import FormOrderChangeSendStatus from "./forms/FormOrderChangeSendStatus.vue";
 import BaseDatatable from "../../../components/base/BaseDatatable.vue";
 import BaseButton from "../../../components/base/BaseButton.vue";
 import {ArrowDownTrayIcon} from "@heroicons/vue/24/outline/index.js";
 import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import PartialBadgeStatusSend from "../../../components/partials/PartialBadgeStatusSend.vue";
+import BaseSemiDatatable from "../../../components/base/BaseSemiDatatable.vue";
+import PartialBadgeStatusPayment from "../../../components/partials/PartialBadgeStatusPayment.vue";
+import BaseSelect from "../../../components/base/BaseSelect.vue";
+import PartialDialog from "../../../components/partials/PartialDialog.vue";
 
 const route = useRoute()
 const toast = useToast()
@@ -286,20 +466,142 @@ const idParam = computed(() => {
 const loading = ref(false)
 
 const order = ref(null)
+const paymentStatuses = ref(null)
 const paymentStatus = ref(null)
 const sendStatus = ref(null)
 
-// onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.orders.show, {order: idParam.value}), null, {
-//         success: (response) => {
-//             order.value = response.data
-//             paymentStatus.value = response.data.payment_status
-//             sendStatus.value = response.data.send_status
-//
-//             loading.value = false
-//         },
-//     })
-// })
+onMounted(() => {
+    // useRequest(apiReplaceParams(apiRoutes.admin.orders.paymentStatuses), null, {
+    //     success: (response) => {
+    //         paymentStatuses.value = response.data
+    //
+    //         loading.value = false
+    //     },
+    // })
+    //
+    // useRequest(apiReplaceParams(apiRoutes.admin.orders.show, {order: idParam.value}), null, {
+    //     success: (response) => {
+    //         order.value = response.data
+    //         paymentStatus.value = response.data.payment_status
+    //         sendStatus.value = response.data.send_status
+    //
+    //         loading.value = false
+    //     },
+    // })
+})
+
+//-----------------------------------
+// Payment section
+//-----------------------------------
+const orderPaymentDetailOpen = ref(false)
+
+const ordersTableSetting = reactive({
+    isLoading: false,
+    columns: [
+        {
+            field: 'op_1',
+            label: '',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'payment_status',
+            label: 'وضعیت پرداخت',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'payed_at',
+            label: 'تاریخ پرداخت',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'created_at',
+            label: 'تاریخ ایجاد',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'must_pay_price',
+            label: 'مبلغ',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'gateway_type',
+            label: 'نوع درگاه',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'payment_status_changed_at',
+            label: 'تاریخ تغییر وضعیت',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'payment_status_changed_by',
+            label: 'تغییر وضعیت توسط',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'op_2',
+            label: '',
+            columnClasses: 'whitespace-nowrap',
+        },
+    ],
+    rows: [],
+    total: 0,
+})
+
+const orderPaymentsTableSetting = reactive({
+    columns: [
+        {
+            label: "#",
+            field: "id",
+            columnStyles: "width: 3%;",
+            sortable: true,
+            isKey: true,
+        },
+        {
+            field: 'status',
+            label: 'وضعیت پرداخت',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'receipt',
+            label: 'کد رهگیری',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'message',
+            label: 'پیام',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'gateway_type',
+            label: 'از طریق درگاه',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'payed_at',
+            label: 'تاریخ پرداخت',
+            columnClasses: 'whitespace-nowrap',
+        },
+        {
+            field: 'created_at',
+            label: 'تاریخ اتصال',
+            columnClasses: 'whitespace-nowrap',
+        },
+    ],
+    rows: [],
+})
+
+function changePaymentStatus(selected, item) {
+    // change payment status
+    // ...
+}
+
+function showOrderPaymentDetail(item) {
+    orderPaymentsTableSetting.rows = item.payments
+    orderPaymentDetailOpen.value = true
+}
+
+//-----------------------------------
 
 //-----------------------------------
 // Factor downloading
@@ -313,7 +615,7 @@ function factorDownloadHandler() {
 //-----------------------------------
 
 //-----------------------------------
-// Table stuffs
+// Items stuffs
 //-----------------------------------
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -401,5 +703,3 @@ doSearch(0, 15, 'id', 'desc')
 <style scoped>
 
 </style>
-<script setup>
-</script>

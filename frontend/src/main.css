@@ -13,6 +13,42 @@
 /*    color: #3057d3;*/
 /*}*/
 
+/* Define Custom Scrollbar */
+.my-custom-scrollbar {
+    overflow: auto;
+}
+
+.my-custom-scrollbar::-webkit-scrollbar {
+    width: 20px;
+}
+
+.my-custom-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 100px;
+    border: 7px solid transparent;
+    background-clip: content-box;
+    background-color: rgba(100, 116, 139, .7);
+}
+
+.my-custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    border: 5px solid transparent;
+}
+
+.my-custom-scrollbar::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+.my-custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(100, 116, 139, 1);
+}
+
+.my-custom-scrollbar.my-custom-scrollbar-light::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, .8);
+}
+
+.my-custom-scrollbar.my-custom-scrollbar-light::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 1);
+}
+
 /* FloatingVue */
 .v-popper--theme-dropdown .v-popper__arrow-container {
     display: none;

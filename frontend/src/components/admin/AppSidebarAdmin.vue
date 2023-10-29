@@ -48,12 +48,12 @@
                                     {{ user.username }}
                                 </template>
                             </span>
-                                <span class="text-center mt-1 text-xs opacity-80">
+                            <span class="text-center mt-1 text-xs opacity-80">
                                 <template v-if="user.roles">
                                     <span v-for="(role, key, idx) in user.roles">
                                         {{ role }}
                                         <span
-                                            v-if="idx != Object.keys(user.roles).length - 1">, </span>
+                                            v-if="idx !== Object.keys(user.roles).length - 1">, </span>
                                     </span>
                                 </template>
                                 <template v-else>

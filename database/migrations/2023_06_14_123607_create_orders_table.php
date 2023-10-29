@@ -15,10 +15,9 @@ return new class extends Migration {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('key_id')
-                ->constrained('order_details')->cascadeOnDelete()->cascadeOnUpdate()
-                ->comment('for make more than one order relate to another');
-            $table->string('code', 25)->unique();
-            $table->string('payment_method_code', 25);
+                ->comment('for make more than one order relate to another')
+                ->constrained('order_details')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedBigInteger('must_pay_price');
             $table->string('payment_method_title');
             $table->enum('payment_method_type', array_map(fn($item) => $item->name, PaymentTypesEnum::cases()));
             $table->enum('payment_status', array_map(fn($item) => $item->name, PaymentStatusesEnum::cases()));
@@ -26,7 +25,8 @@ return new class extends Migration {
             $table->foreignId('payment_status_changed_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->timestamp('payed_at')->nullable();
-            $table->boolean('must_delete_later')->default(false);
+            $table->timestamp('can_pay_again_at')->nullable()
+                ->comment('if it has error for any reason, user can pay in after a specific time');
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

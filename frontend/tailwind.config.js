@@ -10,9 +10,10 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#3057d3',
-                secondary: '#41475b',
-                cool: '#f4f7ff',
+                primary: '#3057D3',
+                secondary: '#41475B',
+                cool: '#F4F7FF',
+                awesome: '#EBF2FC',
             },
             animation: {
                 wiggle: 'wiggle 1s ease-in-out infinite',
@@ -29,4 +30,3 @@ export default {
         require('@tailwindcss/forms'),
     ],
 }
-

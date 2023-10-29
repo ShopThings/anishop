@@ -14,4 +14,6 @@ Route::prefix('user')
         Route::get('/', function (Request $request) {
             return $request->user();
         });
+
+//        Route::any('payments/{payment}/verify', [PaymentsController, ['verify'])->name('payment.verify');
     });

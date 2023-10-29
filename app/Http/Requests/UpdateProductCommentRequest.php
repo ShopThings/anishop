@@ -39,7 +39,7 @@ class UpdateProductCommentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'condition' => 'وضعیت نظر',
+            'condition' => 'وضعیت دیدگاه',
             'status' => 'وضعیت خوانده شدن',
         ];
     }

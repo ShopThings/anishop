@@ -1,17 +1,17 @@
 <template>
     <new-creation-guide-top route-name="admin.blog.badge.add">
         <template #text>
-            با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش برچسب نظر نمایید
+            با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش برچسب دیدگاه نمایید
         </template>
         <template #buttonText>
             <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
-            افزودن برچسب نظر جدید
+            افزودن برچسب دیدگاه جدید
         </template>
     </new-creation-guide-top>
 
     <partial-card ref="tableContainer">
         <template #header>
-            لیست برچسب نظرات
+            لیست برچسب دیدگاه‌ها
         </template>
 
         <template #body>

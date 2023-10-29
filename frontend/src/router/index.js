@@ -44,14 +44,8 @@ const routes = [
     },
     {
         path: '/forget-password',
-        children: [
-            {
-                path: 'step1',
-                alias: [''],
-                name: 'forget_password.step1',
-                component: () => import('../views/PageForgetPasswordStep1.vue'),
-            },
-        ],
+        name: 'forget_password',
+        component: () => import('../views/PageForgetPassword.vue'),
         meta: {layout: 'layout-guest'},
     },
     {
@@ -60,6 +54,20 @@ const routes = [
         component: () => import('../views/PagePages.vue'),
         meta: {layout: 'layout-guest'},
     },
+
+    {
+        path: '/blog/',
+        name: 'blogs',
+        component: () => import('../views/PageBlogs.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+    {
+        path: '/blog/:id(\\d+)',
+        name: 'blog.detail',
+        component: () => import('../views/PageBlogDetail.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+
     {
         // /search/screens -> /search?q=screens
         path: '/search/:searchText',
@@ -79,8 +87,8 @@ const routes = [
         meta: {layout: 'layout-guest'},
     },
     {
-        path: '/product-detail/:id(\\d+)',
-        name: 'product_detail',
+        path: '/product/:id(\\d+)',
+        name: 'product.detail',
         component: () => import('../views/PageProductDetail.vue'),
         meta: {layout: 'layout-guest'},
     },
@@ -94,6 +102,19 @@ const routes = [
         path: '/categories',
         name: 'categories',
         component: () => import('../views/PageCategories.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+
+    {
+        path: '/contact',
+        name: 'contact',
+        component: () => import('../views/PageContact.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+    {
+        path: '/complaint',
+        name: 'complaint',
+        component: () => import('../views/PageComplaint.vue'),
         meta: {layout: 'layout-guest'},
     },
     //

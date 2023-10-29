@@ -308,7 +308,7 @@
                 <template #body>
                     <div class="bg-gray-50 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
                         <label for="dismissCommenting" class="ml-2 cursor-pointer grow">
-                            عدم در نظر گرفتن اجازه ارسال نظر
+                            عدم در نظر گرفتن اجازه ارسال دیدگاه
                         </label>
                         <base-checkbox
                             id="dismissCommenting"
@@ -319,10 +319,10 @@
 
                     <div class="p-2 w-full sm:w-auto sm:grow">
                         <base-switch
-                            label="اجازه ارسال نظر"
+                            label="اجازه ارسال دیدگاه"
                             name="is_commenting_allowed"
                             :enabled="true"
-                            sr-text="اجازه/عدم اجازه ارسال نظر"
+                            sr-text="اجازه/عدم اجازه ارسال دیدگاه"
                             @change="(status) => {allowCommentingStatus = status}"
                         />
                     </div>

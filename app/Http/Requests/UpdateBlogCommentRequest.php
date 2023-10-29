@@ -44,8 +44,8 @@ class UpdateBlogCommentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'badge' => 'برچسب نظر',
-            'condition' => 'وضعیت نظر',
+            'badge' => 'برچسب دیدگاه',
+            'condition' => 'وضعیت دیدگاه',
             'status' => 'وضعیت خوانده شدن',
         ];
     }

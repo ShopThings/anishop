@@ -328,14 +328,14 @@
                     <template #children>
                         <partial-sidebar-item-admin>
                             <router-link
-                                v-tooltip.left="'' + (mini ? 'برچسب نظرات' : '') + ''"
+                                v-tooltip.left="'' + (mini ? 'برچسب دیدگاه‌ها' : '') + ''"
                                 :to="{name: 'admin.blogs.badges'}"
                                 class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
                                 :class="[mini ? 'justify-center px-2' : 'px-3']"
                             >
                                 <ListBulletIcon v-if="mini" class="w-5 h-5"/>
                                 <span v-else
-                                      class="grow">برچسب نظرات</span>
+                                      class="grow">برچسب دیدگاه‌ها</span>
                             </router-link>
                         </partial-sidebar-item-admin>
                         <partial-sidebar-item-admin>

@@ -28,15 +28,6 @@ class CodeGeneratorHelper
     }
 
     /**
-     * @param int $length
-     * @return string
-     */
-    public static function PaymentMethodCode(int $length = 12): string
-    {
-        return static::generateCode(PaymentMethod::query(), 'code', $length);
-    }
-
-    /**
      * @param Builder $model
      * @param string $column
      * @param int $length

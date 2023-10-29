@@ -1,7 +1,7 @@
 <template>
     <partial-card>
         <template #header>
-            جزئیات نظر برای محصول -
+            جزئیات دیدگاه برای محصول -
             <span
                 v-if="product?.id"
                 class="text-teal-600"
@@ -29,14 +29,14 @@
                             v-if="comment?.prev_comment"
                             class="mt-3"
                         >
-                            <partial-input-label title="نظر پیشین"/>
+                            <partial-input-label title="دیدگاه پیشین"/>
                             <div class="rounded bg-gray-100 p-3 border leading-loose">
                                 {{ comment?.prev_comment }}
                             </div>
                         </div>
 
                         <div class="mt-3">
-                            <partial-input-label title="نظر کاربر"/>
+                            <partial-input-label title="دیدگاه کاربر"/>
                             <div class="rounded bg-blue-100 p-3 border leading-loose">
                                 {{ comment?.description ?? '-' }}
                             </div>

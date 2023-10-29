@@ -2,7 +2,7 @@
     <base-popover class="sm:relative" panel-klass="right-0 w-full sm:mt-3 sm:w-80">
         <template #button>
             <button type="button"
-                    class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 active:bg-gray-200 focus:bg-sky-50 transition-all flex justify-between items-center">
+                    class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
                 <BellAlertIcon class="h-6 w-6 "/>
                 <ChevronDownIcon class="h-3 w-3 mr-1"/>
 
@@ -16,7 +16,7 @@
                 <li class="py-2 px-4 flex flex-col">
                     <router-link to="#"
                                  class="flex justify-between items-center group px-4 py-3 hover:bg-indigo-50 transition rounded-lg">
-                        <span>نظرات</span>
+                        <span>دیدگاه شما</span>
                         <span class="w-6 h-6 rounded bg-teal-500 text-white px-1 text-center mr-2">5</span>
                     </router-link>
                 </li>

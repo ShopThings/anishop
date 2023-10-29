@@ -1,5 +1,5 @@
 <template>
-    <div class="relative bg-white ">
+    <div class="relative bg-white">
         <footer class="pt-20 pb-10 lg:pt-[120px] lg:pb-20 relative z-[1]">
             <div class="md:container md:mx-auto">
                 <div class="flex flex-wrap">

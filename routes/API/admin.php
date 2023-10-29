@@ -1,42 +1,42 @@
 <?php
 
-use App\Http\Controllers\Admin\BlogCategoryController;
-use App\Http\Controllers\Admin\BlogCommentBadgeController;
-use App\Http\Controllers\Admin\BlogCommentController;
-use App\Http\Controllers\Admin\BlogController;
-use App\Http\Controllers\Admin\BrandController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\CategoryImageController;
-use App\Http\Controllers\Admin\CityController;
-use App\Http\Controllers\Admin\CityPostPriceController;
-use App\Http\Controllers\Admin\ColorController;
-use App\Http\Controllers\Admin\CommentController;
-use App\Http\Controllers\Admin\ComplaintController;
-use App\Http\Controllers\Admin\ContactUsController;
-use App\Http\Controllers\Admin\CouponController;
-use App\Http\Controllers\Admin\FaqController;
-use App\Http\Controllers\Admin\FestivalController;
-use App\Http\Controllers\Admin\FileManagerController;
-use App\Http\Controllers\Admin\MenuController;
-use App\Http\Controllers\Admin\NewsletterController;
-use App\Http\Controllers\Admin\OrderBadgeController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\PaymentMethodController;
-use App\Http\Controllers\Admin\ProductAttributeCategoryController;
-use App\Http\Controllers\Admin\ProductAttributeController;
-use App\Http\Controllers\Admin\ProductAttributeProductController;
-use App\Http\Controllers\Admin\ProductAttributeValueController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProvinceController;
-use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\ReturnOrderRequestController;
-use App\Http\Controllers\Admin\RoleController;
-use App\Http\Controllers\Admin\SliderController;
-use App\Http\Controllers\Admin\StaticPageController;
-use App\Http\Controllers\Admin\UnitController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\WeightPostPriceController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\RoleController;
+use App\Http\Controllers\Blog\BlogCategoryController;
+use App\Http\Controllers\Blog\BlogCommentBadgeController;
+use App\Http\Controllers\Blog\BlogCommentController;
+use App\Http\Controllers\Blog\BlogController;
+use App\Http\Controllers\Order\OrderBadgeController;
+use App\Http\Controllers\Order\OrderController;
+use App\Http\Controllers\Order\ReturnOrderRequestController;
+use App\Http\Controllers\Other\CityController;
+use App\Http\Controllers\Other\CityPostPriceController;
+use App\Http\Controllers\Other\ComplaintController;
+use App\Http\Controllers\Other\ContactUsController;
+use App\Http\Controllers\Other\FaqController;
+use App\Http\Controllers\Other\FileManagerController;
+use App\Http\Controllers\Other\MenuController;
+use App\Http\Controllers\Other\NewsletterController;
+use App\Http\Controllers\Other\ProvinceController;
+use App\Http\Controllers\Other\SliderController;
+use App\Http\Controllers\Other\StaticPageController;
+use App\Http\Controllers\Other\WeightPostPriceController;
+use App\Http\Controllers\Payment\PaymentMethodController;
+use App\Http\Controllers\Report\ReportController;
+use App\Http\Controllers\Shop\BrandController;
+use App\Http\Controllers\Shop\CategoryController;
+use App\Http\Controllers\Shop\CategoryImageController;
+use App\Http\Controllers\Shop\ColorController;
+use App\Http\Controllers\Shop\CommentController;
+use App\Http\Controllers\Shop\CouponController;
+use App\Http\Controllers\Shop\FestivalController;
+use App\Http\Controllers\Shop\ProductAttributeCategoryController;
+use App\Http\Controllers\Shop\ProductAttributeController;
+use App\Http\Controllers\Shop\ProductAttributeProductController;
+use App\Http\Controllers\Shop\ProductAttributeValueController;
+use App\Http\Controllers\Shop\ProductController;
+use App\Http\Controllers\Shop\UnitController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')
@@ -195,7 +195,7 @@ Route::prefix('admin')
                 Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
                     ->whereNumber('order');
                 Route::put('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
-                    ->whereNumber('order')->name('orders.update-payment');
+                    ->whereNumber('order')->name('orders.update.payment');
                 Route::get('orders/payment-statuses', [OrderController::class, 'paymentStatuses'])
                     ->name('orders.payment-statuses');
                 Route::get('orders/send-statuses', [OrderController::class, 'sendStatuses'])

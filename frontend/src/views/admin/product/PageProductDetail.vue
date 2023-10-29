@@ -2,6 +2,7 @@
     <product-detail
         :show-product-extra-option="false"
         :show-add-to-cart="false"
+        :show-add-comment="false"
     />
 </template>
 

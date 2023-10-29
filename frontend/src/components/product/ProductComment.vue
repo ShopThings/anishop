@@ -3,43 +3,45 @@
         v-if="comments && comments.length"
         class="comment-sticky-container flex flex-col lg:flex-row gap-6"
     >
-        <Vue3StickySidebar
-            class="w-full lg:w-72 shrink-0"
-            containerSelector=".comment-sticky-container"
-            innerWrapperSelector='.sidebar__inner'
-            :top-spacing="20"
-            :bottom-spacing="20"
-            :min-width="1024"
-        >
-            <div
-                class="flex justify-start flex-col sm:justify-between sm:flex-row lg:justify-start lg:flex-col gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
-                <div class="flex items-center">
-                    <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
-                    <div class="text-sm leading-relaxed grow">
-                        نظر شما پس از بررسی و تایید در سایت نمایش داده می‌شود
+        <template v-if="showAddComment">
+            <Vue3StickySidebar
+                class="w-full lg:w-72 shrink-0"
+                containerSelector=".comment-sticky-container"
+                innerWrapperSelector='.sidebar__inner'
+                :top-spacing="20"
+                :bottom-spacing="20"
+                :min-width="1024"
+            >
+                <div
+                    class="flex justify-start flex-col sm:justify-between sm:flex-row lg:justify-start lg:flex-col gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
+                    <div class="flex items-center">
+                        <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
+                        <div class="text-sm leading-relaxed grow">
+                            دیدگاه شما پس از بررسی و تایید در سایت نمایش داده می‌شود
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <base-button
+                            type="link"
+                            to="#"
+                            class="!text-primary border-primary border-2"
+                        >
+                            ثبت دیدگاه
+                        </base-button>
+
+                        <div class="text-rose-500 text-xs">
+                            با دیدگاه خود به سایر کاربران در یک خرید بهتر کمک نمایید
+                        </div>
                     </div>
                 </div>
-
-                <div class="flex flex-col gap-3">
-                    <base-button
-                        type="link"
-                        to="#"
-                        class="!text-primary border-primary border-2"
-                    >
-                        ثبت نظر
-                    </base-button>
-
-                    <div class="text-rose-500 text-xs">
-                        با نظر خود به سایر کاربران در یک خرید بهتر کمک نمایید
-                    </div>
-                </div>
-            </div>
-        </Vue3StickySidebar>
+            </Vue3StickySidebar>
+        </template>
 
         <div class="grow">
             <div class="flex items-center my-4">
                 <div class="grow h-0.5 bg-teal-500 rounded-full"></div>
-                <span class="shrink-0 rounded-full bg-teal-100 px-4 py-1">نظر کاربران</span>
+                <span class="shrink-0 rounded-full bg-teal-100 px-4 py-1">دیدگاه کاربران</span>
                 <div class="grow h-0.5 bg-teal-500 rounded-full"></div>
             </div>
 
@@ -54,7 +56,7 @@
                                 placement="right-start"
                                 :shift="false"
                                 :items="[{
-                                    text: 'گزارش نظر',
+                                    text: 'گزارش دیدگاه',
                                 }]"
                             >
                                 <template #button>
@@ -67,7 +69,7 @@
                                 <template #item="{item, hide}">
                                     <a
                                         href="javascript:void(0)"
-                                        class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md block"
+                                        class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
                                         @click="hide()"
                                     >
                                         <FlagIcon class="w-5 h-5 text-rose-500 ml-2"/>
@@ -84,7 +86,7 @@
                         <div class="w-2 h-2 rounded-full bg-gray-200"></div>
                         <div class="text-gray-700">
                             {{
-                                (comment.creator.first_name || comment.creator.last_name) ? (comment.creator.first_name + ' ' + comment.creator.last_name).trim() : 'کاربر سایت'
+                                (comment?.creator?.first_name ?? 'کاربر سایت').trim()
                             }}
                         </div>
                     </div>
@@ -131,7 +133,7 @@
 
                     <div class="flex flex-wrap justify-end items-center space-x-reverse space-x-3 py-3">
                         <div class="text-gray-500 text-sm">
-                            آیا این نظر مفید بود؟
+                            آیا این دیدگاه مفید بود؟
                         </div>
                         <div class="flex text-gray-500">
                             <span>{{ comment.up_vote_count }}</span>
@@ -153,7 +155,7 @@
         v-else
     >
         <div class="mb-3">
-            <div class="text-lg text-gray-500 mb-3">نظر برای محصول</div>
+            <div class="text-lg text-gray-500 mb-3">دیدگاه برای محصول</div>
             <div class="leading-loose">{{ currentMainProduct.title }}</div>
         </div>
 
@@ -162,7 +164,7 @@
             <div class="flex items-center">
                 <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
                 <div class="text-sm leading-relaxed grow">
-                    نظر شما پس از بررسی و تایید در سایت نمایش داده می‌شود
+                    دیدگاه شما پس از بررسی و تایید در سایت نمایش داده می‌شود
                 </div>
             </div>
 
@@ -172,11 +174,11 @@
                     to="#"
                     class="!text-primary border-primary border-2"
                 >
-                    ثبت نظر
+                    ثبت دیدگاه
                 </base-button>
 
                 <div class="text-rose-500 text-xs">
-                    با نظر خود به سایر کاربران در یک خرید بهتر کمک نمایید
+                    با دیدگاه خود به سایر کاربران در یک خرید بهتر کمک نمایید
                 </div>
             </div>
         </div>
@@ -204,6 +206,10 @@ defineProps({
     productId: {
         type: Number,
         required: true,
+    },
+    showAddComment: {
+        type: Boolean,
+        default: true,
     },
 })
 

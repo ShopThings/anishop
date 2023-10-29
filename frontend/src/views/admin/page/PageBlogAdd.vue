@@ -57,10 +57,10 @@
 
                             <div class="p-2">
                                 <base-switch
-                                    label="اجازه ارسال نظر"
+                                    label="اجازه ارسال دیدگاه"
                                     name="is_commenting_allowed"
                                     :enabled="true"
-                                    sr-text="اجازه/عدم اجازه ارسال نظر"
+                                    sr-text="اجازه/عدم اجازه ارسال دیدگاه"
                                     @change="(status) => {commentAllowing=status}"
                                 />
                             </div>

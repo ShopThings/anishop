@@ -3,7 +3,7 @@
         :to="to"
         :class="[
             'flex items-center justify-between py-3 px-6 rounded-lg w-full h-auto shadow min-h-[5rem]',
-            'hover:scale-105 transition focus:scale-105',
+            'hover:scale-95 transition focus:scale-95',
             bgColor,
         ]"
     >
