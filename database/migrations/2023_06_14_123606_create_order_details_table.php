@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('code', 25)->unique();
             $table->string('first_name');
             $table->string('last_name');
+            $table->string('national_code', 10);
             $table->string('mobile');
             $table->string('province', 100);
             $table->string('city', 100);

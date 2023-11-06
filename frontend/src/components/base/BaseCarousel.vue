@@ -199,7 +199,7 @@ defineExpose({
 
 <style scoped>
 .carousel__slide {
-    padding: 5px;
+    padding: 0;
 }
 
 .carousel__viewport {

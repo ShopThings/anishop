@@ -2,17 +2,17 @@
     <VTransitionSlideFadeUpY mode="out-in">
         <div
             v-if="product && product?.id"
-            class="min-h-[400px] w-full h-full p-3 border bg-white rounded-lg shadow-lg"
+            class="min-h-[400px] w-full h-full p-3 border bg-white"
         >
             <router-link
                 :to="{name: 'product.detail', params: {id: product.id}}"
                 target="_blank"
-                class="group"
+                class="group block"
             >
                 <base-lazy-image
                     :alt="product.title"
                     :lazy-src="product.image.path"
-                    class="w-full h-48 p-3 bg-white rounded-lg transition group-hover:scale-95"
+                    class="w-full h-48 bg-white rounded-lg transition group-hover:scale-95"
                 />
             </router-link>
 
@@ -150,6 +150,10 @@ import BaseLazyImage from "../base/BaseLazyImage.vue";
 import BaseCarousel from "../base/BaseCarousel.vue";
 
 const props = defineProps({
+    containerClass: {
+        type: String,
+        default: 'rounded-lg shadow-lg',
+    },
     product: {
         type: Object,
         required: true,
@@ -172,10 +176,5 @@ const productItemsCarouselSetting = {
 </script>
 
 <style scoped>
-.ellipsis-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+
 </style>

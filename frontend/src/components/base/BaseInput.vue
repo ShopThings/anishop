@@ -3,12 +3,12 @@
         <partial-input-label
             v-if="labelTitle && labelTitle.length"
             :title="labelTitle"
-            :id="labelId"
+            :id="id || labelId"
             :is-optional="isOptional"
         />
         <partial-input-label
             v-else-if="hasLabelSlot"
-            :id="labelId"
+            :id="id || labelId"
             :is-optional="isOptional"
         >
             <template #label>
@@ -26,7 +26,7 @@
                     </div>
                     <input
                         ref="inp"
-                        :id="labelId"
+                        :id="id || labelId"
                         :value="value"
                         :name="name"
                         :type="type"
@@ -52,7 +52,7 @@
                 <button v-if="isTypePassword"
                         type="button"
                         :class="[
-                        'mr-2 rounded border-0 ring-1 ring-gray-300 text-rose-600',
+                        'mr-2 rounded border-0 ring-1 ring-gray-300 text-rose-600 bg-white',
                         'min-w-[48px] group transition-all',
                         isVisiblePassword ? '!ring-amber-500' : '',
                         ]"
@@ -102,6 +102,7 @@ import PartialInputLabel from "../partials/PartialInputLabel.vue";
 import PartialInputErrorMessage from "../partials/PartialInputErrorMessage.vue";
 
 const props = defineProps({
+    id: String,
     name: {
         type: String,
         required: true,
@@ -170,7 +171,7 @@ function togglePasswordVisibility() {
 }
 
 function checkInput(event) {
-    emit(event.type, event.target.value || '')
+    emit(event.type, event.target.value || '', event)
 }
 
 function toggleEditMode() {

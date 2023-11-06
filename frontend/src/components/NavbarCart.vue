@@ -2,11 +2,11 @@
     <BaseMenu :open="open" @open="() => emit('open')"
               btnClass="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
         <template #button>
-            <ShoppingCartIcon class="h-6 w-6"/>
-            <ChevronDownIcon class="h-3 w-3 mr-1"/>
-
             <span
-                class="absolute rounded-full bg-red-500 text-white px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
+                class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
+
+            <ShoppingBagIconOutline class="h-6 w-6 text-slate-400"/>
+            <ChevronDownIcon class="h-3 w-3 mr-1 text-slate-600"/>
         </template>
         <template #items>
             <MenuItems
@@ -160,7 +160,7 @@
                     </div>
 
                     <div class="p-3 border-t">
-                        <router-link to="#"
+                        <router-link :to="{name: 'cart'}"
                                      class="flex items-center py-3 px-3 rounded-md bg-emerald-500 text-white text-center hover:bg-opacity-90 transition">
                             <span class="mr-auto">ثبت سفارش</span>
                             <CheckCircleIcon class="h-7 w-7 mr-auto opacity-60"/>
@@ -184,7 +184,7 @@
                     position="left"
                 >
                     <template #button>
-                        <base-button class="bg-slate-300 !text-black rounded-t-none w-full">
+                        <base-button class="bg-slate-100 !text-black rounded-t-none w-full text-sm">
                             سایر سبد‌های خرید
                         </base-button>
                     </template>
@@ -212,7 +212,7 @@
 import {ref} from "vue"
 import {MenuItems} from '@headlessui/vue'
 import {ChevronDownIcon, ShoppingBagIcon} from '@heroicons/vue/24/solid'
-import {ShoppingCartIcon, CheckCircleIcon} from '@heroicons/vue/24/outline'
+import {ShoppingBagIcon as ShoppingBagIconOutline, CheckCircleIcon} from '@heroicons/vue/24/outline'
 import BaseMenu from "./base/BaseMenu.vue"
 import BaseButtonClose from "./base/BaseButtonClose.vue"
 import BaseButton from "./base/BaseButton.vue";

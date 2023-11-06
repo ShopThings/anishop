@@ -50,6 +50,7 @@
             <partial-general-title title="سفارشات مرجوع شده"/>
 
             <base-semi-datatable
+                pagination-theme="modern"
                 :is-loading="returnOrdersTableSetting.isLoading"
                 :columns="returnOrdersTableSetting.columns"
                 :rows="returnOrdersTableSetting.rows"

@@ -11,7 +11,9 @@
         :has-pagination="carouselSettings.hasPagination"
         :breakpoints="carouselSettings.breakpoints"
     >
-        <product-card :product="slide"/>
+        <div class="px-3 w-full h-full">
+            <product-card :product="slide"/>
+        </div>
     </base-carousel>
 </template>
 

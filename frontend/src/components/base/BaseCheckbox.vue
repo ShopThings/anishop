@@ -1,9 +1,9 @@
 <template>
-    <div class="text-sm flex items-center">
+    <div class="text-sm flex items-center gap-2">
         <label
             v-if="labelTitle && showLabel"
             :for="id ? id : labelId"
-            class="ml-2 cursor-pointer grow sm:grow-0"
+            class="cursor-pointer grow sm:grow-0"
         >
             {{ labelTitle }}
         </label>
@@ -117,12 +117,12 @@ onMounted(() => {
 <style scoped>
 .checkInput {
     position: fixed;
-    height: 0px;
-    padding: 0px;
+    height: 0;
+    padding: 0;
     overflow: hidden;
     clip: rect(0px, 0px, 0px, 0px);
     white-space: nowrap;
-    border-width: 0px;
+    border-width: 0;
     display: none;
 }
 </style>

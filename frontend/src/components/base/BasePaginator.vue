@@ -3,9 +3,11 @@
         v-if="showSearch || (order && order.length)"
         class="py-3 flex flex-col"
     >
-        <div v-if="showSearch">
+        <div v-if="showSearch" class="grow">
             <base-datatable-search
                 class="!p-0"
+                :show-remove-filter-button-on-input="true"
+                :show-refresh-button="false"
                 @search="searchHandler"
                 @clear-filter="clearSearchHandler"
                 @refresh="refreshSearchHandler"
@@ -13,39 +15,63 @@
         </div>
         <div
             v-if="order && order.length"
-            class="w-56"
+            class="mt-3 w-full sm:mt-0"
         >
-            <base-select
-                class="bg-white"
-                options-text="text"
-                options-key="id"
-                :options="order"
-                :selected="selectedOrder"
-                @change="changeOrderHandler"
-            />
+            <div class="hidden md:flex md:items-center md:gap-2">
+                <div class="font-iranyekan-light text-sm">
+                    مرتب سازی:
+                </div>
+
+                <ul class="flex items-center gap-2.5 grow">
+                    <li
+                        v-for="o in order"
+                        :key="o.id"
+                    >
+                        <button
+                            type="button"
+                            :class="[
+                                o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold' : 'hover:text-opacity-80',
+                            ]"
+                            class="border-b-2 border-transparent py-2 text-sm text-black"
+                            @click="changeOrderHandler(o)"
+                        >
+                            {{ o.text }}
+                        </button>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="w-full sm:w-48 md:hidden mr-auto">
+                <base-select
+                    class="bg-white"
+                    options-text="text"
+                    options-key="id"
+                    :options="order"
+                    :selected="selectedOrder"
+                    @change="changeOrderHandler"
+                />
+            </div>
         </div>
     </div>
 
-    <div :class="containerClass">
-        <slot v-if="!actualItems.length" name="empty"></slot>
-        <template v-else>
-            <div
-                v-if="!loading"
-                v-for="(item, idx) of actualItems"
-                :key="idx + '_1'"
-                :class="itemContainerClass"
-            >
-                <slot name="item" :item="item"></slot>
-            </div>
-            <div
-                v-else
-                v-for="idx in perPage"
-                :key="idx + '_2'"
-                :class="itemContainerClass"
-            >
-                <slot name="loading" :index="idx"></slot>
-            </div>
-        </template>
+    <slot v-if="!actualItems.length" name="empty"></slot>
+    <div v-else :class="containerClass">
+        <div
+            v-if="!loading"
+            v-for="(item, idx) of actualItems"
+            :key="idx + '_1'"
+            :class="itemContainerClass"
+        >
+            <slot name="item" :item="item"></slot>
+        </div>
+        <div
+            v-else
+            v-for="idx in perPage"
+            :key="idx + '_2'"
+            :class="itemContainerClass"
+        >
+            <slot name="loading" :index="idx"></slot>
+        </div>
     </div>
 
     <div v-if="showPagination && maxPage > 1" class="mt-3">
@@ -62,13 +88,7 @@
 </template>
 
 <script setup>
-import {computed, nextTick, onUnmounted, ref, watch} from "vue";
-import {
-    ChevronDoubleLeftIcon,
-    ChevronDoubleRightIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon,
-} from "@heroicons/vue/24/outline/index.js";
+import {computed, nextTick, onBeforeUnmount, ref, watch} from "vue";
 import {useRequest} from "../../composables/api-request.js";
 import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
@@ -262,7 +282,8 @@ function goToPage(page) {
 
             actualItems.value = [];
             for (let index = params.offset; index < (params.limit * page) && index < props.items.length; index++) {
-                actualItems.value.push(rows[index]);
+                if (rows[index])
+                    actualItems.value.push(rows[index]);
             }
 
             localLoadingTimeout = setTimeout(() => {
@@ -302,8 +323,12 @@ function nextPage() {
         currentPage.value++
 }
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
     clearTimeout(localLoadingTimeout)
+})
+
+defineExpose({
+    goToPage,
 })
 </script>
 

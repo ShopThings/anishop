@@ -59,7 +59,7 @@
                                 <div class="px-2 py-3">
                                     <base-animated-button
                                         type="submit"
-                                        class="bg-red-500 text-white mr-auto px-6 w-full sm:w-auto !py-1 !px-3"
+                                        class="bg-red-500 text-white mr-auto w-full sm:w-auto !py-1 px-3"
                                         @click="deleteUser"
                                     >
                                         <template #icon="{klass}">

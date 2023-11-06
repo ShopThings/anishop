@@ -14,6 +14,8 @@ enum ReturnOrderStatusesEnum: string
     case DENIED = 'denied';
     case SENDING = 'sending';
     case RECEIVED = 'received';
+    case RETURN_TO_USER = 'return_to_user';
+    case RECEIVED_BY_USER = 'received_by_user';
     case MONEY_RETURNED = 'money_returned';
 
     /**
@@ -28,6 +30,8 @@ enum ReturnOrderStatusesEnum: string
             self::DENIED->value => 'رد درخواست',
             self::SENDING->value => 'ارسال مرسولات توسط کاربر',
             self::RECEIVED->value => 'دریافت مرسولات توسط پذیرنده',
+            self::RETURN_TO_USER->value => 'بازگشت مرسولات توسط پذیرنده',
+            self::RECEIVED_BY_USER->value => 'دریافت مرسولات ارسال شده توسط پذیرنده',
             self::MONEY_RETURNED->value => 'بازگشت وجه پرداخت شده به کاربر',
         ];
     }
@@ -41,6 +45,18 @@ enum ReturnOrderStatusesEnum: string
             self::CHECKING->value,
             self::DENIED_BY_USER->value,
             self::DENIED->value,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getUserStatuses(): array
+    {
+        return [
+            self::DENIED_BY_USER->value,
+            self::SENDING->value,
+            self::RECEIVED_BY_USER->value,
         ];
     }
 }

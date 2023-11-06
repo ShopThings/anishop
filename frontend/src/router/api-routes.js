@@ -320,6 +320,12 @@ export const apiRoutes = {
         login: 'api/user/login',
         logout: 'api/user/logout',
 
+        info: {
+            info: 'api/user/info',
+            password: 'api/user/password',
+            notification: 'api/user/notification',
+        },
+
         orders: {
             index: 'api/user/orders',
             show: 'api/user/orders/{order}',
@@ -341,6 +347,14 @@ export const apiRoutes = {
             store: 'api/user/comments/{product}',
             update: 'api/user/comments/{comment}',
             destroy: 'api/user/comments/{comment}',
+        },
+
+        blogComments: {
+            index: 'api/user/comments/blog',
+            show: 'api/user/comments/blog/{comment}',
+            store: 'api/user/comments/blog/{blog}',
+            update: 'api/user/comments/blog/{comment}',
+            destroy: 'api/user/comments/blog/{comment}',
         },
 
         favoriteProducts: {

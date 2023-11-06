@@ -24,6 +24,7 @@ import LayoutGuest from './components/layouts/LayoutGuest.vue';
 import LayoutUser from './components/layouts/LayoutUser.vue';
 import LayoutAdmin from './components/layouts/LayoutAdmin.vue';
 import LayoutEmpty from "./components/layouts/LayoutEmpty.vue";
+import LayoutBlog from "./components/layouts/LayoutBlog.vue";
 
 const head = createHead()
 const pinia = createPinia()
@@ -124,6 +125,7 @@ createApp(App)
         }
     })
     .component('layout-guest', LayoutGuest)
+    .component('layout-blog', LayoutBlog)
     .component('layout-user', LayoutUser)
     .component('layout-admin', LayoutAdmin)
     .component('layout-empty', LayoutEmpty)

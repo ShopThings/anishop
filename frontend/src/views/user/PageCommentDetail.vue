@@ -57,14 +57,14 @@
             :loading="loading"
         >
             <template #content>
-                <form @submit.prevent="handleSubmit">
+                <form @submit.prevent="onSubmit">
                     <partial-card class="border-0">
                         <template #body>
                             <div class="px-3 pt-3">
                                 <base-message
                                     type="info"
                                     :has-close="false"
-                                    class="rounded-lg"
+                                    class="rounded-md"
                                 >
                                     <div class="leading-relaxed">
                                         امکان ویرایش پس از تغییر وضعیت توسط سایت، وجود ندارد.

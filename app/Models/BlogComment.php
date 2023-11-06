@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Comments\CommentConditionsEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -9,7 +10,6 @@ use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class BlogComment extends Model
 {
@@ -68,5 +68,13 @@ class BlogComment extends Model
     public function allChildren(): HasMany
     {
         return $this->children()->with('allChildren');
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAcceptedChildren(): bool
+    {
+        return $this->children()->where('condition', CommentConditionsEnum::ACCEPTED->name)->count() > 0;
     }
 }

@@ -6,7 +6,7 @@
         <button
             type="button"
             :class="[
-                'w-8 h-8 absolute left-0 top-12 -translate-x-1/2 rounded-full p-1 bg-white text-black group transition',
+                'w-8 h-8 absolute left-0 top-12 -translate-x-1/2 rounded-xl p-1 bg-white text-black group transition',
                 'border hover:bg-opacity-80 z-[1] shadow-lg hidden xl:inline-block'
             ]"
             @click="toggleMiniMenu"

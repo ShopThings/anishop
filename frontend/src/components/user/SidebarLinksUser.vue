@@ -9,7 +9,7 @@
                     <WindowIcon class="h-6 w-6 text-cyan-700"/>
                 </div>
                 <div class="grow">
-                    داشبورد
+                    پیشخوان
                 </div>
             </router-link>
         </li>

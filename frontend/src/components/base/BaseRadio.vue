@@ -1,11 +1,16 @@
 <template>
-    <div class="text-sm flex items-center">
+    <div
+        :class="containerClass"
+        class="text-sm flex items-center gap-3"
+    >
         <label
             v-if="labelTitle && showLabel"
             :for="id ? id : labelId"
-            class="ml-2 cursor-pointer grow sm:grow-0"
+            class="cursor-pointer grow sm:grow-0"
         >
-            {{ labelTitle }}
+            <slot name="text" :title="labelTitle">
+                {{ labelTitle }}
+            </slot>
         </label>
         <input
             :id="id ? id : labelId"
@@ -18,7 +23,7 @@
             @change="emit('change')"
         >
         <div
-            class="rounded-full w-6 h-6 border-2 cursor-pointer transition flex items-center justify-center shadow border-8"
+            class="rounded-full w-6 h-6 cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
             :class="[
                 disabled
                 ? (
@@ -41,7 +46,6 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import uniqueId from "lodash.uniqueid";
-import {CheckIcon} from "@heroicons/vue/24/solid/index.js"
 
 const props = defineProps({
     name: {
@@ -66,6 +70,7 @@ const props = defineProps({
         default: false,
     },
     id: String,
+    containerClass: String,
     disabledClass: {
         type: String,
         default: 'border-slate-300 bg-slate-200',

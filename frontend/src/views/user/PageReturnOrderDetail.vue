@@ -50,6 +50,19 @@
                     <partial-card class="border-0">
                         <template #body>
                             <div class="p-3">
+                                <div
+                                    v-if="1"
+                                    class="mb-4 text-left"
+                                >
+                                    <base-button
+                                        v-if="1"
+                                        type="button"
+                                        class="bg-rose-500 px-4 text-sm !py-1"
+                                        @click="console.log('do something...')"
+                                    >
+                                        لغو درخواست
+                                    </base-button>
+                                </div>
                                 <div class="mb-3">
                                     <base-textarea
                                         name="description"
@@ -329,6 +342,8 @@ import BaseButton from "../../components/base/BaseButton.vue";
 import VTransitionFade from "../../transitions/VTransitionFade.vue";
 import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
 import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
+import BaseSelect from "../../components/base/BaseSelect.vue";
+import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
 
 const loading = ref(false)
 

@@ -8,7 +8,7 @@
                 class="w-full lg:w-72 shrink-0"
                 containerSelector=".comment-sticky-container"
                 innerWrapperSelector='.sidebar__inner'
-                :top-spacing="20"
+                :top-spacing="84"
                 :bottom-spacing="20"
                 :min-width="1024"
             >

@@ -1,16 +1,16 @@
 <template>
     <Disclosure v-slot="{ open }" :default-open="open">
         <DisclosureButton
-            class="flex w-full justify-between rounded-lg px-4 py-2 text-left text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition"
             :class="btnClass"
+            class="flex w-full justify-between rounded-lg gap-4 px-4 py-2 text-right text-sm font-medium focus:outline-none focus-visible:ring focus-visible:ring-opacity-75 transition"
         >
-            <slot name="button" :is-open="open"></slot>
+            <slot name="button" :isOpen="open"></slot>
             <ChevronUpIcon
                 :class="[
                     open ? 'rotate-0' : 'rotate-180',
                     btnIconClass,
                 ]"
-                class="h-5 w-5 text-opacity-70 transition transform"
+                class="h-5 w-5 text-opacity-70 transition transform shrink-0"
             />
         </DisclosureButton>
 

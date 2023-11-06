@@ -15,11 +15,11 @@
 
             <div class="px-3 pb-3" ref="page">
                 <router-view v-slot="{ Component, route }">
-                    <VTransitionSlideFadeUpY>
-                        <div>
+                    <PageTransition v-bind='transitionProps'>
+                        <div :key="route.path">
                             <component :is="Component" :key="route.path"/>
                         </div>
-                    </VTransitionSlideFadeUpY>
+                    </PageTransition>
                 </router-view>
             </div>
 
@@ -33,11 +33,22 @@
 <script setup>
 import {ref, watch, watchEffect} from "vue";
 import {useRoute} from "vue-router";
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue"
 import AppFooterUser from "../user/AppFooterUser.vue";
 import {useResizeObserver} from "@vueuse/core";
 import AppNavbarUser from "../user/AppNavbarUser.vue";
 import AppSidebarUser from "../user/AppSidebarUser.vue";
+import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+
+const transitionProps = defineTransitionProps({
+    mode: 'out-in',
+    name: TransitionPresets.fadeInUp,
+    appear: true,
+    overlay: true,
+    overlayBgClassName: 'bg-violet-500',
+    overlayZIndex: 999,
+    transformDistance: '2rem',
+    transitionDuration: 300,
+})
 
 const route = useRoute()
 

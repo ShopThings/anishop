@@ -4,7 +4,7 @@
             <button @click="open"
                     type="button"
                     class="w-[45] h-[45] border-0 py-2 px-2 rounded-lg bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
-                <MagnifyingGlassIcon class="h-6 w-6"/>
+                <MagnifyingGlassIcon class="h-6 w-6 text-slate-400"/>
             </button>
         </template>
 

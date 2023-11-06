@@ -9,7 +9,7 @@
                 <span v-if="mini" class="rounded-full w-2 h-2 bg-white inline-block"></span>
                 <span v-else>اصلی</span>
             </li>
-            <li v-tooltip.left="'' + (mini ? 'داشبورد' : '') + ''">
+            <li v-tooltip.left="'' + (mini ? 'پیشخوان' : '') + ''">
                 <router-link :to="{name: 'admin.home'}"
                              class="rounded-lg py-2.5 flex hover:bg-white hover:bg-opacity-10 transition"
                              :class="[mini ? 'justify-center px-2' : 'px-3']"
@@ -19,7 +19,7 @@
                         :class="{'ml-2': !mini}"
                     />
                     <span v-if="!mini"
-                          class="grow">داشبورد</span>
+                          class="grow">پیشخوان</span>
                 </router-link>
             </li>
             <li v-tooltip.left="'' + (mini ? 'کاربران' : '') + ''">

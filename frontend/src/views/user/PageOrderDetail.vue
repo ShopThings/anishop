@@ -126,12 +126,22 @@
                             </div>
                         </template>
                     </partial-card>
-                    <partial-card class="border-0 p-3 sm:col-span-2">
+                    <partial-card class="border-0 p-3">
                         <template #body>
                             <div class="flex flex-col">
                                 <span class="text-xs text-gray-400 mb-1">شماره تماس:</span>
                                 <div class="text-sm tracking-widest">
                                     09179516271
+                                </div>
+                            </div>
+                        </template>
+                    </partial-card>
+                    <partial-card class="border-0 p-3">
+                        <template #body>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-gray-400 mb-1">کد ملی:</span>
+                                <div class="text-sm tracking-widest">
+                                    4420549033
                                 </div>
                             </div>
                         </template>

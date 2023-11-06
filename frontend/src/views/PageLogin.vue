@@ -1,18 +1,55 @@
 <template>
-    <!-- ====== Forms Section Start -->
-    <section class="py-10">
-        <div class="md:container md:mx-auto">
-            <div class="flex flex-wrap justify-center items-center min-h-screen">
-                <div class="w-full">
-                    <div
-                        class="relative mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-xl shadow-gray-200 py-6 px-10 text-center"
-                    >
-                        <div class="mb-6 text-center">
-                            <UserCircleIcon class="w-24 h-24 mx-auto text-slate-400"/>
-                            <h1 class="text-xl text-black">
-                                ورود به پنل
-                            </h1>
+    <div class="min-h-screen relative flex flex-col items-center justify-center lg:px-10">
+        <div class="h-full w-full max-w-5xl grid grid-cols-2">
+            <div
+                class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-r-lg">
+                <div class="py-10 flex-col justify-center h-full mx-auto relative z-[2] hidden lg:flex">
+                    <div class="flex flex-col items-center justify-center">
+                        <router-link
+                            :to="{name: 'home'}"
+                            class="mb-6"
+                        >
+                            <img
+                                src="/logo-light.png"
+                                alt="آیریا کالا"
+                                class="h-16"
+                            />
+                        </router-link>
+
+                        <h1 class="text-2xl py-2 bg-white bg-opacity-30 rounded-full px-4 mb-16">ورود به پنل کاربری</h1>
+
+                        <router-link :to="{name: 'forget_password'}"
+                                     class="text-white hover:text-opacity-80 transition flex items-center gap-3 group">
+                            <span>کلمه عبور خود را فراموش کرده‌ام</span>
+                            <ArrowLongLeftIcon class="w-7 h-7 group-hover:-translate-x-1 transition"/>
+                        </router-link>
+
+                        <hr class="w-48 h-1 mx-auto bg-slate-200 bg-opacity-60 border-0 rounded my-3">
+
+                        <div class="text-center">
+                            <span class="text-sm text-black">حساب کاربری ندارد؟</span>
+                            <router-link :to="{name: 'signup'}" class="mr-1 text-white hover:text-opacity-80">
+                                ثبت نام کنید
+                            </router-link>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="h-full col-span-2 lg:col-span-1 z-[2]">
+                <div
+                    class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:items-start mx-auto lg:rounded-l-lg">
+                    <router-link :to="{name: 'home'}">
+                        <img
+                            src="/logo-with-type-light.png"
+                            alt="آیریا کالا"
+                            class="h-12 my-4 lg:hidden"
+                        />
+                    </router-link>
+
+                    <div
+                        class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
+                    >
                         <form @submit.prevent="loginCheck">
                             <div class="mb-3">
                                 <base-input name="username"
@@ -23,7 +60,7 @@
                                     </template>
                                 </base-input>
                             </div>
-                            <div>
+                            <div class="mb-3">
                                 <base-input name="password" type="password"
                                             placeholder="کلمه عبور" label-title="کلمه عبور:">
                                     <template #icon>
@@ -31,13 +68,14 @@
                                     </template>
                                 </base-input>
                             </div>
-                            <div class="mt-6 text-right">
-                                <router-link :to="{name: 'forget_password.step1'}"
-                                             class="mr-1 text-primary hover:text-opacity-80 transition">
+
+                            <div class="mb-6 text-right lg:hidden">
+                                <router-link :to="{name: 'forget_password'}"
+                                             class="mr-1 text-blue-600 hover:text-opacity-80 transition">
                                     کلمه عبور خود را فراموش کرده‌ام!
                                 </router-link>
                             </div>
-                            <div class="border-t mb-6 mt-2"></div>
+
                             <div class="mb-2">
                                 <v-captcha/>
                             </div>
@@ -50,243 +88,25 @@
                             </div>
                             <div class="mb-3">
                                 <base-button type="submit"
-                                             class="w-full flex justify-center group bg-primary border-indigo-700 text-white">
+                                             class="w-full flex justify-center items-center group bg-primary border-primary text-white">
                                     <span class="mr-auto">وارد شوید</span>
                                     <ArrowLeftIcon
                                         class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
                                 </base-button>
                             </div>
-                            <div class="mb-6">
-                                <span class="text-sm text-gray-500">حساب کاربری ندارد؟</span>
-                                <router-link :to="{name: 'signup'}" class="mr-1 text-orange-500">
-                                    ثبت نام کنید
-                                </router-link>
-                            </div>
                         </form>
+                    </div>
 
-                        <div>
-                            <span class="absolute top-1 right-1">
-                                <svg
-                                    width="40"
-                                    height="40"
-                                    viewBox="0 0 40 40"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                <circle
-                    cx="1.39737"
-                    cy="38.6026"
-                    r="1.39737"
-                    transform="rotate(-90 1.39737 38.6026)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="1.39737"
-                    cy="1.99122"
-                    r="1.39737"
-                    transform="rotate(-90 1.39737 1.99122)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="13.6943"
-                    cy="38.6026"
-                    r="1.39737"
-                    transform="rotate(-90 13.6943 38.6026)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="13.6943"
-                    cy="1.99122"
-                    r="1.39737"
-                    transform="rotate(-90 13.6943 1.99122)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="25.9911"
-                    cy="38.6026"
-                    r="1.39737"
-                    transform="rotate(-90 25.9911 38.6026)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="25.9911"
-                    cy="1.99122"
-                    r="1.39737"
-                    transform="rotate(-90 25.9911 1.99122)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="38.288"
-                    cy="38.6026"
-                    r="1.39737"
-                    transform="rotate(-90 38.288 38.6026)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="38.288"
-                    cy="1.99122"
-                    r="1.39737"
-                    transform="rotate(-90 38.288 1.99122)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="1.39737"
-                    cy="26.3057"
-                    r="1.39737"
-                    transform="rotate(-90 1.39737 26.3057)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="13.6943"
-                    cy="26.3057"
-                    r="1.39737"
-                    transform="rotate(-90 13.6943 26.3057)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="25.9911"
-                    cy="26.3057"
-                    r="1.39737"
-                    transform="rotate(-90 25.9911 26.3057)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="38.288"
-                    cy="26.3057"
-                    r="1.39737"
-                    transform="rotate(-90 38.288 26.3057)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="1.39737"
-                    cy="14.0086"
-                    r="1.39737"
-                    transform="rotate(-90 1.39737 14.0086)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="13.6943"
-                    cy="14.0086"
-                    r="1.39737"
-                    transform="rotate(-90 13.6943 14.0086)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="25.9911"
-                    cy="14.0086"
-                    r="1.39737"
-                    transform="rotate(-90 25.9911 14.0086)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="38.288"
-                    cy="14.0086"
-                    r="1.39737"
-                    transform="rotate(-90 38.288 14.0086)"
-                    fill="#3056D3"
-                />
-              </svg>
-                            </span>
-                            <span class="absolute left-1 bottom-1">
-                                <svg
-                                    width="29"
-                                    height="40"
-                                    viewBox="0 0 29 40"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                <circle
-                    cx="2.288"
-                    cy="25.9912"
-                    r="1.39737"
-                    transform="rotate(-90 2.288 25.9912)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="14.5849"
-                    cy="25.9911"
-                    r="1.39737"
-                    transform="rotate(-90 14.5849 25.9911)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="26.7216"
-                    cy="25.9911"
-                    r="1.39737"
-                    transform="rotate(-90 26.7216 25.9911)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="2.288"
-                    cy="13.6944"
-                    r="1.39737"
-                    transform="rotate(-90 2.288 13.6944)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="14.5849"
-                    cy="13.6943"
-                    r="1.39737"
-                    transform="rotate(-90 14.5849 13.6943)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="26.7216"
-                    cy="13.6943"
-                    r="1.39737"
-                    transform="rotate(-90 26.7216 13.6943)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="2.288"
-                    cy="38.0087"
-                    r="1.39737"
-                    transform="rotate(-90 2.288 38.0087)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="2.288"
-                    cy="1.39739"
-                    r="1.39737"
-                    transform="rotate(-90 2.288 1.39739)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="14.5849"
-                    cy="38.0089"
-                    r="1.39737"
-                    transform="rotate(-90 14.5849 38.0089)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="26.7216"
-                    cy="38.0089"
-                    r="1.39737"
-                    transform="rotate(-90 26.7216 38.0089)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="14.5849"
-                    cy="1.39761"
-                    r="1.39737"
-                    transform="rotate(-90 14.5849 1.39761)"
-                    fill="#3056D3"
-                />
-                <circle
-                    cx="26.7216"
-                    cy="1.39761"
-                    r="1.39737"
-                    transform="rotate(-90 26.7216 1.39761)"
-                    fill="#3056D3"
-                />
-              </svg>
-                            </span>
-                        </div>
+                    <div class="my-4 lg:hidden">
+                        <span class="text-sm">حساب کاربری ندارد؟</span>
+                        <router-link :to="{name: 'signup'}" class="mr-1 text-white hover:text-opacity-80">
+                            ثبت نام کنید
+                        </router-link>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 </template>
 
 <script setup>
@@ -295,7 +115,7 @@ import BaseInput from '../components/base/BaseInput.vue';
 import BaseButton from "../components/base/BaseButton.vue";
 import VCaptcha from "../components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from '@heroicons/vue/24/solid'
-import {UserCircleIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline'
+import {ArrowLongLeftIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline'
 
 const canSubmit = ref(true);
 
@@ -309,5 +129,10 @@ function loginCheck() {
 </script>
 
 <style scoped>
-
+.bg-pattern {
+    background-color: #18E6E0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3CradialGradient id='a' gradientUnits='objectBoundingBox'%3E%3Cstop offset='0' stop-color='%234F46E5'/%3E%3Cstop offset='1' stop-color='%2318E6E0'/%3E%3C/radialGradient%3E%3ClinearGradient id='b' gradientUnits='userSpaceOnUse' x1='0' y1='750' x2='1550' y2='750'%3E%3Cstop offset='0' stop-color='%233496e3'/%3E%3Cstop offset='1' stop-color='%2318E6E0'/%3E%3C/linearGradient%3E%3Cpath id='s' fill='url(%23b)' d='M1549.2 51.6c-5.4 99.1-20.2 197.6-44.2 293.6c-24.1 96-57.4 189.4-99.3 278.6c-41.9 89.2-92.4 174.1-150.3 253.3c-58 79.2-123.4 152.6-195.1 219c-71.7 66.4-149.6 125.8-232.2 177.2c-82.7 51.4-170.1 94.7-260.7 129.1c-90.6 34.4-184.4 60-279.5 76.3C192.6 1495 96.1 1502 0 1500c96.1-2.1 191.8-13.3 285.4-33.6c93.6-20.2 185-49.5 272.5-87.2c87.6-37.7 171.3-83.8 249.6-137.3c78.4-53.5 151.5-114.5 217.9-181.7c66.5-67.2 126.4-140.7 178.6-218.9c52.3-78.3 96.9-161.4 133-247.9c36.1-86.5 63.8-176.2 82.6-267.6c18.8-91.4 28.6-184.4 29.6-277.4c0.3-27.6 23.2-48.7 50.8-48.4s49.5 21.8 49.2 49.5c0 0.7 0 1.3-0.1 2L1549.2 51.6z'/%3E%3Cg id='g'%3E%3Cuse href='%23s' transform='scale(0.12) rotate(60)'/%3E%3Cuse href='%23s' transform='scale(0.2) rotate(10)'/%3E%3Cuse href='%23s' transform='scale(0.25) rotate(40)'/%3E%3Cuse href='%23s' transform='scale(0.3) rotate(-20)'/%3E%3Cuse href='%23s' transform='scale(0.4) rotate(-30)'/%3E%3Cuse href='%23s' transform='scale(0.5) rotate(20)'/%3E%3Cuse href='%23s' transform='scale(0.6) rotate(60)'/%3E%3Cuse href='%23s' transform='scale(0.7) rotate(10)'/%3E%3Cuse href='%23s' transform='scale(0.835) rotate(-40)'/%3E%3Cuse href='%23s' transform='scale(0.9) rotate(40)'/%3E%3Cuse href='%23s' transform='scale(1.05) rotate(25)'/%3E%3Cuse href='%23s' transform='scale(1.2) rotate(8)'/%3E%3Cuse href='%23s' transform='scale(1.333) rotate(-60)'/%3E%3Cuse href='%23s' transform='scale(1.45) rotate(-30)'/%3E%3Cuse href='%23s' transform='scale(1.6) rotate(10)'/%3E%3C/g%3E%3C/defs%3E%3Cg %3E%3Cg transform=''%3E%3Ccircle fill='url(%23a)' r='3000'/%3E%3Cg opacity='0.5'%3E%3Ccircle fill='url(%23a)' r='2000'/%3E%3Ccircle fill='url(%23a)' r='1800'/%3E%3Ccircle fill='url(%23a)' r='1700'/%3E%3Ccircle fill='url(%23a)' r='1651'/%3E%3Ccircle fill='url(%23a)' r='1450'/%3E%3Ccircle fill='url(%23a)' r='1250'/%3E%3Ccircle fill='url(%23a)' r='1175'/%3E%3Ccircle fill='url(%23a)' r='900'/%3E%3Ccircle fill='url(%23a)' r='750'/%3E%3Ccircle fill='url(%23a)' r='500'/%3E%3Ccircle fill='url(%23a)' r='380'/%3E%3Ccircle fill='url(%23a)' r='250'/%3E%3C/g%3E%3Cg transform='rotate(-57.6 0 0)'%3E%3Cuse href='%23g' transform='rotate(10)'/%3E%3Cuse href='%23g' transform='rotate(120)'/%3E%3Cuse href='%23g' transform='rotate(240)'/%3E%3C/g%3E%3Ccircle fill-opacity='0.06' fill='url(%23a)' r='3000'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: fixed;
+    background-size: cover;
+}
 </style>

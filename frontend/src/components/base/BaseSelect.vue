@@ -18,7 +18,7 @@
 
                 <VTransitionSlideFadeUpY>
                     <ListboxOptions :class="optionsClass"
-                                    class="absolute z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+                                    class="absolute min-w-[12rem] z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
                     >
                         <loader-progress v-if="isLoading"/>
 
@@ -117,7 +117,7 @@ const props = defineProps({
     },
     optionsClass: {
         type: String,
-        default: 'mt-1'
+        default: 'mt-1 left-0'
     },
     btnClass: {
         type: String,

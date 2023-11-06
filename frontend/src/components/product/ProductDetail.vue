@@ -58,12 +58,14 @@
                             :wrap-around="mainGallerySettings.wrapAround"
                             :has-navigation="mainGallerySettings.hasNavigation"
                         >
-                            <div class="bg-white border rounded-lg">
-                                <base-lazy-image
-                                    :lazy-src="slide.path"
-                                    :alt="slide.name"
-                                    class="rounded-lg"
-                                />
+                            <div class="p-2">
+                                <div class="bg-white border rounded-lg">
+                                    <base-lazy-image
+                                        :lazy-src="slide.path"
+                                        :alt="slide.name"
+                                        class="rounded-lg"
+                                    />
+                                </div>
                             </div>
                         </base-carousel>
                     </div>
@@ -74,15 +76,17 @@
                         v-model:current="currentSlide"
                         :breakpoints="gallerySettings.breakpoints"
                     >
-                        <div
-                            class="carousel__item bg-white border rounded-lg cursor-pointer"
-                            @click="slideTo(index)"
-                        >
-                            <base-lazy-image
-                                :lazy-src="slide.path"
-                                :alt="slide.name"
-                                class="!w-28 h-auto rounded-lg"
-                            />
+                        <div class="p-1">
+                            <div
+                                class="carousel__item bg-white border rounded-lg cursor-pointer"
+                                @click="slideTo(index)"
+                            >
+                                <base-lazy-image
+                                    :lazy-src="slide.path"
+                                    :alt="slide.name"
+                                    class="!w-28 h-auto rounded-lg"
+                                />
+                            </div>
                         </div>
                     </base-carousel>
                 </div>
@@ -100,7 +104,7 @@
                     <div class="grow h-0.5 bg-red-400 rounded-full"></div>
                 </div>
 
-                <h1 class="text-lg leading-loose hyphens-auto break-words">
+                <h1 class="text-xl leading-loose hyphens-auto break-words">
                     گوشی موبایل سامسونگ مدل Galaxy S23 Ultra دو سیم کارت ظرفیت 256 گیگابایت و رم 12 گیگابایت - ویتنام
                 </h1>
 
@@ -226,7 +230,7 @@
                                 v-for="color in colorFiltered"
                                 v-tooltip.top="'' + color.color_name + ''"
                                 :class="[
-                                    'rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
+                                    'relative rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
                                     color.active === 'yes'
                                     ? 'border-indigo-500 cursor-pointer shadow-lg'
                                     : (
@@ -235,12 +239,16 @@
                                         : 'hover:ring-8 cursor-pointer shadow-lg'
                                     ),
                                     selectedColor && selectedColor.color_name === color.color_name
-                                    ? 'border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
+                                    ? '!border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
                                     : ''
                                 ]"
                                 :style="'background-color:' + color.color_hex"
                                 @click="handleColorChange(color)"
                             >
+                                <div
+                                    v-if="color.active === 'no'"
+                                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                                ></div>
                             </li>
                         </ul>
                     </div>
@@ -255,7 +263,7 @@
                             <li
                                 v-for="size in sizeFiltered"
                                 :class="[
-                                    'rounded-lg py-1 px-3 border-2 transition',
+                                    'relative rounded-lg py-1 px-3 border-2 transition',
                                     size.active === 'yes'
                                     ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
                                     : (
@@ -264,11 +272,16 @@
                                         : 'hover:bg-gray-100 cursor-pointer'
                                     ),
                                     selectedSize && selectedSize.size === size.size
-                                    ? 'border-emerald-500 bg-emerald-50 cursor-pointer'
+                                    ? '!border-emerald-500 !bg-emerald-50 cursor-pointer'
                                     : ''
                                 ]"
                                 @click="handleSizeChange(size)"
                             >
+                                <div
+                                    v-if="size.active === 'no'"
+                                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                                ></div>
+
                                 {{ size.size }}
                             </li>
                         </ul>
@@ -367,7 +380,7 @@
         @hide="onLightboxHide"
     ></vue-easy-lightbox>
 
-    <div class="mt-3">
+    <div class="mt-12">
         <partial-general-title title="محصولات مرتبط"/>
 
         <product-carousel :products="relatedProducts"/>
@@ -375,18 +388,18 @@
 
     <div
         v-if="Object.keys(tabs).length"
-        class="mt-3"
+        class="mt-12"
     >
         <base-tab-panel
             :tabs="tabs"
             tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
         >
             <template #description>
-                <div class="p-3">
-                    <h1 class="text-lg leading-loose mb-1">
+                <div class="p-3 styled-description">
+                    <h1>
                         غول جدید سامسونگ قدرتمند‌تر از همیشه
                     </h1>
-                    <p class="leading-loose">
+                    <p>
                         شاید در نگاه اول به سامسونگ Galaxy S23 Ultra تفاوتی با Galaxy S22 Ultra دیده نشود و سامسونگ به
                         طراحی
                         برنده خود دست نزده است. اما باید بدانید که این بار این گوشی هوشمند با کوله‌باری از تجربه و برطرف
@@ -400,7 +413,10 @@
                         داشته باشد. سامسونگ تلاش داشته تا از متریال بازیافت‌ پذیر برای این گوشی استفاده کند و می‌توانیم
                         بگوییم در این زمینه به نسبت تمام پرچمداران دیگر عملکرد بسیار بهتری داشته است.
                     </p>
-                    <p class="leading-loose">
+
+                    <img src="/src/assets/product/g10.jpg" alt="">
+
+                    <p>
                         نمای رو‌به‌رویی این گوشی صفحه‌نمایش بسیار گسترده‌ای را ارائه کرده است که تقریبا حاشیه‌های
                         صفحه‌نمایش
                         اصلا به چشم نمی‌آیند و همین امر سبب شده تا ۸۹.۹ درصد از نمای رو‌به‌رویی را به خودش اختصاص دهد.
@@ -419,10 +435,10 @@
                         داشته باشد.
                     </p>
 
-                    <h1 class="text-lg leading-loose mt-6 mb-1">
+                    <h1>
                         صفحه‌نمایشی چشم نواز که نمی‌خواهید چشم از آن بردارید
                     </h1>
-                    <p class="leading-loose">
+                    <p>
                         در این بخش سامسونگ Galaxy S23 Ultra از مشخصاتی بسیار مشابه با نسل قبلی یعنی Galaxy S22 Ultra
                         بهره
                         برده است. این گوشی به صفحه‌نمایش با ابعاد ۶.۸ اینچ و رزولوشن ۱۴۴۰×۳۰۸۸ پیکسل از نوع Dynamic
@@ -438,7 +454,7 @@
                         صفحه‌نمایش جذاب، قدرتمند و با‌کیفیت انتظار دارید را صفحه‌‌نمایش این گوشی در اختیارتان قرار
                         می‌دهد.
                     </p>
-                    <p class="leading-loose">
+                    <p>
                         حال می‌رسیم به مابقی مشخصات قدرتمند این صفحه‌نمایش بی‌نظیر. نرخ بروزرسانی ۱۲۰ هرتز سبب شده تا
                         صفحه‌نمایش بسیار روان و بدون لگی را شاهد باشید. این قابلیت در اجرای بازی‌ها با گرافیک بالا و
                         سنگین و
@@ -454,10 +470,10 @@
                         صفحه‌نمایش Corning Gorilla Glass Victus 2 هم برای این گوشی در نظر گرفته شده است.
                     </p>
 
-                    <h1 class="text-lg leading-loose mt-6 mb-1">
+                    <h1>
                         سنسور‌ دوربینی که این بار برای قتل عام رقیبان آماده است
                     </h1>
-                    <p class="leading-loose">
+                    <p>
                         اما یکی از اصلی‌ترین تفاوت‌های در نظر گرفته شده برای این گوشی به نسبت نسل قبلی، بدون شک
                         سنسور‌های
                         دوربین در نظر گرفته شده است. با سنسور دوربین عریض و فوق قدرتمند ۲۰۰ مگاپیکسل این گوشی شروع
@@ -476,7 +492,7 @@
                         دوربین
                         عریض در بین گوشی‌های هوشمند جهان رو‌به‌رو هستید.
                     </p>
-                    <p class="leading-loose">
+                    <p>
                         اما نکته جالب‌تر اینجاست که امکان انتخاب خروجی تصاویر با رزولوشن ۵۰ مگاپیکسل (هر پیکسل از تجمیع
                         چهار
                         پیکسل) و رزولوشن ۲۰۰ مگاپیکسل هم وجود دارد. این سنسور دوربین به لرزشگیر اپتیکال یا همان OIS هم
@@ -501,7 +517,7 @@
                         ۱۰
                         برابری، جزئیات با دقت بسیار بالایی نمایش داده شده‌اند و هیچ چیزی را از دست نمی‌دهید.
                     </p>
-                    <p class="leading-loose">
+                    <p>
                         همانند نسل قبلی این گوشی توانایی زوم ۱۰۰ برابری دیجیتال را هم دارد، اما نکته جالب توجه در بخش
                         زوم
                         ۱۰۰ برابری، عملکرد بسیار بهتر این گوشی به نسبت نسل قبلی است. این بار بهره بردن از هوش مصنوعی
@@ -515,7 +531,7 @@
                         بسیار مناسب، خروجی تصویر بسیار خوبی را ارائه می‌کند. حتی این هوش مصنوعی به لطف پردازنده قدرتمند،
                         می‌تواند با توجه به شاخص تصویر، ویرایشات متفاوتی را در راستای خروجی تصاویر با‌کیفیت ارائه کند.
                     </p>
-                    <p class="leading-loose">
+                    <p>
                         همانطور که پیش از این اشاره کرده بودیم، سنسور‌های دوربین در نظر گرفته شده برای این گوشی، توانایی
                         زوم
                         ۳ برابری و ۱۰ برابری اپتیکال را دارند. قابلیت زوم ۳ برابری می‌تواند بسیار مناسب برای ثبت تصاویر
@@ -1291,7 +1307,7 @@ const selectedGuarantee = ref(null)
 watchEffect(() => {
     if (selectedColor.value && selectedSize.value && selectedGuarantee.value) {
         for (let i of products.value) {
-            if (i.id == selectedColor.value.id)
+            if (i.id === selectedColor.value.id)
                 selectedProduct.value = i
         }
     }
@@ -1613,6 +1629,9 @@ setCurrentProductProperties()
 </script>
 
 <style scoped>
+@import "../../assets/css/skeleton/normalize.css";
+@import "../../assets/css/skeleton/skeleton.css";
+
 .carousel__slide--active .carousel__item {
     border: 2px solid #2563eb;
 }

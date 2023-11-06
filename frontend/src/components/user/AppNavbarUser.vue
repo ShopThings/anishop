@@ -99,10 +99,10 @@
                                 </template>
                             </base-popover-side>
                         </li>
-                        <li class="px-1">
+                        <li class="px-0.5">
                             <dialog-search/>
                         </li>
-                        <li class="sm:relative px-1">
+                        <li class="sm:relative px-0.5">
                             <navbar-cart position="right"/>
                         </li>
                     </ul>
@@ -111,7 +111,7 @@
                             <base-button
                                 type="link"
                                 :to="{name: 'home'}"
-                                class="text-sm !text-black border-2 hover:bg-primary hover:bg-opacity-20 w-full border-primary"
+                                class="text-sm !text-black border-2 hover:bg-primary hover:!bg-opacity-[15%] w-full border-primary !py-1"
                             >
                                 مشاهده سایت
                             </base-button>
@@ -120,7 +120,7 @@
                             <base-button
                                 type="link"
                                 :to="{name: 'user.profile'}"
-                                class="bg-primary border-primary w-full border-2"
+                                class="bg-primary border-primary w-full border-2 !py-1"
                             >
                                 <span class="grow text-sm">اطلاعات حساب</span>
                             </base-button>

@@ -3,9 +3,9 @@
         <nav class="fixed bg-white w-full shadow-md z-10">
             <div class="md:container md:mx-auto">
                 <div class="h-[64px] py-2 px-6 flex">
-                    <div class="h-full">
+                    <div class="h-full shrink-0">
                         <router-link :to="{name: 'home'}">
-                            <img class="h-[28px] mt-[10px]"
+                            <img class="h-[32px] mt-[10px]"
                                  src="/logo-with-type.png"
                                  alt="لوگو">
                         </router-link>
@@ -18,16 +18,16 @@
 
                     <div class="h-full">
                         <ul class="flex justify-center mt-[4px] space-x-reverse">
-                            <li class="px-2">
+                            <li class="px-1 sm:px-2">
                                 <dialog-search/>
                             </li>
-                            <li class="sm:relative px-2">
+                            <li class="sm:relative px-1 sm:px-2">
                                 <navbar-cart/>
                             </li>
                             <li class="hidden relative px-2 lg:inline-block">
                                 <navbar-user-action/>
                             </li>
-                            <li class="px-2 block lg:hidden">
+                            <li class="px-1 sm:px-2 block lg:hidden">
                                 <base-popover-side>
                                     <template #button>
                                         <button type="button"

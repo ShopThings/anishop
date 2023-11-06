@@ -9,7 +9,7 @@
         <template #empty>
             <partial-empty-rows
                 image="/empty-statuses/empty-fav-product.svg"
-                image-class="w-64"
+                image-class="w-72"
                 message="هیچ محصولی به لیست علاقه‌مندی‌ها اضافه نشده است"
             />
         </template>

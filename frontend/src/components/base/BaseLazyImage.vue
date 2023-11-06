@@ -1,6 +1,6 @@
 <template>
     <img
-        v-lazy="{ src: lazySrc, loading: '/image-placeholder.jpg' }"
+        v-lazy="{ src: lazySrc, loading: loadingSrc }"
         :alt="alt"
         class="app-image"
     >
@@ -13,6 +13,10 @@ defineProps({
         type: String,
         default: '',
     },
+    loadingSrc: {
+        type: String,
+        default: '/image-placeholder.jpg',
+    },
 })
 </script>
 
@@ -24,7 +28,5 @@ defineProps({
     object-fit: contain;
 }
 
-.app-image[lazy=loading] {
-    width: 100%;
-}
+/*.app-image[lazy=loading] {}*/
 </style>

@@ -2,6 +2,7 @@
     <base-loading-panel :loading="loading" type="table">
         <template #content>
             <base-semi-datatable
+                pagination-theme="modern"
                 :is-loading="table.isLoading"
                 :columns="table.columns"
                 :rows="table.rows"
@@ -269,7 +270,7 @@ const doSearch = (offset, limit) => {
     // })
 }
 
-doSearch(0, 12)
+doSearch(0, 15)
 </script>
 
 <style scoped>

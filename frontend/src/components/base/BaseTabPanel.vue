@@ -39,8 +39,9 @@
                 v-for="tab in Object.keys(tabs)"
                 :key="tab"
                 :class="[
-                    'rounded-md bg-white p-3',
-                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-300 focus:outline-none focus:ring-2 border',
+                    tabPanelExtraClass,
+                    'rounded-md bg-white p-3 border',
+                    'ring-white ring-opacity-60 ring-offset-2 ring-offset-indigo-300 focus:outline-none focus:ring-2',
                   ]"
             >
                 <slot :name="tab"></slot>
@@ -63,6 +64,7 @@ const props = defineProps({
         default: 0,
     },
     tabButtonExtraClass: String,
+    tabPanelExtraClass: String,
 })
 const emit = defineEmits(['change', 'update:defaultIndex'])
 

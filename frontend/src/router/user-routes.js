@@ -31,7 +31,7 @@ export const userRoutes = {
             name: 'user.home',
             component: () => import('../views/user/PageHome.vue'),
             meta: {
-                title: 'داشبورد',
+                title: 'پیشخوان',
             },
         },
 
@@ -103,20 +103,42 @@ export const userRoutes = {
         },
         {
             path: 'comment/:id(\\d+)',
-            name: 'user.comment.detail',
-            component: () => import('../views/user/PageCommentDetail.vue'),
-            meta: {
-                title: 'جزئیات دیدگاه',
-                breadcrumb: [
-                    {
-                        name: 'دیدگاه‌ها',
-                        link: 'users.comments',
+            children: [
+                {
+                    path: '',
+                    name: 'user.comment.detail',
+                    component: () => import('../views/user/PageCommentDetail.vue'),
+                    meta: {
+                        title: 'جزئیات دیدگاه محصول',
+                        breadcrumb: [
+                            {
+                                name: 'دیدگاه‌ها',
+                                link: 'users.comments',
+                            },
+                            {
+                                name: 'دیدگاه شما برای محصول',
+                            },
+                        ],
                     },
-                    {
-                        name: 'دیدگاه شما',
+                },
+                {
+                    path: 'blog',
+                    name: 'user.comment.detail.blog',
+                    component: () => import('../views/user/PageCommentDetailBlog.vue'),
+                    meta: {
+                        title: 'جزئیات دیدگاه بلاگ',
+                        breadcrumb: [
+                            {
+                                name: 'دیدگاه‌ها',
+                                link: 'users.comments',
+                            },
+                            {
+                                name: 'دیدگاه شما برای بلاگ',
+                            },
+                        ],
                     },
-                ],
-            },
+                },
+            ],
         },
 
         {

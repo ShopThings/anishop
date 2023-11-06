@@ -34,19 +34,19 @@ const routes = [
         path: '/login',
         name: 'login',
         component: () => import('../views/PageLogin.vue'),
-        meta: {layout: 'layout-guest'},
+        meta: {layout: 'layout-empty'},
     },
     {
         path: '/signup',
         name: 'signup',
         component: () => import('../views/PageSignup.vue'),
-        meta: {layout: 'layout-guest'},
+        meta: {layout: 'layout-empty'},
     },
     {
         path: '/forget-password',
         name: 'forget_password',
         component: () => import('../views/PageForgetPassword.vue'),
-        meta: {layout: 'layout-guest'},
+        meta: {layout: 'layout-empty'},
     },
     {
         path: '/pages/:url([a-zA-Z0-9\/]*)',
@@ -59,13 +59,41 @@ const routes = [
         path: '/blog/',
         name: 'blogs',
         component: () => import('../views/PageBlogs.vue'),
+        meta: {layout: 'layout-blog'},
+    },
+    {
+        path: '/blog/search/:searchText',
+        redirect: to => {
+            return {
+                name: 'blog.search',
+                query: {
+                    q: to.params.searchText,
+                },
+            }
+        },
+    },
+    {
+        path: '/blog/tag/:searchText',
+        redirect: to => {
+            return {
+                name: 'blog.search',
+                query: {
+                    tag: to.params.searchText,
+                },
+            }
+        },
+    },
+    {
+        path: '/blog/search',
+        name: 'blog.search',
+        component: () => import('../views/PageSearchBlog.vue'),
         meta: {layout: 'layout-guest'},
     },
     {
         path: '/blog/:id(\\d+)',
         name: 'blog.detail',
         component: () => import('../views/PageBlogDetail.vue'),
-        meta: {layout: 'layout-guest'},
+        meta: {layout: 'layout-blog'},
     },
 
     {
@@ -92,6 +120,7 @@ const routes = [
         component: () => import('../views/PageProductDetail.vue'),
         meta: {layout: 'layout-guest'},
     },
+
     {
         path: '/brands',
         name: 'brands',
@@ -106,15 +135,49 @@ const routes = [
     },
 
     {
+        path: '/faq',
+        name: 'faq',
+        component: () => import('../views/PageFaq.vue'),
+        meta: {layout: 'layout-guest'},
+    },
+    {
         path: '/contact',
         name: 'contact',
         component: () => import('../views/PageContact.vue'),
         meta: {layout: 'layout-guest'},
     },
+
     {
-        path: '/complaint',
-        name: 'complaint',
-        component: () => import('../views/PageComplaint.vue'),
+        path: '/cart',
+        name: 'cart',
+        component: () => import('../views/PageCart.vue'),
+        meta: {
+            layout: 'layout-guest',
+            title: 'سبر خرید',
+            breadcrumb: [
+                {
+                    name: 'خانه',
+                    link: 'home',
+                },
+                {
+                    name: 'سبد خرید',
+                },
+            ],
+        },
+    },
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: () => import('../views/PageCheckout.vue'),
+        meta: {
+            // requiresAuth: true,
+            layout: 'layout-guest',
+        },
+    },
+    {
+        path: '/result',
+        name: 'result',
+        component: () => import('../views/PageResult.vue'),
         meta: {layout: 'layout-guest'},
     },
     //

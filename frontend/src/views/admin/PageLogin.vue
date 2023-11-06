@@ -49,7 +49,7 @@
                             </div>
                             <div class="mb-8">
                                 <base-button type="submit"
-                                             class="relative w-full flex justify-center group bg-primary border-indigo-700 text-white"
+                                             class="relative w-full flex justify-center items-center group bg-primary border-indigo-700 text-white"
                                              :class="!canSubmit ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
                                              :disabled="!canSubmit">
                                     <loader-circle v-if="!canSubmit"

@@ -1,9 +1,16 @@
 <template>
     <VTransitionSlideFadeDownY mode="out-in">
-        <div v-if="loading" class="px-3 py-6">
-            <component :is="component"/>
-            <span v-if="loadingText"
-                  class="text-center block mt-3 text-gray-400 text-sm">{{ loadingText }}</span>
+        <div v-if="loading">
+            <template v-if="slots['loader']">
+                <slot name="loader"></slot>
+            </template>
+            <template v-else>
+                <div class="px-3 py-6">
+                    <component :is="component"/>
+                    <span v-if="loadingText"
+                          class="text-center block mt-3 text-gray-400 text-sm">{{ loadingText }}</span>
+                </div>
+            </template>
         </div>
 
         <div v-else>
@@ -14,7 +21,7 @@
 
 <script setup>
 import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
-import {capitalize, shallowRef, watchEffect} from "vue";
+import {capitalize, shallowRef, useSlots, watchEffect} from "vue";
 
 const props = defineProps({
     type: {
@@ -34,6 +41,7 @@ const props = defineProps({
     },
     loadingText: String,
 })
+const slots = useSlots()
 
 const component = shallowRef(null)
 import('./loader/LoaderCircle.vue').then(val => {
