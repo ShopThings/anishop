@@ -8,7 +8,7 @@
                             <base-popover-side panel-class="">
                                 <template #button>
                                     <button type="button"
-                                            class="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]">
+                                            class="relative w-[40px] h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]">
                                         <Bars3BottomRightIcon class="w-6 h-6"/>
                                     </button>
                                 </template>

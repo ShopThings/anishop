@@ -26,7 +26,7 @@
             />
 
             <p class="text-sm mb-4 text-slate-500 leading-relaxed text-center">
-                شماره موبایل خود جهت دریافت پیام‌های هفتگی را وارد نمایید.
+                شماره موبایل خود را جهت دریافت پیام‌های هفتگی، وارد نمایید.
             </p>
 
             <form @submit.prevent="onSubmit" class="w-full">
@@ -69,7 +69,6 @@ import yup from "../validation/index.js";
 import BaseButton from "./base/BaseButton.vue";
 import VTransitionFade from "../transitions/VTransitionFade.vue";
 import LoaderCircle from "./base/loader/LoaderCircle.vue";
-import {CreditCardIcon} from "@heroicons/vue/24/outline/index.js";
 
 const canSubmit = ref(true)
 

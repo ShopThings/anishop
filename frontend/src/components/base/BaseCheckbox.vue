@@ -1,8 +1,12 @@
 <template>
-    <div class="text-sm flex items-center gap-2">
+    <div
+        :class="containerClass"
+        class="text-sm flex items-center gap-2"
+    >
         <label
             v-if="labelTitle && showLabel"
             :for="id ? id : labelId"
+            :class="labelClass"
             class="cursor-pointer grow sm:grow-0"
         >
             {{ labelTitle }}
@@ -14,7 +18,7 @@
             v-model="value"
             class="checkInput"
             :disabled="disabled"
-            @change="emit('change')"
+            @change="emit('change', value)"
         >
         <div
             class="rounded w-6 h-6 border-2 cursor-pointer transition flex items-center justify-center shadow"
@@ -27,7 +31,14 @@
                     : uncheckedClass + ' ' + uncheckedHoverClass
                 ),
             ]"
-            @click="() => {if(!disabled) value = !value}"
+            @click="() => {
+                if(!disabled) {
+                    value = !value
+                    nextTick(() => {
+                        emit('change', value)
+                    })
+                }
+            }"
         >
             <CheckIcon
                 v-if="value"
@@ -41,7 +52,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import uniqueId from "lodash.uniqueid";
 import {CheckIcon} from "@heroicons/vue/24/solid/index.js"
 
@@ -64,6 +75,8 @@ const props = defineProps({
         default: false,
     },
     id: String,
+    containerClass: String,
+    labelClass: String,
     disabledClass: {
         type: String,
         default: 'border-slate-300 bg-slate-200',

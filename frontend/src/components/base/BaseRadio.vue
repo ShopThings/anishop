@@ -6,6 +6,7 @@
         <label
             v-if="labelTitle && showLabel"
             :for="id ? id : labelId"
+            :class="labelClass"
             class="cursor-pointer grow sm:grow-0"
         >
             <slot name="text" :title="labelTitle">
@@ -20,7 +21,7 @@
             v-model="localValue"
             class="radioInput"
             :disabled="disabled"
-            @change="emit('change')"
+            @change="emit('change', localValue)"
         >
         <div
             class="rounded-full w-6 h-6 cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
@@ -37,14 +38,21 @@
                     : uncheckedClass + ' ' + uncheckedHoverClass
                 ),
             ]"
-            @click="() => {if(!disabled) localValue = value}"
+            @click="() => {
+                if(!disabled) {
+                    localValue = value
+                    nextTick(() => {
+                        emit('change', localValue)
+                    })
+                }
+            }"
         >
         </div>
     </div>
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import uniqueId from "lodash.uniqueid";
 
 const props = defineProps({
@@ -53,11 +61,11 @@ const props = defineProps({
         required: true,
     },
     value: {
-        type: String,
+        type: [String, Number],
         required: true,
     },
     modelValue: {
-        type: String,
+        type: [String, Number],
         required: true,
     },
     labelTitle: String,
@@ -71,6 +79,7 @@ const props = defineProps({
     },
     id: String,
     containerClass: String,
+    labelClass: String,
     disabledClass: {
         type: String,
         default: 'border-slate-300 bg-slate-200',
@@ -124,12 +133,12 @@ onMounted(() => {
 <style scoped>
 .radioInput {
     position: fixed;
-    height: 0px;
-    padding: 0px;
+    height: 0;
+    padding: 0;
     overflow: hidden;
     clip: rect(0px, 0px, 0px, 0px);
     white-space: nowrap;
-    border-width: 0px;
+    border-width: 0;
     display: none;
 }
 </style>

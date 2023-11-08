@@ -2,6 +2,7 @@
     <VTransitionSlideFadeUpY mode="out-in">
         <div
             v-if="product && product?.id"
+            :class="containerClass"
             class="min-h-[400px] w-full h-full p-3 border bg-white"
         >
             <router-link
@@ -83,7 +84,7 @@
 
                                     <div class="flex flex-col mr-3">
                                         <div class="my-1 text-lg">
-                                            {{ slide.discounted_price }}
+                                            <span class="font-iranyekan-bold mx-1">{{ slide.discounted_price }}</span>
                                             <span class="text-xs text-gray-400">تومان</span>
                                         </div>
                                         <template v-if="slide.discounted_price < slide.price">

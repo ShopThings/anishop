@@ -1,6 +1,6 @@
 <template>
     <BaseMenu :open="open" @open="() => emit('open')"
-              btnClass="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
+              btnClass="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
         <template #button>
             <span
                 class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
@@ -195,7 +195,7 @@
                                 سبد‌های خرید
                             </span>
                             <button @click="close" type="button"
-                                    class="w-[45] h-[45] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
+                                    class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
                                 <XMarkIcon class="h-6 w-6"/>
                             </button>
                         </div>

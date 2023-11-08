@@ -1,7 +1,7 @@
 <template>
     <div
         v-if="showSearch || (order && order.length)"
-        class="py-3 flex flex-col"
+        class="pb-3 flex flex-col"
     >
         <div v-if="showSearch" class="grow">
             <base-datatable-search
@@ -54,6 +54,39 @@
         </div>
     </div>
 
+    <slot
+        name="BeforeItemsPanel"
+        :total="total"
+        :page="currentPage"
+        :maxPage="maxPage"
+        :perPage="+props.perPage"
+        :offset="offset"
+    >
+        <div
+            v-if="showPaginationDetail"
+            class="flex items-center justify-end gap-4 text-slate-400 px-3 pb-3 divide-x-2 divide-x-reverse divide-slate-200"
+        >
+            <div>
+                <span class="ml-1.5 text-sm font-iranyekan-light">نمایش</span>
+                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(offset + 1) }}</span>
+                <span class="mx-1.5 text-sm font-iranyekan-light">تا</span>
+                <span class="font-iranyekan-bold">{{
+                        formatPriceLikeNumber(offset + Math.min(items.length, props.perPage))
+                    }}</span>
+            </div>
+            <div class="pr-3">
+                <span class="ml-1.5 text-sm font-iranyekan-light">صفحه</span>
+                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(currentPage) }}</span>
+                <span class="mx-1.5 text-sm font-iranyekan-light">از</span>
+                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(maxPage) }}</span>
+            </div>
+            <div class="pr-3">
+                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(total) }}</span>
+                <span class="mr-1 text-sm font-iranyekan-light">مورد</span>
+            </div>
+        </div>
+    </slot>
+
     <slot v-if="!actualItems.length" name="empty"></slot>
     <div v-else :class="containerClass">
         <div
@@ -94,6 +127,7 @@ import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
 import BasePagination from "./BasePagination.vue";
+import {formatPriceLikeNumber} from "../../composables/helper.js";
 
 const props = defineProps({
     containerClass: String,
@@ -130,6 +164,7 @@ const props = defineProps({
         type: Boolean,
         default: true,
     },
+    showPaginationDetail: Boolean,
     paginationTheme: String,
 })
 const emit = defineEmits(['update:items', 'update:searchText'])
@@ -170,6 +205,9 @@ const paging = computed(() => {
         }
     }
     return pages;
+})
+const offset = computed(() => {
+    return (currentPage.value - 1) * props.perPage
 })
 
 //-------------------------------

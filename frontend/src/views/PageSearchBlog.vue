@@ -1,4 +1,6 @@
 <template>
+    <app-navigation-header title="جستجوی بلاگ"/>
+
     <div class="mb-6 p-3">
         <div class="flex flex-col lg:flex-row-reverse gap-6 sticky-container">
             <div class="grow">
@@ -45,7 +47,7 @@
             >
                 <div class="flex flex-col gap-6">
                     <partial-card
-                        class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
+                        class="border-0 flex flex-col">
                         <template #body>
                             <partial-general-title
                                 type="side"
@@ -57,7 +59,7 @@
                     </partial-card>
 
                     <partial-card
-                        class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
+                        class="border-0 flex flex-col">
                         <template #body>
                             <partial-general-title
                                 type="side"
@@ -131,9 +133,9 @@ import {ArchiveBoxIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import BasePaginator from "../components/base/BasePaginator.vue";
 import PartialEmptyRows from "../components/partials/PartialEmptyRows.vue";
-import LoaderCardBlog from "../components/base/loader/LoaderCardBlog.vue";
 import BlogCard from "../components/blog/BlogCard.vue";
 import LoaderListSingleBlog from "../components/base/loader/LoaderListSingleBlog.vue";
+import AppNavigationHeader from "../components/AppNavigationHeader.vue";
 
 //----------------------------
 // Search Blogs

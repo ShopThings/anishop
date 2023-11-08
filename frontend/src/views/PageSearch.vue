@@ -1,5 +1,7 @@
 <template>
-    <div class="mb-6 p-3">
+    <app-navigation-header title="جستجوی محصول"/>
+
+    <div class="mb-8 p-3">
         <div class="flex flex-col lg:flex-row-reverse gap-6 sticky-container">
             <div class="grow">
                 <base-paginator
@@ -11,7 +13,90 @@
                     :order="productOrder"
                     v-model:items="products"
                     :is-local="true"
+                    :show-pagination-detail="true"
                 >
+                    <template #BeforeItemsPanel="{offset, page, perPage, maxPage, total}">
+                        <div class="flex flex-wrap items-center justify-between gap-3 pb-3">
+                            <div class="lg:hidden">
+                                <base-popover-side
+                                    panel-class=""
+                                >
+                                    <template #button>
+                                        <base-button
+                                            type="button"
+                                            class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black hover:bg-white/40"
+                                        >
+                                            <FunnelIcon class="w-6 h-6"/>
+                                            <span class="text-sm font-iranyekan-bold">نمایش فیلترها</span>
+                                        </base-button>
+                                    </template>
+
+                                    <template #panel="{close}">
+                                        <div class="mb-3 flex flex-row-reverse items-center p-3">
+                                            <button @click="close" type="button"
+                                                    class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
+                                                <XMarkIcon class="h-6 w-6"/>
+                                            </button>
+                                        </div>
+
+                                        <div class="h-[calc(100vh-40px-2.25rem)] relative overflow-y-auto">
+                                            <div class="flex items-center p-3 gap-3 justify-between">
+                                                <span class="font-iranyekan-bold text-xl">فیلترها</span>
+                                                <button
+                                                    type="button"
+                                                    class="p-1 text-cyan-600 text-sm hover:text-opacity-80 transition"
+                                                    @click="clearAllFilters"
+                                                >
+                                                    حذف فیلترها
+                                                </button>
+                                            </div>
+
+                                            <div
+                                                class="text-emerald-700 px-3 py-1.5 text-xs leading-relaxed bg-emerald-50">
+                                                پس از انتخاب فیلترها، از دکمه
+                                                <span class="text-black">اعمال فیلتر</span>
+                                                در پایین صفحه برای اعمال فیلترها، استفاده نمایید.
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <product-search-filters/>
+                                            </div>
+
+                                            <div class="px-3 pb-3 pt-5 bg-white sticky bottom-0 z-[1]">
+                                                <base-button
+                                                    class="w-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:bg-gradient-to-bl">
+                                                    اعمال فیلترها
+                                                </base-button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </base-popover-side>
+                            </div>
+
+                            <div
+                                class="flex flex-wrap items-center justify-end gap-4 px-3 text-slate-400 divide-x-2 divide-x-reverse divide-slate-200 mr-auto">
+                                <div>
+                                    <span class="ml-1.5 text-sm font-iranyekan-light">نمایش</span>
+                                    <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(offset + 1) }}</span>
+                                    <span class="mx-1.5 text-sm font-iranyekan-light">تا</span>
+                                    <span class="font-iranyekan-bold">{{
+                                            formatPriceLikeNumber(offset + Math.min(products.length, perPage))
+                                        }}</span>
+                                </div>
+                                <div class="pr-3">
+                                    <span class="ml-1.5 text-sm font-iranyekan-light">صفحه</span>
+                                    <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(page) }}</span>
+                                    <span class="mx-1.5 text-sm font-iranyekan-light">از</span>
+                                    <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(maxPage) }}</span>
+                                </div>
+                                <div class="pr-3">
+                                    <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(total) }}</span>
+                                    <span class="mr-1 text-sm font-iranyekan-light">مورد</span>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
                     <template #empty>
                         <partial-empty-rows
                             image="/empty-statuses/empty-product.svg"
@@ -23,13 +108,13 @@
                     <template #item="{item}">
                         <product-card
                             :product="item"
-                            container-class=""
+                            container-class="hover:shadow-lg hover:z-[1] hover:relative transition"
                         />
                     </template>
 
                     <template #loading>
                         <div class="border-b">
-                            <loader-card/>
+                            <loader-card class="rounded-none"/>
                         </div>
                     </template>
                 </base-paginator>
@@ -45,7 +130,7 @@
             >
                 <div class="flex flex-col gap-6">
                     <partial-card
-                        class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
+                        class="border-0 flex flex-col pb-3">
                         <template #body>
                             <div class="flex items-center p-3 gap-3 justify-between">
                                 <span class="font-iranyekan-bold text-xl">فیلترها</span>
@@ -58,8 +143,21 @@
                                 </button>
                             </div>
 
-                            <div class="mt-4">
+                            <div class="text-emerald-700 px-3 py-1.5 text-xs leading-relaxed bg-emerald-50">
+                                پس از انتخاب فیلترها، از دکمه
+                                <span class="text-black">اعمال فیلتر</span>
+                                در پایین صفحه برای اعمال فیلترها، استفاده نمایید.
+                            </div>
+
+                            <div class="mt-3">
                                 <product-search-filters/>
+                            </div>
+
+                            <div class="px-3 pb-3 pt-5 bg-white">
+                                <base-button
+                                    class="w-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:bg-gradient-to-bl">
+                                    اعمال فیلترها
+                                </base-button>
                             </div>
                         </template>
                     </partial-card>
@@ -67,10 +165,13 @@
             </Vue3StickySidebar>
         </div>
     </div>
+
+    <app-newsletter/>
 </template>
 
 <script setup>
 import {ref} from "vue";
+import {FunnelIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import BasePaginator from "../components/base/BasePaginator.vue";
 import PartialEmptyRows from "../components/partials/PartialEmptyRows.vue";
@@ -78,6 +179,12 @@ import PartialCard from "../components/partials/PartialCard.vue";
 import LoaderCard from "../components/base/loader/LoaderCard.vue";
 import ProductCard from "../components/product/ProductCard.vue";
 import ProductSearchFilters from "../components/product/ProductSearchFilters.vue";
+import BaseButton from "../components/base/BaseButton.vue";
+import AppNavigationHeader from "../components/AppNavigationHeader.vue";
+import AppNewsletter from "../components/AppNewsletter.vue";
+import {formatPriceLikeNumber} from "../composables/helper.js";
+import BasePopoverSide from "../components/base/BasePopoverSide.vue";
+import {XMarkIcon} from "@heroicons/vue/24/solid/index.js";
 
 function clearAllFilters() {
     // ...
