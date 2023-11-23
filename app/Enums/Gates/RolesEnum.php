@@ -2,10 +2,12 @@
 
 namespace App\Enums\Gates;
 
-use Illuminate\Support\Str;
+use App\Traits\EnumTranslateTrait;
 
 enum RolesEnum: string
 {
+    use EnumTranslateTrait;
+
     case DEVELOPER = 'developer';
     case SUPER_ADMIN = 'super_admin';
     case ADMIN = 'admin';
@@ -18,9 +20,9 @@ enum RolesEnum: string
     /**
      * @return string[]
      */
-    private static function translationArray(): array
+    public static function translationArray(): array
     {
-        return $translates = [
+        return [
             self::DEVELOPER->value => 'توسعه دهنده',
             self::SUPER_ADMIN->value => 'کاربر ویژه',
             self::ADMIN->value => 'ادمین',
@@ -55,50 +57,20 @@ enum RolesEnum: string
     }
 
     /**
+     * @return RolesEnum[]
+     */
+    public static function getPrivilegedRoles(): array
+    {
+        return [self::DEVELOPER, self::SUPER_ADMIN];
+    }
+
+    /**
      * @param string $role
      * @return bool
      */
     public static function isAdminRole(string $role): bool
     {
         $roleValues = array_map(fn($item) => $item->value, self::getAdminRoles());
-        $similarRoles = self::getSimilarRoleValuesFromString($role);
-        foreach ($similarRoles as $role) {
-            if(in_array($role, $roleValues))
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * @param array|string $roles
-     * @return array|string|null
-     */
-    public static function getTranslations(array|string $roles): array|string|null
-    {
-        $translates = self::translationArray();
-        if (is_array($roles)) {
-            $newArr = [];
-            foreach ($roles as $role) {
-                $newArr[$role] = $translates[$role] ?? $role;
-            }
-            return count($newArr) ? $newArr : null;
-        }
-        return $translates[$roles] ?? $roles;
-    }
-
-    /**
-     * @param string $str
-     * @return array
-     */
-    public static function getSimilarRoleValuesFromString(string $str): array
-    {
-        $translates = self::translationArray();
-        $arr = [];
-        foreach ($translates as $role => $translate) {
-            if(Str::contains($translate, $str, true)) {
-                $arr[] = $role;
-            }
-        }
-        return $arr;
+        return in_array($role, $roleValues);
     }
 }

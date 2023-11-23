@@ -31,7 +31,7 @@
                             'max-h-[calc(100vh-2rem)]',
                              containerKlass,
                         ]">
-                            <div class="sticky relative top-0 bg-white z-[1]">
+                            <div class="sticky top-0 bg-white z-[1]">
                                 <slot name="closeButton" :close="closeModal">
                                     <base-button-close @click="closeModal"
                                                        class="absolute top-0 left-0 translate-x-2/4 translate-y-2/4"/>

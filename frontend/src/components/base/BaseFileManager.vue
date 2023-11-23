@@ -12,7 +12,7 @@
             <li class="my-1">
                 <base-floating-drop-down
                     placement="bottom-start"
-                    :items="storages"
+                    :items="isArray(storages) ? storages : [storages]"
                 >
                     <template #button>
                         <button type="button" v-tooltip.top="'فضای ذخیره سازی'"
@@ -73,8 +73,13 @@
                         :messages="table.messages"
                         @do-search="doSearch"
                         @row-context-menu="onContextMenu"
+                        @row-clicked="handleFileSelection"
                     >
-                        <template #full_name></template>
+                        <template #image="{data}">
+                            <base-lazy-image
+                                :lazy-src="data.image"
+                            ></base-lazy-image>
+                        </template>
                     </base-datatable>
 
                     <base-file-manager-context-menu
@@ -94,12 +99,37 @@
                         :path="currentPath"
                         :disk="currentStorage.path"
                         :open="treeOpen"
-                        @close="() => (treeOpen.value = false)"
+                        @close="closeTree"
+                        @select-change="treeDirectoryChange"
                     >
-                        <template #extra>
-
+                        <template v-if="copiedPath.items.length" #extra>
+                            <base-animated-button @click="doBatchCopyOrMove" class="bg-slate-600 px-5 mr-auto">
+                                <template #icon="{klass}">
+                                    <ScissorsIcon
+                                        v-if="copiedPath.action === 'move'"
+                                        :class="klass"
+                                        class="w-6 h-6 ml-2"
+                                    />
+                                    <DocumentDuplicateIcon
+                                        v-else-if="copiedPath.action === 'copy'"
+                                        :class="klass"
+                                        class="w-6 h-6 ml-2"
+                                    />
+                                </template>
+                                <span v-if="copiedPath.action === 'move'">انجام جابجایی</span>
+                                <span v-else-if="copiedPath.action === 'copy'">انجام عملیات کپی</span>
+                            </base-animated-button>
                         </template>
                     </base-file-manager-tree-directory>
+
+                    <base-file-manager-rename
+                        v-if="renameItem && renameItem.length"
+                        :open="renameOpen"
+                        :path="currentPath"
+                        :name="renameItem"
+                        @close="closeRename"
+                        @success="renameSucceed"
+                    />
                 </template>
             </base-loading-panel>
         </template>
@@ -107,11 +137,14 @@
 </template>
 
 <script setup>
-import {ChevronLeftIcon, ServerIcon, ChevronDownIcon, ServerStackIcon} from '@heroicons/vue/24/outline';
+import {
+    ChevronLeftIcon, ServerIcon, ChevronDownIcon, ServerStackIcon,
+    ScissorsIcon, DocumentDuplicateIcon,
+} from '@heroicons/vue/24/outline';
 import BaseFileManagerUploader from "./filemanager/BaseFileManagerUploader.vue";
 import BaseFileManagerFolderCreator from "./filemanager/BaseFileManagerFolderCreator.vue";
 import BaseDatatable from "./BaseDatatable.vue";
-import {useToast} from "vue-toastification";
+import {useToast, TYPE} from "vue-toastification";
 import {reactive, ref, watch, watchEffect} from "vue";
 import {useRequest} from "../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
@@ -124,8 +157,10 @@ import BaseFloatingDropDown from "./BaseFloatingDropDown.vue";
 import isArray from "lodash.isarray";
 import {FileSizes} from "../../composables/file-list.js";
 import {useConfirmToast} from "../../composables/toast-confirm.js";
-import {useClipboard} from "@vueuse/core";
 import BaseFileManagerTreeDirectory from "./filemanager/BaseFileManagerTreeDirectory.vue";
+import BaseAnimatedButton from "./BaseAnimatedButton.vue";
+import BaseFileManagerRename from "./filemanager/BaseFileManagerRename.vue";
+import BaseLazyImage from "./BaseLazyImage.vue";
 
 const props = defineProps({
     hasCreateFolder: {
@@ -179,7 +214,14 @@ const props = defineProps({
             }
         },
     },
+    extensions: {
+        type: Array,
+        default: () => [],
+    },
+    selectableFiles: Boolean,
 })
+
+const emit = defineEmits(['file-selected'])
 
 const toast = useToast()
 const route = useRoute()
@@ -190,7 +232,9 @@ const currentStorage = ref({
 })
 
 function storageChange(storage, hide) {
+    // hide the dropdown
     hide()
+
     if (currentStorage.value.path !== storage) {
         currentStorage.value.path = storage
         currentStorage.value.text = storage
@@ -222,12 +266,6 @@ watch(() => route.hash, () => {
     checkHash()
 })
 
-const copiedPath = ref({
-    type: '',
-    items: [],
-})
-const treeOpen = ref(false)
-
 const datatable = ref(null)
 const tableContainer = ref(null)
 const loading = ref(true)
@@ -241,6 +279,11 @@ const table = reactive({
             isKey: true,
             sortable: false,
             columnClasses: 'hidden',
+        },
+        {
+            label: "تصویر",
+            field: "image",
+            sortable: false,
         },
         {
             label: "نام",
@@ -273,6 +316,11 @@ const table = reactive({
             isKey: true,
             sortable: false,
             columnClasses: 'hidden',
+        },
+        {
+            label: "تصویر",
+            field: "image",
+            sortable: false,
         },
         {
             label: "نام",
@@ -315,6 +363,66 @@ const table = reactive({
     },
 })
 
+const copiedPath = ref({
+    action: '',
+    items: [],
+})
+const treeOpen = ref(false)
+const selectedTreeDirectory = ref(null)
+
+const renameItem = ref(null)
+const renameOpen = ref(false)
+
+function treeDirectoryChange(item) {
+    selectedTreeDirectory.value = item.full_path
+}
+
+function closeTree() {
+    treeOpen.value = false
+}
+
+function closeRename() {
+    renameOpen.value = false
+}
+
+function renameSucceed() {
+    renameItem.value = null
+}
+
+function doBatchCopyOrMove() {
+    if (!copiedPath.value.items.length) return
+
+    if (!selectedTreeDirectory.value) {
+        toast.warning('ابتدا پوشه‌ی مقصد را انتخاب نمایید.')
+        return
+    }
+
+    let apiLink = null
+
+    if (copiedPath.value.action === 'move') {
+        apiLink = apiRoutes.admin.files.move
+    } else if (copiedPath.value.action === 'copy') {
+        apiLink = apiRoutes.admin.files.copy
+    }
+
+    if (!apiLink) return
+
+    useRequest(apiLink, {
+        method: 'POST',
+        data: {
+            files: copiedPath.value.items,
+            destination: selectedTreeDirectory.value,
+            disk: currentStorage.value.path,
+        },
+    }, {
+        success: () => {
+            copiedPath.value.action = ''
+            copiedPath.value.items = []
+            selectedTreeDirectory.value = null
+        },
+    })
+}
+
 function getSelectedItemsProperty(items, property) {
     const properties = []
     for (const item in items) {
@@ -342,11 +450,13 @@ if (props.allowCopy) {
         event: {
             click: (items) => {
                 const paths = getSelectedItemsProperty(items, 'full_path')
-                copiedPath.value.type = 'copy'
+
+                copiedPath.value.action = 'copy'
                 copiedPath.value.items = []
                 for (const i of paths) {
                     copiedPath.value.items.push(i)
                 }
+
                 treeOpen.value = true
             },
         },
@@ -361,11 +471,13 @@ if (props.allowMove) {
         event: {
             click: (items) => {
                 const paths = getSelectedItemsProperty(items, 'full_path')
-                copiedPath.value.type = 'move'
+
+                copiedPath.value.action = 'move'
                 copiedPath.value.items = []
                 for (const i of paths) {
                     copiedPath.value.items.push(i)
                 }
+
                 treeOpen.value = true
             },
         },
@@ -468,11 +580,23 @@ const onContextMenu = (e, data) => {
 // -----------------------------------
 
 function copyClicked(item) {
+    copiedPath.value.action = 'copy'
+    copiedPath.value.items = []
+    copiedPath.value.items.push(item.full_path)
 
+    toast('کپی انجام شد.', {
+        type: TYPE.DEFAULT,
+    })
 }
 
 function cutClicked(item) {
+    copiedPath.value.action = 'move'
+    copiedPath.value.items = []
+    copiedPath.value.items.push(item.full_path)
 
+    toast('فایل/پوشه برای جابجایی آماده می‌باشد.', {
+        type: TYPE.DEFAULT,
+    })
 }
 
 function deleteClicked(item) {
@@ -501,18 +625,43 @@ function downloadClicked(item) {
 }
 
 function renameClicked(item) {
-
+    renameItem.value = item.full_name
+    renameOpen.value = true
 }
 
 function pasteClicked(item) {
+    let url = null
+    if (copiedPath.value.action === 'move')
+        url = apiRoutes.admin.files.move
+    else if (copiedPath.value.action === 'copy')
+        url = apiRoutes.admin.files.copy
 
+    if (!url) {
+        toast.info('ابتدا فایل/پوشه مورد نظر را برای جابجایی/کپی انتخاب کنید.')
+        return
+    }
+
+    useConfirmToast(() => {
+        useRequest(url, {
+            method: 'POST',
+            data: {
+                files: copiedPath.value.items,
+                destination: item.path,
+                disk: currentStorage.value.path,
+            },
+        }, {
+            success: () => {
+                copiedPath.value.action = ''
+                copiedPath.value.items = []
+            },
+        })
+    })
 }
 
 // -----------------------------------
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
     table.searchText = text
 
@@ -524,6 +673,7 @@ const doSearch = (offset, limit, order, sort, text) => {
             size: FileSizes.SMALL,
             order,
             sort,
+            extensions: props.extensions,
         },
     }, {
         success: (response) => {
@@ -549,10 +699,21 @@ const doSearch = (offset, limit, order, sort, text) => {
 }
 
 doSearch(0, -1, 'id', 'desc')
+
+function handleFileSelection(file, row) {
+    if (datatable.value && props.selectableFiles && !file.is_dir && row) {
+        datatable.value.table.querySelector('.file-selection').removeClass('file-selection')
+        row.addClass('file-selection')
+
+        emit('file-selected', file)
+    }
+}
 </script>
 
 <style scoped>
-
+.file-selection {
+    background-color: rgba(160, 42, 229, 0.07);
+}
 </style>
 <script setup>
 </script>

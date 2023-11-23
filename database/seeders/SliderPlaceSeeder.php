@@ -21,5 +21,9 @@ class SliderPlaceSeeder extends Seeder
             'title' => 'اسلایدر محصولات',
             'place_in' => SliderPlacesEnum::MAIN_SLIDERS,
         ]);
+        SliderPlace::create([
+            'title' => 'تصویر محصولات',
+            'place_in' => SliderPlacesEnum::MAIN_SLIDER_IMAGES,
+        ]);
     }
 }

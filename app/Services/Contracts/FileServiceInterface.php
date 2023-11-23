@@ -6,7 +6,7 @@ use App\Contracts\ServiceInterface;
 use App\Models\FileManager;
 use Illuminate\Database\Eloquent\Model;
 
-interface FileServiceInterface extends ServiceInterface
+interface FileServiceInterface
 {
     /**
      * @param string $path
@@ -22,6 +22,7 @@ interface FileServiceInterface extends ServiceInterface
      * @param string $disk
      * @param string|null $search
      * @param string|null $fileSize
+     * @param array $extensions
      * @param array $order
      * @return array
      */
@@ -30,6 +31,7 @@ interface FileServiceInterface extends ServiceInterface
         string  $disk,
         ?string $search = null,
         ?string $fileSize = null,
+        array   $extensions = [],
         array   $order = ['name' => 'acs']
     ): array;
 
@@ -65,6 +67,14 @@ interface FileServiceInterface extends ServiceInterface
      * @return bool
      */
     public function move(array $paths, string $destination, string $disk): bool;
+
+    /**
+     * @param array $paths
+     * @param string $destination
+     * @param string $disk
+     * @return bool
+     */
+    public function copy(array $paths, string $destination, string $disk): bool;
 
     /**
      * @param array|FileManager $files

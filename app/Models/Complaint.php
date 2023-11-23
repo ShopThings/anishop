@@ -16,12 +16,17 @@ class Complaint extends Model
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait;
 
+    public $timestamps = false;
+
+    protected $hasUpdatedBy = false;
+
     protected $guarded = [
         'id',
     ];
 
     protected $casts = [
         'is_seen' => 'boolean',
+        'created_at' => 'datetime',
     ];
 
     /**

@@ -56,13 +56,13 @@ trait ModifierBootTrait
     {
         parent::boot();
         static::creating(function ($model) {
-            $this->addCreatedAt($model);
-            $this->addCreatedBy($model);
-            $this->addUpdatedBy($model);
+            $model->addCreatedAt($model);
+            $model->addCreatedBy($model);
+            $model->addUpdatedBy($model);
         });
         static::updating(function ($model) {
-            $this->addUpdatedAt($model);
-            $this->addUpdatedBy($model);
+            $model->addUpdatedAt($model);
+            $model->addUpdatedBy($model);
         });
     }
 }

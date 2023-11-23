@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('blog_comment_badges', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 25)->unique();
             $table->string('title');
             $table->string('color_hex', 12);
             $table->boolean('is_starting_badge')->default(false);
@@ -26,6 +25,10 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

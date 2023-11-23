@@ -25,14 +25,17 @@ enum PermissionPlacesEnum: string
     case ORDER_BADGE = 'order_badge';
     case PAYMENT_METHOD = 'payment_method';
     case PRODUCT = 'product';
+    case PRODUCT_COMMENT = 'product_comment';
     case PRODUCT_ATTRIBUTE = 'product_attribute';
     case RETURN_ORDER_REQUEST = 'return_order_request';
     case SETTING = 'setting';
     case SLIDER = 'slider';
+    case SMS_LOG = 'sms_log';
     case STATIC_PAGE = 'static_page';
     case UNIT = 'unit';
     case USER = 'user';
     case USER_FAVORITE_PRODUCT = 'user_favorite_product';
+    case USER_NOTIFICATION = 'user_notification';
     case WEIGHT_POST_PRICE = 'weight_post_price';
     case FILE_MANAGER = 'file_manager';
 }

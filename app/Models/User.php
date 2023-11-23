@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Shetabit\Visitor\Traits\Visitor;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Model
@@ -23,7 +24,8 @@ class User extends Model
         HasRoles,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasDeletedRelationTrait;
+        HasDeletedRelationTrait,
+        Visitor;
 
     private const CreatedByLabel = 'created_by';
     private const UpdateByLabel = 'updated_by';
@@ -66,14 +68,6 @@ class User extends Model
     public function blogComments(): HasMany
     {
         return $this->hasMany(BlogComment::class);
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function blogViews(): HasMany
-    {
-        return $this->hasMany(BlogView::class, 'blog_id');
     }
 
     /**

@@ -26,7 +26,11 @@
                         :open="itemsRef.value[idx]?.open"
                         :items="itemsRef.value[idx]?.chilren"
                         :disk="disk"
+                        @selection-change="emit('selection-change', item)"
                     ></partial-tree-directory>
+                    <div v-else class="mr-3 text-sm text-gray-400">
+                        هیچ پوشه‌ای وجود ندارد.
+                    </div>
                 </li>
             </VTransitionSlideFadeLeftXGroup>
         </ul>
@@ -70,7 +74,6 @@ function clickHandler(idx, item) {
             success: (response) => {
                 itemsRef.value[idx].children = response.data
                 itemsRef.value[idx].open = true
-
             },
         })
     }

@@ -31,7 +31,7 @@ class FileRequest extends FormRequest
         /**
          * @var FileServiceInterface $service
          */
-        $service = app()->make(FileServiceInterface::class);
+        $service = app(FileServiceInterface::class);
 
         return [
             'disk' => [

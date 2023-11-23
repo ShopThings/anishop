@@ -12,7 +12,7 @@
         </div>
         <button type="button"
                 :class="[
-                    'mr-2 rounded-full border-0 ring-1 ring-gray-300 text-rose-600',
+                    'mr-2 rounded-full border-0 ring-1 ring-gray-300 text-rose-600 bg-white',
                     'min-w-[48px] min-h-[48px] group transition-all relative',
                     !canLoad ? 'cursor-not-allowed bg-gray-50' : 'cursor-pointer'
                 ]"

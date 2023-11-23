@@ -33,6 +33,10 @@ return new class extends Migration {
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('status');
+            $table->index('requested_at');
+            $table->index('deleted_at');
         });
     }
 

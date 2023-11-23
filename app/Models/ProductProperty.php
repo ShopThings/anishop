@@ -3,10 +3,15 @@
 namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
+use Gloudemans\Shoppingcart\Contracts\Buyable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Parables\NanoId\GeneratesNanoId;
 
-class ProductProperty extends Model
+class ProductProperty extends Model implements Buyable
 {
+    use GeneratesNanoId;
+
     public $timestamps = false;
 
     protected $hasCreatedBy = false;
@@ -25,11 +30,49 @@ class ProductProperty extends Model
         'is_published' => 'boolean',
     ];
 
+    public function nanoIdColumn()
+    {
+        return 'code';
+    }
+
     /**
      * @return BelongsTo
      */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function getBuyableIdentifier($options = null)
+    {
+        return $this->id;
+    }
+
+    public function getBuyableDescription($options = null)
+    {
+        return $this->product()->title;
+    }
+
+    public function getBuyablePrice($options = null)
+    {
+        $id = $this->id;
+        $price = $this->price;
+
+        // check if product have discount
+        if ($this->discounted_until && $this->discounted_until > now()) {
+            $price = $this->discounted_price;
+        }
+
+        // check product if it's in festival or not and if so, apply festival discount percentage to it
+        $festivalProduct = $this->product()->with('festivals.items', function (Builder $query) use ($id) {
+            $query->where('product_id', $id);
+        })->get(['discount_percentage']);
+
+        if ($festivalProduct->count()) {
+            $off = $this->price * $festivalProduct->first()->discount_percentage / 100;
+            $price = $this->price - $off;
+        }
+
+        return $price;
     }
 }

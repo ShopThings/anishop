@@ -3,16 +3,16 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
-use App\Support\WhereBuilder\WhereBuilderInterface;
+use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface UserServiceInterface extends ServiceInterface
 {
     /**
-     * @param WhereBuilderInterface|null $where
+     * @param string|null $searchText
      * @param int $limit
-     * @param int $offset
+     * @param int $page
      * @param array $order
      * @return Collection|LengthAwarePaginator
      */
@@ -24,16 +24,56 @@ interface UserServiceInterface extends ServiceInterface
     ): Collection|LengthAwarePaginator;
 
     /**
-     * @param $id
-     * @param bool $permanent
-     * @return bool
+     * @param User $user
+     * @param string|null $searchText
+     * @param int $limit
+     * @param int $page
+     * @param array $order
+     * @return Collection|LengthAwarePaginator
      */
-    public function deleteUser($id, bool $permanent = false): bool;
+    public function getUserAddresses(
+        User    $user,
+        ?string $searchText = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = ['id' => 'desc']
+    ): Collection|LengthAwarePaginator;
 
     /**
-     * @param array $ids
-     * @param bool $permanent
-     * @return bool
+     * @param User $user
+     * @param string|null $searchText
+     * @param int $limit
+     * @param int $page
+     * @param array $order
+     * @return Collection|LengthAwarePaginator
      */
-    public function batchDelete(array $ids, bool $permanent = false): bool;
+    public function getUserFavoriteProduct(
+        User    $user,
+        ?string $searchText = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = ['id' => 'desc']
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param User $user
+     * @param string|null $searchText
+     * @param int $limit
+     * @param int $page
+     * @param array $order
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getUserPurchases(
+        User    $user,
+        ?string $searchText = null,
+        int     $limit = 15,
+        int     $page = 1,
+        array   $order = ['id' => 'desc']
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserCarts(User $user);
 }

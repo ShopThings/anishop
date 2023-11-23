@@ -15,11 +15,14 @@ return new class extends Migration {
             $table->foreignId('product_attribute_id')
                 ->constrained('product_attributes')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('attribute_value');
+            $table->unsignedInteger('priority')->default(0);
             $table->timestamps();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('attribute_value');
         });
     }
 

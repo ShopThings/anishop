@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SliderItem extends Model
 {
-    use SoftDeletesTrait,
-        HasDeletedRelationTrait,
-        HasCreatedRelationTrait,
-        HasUpdatedRelationTrait;
+    use HasCreatedRelationTrait;
+
+    public $timestamps = false;
+
+    protected $hasUpdatedBy = false;
 
     protected $guarded = [
         'id',
@@ -23,6 +24,7 @@ class SliderItem extends Model
     protected $casts = [
         'is_published' => 'boolean',
         'options' => 'array',
+        'created_at' => 'datetime',
     ];
 
     /**

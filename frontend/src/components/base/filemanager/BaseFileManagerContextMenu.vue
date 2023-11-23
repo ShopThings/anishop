@@ -25,9 +25,6 @@
         <context-menu-separator v-if="hasOperation('download')"/>
         <context-menu-item v-if="hasOperation('paste')"
                            @click="menuItemClick('paste')">
-            <template #icon>
-                <ScissorsIcon class="h-4 w-4"/>
-            </template>
             <template #label>
                 <span class="text-sm">چسباندن (paste)</span>
             </template>

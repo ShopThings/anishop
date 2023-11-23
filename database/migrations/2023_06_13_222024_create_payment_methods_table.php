@@ -14,12 +14,12 @@ return new class extends Migration {
     {
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 25)->unique();
             $table->string('title');
             $table->foreignId('image_id')->nullable()
                 ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
             $table->enum('type', array_map(fn($item) => $item->name, PaymentTypesEnum::cases()));
-            $table->enum('bank_gateway_type', array_map(fn($item) => $item->name, GatewaysEnum::cases()));
+            $table->enum('bank_gateway_type', array_map(fn($item) => $item->name, GatewaysEnum::cases()))
+                ->nullable();
             $table->text('options')->nullable()
                 ->comment('for more options about the selected type for example credentials of bank gateway type');
             $table->boolean('is_published')->default(true);
@@ -32,6 +32,11 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('type');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

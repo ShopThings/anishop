@@ -12,7 +12,7 @@ class PersianNameRule implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if(!preg_match('/^[پچجحخهعغفقثصضشسیبلاتنمکگوئدذرزطظژؤإأآءًٌٍَُِّ\s]+$/u', $value)) {
+        if(!preg_match('/^[‌پچجحخهعغفقثصضشسیبلاتنمکگوئدذرزطظژؤإأآءًٌٍَُِّ\s]+$/u', $value)) {
             $fail('validation.persian_name')->translate();
         }
     }

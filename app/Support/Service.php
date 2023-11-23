@@ -4,28 +4,62 @@ namespace App\Support;
 
 use App\Contracts\ServiceInterface;
 use App\Support\Traits\ServiceTrait;
+use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 
-class Service implements ServiceInterface
+abstract class Service implements ServiceInterface
 {
     use ServiceTrait;
 
     /**
-     * @param array $orders
-     * @param int $dept - How many nested array should travel
-     * @return array
+     * @inheritDoc
      */
-    protected function convertOrdersColumnToArray(array $orders, int $dept = 512): array
+    public function getById($id): Collection|Model|null
     {
-        if ($dept < 0) return $orders;
+        return $this->repository->findOrFail($id);
+    }
 
-        $orderArr = [];
-        foreach ($orders as $column => $sort) {
-            if (is_array($sort))
-                $orderArr = $orderArr + $this->convertOrdersColumnToArray($sort, $dept - 1);
-
-            if (!isset($orderArr[$column]))
-                $orderArr[$column] = $sort;
+    /**
+     * @inheritDoc
+     */
+    public function deleteById($id, bool $permanent = false): bool
+    {
+        if ($permanent) {
+            Gate::authorize('forceDelete', $this->repository->find($id));
         }
-        return $orderArr;
+
+        return (bool)$this->repository->delete($id, $permanent);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function batchDeleteByIds(array $ids, bool $permanent = false): bool
+    {
+        if ($permanent) {
+            Gate::authorize('forceDelete', $this->repository->find($ids));
+        }
+
+        if (!count($ids)) return true;
+        return (bool)$this->repository->deleteBatch($ids, $permanent);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function create(array $attributes): ?Model
+    {
+        // empty implementation
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateById($id, array $attributes): ?Model
+    {
+        // empty implementation
+        return null;
     }
 }

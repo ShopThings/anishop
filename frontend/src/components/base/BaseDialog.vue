@@ -6,12 +6,24 @@
         @close="closeModal"
         v-model:open="isOpen"
         :container-klass="containerKlass"
-    ></partial-dialog>
+    >
+        <template v-if="slots['closeButton']" #closeButton="{close}">
+            <slot name="closeButton" :close="close"></slot>
+        </template>
+
+        <template v-if="slots['title']" #title>
+            <slot name="title"></slot>
+        </template>
+
+        <template v-if="slots['body']" #body="{close}">
+            <slot name="body" :close="closeModal"></slot>
+        </template>
+    </partial-dialog>
 </template>
 
 <script setup>
 import PartialDialog from "../partials/PartialDialog.vue";
-import {computed, watch} from "vue";
+import {ref, useSlots, watch} from "vue";
 
 const props = defineProps({
     open: Boolean,
@@ -19,15 +31,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['open', 'close', 'update:open'])
+const slots = useSlots()
 
-const isOpen = computed({
-    get() {
-        return props.open
-    },
-    set(value) {
-        emit('update:open', value)
-    }
-})
+const isOpen = ref(props.open)
 
 watch(() => props.open, function () {
     if (props.open)
@@ -38,11 +44,15 @@ watch(() => props.open, function () {
 
 function closeModal() {
     isOpen.value = false
+    emit('update:open', isOpen.value)
+
     emit('close')
 }
 
 function openModal() {
     isOpen.value = true
+    emit('update:open', isOpen.value)
+
     emit('open')
 }
 </script>

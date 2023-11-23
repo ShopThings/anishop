@@ -1,6 +1,6 @@
 <template>
     <BaseMenu :open="open" @open="() => emit('open')"
-              btnClass="relative w-[45] h-[45] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-gray-100 active:bg-gray-200 focus:bg-sky-50 transition-all flex justify-between items-center">
+              btnClass="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
         <template #button>
             <UserIcon class="h-6 w-6"/>
 
@@ -81,8 +81,7 @@ import {MenuItems, MenuItem} from '@headlessui/vue'
 import {ChevronDownIcon} from '@heroicons/vue/24/solid'
 import {UserIcon, IdentificationIcon, PowerIcon, Cog6ToothIcon} from '@heroicons/vue/24/outline'
 import BaseMenu from "../base/BaseMenu.vue"
-import {useAdminStore} from "../../store/StoreUserAuth.js";
-import {toRaw} from "vue";
+import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
 
 defineProps({
     open: {
@@ -92,7 +91,7 @@ defineProps({
 })
 const emit = defineEmits(['open'])
 
-const store = useAdminStore()
+const store = useAdminAuthStore()
 const user = store.getUser
 </script>
 

@@ -12,15 +12,10 @@ return new class extends Migration {
     {
         Schema::create('blog_categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('parent_id')->nullable()
-                ->constrained('blog_categories')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
             $table->string('escaped_name');
             $table->string('slug');
-            $table->foreignId('image_id')->nullable()
-                ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
-            $table->text('ancestry')->nullable();
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->text('keywords');
             $table->boolean('is_published')->default(true);
             $table->boolean('show_in_menu')->default(true);
@@ -34,6 +29,12 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('name');
+            $table->index('escaped_name');
+            $table->index('slug');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

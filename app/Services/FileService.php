@@ -11,12 +11,16 @@ use App\Repositories\FileRepository;
 use App\Services\Contracts\FileServiceInterface;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
+use App\Traits\VersionTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class FileService extends Service implements FileServiceInterface
+class FileService implements FileServiceInterface
 {
+    use VersionTrait;
+
     public function __construct(protected FileRepository $repository)
     {
     }
@@ -29,7 +33,7 @@ class FileService extends Service implements FileServiceInterface
      */
     public function upload(string $path, $file, string $disk, bool $overwrite = false): bool
     {
-        if (is_null($file) || !($file instanceof UploadedFile)) return false;
+        if (!($file instanceof UploadedFile)) return false;
         return $this->repository->upload($path, $file, $disk, $overwrite);
     }
 
@@ -43,6 +47,7 @@ class FileService extends Service implements FileServiceInterface
         string  $disk,
         ?string $search = null,
         ?string $fileSize = null,
+        array   $extensions = [],
         array   $order = ['name' => 'asc']
     ): array
     {
@@ -54,6 +59,7 @@ class FileService extends Service implements FileServiceInterface
             $disk,
             $search,
             $fileSize,
+            $extensions,
             $this->convertOrdersColumnToArray($order)
         );
     }
@@ -105,6 +111,16 @@ class FileService extends Service implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
+    public function copy(array $paths, string $destination, string $disk): bool
+    {
+        return $this->repository->copy($paths, $destination, $disk);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws InvalidDiskException
+     * @throws InvalidPathException
+     */
     public function delete(array|FileManager $files, ?string $path, string $disk): bool
     {
         if ($files instanceof FileManager) {
@@ -117,7 +133,7 @@ class FileService extends Service implements FileServiceInterface
 
     /**
      * @inheritDoc
-     * @return mixed|\Symfony\Component\HttpFoundation\StreamedResponse
+     * @return mixed|StreamedResponse
      * @throws InvalidDiskException
      * @throws InvalidFileException
      */
@@ -132,7 +148,11 @@ class FileService extends Service implements FileServiceInterface
      */
     public function exists(string $path, string $disk): bool
     {
-        return $this->repository->fileExists($path, $disk);
+        $hasDisk = $this->repository->checkDiskValidation($disk, false);
+
+        if (!$hasDisk) return false;
+
+        return $this->repository->checkPathExists($path, false);
     }
 
     /**
@@ -140,7 +160,7 @@ class FileService extends Service implements FileServiceInterface
      */
     public function find($file): Model|null
     {
-        $where = new WhereBuilder();
+        $where = new WhereBuilder('file_manager');
         $where->orWhereEqual('id', $file)
             ->orWhereEqual('CONCAT(file_manager.path, \'/\', file_manager.name)', $file);
         return $this->repository->findWhere($where->build());
@@ -163,8 +183,8 @@ class FileService extends Service implements FileServiceInterface
         ) {
             $files = $this->repository->fileExists($dbFile->path, $disk, true);
         } else {
-            $disk = $this->repository::STORAGE_DISK_LOCAL;
-            $files = $this->repository->fileExists($dbFile->path, $this->repository::STORAGE_DISK_PUBLIC, true, $size);
+            $disk = $this->repository::STORAGE_DISK_PUBLIC;
+            $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);
             if (!count($files)) {
                 $disk = $this->repository::STORAGE_DISK_LOCAL;
                 $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);

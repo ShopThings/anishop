@@ -17,13 +17,12 @@ return new class extends Migration {
             $table->string('name');
             $table->string('escaped_name');
             $table->string('slug');
-            $table->text('image')->nullable();
             $table->text('ancestry')->nullable();
             $table->unsignedInteger('level')->default(0);
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->boolean('show_in_menu')->default(true)
                 ->comment('show in main categories menu or not');
-            $table->boolean('show_in_side_menu')->default(true)
+            $table->boolean('show_in_search_side_menu')->default(true)
                 ->comment('neither show in search side panel or not');
             $table->boolean('show_in_slider')->default(true);
             $table->boolean('is_published')->default(true);
@@ -36,6 +35,12 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('name');
+            $table->index('escaped_name');
+            $table->index('slug');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

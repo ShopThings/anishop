@@ -16,8 +16,6 @@ return new class extends Migration {
             $table->text('answer');
             $table->text('keywords');
             $table->boolean('is_published')->default(true);
-            $table->boolean('is_deletable')->default(true)
-                ->comment('to restrict other roles than super_admin and the original creator from deleting faq');
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
@@ -26,6 +24,10 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('question');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

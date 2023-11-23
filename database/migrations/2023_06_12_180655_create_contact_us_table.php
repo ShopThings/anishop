@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,22 +12,30 @@ return new class extends Migration
     {
         Schema::create('contact_us', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')
+                ->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('title');
             $table->string('name');
             $table->string('mobile', 11);
-            $table->text('description');
+            $table->text('message')->comment('message of user');
+            $table->text('answer')->comment('respond to user');
             $table->boolean('is_seen')->default(true);
+            $table->timestamp('answered_at')->nullable();
+            $table->foreignId('answered_by')->nullable()
+                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->timestamp('changed_status_at')->nullable();
             $table->foreignId('changed_status_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreignId('updated_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('answered_at');
+            $table->index('deleted_at');
         });
     }
 

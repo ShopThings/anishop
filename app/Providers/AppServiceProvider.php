@@ -33,8 +33,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->registerBase();
-        $this->registerRepositories();
-        $this->registerServices();
     }
 
     /**
@@ -52,27 +50,6 @@ class AppServiceProvider extends ServiceProvider
     private function registerBase(): void
     {
         $this->app->bind(WhereBuilderInterface::class, WhereBuilder::class);
-    }
-
-    /**
-     * @return void
-     */
-    private function registerRepositories(): void
-    {
-        $this->app->bind(AuthRepositoryInterface::class, AuthRepository::class);
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
-    }
-
-    /**
-     * @return void
-     */
-    private function registerServices(): void
-    {
-        $this->app->bind(RoleServiceInterface::class, RoleService::class);
-        $this->app->bind(AuthServiceInterface::class, AuthService::class);
-        $this->app->bind(UserServiceInterface::class, UserService::class);
-        $this->app->bind(FileServiceInterface::class, FileService::class);
     }
 
     /**

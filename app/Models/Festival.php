@@ -6,7 +6,7 @@ use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasTitleSluggableTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -16,7 +16,7 @@ class Festival extends Model
         HasDeletedRelationTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasTitleSluggableTrait;
+        HasSluggableTrait;
 
     protected $guarded = [
         'id',
@@ -27,6 +27,8 @@ class Festival extends Model
         'end_at' => 'datetime',
         'is_published' => 'boolean',
     ];
+
+    protected $sluggableField = 'title';
 
     /**
      * @return HasMany

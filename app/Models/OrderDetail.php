@@ -4,11 +4,15 @@ namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Mews\Purifier\Casts\CleanHtml;
+use Parables\NanoId\GeneratesNanoId;
 
 class OrderDetail extends Model
 {
+    use GeneratesNanoId;
+
     public $timestamps = false;
 
     protected $hasCreatedBy = false;
@@ -20,10 +24,22 @@ class OrderDetail extends Model
     ];
 
     protected $casts = [
+        'description' => CleanHtml::class,
+        'is_needed_factor' => 'boolean',
         'is_in_place_delivery' => 'boolean',
         'is_product_returned_to_stock' => 'boolean',
         'ordered_at' => 'datetime',
     ];
+
+    public function nanoIdColumn(): string
+    {
+        return 'code';
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
 
     /**
      * @return BelongsTo
@@ -34,16 +50,27 @@ class OrderDetail extends Model
     }
 
     /**
-     * @return BelongsToMany
+     * @return HasOne
      */
-    public function orders(): BelongsToMany
+    public function user(): HasOne
     {
-        return $this->belongsToMany(
-            Order::class,
-            'orders',
-            'order_key_id',
-            'key_id'
-        );
+        return $this->hasOne(User::class, 'user_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'key_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'order_key_id', 'id');
     }
 
     /**

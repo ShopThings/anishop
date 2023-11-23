@@ -8,11 +8,13 @@ return [
         'status' => [
             ReturnOrderStatusesEnum::CHECKING->value => 'در حال بررسی',
             ReturnOrderStatusesEnum::DENIED_BY_USER->value => 'لغو توسط کاربر',
-            ReturnOrderStatusesEnum::ACCEPT->value => 'تایید شده',
-            ReturnOrderStatusesEnum::DENIED->value => 'تایید نشده',
-            ReturnOrderStatusesEnum::SENDING->value => 'ارسال کالای مرجوعی',
-            ReturnOrderStatusesEnum::RECEIVED->value => 'دریافت کالای مرجوعی',
-            ReturnOrderStatusesEnum::MONEY_RETURNED->value => 'بازگشت مبلغ کالاها',
+            ReturnOrderStatusesEnum::ACCEPT->value => 'قبول درخواست',
+            ReturnOrderStatusesEnum::DENIED->value => 'رد درخواست',
+            ReturnOrderStatusesEnum::SENDING->value => 'ارسال مرسولات توسط کاربر',
+            ReturnOrderStatusesEnum::RECEIVED->value => 'دریافت مرسولات توسط پذیرنده',
+            ReturnOrderStatusesEnum::RETURN_TO_USER->value => 'بازگشت مرسولات توسط پذیرنده',
+            ReturnOrderStatusesEnum::RECEIVED_BY_USER->value => 'دریافت مرسولات ارسال شده توسط پذیرنده',
+            ReturnOrderStatusesEnum::MONEY_RETURNED->value => 'بازگشت وجه پرداخت شده به کاربر',
         ],
     ],
 
