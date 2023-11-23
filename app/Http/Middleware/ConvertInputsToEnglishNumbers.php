@@ -19,6 +19,7 @@ class ConvertInputsToEnglishNumbers extends TransformsRequest
      */
     protected static array $skipKeys = [
         'title',
+        'name',
         'description',
         'current_password',
         'password',

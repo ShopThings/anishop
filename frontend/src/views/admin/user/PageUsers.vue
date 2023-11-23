@@ -1,7 +1,7 @@
 <template>
     <new-creation-guide-top route-name="admin.user.add">
         <template #text>
-            با استفاده از ستون عملیات می‌توانید اقدام به حذف و مشاهده کاربر کنید
+            با استفاده از ستون عملیات می‌توانید اقدام به حذف و مشاهده کاربر نمایید
         </template>
         <template #buttonText>
             <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
@@ -54,14 +54,18 @@
                             <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>
                         </template>
                         <template v-slot:op="{value}">
-                            <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+                            <base-datatable-menu
+                                :items="operations"
+                                :data="value"
+                                :container="getMenuContainer"
+                                :removals="!value.is_deletable ? ['delete'] : []"
+                            />
                         </template>
                     </base-datatable>
                 </template>
             </base-loading-panel>
         </template>
     </partial-card>
-
 </template>
 
 <script setup>
@@ -70,14 +74,13 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "../../../components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "../../../components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
-import {useToast, POSITION, TYPE} from "vue-toastification";
+import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {UserAPI} from "../../../service/APIUser.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -188,6 +191,7 @@ const getMenuContainer = computed(() => {
 
 const operations = [
     {
+        id: 'edit',
         link: {
             text: 'مشاهده و ویرایش',
             icon: 'PencilIcon',
@@ -204,6 +208,7 @@ const operations = [
         },
     },
     {
+        id: 'delete',
         link: {
             text: 'حذف',
             icon: 'TrashIcon',
@@ -214,10 +219,11 @@ const operations = [
                 hideAllPoppers()
                 toast.clear()
 
+                if (!data.is_deletable)
+                    toast.warning('این آیتم قابل حذف نمی‌باشد.')
+
                 useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.users.destroy, {user: data.id}), {
-                        method: 'DELETE',
-                    }, {
+                    UserAPI.deleteById(data.id, {
                         success: () => {
                             toast.success('عملیات با موفقیت انجام شد.')
                             datatable.value?.refresh()
@@ -257,12 +263,7 @@ const selectionOperations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiRoutes.admin.users.batchDestroy, {
-                        method: 'DELETE',
-                        data: {
-                            ids,
-                        },
-                    }, {
+                    UserAPI.deleteByIds(ids, {
                         success: () => {
                             toast.success('عملیات با موفقیت انجام شد.')
                             datatable.value?.refresh()
@@ -279,22 +280,15 @@ const selectionOperations = [
 
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
-    text = text || ''
 
-    useRequest(apiRoutes.admin.users.index, {
-        params: {limit, offset, order, sort, text},
-    }, {
-        success: (response) => {
+    UserAPI.fetchAll({limit, offset, order, sort, text}, {
+        success(response, total) {
             table.rows = response.data
-            table.totalRecordCount = response.meta.total
+            table.totalRecordCount = total
 
             return false
         },
-        error: () => {
-            table.rows = []
-            table.totalRecordCount = 0
-        },
-        finally: () => {
+        finally() {
             loading.value = false
             table.isLoading = false
             table.sortable.order = order
@@ -312,5 +306,3 @@ doSearch(0, 15, 'id', 'desc')
 <style scoped>
 
 </style>
-<script setup>
-</script>

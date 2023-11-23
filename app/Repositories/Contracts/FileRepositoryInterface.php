@@ -21,6 +21,7 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @param string $disk
      * @param string|null $search
      * @param string $fileSize
+     * @param array $extensions
      * @param array $order
      * @return array
      */
@@ -29,6 +30,7 @@ interface FileRepositoryInterface extends RepositoryInterface
         string  $disk,
         ?string $search = null,
         string  $fileSize = 'original',
+        array   $extensions = [],
         array   $order = []
     ): array;
 
@@ -66,6 +68,14 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @return bool
      */
     public function move(array $paths, string $destination, string $disk): bool;
+
+    /**
+     * @param array $paths
+     * @param string $destination
+     * @param string $disk
+     * @return bool
+     */
+    public function copy(array $paths, string $destination, string $disk): bool;
 
     /**
      * @param array|string $files

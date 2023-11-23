@@ -12,8 +12,9 @@ return new class extends Migration {
     {
         Schema::create('return_order_request_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('return_code')
-                ->constrained('return_order_requests')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('return_code', 25);
+            $table->foreign('return_code')->references('code')->on('return_order_requests')
+                ->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('order_item_id')
                 ->constrained('order_items')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedMediumInteger('quantity');
@@ -23,6 +24,9 @@ return new class extends Migration {
             $table->timestamp('updated_at')->nullable();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
+
+            $table->index('return_code');
+            $table->index('accepted_at');
         });
     }
 

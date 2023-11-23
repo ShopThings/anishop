@@ -43,7 +43,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->response(function (Request $request, array $headers) {
                     return response()->json([
                         'type' => ResponseTypesEnum::ERROR->value,
-                        'message' => 'تعداد دفعات درخواست ورود بیشتر از حد مجاز است. لطفا چند لحظه صبر کنید و سپس تلاش کنید.',
+                        'message' => 'تعداد دفعات درخواست بیشتر از حد مجاز است. لطفا چند لحظه صبر کنید و سپس تلاش کنید.',
                     ], ResponseCodes::HTTP_TOO_MANY_REQUESTS, $headers);
                 });
         });

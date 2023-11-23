@@ -24,5 +24,4 @@
     transform: translateY(-12px);
     opacity: 0;
 }
-
 </style>

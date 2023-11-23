@@ -2,6 +2,19 @@
 
 namespace App\Support\Helper;
 
+if (!function_exists('to_boolean')) {
+    /**
+     * Convert to boolean
+     *
+     * @param $booleable
+     * @return boolean
+     */
+    function to_boolean($booleable): bool
+    {
+        return (bool)filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    }
+}
+
 if (!function_exists('get_color_from_bg')) {
     /**
      * @see https://betterprogramming.pub/generate-contrasting-text-for-your-random-background-color-ac302dc87b4
@@ -28,12 +41,12 @@ if (!function_exists('get_color_from_bg')) {
     }
 }
 
-if (!function_exists('get_db_comma_regex_string')) {
+if (!function_exists('get_db_ancestry_regex_string')) {
     /**
      * @param $needle
      * @return string
      */
-    function get_db_comma_regex_string($needle): string
+    function get_db_ancestry_regex_string($needle): string
     {
         return '([^0-9]|^)' . preg_quote($needle) . '([^0-9]|$)';
     }

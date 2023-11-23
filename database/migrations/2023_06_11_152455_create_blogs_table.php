@@ -20,10 +20,9 @@ return new class extends Migration {
             $table->foreignId('image_id')->nullable()
                 ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
             $table->text('description');
-            $table->string('archive_tag');
             $table->text('keywords');
-            $table->boolean('is_published')->default(true);
             $table->boolean('is_commenting_allowed')->default(true);
+            $table->boolean('is_published')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
@@ -32,6 +31,12 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('escaped_title');
+            $table->index('slug');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

@@ -22,16 +22,26 @@ return new class extends Migration {
             $table->unsignedInteger('weight')
                 ->comment('it is in grams');
             $table->unsignedBigInteger('price');
-            $table->unsignedBigInteger('discounted_price');
+            $table->unsignedBigInteger('discounted_price')->nullable();
             $table->timestamp('discounted_until')->nullable();
             $table->unsignedDecimal('tax_rate')->nullable();
-            $table->unsignedInteger('stock-count');
+            $table->unsignedInteger('stock_count');
             $table->unsignedInteger('max_cart_count');
             $table->boolean('is_special')->default(true);
             $table->boolean('is_available')->default(true);
             $table->boolean('show_coming_soon')->default(true);
             $table->boolean('show_call_for_more')->default(true);
             $table->boolean('is_published')->default(true);
+
+            $table->index('color_name');
+            $table->index('size');
+            $table->index('guarantee');
+            $table->index('price');
+            $table->index('discounted_price');
+            $table->index('stock_count');
+            $table->index('is_special');
+            $table->index('is_available');
+            $table->index('is_published');
         });
     }
 

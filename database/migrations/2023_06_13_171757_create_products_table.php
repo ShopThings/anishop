@@ -37,6 +37,13 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('escaped_title');
+            $table->index('slug');
+            $table->index('is_available');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

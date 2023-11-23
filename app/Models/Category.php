@@ -6,7 +6,7 @@ use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasNameSluggableTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasParentRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,7 +18,9 @@ class Category extends Model
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
         HasParentRelationTrait,
-        HasNameSluggableTrait;
+        HasSluggableTrait;
+
+    public $table = 'categories';
 
     protected $guarded = [
         'id',
@@ -31,6 +33,8 @@ class Category extends Model
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
     ];
+
+    protected $sluggableField = 'escaped_name';
 
     /**
      * @return HasMany

@@ -1,6 +1,4 @@
-import {useAdminStore} from "../store/StoreUserAuth.js";
-import {useRequest} from "../composables/api-request.js";
-import {apiRoutes} from "./api-routes.js";
+import {useAdminAuthStore} from "../store/StoreUserAuth.js";
 
 export const adminRoutes = {
     path: '/admin',
@@ -17,14 +15,14 @@ export const adminRoutes = {
             path: 'logout',
             name: 'admin.logout',
             beforeEnter(to, from, next) {
-                const store = useAdminStore()
-                useRequest(apiRoutes.admin.logout, {method: 'POST'}, {
-                    success: () => {
-                        store.$reset()
-                    },
-                })
+                const store = useAdminAuthStore()
+                store.logout()
                 if (from.meta.requiresAuth) {
-                    return next({name: 'admin.login'});
+                    const pushObj = {name: 'admin.login'}
+
+                    if (to.query.redirect) pushObj.query = {redirect: to.query.redirect}
+
+                    return next(pushObj);
                 }
                 location.reload();
             },
@@ -47,7 +45,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'کاربران',
-                            }
+                            },
                         ],
                     },
                 },
@@ -64,7 +62,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن کاربر',
-                            }
+                            },
                         ],
                     },
                 },
@@ -88,7 +86,29 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'مشاهده پروفایل',
-                            }
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'addresses',
+                    name: 'admin.user.addresses',
+                    component: () => import('../views/admin/user/PageUserAddresses.vue'),
+                    meta: {
+                        title: 'آدرس‌های کاربر',
+                        breadcrumb: [
+                            {
+                                name: 'کاربران',
+                                link: 'admin.users',
+                            },
+                            {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'مشاهده آدرس‌ها',
+                            },
                         ],
                     },
                 },
@@ -104,8 +124,13 @@ export const adminRoutes = {
                                 link: 'admin.users',
                             },
                             {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
+                            },
+                            {
                                 name: 'مشاهده سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -121,8 +146,13 @@ export const adminRoutes = {
                                 link: 'admin.users',
                             },
                             {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
+                            },
+                            {
                                 name: 'مشاهده سبدهای خرید',
-                            }
+                            },
                         ],
                     },
                 },
@@ -138,8 +168,13 @@ export const adminRoutes = {
                                 link: 'admin.users',
                             },
                             {
+                                name: 'مشاهده پروفایل',
+                                link: 'admin.user.profile',
+                                params: ['id'],
+                            },
+                            {
                                 name: 'مشاهده محصولات مورد علاقه',
-                            }
+                            },
                         ],
                     },
                 },
@@ -158,7 +193,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'روش‌های پرداخت',
-                            }
+                            },
                         ],
                     },
                 },
@@ -175,7 +210,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد روش پرداخت',
-                            }
+                            },
                         ],
                     },
                 },
@@ -194,7 +229,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش روش پرداخت',
-                    }
+                    },
                 ],
             },
         },
@@ -211,7 +246,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'رنگ‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -228,7 +263,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن رنگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -247,7 +282,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش رنگ',
-                    }
+                    },
                 ],
             },
         },
@@ -264,7 +299,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'برندها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -281,7 +316,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد برند',
-                            }
+                            },
                         ],
                     },
                 },
@@ -300,7 +335,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش برند',
-                    }
+                    },
                 ],
             },
         },
@@ -317,7 +352,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'دسته‌بندی‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -334,7 +369,24 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن دسته‌بندی',
-                            }
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'image',
+                    name: 'admin.category_images',
+                    component: () => import('../views/admin/product/PageCategoryImages.vue'),
+                    meta: {
+                        title: 'تصاویر دسته‌بندی‌ها',
+                        breadcrumb: [
+                            {
+                                name: 'دسته‌بندی‌ها',
+                                link: 'admin.categories',
+                            },
+                            {
+                                name: 'تصاویر دسته‌بندی‌ها',
+                            },
                         ],
                     },
                 },
@@ -353,7 +405,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش دسته‌بندی',
-                    }
+                    },
                 ],
             },
         },
@@ -370,7 +422,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'جشنواره‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -387,7 +439,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد جشنواره',
-                            }
+                            },
                         ],
                     },
                 },
@@ -395,20 +447,42 @@ export const adminRoutes = {
         },
         {
             path: 'festival/:id(\\d+)',
-            name: 'admin.festival.edit',
-            component: () => import('../views/admin/shop/PageFestivalEdit.vue'),
-            meta: {
-                title: 'ویرایش جشنواره',
-                breadcrumb: [
-                    {
-                        name: 'جشنواره‌ها',
-                        link: 'admin.festivals',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.festival.edit',
+                    component: () => import('../views/admin/shop/PageFestivalEdit.vue'),
+                    meta: {
+                        title: 'ویرایش جشنواره',
+                        breadcrumb: [
+                            {
+                                name: 'جشنواره‌ها',
+                                link: 'admin.festivals',
+                            },
+                            {
+                                name: 'ویرایش جشنواره',
+                            },
+                        ],
                     },
-                    {
-                        name: 'ویرایش جشنواره',
-                    }
-                ],
-            },
+                },
+                {
+                    path: 'products',
+                    name: 'admin.festival.products',
+                    component: () => import('../views/admin/shop/PageFestivalProducts.vue'),
+                    meta: {
+                        title: 'ویرایش محصولات جشنواره',
+                        breadcrumb: [
+                            {
+                                name: 'جشنواره‌ها',
+                                link: 'admin.festivals',
+                            },
+                            {
+                                name: 'ویرایش محصولات جشنواره',
+                            },
+                        ],
+                    },
+                },
+            ],
         },
 
         {
@@ -423,7 +497,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'واحدها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -440,7 +514,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن واحد محصول',
-                            }
+                            },
                         ],
                     },
                 },
@@ -459,7 +533,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش واحد',
-                    }
+                    },
                 ],
             },
         },
@@ -476,7 +550,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'کوپن‌های تخفیف',
-                            }
+                            },
                         ],
                     },
                 },
@@ -493,7 +567,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد کوپن تخفیف',
-                            }
+                            },
                         ],
                     },
                 },
@@ -512,7 +586,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش کوپن',
-                    }
+                    },
                 ],
             },
         },
@@ -529,7 +603,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'محصولات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -546,39 +620,126 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد محصول جدید',
-                            }
+                            },
                         ],
                     },
+                },
+                {
+                    path: ':ids([\\d\/]+)',
+                    children: [
+                        {
+                            path: 'change-price',
+                            name: 'admin.products.change.price',
+                            component: () => import('../views/admin/product/PageProductMultipleChangePrice.vue'),
+                            meta: {
+                                title: 'تغییر دسته‌جمعی قیمت محصولات',
+                                breadcrumb: [
+                                    {
+                                        name: 'محصولات',
+                                        link: 'admin.products',
+                                    },
+                                    {
+                                        name: 'تغییر دسته‌جمعی قیمت محصولات',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: 'change-info',
+                            name: 'admin.products.change.info',
+                            component: () => import('../views/admin/product/PageProductMultipleChangeInfo.vue'),
+                            meta: {
+                                title: 'تغییر دسته‌جمعی مشخصات محصولات',
+                                breadcrumb: [
+                                    {
+                                        name: 'محصولات',
+                                        link: 'admin.products',
+                                    },
+                                    {
+                                        name: 'تغییر دسته‌جمعی مشخصات محصولات',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
                 {
                     path: 'attributes',
-                    name: 'admin.products.attrs',
-                    component: () => import('../views/admin/product/PageProductsAttributes.vue'),
-                    meta: {
-                        title: 'ویژگی‌های جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                            }
-                        ],
-                    },
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.search.attrs',
+                            component: () => import('../views/admin/product/PageSearchAttributes.vue'),
+                            meta: {
+                                title: 'ویژگی‌های جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: 'new',
+                            name: 'admin.search.attr.add',
+                            component: () => import('../views/admin/product/PageAttributeAdd.vue'),
+                            meta: {
+                                title: 'ایجاد ویژگی جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'ایجاد ویژگی جستجو',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
                 {
-                    path: 'attributes/new',
-                    name: 'admin.product.attr.add',
-                    component: () => import('../views/admin/product/PageProductAttributeAdd.vue'),
-                    meta: {
-                        title: 'ایجاد ویژگی جستجو',
-                        breadcrumb: [
-                            {
-                                name: 'ویژگی‌های جستجو',
-                                link: 'admin.products.attrs',
+                    path: 'attributes/categories',
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.search.attrs.categories',
+                            component: () => import('../views/admin/product/PageAttributeCategories.vue'),
+                            meta: {
+                                title: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                    },
+                                ],
                             },
-                            {
-                                name: 'ایجاد ویژگی جستجو',
-                            }
-                        ],
-                    },
+                        },
+                        {
+                            path: 'new',
+                            name: 'admin.search.attr.category.add',
+                            component: () => import('../views/admin/product/PageAttributeCategoryAdd.vue'),
+                            meta: {
+                                title: 'تخصیص ویژگی جستجو به دسته‌بندی',
+                                breadcrumb: [
+                                    {
+                                        name: 'ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs',
+                                    },
+                                    {
+                                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                                        link: 'admin.search.attrs.categories',
+                                    },
+                                    {
+                                        name: 'تخصیص ویژگی جستجو به دسته‌بندی',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
             ],
         },
@@ -598,32 +759,191 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش محصول',
-                            }
+                            },
                         ],
                     },
                 },
                 {
-                    path: 'attribute',
-                    name: 'admin.product.attr.edit',
-                    component: () => import('../views/admin/product/PageProductAttributeEdit.vue'),
+                    path: 'detail',
+                    name: 'admin.product.detail',
+                    component: () => import('../views/admin/product/PageProductDetail.vue'),
                     meta: {
-                        title: 'ویرایش ویژگی جستجو',
+                        title: 'جزئیات محصول',
                         breadcrumb: [
                             {
                                 name: 'محصولات',
                                 link: 'admin.products',
                             },
                             {
+                                name: 'جزئیات محصول',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'attribute',
+                    name: 'admin.product.attrs.edit',
+                    component: () => import('../views/admin/product/PageProductAttributeEdit.vue'),
+                    meta: {
+                        title: 'ویرایش ویژگی جستجو محصول',
+                        breadcrumb: [
+                            {
+                                name: 'محصولات',
+                                link: 'admin.products',
+                            },
+                            {
+                                name: 'ویرایش ویژگی جستجو محصول',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'comments',
+                    name: 'admin.product.comments',
+                    component: () => import('../views/admin/product/PageProductComments.vue'),
+                    meta: {
+                        title: 'دیدگاه‌های محصول',
+                        breadcrumb: [
+                            {
+                                name: 'محصولات',
+                                link: 'admin.products',
+                            },
+                            {
+                                name: 'دیدگاه‌های محصول',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'comment/:detail(\\d+)',
+                    name: 'admin.product.comment.detail',
+                    component: () => import('../views/admin/product/PageProductCommentDetail.vue'),
+                    meta: {
+                        title: 'جزئیات دیدگاه محصول',
+                        breadcrumb: [
+                            {
+                                name: 'محصولات',
+                                link: 'admin.products',
+                            },
+                            {
+                                name: 'دیدگاه‌های محصول',
+                                link: 'admin.product.comments',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'جزئیات دیدگاه',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+
+        {
+            path: 'attribute/:id(\\d+)',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.search.attr.edit',
+                    component: () => import('../views/admin/product/PageAttributeEdit.vue'),
+                    meta: {
+                        title: 'ویرایش ویژگی جستجو',
+                        breadcrumb: [
+                            {
                                 name: 'ویژگی‌های جستجو',
-                                link: 'admin.products.attrs',
+                                link: 'admin.search.attrs',
                             },
                             {
                                 name: 'ویرایش ویژگی جستجو',
-                            }
+                            },
                         ],
                     },
-                }
+                },
+                {
+                    path: 'values',
+                    name: 'admin.search.attr.values',
+                    component: () => import('../views/admin/product/PageSearchAttributesValues.vue'),
+                    meta: {
+                        title: 'مقادیر ویژگی‌های جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'مقادیر ویژگی‌های جستجو',
+                            },
+                        ],
+                    },
+                },
+                {
+                    path: 'values/new',
+                    name: 'admin.search.attr.value.new',
+                    component: () => import('../views/admin/product/PageSearchAttributeValueAdd.vue'),
+                    meta: {
+                        title: 'ایجاد مقدار ویژگی جستجو',
+                        breadcrumb: [
+                            {
+                                name: 'ویژگی‌های جستجو',
+                                link: 'admin.search.attrs',
+                            },
+                            {
+                                name: 'مقادیر ویژگی‌های جستجو',
+                                link: 'admin.search.attr.values',
+                                params: ['id'],
+                            },
+                            {
+                                name: 'ایجاد مقدار ویژگی جستجو',
+                            },
+                        ],
+                    },
+                },
             ],
+        },
+
+        {
+            path: 'attribute/category/:id(\\d+)',
+            name: 'admin.search.attr.category.edit',
+            component: () => import('../views/admin/product/PageAttributeCategoryEdit.vue'),
+            meta: {
+                title: 'ویرایش تخصیص ویژگی جستجو به دسته‌بندی',
+                breadcrumb: [
+                    {
+                        name: 'ویژگی‌های جستجو',
+                        link: 'admin.search.attrs',
+                    },
+                    {
+                        name: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
+                        link: 'admin.search.attrs.categories',
+                    },
+                    {
+                        name: 'ویرایش تخصیص ویژگی جستجو به دسته‌بندی',
+                    },
+                ],
+            },
+        },
+
+        {
+            path: 'attribute/:id(\\d+)/value/:val(\\d+)',
+            name: 'admin.search.attr.value.edit',
+            component: () => import('../views/admin/product/PageSearchAttributeValueEdit.vue'),
+            meta: {
+                title: 'ویرایش مقدار ویژگی جستجو',
+                breadcrumb: [
+                    {
+                        name: 'ویژگی‌های جستجو',
+                        link: 'admin.search.attrs',
+                    },
+                    {
+                        name: 'مقادیر ویژگی‌های جستجو',
+                        link: 'admin.search.attr.values',
+                        params: ['id'],
+                    },
+                    {
+                        name: 'ویرایش مقدار ویژگی جستجو',
+                    },
+                ],
+            },
         },
 
         {
@@ -638,7 +958,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -651,7 +971,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'برچسب سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -672,14 +992,14 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن برچسب سفارش',
-                            }
+                            },
                         ],
                     },
                 },
             ],
         },
         {
-            path: 'order/:id(\\d+)',
+            path: 'order/:id([\\d\\w]+|\\d+)',
             children: [
                 {
                     path: '',
@@ -695,7 +1015,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'جزئیات سفارش',
-                            }
+                            },
                         ],
                     },
                 },
@@ -716,7 +1036,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش برچسب',
-                            }
+                            },
                         ],
                     },
                 },
@@ -732,12 +1052,12 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'سفارشات مرجوعی',
-                    }
+                    },
                 ],
             },
         },
         {
-            path: 'return-order/:id(\\d+)',
+            path: 'return-order/:id([\\d\\w]+|\\d+)',
             name: 'admin.return_order.detail',
             component: () => import('../views/admin/order/PageReturnOrderDetail.vue'),
             meta: {
@@ -749,7 +1069,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'جزئیات سفارش مرجوعی',
-                    }
+                    },
                 ],
             },
         },
@@ -766,7 +1086,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'گزارش‌گیری کاربران',
-                            }
+                            },
                         ],
                     },
                 },
@@ -779,7 +1099,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'گزارش‌گیری محصولات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -792,7 +1112,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'گزارش‌گیری سفارشات',
-                            }
+                            },
                         ],
                     },
                 },
@@ -811,7 +1131,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -828,7 +1148,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد بلاگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -837,15 +1157,15 @@ export const adminRoutes = {
                     name: 'admin.blogs.badges',
                     component: () => import('../views/admin/page/PageBlogsBadges.vue'),
                     meta: {
-                        title: 'برچسب نظرات',
+                        title: 'برچسب دیدگاه‌ها',
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
                                 link: 'admin.blogs',
                             },
                             {
-                                name: 'برچسب نظرات',
-                            }
+                                name: 'برچسب دیدگاه‌ها',
+                            },
                         ],
                     },
                 },
@@ -854,7 +1174,7 @@ export const adminRoutes = {
                     name: 'admin.blog.badge.add',
                     component: () => import('../views/admin/page/PageBlogBadgeAdd.vue'),
                     meta: {
-                        title: 'افزودن برچسب نظر',
+                        title: 'افزودن برچسب دیدگاه',
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
@@ -866,7 +1186,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن برچسب',
-                            }
+                            },
                         ],
                     },
                 },
@@ -879,7 +1199,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'دسته‌بندی‌های بلاگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -896,7 +1216,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن دسته‌بندی',
-                            }
+                            },
                         ],
                     },
                 },
@@ -918,7 +1238,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش بلاگ',
-                            }
+                            },
                         ],
                     },
                 },
@@ -927,7 +1247,7 @@ export const adminRoutes = {
                     name: 'admin.blog.badge.edit',
                     component: () => import('../views/admin/page/PageBlogBadgeEdit.vue'),
                     meta: {
-                        title: 'ویرایش برچسب نظر بلاگ',
+                        title: 'ویرایش برچسب دیدگاه بلاگ',
                         breadcrumb: [
                             {
                                 name: 'بلاگ‌ها',
@@ -939,7 +1259,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش برچسب',
-                            }
+                            },
                         ],
                     },
                 },
@@ -956,9 +1276,52 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ویرایش دسته‌بندی',
-                            }
+                            },
                         ],
                     },
+                },
+                {
+                    path: 'comments',
+                    children: [
+                        {
+                            path: '',
+                            name: 'admin.blog.comments',
+                            component: () => import('../views/admin/page/PageBlogComments.vue'),
+                            meta: {
+                                title: 'دیدگاه‌های بلاگ',
+                                breadcrumb: [
+                                    {
+                                        name: 'بلاگ‌ها',
+                                        link: 'admin.blogs',
+                                    },
+                                    {
+                                        name: 'لیست دیدگاه‌های بلاگ',
+                                    },
+                                ],
+                            },
+                        },
+                        {
+                            path: ':detail(\\d+)',
+                            name: 'admin.blog.comment.detail',
+                            component: () => import('../views/admin/page/PageBlogCommentDetail.vue'),
+                            meta: {
+                                title: 'جزئیات دیدگاه',
+                                breadcrumb: [
+                                    {
+                                        name: 'بلاگ‌ها',
+                                        link: 'admin.blogs',
+                                    },
+                                    {
+                                        name: 'دیدگاه‌های بلاگ',
+                                        link: 'admin.blog.comments',
+                                    },
+                                    {
+                                        name: 'جزئیات دیدگاه',
+                                    },
+                                ],
+                            },
+                        },
+                    ],
                 },
             ],
         },
@@ -975,7 +1338,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'صفحات ایستا',
-                            }
+                            },
                         ],
                     },
                 },
@@ -992,7 +1355,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'ایجاد صفحه ایستا',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1011,7 +1374,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش صفحه ایستا',
-                    }
+                    },
                 ],
             },
         },
@@ -1025,7 +1388,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'تماس‌ها',
-                    }
+                    },
                 ],
             },
         },
@@ -1043,7 +1406,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'جزئیات تماس',
-                    }
+                    },
                 ],
             },
         },
@@ -1057,7 +1420,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'شکایات',
-                    }
+                    },
                 ],
             },
         },
@@ -1075,7 +1438,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'جزئیات شکایت',
-                    }
+                    },
                 ],
             },
         },
@@ -1092,7 +1455,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'سؤالات متداول',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1109,7 +1472,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن سؤال',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1128,7 +1491,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش سؤال',
-                    }
+                    },
                 ],
             },
         },
@@ -1142,7 +1505,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'کاربران خبرنامه',
-                    }
+                    },
                 ],
             },
         },
@@ -1159,7 +1522,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'اسلایدرها',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1176,7 +1539,7 @@ export const adminRoutes = {
                             },
                             {
                                 name: 'افزودن اسلایدر',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1184,20 +1547,42 @@ export const adminRoutes = {
         },
         {
             path: 'slider/:id(\\d+)',
-            name: 'admin.slider.edit',
-            component: () => import('../views/admin/other/PageSliderEdit.vue'),
-            meta: {
-                title: 'ویرایش اسلایدر',
-                breadcrumb: [
-                    {
-                        name: 'اسلایدرها',
-                        link: 'admin.sliders',
+            children: [
+                {
+                    path: '',
+                    name: 'admin.slider.edit',
+                    component: () => import('../views/admin/other/PageSliderEdit.vue'),
+                    meta: {
+                        title: 'ویرایش اسلایدر',
+                        breadcrumb: [
+                            {
+                                name: 'اسلایدرها',
+                                link: 'admin.sliders',
+                            },
+                            {
+                                name: 'ویرایش اسلایدر',
+                            },
+                        ],
                     },
-                    {
-                        name: 'ویرایش اسلایدر',
-                    }
-                ],
-            },
+                },
+                {
+                    path: 'slides',
+                    name: 'admin.slider.slides.edit',
+                    component: () => import('../views/admin/other/PageSliderSlidesEdit.vue'),
+                    meta: {
+                        title: 'ویرایش اسلایدها',
+                        breadcrumb: [
+                            {
+                                name: 'اسلایدرها',
+                                link: 'admin.sliders',
+                            },
+                            {
+                                name: 'ویرایش اسلایدها',
+                            },
+                        ],
+                    },
+                },
+            ],
         },
 
         {
@@ -1212,24 +1597,7 @@ export const adminRoutes = {
                         breadcrumb: [
                             {
                                 name: 'منوها',
-                            }
-                        ],
-                    },
-                },
-                {
-                    path: 'new',
-                    name: 'admin.menu.add',
-                    component: () => import('../views/admin/other/PageMenuAdd.vue'),
-                    meta: {
-                        title: 'افزودن منو',
-                        breadcrumb: [
-                            {
-                                name: 'منوها',
-                                link: 'admin.menus',
                             },
-                            {
-                                name: 'افزودن منو',
-                            }
                         ],
                     },
                 },
@@ -1248,7 +1616,7 @@ export const adminRoutes = {
                     },
                     {
                         name: 'ویرایش منو',
-                    }
+                    },
                 ],
             },
         },
@@ -1256,20 +1624,6 @@ export const adminRoutes = {
         {
             path: 'post-prices',
             children: [
-                {
-                    path: '',
-                    name: 'admin.post_prices',
-                    component: () => import('../views/admin/other/PagePostPrices.vue'),
-                    meta: {
-                        title: 'مدیریت هزینه ارسال',
-                        breadcrumb: [
-                            {
-                                name: 'هزینه‌های ارسال',
-                            }
-                        ],
-                    },
-                },
-
                 {
                     path: 'cities',
                     children: [
@@ -1281,12 +1635,8 @@ export const adminRoutes = {
                                 title: 'مدیریت هزینه ارسال شهرستان',
                                 breadcrumb: [
                                     {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
-                                    {
                                         name: 'هزینه ارسال شهرستان',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1298,16 +1648,12 @@ export const adminRoutes = {
                                 title: 'افزودن هزینه ارسال شهرستان',
                                 breadcrumb: [
                                     {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
-                                    {
                                         name: 'هزینه ارسال شهرستان',
                                         link: 'admin.post_prices.cities',
                                     },
                                     {
                                         name: 'افزودن هزینه ارسال شهرستان',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1325,12 +1671,8 @@ export const adminRoutes = {
                                 title: 'هزینه ارسال بر حسب وزن',
                                 breadcrumb: [
                                     {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
-                                    {
                                         name: 'هزینه ارسال بر حسب وزن',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1342,16 +1684,12 @@ export const adminRoutes = {
                                 title: 'افزودن هزینه ارسال بر حسب وزن',
                                 breadcrumb: [
                                     {
-                                        name: 'هزینه‌های ارسال',
-                                        link: 'admin.post_prices',
-                                    },
-                                    {
                                         name: 'هزینه ارسال بر حسب وزن',
                                         link: 'admin.post_prices.weights',
                                     },
                                     {
                                         name: 'افزودن هزینه ارسال بر حسب وزن',
-                                    }
+                                    },
                                 ],
                             },
                         },
@@ -1370,16 +1708,12 @@ export const adminRoutes = {
                         title: 'ویرایش هزینه ارسال شهرستان',
                         breadcrumb: [
                             {
-                                name: 'هزینه‌های ارسال',
-                                link: 'admin.post_prices',
-                            },
-                            {
                                 name: 'هزینه ارسال شهرستان',
                                 link: 'admin.post_prices.cities',
                             },
                             {
                                 name: 'ویرایش هزینه ارسال شهرستان',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1391,16 +1725,12 @@ export const adminRoutes = {
                         title: 'ویرایش هزینه ارسال بر حسب وزن',
                         breadcrumb: [
                             {
-                                name: 'هزینه‌های ارسال',
-                                link: 'admin.post_prices',
-                            },
-                            {
                                 name: 'هزینه ارسال بر حسب وزن',
                                 link: 'admin.post_prices.weights',
                             },
                             {
                                 name: 'ویرایش هزینه ارسال بر حسب وزن',
-                            }
+                            },
                         ],
                     },
                 },
@@ -1416,7 +1746,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'فایل‌ها',
-                    }
+                    },
                 ],
             },
         },
@@ -1430,7 +1760,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'راهنما',
-                    }
+                    },
                 ],
             },
         },
@@ -1444,7 +1774,7 @@ export const adminRoutes = {
                 breadcrumb: [
                     {
                         name: 'تنظیمات',
-                    }
+                    },
                 ],
             },
         },

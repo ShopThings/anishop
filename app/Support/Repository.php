@@ -8,9 +8,8 @@ use App\Support\Model\ExtendedModel;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use stdClass;
 
 abstract class Repository implements RepositoryInterface
 {
@@ -124,7 +123,7 @@ abstract class Repository implements RepositoryInterface
         array $columns = ['*'],
         bool $withTrashed = false,
         bool $onlyTrashed = false
-    ): Collection|Model
+    ): Collection|Model|null
     {
         $query = $this->model->newQuery();
 
@@ -151,10 +150,12 @@ abstract class Repository implements RepositoryInterface
     {
         $query = $this->model->newQuery();
 
-        if ($onlyTrashed) {
-            $query->onlyTrashed();
-        } elseif ($withTrashed) {
-            $query->withTrashed();
+        if ($this->useSoftDeletes) {
+            if ($onlyTrashed) {
+                $query->onlyTrashed();
+            } elseif ($withTrashed) {
+                $query->withTrashed();
+            }
         }
 
         return $query->findOrFail($id, $columns);

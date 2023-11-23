@@ -9,6 +9,7 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
+use InvalidArgumentException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException as SymphonyFileNotFoundException;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
@@ -91,6 +92,16 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
                     'message' => 'شما اجازه انجام این عملیات را ندارید.',
+                ], ResponseCodes::HTTP_UNAUTHORIZED);
+            }
+        });
+
+        // custom invalid argument message for APIs
+        $this->renderable(function (InvalidArgumentException $e, $request) {
+            if ($request->is('api/*')) {
+                return response()->json([
+                    'type' => ResponseTypesEnum::ERROR->value,
+                    'message' => $e->getMessage() ?: 'پارامترهای ارسال شده نامعتبر می‌باشد.',
                 ], ResponseCodes::HTTP_UNAUTHORIZED);
             }
         });

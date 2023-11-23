@@ -14,19 +14,16 @@ class BlogCommentBadgeSeeder extends Seeder
     public function run(): void
     {
         BlogCommentBadge::create([
-            'code' => CodeGeneratorHelper::blogCommentBadgeCode(),
             'title' => 'عادی',
             'color_hex' => '#AFC6FF',
             'is_starting_badge' => true,
             'is_deletable' => false,
         ]);
         BlogCommentBadge::create([
-            'code' => CodeGeneratorHelper::blogCommentBadgeCode(),
             'title' => 'توضیحات تکمیلی',
             'color_hex' => '#6DFFC9',
         ]);
         BlogCommentBadge::create([
-            'code' => CodeGeneratorHelper::blogCommentBadgeCode(),
             'title' => 'انتقادی',
             'color_hex' => '#FF6DA2',
         ]);

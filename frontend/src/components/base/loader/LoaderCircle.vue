@@ -9,7 +9,7 @@
         </div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2]">
             <div :class="[
-                    'h-6 w-6 border-4 rounded-full animate-spin',
+                    'h-8 w-8 border-[3px] rounded-full animate-spin',
                     smallCircleColor,
                     bigCircleColor,
                     spinnerKlass,

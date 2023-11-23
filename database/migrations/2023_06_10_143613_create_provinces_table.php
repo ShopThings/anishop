@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name', 100);
             $table->boolean('is_published')
                 ->default(true);
+
+            $table->index('name');
+            $table->index('is_published');
         });
     }
 

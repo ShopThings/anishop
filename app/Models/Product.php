@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use App\Casts\StringToArray;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasTitleSluggableTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use App\Traits\SelfHealingRouteTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Mews\Purifier\Casts\CleanHtml;
+use Shetabit\Visitor\Traits\Visitable;
 
 class Product extends Model
 {
@@ -17,17 +21,29 @@ class Product extends Model
         HasDeletedRelationTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasTitleSluggableTrait;
+        HasSluggableTrait,
+        SelfHealingRouteTrait,
+        Visitable;
 
     protected $guarded = [
         'id',
     ];
 
     protected $casts = [
+        'keywords' => StringToArray::class,
+        'description' => CleanHtml::class,
         'is_available' => 'boolean',
         'is_commenting_allowed' => 'boolean',
         'is_published' => 'boolean',
     ];
+
+    protected $sluggableField = 'escaped_title';
+
+
+    public function getHealingRoute(): string
+    {
+        return 'product.show';
+    }
 
     /**
      * @return BelongsTo
@@ -98,7 +114,7 @@ class Product extends Model
      */
     public function productAttrValues(): HasMany
     {
-        return $this->hasMany(ProductAttributeProduct::class, 'product_attribute_value_id');
+        return $this->hasMany(ProductAttributeProduct::class, 'product_id');
     }
 
     /**

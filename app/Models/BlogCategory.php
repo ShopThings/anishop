@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Casts\StringToArray;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasNameSluggableTrait;
+use App\Traits\HasSluggableTrait;
 use App\Traits\HasParentRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 
@@ -24,19 +24,19 @@ class BlogCategory extends Model
         HasUpdatedRelationTrait,
         HasDeletedRelationTrait,
         HasParentRelationTrait,
-        HasNameSluggableTrait;
+        HasSluggableTrait;
+
+    protected $table = 'blog_categories';
 
     protected $guarded = [
         'id',
     ];
 
-    /**
-     * @return BelongsTo
-     */
-    public function image(): BelongsTo
-    {
-        return $this->belongsTo(FileManager::class, 'image_id');
-    }
+    protected $casts = [
+        'keywords' => StringToArray::class,
+    ];
+
+    protected $sluggableField = 'escaped_name';
 
     /**
      * @return HasMany

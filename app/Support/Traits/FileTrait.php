@@ -140,6 +140,74 @@ trait FileTrait
     }
 
     /**
+     * @param array $paths
+     * @param string $destination
+     * @param string $disk
+     * @param bool $duplicate
+     * @return void
+     * @throws InvalidDiskException
+     * @throws InvalidPathException
+     */
+    protected function moveOrCopy(array $paths, string $destination, string $disk, bool $duplicate = false): void
+    {
+        $destination = $this->getNormalizedPath($destination);
+
+        $this->checkDiskValidation($disk);
+        $this->checkPathExists($destination, $disk);
+
+        $diskStorage = Storage::disk($disk);
+
+        foreach ($paths as $path) {
+            $normalizedPath = $this->getNormalizedPath($path);
+
+            $isDir = false;
+
+            if ($diskStorage->exists($normalizedPath)) {
+                $disPath = $diskStorage->path($normalizedPath);
+                if (is_dir($disPath)) $isDir = true;
+            }
+
+            if (!$isDir) {
+                $files = $this->fileExists($normalizedPath, $disk, true);
+                foreach ($files as $file) {
+                    $filename = pathinfo($file, PATHINFO_FILENAME);
+
+                    // Do not move files that are exists in destination
+                    if (!$this->fileExists($destination . '/' . $filename, $disk)) {
+                        if ($duplicate)
+                            $diskStorage->copy($file, $destination);
+                        else
+                            $diskStorage->move($file, $destination);
+                    }
+                }
+
+                $info = pathinfo($normalizedPath);
+
+                // It needs to update in database too
+                if ($duplicate) {
+                    $this->create([
+                        'name' => $info['filename'],
+                        'extension' => $info['extension'],
+                        'path' => $destination,
+                    ]);
+                } else {
+                    $where = new WhereBuilder('file_manager');
+                    $where->whereEqual('name', $info['filename'])
+                        ->whereEqual('path', $info['dirname']);
+                    $this->updateWhere([
+                        'path' => $destination,
+                    ], $where->build());
+                }
+            } else {
+                if ($duplicate)
+                    $diskStorage->copy($normalizedPath, $destination);
+                else
+                    $diskStorage->move($normalizedPath, $destination);
+            }
+        }
+    }
+
+    /**
      * @param $file
      * @param $path
      * @param $disk
@@ -164,24 +232,37 @@ trait FileTrait
     /**
      * @param string $path
      * @param string $disk
-     * @return void
+     * @param bool $throw
+     * @return bool
      * @throws InvalidPathException
      */
-    protected function checkPathExists(string $path, string $disk): void
+    public function checkPathExists(string $path, string $disk, bool $throw = true): bool
     {
-        if (!Storage::disk($disk)->exists($path) || !is_dir($path))
-            throw new InvalidPathException('مسیر پوشه انتخاب شده نامعتبر می‌باشد.');
+        $diskStorage = Storage::disk($disk);
+        if (!$diskStorage->exists($path) || !is_dir($diskStorage->path($path))) {
+            if ($throw)
+                throw new InvalidPathException('مسیر پوشه انتخاب شده نامعتبر می‌باشد.');
+            else
+                return false;
+        }
+        return true;
     }
 
     /**
      * @param string $disk
-     * @return void
+     * @param bool $throw
+     * @return bool
      * @throws InvalidDiskException
      */
-    protected function checkDiskValidation(string $disk): void
+    public function checkDiskValidation(string $disk, bool $throw = true): bool
     {
-        if (!in_array(strtolower($disk), self::$storageDisks))
-            throw new InvalidDiskException();
+        if (!in_array(strtolower($disk), self::$storageDisks)) {
+            if ($throw)
+                throw new InvalidDiskException();
+            else
+                return false;
+        }
+        return true;
     }
 
     /**

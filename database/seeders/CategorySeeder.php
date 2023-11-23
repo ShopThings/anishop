@@ -18,7 +18,7 @@ class CategorySeeder extends Seeder
             'escaped_name' => 'بدون دسته‌بندی',
             'slug' => Str::slug('بدون دسته‌بندی'),
             'show_in_menu' => false,
-            'show_in_side_menu' => false,
+            'show_in_search_side_menu' => false,
             'show_in_slider' => false,
             'is_deletable' => false,
         ]);

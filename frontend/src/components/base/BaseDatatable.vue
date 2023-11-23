@@ -24,10 +24,10 @@
                         :total="items.length"
                     >
                         <template v-for="(slot, index) of Object.keys(slots)" :key="index" v-slot:[slot]="data">
-                            <slot :name="slot" :value="data.value"></slot>
+                            <slot :name="slot" :value="data.value" :index="index + setting.offset"></slot>
                         </template>
                         <template v-slot:selection_remover="data">
-                            <BackspaceIcon @click="removeSelectedItem(data.value)"
+                            <BackspaceIcon @click="removeFromSelectedItem(data.value)"
                                            v-tooltip.left="'حذف از انتخاب‌ها'"
                                            class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"/>
                         </template>
@@ -75,11 +75,11 @@
                 </slot>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="my-custom-scrollbar overflow-x-auto">
                 <div class="inline-block min-w-full">
                     <div class="overflow-hidden" ref="tableContainer">
                         <table ref="localTable"
-                               class="text-sm text-left text-gray-500 rtl:text-right"
+                               class="text-sm text-left text-gray-500 rtl:text-right w-full"
                                :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
                         >
                             <thead
@@ -92,6 +92,7 @@
                                             type="checkbox"
                                             class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
                                             v-model="setting.isCheckAll"
+                                            @change="changeCheckAll"
                                         >
                                     </div>
                                 </th>
@@ -175,7 +176,7 @@
                                         :name="'vtl-group-' + groupingIndex"
                                         class="border-b transition"
                                         :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                                        @click="emit('row-clicked', row)"
+                                        @click="emit('row-clicked', row, this)"
                                         @contextmenu="emit('row-context-menu', $event, row)"
                                     >
                                         <td v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5">
@@ -208,7 +209,11 @@
                                             <div v-if="col.display" v-html="col.display(row)"></div>
                                             <div v-else>
                                                 <div v-if="setting.isSlotMode && slots[col.field]">
-                                                    <slot :name="col.field" :value="row"></slot>
+                                                    <slot
+                                                        :name="col.field"
+                                                        :value="row"
+                                                        :index="i + setting.offset"
+                                                    ></slot>
                                                 </div>
                                                 <span v-else>{{ row[col.field] }}</span>
                                             </div>
@@ -266,7 +271,7 @@
                                         :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
                                         class="border-b transition"
                                         :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                                        @click="emit('row-clicked', row)"
+                                        @click="emit('row-clicked', row, this)"
                                         @contextmenu="emit('row-context-menu', $event, row)"
                                     >
                                         <td v-if="hasCheckbox" class="px-6 py-4">
@@ -278,6 +283,10 @@
                                                             (el) => {
                                                               if(el && hasSelectedItemWithProperty(row)) {
                                                                 el.checked = true;
+                                                                const tr = getParent(el, 'tr');
+                                                                if(tr) {
+                                                                    tr.classList.add('row-is-checked');
+                                                                }
                                                               }
                                                               rowCheckbox.push(el);
                                                             }
@@ -299,7 +308,11 @@
                                             <div v-if="col.display" v-html="col.display(row)"></div>
                                             <div v-else>
                                                 <div v-if="setting.isSlotMode && slots[col.field]">
-                                                    <slot :name="col.field" :value="row"></slot>
+                                                    <slot
+                                                        :name="col.field"
+                                                        :value="row"
+                                                        :index="i + setting.offset"
+                                                    ></slot>
                                                 </div>
                                                 <span v-else>{{ row[col.field] }}</span>
                                             </div>
@@ -319,6 +332,7 @@
                                             type="checkbox"
                                             class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
                                             v-model="setting.isCheckAll"
+                                            @change="changeCheckAll"
                                         >
                                     </div>
                                 </th>
@@ -370,8 +384,8 @@
                             <span class="text-sm text-gray-500">{{ messages.pageSizeChangeLabel }}</span>
                             <base-select :options="pageOptions"
                                          options-key="value"
-                                         :text="setting.pageSize"
-                                         :selected="setting.pageSize"
+                                         options-text="text"
+                                         :selected="{value: setting.pageSize, text: setting.pageSize}"
                                          options-class="bottom-full mb-1"
                                          @change="(item) => {setting.pageSize = item.value}"
                             >
@@ -383,11 +397,12 @@
 
                         <div class="mx-2" v-if="!setting.isHideSelectPaging">
                             <span class="text-sm text-gray-500">{{ messages.gotoPageLabel }}</span>
-                            <base-select :options="setting.maxPage"
-                                         :text="setting.page"
-                                         :selected="setting.page"
+                            <base-select :options="pageNumberOptions"
+                                         options-key="value"
+                                         options-text="text"
+                                         :selected="{value: setting.page, text: setting.page}"
                                          options-class="bottom-full mb-1"
-                                         @change="(item) => {setting.page = item}"
+                                         @change="(item) => {setting.page = item.value}"
                             >
                             </base-select>
                         </div>
@@ -395,76 +410,15 @@
                 </div>
 
                 <div class="mt-3" v-if="setting.maxPage > 1">
-                    <ul class="flex justify-center text-center rtl:flex-row-reverse whitespace-nowrap no-underline">
-                        <li>
-                            <a v-tooltip.top="'صفحه اول'"
-                               class="cursor-pointer relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page <= 1}"
-                               :disabled="setting.page <= 1"
-                               aria-label="First"
-                               @click.prevent="setting.page = 1"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronDoubleLeftIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه اول</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a v-tooltip.top="'صفحه قبل'"
-                               class="cursor-pointer relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page <= 1}"
-                               :disabled="setting.page <= 1"
-                               aria-label="Previous"
-                               @click.prevent="prevPage"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronLeftIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه قبل</span>
-                            </a>
-                        </li>
-                        <li v-for="n in setting.paging"
-                            :key="n"
-                        >
-                            <a v-tooltip.top="'صفحه ' + n"
-                               class="cursor-pointer relative inline-flex items-center px-4 py-2 text-xs font-semibold text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-primary !text-white !ring-primary': setting.page === n}"
-                               :disabled="setting.page === n"
-                               @click.prevent="movePage(n)"
-                            >
-                                {{ n }}
-                            </a>
-                        </li>
-                        <li>
-                            <a v-tooltip.top="'صفحه بعد'"
-                               class="cursor-pointer relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-800 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page >= setting.maxPage}"
-                               :disabled="setting.page >= setting.maxPage"
-                               aria-label="Next"
-                               @click.prevent="nextPage"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronRightIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه بعد</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a v-tooltip.top="'صفحه آخر'"
-                               class="cursor-pointer relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-200 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                               :class="{'!cursor-not-allowed !bg-gray-100 !text-gray-400': setting.page >= setting.maxPage}"
-                               :disabled="setting.page >= setting.maxPage"
-                               aria-label="Last"
-                               @click.prevent="setting.page = setting.maxPage"
-                            >
-                                    <span aria-hidden="true">
-                                        <ChevronDoubleRightIcon class="w-4 h-4"/>
-                                    </span>
-                                <span class="sr-only">صفحه آخر</span>
-                            </a>
-                        </li>
-                    </ul>
+                    <base-pagination
+                        :theme="paginationTheme"
+                        :next-page="nextPage"
+                        :move-page="movePage"
+                        :prev-page="prevPage"
+                        v-model:max-page="setting.maxPage"
+                        v-model:paging="setting.paging"
+                        v-model:current-page="setting.page"
+                    />
                 </div>
             </template>
         </div>
@@ -482,16 +436,15 @@
 <script setup>
 import {computed, nextTick, onBeforeUpdate, onMounted, reactive, ref, useSlots, watch} from "vue"
 import {
-    ChevronDownIcon, ArrowSmallUpIcon, ArrowSmallDownIcon, ArrowsUpDownIcon,
-    ChevronLeftIcon, ChevronRightIcon, ChevronDoubleLeftIcon, ChevronDoubleRightIcon,
-    XCircleIcon, BackspaceIcon,
+    ChevronDownIcon, ArrowSmallUpIcon, ArrowSmallDownIcon,
+    ArrowsUpDownIcon, XCircleIcon, BackspaceIcon,
 } from '@heroicons/vue/24/outline'
 import BaseSelect from "./BaseSelect.vue";
 import LoaderCircle from "./loader/LoaderCircle.vue";
 import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseDatatableMultiOperation from "./datatable/BaseDatatableMultiOperation.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
-import BaseButton from "./BaseButton.vue";
+import BasePagination from "./BasePagination.vue";
 
 const props = defineProps({
     isLoading: {
@@ -647,6 +600,7 @@ const props = defineProps({
             return [];
         },
     },
+    paginationTheme: String,
 })
 const emit = defineEmits([
     "return-checked-rows",
@@ -721,6 +675,17 @@ const setting = reactive({
             maxPage++;
         }
         return maxPage;
+    }),
+    pageNumberOptions: computed(() => {
+        const mp = setting.maxPage
+        const pnObj = []
+        for (let i = 0; i < mp; i++) {
+            pnObj.push({
+                value: i,
+                text: i,
+            })
+        }
+        return pnObj
     }),
     offset: computed(() => {
         return (setting.page - 1) * setting.pageSize + 1;
@@ -820,27 +785,7 @@ watch(
                     });
                 }
             }
-            tmpRows.forEach((val) => {
-                if (state) {
-                    if (!hasSelectedItemWithProperty(val))
-                        selectedItems.value.push(val)
-                } else {
-                    removeFromSelectedItem(val)
-                }
-            });
-            rowCheckbox.value.forEach((val) => {
-                if (val) {
-                    val.checked = state;
 
-                    const tr = getParent(val, 'tr');
-                    if (state) {
-                        tr.classList.add('row-is-checked');
-                    } else {
-                        tr.classList.remove('row-is-checked');
-                    }
-                }
-            });
-            //
             // Return the selected data on the screen
             emit("return-checked-rows", isChecked.value);
         }
@@ -858,6 +803,35 @@ watch(
         }
     }
 );
+
+function changeCheckAll(e) {
+    if (props.hasCheckbox) {
+        const state = e.target.checked
+
+        let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
+        tmpRows.forEach((val) => {
+            if (state) {
+                if (!hasSelectedItemWithProperty(val))
+                    selectedItems.value.push(val)
+            } else {
+                removeFromSelectedItem(val)
+            }
+        });
+
+        rowCheckbox.value.forEach((val) => {
+            if (val) {
+                val.checked = state;
+
+                const tr = getParent(val, 'tr');
+                if (state) {
+                    tr.classList.add('row-is-checked');
+                } else {
+                    tr.classList.remove('row-is-checked');
+                }
+            }
+        });
+    }
+}
 
 /**
  * Checkbox click event
@@ -1191,10 +1165,6 @@ function removeFromSelectedItem(row) {
     }
 }
 
-function removeSelectedItem(value) {
-    removeFromSelectedItem(value)
-}
-
 function getParent(el, tagName) {
     tagName = tagName.toLowerCase();
     while (el && el.parentNode) {
@@ -1279,9 +1249,7 @@ defineExpose({
     resetSelection: () => {
         clearSelectedItems()
     },
-    resetSelectionItem: (row) => {
-        removeSelectedItem(row)
-    },
+    resetSelectionItem: removeFromSelectedItem,
 })
 
 onMounted(() => {

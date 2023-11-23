@@ -162,6 +162,7 @@ return [
     'persian_name' => 'The :attribute must contains only persian letters.',
     'persian_mobile' => 'The :attribute is not a valid persian mobile number.',
     'persian_national_code' => 'The :attribute is not a valid persian national code.',
+    'color' => 'Color code is invalid.',
 
     /*
     |--------------------------------------------------------------------------
@@ -193,6 +194,7 @@ return [
 
     'attributes' => [
         "name" => "Name",
+        "latin_name" => "Latin Name",
         "username" => "User Name",
         "email" => "Email Address",
         "first_name" => "First Name",
@@ -200,6 +202,8 @@ return [
         "family" => "Last Name",
         "password" => "Password",
         "password_confirmation" => "Password Confirmation",
+        "keywords" => "Keywords",
+        "province" => "Province",
         "city" => "City",
         "country" => "Country",
         "address" => "Address",
@@ -226,7 +230,30 @@ return [
         "time" => "Time",
         "available" => "Available",
         "unavailable" => "Unavailable",
-        "size" => "Size"
+        "size" => "Size",
+        "role" => "Role",
+        "roles" => "Roles",
+        "product" => "Product",
+        "products" => "Products",
+        "category" => "Category",
+        "brand" => "Brand",
+        "parent" => "Parent",
+        "image" => "Image",
+        "level" => "Level",
+        "priority" => "Priority",
+        "is_available" => "Availability Status",
+        "is_published" => "Publish Status",
+        "is_deletable" => "Deletable Status",
+        "price" => "Price",
+        "guarantee" => "Guarantee",
+        "weight" => "Weight",
+        "type" => "Type",
+        "blog" => "Blog",
+        "comment" => "Comment",
+        "answer" => "Answer",
+        "question" => "Question",
+        "zip_code" => "Zip Code",
+        "postal_code" => "Zip Code",
     ],
 
 ];

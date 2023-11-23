@@ -17,7 +17,7 @@ class BrandSeeder extends Seeder
             'name' => 'ندارد',
             'latin_name' => 'unknown',
             'escaped_name' => 'ندارد',
-            'slug' => Str::slug('ندارد'),
+            'slug' => Str::slug('unknown'),
             'show_in_slider' => false,
             'is_deletable' => false,
         ]);

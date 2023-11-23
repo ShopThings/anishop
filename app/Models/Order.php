@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Support\Model\ExtendedModel as Model;
@@ -27,7 +28,7 @@ class Order extends Model
         'payment_status' => PaymentStatusesEnum::class,
         'payment_status_changed_at' => 'datetime',
         'payed_at' => 'datetime',
-        'must_delete_later' => 'boolean',
+        'can_pay_again_at' => 'datetime',
         'created_at' => 'datetime',
     ];
 
@@ -44,15 +45,7 @@ class Order extends Model
      */
     public function detail(): HasOne
     {
-        return $this->hasOne(OrderDetail::class, 'order_key_id', 'key_id');
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderItem::class, 'order_key_id', 'key_id');
+        return $this->hasOne(OrderDetail::class, 'id', 'key_id');
     }
 
     /**
@@ -61,5 +54,23 @@ class Order extends Model
     public function reservedOrders(): HasMany
     {
         return $this->hasMany(OrderReserve::class, 'order_code', 'code');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(GatewayPayment::class, 'order_id');
+    }
+
+    /**
+     * Determine if current order has paid.
+     *
+     * @return bool
+     */
+    public function hasPaid(): bool
+    {
+        return $this->payments()->where('status', DatabaseEnum::DB_YES)->count() > 0;
     }
 }

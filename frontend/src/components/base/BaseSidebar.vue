@@ -1,8 +1,11 @@
 <template>
-    <div
-         class="w-72 fixed invisible -right-full h-screen z-10 lg:w-80 lg:top-0 lg:relative lg:block">
-        <nav :class="bg"
-             class="w-full">
+    <div class="relative h-full">
+        <nav
+            class="sticky top-0 hidden lg:block z-[1] transition-all delay-[200ms] duration-[450ms]"
+             :class="[
+                 bg,
+                 !mini ? 'w-72' : 'w-20'
+             ]">
             <slot/>
         </nav>
     </div>
@@ -10,10 +13,14 @@
 
 <script setup>
 defineProps({
+    mini: {
+        type: Boolean,
+        default: true,
+    },
     bg: {
         type: String,
-        default: 'bg-indigo-600'
-    }
+        default: 'bg-indigo-600 text-white'
+    },
 })
 </script>
 

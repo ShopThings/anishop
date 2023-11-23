@@ -7,13 +7,15 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Parables\NanoId\GeneratesNanoId;
 
 class OrderBadge extends Model
 {
     use SoftDeletesTrait,
         HasDeletedRelationTrait,
         HasCreatedRelationTrait,
-        HasUpdatedRelationTrait;
+        HasUpdatedRelationTrait,
+        GeneratesNanoId;
 
     protected $guarded = [
         'id',
@@ -26,4 +28,9 @@ class OrderBadge extends Model
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
     ];
+
+    public function nanoIdColumn()
+    {
+        return 'code';
+    }
 }

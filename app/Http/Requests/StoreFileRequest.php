@@ -18,7 +18,10 @@ class StoreFileRequest extends FormRequest
     public function authorize(): bool
     {
         return Auth::user()
-            ?->can(PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::USER));
+            ?->can(PermissionHelper::permission(
+                PermissionsEnum::CREATE,
+                PermissionPlacesEnum::USER
+            ));
     }
 
     /**
@@ -51,12 +54,21 @@ class StoreFileRequest extends FormRequest
                     /**
                      * @var FileServiceInterface $service
                      */
-                    $service = app()->make(FileServiceInterface::class);
+                    $service = app(FileServiceInterface::class);
                     if ($value && !$service->exists($value, $this->input('disk'))) {
                         $fail('مسیر فایل/پوشه نامعتبر می‌باشد.');
                     }
                 },
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'file' => 'فایل',
+            'disk' => 'محل ذخیره‌سازی',
+            'path' => 'مسیر فایل/پوشه',
         ];
     }
 }

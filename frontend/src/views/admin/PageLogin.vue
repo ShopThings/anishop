@@ -48,15 +48,18 @@
                                 </base-input>
                             </div>
                             <div class="mb-8">
-                                <base-button type="submit"
-                                             class="relative w-full flex justify-center group bg-primary border-indigo-700 text-white"
-                                             :class="!canSubmit ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
-                                             :disabled="!canSubmit">
-                                    <loader-circle v-if="!canSubmit"
+                                <base-button
+                                    type="submit"
+                                    class="relative w-full flex justify-center items-center group bg-primary border-indigo-700 text-white"
+                                    :class="store.isLoading ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
+                                    :disabled="store.isLoading"
+                                >
+                                    <loader-circle v-if="store.isLoading"
                                                    main-container-klass="absolute h-6 w-6 right-3"
                                                    container-bg-color=""
                                                    small-circle-color="border-t-white"
                                                    big-circle-color="border-transparent"/>
+
                                     <span class="mr-auto">وارد شوید</span>
                                     <ArrowLeftIcon
                                         class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
@@ -304,17 +307,14 @@ import VCaptcha from "../../components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from '@heroicons/vue/24/solid';
 import {UserCircleIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline';
 import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import {apiRoutes} from "../../router/api-routes.js";
-import {useRequest} from "../../composables/api-request.js";
 import {useRoute, useRouter} from "vue-router";
 import BaseMessage from "../../components/base/BaseMessage.vue";
 import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
 import yup from '../../validation/index.js';
 import {useForm} from "vee-validate";
-import {useAdminStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
 
 const captchaKey = ref(null)
-const canSubmit = ref(true)
 const err = reactive({})
 const captchaCom = ref(null)
 
@@ -329,65 +329,57 @@ const {handleSubmit} = useForm({
 const router = useRouter()
 const route = useRoute()
 
+const store = useAdminAuthStore()
+const canSubmit = ref(true)
+
 function closeAlert() {
     err.message = null
     err.type = null
 }
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (canSubmit.value) {
-        closeAlert()
-        canSubmit.value = false
+    if (store.isLoading) return
 
-        if (!captchaKey.value) {
-            err.message = 'تصویر را دوباره بارگذاری نمایید.'
-            err.type = 'error'
-            return
-        }
+    closeAlert()
 
-        values.key = captchaKey.value
-
-        useRequest(apiRoutes.admin.login, {
-            method: 'POST',
-            data: values,
-        }, {
-            success: function (response) {
-                actions.resetForm();
-
-                const store = useAdminStore()
-                store.setToken(response.data.token)
-                store.setUser(response.data.user)
-
-                if (captchaCom.value)
-                    captchaCom.value.getCaptcha()
-
-                if (
-                    route.query.redirect &&
-                    ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
-                ) router.push(route.query.redirect)
-                else router.push({name: 'admin.home'})
-
-                return false
-            },
-            error: function (error) {
-                if (captchaCom.value)
-                    captchaCom.value.getCaptcha()
-
-                actions.resetField('password')
-                actions.resetField('captcha')
-
-                if (error.errors && Object.keys(error.errors).length > 1)
-                    actions.setErrors(error.errors)
-
-                err.message = error.message || 'خطا در عملیات ورود!'
-                err.type = 'error'
-                return false
-            },
-            finally: function () {
-                canSubmit.value = true
-            },
-        })
+    if (!captchaKey.value) {
+        err.message = 'تصویر را دوباره بارگذاری نمایید.'
+        err.type = 'error'
+        return
     }
+
+    values.key = captchaKey.value
+
+    store.login(values, {
+        success() {
+            actions.resetForm();
+
+            if (captchaCom.value)
+                captchaCom.value.getCaptcha()
+
+            if (
+                route.query.redirect &&
+                ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
+            ) router.push(route.query.redirect)
+            else router.push({name: 'admin.home'})
+
+            return false
+        },
+        error(error) {
+            if (captchaCom.value)
+                captchaCom.value.getCaptcha()
+
+            actions.resetField('password')
+            actions.resetField('captcha')
+
+            if (error.errors && Object.keys(error.errors).length >= 1)
+                actions.setErrors(error.errors)
+
+            err.message = error.message || 'خطا در عملیات ورود!'
+            err.type = 'error'
+            return false
+        },
+    })
 })
 </script>
 

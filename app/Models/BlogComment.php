@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Comments\CommentConditionsEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -21,24 +22,12 @@ class BlogComment extends Model
         'id',
     ];
 
-    protected $casts = [
-        'is_published' => 'boolean',
-    ];
-
     /**
      * @return BelongsTo
      */
     public function blog(): BelongsTo
     {
         return $this->belongsTo(Blog::class);
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function author(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id');
     }
 
     /**
@@ -58,6 +47,14 @@ class BlogComment extends Model
     }
 
     /**
+     * @return BelongsTo
+     */
+    public function answerTo(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'answer_to');
+    }
+
+    /**
      * @return HasMany
      */
     public function children(): HasMany
@@ -71,5 +68,13 @@ class BlogComment extends Model
     public function allChildren(): HasMany
     {
         return $this->children()->with('allChildren');
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAcceptedChildren(): bool
+    {
+        return $this->children()->where('condition', CommentConditionsEnum::ACCEPTED->name)->count() > 0;
     }
 }

@@ -18,6 +18,9 @@ return new class extends Migration
             $table->enum('place_in', array_map(fn($item) => $item->name, MenuPlacesEnum::cases()))
                 ->comment('is it an enum to place a menu in predefined places');
             $table->boolean('is_published')->default(true);
+
+            $table->index('place_in');
+            $table->index('is_published');
         });
     }
 

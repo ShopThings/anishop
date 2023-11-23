@@ -40,8 +40,11 @@ return [
     'default_money_unit' => 'تومان',
 
     'money_unit' => [
+
         'en' => '$',
+
         'fa' => 'تومان',
+
     ],
 
     /**
@@ -65,6 +68,23 @@ return [
         'main' => 'main_page_token_',
 
         'admin' => 'admin_page_token_',
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cart Namespace Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Set cart names for "default" pages and "wishlist" namespace.
+    |
+    */
+    'cart_name' => [
+
+        'default' => 'shopping',
+
+        'wishlist' => 'wishlist',
+
     ],
 
     /*
@@ -74,6 +94,7 @@ return [
     |
     */
     'sms' => [
+
         /**
          * Times to show resend activation code button to user in UI
          */
@@ -84,12 +105,19 @@ return [
          * to show user specific information.
          */
         'replacements' => [
+
             'mobile' => '@mobile@',
+
             'code' => '@code@',
+
             'order_code' => '@orderCode@',
+
             'status' => '@status@',
+
             'shop' => '@shop@',
+
         ],
+
     ],
 
     /*
@@ -99,11 +127,13 @@ return [
     |
     */
     'order' => [
+
         /**
          * Time to reserve products for pay,
          * after this time, products will return to stock.
          */
         'reservation_time' => TimesEnum::MINUTES_10->value,
+
     ],
 
     /*
@@ -113,6 +143,7 @@ return [
     |
     */
     'user' => [
+
         /**
          * Number of address that user can store in his profile
          */
@@ -122,6 +153,7 @@ return [
          * Number of cart that user can store in his carts place
          */
         'max_cart_count' => 3,
+
     ],
 
 ];

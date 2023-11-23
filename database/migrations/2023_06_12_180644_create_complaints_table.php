@@ -23,11 +23,12 @@ return new class extends Migration {
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            $table->timestamp('created_at')->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreignId('updated_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('deleted_at');
         });
     }
 

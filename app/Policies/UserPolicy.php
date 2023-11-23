@@ -4,10 +4,11 @@ namespace App\Policies;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
+use App\Enums\Gates\RolesEnum;
 use App\Exceptions\NotDeletableException;
 use App\Models\User;
 use App\Support\Gate\PermissionHelper;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class UserPolicy
 {
@@ -28,6 +29,8 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
+        if ($user->id === $model->id) return true;
+
         return $user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::READ,
@@ -52,6 +55,20 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
+        if ($user->id === $model->id) return true;
+
+        if (
+            (
+                !$user->hasRole(RolesEnum::DEVELOPER->value) &&
+                $model->hasAnyRole([RolesEnum::DEVELOPER->value, RolesEnum::SUPER_ADMIN->value])
+            )
+            ||
+            (
+                $user->hasAnyRole([RolesEnum::ADMIN->value, RolesEnum::USER_MANAGER->value]) &&
+                $model->hasRole(RolesEnum::ADMIN->value)
+            )
+        ) return false;
+
         return $user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::UPDATE,
@@ -66,7 +83,6 @@ class UserPolicy
     {
         if (!$model->is_deletable) {
             throw new NotDeletableException();
-            return false;
         }
         return $user->hasPermissionTo(
             PermissionHelper::permission(
@@ -92,11 +108,26 @@ class UserPolicy
      */
     public function forceDelete(User $user, User|Collection $model): bool
     {
-        return $user->hasPermissionTo(
+        if ($user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::PERMANENT_DELETE,
                 PermissionPlacesEnum::USER)
-        );
+        )) {
+            return true;
+        } else {
+            if ($model instanceof User) {
+                if ($user->id === $model->creator()?->id)
+                    return true;
+            } else {
+                $tmp = $model->filter(function ($item) use ($user) {
+                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
+                });
+
+                if (!$tmp->count())
+                    return true;
+            }
+            return false;
+        }
     }
 
     /**

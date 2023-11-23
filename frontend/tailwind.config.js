@@ -1,3 +1,5 @@
+import plugin from "tailwindcss/plugin";
+
 /** @type {import('tailwindcss').Config} */
 export default {
     content: {
@@ -10,9 +12,10 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#3057d3',
-                secondary: '#41475b',
-                cool: '#f4f7ff',
+                primary: '#3057D3',
+                secondary: '#41475B',
+                cool: '#F4F7FF',
+                awesome: '#EBF2FC',
             },
             animation: {
                 wiggle: 'wiggle 1s ease-in-out infinite',
@@ -23,10 +26,24 @@ export default {
                     '50%': {transform: 'rotate(10deg)'},
                 }
             },
+            textShadow: {
+                sm: '0 1px 2px var(--tw-shadow-color)',
+                DEFAULT: '0 2px 4px var(--tw-shadow-color)',
+                lg: '0 8px 16px var(--tw-shadow-color)',
+            },
         },
     },
     plugins: [
+        plugin(function ({matchUtilities, theme}) {
+            matchUtilities(
+                {
+                    'text-shadow': (value) => ({
+                        textShadow: value,
+                    }),
+                },
+                {values: theme('textShadow')}
+            )
+        }),
         require('@tailwindcss/forms'),
     ],
 }
-

@@ -18,17 +18,14 @@ return new class extends Migration {
                 ->constrained('menu_items')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('title');
             $table->text('link')->default('#');
-            $table->integer('priority')->default(0);
+            $table->unsignedInteger('priority')->default(0);
             $table->boolean('can_have_children')->default(true);
             $table->boolean('is_published')->default(true);
-            $table->softDeletes();
-            $table->foreignId('deleted_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent()->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreignId('updated_by')->nullable()
-                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('is_published');
         });
     }
 
