@@ -85,7 +85,7 @@ import BaseMessage from "../../components/base/BaseMessage.vue";
 import BaseSelectSearchable from "../../components/base/BaseSelectSearchable.vue";
 import {useRequest} from "../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
-import {useUserStore} from "../../store/StoreUserAuth.js";
+import {useUserAuthStore} from "../../store/StoreUserAuth.js";
 import BaseButton from "../../components/base/BaseButton.vue";
 import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusReturnOrder from "../../components/partials/PartialBadgeStatusReturnOrder.vue";
@@ -97,7 +97,7 @@ import yup from "../../validation/index.js";
 import VTransitionFade from "../../transitions/VTransitionFade.vue";
 import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
 
-const store = useUserStore()
+const store = useUserAuthStore()
 const user = store.getUser
 
 const orders = ref([])

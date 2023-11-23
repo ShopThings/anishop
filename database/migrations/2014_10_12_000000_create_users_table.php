@@ -38,6 +38,11 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('username');
+            $table->index('first_name');
+            $table->index('last_name');
+            $table->index('deleted_at');
         });
     }
 

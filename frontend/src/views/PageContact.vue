@@ -58,29 +58,31 @@
                             />
                         </div>
                         <div class="w-full"></div>
-                        <div class="p-2 w-full sm:w-1/2">
-                            <base-input
-                                label-title="نام"
-                                placeholder="حروف فارسی"
-                                name="name"
-                            >
-                                <template #icon>
-                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                </template>
-                            </base-input>
-                        </div>
-                        <div class="p-2 w-full sm:w-1/2">
-                            <base-input
-                                label-title="موبایل"
-                                placeholder="09xxxxxxxxx"
-                                name="name"
-                                klass="tracking-widest"
-                            >
-                                <template #icon>
-                                    <DevicePhoneMobileIcon class="h-6 w-6 text-gray-400"/>
-                                </template>
-                            </base-input>
-                        </div>
+                        <template v-if="!user?.id">
+                            <div class="p-2 w-full sm:w-1/2">
+                                <base-input
+                                    label-title="نام"
+                                    placeholder="حروف فارسی"
+                                    name="name"
+                                >
+                                    <template #icon>
+                                        <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                                    </template>
+                                </base-input>
+                            </div>
+                            <div class="p-2 w-full sm:w-1/2">
+                                <base-input
+                                    label-title="موبایل"
+                                    placeholder="09xxxxxxxxx"
+                                    name="name"
+                                    klass="tracking-widest"
+                                >
+                                    <template #icon>
+                                        <DevicePhoneMobileIcon class="h-6 w-6 text-gray-400"/>
+                                    </template>
+                                </base-input>
+                            </div>
+                        </template>
                         <div class="p-2 w-full">
                             <base-textarea
                                 label-title="توضیحات"
@@ -241,6 +243,10 @@ import {useForm} from "vee-validate";
 import yup from "../validation/index.js";
 import BaseSelect from "../components/base/BaseSelect.vue";
 import PartialInputLabel from "../components/partials/PartialInputLabel.vue";
+import {useUserAuthStore} from "../store/StoreUserAuth.js";
+
+const userStore = useUserAuthStore()
+const user = userStore.getUser
 
 const mapLoading = ref(false)
 const mapSettings = reactive({

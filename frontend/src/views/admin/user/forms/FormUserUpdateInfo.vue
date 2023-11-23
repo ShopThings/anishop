@@ -126,10 +126,10 @@ import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
 import yup, {transformNumbersToEnglish} from "../../../../validation/index.js";
 import isArray from "lodash.isarray";
-import {useRequest} from "../../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../../router/api-routes.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
+import {RoleAPI} from "../../../../service/APIRole.js";
+import {UserAPI} from "../../../../service/APIUser.js";
 
 const props = defineProps({
     user: {
@@ -193,7 +193,7 @@ const onSubmit = handleSubmit((values, actions) => {
     if (!canSubmit.value) return
 
     // validate extra inputs
-    if (!selectedRole.value || selectedRole.value === null || selectedRole.value.length === 0) {
+    if (!selectedRole.value || selectedRole.value.length === 0) {
         actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
         return
     }
@@ -217,13 +217,8 @@ const onSubmit = handleSubmit((values, actions) => {
 
     canSubmit.value = false
 
-    useRequest(apiReplaceParams(apiRoutes.admin.users.update, {
-        user: idParam.value,
-    }), {
-        method: 'PUT',
-        data: values,
-    }, {
-        success: (response) => {
+    UserAPI.updateById(idParam.value, values, {
+        success(response) {
             toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
 
             user.value = response.data
@@ -241,21 +236,21 @@ const onSubmit = handleSubmit((values, actions) => {
 
             return false
         },
-        error: (error) => {
+        error(error) {
             if (error.errors && Object.keys(error.errors).length >= 1)
                 actions.setErrors(error.errors)
 
             return false
         },
-        finally: function () {
+        finally() {
             canSubmit.value = true
         },
     })
 })
 
 onMounted(() => {
-    useRequest(apiRoutes.admin.roles, null, {
-        success: (response) => {
+    RoleAPI.fetchAll({
+        success(response) {
             roles.value = response.data
         },
     })

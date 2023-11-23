@@ -7,6 +7,34 @@ export const SLIDER_PLACES = {
         value: 'main_sliders',
         text: 'اسلایدرهای محصول',
     },
+    MAIN_SLIDER_IMAGES: {
+        value: 'main_slider_images',
+        text: 'تصویر محصولات',
+    },
+}
+
+export const SLIDER_OPTIONS = {
+    SHOW_ALL_LINK: {
+        value: 'show_all_link',
+    },
+    BRAND_ID: {
+        value: 'brand_id',
+    },
+    CATEGORY_ID: {
+        value: 'category_id',
+    },
+    ORDER_BY: {
+        value: 'order_by',
+    },
+    IS_SPECIAL: {
+        value: 'is_special',
+    },
+    COUNT: {
+        value: 'count',
+    },
+    BESIDE_IMAGES: {
+        value: 'beside_images',
+    },
 }
 
 export const PRODUCT_ATTRIBUTE_TYPES = {

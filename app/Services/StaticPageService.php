@@ -39,7 +39,7 @@ class StaticPageService extends Service implements StaticPageServiceInterface
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(), limit: $limit, page: $page, order: $this->convertOrdersColumnToArray($order)
         );
     }
 

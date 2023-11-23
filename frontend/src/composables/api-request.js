@@ -1,6 +1,6 @@
 import axios from "axios"
 import isFunction from 'lodash.isfunction'
-import {useAdminStore, useUserStore} from "../store/StoreUserAuth.js"
+import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js"
 import {useToast} from "vue-toastification"
 import router from "../router/index.js";
 import isObject from "lodash.isobject";
@@ -87,8 +87,8 @@ axiosClient.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axiosClient.defaults.headers.common['Content-Type'] = 'application/json'
 
 axiosClient.interceptors.request.use((config) => {
-    const store = useUserStore()
-    const adminStore = useAdminStore()
+    const store = useUserAuthStore()
+    const adminStore = useAdminAuthStore()
     if (config.url.indexOf('/admin/') !== -1 && adminStore.getToken) {
         config.headers.Authorization = `Bearer ${adminStore.getToken}`
     } else if (store.getToken) {
@@ -100,8 +100,8 @@ axiosClient.interceptors.request.use((config) => {
 axiosClient.interceptors.response.use(response => {
     return response;
 }, error => {
-    const store = useUserStore()
-    const adminStore = useAdminStore()
+    const store = useUserAuthStore()
+    const adminStore = useAdminAuthStore()
     if (error?.response?.status === responseStatuses.HTTP_FORBIDDEN) {
         const route = window.location.pathname
         if (route.indexOf('/admin') !== -1) {
@@ -129,9 +129,13 @@ export const useRequest = (url, config, resultConfig) => {
     const toast = useToast()
 
     config = config || {}
-    const onSuccess = resultConfig?.success || null
-    const onError = resultConfig?.error || null
-    const onFinally = resultConfig?.finally || null
+    const onBeforeRequest = resultConfig?.beforeRequest
+    const onSuccess = resultConfig?.success
+    const onError = resultConfig?.error
+    const onFinally = resultConfig?.finally
+
+    if (isFunction(onBeforeRequest))
+        onBeforeRequest.apply(null)
 
     config['method'] = config['method'] || 'GET'
     axiosClient(url, config)
@@ -140,9 +144,18 @@ export const useRequest = (url, config, resultConfig) => {
             const type = response.data?.data?.type || data?.type
             const msg = response.data?.data?.message || response.data?.message
 
+            let total = 0
+            if (data?.meta?.total) {
+                total = data?.meta?.total
+            } else if (isArray(data?.data) || isArray(data)) {
+                total = data?.data?.length || data.length
+            } else if (isObject(data?.data) || isObject(data)) {
+                total = 1
+            }
+
             let ans = true
             if (isFunction(onSuccess))
-                ans = onSuccess.apply(null, [data])
+                ans = onSuccess.apply(null, [data, total])
 
             // if returned value is false, overwrite functionality
             if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {

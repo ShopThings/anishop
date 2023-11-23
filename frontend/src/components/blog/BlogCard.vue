@@ -28,16 +28,16 @@
                 </router-link>
 
                 <div class="mt-3 flex flex-col justify-center gap-3">
-                    <router-link
-                        :to="{name: 'blog.detail', params: {id: blog.id}}"
-                        target="_blank"
-                        class="text-sm leading-loose h-[56px] ellipsis-2 hover:text-indigo-600 transition"
-                        :title="blog.title"
-                    >
-                        <h1 class="font-iranyekan-bold">
+                    <h1>
+                        <router-link
+                            :to="{name: 'blog.detail', params: {id: blog.id}}"
+                            target="_blank"
+                            class="text-sm leading-loose h-[56px] ellipsis-2 hover:text-indigo-600 transition font-iranyekan-bold"
+                            :title="blog.title"
+                        >
                             {{ blog.title }}
-                        </h1>
-                    </router-link>
+                        </router-link>
+                    </h1>
 
                     <div class="flex gap-3 items-center justify-between mt-3">
                         <div class="flex gap-2 items-center">
@@ -99,7 +99,6 @@
                                     (blog.creator.first_name + ' ' + blog.creator.last_name).trim()
                                 }}</span>
                         </div>
-
                     </div>
                 </div>
             </template>

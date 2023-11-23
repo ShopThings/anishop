@@ -1,6 +1,4 @@
-import {useUserStore} from "../store/StoreUserAuth.js";
-import {useRequest} from "../composables/api-request.js";
-import {apiRoutes} from "./api-routes.js";
+import {useUserAuthStore} from "../store/StoreUserAuth.js";
 
 export const userRoutes = {
     path: '/user',
@@ -9,12 +7,8 @@ export const userRoutes = {
             path: 'logout',
             name: 'user.logout',
             beforeEnter(to, from, next) {
-                const store = useUserStore()
-                useRequest(apiRoutes.user.logout, {method: 'POST'}, {
-                    success: () => {
-                        store.$reset()
-                    },
-                })
+                const store = useUserAuthStore()
+                store.logout()
                 if (from.meta.requiresAuth) {
                     const pushObj = {name: 'user.login'}
 
@@ -102,7 +96,7 @@ export const userRoutes = {
             },
         },
         {
-            path: 'comment/:id(\\d+)',
+            path: 'comment/:id([\\d\\w]+)',
             children: [
                 {
                     path: '',
@@ -183,7 +177,7 @@ export const userRoutes = {
             },
         },
         {
-            path: 'order/:code(\\d+)',
+            path: 'order/:code([\\d\\w]+)',
             name: 'user.order.detail',
             component: () => import('../views/user/PageOrderDetail.vue'),
             meta: {
@@ -214,7 +208,7 @@ export const userRoutes = {
             },
         },
         {
-            path: 'return-order/:code(\\d+)',
+            path: 'return-order/:code([\\d\\w]+)',
             name: 'user.return_order.detail',
             component: () => import('../views/user/PageReturnOrderDetail.vue'),
             meta: {
@@ -226,6 +220,37 @@ export const userRoutes = {
                     },
                     {
                         name: 'جزئیات سفارش مرجوع شده',
+                    },
+                ],
+            },
+        },
+
+        {
+            path: 'contacts',
+            name: 'user.contacts',
+            component: () => import('../views/user/PageContact.vue'),
+            meta: {
+                title: 'تماس‌های من',
+                breadcrumb: [
+                    {
+                        name: 'مشاهده تماس‌های من',
+                    },
+                ],
+            },
+        },
+        {
+            path: 'contact/:id(\\d+)',
+            name: 'user.contact.detail',
+            component: () => import('../views/user/PageContactDetail.vue'),
+            meta: {
+                title: 'جزئیات تماس',
+                breadcrumb: [
+                    {
+                        name: 'تماس‌های من',
+                        link: 'user.contacts',
+                    },
+                    {
+                        name: 'جزئیات تماس',
                     },
                 ],
             },

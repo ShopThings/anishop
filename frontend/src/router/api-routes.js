@@ -7,6 +7,7 @@ export const apiRoutes = {
         logout: 'api/admin/logout',
 
         roles: 'api/admin/roles',
+        permissions: 'api/admin/permissions',
 
         users: {
             index: 'api/admin/users',
@@ -77,7 +78,7 @@ export const apiRoutes = {
             storeProduct: 'api/admin/festivals/{festival}/{product}',
             storeCategoryProducts: 'api/admin/festivals/{festival}/{category}',
             destroyProduct: 'api/admin/festivals/{festival}/{product}',
-            batchDestroyProduct: 'api/admin/festivals/{festival}/batch',
+            batchDestroyProduct: 'api/admin/festivals/{festival}/category/{category}',
         },
 
         units: {
@@ -169,10 +170,11 @@ export const apiRoutes = {
         },
 
         returnOrders: {
-            index: 'api/admin/return-orders',
+            index: 'api/admin/return-orders/{user?}',
             show: 'api/admin/return-orders/{return_order}',
             update: 'api/admin/return-orders/{return_order}',
             destroy: 'api/admin/return-orders/{return_order}',
+            modifyOrderItem: 'api/admin/return-orders/{return_order}/{return_order_item}/modify-item',
         },
 
         reports: {
@@ -220,6 +222,10 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/blog-categories/batch',
         },
 
+        smsLogs: {
+            index: 'api/admin/sms-log',
+        },
+
         staticPages: {
             index: 'api/admin/static-pages',
             show: 'api/admin/static-pages/{static_page}',
@@ -262,6 +268,9 @@ export const apiRoutes = {
             batchDestroy: 'api/admin/newsletters/batch',
         },
 
+        provinces: 'api/admin/provinces',
+        cities: 'api/admin/cities/{province}',
+
         cityPostPrices: {
             index: 'api/admin/city-post-prices',
             show: 'api/admin/city-post-prices/{city_post_price}',
@@ -269,8 +278,6 @@ export const apiRoutes = {
             update: 'api/admin/city-post-prices/{city_post_price}',
             destroy: 'api/admin/city-post-prices/{city_post_price}',
             batchDestroy: 'api/admin/city-post-prices/batch',
-            provinces: 'api/admin/provinces',
-            cities: 'api/admin/cities',
         },
 
         weightPostPrices: {
@@ -289,19 +296,22 @@ export const apiRoutes = {
             update: 'api/admin/sliders/{slider}',
             destroy: 'api/admin/sliders/{slider}',
             batchDestroy: 'api/admin/sliders/batch',
+            modifySliderItem: 'api/admin/sliders/{slider}/modify',
         },
 
         menus: {
             index: 'api/admin/menus',
             show: 'api/admin/menus/{menu}',
-            store: 'api/admin/menus',
-            update: 'api/admin/menus/{menu}',
-            destroy: 'api/admin/menus/{menu}',
             batchDestroy: 'api/admin/menus/batch',
+            modifyMenuItem: 'api/admin/menus/{menu}/modify',
+        },
+
+        settings: {
+            index: 'api/admin/settings',
+            update: 'api/admin/settings/{setting}',
         },
 
         files: {
-            show: 'api/admin/files/{file}/{size?}',
             list: 'api/admin/files',
             tree: 'api/admin/files/tree',
             createDir: 'api/admin/files/directory',
@@ -319,6 +329,12 @@ export const apiRoutes = {
     user: {
         login: 'api/user/login',
         logout: 'api/user/logout',
+
+        main: {
+            countOfStuffs: 'api/user/count-of-stuffs',
+            latestOrders: 'api/user/orders/latest',
+            latestReturnOrders: 'api/user/return-orders/latest',
+        },
 
         info: {
             info: 'api/user/info',
@@ -342,23 +358,24 @@ export const apiRoutes = {
         },
 
         comments: {
-            index: 'api/user/comments',
-            show: 'api/user/comments/{comment}',
-            store: 'api/user/comments/{product}',
-            update: 'api/user/comments/{comment}',
-            destroy: 'api/user/comments/{comment}',
+            index: 'api/user/product/comments',
+            show: 'api/user/product/comments/{comment}',
+            store: 'api/user/product/{product}/comments',
+            update: 'api/user/product/comments/{comment}',
+            destroy: 'api/user/product/comments/{comment}',
         },
 
         blogComments: {
-            index: 'api/user/comments/blog',
-            show: 'api/user/comments/blog/{comment}',
-            store: 'api/user/comments/blog/{blog}',
-            update: 'api/user/comments/blog/{comment}',
-            destroy: 'api/user/comments/blog/{comment}',
+            index: 'api/user/blog/comments',
+            show: 'api/user/blog/comments/{comment}',
+            store: 'api/user/blog/{blog}/comments',
+            update: 'api/user/blog/comments/{comment}',
+            destroy: 'api/user/blog/comments/{comment}',
         },
 
         favoriteProducts: {
             index: 'api/user/favorite-products',
+            store: 'api/user/favorite-products',
             destroy: 'api/user/favorite-products/{product}',
         },
 
@@ -369,11 +386,43 @@ export const apiRoutes = {
             update: 'api/user/addresses/{address}',
             destroy: 'api/user/addresses/{address}',
         },
+
+        contacts: {
+            index: 'api/user/contacts',
+            show: 'api/user/contacts/{contact}',
+            destroy: 'api/user/contacts/{contact}',
+        },
     },
 
     // general routes
     captcha: '/captcha/api',
-    login: 'api/login',
+    showFile: 'api/files/{file}/{size?}',
+
+    main: {
+        sliderMain: 'api/sliders/main',
+        sliderChosenCategories: 'api/sliders/categories',
+        sliderPopularBrands: 'api/sliders/brands',
+        sliderOffers: 'api/sliders/amazing-offers',
+        sliders: 'api/sliders',
+        latestBlogs: 'api/blogs/latest',
+    },
+
+    products: {
+        index: 'api/products',
+        show: 'api/products/{product}',
+    },
+
+    comments: {
+        index: 'api/products/{product}/comments',
+        report: 'api/products/{product}/comments/{comment}/report',
+        vote: 'api/products/{product}/comments/{comment}/vote',
+    },
+
+    blogComments: {
+        index: 'api/products/{product}/comments',
+        report: 'api/products/{product}/comments/{comment}/report',
+        vote: 'api/products/{product}/comments/{comment}/vote',
+    },
 }
 
 export const apiReplaceParams = function (url, params) {

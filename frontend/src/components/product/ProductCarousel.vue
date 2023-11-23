@@ -3,17 +3,17 @@
         v-slot="{slide, index}"
         v-model="relatedProducts"
         v-model:current="currentSlide"
-        :snap-align="carouselSettings.snapAlign"
         :has-navigation="carouselSettings.hasNavigation"
-        :navigation-position="carouselSettings.navigationPosition"
         :navigation-display="carouselSettings.navigationDisplay"
-        :always-show-navigation-buttons="carouselSettings.alwaysShowNavigationButtons"
         :has-pagination="carouselSettings.hasPagination"
+        :free-mode="carouselSettings.freeMode"
         :breakpoints="carouselSettings.breakpoints"
     >
-        <div class="px-3 w-full h-full">
-            <product-card :product="slide"/>
-        </div>
+        <slot name="slide" :slide="slide" :index="index">
+            <div class="w-full h-full">
+                <product-card :product="slide"/>
+            </div>
+        </slot>
     </base-carousel>
 </template>
 
@@ -33,34 +33,29 @@ const relatedProducts = ref(props.products)
 const currentSlide = ref(0)
 
 const carouselSettings = {
-    snapAlign: 'start',
     hasNavigation: true,
-    navigationPosition: 'right',
     navigationDisplay: 'floating-sides',
-    alwaysShowNavigationButtons: false,
-    hasPagination: true,
+    hasPagination: false,
+    freeMode: true,
     breakpoints: {
         0: {
-            itemsToShow: 1,
+            slidesPerView: 1,
         },
         450: {
-            itemsToShow: 1.5,
+            slidesPerView: 1.5,
         },
         576: {
-            itemsToShow: 2,
-            itemsToScroll: 2,
+            slidesPerView: 2,
         },
         768: {
-            itemsToShow: 2.85,
-            itemsToScroll: 2,
+            slidesPerView: 2.85,
         },
         991: {
-            itemsToShow: 3.35,
-            itemsToScroll: 3,
+            slidesPerView: 3.35,
+            spaceBetween: 20,
         },
         1280: {
-            itemsToShow: 4.15,
-            itemsToScroll: 4,
+            slidesPerView: 4.15,
         },
     },
 }

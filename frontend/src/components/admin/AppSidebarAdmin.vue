@@ -175,7 +175,7 @@ import {UserIcon, Cog6ToothIcon} from '@heroicons/vue/24/solid'
 import {ComputerDesktopIcon, PowerIcon} from '@heroicons/vue/24/outline'
 import BaseSidebar from "../base/BaseSidebar.vue"
 import SidebarLinksAdmin from "./SidebarLinksAdmin.vue"
-import {useAdminStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
 import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import VTransitionFade from "../../transitions/VTransitionFade.vue";
 
@@ -185,7 +185,7 @@ const scrollableSection = ref(null)
 const bottomSection = ref(null)
 const sidebar = ref(null)
 
-const store = useAdminStore()
+const store = useAdminAuthStore()
 const user = store.getUser
 
 const isMini = ref(false)

@@ -29,6 +29,7 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
      * @inheritDoc
      */
     public function getOrdersSearchFilterPaginated(
+        ?int    $userId = null,
         array   $columns = ['*'],
         ?string $search = null,
         int     $limit = 15,
@@ -38,6 +39,9 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
     {
         $query = $this->model->newQuery();
         $query
+            ->when($userId, function (Builder $query, $uId) {
+                $query->where('user_id', $uId);
+            })
             ->when($search, function (Builder $query, string $search) {
                 $query
                     ->withWhereHas('user', function ($q) use ($search) {

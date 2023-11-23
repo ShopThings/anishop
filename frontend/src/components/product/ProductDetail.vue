@@ -44,51 +44,45 @@
                 <div>
                     <div class="relative mb-3">
                         <button
-                            class="absolute shadow-lg top-0 left-0 translate-y-6 translate-x-6 rounded-full border bg-white p-2 w-9 h-9 group z-[1] hover:border-blue-500 hover:bg-blue-50 transition"
+                            class="absolute shadow-lg top-0 left-0 translate-y-6 translate-x-6 rounded-full border bg-white p-2 w-11 h-11 group z-[2] hover:border-blue-500 hover:bg-blue-50 transition"
                             @click="onLightboxShow"
                         >
-                            <MagnifyingGlassPlusIcon class="w-5 h-5 mx-auto group-hover:scale-110 transition"/>
+                            <MagnifyingGlassPlusIcon class="w-6 h-6 mx-auto group-hover:scale-110 transition"/>
                         </button>
 
                         <base-carousel
-                            v-slot="{slide, index}"
                             v-model="slides"
                             v-model:current="currentSlide"
+                            :class-name="mainGallerySettings.className"
                             :breakpoints="mainGallerySettings.breakpoints"
                             :wrap-around="mainGallerySettings.wrapAround"
                             :has-navigation="mainGallerySettings.hasNavigation"
+                            :effect="mainGallerySettings.effect"
+                            :use-thumbnail="mainGallerySettings.useThumbnail"
                         >
-                            <div class="p-2">
-                                <div class="bg-white border rounded-lg">
+                            <template #default="{slide, index}">
+                                <div class="bg-white border rounded-lg lg:h-96 xl:h-[32rem]">
                                     <base-lazy-image
                                         :lazy-src="slide.path"
                                         :alt="slide.name"
                                         class="rounded-lg"
                                     />
                                 </div>
-                            </div>
+                            </template>
+
+                            <template #thumbSlide="{slide, index}">
+                                <div
+                                    class="bg-white border rounded-lg cursor-pointer"
+                                >
+                                    <base-lazy-image
+                                        :lazy-src="slide.path"
+                                        :alt="slide.name"
+                                        class="!w-auto !h-28 rounded-lg"
+                                    />
+                                </div>
+                            </template>
                         </base-carousel>
                     </div>
-
-                    <base-carousel
-                        v-slot="{slide, index}"
-                        v-model="slides"
-                        v-model:current="currentSlide"
-                        :breakpoints="gallerySettings.breakpoints"
-                    >
-                        <div class="p-1">
-                            <div
-                                class="carousel__item bg-white border rounded-lg cursor-pointer"
-                                @click="slideTo(index)"
-                            >
-                                <base-lazy-image
-                                    :lazy-src="slide.path"
-                                    :alt="slide.name"
-                                    class="!w-28 h-auto rounded-lg"
-                                />
-                            </div>
-                        </div>
-                    </base-carousel>
                 </div>
             </div>
         </Vue3StickySidebar>
@@ -104,7 +98,7 @@
                     <div class="grow h-0.5 bg-red-400 rounded-full"></div>
                 </div>
 
-                <h1 class="text-xl leading-loose hyphens-auto break-words">
+                <h1 class="text-xl leading-loose hyphens-auto break-words font-iranyekan-bold">
                     گوشی موبایل سامسونگ مدل Galaxy S23 Ultra دو سیم کارت ظرفیت 256 گیگابایت و رم 12 گیگابایت - ویتنام
                 </h1>
 
@@ -131,8 +125,8 @@
                         v-else
                         class="flex flex-wrap mt-3 items-center"
                     >
-                        <div class="ml-3 text-xl my-1">
-                            {{ selectedProduct.discounted_price ?? selectedProduct.price }}
+                        <div class="ml-3 text-xl my-1 font-iranyekan-bold">
+                            {{ formatPriceLikeNumber(selectedProduct.discounted_price ?? selectedProduct.price) }}
                             <span class="text-xs text-gray-400">تومان</span>
                         </div>
 
@@ -142,7 +136,7 @@
                                 <span
                                     class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
                                 <div class="text-slate-500">
-                                    {{ selectedProduct.price }}
+                                    {{ formatPriceLikeNumber(selectedProduct.price) }}
                                     <span class="text-xs text-gray-400">تومان</span>
                                 </div>
                             </div>
@@ -624,6 +618,7 @@ import ProductCarousel from "./ProductCarousel.vue";
 import BaseTabPanel from "../base/BaseTabPanel.vue";
 import ProductComment from "./ProductComment.vue";
 import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
+import {formatPriceLikeNumber} from "../../composables/helper.js";
 
 defineProps({
     showProductExtraOption: {
@@ -641,37 +636,23 @@ defineProps({
 })
 
 const mainGallerySettings = {
+    className: 'detail-slider',
+    effect: 'flip',
     wrapAround: true,
     hasNavigation: true,
+    useThumbnail: true,
     breakpoints: {
         0: {
-            itemsToShow: 1,
+            slidesPerView: 1,
         },
         480: {
-            itemsToShow: 1.5,
+            slidesPerView: 1.5,
         },
         768: {
-            itemsToShow: 2,
+            slidesPerView: 2,
         },
         1024: {
-            itemsToShow: 1,
-        },
-    },
-}
-
-const gallerySettings = {
-    breakpoints: {
-        360: {
-            itemsToShow: 3.5,
-        },
-        640: {
-            itemsToShow: 5,
-        },
-        768: {
-            itemsToShow: 6,
-        },
-        1024: {
-            itemsToShow: 3.5,
+            slidesPerView: 1,
         },
     },
 }
@@ -737,10 +718,6 @@ const imgsRef = ref([
 
 const onLightboxShow = () => (visibleRef.value = true)
 const onLightboxHide = () => (visibleRef.value = false)
-
-function slideTo(index) {
-    currentSlide.value = index
-}
 
 const currentMainProduct = ref({
     id: 1,
@@ -1631,8 +1608,4 @@ setCurrentProductProperties()
 <style scoped>
 @import "../../assets/css/skeleton/normalize.css";
 @import "../../assets/css/skeleton/skeleton.css";
-
-.carousel__slide--active .carousel__item {
-    border: 2px solid #2563eb;
-}
 </style>

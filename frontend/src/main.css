@@ -1,5 +1,4 @@
 @import "../styles/fonts.scss";
-@import 'vue3-carousel/dist/carousel.css';
 
 @tailwind base;
 @tailwind components;

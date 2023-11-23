@@ -16,6 +16,9 @@ return new class extends Migration {
             $table->unsignedInteger('max_weight');
             $table->unsignedBigInteger('post_price')->default(0);
             $table->timestamps();
+
+            $table->index('min_weight');
+            $table->index('max_weight');
         });
     }
 

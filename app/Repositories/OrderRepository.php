@@ -41,7 +41,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
         $query = $this->model->newQuery();
         $query
             ->when($userId, function (Builder $query, $uId) {
-                $query->where('id', $uId);
+                $query->where('user_id', $uId);
             })
             ->when($search, function (Builder $query, string $search) {
                 $query

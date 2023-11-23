@@ -35,17 +35,22 @@ class ReturnOrderRequestController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     * @param User|null $user
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Request $request, ?User $user = null)
     {
         $this->authorize('viewAny', User::class);
 
         $params = $this->getPaginateParameters($request);
 
         return ReturnOrderResource::collection($this->service->getOrders(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
+            userId: $user?->id,
+            searchText: $params['text'],
+            limit: $params['limit'],
+            page: $params['page'],
+            order: $params['order']
         ));
     }
 

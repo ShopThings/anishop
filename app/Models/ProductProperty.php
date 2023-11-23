@@ -6,9 +6,12 @@ use App\Support\Model\ExtendedModel as Model;
 use Gloudemans\Shoppingcart\Contracts\Buyable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Parables\NanoId\GeneratesNanoId;
 
 class ProductProperty extends Model implements Buyable
 {
+    use GeneratesNanoId;
+
     public $timestamps = false;
 
     protected $hasCreatedBy = false;
@@ -26,6 +29,11 @@ class ProductProperty extends Model implements Buyable
         'show_call_for_more' => 'boolean',
         'is_published' => 'boolean',
     ];
+
+    public function nanoIdColumn()
+    {
+        return 'code';
+    }
 
     /**
      * @return BelongsTo

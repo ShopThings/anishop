@@ -34,17 +34,15 @@
                     v-slot="{slide, index}"
                     v-model="slides"
                     v-model:current="currentSlide"
-                    :snap-align="carouselSettings.snapAlign"
+                    :class-name="carouselSettings.className"
                     :has-navigation="carouselSettings.hasNavigation"
                     :navigation-position="carouselSettings.navigationPosition"
                     :navigation-display="carouselSettings.navigationDisplay"
-                    :always-show-navigation-buttons="carouselSettings.alwaysShowNavigationButtons"
                     :has-pagination="carouselSettings.hasPagination"
                     :breakpoints="carouselSettings.breakpoints"
                     :autoplay="carouselSettings.autoplay"
                     :wrap-around="carouselSettings.wrapAround"
-                    :items-to-show="carouselSettings.itemsToShow"
-                    :use-slide-effect="carouselSettings.useSlideEffect"
+                    :effect="carouselSettings.effect"
                 >
                     <div class="bg-white rounded-lg relative">
                         <base-lazy-image
@@ -54,22 +52,24 @@
                         />
 
                         <div
-                            class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-[60%] rounded-b-lg pt-6 px-6 pb-9 text-shadow flex items-end">
-                            <h1 class="w-full text-right">
+                            class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-16 text-shadow flex items-end">
+                            <div>
                                 <router-link
                                     to="#"
-                                    class="text-xl text-white leading-relaxed hover:text-opacity-80 transition"
-                                >
-                                    {{ slide.title }}
-                                </router-link>
-
-                                <router-link
-                                    to="#"
-                                    class="text-xs rounded-tr-lg rounded-bl-lg py-1.5 px-4 bg-indigo-600 text-white absolute left-0 bottom-0 hover:bg-indigo-500 transition"
+                                    class="text-xs rounded-full py-1.5 px-4 inline-block mb-3 bg-indigo-600 text-white hover:bg-indigo-500 transition"
                                 >
                                     {{ slide.category }}
                                 </router-link>
-                            </h1>
+                                <h1 class="w-full text-right">
+
+                                    <router-link
+                                        to="#"
+                                        class="text-xl text-white leading-relaxed hover:text-opacity-80 transition"
+                                    >
+                                        {{ slide.title }}
+                                    </router-link>
+                                </h1>
+                            </div>
                         </div>
                     </div>
                 </base-carousel>
@@ -256,16 +256,14 @@ const slides = ref([
 const currentSlide = ref(0)
 
 const carouselSettings = {
-    useSlideEffect: true,
+    className: 'blog-slider',
+    effect: 'coverflow',
     wrapAround: true,
     autoplay: 10000,
-    snapAlign: 'start',
     hasNavigation: true,
     navigationPosition: 'right',
     navigationDisplay: 'floating-sides',
-    alwaysShowNavigationButtons: true,
     hasPagination: true,
-    itemsToShow: 1,
     breakpoints: {},
 }
 
@@ -316,7 +314,7 @@ const latestBlogs = ref([
         },
         created_at: '۱۵ شهریور ۱۴۰۲',
         creator: {
-            first_name: 'اضغر',
+            first_name: 'اصغر',
             last_name: 'فرهادی',
         },
     },
@@ -361,7 +359,7 @@ const latestBlogs = ref([
         },
         created_at: '۱۵ شهریور ۱۴۰۲',
         creator: {
-            first_name: 'اضغر',
+            first_name: 'اصغر',
             last_name: 'فرهادی',
         },
     },
@@ -406,7 +404,7 @@ const latestBlogs = ref([
         },
         created_at: '۱۵ شهریور ۱۴۰۲',
         creator: {
-            first_name: 'اضغر',
+            first_name: 'اصغر',
             last_name: 'فرهادی',
         },
     },

@@ -196,7 +196,7 @@ const blogs = ref([
         },
         created_at: '۱۵ شهریور ۱۴۰۲',
         creator: {
-            first_name: 'اضغر',
+            first_name: 'اصغر',
             last_name: 'فرهادی',
         },
     },
@@ -241,7 +241,7 @@ const blogs = ref([
         },
         created_at: '۱۵ شهریور ۱۴۰۲',
         creator: {
-            first_name: 'اضغر',
+            first_name: 'اصغر',
             last_name: 'فرهادی',
         },
     },
@@ -286,7 +286,7 @@ const blogs = ref([
         },
         created_at: '۱۵ شهریور ۱۴۰۲',
         creator: {
-            first_name: 'اضغر',
+            first_name: 'اصغر',
             last_name: 'فرهادی',
         },
     },

@@ -34,13 +34,10 @@
                         v-slot="{slide, index}"
                         v-model="productProperties"
                         v-model:current="currentProductItem"
-                        :mouse-drag="productItemsCarouselSetting.mouseDrag"
-                        :touch-drag="productItemsCarouselSetting.touchDrag"
-                        :snap-align="productItemsCarouselSetting.snapAlign"
                         :has-navigation="productItemsCarouselSetting.hasNavigation"
-                        :always-show-navigation-buttons="productItemsCarouselSetting.alwaysShowNavigationButtons"
                         :has-pagination="productItemsCarouselSetting.hasPagination"
                         :navigation-display="productItemsCarouselSetting.navigationDisplay"
+                        :navigation-size="productItemsCarouselSetting.navigationSize"
                         :breakpoints="productItemsCarouselSetting.breakpoints"
                     >
                         <div class="w-full h-full flex flex-col justify-evenly">
@@ -84,7 +81,9 @@
 
                                     <div class="flex flex-col mr-3">
                                         <div class="my-1 text-lg">
-                                            <span class="font-iranyekan-bold mx-1">{{ slide.discounted_price }}</span>
+                                            <span class="font-iranyekan-bold mx-1">{{
+                                                    formatPriceLikeNumber(slide.discounted_price)
+                                                }}</span>
                                             <span class="text-xs text-gray-400">تومان</span>
                                         </div>
                                         <template v-if="slide.discounted_price < slide.price">
@@ -92,7 +91,7 @@
                                             <span
                                                 class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-400 -rotate-3"></span>
                                                 <div class="text-slate-400 text-center">
-                                                    {{ slide.price }}
+                                                    {{ formatPriceLikeNumber(slide.price) }}
                                                     <span class="text-xs text-gray-400">تومان</span>
                                                 </div>
                                             </div>
@@ -149,6 +148,7 @@ import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.v
 import LoaderCard from "../base/loader/LoaderCard.vue";
 import BaseLazyImage from "../base/BaseLazyImage.vue";
 import BaseCarousel from "../base/BaseCarousel.vue";
+import {formatPriceLikeNumber} from "../../composables/helper.js";
 
 const props = defineProps({
     containerClass: {
@@ -165,14 +165,12 @@ const productProperties = ref(props.product.products)
 const currentProductItem = ref(0)
 
 const productItemsCarouselSetting = {
-    mouseDrag: false,
-    touchDrag: false,
-    snapAlign: 'start',
     hasNavigation: true,
-    alwaysShowNavigationButtons: true,
     hasPagination: false,
     navigationDisplay: 'floating',
-    breakpoints: {},
+    navigationSize: 'small',
+    breakpoints: {
+    },
 }
 </script>
 

@@ -97,15 +97,14 @@ import PartialCardNavigation from "../../../components/partials/PartialCardNavig
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 import BaseTabPanel from "../../../components/base/BaseTabPanel.vue";
 import {useConfirmToast} from "../../../composables/toast-confirm.js";
 import {useToast} from "vue-toastification";
 import FormUserUpdateInfo from "./forms/FormUserUpdateInfo.vue";
 import FormUserUpdatePassword from "./forms/FormUserUpdatePassword.vue";
 import FormUserUpdateStatus from "./forms/FormUserUpdateStatus.vue";
-import {useAdminStore} from "../../../store/StoreUserAuth.js";
+import {useAdminAuthStore} from "../../../store/StoreUserAuth.js";
+import {UserAPI} from "../../../service/APIUser.js";
 
 const router = useRouter()
 const route = useRoute()
@@ -116,7 +115,7 @@ const idParam = computed(() => {
     return id
 })
 
-const userStore = useAdminStore()
+const userStore = useAdminAuthStore()
 const currentUser = userStore.getUser
 
 const loading = ref(true)
@@ -140,9 +139,7 @@ if (currentUser.id !== idParam.value) {
 function deleteUser() {
     useConfirmToast(
         () => {
-            useRequest(apiReplaceParams(apiRoutes.admin.users.destroy, {user: idParam.value}), {
-                method: 'DELETE',
-            }, {
+            UserAPI.deleteById(idParam.value, {
                 success: () => {
                     toast.success('عملیات با موفقیت انجام شد.')
                     router.push({name: 'admin.users'})
@@ -156,8 +153,8 @@ function deleteUser() {
 }
 
 onMounted(() => {
-    useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
-        success: (response) => {
+    UserAPI.fetchById(idParam.value, {
+        success(response) {
             user.value = response.data
 
             const retrievedRoles = []

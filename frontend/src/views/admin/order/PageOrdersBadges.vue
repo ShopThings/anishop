@@ -13,7 +13,7 @@
         type="info"
         :has-close="false"
     >
-        در صورت تغییر وضعیت به وضعیت‌های دارای
+        در صورت تغییر وضعیت به
         <span class="bg-white rounded mx-2 text-black px-2">بازگشت محصول به انبار</span>
         ، محصولات سفارش به انبار بازگشت داده می‌شود.
     </base-message>

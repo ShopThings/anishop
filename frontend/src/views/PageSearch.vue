@@ -108,7 +108,7 @@
                     <template #item="{item}">
                         <product-card
                             :product="item"
-                            container-class="hover:shadow-lg hover:z-[1] hover:relative transition"
+                            container-class="hover:shadow-lg w-full hover:z-[1] hover:relative transition"
                         />
                     </template>
 
@@ -124,7 +124,7 @@
                 class="shrink-0 hidden lg:block lg:w-80"
                 containerSelector=".sticky-container"
                 innerWrapperSelector='.sidebar__inner'
-                :top-spacing="84"
+                :top-spacing="114"
                 :bottom-spacing="20"
                 :min-width="1024"
             >

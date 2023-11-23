@@ -125,6 +125,31 @@
 
             <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
         </div>
+        <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
+            <div class="flex gap-3 items-center justify-between">
+                <ChatBubbleLeftEllipsisIcon class="h-8 w-8 text-fuchsia-500"/>
+                <router-link
+                    :to="{name: 'user.contacts'}"
+                    class="text-blue-600 hover:text-opacity-80 text-sm"
+                >
+                    <div class="flex items-center">
+                        <span class="ml-2">مشاهده</span>
+                        <div class="p-1 bg-slate-100 rounded-full">
+                            <ChevronLeftIcon class="w-4 h-4 text-black"/>
+                        </div>
+                    </div>
+                </router-link>
+            </div>
+            <div>
+                <h1 class="text-gray-400 mb-1">
+                    تماس‌های من
+                </h1>
+                <span class="text-2xl">0</span>
+                <span class="mr-2 text-sm text-gray-400">مورد</span>
+            </div>
+
+            <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
+        </div>
     </div>
 
     <div>
@@ -246,6 +271,7 @@ import {
     ChatBubbleLeftRightIcon,
     HeartIcon,
     BookOpenIcon,
+    ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/vue/24/solid/index.js";
 import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialGeneralTitle from "../../components/partials/PartialGeneralTitle.vue";

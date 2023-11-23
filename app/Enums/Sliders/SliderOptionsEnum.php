@@ -10,4 +10,5 @@ enum SliderOptionsEnum: string
     case ORDER_BY = 'order_by';
     case IS_SPECIAL = 'is_special';
     case COUNT = 'count';
+    case BESIDE_IMAGES = 'beside_images';
 }

@@ -79,7 +79,7 @@ import {useRequest} from "../../../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../../../router/api-routes.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import {useAdminStore, ROLES} from "../../../../store/StoreUserAuth.js";
+import {useAdminAuthStore, ROLES} from "../../../../store/StoreUserAuth.js";
 
 const props = defineProps({
     user: {
@@ -98,7 +98,7 @@ const user = computed({
     },
 })
 
-const userStore = useAdminStore()
+const userStore = useAdminAuthStore()
 
 const route = useRoute()
 const toast = useToast()

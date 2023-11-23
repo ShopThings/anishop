@@ -23,6 +23,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
      * @inheritDoc
      */
     public function getOrders(
+        ?int    $userId = null,
         ?string $searchText = null,
         int     $limit = 15,
         int     $page = 1,
@@ -30,6 +31,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getOrdersSearchFilterPaginated(
+            userId: $userId,
             search: $searchText,
             limit: $limit,
             page: $page,

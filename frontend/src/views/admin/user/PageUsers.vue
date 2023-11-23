@@ -74,14 +74,13 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "../../../components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "../../../components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {UserAPI} from "../../../service/APIUser.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -224,9 +223,7 @@ const operations = [
                     toast.warning('این آیتم قابل حذف نمی‌باشد.')
 
                 useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.users.destroy, {user: data.id}), {
-                        method: 'DELETE',
-                    }, {
+                    UserAPI.deleteById(data.id, {
                         success: () => {
                             toast.success('عملیات با موفقیت انجام شد.')
                             datatable.value?.refresh()
@@ -266,12 +263,7 @@ const selectionOperations = [
                 toast.clear()
 
                 useConfirmToast(() => {
-                    useRequest(apiRoutes.admin.users.batchDestroy, {
-                        method: 'DELETE',
-                        data: {
-                            ids,
-                        },
-                    }, {
+                    UserAPI.deleteByIds(ids, {
                         success: () => {
                             toast.success('عملیات با موفقیت انجام شد.')
                             datatable.value?.refresh()
@@ -289,20 +281,14 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
     table.isLoading = true
 
-    useRequest(apiRoutes.admin.users.index, {
-        params: {limit, offset, order, sort, text},
-    }, {
-        success: (response) => {
+    UserAPI.fetchAll({limit, offset, order, sort, text}, {
+        success(response, total) {
             table.rows = response.data
-            table.totalRecordCount = response.meta.total
+            table.totalRecordCount = total
 
             return false
         },
-        error: () => {
-            table.rows = []
-            table.totalRecordCount = 0
-        },
-        finally: () => {
+        finally() {
             loading.value = false
             table.isLoading = false
             table.sortable.order = order
@@ -320,5 +306,3 @@ doSearch(0, 15, 'id', 'desc')
 <style scoped>
 
 </style>
-<script setup>
-</script>

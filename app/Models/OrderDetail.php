@@ -4,13 +4,15 @@ namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Mews\Purifier\Casts\CleanHtml;
+use Parables\NanoId\GeneratesNanoId;
 
 class OrderDetail extends Model
 {
+    use GeneratesNanoId;
+
     public $timestamps = false;
 
     protected $hasCreatedBy = false;
@@ -28,6 +30,16 @@ class OrderDetail extends Model
         'is_product_returned_to_stock' => 'boolean',
         'ordered_at' => 'datetime',
     ];
+
+    public function nanoIdColumn(): string
+    {
+        return 'code';
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
 
     /**
      * @return BelongsTo

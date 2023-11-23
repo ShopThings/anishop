@@ -88,7 +88,7 @@ import {useResizeObserver} from "@vueuse/core"
 import {UserIcon} from '@heroicons/vue/24/solid'
 import {PowerIcon} from '@heroicons/vue/24/outline'
 import BaseSidebar from "../base/BaseSidebar.vue"
-import {useAdminStore, useUserStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore, useUserAuthStore} from "../../store/StoreUserAuth.js";
 import SidebarLinksUser from "./SidebarLinksUser.vue";
 import BaseButton from "../base/BaseButton.vue";
 import {BellAlertIcon} from "@heroicons/vue/24/outline/index.js";
@@ -98,8 +98,8 @@ const topSection = ref(null)
 const bottomSection = ref(null)
 const sidebar = ref(null)
 
-// const store = useUserStore()
-const store = useAdminStore()
+// const store = useUserAuthStore()
+const store = useAdminAuthStore()
 const user = store.getUser
 
 watchEffect(() => {

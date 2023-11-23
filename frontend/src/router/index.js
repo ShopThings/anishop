@@ -1,10 +1,10 @@
 import {createRouter, createWebHistory} from "vue-router";
 import PageNotFound from "../views/PageNotFound.vue";
-import {useAdminStore, useUserStore} from "../store/StoreUserAuth.js";
+import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js";
 import {adminRoutes} from "./admin-routes.js";
 import {userRoutes} from "./user-routes.js";
-import {useRequest} from "../composables/api-request.js";
-import {apiRoutes} from "./api-routes.js";
+
+const idRouteRegex = '(.*\\-\\d|\\d+)'
 
 const routes = [
     {...adminRoutes},
@@ -90,7 +90,7 @@ const routes = [
         meta: {layout: 'layout-guest'},
     },
     {
-        path: '/blog/:id(\\d+)',
+        path: '/blog/:id' + idRouteRegex,
         name: 'blog.detail',
         component: () => import('../views/PageBlogDetail.vue'),
         meta: {layout: 'layout-blog'},
@@ -115,7 +115,7 @@ const routes = [
         meta: {layout: 'layout-guest'},
     },
     {
-        path: '/product/:id(\\d+)',
+        path: '/product/:id' + idRouteRegex,
         name: 'product.detail',
         component: () => import('../views/PageProductDetail.vue'),
         meta: {layout: 'layout-guest'},
@@ -125,12 +125,6 @@ const routes = [
         path: '/brands',
         name: 'brands',
         component: () => import('../views/PageBrands.vue'),
-        meta: {layout: 'layout-guest'},
-    },
-    {
-        path: '/categories',
-        name: 'categories',
-        component: () => import('../views/PageCategories.vue'),
         meta: {layout: 'layout-guest'},
     },
 
@@ -186,12 +180,8 @@ const routes = [
         path: '/logout',
         name: 'logout',
         beforeEnter(to, from, next) {
-            const store = useUserStore()
-            useRequest(apiRoutes.user.logout, {method: 'POST'}, {
-                success: () => {
-                    store.$reset()
-                },
-            })
+            const store = useUserAuthStore()
+            store.logout()
             if (from.meta.requiresAuth) {
                 return next('/');
             }
@@ -220,8 +210,8 @@ index.beforeEach((to, from, next) => {
         to.name !== 'login' && to.name !== 'admin.login' &&
         to.name !== 'logout' && to.name !== 'admin.logout'
     ) {
-        const store = useUserStore()
-        const adminStore = useAdminStore()
+        const store = useUserAuthStore()
+        const adminStore = useAdminAuthStore()
 
         // this route requires auth, check if logged in
         // if not, redirect to login page.

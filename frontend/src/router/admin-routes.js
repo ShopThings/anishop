@@ -1,6 +1,4 @@
-import {useAdminStore} from "../store/StoreUserAuth.js";
-import {useRequest} from "../composables/api-request.js";
-import {apiRoutes} from "./api-routes.js";
+import {useAdminAuthStore} from "../store/StoreUserAuth.js";
 
 export const adminRoutes = {
     path: '/admin',
@@ -17,12 +15,8 @@ export const adminRoutes = {
             path: 'logout',
             name: 'admin.logout',
             beforeEnter(to, from, next) {
-                const store = useAdminStore()
-                useRequest(apiRoutes.admin.logout, {method: 'POST'}, {
-                    success: () => {
-                        store.$reset()
-                    },
-                })
+                const store = useAdminAuthStore()
+                store.logout()
                 if (from.meta.requiresAuth) {
                     const pushObj = {name: 'admin.login'}
 
@@ -1005,7 +999,7 @@ export const adminRoutes = {
             ],
         },
         {
-            path: 'order/:id(\\d+)',
+            path: 'order/:id([\\d\\w]+|\\d+)',
             children: [
                 {
                     path: '',
@@ -1063,7 +1057,7 @@ export const adminRoutes = {
             },
         },
         {
-            path: 'return-order/:id(\\d+)',
+            path: 'return-order/:id([\\d\\w]+|\\d+)',
             name: 'admin.return_order.detail',
             component: () => import('../views/admin/order/PageReturnOrderDetail.vue'),
             meta: {

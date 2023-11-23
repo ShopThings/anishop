@@ -33,6 +33,7 @@ use App\Models\ProductAttributeValue;
 use App\Models\Province;
 use App\Models\ReturnOrderRequest;
 use App\Models\Slider;
+use App\Models\SmsLog;
 use App\Models\StaticPage;
 use App\Models\Unit;
 use App\Models\User;
@@ -68,6 +69,7 @@ use App\Policies\ProvincePolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\ReturnOrderPolicy;
 use App\Policies\SliderPolicy;
+use App\Policies\SmsLogPolicy;
 use App\Policies\StaticPagePolicy;
 use App\Policies\UnitPolicy;
 use App\Policies\UserPolicy;
@@ -105,6 +107,7 @@ class AuthServiceProvider extends ServiceProvider
         BlogCommentBadge::class => BlogBadgePolicy::class,
         BlogComment::class => BlogCommentPolicy::class,
         BlogCategory::class => BlogCategoryPolicy::class,
+        SmsLog::class => SmsLogPolicy::class,
         StaticPage::class => StaticPagePolicy::class,
         ContactUs::class => ContactUsPolicy::class,
         Complaint::class => ComplaintPolicy::class,

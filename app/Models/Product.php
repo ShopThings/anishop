@@ -9,9 +9,11 @@ use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use App\Traits\SelfHealingRouteTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mews\Purifier\Casts\CleanHtml;
+use Shetabit\Visitor\Traits\Visitable;
 
 class Product extends Model
 {
@@ -19,7 +21,9 @@ class Product extends Model
         HasDeletedRelationTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasSluggableTrait;
+        HasSluggableTrait,
+        SelfHealingRouteTrait,
+        Visitable;
 
     protected $guarded = [
         'id',
@@ -34,6 +38,12 @@ class Product extends Model
     ];
 
     protected $sluggableField = 'escaped_title';
+
+
+    public function getHealingRoute(): string
+    {
+        return 'product.show';
+    }
 
     /**
      * @return BelongsTo

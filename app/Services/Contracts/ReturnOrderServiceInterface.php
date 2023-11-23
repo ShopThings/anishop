@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 interface ReturnOrderServiceInterface extends ServiceInterface
 {
     /**
+     * @param int|null $userId
      * @param string|null $searchText
      * @param int $limit
      * @param int $page
@@ -17,6 +18,7 @@ interface ReturnOrderServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getOrders(
+        ?int    $userId = null,
         ?string $searchText = null,
         int     $limit = 15,
         int     $page = 1,

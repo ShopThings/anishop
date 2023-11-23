@@ -51,9 +51,29 @@
                         </div>
                     </div>
 
-                    <VTransitionSlideFadeDownY>
+                    <VTransitionSlideFadeDownY mode="out-in">
                         <div
-                            v-if="selectedSliderPlace && selectedSliderPlace.value === SLIDER_PLACES.MAIN_SLIDERS.value">
+                            v-if="selectedSliderPlace && selectedSliderPlace.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value">
+                            <hr class="my-3">
+
+                            <div class="p-2 w-full sm:w-1/2">
+                                <base-input
+                                    type="number"
+                                    :min="1"
+                                    :max="4"
+                                    label-title="تعداد تصاویر کنار هم"
+                                    placeholder="بین ۱ تا ۴ تصویر کنار هم"
+                                    name="beside_images"
+                                >
+                                    <template #icon>
+                                        <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                                    </template>
+                                </base-input>
+                            </div>
+                        </div>
+
+                        <div
+                            v-else-if="selectedSliderPlace && selectedSliderPlace.value === SLIDER_PLACES.MAIN_SLIDERS.value">
                             <hr class="my-3">
 
                             <div class="flex flex-wrap items-end">
@@ -214,6 +234,10 @@ const sliderPlaces = [
     {
         value: SLIDER_PLACES.MAIN_SLIDERS.value,
         text: SLIDER_PLACES.MAIN_SLIDERS.text,
+    },
+    {
+        value: SLIDER_PLACES.MAIN_SLIDER_IMAGES.value,
+        text: SLIDER_PLACES.MAIN_SLIDER_IMAGES.text,
     },
 ]
 

@@ -9,11 +9,13 @@ use App\Traits\HasDeletedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mews\Purifier\Casts\CleanHtml;
+use Parables\NanoId\GeneratesNanoId;
 
 class ReturnOrderRequest extends Model
 {
     use SoftDeletesTrait,
-        HasDeletedRelationTrait;
+        HasDeletedRelationTrait,
+        GeneratesNanoId;
 
     public $timestamps = false;
 
@@ -34,6 +36,16 @@ class ReturnOrderRequest extends Model
         'responded_at' => 'datetime',
         'requested_at' => 'datetime',
     ];
+
+    public function nanoIdColumn()
+    {
+        return 'code';
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
 
     /**
      * @return BelongsTo

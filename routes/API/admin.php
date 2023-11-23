@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\PermissionController;
 use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\Blog\BlogCategoryController;
 use App\Http\Controllers\Blog\BlogCommentBadgeController;
@@ -18,7 +19,9 @@ use App\Http\Controllers\Other\FileManagerController;
 use App\Http\Controllers\Other\MenuController;
 use App\Http\Controllers\Other\NewsletterController;
 use App\Http\Controllers\Other\ProvinceController;
+use App\Http\Controllers\Other\SettingController;
 use App\Http\Controllers\Other\SliderController;
+use App\Http\Controllers\Other\SmsLogController;
 use App\Http\Controllers\Other\StaticPageController;
 use App\Http\Controllers\Other\WeightPostPriceController;
 use App\Http\Controllers\Payment\PaymentMethodController;
@@ -48,8 +51,11 @@ Route::prefix('admin')
             Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
             Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
+            Route::get('permissions', [PermissionController::class, 'index'])->name('permissions.index');
 
             Route::middleware('xss')->group(function () {
+                $codeRegex = '[\d\w\-\_]+';
+
                 /*
                  * user routes
                  */
@@ -142,7 +148,7 @@ Route::prefix('admin')
                  */
                 Route::apiResource('products', ProductController::class)
                     ->whereNumber('product');
-                Route::post('/products/{product}/modify', [ProductController::class, 'modifyProducts'])
+                Route::post('products/{product}/modify', [ProductController::class, 'modifyProducts'])
                     ->whereNumber('product')->name('products.modify-products');
                 Route::delete('products/batch', [ProductController::class, 'batchDestroy'])
                     ->name('products.destroy.batch');
@@ -183,7 +189,7 @@ Route::prefix('admin')
                  * comment routes
                  */
                 Route::apiResource('products.comments', CommentController::class)->except(['store'])
-                    ->whereNumber(['product', 'comment'])->shallow();
+                    ->whereNumber(['product', 'comment']);
                 Route::delete('products/{product}/comments/batch', [CommentController::class, 'batchDestroy'])
                     ->whereNumber('product')->name('products.comments.destroy.batch');
 
@@ -193,8 +199,8 @@ Route::prefix('admin')
                 Route::get('orders/{user?}', [OrderController::class, 'index'])
                     ->whereNumber('user')->name('orders.index');
                 Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
-                    ->whereNumber('order');
-                Route::put('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
+                    ->where(['order' => $codeRegex]);
+                Route::put('orders/{order}/payment', [OrderController::class, 'updatePayment'])
                     ->whereNumber('order')->name('orders.update.payment');
                 Route::get('orders/payment-statuses', [OrderController::class, 'paymentStatuses'])
                     ->name('orders.payment-statuses');
@@ -212,7 +218,9 @@ Route::prefix('admin')
                 /*
                  * return order routes
                  */
-                Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['store'])
+                Route::get('return-orders/{user?}', [ReturnOrderRequestController::class, 'index'])
+                    ->whereNumber('user')->name('return-orders.index');
+                Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['index', 'store'])
                     ->whereNumber('return_order');
                 Route::put('return-orders/{return_order}/{return_order_item}/modify-item', [ReturnOrderRequestController::class, 'modifyItem'])
                     ->whereNumber('return_order')->name('return-orders.modify-item');
@@ -253,8 +261,8 @@ Route::prefix('admin')
                  * blog comment routes
                  */
                 Route::apiResource('blogs.comments', BlogCommentController::class)
-                    ->whereNumber(['blog', 'comment'])->shallow();
-                Route::delete('blogs/{blog}/comments/{comment}/batch', [BlogCommentController::class, 'batchDestroy'])
+                    ->whereNumber(['blog', 'comment']);
+                Route::delete('blogs/{blog}/comments/batch', [BlogCommentController::class, 'batchDestroy'])
                     ->name('blogs.comments.destroy.batch');
 
                 /*
@@ -264,6 +272,11 @@ Route::prefix('admin')
                     ->whereNumber('blog_category');
                 Route::delete('blog-categories/batch', [BlogCategoryController::class, 'batchDestroy'])
                     ->name('blog-categories.destroy.batch');
+
+                /*
+                 * sms log routes
+                 */
+                Route::get('sms-log', [SmsLogController::class, 'index'])->name('sms-log.index');
 
                 /*
                  * static page routes
@@ -338,7 +351,7 @@ Route::prefix('admin')
                  */
                 Route::apiResource('sliders', SliderController::class)
                     ->whereNumber('slider');
-                Route::post('/sliders/{slider}/modify', [SliderController::class, 'modifySlides'])
+                Route::post('sliders/{slider}/modify', [SliderController::class, 'modifySlides'])
                     ->whereNumber('slider')->name('sliders.modify-slides');
                 Route::delete('sliders/batch', [SliderController::class, 'batchDestroy'])
                     ->name('sliders.destroy.batch');
@@ -348,8 +361,14 @@ Route::prefix('admin')
                  */
                 Route::apiResource('menus', MenuController::class)->except(['store', 'update', 'destroy'])
                     ->whereNumber('menu');
-                Route::post('/menus/{menu}/modify', [MenuController::class, 'modifyMenus'])
+                Route::post('menus/{menu}/modify', [MenuController::class, 'modifyMenus'])
                     ->whereNumber('menu')->name('menus.modify-menus');
+
+                /*
+                 * setting routes
+                 */
+                Route::apiResource('settings', SettingController::class)->except(['show', 'store', 'destroy'])
+                    ->whereNumber('setting');
             });
 
             /*
@@ -371,8 +390,6 @@ Route::prefix('admin')
                 ->name('files.store');
             Route::get('files/{file}', [FileManagerController::class, 'download'])
                 ->name('files.download');
-            Route::get('files/{file}/{size?}', [FileManagerController::class, 'show'])
-                ->name('files.show');
             Route::delete('files/{file}', [FileManagerController::class, 'destroy'])
                 ->name('files.destroy')->whereNumber('file');
             Route::delete('files/batch', [FileManagerController::class, 'batchDestroy'])

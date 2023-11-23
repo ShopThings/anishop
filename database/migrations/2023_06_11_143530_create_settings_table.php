@@ -21,6 +21,9 @@ return new class extends Migration {
             $table->timestamp('updated_at')->nullable();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
+
+            $table->index('name');
+            $table->index('group_name');
         });
     }
 

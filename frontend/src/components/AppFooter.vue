@@ -1,7 +1,7 @@
 <template>
     <div class="relative bg-white">
         <footer class="pt-20 pb-10 lg:pt-[120px] lg:pb-20 relative z-[1]">
-            <div class="md:container md:mx-auto">
+            <div class="px-6">
                 <div class="flex flex-wrap">
                     <div class="w-full px-4 sm:w-2/3 lg:w-3/12">
                         <div class="mb-8 w-full">

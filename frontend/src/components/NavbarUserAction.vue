@@ -1,6 +1,6 @@
 <template>
     <BaseMenu :open="open" @open="() => emit('open')"
-              btnClass="relative w-[40px] h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
+              btnClass="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
         <template #button>
             <UserIcon class="h-6 w-6"/>
             <ChevronDownIcon class="h-3 w-3 mr-1"/>

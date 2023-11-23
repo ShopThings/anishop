@@ -93,6 +93,22 @@
                 </div>
             </router-link>
         </li>
+        <li>
+            <router-link
+                :to="{name: 'user.contacts'}"
+                class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+            >
+                <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
+                    <ChatBubbleLeftEllipsisIcon class="h-6 w-6 text-cyan-700"/>
+                </div>
+                <div class="grow">
+                    تماس‌های من
+                </div>
+                <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
+                    0
+                </div>
+            </router-link>
+        </li>
     </ul>
 </template>
 
@@ -104,6 +120,7 @@ import {
     ChatBubbleLeftRightIcon,
     HeartIcon,
     BookOpenIcon,
+    ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/vue/24/outline/index.js"
 </script>
 

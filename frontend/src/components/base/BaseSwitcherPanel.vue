@@ -11,14 +11,17 @@
         <div ref="backContainer" class="relative">
             <Transition name="slide-fade-down-y">
                 <slot v-if="activeTopText" name="backHeader">
-                    <div class="flex items-center gap-2 justify-between bg-slate-200 py-1.5 px-2">
-                        <span class="mx-auto text-sm text-slate-600">{{ activeTopText }}</span>
+                    <div
+                        :class="backExtraClass"
+                        class="flex items-center gap-2 justify-between bg-slate-200 py-1.5 px-2"
+                    >
+                        <span :class="backTextClass" class="mx-auto text-sm">{{ activeTopText }}</span>
                         <div
                             v-if="showBackButton"
                             class="text-center p-1 rounded-full group shadow-lg bg-white cursor-pointer"
                             @click="back"
                         >
-                            <ChevronLeftIcon
+                            <ArrowLeftIcon
                                 class="w-5 h-5 text-black group-hover:text-blue-600 transition"/>
                         </div>
                     </div>
@@ -32,16 +35,16 @@
                 useFixedHeight ? 'my-custom-scrollbar !overflow-x-hidden' : '',
             ]"
         >
-            <template v-for="(panel, index) in panels" :key="index">
+            <template v-for="(panel, name) in panels" :key="name">
                 <div
-                    v-if="slots[panel]"
+                    v-if="slots[name]"
                     :class="[
                     'hidden w-full absolute top-0 right-0 z-[1]',
                     panelClass,
                 ]"
-                    :ref="(el) => (allPanels[panel] = el)"
+                    :ref="(el) => (allPanels[name] = el)"
                 >
-                    <slot :name="panel" :goTo="gotTo"></slot>
+                    <slot :name="name" :data="panel" :goTo="gotTo"></slot>
                 </div>
             </template>
         </div>
@@ -50,7 +53,7 @@
 
 <script setup>
 import {computed, nextTick, onMounted, ref, useSlots, watchEffect} from "vue";
-import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import isFunction from "lodash.isfunction";
 import {useResizeObserver} from "@vueuse/core";
 
@@ -63,16 +66,27 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    activeBackText: String,
+    backExtraClass: String,
+    backTextClass: {
+        type: String,
+        default: 'text-slate-600',
+    },
     showBackButton: {
         type: Boolean,
         default: true,
     },
+    backHistory: {
+        type: Array,
+        default: () => [],
+    },
     useFixedHeight: Boolean,
+    fixedHeight: Number,
     useHeightAnimation: {
         type: Boolean,
         default: true,
     },
-    useSlideAnimation: {
+    usePanelAnimation: {
         type: Boolean,
         default: true,
     },
@@ -87,12 +101,28 @@ const props = defineProps({
     extraContainerClass: String,
     panelClass: String,
 })
-const emit = defineEmits(['update:activePanel'])
+const emit = defineEmits([
+    'update:panels',
+    'update:backHistory',
+    'update:activePanel',
+    'update:activeBackText',
+    'update:fixedHeight',
+])
 const slots = useSlots()
 
 const container = ref(null)
 const scrollingContainer = ref(null)
 const backContainer = ref(null)
+
+const panels = computed({
+    get() {
+        return props.panels
+    },
+    set(value) {
+        emit('update:panels', value)
+    },
+})
+
 const activePanel = computed({
     get() {
         return props.activePanel
@@ -101,28 +131,56 @@ const activePanel = computed({
         emit('update:activePanel', value)
     },
 })
-const activeTopText = ref(null)
+const activeTopText = computed({
+    get() {
+        return props.activeBackText
+    },
+    set(value) {
+        emit('update:activeBackText', value)
+    },
+})
+
+const fixedHeight = computed({
+    get() {
+        return props.fixedHeight
+    },
+    set(value) {
+        emit('update:fixedHeight', value)
+    },
+})
+
 const allPanels = {}
-const history = []
+const history = computed({
+    get() {
+        return props.backHistory
+    },
+    set(value) {
+        emit('update:backHistory', value)
+    },
+})
 
 const initialContainerHeight = ref(0)
 watchEffect(() => {
-    if (props.useFixedHeight && container.value)
-        initialContainerHeight.value = container.value.getBoundingClientRect().height
+    if (props.useFixedHeight && container.value) {
+        if (fixedHeight.value)
+            initialContainerHeight.value = fixedHeight.value
+        else
+            initialContainerHeight.value = container.value.getBoundingClientRect().height
+    }
 })
 
 function gotTo(panel, text) {
     if (!allPanels[panel]) return
 
-    history.push({
+    history.value.push({
         panel: activePanel.value,
-        backText: activeTopText.value,
+        backText: activeTopText.value ?? null,
     })
     activeTopText.value = text
 
     showPanel()
 
-    if (props.useSlideAnimation) {
+    if (props.usePanelAnimation) {
         animatePanel(panel, false, () => {
             activePanel.value = panel
         })
@@ -136,13 +194,13 @@ function gotTo(panel, text) {
 }
 
 function back() {
-    const item = history.pop()
+    const item = history.value.pop()
 
     if (!item?.panel || !allPanels[item.panel]) return
 
     showPanel()
 
-    if (props.useSlideAnimation) {
+    if (props.usePanelAnimation) {
         animatePanel(item.panel, true, () => {
             activePanel.value = item.panel
             activeTopText.value = item.backText
@@ -167,7 +225,7 @@ function showPanel() {
 function setHeight(panel, text) {
     if (!panel) {
         panel = activePanel.value
-        text = activeTopText.value
+        text = activeTopText.value ?? null
     }
 
     if (!allPanels[panel]) return
@@ -220,14 +278,16 @@ function animatePanel(panel, reverse, animationEndCallback) {
     function endCallback() {
         allPanels[activePanel.value].classList.add('hidden')
 
-        if (isFunction(animationEndCallback))
-            animationEndCallback.call()
-
         allPanels[panel].removeEventListener("animationend", endCallback, false)
-        allPanels[activePanel.value].removeEventListener("animationend", endCallback, false)
-
-        allPanels[activePanel.value].classList.remove(...allAnimationClasses)
         allPanels[panel].classList.remove(...allAnimationClasses)
+
+        nextTick(() => {
+            if (isFunction(animationEndCallback))
+                animationEndCallback.call()
+
+            allPanels[activePanel.value].removeEventListener("animationend", endCallback, false)
+            allPanels[activePanel.value].classList.remove(...allAnimationClasses)
+        })
     }
 
     if (reverse === true) {

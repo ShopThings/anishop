@@ -9,11 +9,13 @@ use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use App\Traits\SelfHealingRouteTrait;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mews\Purifier\Casts\CleanHtml;
+use Shetabit\Visitor\Traits\Visitable;
 
 /**
  * @method Builder archivedInYear(DateTimeInterface|int|string $year)
@@ -25,7 +27,9 @@ class Blog extends Model
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
         HasDeletedRelationTrait,
-        HasSluggableTrait;
+        HasSluggableTrait,
+        SelfHealingRouteTrait,
+        Visitable;
 
     protected $guarded = [
         'id',
@@ -37,6 +41,11 @@ class Blog extends Model
         'is_commenting_allowed' => 'boolean',
         'is_published' => 'boolean',
     ];
+
+    public function getHealingRoute(): string
+    {
+        return 'blog.show';
+    }
 
     public function scopeArchivedInYear(Builder $query, $year)
     {
@@ -64,14 +73,6 @@ class Blog extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(BlogCategory::class, 'category_id');
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function views(): HasMany
-    {
-        return $this->hasMany(BlogView::class, 'blog_id');
     }
 
     /**

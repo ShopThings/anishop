@@ -4,9 +4,15 @@
         v-if="type === 'side'"
         :class="containerClass"
     >
-        <h1 class="flex flex-col gap-2 text-center">
-            <span class="font-iranyekan-bold">{{ title }}</span>
-            <span class="h-0.5 w-12 bg-primary rounded-full mx-auto"></span>
+        <h1 class="text-center font-iranyekan-bold">
+            <template v-if="slots['title']">
+                <slot name="title"></slot>
+            </template>
+            <template v-else>
+                <span :class="titleSize" class="font-iranyekan-bold">{{ title }}</span>
+            </template>
+
+            <span :class="lineClass" class="h-[3px] w-12 rounded-full mx-auto block mt-2.5"></span>
         </h1>
     </div>
 
@@ -15,7 +21,10 @@
         class="flex gap-3 items-center justify-between"
         :class="containerClass"
     >
-        <h1 class="border-b-2 border-primary inline-block pb-2 font-iranyekan-bold">
+        <h1
+            :class="titleSize"
+            class="border-b-[3px] border-primary inline-block pb-2 font-iranyekan-bold"
+        >
             <template v-if="slots['title']">
                 <slot name="title"></slot>
             </template>
@@ -38,6 +47,10 @@ defineProps({
         type: String,
         default: 'mb-2 mt-6 p-2',
     },
+    lineClass: {
+        type: String,
+        default: 'bg-primary',
+    },
     type: {
         type: String,
         default: 'general',
@@ -45,10 +58,8 @@ defineProps({
             return ['general', 'side'].indexOf(value) !== -1
         },
     },
-    title: {
-        type: String,
-        required: true,
-    },
+    title: String,
+    titleSize: String,
 })
 const slots = useSlots()
 </script>

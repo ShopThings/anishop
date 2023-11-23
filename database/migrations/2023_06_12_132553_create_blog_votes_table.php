@@ -16,6 +16,8 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->boolean('is_voted');
             $table->timestamp('created_at')->useCurrent()->nullable();
+
+            $table->index('is_voted');
         });
     }
 

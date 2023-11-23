@@ -67,7 +67,13 @@ class BlogCommentController extends Controller
     {
         $this->authorize('create', User::class);
 
-        $validated = $request->validated();
+        $validated = $request->validated([
+            'blog',
+            'badge',
+            'comment',
+            'answer_to',
+            'description',
+        ]);
         $model = $this->service->create($validated);
 
         if (!is_null($model)) {
@@ -109,10 +115,11 @@ class BlogCommentController extends Controller
     {
         $this->authorize('update', $blogComment);
 
-        $validated = $request->validated();
-        unset($validated['blog']);
-        unset($validated['description']);
-        unset($validated['flag_count']);
+        $validated = $request->validated([
+            'badge',
+            'condition',
+            'status',
+        ]);
         $model = $this->service->updateById($blogComment->id, $validated);
 
         if (!is_null($model)) {

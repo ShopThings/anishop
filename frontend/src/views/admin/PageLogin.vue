@@ -48,15 +48,18 @@
                                 </base-input>
                             </div>
                             <div class="mb-8">
-                                <base-button type="submit"
-                                             class="relative w-full flex justify-center items-center group bg-primary border-indigo-700 text-white"
-                                             :class="!canSubmit ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
-                                             :disabled="!canSubmit">
-                                    <loader-circle v-if="!canSubmit"
+                                <base-button
+                                    type="submit"
+                                    class="relative w-full flex justify-center items-center group bg-primary border-indigo-700 text-white"
+                                    :class="store.isLoading ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
+                                    :disabled="store.isLoading"
+                                >
+                                    <loader-circle v-if="store.isLoading"
                                                    main-container-klass="absolute h-6 w-6 right-3"
                                                    container-bg-color=""
                                                    small-circle-color="border-t-white"
                                                    big-circle-color="border-transparent"/>
+
                                     <span class="mr-auto">وارد شوید</span>
                                     <ArrowLeftIcon
                                         class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
@@ -304,17 +307,14 @@ import VCaptcha from "../../components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from '@heroicons/vue/24/solid';
 import {UserCircleIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline';
 import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import {apiRoutes} from "../../router/api-routes.js";
-import {useRequest} from "../../composables/api-request.js";
 import {useRoute, useRouter} from "vue-router";
 import BaseMessage from "../../components/base/BaseMessage.vue";
 import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
 import yup from '../../validation/index.js';
 import {useForm} from "vee-validate";
-import {useAdminStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
 
 const captchaKey = ref(null)
-const canSubmit = ref(true)
 const err = reactive({})
 const captchaCom = ref(null)
 
@@ -329,16 +329,18 @@ const {handleSubmit} = useForm({
 const router = useRouter()
 const route = useRoute()
 
+const store = useAdminAuthStore()
+const canSubmit = ref(true)
+
 function closeAlert() {
     err.message = null
     err.type = null
 }
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+    if (store.isLoading) return
 
     closeAlert()
-    canSubmit.value = false
 
     if (!captchaKey.value) {
         err.message = 'تصویر را دوباره بارگذاری نمایید.'
@@ -348,16 +350,9 @@ const onSubmit = handleSubmit((values, actions) => {
 
     values.key = captchaKey.value
 
-    useRequest(apiRoutes.admin.login, {
-        method: 'POST',
-        data: values,
-    }, {
-        success: function (response) {
+    store.login(values, {
+        success() {
             actions.resetForm();
-
-            const store = useAdminStore()
-            store.setToken(response.data.token)
-            store.setUser(response.data.user)
 
             if (captchaCom.value)
                 captchaCom.value.getCaptcha()
@@ -370,7 +365,7 @@ const onSubmit = handleSubmit((values, actions) => {
 
             return false
         },
-        error: function (error) {
+        error(error) {
             if (captchaCom.value)
                 captchaCom.value.getCaptcha()
 
@@ -383,9 +378,6 @@ const onSubmit = handleSubmit((values, actions) => {
             err.message = error.message || 'خطا در عملیات ورود!'
             err.type = 'error'
             return false
-        },
-        finally: function () {
-            canSubmit.value = true
         },
     })
 })

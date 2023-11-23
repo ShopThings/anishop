@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 interface ReturnOrderRepositoryInterface extends RepositoryInterface
 {
     /**
+     * @param int|null $userId
      * @param array $columns
      * @param string|null $search
      * @param int $limit
@@ -18,6 +19,7 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getOrdersSearchFilterPaginated(
+        ?int     $userId = null,
         array   $columns = ['*'],
         ?string $search = null,
         int     $limit = 15,

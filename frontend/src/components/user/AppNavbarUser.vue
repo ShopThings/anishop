@@ -137,7 +137,7 @@ import {ref, watchEffect} from "vue"
 import {XMarkIcon, PowerIcon, BellIcon, Bars3BottomRightIcon} from "@heroicons/vue/24/outline/index.js";
 import BasePopoverSide from "../base/BasePopoverSide.vue";
 import {UserIcon} from "@heroicons/vue/24/solid/index.js";
-import {useAdminStore, useUserStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore, useUserAuthStore} from "../../store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
 import SidebarLinksUser from "./SidebarLinksUser.vue";
 import BaseButton from "../base/BaseButton.vue";
@@ -151,8 +151,8 @@ const topSection = ref(null)
 const bottomSection = ref(null)
 const sidebar = ref(null)
 
-// const store = useUserStore()
-const store = useAdminStore()
+// const store = useUserAuthStore()
+const store = useAdminAuthStore()
 const user = store.getUser
 
 watchEffect(() => {

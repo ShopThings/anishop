@@ -26,6 +26,9 @@ return new class extends Migration {
             $table->timestamp('created_at')->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('deleted_at');
         });
     }
 

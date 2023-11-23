@@ -113,10 +113,10 @@ import {useForm} from "vee-validate";
 import yup, {transformNumbersToEnglish} from "../../../validation/index.js";
 import {useRequest} from "../../../composables/api-request.js";
 import {apiRoutes} from "../../../router/api-routes.js";
-import {useAdminStore, useUserStore} from "../../../store/StoreUserAuth.js";
+import {useAdminAuthStore, useUserAuthStore} from "../../../store/StoreUserAuth.js";
 
-// const store = useUserStore()
-const store = useAdminStore()
+// const store = useUserAuthStore()
+const store = useAdminAuthStore()
 const user = store.getUser
 
 const canSubmit = ref(true)

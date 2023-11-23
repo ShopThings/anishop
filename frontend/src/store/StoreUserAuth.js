@@ -2,6 +2,8 @@ import {computed, ref, toValue} from "vue"
 import {defineStore} from "pinia"
 import {useSafeLocalStorage} from "../composables/safe-local-storage.js";
 import isArray from "lodash.isarray";
+import {useRequestWrapper} from "../composables/request-simplifier.js";
+import {apiRoutes} from "../router/api-routes.js";
 
 export const ROLES = {
     DEVELOPER: 'developer',
@@ -16,24 +18,21 @@ export const ROLES = {
 
 const safeStorage = useSafeLocalStorage
 
-export const useUserStore = defineStore('user', () => {
+export const useUserAuthStore = defineStore('user_auth', () => {
     const userStorageKey = 'user'
     const tokenStorageKey = 'user_token'
     const user = ref(safeStorage.getItem(userStorageKey))
     const token = ref(safeStorage.getItem(tokenStorageKey))
+    const loading = ref(false)
 
-    const getToken = computed(() => {
-        return token.value
-    })
+    const isLoading = computed(() => loading.value)
+    const getToken = computed(() => token.value)
+    const getUser = computed(() => user.value)
 
     function setToken(value) {
         safeStorage.setItem(tokenStorageKey, JSON.stringify(value))
         token.value = toValue(value)
     }
-
-    const getUser = computed(() => {
-        return user.value
-    })
 
     function setUser(payload) {
         safeStorage.setItem(userStorageKey, JSON.stringify(payload))
@@ -55,8 +54,8 @@ export const useUserStore = defineStore('user', () => {
             }
         }
 
-        if (counter >= role.length) return true
-        return false
+        return counter >= role.length;
+
     }
 
     function hasAnyRole(role) {
@@ -76,6 +75,35 @@ export const useUserStore = defineStore('user', () => {
         return false
     }
 
+    function login(data, callbacks) {
+        useRequestWrapper(apiRoutes.user.login, {
+            method: 'POST',
+            data,
+        }, {
+            beforeRequest() {
+                loading.value = true
+            },
+            success(response) {
+                setToken(response.data?.token)
+                setUser(response.data?.user)
+            },
+            finally() {
+                // this timeout is a little delay to make success do its thing first
+                setTimeout(() => {
+                    loading.value = false
+                }, 25)
+            },
+        }, callbacks)
+    }
+
+    function logout() {
+        useRequestWrapper(apiRoutes.user.logout, {method: 'POST'}, {
+            success() {
+                $reset()
+            },
+        })
+    }
+
     function $reset() {
         safeStorage.removeItem(tokenStorageKey)
         safeStorage.removeItem(userStorageKey)
@@ -87,39 +115,33 @@ export const useUserStore = defineStore('user', () => {
     // computed() become getters
     // and functions become actions
     return {
-        token,
-        getToken,
-        setToken,
+        token, getToken, setToken,
         //
-        user,
-        getUser,
-        setUser,
+        user, getUser, setUser,
         //
-        hasRole,
-        hasAnyRole,
+        hasRole, hasAnyRole,
+        //
+        login, logout, isLoading,
         //
         $reset
     }
 })
 
-export const useAdminStore = defineStore('admin', () => {
+export const useAdminAuthStore = defineStore('admin_auth', () => {
     const userStorageKey = 'user_admin'
     const tokenStorageKey = 'user_token_admin'
     const user = ref(safeStorage.getItem(userStorageKey))
     const token = ref(safeStorage.getItem(tokenStorageKey))
+    const loading = ref(false)
 
-    const getToken = computed(() => {
-        return token.value
-    })
+    const isLoading = computed(() => loading.value)
+    const getToken = computed(() => token.value)
+    const getUser = computed(() => user.value)
 
     function setToken(value) {
         safeStorage.setItem(tokenStorageKey, JSON.stringify(value))
         token.value = toValue(value)
     }
-
-    const getUser = computed(() => {
-        return user.value
-    })
 
     function setUser(payload) {
         safeStorage.setItem(userStorageKey, JSON.stringify(payload))
@@ -141,8 +163,7 @@ export const useAdminStore = defineStore('admin', () => {
             }
         }
 
-        if (counter >= role.length) return true
-        return false
+        return counter >= role.length
     }
 
     function hasAnyRole(role) {
@@ -162,6 +183,35 @@ export const useAdminStore = defineStore('admin', () => {
         return false
     }
 
+    function login(data, callbacks) {
+        useRequestWrapper(apiRoutes.admin.login, {
+            method: 'POST',
+            data,
+        }, {
+            beforeRequest() {
+                loading.value = true
+            },
+            success(response) {
+                setToken(response.data?.token)
+                setUser(response.data?.user)
+            },
+            finally() {
+                // this timeout is a little delay to make success do its thing first
+                setTimeout(() => {
+                    loading.value = false
+                }, 25)
+            }
+        }, callbacks)
+    }
+
+    function logout() {
+        useRequestWrapper(apiRoutes.admin.logout, {method: 'POST'}, {
+            success() {
+                $reset()
+            },
+        })
+    }
+
     function $reset() {
         safeStorage.removeItem(tokenStorageKey)
         safeStorage.removeItem(userStorageKey)
@@ -173,16 +223,13 @@ export const useAdminStore = defineStore('admin', () => {
     // computed() become getters
     // and functions become actions
     return {
-        token,
-        getToken,
-        setToken,
+        token, getToken, setToken,
         //
-        user,
-        getUser,
-        setUser,
+        user, getUser, setUser,
         //
-        hasRole,
-        hasAnyRole,
+        hasRole, hasAnyRole,
+        //
+        login, logout, isLoading,
         //
         $reset
     }

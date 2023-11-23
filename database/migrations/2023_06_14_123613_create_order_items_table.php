@@ -29,6 +29,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('unit_price');
             $table->unsignedMediumInteger('quantity');
             $table->boolean('is_returned')->default(false);
+
+            $table->index('product_title');
+            $table->index('color_name');
+            $table->index('size');
+            $table->index('guarantee');
+            $table->index('price');
         });
     }
 

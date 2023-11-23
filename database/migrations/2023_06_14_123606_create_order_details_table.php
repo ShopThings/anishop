@@ -42,6 +42,14 @@ return new class extends Migration {
             $table->boolean('is_in_place_delivery')->default(false);
             $table->boolean('is_product_returned_to_stock')->default(false);
             $table->timestamp('ordered_at')->useCurrent()->nullable();
+
+            $table->index('code');
+            $table->index('first_name');
+            $table->index('last_name');
+            $table->index('mobile');
+            $table->index('receiver_name');
+            $table->index('receiver_mobile');
+            $table->index('ordered_at');
         });
     }
 

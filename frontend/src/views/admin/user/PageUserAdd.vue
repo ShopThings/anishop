@@ -133,8 +133,6 @@ import BaseInput from "../../../components/base/BaseInput.vue";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
 import {useForm} from "vee-validate";
 import yup, {transformNumbersToEnglish} from "../../../validation/index.js";
 import {useRouter} from "vue-router";
@@ -144,6 +142,8 @@ import isArray from "lodash.isarray";
 import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
 import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import {RoleAPI} from "../../../service/APIRole.js";
+import {UserAPI} from "../../../service/APIUser.js";
 
 const loading = ref(true)
 const canSubmit = ref(true)
@@ -210,15 +210,12 @@ const onSubmit = handleSubmit((values, actions) => {
 
     canSubmit.value = false
 
-    useRequest(apiRoutes.admin.users.store, {
-        method: 'POST',
-        data: values,
-    }, {
-        success: (response) => {
+    UserAPI.create(values, {
+        success() {
             actions.resetForm();
             router.push({name: 'admin.users'})
         },
-        error: (error) => {
+        error(error) {
             actions.resetField('password')
             actions.resetField('password_confirmation')
 
@@ -227,15 +224,15 @@ const onSubmit = handleSubmit((values, actions) => {
 
             return false
         },
-        finally: function () {
+        finally() {
             canSubmit.value = true
         },
     })
 })
 
 onMounted(() => {
-    useRequest(apiRoutes.admin.roles, null, {
-        success: (response) => {
+    RoleAPI.fetchAll({
+        success(response) {
             roles.value = response.data
             loading.value = false
         },

@@ -18,14 +18,14 @@
             <partial-card class="border-0 p-3 text-sm">
                 <template #body>
                     <div class="flex flex-wrap items-center gap-2">
-                        <h1 class="text-black">
+                        <h1 class="text-black font-iranyekan-bold">
                             پیگیری سفارش
                         </h1>
                         <p class="text-slate-700 text-sm">
                             سفارش با کد
                             <span class="tracking-widest mx-2">861247269716759</span>
                             به وضعیت
-                            <span class="bg-yellow-300 text-sm mx-2 rounded px-2">تحویل به پست</span>
+                            <span class="bg-yellow-300 text-sm mx-2 rounded px-2 font-iranyekan-bold">تحویل به پست</span>
                             تغییر یافت.
                         </p>
                     </div>

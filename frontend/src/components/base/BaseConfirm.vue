@@ -19,26 +19,36 @@
             </div>
         </div>
 
-        <div class="flex flex-wrap justify-start py-3 px-8 bg-slate-200 border-t-2 border-t-primary">
-            <base-button
+        <div class="flex flex-wrap justify-start py-3 px-8 bg-slate-50 border-t-2 border-slate-100">
+            <button
+                type="button"
+                class="ml-3 border-gray-500 text-gray-500 px-6 py-2 hover:border-black hover:text-black bg-white text-sm rounded-md border transition"
                 @click="$emit('close-toast')"
-                class="ml-3 border-gray-500 !text-gray-500 px-6 !py-1 hover:border-black hover:!text-black bg-white text-sm"
             >
                 <span>خیر</span>
-            </base-button>
-            <base-button
+            </button>
+            <button
+                type="button"
+                class="bg-primary text-white border-primary px-3 py-2 text-sm rounded-md border hover:bg-opacity-90 transition"
                 @click="accept"
-                class="bg-primary border-primary px-3 !py-1 text-sm"
             >
                 <span>انجام عملیات</span>
-            </base-button>
+            </button>
         </div>
+
+        <template v-if="showBackdrop">
+            <Teleport to="body">
+                <div
+                    class="slide-rotate-hor-t-fwd fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
+                    @click="$emit('close-toast')"
+                ></div>
+            </Teleport>
+        </template>
     </div>
 </template>
 
 <script setup>
 import {QuestionMarkCircleIcon} from '@heroicons/vue/24/outline'
-import BaseButton from "./BaseButton.vue";
 
 defineProps({
     title: {
@@ -46,6 +56,10 @@ defineProps({
         default: 'آیا از انجام عملیات مطمئن هستید؟',
     },
     subTitle: String,
+    showBackdrop: {
+        type: Boolean,
+        default: true,
+    },
 })
 const emit = defineEmits(['accept', 'close-toast'])
 
@@ -56,5 +70,45 @@ function accept() {
 </script>
 
 <style scoped>
+.slide-rotate-hor-t-fwd {
+    --perspective: 300px;
+    transform-style: preserve-3d;
+    -webkit-animation: slide-rotate-hor-t-fwd 0.2s cubic-bezier(0.455, 0.030, 0.515, 0.955) reverse both;
+    animation: slide-rotate-hor-t-fwd 0.2s cubic-bezier(0.455, 0.030, 0.515, 0.955) reverse both;
+}
 
+/**
+ * ----------------------------------------
+ * animation slide-rotate-hor-t-fwd
+ * ----------------------------------------
+ */
+@-webkit-keyframes slide-rotate-hor-t-fwd {
+    0% {
+        -webkit-transform: perspective(var(--perspective)) translateY(0) translateZ(0) rotateX(0deg);
+        transform: perspective(var(--perspective)) translateY(0) translateZ(0) rotateX(0deg);
+        -webkit-transform-origin: bottom center;
+        transform-origin: bottom center;
+    }
+    100% {
+        -webkit-transform: perspective(var(--perspective)) translateY(-150px) translateZ(130px) rotateX(-90deg);
+        transform: perspective(var(--perspective)) translateY(-150px) translateZ(130px) rotateX(-90deg);
+        -webkit-transform-origin: bottom center;
+        transform-origin: bottom center;
+    }
+}
+
+@keyframes slide-rotate-hor-t-fwd {
+    0% {
+        -webkit-transform: perspective(var(--perspective)) translateY(0) translateZ(0) rotateX(0deg);
+        transform: perspective(var(--perspective)) translateY(0) translateZ(0) rotateX(0deg);
+        -webkit-transform-origin: bottom center;
+        transform-origin: bottom center;
+    }
+    100% {
+        -webkit-transform: perspective(var(--perspective)) translateY(-150px) translateZ(130px) rotateX(-90deg);
+        transform: perspective(var(--perspective)) translateY(-150px) translateZ(130px) rotateX(-90deg);
+        -webkit-transform-origin: bottom center;
+        transform-origin: bottom center;
+    }
+}
 </style>

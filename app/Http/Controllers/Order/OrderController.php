@@ -47,7 +47,11 @@ class OrderController extends Controller
         $params = $this->getPaginateParameters($request);
 
         return OrderDetailResource::collection($this->service->getOrders(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
+            userId: $user?->id,
+            searchText: $params['text'],
+            limit: $params['limit'],
+            page: $params['page'],
+            order: $params['order']
         ));
     }
 

@@ -331,7 +331,7 @@
                 class="w-full shrink-0 md:w-1/2 lg:w-1/3 md:mr-auto lg:mr-0"
                 containerSelector=".cart-info-sticky-container"
                 innerWrapperSelector='.sidebar__inner'
-                :top-spacing="84"
+                :top-spacing="114"
                 :bottom-spacing="20"
                 :min-width="1024"
             >

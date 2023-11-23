@@ -143,7 +143,7 @@ class UserService extends Service implements UserServiceInterface
         DB::beginTransaction();
 
         $user = $this->repository->create($attrs);
-        $user->assignRole($roles);
+        $user->syncRoles($roles);
 
         if ($user instanceof Model) {
             DB::commit();

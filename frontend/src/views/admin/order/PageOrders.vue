@@ -69,13 +69,13 @@ import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "../../../composables/toast-confirm.js";
-import {useAdminStore, ROLES} from "../../../store/StoreUserAuth.js";
+import {useAdminAuthStore, ROLES} from "../../../store/StoreUserAuth.js";
 import BaseButton from "../../../components/base/BaseButton.vue";
 
 const router = useRouter()
 const toast = useToast()
 
-const store = useAdminStore()
+const store = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)

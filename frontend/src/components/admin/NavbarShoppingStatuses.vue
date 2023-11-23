@@ -2,7 +2,7 @@
     <base-popover class="sm:relative" panel-klass="right-0 w-full sm:mt-3 sm:w-[25rem]">
         <template #button>
             <button type="button"
-                    class="relative w-[40px] h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
+                    class="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
                 <ShoppingBagIcon class="h-6 w-6 "/>
                 <ChevronDownIcon class="h-3 w-3 mr-1"/>
 

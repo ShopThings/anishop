@@ -58,32 +58,6 @@
                                                 </div>
 
                                                 <div class="flex flex-wrap">
-                                                    <div class="p-2 w-full lg:w-1/2">
-                                                        <base-input
-                                                            label-title="عنوان"
-                                                            placeholder="وارد نمایید"
-                                                            :name="'title' + element.id"
-                                                            :value="element?.title"
-                                                            @input="(v) => {element.title = v}"
-                                                        >
-                                                            <template #icon>
-                                                                <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                            </template>
-                                                        </base-input>
-                                                    </div>
-                                                    <div class="p-2 w-full lg:w-1/2">
-                                                        <base-input
-                                                            label-title="زیرعنوان"
-                                                            placeholder="وارد نمایید"
-                                                            :name="'sub_title' + element.id"
-                                                            :value="element?.sub_title"
-                                                            @input="(v) => {element.sub_title = v}"
-                                                        >
-                                                            <template #icon>
-                                                                <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                            </template>
-                                                        </base-input>
-                                                    </div>
                                                     <div class="p-2 w-full">
                                                         <base-input
                                                             label-title="لینک"
@@ -202,8 +176,6 @@ function removeSlideHandler(idx) {
 function handleNewSlideClick() {
     slides.push({
         id: parseInt(uniqueId()),
-        title: '',
-        sub_title: '',
         link: '',
         image: null,
     })

@@ -7,12 +7,22 @@ final class CharacterConverter
     /**
      * @var array
      */
-    private static array $persianSpecialCharacters = ['ا', 'ک', 'ه', 'ی'];
+    private static array $toPersianSpecialCharacters = ['ا', 'ک', 'ه', 'ی'];
 
     /**
      * @var array
      */
-    private static array $arabicSpecialCharacters = ['أ', 'ك', 'ة', 'ي'];
+    private static array $fromArabicSpecialCharacters = ['أ', 'ك', 'ة', 'ي'];
+
+    /**
+     * @var array
+     */
+    private static array $fromPersianSpecialCharacters = ['ا', 'گ', 'چ', 'پ', 'ژ', 'ه', 'ی'];
+
+    /**
+     * @var array
+     */
+    private static array $toArabicSpecialCharacters = ['أ', 'ك', 'ج', 'ب', 'ز', 'ة', 'ي'];
 
     /**
      * @param $value
@@ -29,7 +39,7 @@ final class CharacterConverter
         }
 
         if (\is_string($value) || \is_numeric($value)) {
-            $value = \str_replace(self::$arabicSpecialCharacters, self::$persianSpecialCharacters, $value);
+            $value = \str_replace(self::$fromArabicSpecialCharacters, self::$toPersianSpecialCharacters, $value);
         }
 
         return $value;
@@ -50,7 +60,7 @@ final class CharacterConverter
         }
 
         if (\is_string($value) || \is_numeric($value)) {
-            $value = \str_replace(self::$persianSpecialCharacters, self::$arabicSpecialCharacters, $value);
+            $value = \str_replace(self::$fromPersianSpecialCharacters, self::$toArabicSpecialCharacters, $value);
         }
 
         return $value;

@@ -32,6 +32,16 @@ return new class extends Migration {
             $table->boolean('show_coming_soon')->default(true);
             $table->boolean('show_call_for_more')->default(true);
             $table->boolean('is_published')->default(true);
+
+            $table->index('color_name');
+            $table->index('size');
+            $table->index('guarantee');
+            $table->index('price');
+            $table->index('discounted_price');
+            $table->index('stock_count');
+            $table->index('is_special');
+            $table->index('is_available');
+            $table->index('is_published');
         });
     }
 

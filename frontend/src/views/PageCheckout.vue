@@ -187,7 +187,7 @@
                         class="w-full lg:w-1/2"
                         containerSelector=".cart-checkout-sticky-container"
                         innerWrapperSelector='.sidebar__inner'
-                        :top-spacing="84"
+                        :top-spacing="114"
                         :bottom-spacing="20"
                         :min-width="1024"
                     >
@@ -540,7 +540,7 @@
 <script setup>
 import {ref} from "vue";
 import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import {useAdminStore, useUserStore} from "../store/StoreUserAuth.js";
+import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js";
 import PartialCard from "../components/partials/PartialCard.vue";
 import PartialEmptyCard from "../components/partials/pages/PartialEmptyCard.vue";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
@@ -559,10 +559,9 @@ import BaseTextarea from "../components/base/BaseTextarea.vue";
 import BaseRadio from "../components/base/BaseRadio.vue";
 import VTransitionFade from "../transitions/VTransitionFade.vue";
 import LoaderCircle from "../components/base/loader/LoaderCircle.vue";
-import BaseAnimatedButton from "../components/base/BaseAnimatedButton.vue";
 
-// const store = useUserStore()
-const store = useAdminStore()
+// const store = useUserAuthStore()
+const store = useAdminAuthStore()
 const user = store.getUser
 const items = ref([
     {},

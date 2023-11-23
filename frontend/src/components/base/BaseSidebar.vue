@@ -1,7 +1,7 @@
 <template>
     <div class="relative h-full">
         <nav
-            class="sticky top-0 hidden lg:block z-[1] transition-all delay-200 duration-300"
+            class="sticky top-0 hidden lg:block z-[1] transition-all delay-[200ms] duration-[450ms]"
              :class="[
                  bg,
                  !mini ? 'w-72' : 'w-20'

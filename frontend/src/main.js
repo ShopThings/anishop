@@ -8,6 +8,9 @@ import Vue3ColorPicker from "vue3-colorpicker";
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 import VueEasyLightbox from "vue-easy-lightbox";
 
+// import function to register Swiper custom elements
+import { register } from 'swiper/element/bundle';
+
 import "vue-toastification/dist/index.css";
 import 'floating-vue/dist/style.css';
 import 'overlayscrollbars/overlayscrollbars.css';
@@ -28,6 +31,9 @@ import LayoutBlog from "./components/layouts/LayoutBlog.vue";
 
 const head = createHead()
 const pinia = createPinia()
+
+// register Swiper custom elements
+register();
 
 createApp(App)
     .use(head)

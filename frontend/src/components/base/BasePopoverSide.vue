@@ -1,5 +1,5 @@
 <template>
-    <Popover class="relative" v-slot="{close, open}">
+    <Popover ref="container" class="relative" v-slot="{close, open}">
         <PopoverButton ref="button" as="button" :class="btnClass">
             <slot name="button" :close="close" :open="open"></slot>
         </PopoverButton>
@@ -88,12 +88,17 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:open'])
 
+const container = ref(null)
 const button = ref(null)
 
 watchEffect(() => {
     if (props.open && button.value && button.value?.el) {
         button.value.el.click()
     }
+})
+
+defineExpose({
+    container,
 })
 </script>
 

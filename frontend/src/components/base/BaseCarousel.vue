@@ -1,73 +1,90 @@
 <template>
-    <div
-        ref="carouselContainer"
-    >
-        <Carousel
-            :mouse-drag="mouseDrag"
-            :touch-drag="touchDrag"
-            :items-to-show="itemsToShow"
-            :items-to-scroll="itemsToScroll"
-            :wrap-around="wrapAround"
-            :transition="transition"
-            :snap-align="snapAlign"
-            :autoplay="autoplay"
-            :breakpoints="breakpoints"
-            :dir="dir"
-            :pause-autoplay-on-hover="pauseAutoplayOnHover"
-            :i18n="i18n"
-            v-model="currentSlide"
+    <div class="relative">
+        <swiper-container
             ref="carousel"
-            @before-init="emit('before-init')"
-            @init="emit('init')"
-            @slide-start="emit('slide-start')"
-            @slide-end="emit('slide-end')"
-            @loop="emit('loop')"
+            init="false"
+            :class="className"
         >
-            <template #slides>
-                <Slide v-for="(slide, idx) in slides" :key="idx">
-                    <div v-if="useSlideEffect" class="carousel__item w-full">
-                        <slot :slide="slide" :index="idx"></slot>
-                    </div>
-                    <template v-else>
-                        <slot :slide="slide" :index="idx"></slot>
-                    </template>
-                </Slide>
-            </template>
+            <swiper-slide v-for="(slide, idx) in slides" :key="idx">
+                <slot :slide="slide" :index="idx"></slot>
+            </swiper-slide>
+        </swiper-container>
 
-            <template #addons="{slideWidth, currentSlide, slidesCount}">
-                <PartialCarouselNavigation
-                    v-if="hasNavigation && slidesCount > 1 && carousel"
-                    :carousel="carousel"
-                    :slide-width="slideWidth"
-                    :current-slide="currentSlide"
-                    :slides-count="slidesCount"
-                    :has-pagination="hasPagination"
-                    :position="navigationPosition"
-                    :display="navigationDisplay"
-                    :always-show-buttons="alwaysShowNavigationButtons"
-                    :items-to-scroll="itemsToScroll"
-                    :breakpoints="breakpoints"
-                />
-                <PartialCarouselPagination
-                    v-if="hasPagination && slidesCount > 1 && carousel"
-                    :carousel="carousel"
-                    :slide-width="slideWidth"
-                    :current-slide="currentSlide"
-                    :slides-count="slidesCount"
-                    :items-to-scroll="itemsToScroll"
-                    :breakpoints="breakpoints"
-                />
-            </template>
-        </Carousel>
+        <partial-carousel-navigation
+            v-if="hasNavigation"
+            :prev-class-name="className + '-prev'"
+            :next-class-name="className + '-next'"
+            :display="navigationDisplay"
+            :position="navigationPosition"
+            :size="navigationSize"
+            :dir="dir"
+        />
+    </div>
+
+    <div
+        v-if="useThumbnail"
+        class="mt-3"
+    >
+        <swiper-container
+            ref="thumbsSwiper"
+            :class="className + '-thumbnail'"
+            :a11y="a11y"
+            :initial-slide="currentSlide"
+            :watch-slides-progress="true"
+            :free-mode="true"
+            :speed="transition"
+            :space-between="10"
+            :slides-per-view="4"
+            :loop="true"
+            :dir="dir"
+            :breakpoints="{
+                    360: {
+                    slidesPerView: 3.5,
+                    },
+                    640: {
+                    slidesPerView: 5,
+                    },
+                    768: {
+                    slidesPerView: 6,
+                    },
+                    1024: {
+                    slidesPerView: 3.5,
+                    },
+                }"
+        >
+            <swiper-slide v-for="(slide, idx) in slides" :key="idx">
+                <slot name="thumbSlide" :slide="slide" :index="idx"></slot>
+            </swiper-slide>
+        </swiper-container>
     </div>
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
-import {useResizeObserver} from "@vueuse/core";
-import {Carousel, Slide} from 'vue3-carousel'
+import 'swiper/css';
+import 'swiper/css/a11y';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/free-mode';
+import 'swiper/css/thumbs';
+import 'swiper/css/effect-fade';
+import 'swiper/css/effect-coverflow';
+
+import {computed, nextTick, ref, watchEffect} from "vue";
+import {watchImmediate} from "@vueuse/core";
+import {
+    Navigation,
+    Pagination,
+    Thumbs,
+    Autoplay,
+    FreeMode,
+    A11y,
+    EffectCoverflow,
+    EffectFade,
+    EffectFlip,
+} from 'swiper/modules';
 import PartialCarouselNavigation from "../partials/PartialCarouselNavigation.vue";
-import PartialCarouselPagination from "../partials/PartialCarouselPagination.vue";
+import isObject from "lodash.isobject";
+import uniqueId from "lodash.uniqueid";
 
 const props = defineProps({
     modelValue: {
@@ -78,39 +95,29 @@ const props = defineProps({
         type: Number,
         default: 0,
     },
-    useSlideEffect: Boolean,
-    mouseDrag: {
-        type: Boolean,
-        default: true,
-    },
-    touchDrag: {
-        type: Boolean,
-        default: true,
+    className: String,
+    freeMode: [Boolean, Object],
+    effect: {
+        type: String,
+        default: 'slide',
+        validator: (value) => {
+            return ['slide', 'fade', 'cube', 'coverflow', 'flip', 'creative'].indexOf(value) !== -1
+        },
     },
     hasNavigation: Boolean,
     navigationPosition: String,
     navigationDisplay: String,
-    alwaysShowNavigationButtons: {
-        type: Boolean,
-        default: true,
-    },
-    hasPagination: Boolean,
-    itemsToShow: {
+    navigationSize: String,
+    hasPagination: [Boolean, Object],
+    slidesPerView: {
         type: [Function, Number],
         default: 1,
     },
-    itemsToScroll: {
+    spaceBetween: {
         type: Number,
-        default: 1,
+        default: 15,
     },
-    snapAlign: {
-        type: String,
-        default: 'center',
-        validator: (value) => {
-            return ['center', 'start', 'end'].indexOf(value) !== -1
-        },
-    },
-    autoplay: Number,
+    autoplay: [Number, Object],
     wrapAround: Boolean,
     dir: {
         type: String,
@@ -119,48 +126,52 @@ const props = defineProps({
             return ['rtl', 'ltr'].indexOf(value) !== -1
         },
     },
-    pauseAutoplayOnHover: {
-        type: Boolean,
-        default: true,
+    transition: {
+        type: Number,
+        default: 400,
     },
-    transition: Number,
+    direction: {
+        type: String,
+        default: 'horizontal',
+        validator: (value) => {
+            return ['horizontal', 'vertical'].indexOf(value) !== -1
+        },
+    },
     breakpoints: {
         type: Object,
         default: () => {
             return {
                 // 640px and up
                 640: {
-                    itemsToShow: 2.5,
+                    slidesPerView: 2.5,
                 },
                 // 1024px and up
                 1024: {
-                    itemsToShow: 3.5,
+                    slidesPerView: 3.5,
                 },
                 // 1280px and up
                 1280: {
-                    itemsToShow: 4.5,
+                    slidesPerView: 4.5,
+                    spaceBetween: 20,
                 },
             }
         },
     },
+    useObserver: {
+        type: Boolean,
+        default: true,
+    },
+    useThumbnail: Boolean,
+    nested: Boolean,
 })
 const emit = defineEmits([
     'update:modelValue',
     'update:current',
-    'before-init',
     'init',
-    'slide-start',
-    'slide-end',
-    'loop',
+    'slide-change',
 ])
 
-const carouselContainer = ref(null)
 const carousel = ref(null)
-
-useResizeObserver(carouselContainer, () => {
-    if (carousel.value)
-        carousel.value.updateSlideWidth()
-})
 
 const slides = computed({
     get() {
@@ -180,65 +191,172 @@ const currentSlide = computed({
     }
 })
 
-const i18n = {
-    ariaNextSlide: "اسلاید بعدی",
-    ariaPreviousSlide: "اسلاید قبلی",
-    ariaNavigateToSlide: "رفتن به اسلاید شماره {slideNumber}",
-    ariaGallery: "گالری",
-    itemXofY: "اسلاید شماره {currentSlide} از {slidesCount} اسلاید",
-    iconArrowUp: "فلش رو به بالا",
-    iconArrowDown: "فلش رو به پایین",
-    iconArrowRight: "فلش به سمت راست",
-    iconArrowLeft: "فلش به سمت چپ",
+const className = props.className ?? uniqueId('base-swiper-')
+
+//-------------------------------
+// Define Modules & Preparation
+//-------------------------------
+const modules = [
+    A11y,
+    EffectFade,
+    EffectCoverflow,
+    EffectFlip,
+]
+
+if (props.useThumbnail) modules.push(Thumbs)
+if (props.freeMode) modules.push(FreeMode)
+if (props.autoplay) modules.push(Autoplay)
+
+const navigationObject = ref(props.hasNavigation)
+const paginationObject = ref(props.hasPagination)
+const autoplayObject = ref(props.autoplay)
+
+watchImmediate([
+    () => props.hasNavigation,
+    () => props.hasPagination,
+    () => props.autoplay,
+], ([nav, page, autoplay]) => {
+    if (nav === true) {
+        navigationObject.value = {
+            nextEl: '.' + className + '-next',
+            prevEl: '.' + className + '-prev',
+        }
+    } else {
+        navigationObject.value = nav
+    }
+
+    if (page === true) {
+        paginationObject.value = {
+            clickable: true,
+            // dynamicBullets: true,
+        }
+    } else {
+        paginationObject.value = page
+    }
+
+    if (autoplay && !isObject(autoplay)) {
+        autoplayObject.value = {
+            delay: autoplay,
+            pauseOnMouseEnter: true,
+        }
+    } else {
+        autoplayObject.value = autoplay
+    }
+})
+
+//-------------------------------
+
+const a11y = {
+    firstSlideMessage: 'اسلاید اول',
+    prevSlideMessage: 'اسلاید قبلی',
+    nextSlideMessage: 'اسلاید بعدی',
+    lastSlideMessage: 'اسلاید آخر',
+    paginationBulletMessage: 'رفتن به اسلاید {{index}}',
 }
 
+//-------------------------------
+// Thumbnail Support
+//-------------------------------
+const thumbsSwiper = ref(null)
+const thumbObject = ref({})
+
+watchImmediate([() => props.useThumbnail, thumbsSwiper], () => {
+    if (props.useThumbnail && thumbsSwiper.value)
+        thumbObject.value = {swiper: thumbsSwiper.value?.swiper}
+})
+
+//-------------------------------
+
+watchEffect(() => {
+    if (carousel.value) {
+        if (!carousel.value.initialized) {
+            Object.assign(carousel.value, {
+                initialSlide: currentSlide.value,
+                navigation: navigationObject.value,
+                pagination: paginationObject.value,
+                freeMode: props.freeMode,
+                effect: props.effect,
+                speed: props.transition,
+                loop: props.wrapAround,
+                autoplay: autoplayObject.value,
+                breakpoints: props.breakpoints,
+                observer: props.useObserver,
+                dir: props.dir,
+                thumbs: thumbObject.value,
+                direction: props.direction,
+                spaceBetween: props.spaceBetween,
+                nested: props.nested,
+                a11y,
+                modules,
+                on: {
+                    swiper: () => {
+                        emit('init')
+                    },
+                    swiperslidechange: () => {
+                        emit('slide-change')
+                    }
+                },
+            })
+
+            carousel.value.initialize()
+        } else {
+            carousel.value.initialSlide = currentSlide.value
+            carousel.value.navigation = navigationObject.value
+            carousel.value.freeMode = props.freeMode
+            carousel.value.effect = props.effect
+            carousel.value.speed = props.transition
+            carousel.value.loop = props.wrapAround
+            carousel.value.autoplay = autoplayObject.value
+            carousel.value.breakpoints = props.breakpoints
+            carousel.value.observer = props.useObserver
+            carousel.value.dir = props.dir
+            carousel.value.thumbs = thumbObject.value
+            carousel.value.direction = props.direction
+            carousel.value.spaceBetween = props.spaceBetween
+            carousel.value.nested = props.nested
+        }
+    }
+})
+
 defineExpose({
-    carousel,
+    carousel: carousel.value,
+    thumbnail: thumbsSwiper.value,
 })
 </script>
 
-<style scoped>
-.carousel__slide {
-    padding: 0;
+<style>
+:root {
+    --swiper-theme-color: #3057D3;
+
+    /* pagination settings */
+    --swiper-pagination-color: var(--swiper-theme-color);
+    --swiper-pagination-left: auto;
+    --swiper-pagination-right: 8px;
+    --swiper-pagination-bottom: 8px;
+    --swiper-pagination-top: auto;
+    --swiper-pagination-fraction-color: inherit;
+    --swiper-pagination-progressbar-bg-color: rgba(0, 0, 0, 0.25);
+    --swiper-pagination-progressbar-size: 4px;
+    --swiper-pagination-bullet-size: 8px;
+    --swiper-pagination-bullet-width: 12px;
+    --swiper-pagination-bullet-height: 12px;
+    --swiper-pagination-bullet-inactive-color: #000;
+    --swiper-pagination-bullet-inactive-opacity: 0.35;
+    --swiper-pagination-bullet-opacity: 1;
+    --swiper-pagination-bullet-horizontal-gap: 4px;
+    --swiper-pagination-bullet-vertical-gap: 6px;
 }
 
-.carousel__viewport {
-    perspective: 2000px;
+.swiper-slide-thumb-active {
+    border: 2px solid #2563eb;
+    border-radius: .6rem;
 }
 
-.carousel__track {
-    transform-style: preserve-3d;
+swiper-container {
+    display: grid;
 }
 
-.carousel__slide--sliding {
-    transition: 0.5s;
-}
-
-.carousel__item {
-    transition: 0.5s;
-}
-
-.carousel__slide > .carousel__item {
-    opacity: 0.9;
-    transform: rotateY(-20deg) scale(0.88);
-}
-
-.carousel__slide--active ~ .carousel__slide > .carousel__item {
-    transform: rotateY(20deg) scale(0.88);
-}
-
-.carousel__slide--prev > .carousel__item {
-    opacity: 1;
-    transform: rotateY(-10deg) scale(0.93);
-}
-
-.carousel__slide--next > .carousel__item {
-    opacity: 1;
-    transform: rotateY(10deg) scale(0.93);
-}
-
-.carousel__slide--active > .carousel__item {
-    opacity: 1;
-    transform: rotateY(0) scale(1);
+.swiper-wrapper {
+    min-width: 0;
 }
 </style>
