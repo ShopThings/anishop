@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
-use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreNewsletterRequest extends FormRequest
+class VerifyCodeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +22,9 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => [
+            'code' => [
                 'required',
-                new PersianMobileRule(),
+                'numeric',
             ],
         ];
     }
@@ -33,7 +32,7 @@ class StoreNewsletterRequest extends FormRequest
     public function attributes()
     {
         return [
-            'mobile' => 'شماره همراه',
+            'code' => 'کد تایید',
         ];
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreNewsletterRequest extends FormRequest
+class SignupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,9 +24,10 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => [
+            'username' => [
                 'required',
-                new PersianMobileRule(),
+                'unique:' . User::class . ',username',
+                new PersianMobileRule,
             ],
         ];
     }
@@ -33,7 +35,7 @@ class StoreNewsletterRequest extends FormRequest
     public function attributes()
     {
         return [
-            'mobile' => 'شماره همراه',
+            'username' => 'شماره موبایل',
         ];
     }
 }

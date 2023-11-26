@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class InvalidDirectoryNameException extends Exception
 {
+    use ExceptionTrait;
+
     /**
      * Report the exception.
      */

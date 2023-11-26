@@ -53,6 +53,28 @@ export const ProductAPI = Object.assign(
                 callbacks
             )
         },
+
+        modifyBatchInfo(data, callbacks) {
+            useRequest(
+                apiRoutes.admin.products.batchEditInfo,
+                {
+                    method: 'PUT',
+                    data,
+                },
+                callbacks
+            )
+        },
+
+        modifyBatchPrice(data, callbacks) {
+            useRequest(
+                apiRoutes.admin.products.batchEditPrice,
+                {
+                    method: 'PUT',
+                    data,
+                },
+                callbacks
+            )
+        },
     }
 )
 
@@ -99,10 +121,10 @@ export const CommentAPI = {
         )
     },
 
-    fetchAll(productId, callbacks) {
+    fetchAll(productId, params, callbacks) {
         useRequest(
             apiReplaceParams(apiRoutes.admin.comments.index, {product: productId}),
-            null,
+            {params},
             callbacks
         )
     },

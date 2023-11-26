@@ -2,7 +2,7 @@ import {computed, ref, toValue} from "vue"
 import {defineStore} from "pinia"
 import {useSafeLocalStorage} from "../composables/safe-local-storage.js";
 import isArray from "lodash.isarray";
-import {useRequestWrapper} from "../composables/request-simplifier.js";
+import {useRequestWrapper} from "../composables/api-request.js";
 import {apiRoutes} from "../router/api-routes.js";
 
 export const ROLES = {

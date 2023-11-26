@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
-class NotDeletableException extends Exception
+class RouteNotFoundException extends Exception
 {
     use ExceptionTrait;
 
@@ -26,8 +26,8 @@ class NotDeletableException extends Exception
      */
     public function render(Request $request): Response|JsonResponse
     {
-        $msg = $this->getMessage() ?: 'این رکورد قابل حذف نمی‌باشد.';
-        $status = ResponseCodes::HTTP_UNPROCESSABLE_ENTITY;
+        $msg = $this->getMessage() ?: 'مسیر مورد نظر پیدا نشد!';
+        $status = ResponseCodes::HTTP_NOT_FOUND;
         return $this->sendResponse($request, $msg, $status);
     }
 }

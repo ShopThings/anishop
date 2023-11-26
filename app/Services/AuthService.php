@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Repositories\Contracts\AuthRepositoryInterface;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Support\Service;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService extends Service implements AuthServiceInterface
@@ -41,5 +42,6 @@ class AuthService extends Service implements AuthServiceInterface
     {
         $user = Auth::user();
         $user->currentAccessToken()->delete();
+        Request::session()->regenerate();
     }
 }

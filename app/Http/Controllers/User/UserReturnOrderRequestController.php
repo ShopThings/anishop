@@ -11,6 +11,11 @@ use Illuminate\Http\Request;
 
 class UserReturnOrderRequestController extends Controller
 {
+    public function latest(Request $request)
+    {
+
+    }
+
     /**
      * Display a listing of the resource.
      */

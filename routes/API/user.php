@@ -6,12 +6,12 @@ use App\Http\Controllers\User\UserBlogCommentContrller;
 use App\Http\Controllers\User\UserCommentController;
 use App\Http\Controllers\User\UserContactUsController;
 use App\Http\Controllers\User\UserFavoriteProductController;
+use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\User\UserNotificationController;
 use App\Http\Controllers\User\UserOrderController;
 use App\Http\Controllers\User\UserReturnOrderRequestController;
 use App\Http\Controllers\User\UserSpecificationController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::prefix('user')
     ->name('api.user.')
@@ -22,9 +22,7 @@ Route::prefix('user')
         Route::post('logout', [AuthController::class, 'logout'])
             ->name('logout');
 
-//        count-of-stuffs
-//        orders/latest
-//        return-orders/latest
+        Route::get('count-of-stuffs', [UserHomeController::class, 'countOfItems'])->name('home.count-of-stuffs');
 
         /*
          * specification routes
@@ -36,17 +34,19 @@ Route::prefix('user')
          * notification routes
          */
         Route::apiResource('notifications', UserNotificationController::class)->only(['index', 'update'])
-            ->where(['notification' => $codeRegex]);
+            ->whereNumber('notification');
 
         /*
          * order routes
          */
+        Route::get('orders/latest', [UserOrderController::class, 'latest'])->name('orders.latest');
         Route::apiResource('orders', UserOrderController::class)->except(['store'])
             ->where(['order' => $codeRegex]);
 
         /*
          * return order routes
          */
+        Route::get('return-orders/latest', [UserReturnOrderRequestController::class, 'latest'])->name('return-orders.latest');
         Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
             ->where(['return_order' => $codeRegex]);
         Route::post('return-orders/{order}', [UserReturnOrderRequestController::class, 'store'])
@@ -94,7 +94,7 @@ Route::prefix('user')
          * address routes
          */
         Route::apiResource('addresses', UserAddressController::class)
-            ->where(['address' => $codeRegex]);
+            ->whereNumber('address');
 
         /*
          * contact routes

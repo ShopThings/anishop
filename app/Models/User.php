@@ -65,9 +65,17 @@ class User extends Model
     /**
      * @return HasMany
      */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class)->latest();
+    }
+
+    /**
+     * @return HasMany
+     */
     public function blogComments(): HasMany
     {
-        return $this->hasMany(BlogComment::class);
+        return $this->hasMany(BlogComment::class)->latest();
     }
 
     /**

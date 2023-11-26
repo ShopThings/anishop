@@ -150,6 +150,10 @@ Route::prefix('admin')
                     ->whereNumber('product');
                 Route::post('products/{product}/modify', [ProductController::class, 'modifyProducts'])
                     ->whereNumber('product')->name('products.modify-products');
+                Route::put('products/batch', [ProductController::class, 'batchUpdateInfo'])
+                    ->name('products.update.batch.info');
+                Route::put('products/batch', [ProductController::class, 'batchUpdatePrice'])
+                    ->name('products.update.batch.price');
                 Route::delete('products/batch', [ProductController::class, 'batchDestroy'])
                     ->name('products.destroy.batch');
 
@@ -201,7 +205,7 @@ Route::prefix('admin')
                 Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
                     ->where(['order' => $codeRegex]);
                 Route::put('orders/{order}/payment', [OrderController::class, 'updatePayment'])
-                    ->whereNumber('order')->name('orders.update.payment');
+                    ->where(['order' => $codeRegex])->name('orders.update.payment');
                 Route::get('orders/payment-statuses', [OrderController::class, 'paymentStatuses'])
                     ->name('orders.payment-statuses');
                 Route::get('orders/send-statuses', [OrderController::class, 'sendStatuses'])
@@ -221,9 +225,9 @@ Route::prefix('admin')
                 Route::get('return-orders/{user?}', [ReturnOrderRequestController::class, 'index'])
                     ->whereNumber('user')->name('return-orders.index');
                 Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['index', 'store'])
-                    ->whereNumber('return_order');
+                    ->where(['return_order' => $codeRegex]);
                 Route::put('return-orders/{return_order}/{return_order_item}/modify-item', [ReturnOrderRequestController::class, 'modifyItem'])
-                    ->whereNumber('return_order')->name('return-orders.modify-item');
+                    ->where(['return_order' => $codeRegex])->name('return-orders.modify-item');
 
                 /*
                  * report routes
@@ -367,7 +371,7 @@ Route::prefix('admin')
                 /*
                  * setting routes
                  */
-                Route::apiResource('settings', SettingController::class)->except(['show', 'store', 'destroy'])
+                Route::apiResource('settings', SettingController::class)->except(['index', 'update'])
                     ->whereNumber('setting');
             });
 

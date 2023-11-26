@@ -49,7 +49,7 @@ import LoaderListSingle from "../../components/base/loader/LoaderListSingle.vue"
 
 const loading = ref(false)
 const getPath = computed(() => {
-    // return apiRoutes.user.info.notification
+    // return apiRoutes.user.info.notification.index
     return ''
 })
 const notifications = ref([])

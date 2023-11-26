@@ -107,6 +107,8 @@ export const apiRoutes = {
             destroy: 'api/admin/products/{product}',
             batchDestroy: 'api/admin/products/batch',
             modifyProducts: 'api/admin/products/{product}/modify',
+            batchEditInfo: 'api/admin/products/batch/info',
+            batchEditPrice: 'api/admin/products/batch/price',
         },
 
         productAttributes: {
@@ -339,7 +341,10 @@ export const apiRoutes = {
         info: {
             info: 'api/user/info',
             password: 'api/user/password',
-            notification: 'api/user/notification',
+            notification: {
+                index: 'api/user/notification',
+                update: 'api/user/notification/{notification}',
+            },
         },
 
         orders: {
@@ -398,6 +403,18 @@ export const apiRoutes = {
     captcha: '/captcha/api',
     showFile: 'api/files/{file}/{size?}',
 
+    signup: {
+        stepMobile: 'api/signup/mobile',
+        stepCode: 'api/signup/code',
+        stepPass: 'api/signup/new-password',
+    },
+
+    recoverPass: {
+        stepMobile: 'api/recover-password/mobile',
+        stepCode: 'api/recover-password/code',
+        stepNewPass: 'api/recover-password/new-password',
+    },
+
     main: {
         sliderMain: 'api/sliders/main',
         sliderChosenCategories: 'api/sliders/categories',
@@ -407,9 +424,14 @@ export const apiRoutes = {
         latestBlogs: 'api/blogs/latest',
     },
 
+    brands: 'api/brands',
+
     products: {
         index: 'api/products',
         show: 'api/products/{product}',
+        colors: 'api/products/colors',
+        sizes: 'api/products/sizes',
+        priceRange: 'api/products/price-range',
     },
 
     comments: {
@@ -418,11 +440,27 @@ export const apiRoutes = {
         vote: 'api/products/{product}/comments/{comment}/vote',
     },
 
-    blogComments: {
-        index: 'api/products/{product}/comments',
-        report: 'api/products/{product}/comments/{comment}/report',
-        vote: 'api/products/{product}/comments/{comment}/vote',
+    blogs: {
+        index: 'api/blogs',
+        show: 'api/blogs/{blog}',
+        vote: 'api/blogs/{blog}/vote',
+        archive: 'api/blogs/archive',
+        sliderMain: 'api/blogs/sliders/main',
+        sliderMainSide: 'api/blogs/sliders/side-slides',
+        popularCategories: 'api/blogs/popular-categories',
+        mostViewedPosts: 'api/blogs/most-viewed',
     },
+
+    blogComments: {
+        index: 'api/blogs/{blog}/comments',
+        report: 'api/blogs/{blog}/comments/{comment}/report',
+        vote: 'api/blogs/{blog}/comments/{comment}/vote',
+    },
+
+    contactUs: 'api/contact-us',
+    complaints: 'api/complaints',
+    newsletters: 'api/newsletters',
+    faqs: 'api/faqs',
 }
 
 export const apiReplaceParams = function (url, params) {

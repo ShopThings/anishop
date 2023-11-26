@@ -6,14 +6,14 @@
         :items="colors"
         v-model:selected-items="selectedColors"
         :show-selected-items="true"
-        :displaying-selected-items="{selectedItems: selectedColors, length: getLengthOfProxyObject(selectedColors)}"
+        :displaying-selected-items="{selectedItems: selectedColors, length: Object.keys(selectedColors).length}"
         panel-container-class="flex flex-wrap items-center gap-2"
     >
         <template #default>
             <div class="flex items-center justify-between gap-3 w-full pl-3">
                 <span class="font-iranyekan-bold">رنگ</span>
                 <div class="rounded-full py-0.5 px-2.5 border-2 border-rose-400 flex items-center gap-1.5">
-                    <span>{{ getLengthOfProxyObject(selectedColors) }}</span>
+                    <span>{{ Object.keys(selectedColors).length }}</span>
                     <span class="text-xs">انتخاب</span>
                 </div>
             </div>
@@ -50,14 +50,14 @@
         :items="sizes"
         v-model:selected-items="selectedSizes"
         :show-selected-items="true"
-        :displaying-selected-items="{selectedItems: selectedSizes, length: getLengthOfProxyObject(selectedSizes)}"
+        :displaying-selected-items="{selectedItems: selectedSizes, length: Object.keys(selectedSizes).length}"
         panel-container-class="flex flex-wrap items-center gap-2"
     >
         <template #default>
             <div class="flex items-center justify-between gap-3 w-full pl-3">
                 <span class="font-iranyekan-bold">اندازه</span>
                 <div class="rounded-full py-0.5 px-2.5 border-2 border-rose-400 flex items-center gap-1.5">
-                    <span>{{ getLengthOfProxyObject(selectedSizes) }}</span>
+                    <span>{{ Object.keys(selectedSizes).length }}</span>
                     <span class="text-xs">انتخاب</span>
                 </div>
             </div>
@@ -246,7 +246,7 @@ import {ref} from "vue";
 import PartialFilterCard from "../partials/pages/PartialFilterCard.vue";
 import BaseRangeSlider from "../base/BaseRangeSlider.vue";
 import BaseInput from "../base/BaseInput.vue";
-import {formatPriceLikeNumber, getLengthOfProxyObject} from "../../composables/helper.js";
+import {formatPriceLikeNumber} from "../../composables/helper.js";
 import BaseSwitch from "../base/BaseSwitch.vue";
 import {PRODUCT_ATTRIBUTE_TYPES} from "../../composables/constants.js";
 import isObject from "lodash.isobject";

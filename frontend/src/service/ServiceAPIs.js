@@ -21,7 +21,7 @@ export const GenericAPI = (url, config) => {
 
     // make default variables
     if (!only || !only?.length) {
-        only = ['index', 'show', 'store', 'update', 'destroy', 'batchDestroy']
+        only = Object.values(defaultUrlKeys)
     }
     if (!except || !except?.length) {
         except = []
@@ -29,10 +29,10 @@ export const GenericAPI = (url, config) => {
     if (!urlKeys || !isObject(urlKeys) || !Object.keys(urlKeys).length) {
         urlKeys = defaultUrlKeys
     } else {
-        urlKeys = Object.assign(urlKeys, defaultUrlKeys)
+        urlKeys = Object.assign(defaultUrlKeys, urlKeys)
     }
 
-    if (only.indexOf('show') !== -1 && except.indexOf('show') === -1) {
+    if (only.indexOf(defaultUrlKeys.show) !== -1 && except.indexOf(defaultUrlKeys.show) === -1) {
         api.fetchById = (id, callbacks) => {
             useRequest(
                 apiReplaceParams(url[urlKeys.show], {[replacement]: id}),
@@ -42,13 +42,13 @@ export const GenericAPI = (url, config) => {
         }
     }
 
-    if (only.indexOf('index') !== -1 && except.indexOf('index') === -1) {
+    if (only.indexOf(defaultUrlKeys.index) !== -1 && except.indexOf(defaultUrlKeys.index) === -1) {
         api.fetchAll = (params, callbacks) => {
             useRequest(url[urlKeys.index], {params}, callbacks)
         }
     }
 
-    if (only.indexOf('store') !== -1 && except.indexOf('store') === -1) {
+    if (only.indexOf(defaultUrlKeys.store) !== -1 && except.indexOf(defaultUrlKeys.store) === -1) {
         api.create = (data, callbacks) => {
             useRequest(url[urlKeys.store], {
                 method: 'POST',
@@ -57,7 +57,7 @@ export const GenericAPI = (url, config) => {
         }
     }
 
-    if (only.indexOf('update') !== -1 && except.indexOf('update') === -1) {
+    if (only.indexOf(defaultUrlKeys.update) !== -1 && except.indexOf(defaultUrlKeys.update) === -1) {
         api.updateById = (id, data, callbacks) => {
             useRequest(apiReplaceParams(url[urlKeys.update], {[replacement]: id}), {
                 method: 'PUT',
@@ -66,7 +66,7 @@ export const GenericAPI = (url, config) => {
         }
     }
 
-    if (only.indexOf('destroy') !== -1 && except.indexOf('destroy') === -1) {
+    if (only.indexOf(defaultUrlKeys.destroy) !== -1 && except.indexOf(defaultUrlKeys.destroy) === -1) {
         api.deleteById = (id, callbacks) => {
             useRequest(apiReplaceParams(url[urlKeys.destroy], {[replacement]: id}), {
                 method: 'DELETE'
@@ -74,7 +74,7 @@ export const GenericAPI = (url, config) => {
         }
     }
 
-    if (only.indexOf('batchDestroy') !== -1 && except.indexOf('batchDestroy') === -1) {
+    if (only.indexOf(defaultUrlKeys.batchDestroy) !== -1 && except.indexOf(defaultUrlKeys.batchDestroy) === -1) {
         api.deleteByIds = (ids, callbacks) => {
             useRequest(url[urlKeys.batchDestroy], {
                 method: 'DELETE',

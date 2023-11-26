@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
-use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
-class StoreNewsletterRequest extends FormRequest
+class NewPasswordRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +23,11 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => [
+            'password' => [
                 'required',
-                new PersianMobileRule(),
+                (new Password(9))->numbers()->letters(),
+                'confirmed',
             ],
-        ];
-    }
-
-    public function attributes()
-    {
-        return [
-            'mobile' => 'شماره همراه',
         ];
     }
 }

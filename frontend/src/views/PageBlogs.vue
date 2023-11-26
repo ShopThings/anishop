@@ -15,11 +15,6 @@
         <li class="bg-pink-400"></li>
         <li class="bg-pink-400"></li>
         <li class="bg-pink-400"></li>
-        <li class="bg-pink-400"></li>
-        <li class="bg-pink-400"></li>
-        <li class="bg-pink-400"></li>
-        <li class="bg-pink-400"></li>
-        <li class="bg-pink-400"></li>
     </ul>
 
     <div ref="mainPageContainer">
@@ -549,44 +544,6 @@ const latestBlogs = ref([
     width: 20px;
     height: 20px;
     animation-delay: 3s;
-}
-
-.circles li:nth-child(16) {
-    left: 70%;
-    width: 90px;
-    height: 90px;
-    animation-delay: 6s;
-}
-
-.circles li:nth-child(17) {
-    left: 30%;
-    width: 110px;
-    height: 110px;
-    animation-delay: 9s;
-}
-
-.circles li:nth-child(18) {
-    left: 60%;
-    width: 22px;
-    height: 22px;
-    animation-delay: 13s;
-    animation-duration: 49s;
-}
-
-.circles li:nth-child(19) {
-    left: 12%;
-    width: 12px;
-    height: 12px;
-    animation-delay: 7s;
-    animation-duration: 30s;
-}
-
-.circles li:nth-child(20) {
-    left: 80%;
-    width: 160px;
-    height: 160px;
-    animation-delay: 4s;
-    animation-duration: 16s;
 }
 
 

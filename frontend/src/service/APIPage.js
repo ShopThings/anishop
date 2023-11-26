@@ -1,5 +1,6 @@
 import {GenericAPI} from "./ServiceAPIs.js";
 import {apiRoutes} from "../router/api-routes.js";
+import {useRequest} from "../composables/api-request.js";
 
 export const StaticPageAPI = Object.assign(
     GenericAPI(apiRoutes.admin.staticPages, {replacement: 'static_page'}),
@@ -44,3 +45,9 @@ export const NewsletterAPI = Object.assign(
         // extra functionality goes here
     }
 )
+
+export const SmsLogAPI = {
+    fetchAll(callbacks) {
+        useRequest(apiRoutes.admin.smsLogs, null, callbacks)
+    },
+}

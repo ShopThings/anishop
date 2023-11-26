@@ -411,6 +411,13 @@ body .styled-description {
     padding: 1.75rem 1rem;
 }
 
+.styled-description img {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    border-radius: .5rem;
+}
+
 
 /* Clearing
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
@@ -434,7 +441,6 @@ on small devices, paste the mobile query code up in the buttons section and styl
 there.
 */
 
-
 /* Larger than mobile */
 @media (min-width: 400px) {
 }
@@ -449,6 +455,9 @@ there.
 
 /* Larger than desktop */
 @media (min-width: 1000px) {
+    .styled-description img {
+        width: 80%;
+    }
 }
 
 /* Larger than Desktop HD */

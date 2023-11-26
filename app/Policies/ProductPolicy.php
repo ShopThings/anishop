@@ -125,4 +125,16 @@ class ProductPolicy
                 PermissionPlacesEnum::PRODUCT)
         );
     }
+
+    /**
+     * Determine whether the user can batch update.
+     */
+    public function batchUpdate(User $user): bool
+    {
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::PRODUCT)
+        );
+    }
 }

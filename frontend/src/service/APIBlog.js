@@ -28,10 +28,10 @@ export const BlogCommentAPI = {
         )
     },
 
-    fetchAll(blogId, callbacks) {
+    fetchAll(blogId, params, callbacks) {
         useRequest(
             apiReplaceParams(apiRoutes.admin.blogComments.index, {blog: blogId}),
-            null,
+            {params},
             callbacks
         )
     },

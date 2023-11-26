@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreNewsletterRequest extends FormRequest
+class StoreComplaintRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,17 +22,7 @@ class StoreNewsletterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile' => [
-                'required',
-                new PersianMobileRule(),
-            ],
-        ];
-    }
-
-    public function attributes()
-    {
-        return [
-            'mobile' => 'شماره همراه',
+            //
         ];
     }
 }

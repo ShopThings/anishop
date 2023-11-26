@@ -6,6 +6,8 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductPropertyRequest;
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateMultiProductInfo;
+use App\Http\Requests\UpdateMultiProductPrice;
 use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductPropertyResource;
 use App\Http\Resources\ProductResource;
@@ -145,10 +147,24 @@ class ProductController extends Controller
      */
     public function modifyProducts(StoreProductPropertyRequest $request, Product $product)
     {
-        $this->authorize('create', User::class);
+        $this->authorize('update', $product);
 
         $validated = $request->validated();
 
         return ProductPropertyResource::collection($this->service->modifyProducts($product->id, $validated['products']));
+    }
+
+    public function batchUpdateInfo(UpdateMultiProductInfo $request)
+    {
+        $this->authorize('batchUpdate', User::class);
+
+        //
+    }
+
+    public function batchUpdatePrice(UpdateMultiProductPrice $request)
+    {
+        $this->authorize('batchUpdate', User::class);
+
+        //
     }
 }
