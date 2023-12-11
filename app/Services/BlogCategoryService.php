@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Repositories\Contracts\BlogCategoryRepositoryInterface;
 use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -24,15 +26,10 @@ class BlogCategoryService extends Service implements BlogCategoryServiceInterfac
     /**
      * @inheritDoc
      */
-    public function getCategories(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getCategories(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('blog_categories');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'escaped_name',
                 'keywords',
@@ -40,7 +37,25 @@ class BlogCategoryService extends Service implements BlogCategoryServiceInterfac
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSideCategories(): Collection
+    {
+        $where = new WhereBuilder('blog_categories');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->all(
+            columns: ['id', 'name', 'escaped_name', 'slug', 'keywords'],
+            where: $where->build(),
+            order: ['priority' => 'asc', 'id' => 'asc']
         );
     }
 

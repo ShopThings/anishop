@@ -2,13 +2,15 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\Request;
+
 trait ControllerPaginateTrait
 {
     /**
-     * @param $request
+     * @param Request $request
      * @return array
      */
-    protected function getPaginateParameters($request): array
+    protected function getPaginateParameters(Request $request): array
     {
         $limit = $request->input('limit', 10);
         $offset = $request->input('offset', 0);

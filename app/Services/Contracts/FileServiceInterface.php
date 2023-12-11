@@ -3,6 +3,7 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
+use App\Http\Requests\Filters\FileListFilter;
 use App\Models\FileManager;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,22 +19,10 @@ interface FileServiceInterface
     public function upload(string $path, $file, string $disk, bool $overwrite = false): bool;
 
     /**
-     * @param string $path
-     * @param string $disk
-     * @param string|null $search
-     * @param string|null $fileSize
-     * @param array $extensions
-     * @param array $order
+     * @param FileListFilter $filter
      * @return array
      */
-    public function list(
-        string  $path,
-        string  $disk,
-        ?string $search = null,
-        ?string $fileSize = null,
-        array   $extensions = [],
-        array   $order = ['name' => 'acs']
-    ): array;
+    public function list(FileListFilter $filter): array;
 
     /**
      * @param string $path
@@ -77,12 +66,12 @@ interface FileServiceInterface
     public function copy(array $paths, string $destination, string $disk): bool;
 
     /**
-     * @param array|FileManager $files
+     * @param FileManager|array $files
      * @param string|null $path
      * @param string $disk
      * @return bool
      */
-    public function delete(array|FileManager $files, ?string $path, string $disk): bool;
+    public function delete(FileManager|array $files, ?string $path, string $disk): bool;
 
     /**
      * @param $file
@@ -101,17 +90,24 @@ interface FileServiceInterface
 
     /**
      * @param $file
+     * @param bool $isAuthenticated
      * @return Model|null
      */
-    public function find($file): Model|null;
+    public function find($file, bool $isAuthenticated = false): Model|null;
 
     /**
      * @param $file
      * @param string|null $disk
      * @param string|null $size
+     * @param bool $isAuthenticated
      * @return string|null
      */
-    public function findFile($file, ?string $disk = null, ?string $size = null): ?string;
+    public function findFile(
+        $file,
+        ?string $disk = null,
+        ?string $size = null,
+        bool $isAuthenticated = false
+    ): ?string;
 
     /**
      * @param string $size

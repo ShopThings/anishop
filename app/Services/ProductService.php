@@ -9,7 +9,9 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\UnitRepositoryInterface;
 use App\Services\Contracts\ProductServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -30,18 +32,11 @@ class ProductService extends Service implements ProductServiceInterface
      * @inheritDoc
      */
     public function getProducts(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
+        Filter                    $filter,
+        GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator
     {
-        return $this->repository->getProductsSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getProductsSearchFilterPaginated(filter: $filter, where: $where);
     }
 
     /**
@@ -192,7 +187,7 @@ class ProductService extends Service implements ProductServiceInterface
                     }
                 }
 
-                if(!count($refined[$counter]['children']))
+                if (!count($refined[$counter]['children']))
                     unset($refined[$counter]);
                 else
                     $counter++;

@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
@@ -90,6 +91,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function bootMacros(): void
     {
+        Collection::macro('pluckMultiple', function ($keys) {
+            return $this->map(function ($item) use ($keys) {
+                return collect($item)->only($keys)->all();
+            });
+        });
+
+        //
+
         Builder::macro('whereLike', function (string|array $columns, string $search, string $operator = 'or') {
             $this->where(function (Builder $query) use ($columns, $search, $operator) {
                 $columns = !is_array($columns) ? [$columns] : $columns;

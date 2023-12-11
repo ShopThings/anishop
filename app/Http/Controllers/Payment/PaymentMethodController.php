@@ -10,8 +10,8 @@ use App\Http\Resources\PaymentMethodResource;
 use App\Models\PaymentMethod;
 use App\Models\User;
 use App\Services\Contracts\PaymentMethodServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class PaymentMethodController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param PaymentMethodServiceInterface $service
@@ -35,19 +34,14 @@ class PaymentMethodController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return PaymentMethodResource::collection($this->service->getMethods(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return PaymentMethodResource::collection($this->service->getMethods($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class PaymentMethodController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StorePaymentMethodRequest $request)
+    public function store(StorePaymentMethodRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class PaymentMethodController extends Controller
      * @return PaymentMethodResource
      * @throws AuthorizationException
      */
-    public function show(PaymentMethod $paymentMethod)
+    public function show(PaymentMethod $paymentMethod): PaymentMethodResource
     {
         $this->authorize('view', $paymentMethod);
         return new PaymentMethodResource($paymentMethod);
@@ -99,7 +93,10 @@ class PaymentMethodController extends Controller
      * @return PaymentMethodResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdatePaymentMethodRequest $request, PaymentMethod $paymentMethod)
+    public function update(
+        UpdatePaymentMethodRequest $request,
+        PaymentMethod $paymentMethod
+    ): PaymentMethodResource|JsonResponse
     {
         $this->authorize('update', $paymentMethod);
 
@@ -126,7 +123,7 @@ class PaymentMethodController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, PaymentMethod $paymentMethod)
+    public function destroy(Request $request, PaymentMethod $paymentMethod): JsonResponse
     {
         $this->authorize('delete', $paymentMethod);
 

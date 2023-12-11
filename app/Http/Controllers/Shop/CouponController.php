@@ -10,8 +10,8 @@ use App\Http\Resources\CouponResource;
 use App\Models\Coupon;
 use App\Models\User;
 use App\Services\Contracts\CouponServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CouponController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param CouponServiceInterface $service
@@ -35,19 +34,14 @@ class CouponController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return CouponResource::collection($this->service->getCoupons(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return CouponResource::collection($this->service->getCoupons($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class CouponController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreCouponRequest $request)
+    public function store(StoreCouponRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class CouponController extends Controller
      * @return CouponResource
      * @throws AuthorizationException
      */
-    public function show(Coupon $coupon)
+    public function show(Coupon $coupon): CouponResource
     {
         $this->authorize('view', $coupon);
         return new CouponResource($coupon);
@@ -99,7 +93,7 @@ class CouponController extends Controller
      * @return CouponResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateCouponRequest $request, Coupon $coupon)
+    public function update(UpdateCouponRequest $request, Coupon $coupon): CouponResource|JsonResponse
     {
         $this->authorize('update', $coupon);
 
@@ -124,7 +118,7 @@ class CouponController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Coupon $coupon)
+    public function destroy(Request $request, Coupon $coupon): JsonResponse
     {
         $this->authorize('delete', $coupon);
 

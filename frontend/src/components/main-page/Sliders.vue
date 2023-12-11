@@ -19,7 +19,7 @@
                     </router-link>
                 </template>
             </partial-general-title>
-            <product-carousel :products="slider.products"/>
+            <product-carousel :products="slider.items"/>
         </template>
 
         <template v-else-if="slider.type === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value">
@@ -32,11 +32,11 @@
                     :key="idx"
                 >
                     <router-link
-                        :to="item?.options.link"
+                        :to="item?.link"
                         class="block rounded-lg shadow"
                     >
                         <img
-                            :src="item?.options.image.path"
+                            :src="item?.image.path"
                             alt=""
                             class="w-full h-auto object-contain rounded-lg"
                         />
@@ -488,20 +488,16 @@ const sliders = ref([
         type: SLIDER_PLACES.MAIN_SLIDER_IMAGES.value,
         items: [
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m2-1.jpg',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m2-1.jpg',
                 },
+                link: '#',
             },
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m2-2.jpg',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m2-2.jpg',
                 },
+                link: '#',
             },
         ],
         options: {
@@ -511,12 +507,12 @@ const sliders = ref([
     {
         title: 'محصولات ویژه',
         type: SLIDER_PLACES.MAIN_SLIDERS.value,
-        products,
+        items: products,
     },
     {
         title: 'جدیدترین محصولات',
         type: SLIDER_PLACES.MAIN_SLIDERS.value,
-        products,
+        items: products,
         options: {
             show_all_link: '#',
         },
@@ -526,36 +522,28 @@ const sliders = ref([
         type: SLIDER_PLACES.MAIN_SLIDER_IMAGES.value,
         items: [
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m3-1.jpg',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m3-1.jpg',
                 },
+                link: '#',
             },
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m3-2.gif',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m3-2.gif',
                 },
+                link: '#',
             },
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m3-3.jpg',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m3-3.jpg',
                 },
+                link: '#',
             },
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m3-4.jpg',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m3-4.jpg',
                 },
+                link: '#',
             },
         ],
         options: {
@@ -565,24 +553,22 @@ const sliders = ref([
     {
         title: 'سامسونگ',
         type: SLIDER_PLACES.MAIN_SLIDERS.value,
-        products,
+        items: products,
     },
     {
         title: 'اسنوا',
         type: SLIDER_PLACES.MAIN_SLIDERS.value,
-        products,
+        items: products,
     },
     {
         title: 'تصویر تکی',
         type: SLIDER_PLACES.MAIN_SLIDER_IMAGES.value,
         items: [
             {
-                options: {
-                    image: {
-                        path: '/src/assets/banners/m1.jpg',
-                    },
-                    link: '#',
+                image: {
+                    path: '/src/assets/banners/m1.jpg',
                 },
+                link: '#',
             },
         ],
         options: {

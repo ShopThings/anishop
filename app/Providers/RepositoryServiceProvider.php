@@ -49,6 +49,7 @@ use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ProvinceRepositoryInterface;
 use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
+use App\Repositories\Contracts\SettingRepositoryInterface;
 use App\Repositories\Contracts\SliderRepositoryInterface;
 use App\Repositories\Contracts\SmsLogRepositoryInterface;
 use App\Repositories\Contracts\StaticPageRepositoryInterface;
@@ -74,6 +75,7 @@ use App\Repositories\ProductRepository;
 use App\Repositories\ProvinceRepository;
 use App\Repositories\ReportRepository;
 use App\Repositories\ReturnOrderRepository;
+use App\Repositories\SettingRepository;
 use App\Repositories\SliderRepository;
 use App\Repositories\SmsLogRepository;
 use App\Repositories\StaticPageRepository;
@@ -126,6 +128,7 @@ use App\Services\Contracts\ProvinceServiceInterface;
 use App\Services\Contracts\ReportServiceInterface;
 use App\Services\Contracts\ReturnOrderServiceInterface;
 use App\Services\Contracts\RoleServiceInterface;
+use App\Services\Contracts\SettingServiceInterface;
 use App\Services\Contracts\SliderServiceInterface;
 use App\Services\Contracts\SmsLogServiceInterface;
 use App\Services\Contracts\StaticPageServiceInterface;
@@ -152,6 +155,7 @@ use App\Services\ProvinceService;
 use App\Services\ReportService;
 use App\Services\ReturnOrderService;
 use App\Services\RoleService;
+use App\Services\SettingService;
 use App\Services\SliderService;
 use App\Services\SmsLogService;
 use App\Services\StaticPageService;
@@ -221,6 +225,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WeightPostPriceRepositoryInterface::class, WeightPostPriceRepository::class);
         $this->app->bind(SliderRepositoryInterface::class, SliderRepository::class);
         $this->app->bind(MenuRepositoryInterface::class, MenuRepository::class);
+        $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
         $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
         $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
     }
@@ -268,6 +273,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WeightPostPriceServiceInterface::class, WeightPostPriceService::class);
         $this->app->bind(SliderServiceInterface::class, SliderService::class);
         $this->app->bind(MenuServiceInterface::class, MenuService::class);
+        $this->app->bind(SettingServiceInterface::class, SettingService::class);
         $this->app->bind(FileServiceInterface::class, FileService::class);
     }
 }

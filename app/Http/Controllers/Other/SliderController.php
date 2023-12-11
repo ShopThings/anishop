@@ -12,8 +12,8 @@ use App\Http\Resources\SliderResource;
 use App\Models\Slider;
 use App\Models\User;
 use App\Services\Contracts\SliderServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -22,8 +22,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class SliderController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param SliderServiceInterface $service
@@ -37,19 +36,14 @@ class SliderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return SliderResource::collection($this->service->getSliders(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return SliderResource::collection($this->service->getSliders($filter));
     }
 
     /**
@@ -59,7 +53,7 @@ class SliderController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreSliderRequest $request)
+    public function store(StoreSliderRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -87,7 +81,7 @@ class SliderController extends Controller
      * @return SliderResource
      * @throws AuthorizationException
      */
-    public function show(Slider $slider)
+    public function show(Slider $slider): SliderResource
     {
         $this->authorize('view', $slider);
         return new SliderResource($slider);
@@ -101,7 +95,7 @@ class SliderController extends Controller
      * @return SliderResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateSliderRequest $request, Slider $slider)
+    public function update(UpdateSliderRequest $request, Slider $slider): SliderResource|JsonResponse
     {
         $this->authorize('update', $slider);
 
@@ -127,7 +121,7 @@ class SliderController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Slider $slider)
+    public function destroy(Request $request, Slider $slider): JsonResponse
     {
         $this->authorize('delete', $slider);
 
@@ -148,7 +142,7 @@ class SliderController extends Controller
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function modifySlides(StoreSliderItemRequest $request, Slider $slider)
+    public function modifySlides(StoreSliderItemRequest $request, Slider $slider): AnonymousResourceCollection
     {
         $this->authorize('create', User::class);
 

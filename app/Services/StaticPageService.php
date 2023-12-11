@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\StaticPageRepositoryInterface;
 use App\Services\Contracts\StaticPageServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -23,15 +24,10 @@ class StaticPageService extends Service implements StaticPageServiceInterface
     /**
      * @inheritDoc
      */
-    public function getPages(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getPages(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('static_pages');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'title',
                 'keywords',
@@ -39,7 +35,10 @@ class StaticPageService extends Service implements StaticPageServiceInterface
         });
 
         return $this->repository->paginate(
-            where: $where->build(), limit: $limit, page: $page, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

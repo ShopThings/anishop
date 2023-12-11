@@ -9,15 +9,12 @@ use App\Http\Resources\MenuResource;
 use App\Models\Menu;
 use App\Models\User;
 use App\Services\Contracts\MenuServiceInterface;
-use App\Traits\ControllerPaginateTrait;
+use App\Support\Filter;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MenuController extends Controller
 {
-    use ControllerPaginateTrait;
-
     /**
      * @param MenuServiceInterface $service
      */
@@ -30,19 +27,14 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return MenuResource::collection($this->service->getMenus(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return MenuResource::collection($this->service->getMenus($filter));
     }
 
     /**
@@ -52,7 +44,7 @@ class MenuController extends Controller
      * @return MenuResource
      * @throws AuthorizationException
      */
-    public function show(Menu $menu)
+    public function show(Menu $menu): MenuResource
     {
         $this->authorize('view', $menu);
         return new MenuResource($menu);
@@ -64,7 +56,7 @@ class MenuController extends Controller
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function modifyMenus(StoreMenuItemRequest $request, Menu $menu)
+    public function modifyMenus(StoreMenuItemRequest $request, Menu $menu): AnonymousResourceCollection
     {
         $this->authorize('view', $menu);
 

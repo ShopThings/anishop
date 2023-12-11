@@ -12,7 +12,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\User;
 use App\Services\Contracts\OrderServiceInterface;
-use App\Traits\ControllerPaginateTrait;
+use App\Support\Filter;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,8 +21,6 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class OrderController extends Controller
 {
-    use ControllerPaginateTrait;
-
     /**
      * @param OrderServiceInterface $service
      */
@@ -35,24 +33,15 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @param User|null $user
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request, ?User $user = null)
+    public function index(Filter $filter, ?User $user = null): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return OrderDetailResource::collection($this->service->getOrders(
-            userId: $user?->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
-        ));
+        return OrderDetailResource::collection($this->service->getOrders(userId: $user?->id, filter: $filter));
     }
 
     /**
@@ -62,7 +51,7 @@ class OrderController extends Controller
      * @return OrderDetailResource
      * @throws AuthorizationException
      */
-    public function show(OrderDetail $order)
+    public function show(OrderDetail $order): OrderDetailResource
     {
         $this->authorize('view', $order);
         return new OrderDetailResource($order);
@@ -76,7 +65,7 @@ class OrderController extends Controller
      * @return OrderDetailResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateOrderDetailRequest $request, OrderDetail $order)
+    public function update(UpdateOrderDetailRequest $request, OrderDetail $order): OrderDetailResource|JsonResponse
     {
         $this->authorize('update', $order);
 
@@ -101,7 +90,7 @@ class OrderController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, OrderDetail $order)
+    public function destroy(Request $request, OrderDetail $order): JsonResponse
     {
         $this->authorize('delete', $order);
 
@@ -122,7 +111,7 @@ class OrderController extends Controller
      * @return OrderResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function updatePayment(UpdateOrderRequest $request, Order $order)
+    public function updatePayment(UpdateOrderRequest $request, Order $order): JsonResponse|OrderResource
     {
         $this->authorize('update', $order);
 
@@ -142,7 +131,7 @@ class OrderController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function paymentStatuses()
+    public function paymentStatuses(): JsonResponse
     {
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
@@ -153,7 +142,7 @@ class OrderController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendStatuses()
+    public function sendStatuses(): JsonResponse
     {
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,

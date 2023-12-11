@@ -10,7 +10,7 @@ use App\Http\Resources\CategoryImageResource;
 use App\Models\CategoryImage;
 use App\Models\User;
 use App\Services\Contracts\CategoryImageServiceInterface;
-use App\Traits\ControllerPaginateTrait;
+use App\Support\Filter;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,8 +19,6 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CategoryImageController extends Controller
 {
-    use ControllerPaginateTrait;
-
     /**
      * @param CategoryImageServiceInterface $service
      */
@@ -33,25 +31,20 @@ class CategoryImageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return CategoryImageResource::collection($this->service->getCategoryImages(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return CategoryImageResource::collection($this->service->getCategoryImages($filter));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryImageRequest $request)
+    public function store(StoreCategoryImageRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -79,7 +72,7 @@ class CategoryImageController extends Controller
      * @return CategoryImageResource
      * @throws AuthorizationException
      */
-    public function show(CategoryImage $categoryImage)
+    public function show(CategoryImage $categoryImage): CategoryImageResource
     {
 
         $this->authorize('view', $categoryImage);
@@ -94,7 +87,10 @@ class CategoryImageController extends Controller
      * @return CategoryImageResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateCategoryImageRequest $request, CategoryImage $categoryImage)
+    public function update(
+        UpdateCategoryImageRequest $request,
+        CategoryImage $categoryImage
+    ): JsonResponse|CategoryImageResource
     {
         $this->authorize('update', $categoryImage);
 
@@ -119,7 +115,7 @@ class CategoryImageController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, CategoryImage $categoryImage)
+    public function destroy(Request $request, CategoryImage $categoryImage): JsonResponse
     {
         $this->authorize('delete', $categoryImage);
 

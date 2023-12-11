@@ -3,6 +3,7 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -11,18 +12,12 @@ interface ProductCommentRepositoryInterface extends RepositoryInterface
     /**
      * @param int $productId
      * @param array $columns
-     * @param string|null $search
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter|null $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getCommentsSearchFilterPaginated(
-        int     $productId,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        int    $productId,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator;
 }

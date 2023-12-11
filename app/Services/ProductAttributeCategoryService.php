@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ProductAttributeCategoryRepositoryInterface;
 use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -20,19 +21,9 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     /**
      * @inheritDoc
      */
-    public function getAttributeCategories(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getAttributeCategories(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getAttributeCategoriesSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getAttributeCategoriesSearchFilterPaginated(filter: $filter);
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Enums\Gates\RolesEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\WhereBuilder;
@@ -27,13 +28,15 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @inheritDoc
      */
     public function getUsersSearchFilterPaginated(
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query->when($search, function (Builder $query, string $search) {
             $query
@@ -58,14 +61,16 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @inheritDoc
      */
     public function getUserAddressesSearchFilterPaginated(
-        User    $user,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        User   $user,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $user->addresses();
         $query->when($search, function (Builder $query, string $search) {
             $query
@@ -93,14 +98,16 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @inheritDoc
      */
     public function getUserFavoriteProductsSearchFilterPaginated(
-        User    $user,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        User   $user,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $user->favoriteProducts();
         $query->when($search, function (Builder $query, string $search) {
             $query
@@ -122,14 +129,16 @@ class UserRepository extends Repository implements UserRepositoryInterface
      * @inheritDoc
      */
     public function getUserPurchasesSearchFilterPaginated(
-        User    $user,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        User   $user,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $user->orders();
         $query->when($search, function (Builder $query, string $search) {
             $query

@@ -16,10 +16,6 @@ class MenuAndPlaceSeeder extends Seeder
     public function run(): void
     {
         // create menu places
-        $main = MenuPlace::create([
-            'title' => 'اصلی',
-            'place_in' => MenuPlacesEnum::MAIN,
-        ]);
         $top = MenuPlace::create([
             'title' => 'بالای صفحه',
             'place_in' => MenuPlacesEnum::TOP_MENU,
@@ -28,17 +24,8 @@ class MenuAndPlaceSeeder extends Seeder
             'title' => 'فوتر(پانوشت)',
             'place_in' => MenuPlacesEnum::FOOTER,
         ]);
-        $blog = MenuPlace::create([
-            'title' => 'بلاگ',
-            'place_in' => MenuPlacesEnum::BLOG,
-        ]);
 
         // create menus
-        $mainMenu = Menu::create([
-            'menu_place_id' => $main->id,
-            'title' => 'منوی اصلی',
-            'is_deletable' => false,
-        ]);
         $topMenu = Menu::create([
             'menu_place_id' => $top->id,
             'title' => 'منوی بالای صفحه',
@@ -52,11 +39,6 @@ class MenuAndPlaceSeeder extends Seeder
         $footerMenu2 = Menu::create([
             'menu_place_id' => $footer->id,
             'title' => 'لینک‌های مفید',
-            'is_deletable' => false,
-        ]);
-        $blogMenu = Menu::create([
-            'menu_place_id' => $blog->id,
-            'title' => 'منوی بلاگ',
             'is_deletable' => false,
         ]);
 

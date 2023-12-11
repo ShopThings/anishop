@@ -4,7 +4,7 @@ import {apiReplaceParams, apiRoutes} from "../router/api-routes.js";
 export const FilemanagerAPI = {
     showFile(fileId, size, callbacks) {
         useRequest(
-            apiReplaceParams(apiRoutes.showFile, {file: fileId, size: size}),
+            apiReplaceParams(apiRoutes.showFile, {file: fileId, size}),
             null,
             callbacks
         )

@@ -151,7 +151,7 @@ const props = defineProps({
         default: () => [],
         validator: (value) => {
             for (let i of value) {
-                if (!i.id || !i.key || !i.text || !i.sort) return false
+                if (!i.id || !i.key || !i.text) return false
             }
 
             return true

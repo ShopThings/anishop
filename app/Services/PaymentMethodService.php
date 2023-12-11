@@ -6,6 +6,7 @@ use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Repositories\Contracts\PaymentMethodRepositoryInterface;
 use App\Services\Contracts\PaymentMethodServiceInterface;
+use App\Support\Filter;
 use App\Support\Model\CodeGeneratorHelper;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
@@ -26,15 +27,10 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
     /**
      * @inheritDoc
      */
-    public function getMethods(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getMethods(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('payment_methods');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query
                 ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function (WhereBuilderInterface $q, array $items) {
                     $q->orWhereIn('type', $items);
@@ -46,7 +42,10 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

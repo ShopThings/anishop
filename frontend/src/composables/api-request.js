@@ -173,7 +173,7 @@ export const useRequest = (url, config, resultConfig) => {
                 error?.response?.statusText ||
                 error.message
 
-            // mostly is has debugging purposes
+            // mostly it has debugging purposes
             if ((isObject(data) && !Object.keys(data).length) ||
                 (isArray(data) && !data.length) ||
                 error?.response.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR ||

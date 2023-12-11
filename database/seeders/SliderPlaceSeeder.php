@@ -18,12 +18,24 @@ class SliderPlaceSeeder extends Seeder
             'place_in' => SliderPlacesEnum::MAIN,
         ]);
         SliderPlace::create([
+            'title' => 'اسلایدر اصلی بلاگ',
+            'place_in' => SliderPlacesEnum::MAIN_BLOG,
+        ]);
+        SliderPlace::create([
+            'title' => 'اسلایدر اصلی بلاگ - اسلایدهای کناری',
+            'place_in' => SliderPlacesEnum::MAIN_BLOG_SIDE,
+        ]);
+        SliderPlace::create([
             'title' => 'اسلایدر محصولات',
             'place_in' => SliderPlacesEnum::MAIN_SLIDERS,
         ]);
         SliderPlace::create([
             'title' => 'تصویر محصولات',
             'place_in' => SliderPlacesEnum::MAIN_SLIDER_IMAGES,
+        ]);
+        SliderPlace::create([
+            'title' => 'پیشنهادهای شگفت‌انگیز',
+            'place_in' => SliderPlacesEnum::AMAZING_OFFER,
         ]);
     }
 }

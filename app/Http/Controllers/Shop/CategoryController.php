@@ -8,8 +8,8 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\User;
 use App\Services\Contracts\CategoryServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,8 +18,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CategoryController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param CategoryServiceInterface $service
@@ -33,19 +32,14 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return CategoryResource::collection($this->service->getCategories(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return CategoryResource::collection($this->service->getCategories($filter));
     }
 
     /**
@@ -55,7 +49,7 @@ class CategoryController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -83,7 +77,7 @@ class CategoryController extends Controller
      * @return CategoryResource
      * @throws AuthorizationException
      */
-    public function show(Category $category)
+    public function show(Category $category): CategoryResource
     {
         $this->authorize('view', $category);
         return new CategoryResource($category);
@@ -97,7 +91,7 @@ class CategoryController extends Controller
      * @return CategoryResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Category $category): CategoryResource|JsonResponse
     {
         $this->authorize('update', $category);
 
@@ -123,7 +117,7 @@ class CategoryController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Category $category)
+    public function destroy(Request $request, Category $category): JsonResponse
     {
         $this->authorize('delete', $category);
 

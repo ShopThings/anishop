@@ -20,7 +20,7 @@ class AuthController extends Controller
      * @param AuthServiceInterface $service
      * @return JsonResponse
      */
-    public function login(LoginRequest $request, AuthServiceInterface $service)
+    public function login(LoginRequest $request, AuthServiceInterface $service): JsonResponse
     {
         $isFromAdmin = Route::is('api.admin.login');
         $service->login($request, $isFromAdmin);
@@ -40,7 +40,7 @@ class AuthController extends Controller
     /**
      * @return JsonResponse
      */
-    public function logout(AuthServiceInterface $service)
+    public function logout(AuthServiceInterface $service): JsonResponse
     {
         $service->logout();
         return response()->json(status: ResponseCodes::HTTP_NO_CONTENT);

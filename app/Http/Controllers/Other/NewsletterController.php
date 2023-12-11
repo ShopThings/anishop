@@ -9,8 +9,8 @@ use App\Http\Resources\NewsletterResource;
 use App\Models\Newsletter;
 use App\Models\User;
 use App\Services\Contracts\NewsletterServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,8 +19,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class NewsletterController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param NewsletterServiceInterface $service
@@ -34,19 +33,14 @@ class NewsletterController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return NewsletterResource::collection($this->service->getMembers(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return NewsletterResource::collection($this->service->getMembers($filter));
     }
 
     /**
@@ -56,7 +50,7 @@ class NewsletterController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreNewsletterRequest $request)
+    public function store(StoreNewsletterRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -84,7 +78,7 @@ class NewsletterController extends Controller
      * @return NewsletterResource
      * @throws AuthorizationException
      */
-    public function show(Newsletter $newsletter)
+    public function show(Newsletter $newsletter): NewsletterResource
     {
         $this->authorize('view', $newsletter);
         return new NewsletterResource($newsletter);
@@ -98,7 +92,7 @@ class NewsletterController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Newsletter $newsletter)
+    public function destroy(Request $request, Newsletter $newsletter): JsonResponse
     {
         $this->authorize('delete', $newsletter);
 

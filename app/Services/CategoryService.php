@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Services\Contracts\CategoryServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -23,19 +24,17 @@ class CategoryService extends Service implements CategoryServiceInterface
     /**
      * @inheritDoc
      */
-    public function getCategories(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getCategories(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCategoriesSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getCategoriesSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSliderCategories(): Collection
+    {
+        return $this->repository->getSliderCategories();
     }
 
     /**

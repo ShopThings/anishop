@@ -14,7 +14,7 @@ class RoleController extends Controller
      * @param RoleServiceInterface $service
      * @return JsonResponse
      */
-    public function index(RoleServiceInterface $service)
+    public function index(RoleServiceInterface $service): JsonResponse
     {
         $roles = $service->getRoles();
         $status = ResponseCodes::HTTP_OK;

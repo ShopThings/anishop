@@ -32,7 +32,7 @@ class ProductAttributeProductController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request, Product $product)
+    public function store(Request $request, Product $product): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -60,7 +60,7 @@ class ProductAttributeProductController extends Controller
      * @return ProductAttributeProductResource
      * @throws AuthorizationException
      */
-    public function show(Product $product)
+    public function show(Product $product): ProductAttributeProductResource
     {
         $this->authorize('view', $product);
         return new ProductAttributeProductResource($this->service->getProductAttributes($product->id));

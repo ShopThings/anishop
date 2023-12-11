@@ -15,8 +15,8 @@ use App\Http\Resources\ProductSingleResource;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\Contracts\ProductServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,8 +25,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ProductServiceInterface $service
@@ -40,19 +39,14 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ProductResource::collection($this->service->getProducts(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return ProductResource::collection($this->service->getProducts($filter));
     }
 
     /**
@@ -62,7 +56,7 @@ class ProductController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -90,7 +84,7 @@ class ProductController extends Controller
      * @return ProductSingleResource
      * @throws AuthorizationException
      */
-    public function show(Product $product)
+    public function show(Product $product): ProductSingleResource
     {
         $this->authorize('view', $product);
         return new ProductSingleResource($product);
@@ -99,7 +93,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product): JsonResponse|ProductResource
     {
         $this->authorize('update', $product);
 
@@ -124,7 +118,7 @@ class ProductController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Product $product)
+    public function destroy(Request $request, Product $product): JsonResponse
     {
         $this->authorize('delete', $product);
 
@@ -145,7 +139,7 @@ class ProductController extends Controller
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function modifyProducts(StoreProductPropertyRequest $request, Product $product)
+    public function modifyProducts(StoreProductPropertyRequest $request, Product $product): AnonymousResourceCollection
     {
         $this->authorize('update', $product);
 

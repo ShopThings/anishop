@@ -9,6 +9,12 @@ interface ServiceInterface extends VersionInterface
 {
     /**
      * @param $id
+     * @return bool
+     */
+    public function exists($id): bool;
+
+    /**
+     * @param $id
      * @return Collection|Model|null
      */
     public function getById($id): Collection|Model|null;

@@ -2,10 +2,21 @@
 
 namespace App\Services;
 
+use App\Enums\Blogs\BlogOrderTypesEnum;
+use App\Enums\Blogs\BlogVotingTypesEnum;
+use App\Enums\SettingsEnum;
+use App\Enums\Sliders\SliderItemOptionsEnum;
+use App\Enums\Sliders\SliderPlacesEnum;
+use App\Http\Requests\Filters\HomeBlogFilter;
 use App\Repositories\Contracts\BlogRepositoryInterface;
+use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Services\Contracts\BlogServiceInterface;
+use App\Services\Contracts\SettingServiceInterface;
+use App\Services\Contracts\SliderServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +25,10 @@ use function App\Support\Helper\to_boolean;
 class BlogService extends Service implements BlogServiceInterface
 {
     public function __construct(
-        protected BlogRepositoryInterface $repository
+        protected BlogRepositoryInterface      $repository,
+        protected SettingServiceInterface      $settingService,
+        protected SliderServiceInterface       $sliderService,
+        protected BlogCategoryServiceInterface $blogCategoryService,
     )
     {
     }
@@ -22,19 +36,71 @@ class BlogService extends Service implements BlogServiceInterface
     /**
      * @inheritDoc
      */
-    public function getBlogs(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getBlogs(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getBlogsSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getBlogsSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFilteredBlogs(HomeBlogFilter $filter): Collection|LengthAwarePaginator
+    {
+        $settingModel = $this->settingService->getSetting(SettingsEnum::BLOG_EACH_PAGE->value);
+        $limit = $settingModel->setting_value ?: $settingModel->default_value;
+
+        $filter->setLimit($limit);
+
+        return $this->getBlogs($filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toggleVote(int $userId, int $blogId, BlogVotingTypesEnum $vote): bool
+    {
+        return $this->repository->toggleBlogVote($userId, $blogId, $vote);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getArchive(): Collection
+    {
+        return $this->repository->getArchive();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMainSlider(): Collection
+    {
+        $slider = $this->sliderService->getSlider(SliderPlacesEnum::MAIN_BLOG)->first();
+        if (null === $slider) return collect();
+
+        return $this->_getMainSlides($slider);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMainSideSlides(): Collection
+    {
+        $slider = $this->sliderService->getSlider(SliderPlacesEnum::MAIN_BLOG_SIDE)->first();
+        if (null === $slider) return collect();
+
+        return $this->_getMainSlides($slider);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLatestMostViewedBlogs(int $limit = 10): Collection
+    {
+        $filter = new HomeBlogFilter(request());
+        $filter->reset()->setBlogOrder(BlogOrderTypesEnum::MOST_VIEWED)->setLimit($limit);
+
+        return collect($this->getBlogs($filter)->items());
     }
 
     /**
@@ -91,5 +157,22 @@ class BlogService extends Service implements BlogServiceInterface
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @param Model $slider
+     * @return Collection
+     */
+    private function _getMainSlides(Model $slider): Collection
+    {
+        /**
+         * @var Collection $ids
+         */
+        $ids = $slider->items->pluck('options')->pluck(SliderItemOptionsEnum::BLOG_ID->value);
+
+        // get all blogs with slides ids
+        $where = new WhereBuilder('blogs');
+        $where->whereIn('id', $ids->toArray());
+        return $this->repository->all(where: $where->build());
     }
 }

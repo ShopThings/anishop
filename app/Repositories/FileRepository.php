@@ -7,6 +7,7 @@ use App\Exceptions\FileDuplicationException;
 use App\Exceptions\InvalidDiskException;
 use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
+use App\Http\Requests\Filters\FileListFilter;
 use App\Models\FileManager;
 use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Support\Repository;
@@ -24,41 +25,6 @@ use function pathinfo;
 class FileRepository extends Repository implements FileRepositoryInterface
 {
     use FileTrait;
-
-    /**
-     * Storage disks constants
-     */
-    const STORAGE_DISK_PUBLIC = 'public';
-
-    const STORAGE_DISK_LOCAL = 'local';
-
-    /**
-     * File sizes for images
-     */
-    const ORIGINAL = 'original';
-
-    const SMALL = 'small';
-
-    const MEDIUM = 'medium';
-
-    const LARGE = 'large';
-
-    /**
-     * @var string[]
-     */
-    public static array $storageDisks = [
-        self::STORAGE_DISK_LOCAL,
-        self::STORAGE_DISK_PUBLIC
-    ];
-
-    /**
-     * @var array|int[]
-     */
-    public static array $validSizes = [
-        self::SMALL => [400, 300],
-        self::MEDIUM => [800, 600],
-        self::LARGE => [1000, 800],
-    ];
 
     protected bool $useSoftDeletes = false;
 
@@ -107,15 +73,15 @@ class FileRepository extends Repository implements FileRepositoryInterface
      * @throws InvalidPathException
      * @throws InvalidDiskException
      */
-    public function list(
-        string  $path,
-        string  $disk,
-        ?string $search = null,
-        string  $fileSize = self::ORIGINAL,
-        array   $extensions = [],
-        array   $order = []
-    ): array
+    public function list(FileListFilter $filter): array
     {
+        $path = $filter->getPath();
+        $disk = $filter->getDisk();
+        $fileSize = $filter->getSize();
+        $search = $filter->getSearchText();
+        $extensions = $filter->getExtensions();
+        $order = $filter->getOrder();
+
         $path = $this->getNormalizedPath($path);
 
         $this->checkDiskValidation($disk);
@@ -447,6 +413,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $path = $diskStorage->path($file);
         $info = pathinfo($path);
         $createdAt = explode('-', $info['filename'])[1] ?? null;
+        $modifiedAt = $diskStorage->lastModified($path);
 
         return [
             'name' => $info['filename'],
@@ -472,7 +439,10 @@ class FileRepository extends Repository implements FileRepositoryInterface
                 ? verta(Carbon::createFromTimestamp($createdAt))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'last_modified' => $diskStorage->lastModified('file.jpg'),
+            'last_modified' => $modifiedAt
+                ? verta(Carbon::createFromTimestamp($modifiedAt))
+                    ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
         ];
     }
 }

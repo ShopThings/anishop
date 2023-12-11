@@ -47,9 +47,9 @@
                                         </template>
                                         <template #panel="{close}">
                                             <div class="mb-3 flex items-center">
-                                            <span class="ml-auto text-sm text-gray-400">
-                                                منو
-                                            </span>
+                                                <span class="ml-auto text-sm text-gray-400">
+                                                    منو
+                                                </span>
                                                 <button @click="close" type="button"
                                                         class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
                                                     <XMarkIcon class="h-6 w-6"/>
@@ -92,7 +92,7 @@
 
                     <div class="mr-auto flex items-center gap-2 bg-indigo-50 px-3 rounded-full">
                         <div class="flex items-center gap-2">
-                            <span class="text-slate-400 text-xs hidden sm:inline-block">قیمت لحظه‌ای</span>
+                            <span class="text-slate-400 text-xs hidden sm:inline-block">قیمت</span>
                             <span class="iranyekan-bold text-sm">دلار</span>
                         </div>
                         <div class="flex items-center gap-2">

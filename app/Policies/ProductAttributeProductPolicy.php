@@ -3,34 +3,21 @@
 namespace App\Policies;
 
 use App\Enums\Gates\PermissionPlacesEnum;
-use App\Enums\Gates\PermissionsEnum;
 use App\Models\ProductAttributeProduct;
-use App\Models\User;
-use App\Support\Gate\PermissionHelper;
+use App\Support\Traits\PolicyTrait;
 
 class ProductAttributeProductPolicy
 {
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, ProductAttributeProduct $model): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::READ,
-                PermissionPlacesEnum::PRODUCT_ATTRIBUTE)
-        );
-    }
+    use PolicyTrait;
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    protected string $modelClass = ProductAttributeProduct::class;
+
+    protected PermissionPlacesEnum $permissionPlace = PermissionPlacesEnum::PRODUCT_ATTRIBUTE;
+
+    protected array $only = ['view', 'create'];
+
+    public function __construct()
     {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::CREATE,
-                PermissionPlacesEnum::PRODUCT_ATTRIBUTE)
-        );
+        $this->checkCreator = false;
     }
 }

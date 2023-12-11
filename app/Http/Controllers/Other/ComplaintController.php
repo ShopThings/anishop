@@ -8,8 +8,8 @@ use App\Http\Resources\ComplaintResource;
 use App\Models\Complaint;
 use App\Models\User;
 use App\Services\Contracts\ComplaintServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,8 +18,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ComplaintController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ComplaintServiceInterface $service
@@ -33,19 +32,14 @@ class ComplaintController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ComplaintResource::collection($this->service->getComplaints(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return ComplaintResource::collection($this->service->getComplaints($filter));
     }
 
     /**
@@ -55,7 +49,7 @@ class ComplaintController extends Controller
      * @return ComplaintResource
      * @throws AuthorizationException
      */
-    public function show(Complaint $complaint)
+    public function show(Complaint $complaint): ComplaintResource
     {
         $this->authorize('view', $complaint);
         return new ComplaintResource($complaint);
@@ -64,7 +58,7 @@ class ComplaintController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ComplaintResource $request, Complaint $complaint)
+    public function update(ComplaintResource $request, Complaint $complaint): JsonResponse|ComplaintResource
     {
         $this->authorize('update', $complaint);
 
@@ -89,7 +83,7 @@ class ComplaintController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Complaint $complaint)
+    public function destroy(Request $request, Complaint $complaint): JsonResponse
     {
         $this->authorize('delete', $complaint);
 

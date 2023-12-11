@@ -26,7 +26,7 @@ class ProvinceController extends Controller
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index()
+    public function index(): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
         return ProductResource::collection($this->service->getProvinces());

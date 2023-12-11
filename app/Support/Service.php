@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Contracts\ServiceInterface;
 use App\Support\Traits\ServiceTrait;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
@@ -11,6 +12,16 @@ use Illuminate\Support\Facades\Gate;
 abstract class Service implements ServiceInterface
 {
     use ServiceTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public function exists($id): bool
+    {
+        $where = new WhereBuilder();
+        $where->whereEqual('id', $id);
+        return $this->repository->exists($where->build());
+    }
 
     /**
      * @inheritDoc

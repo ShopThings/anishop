@@ -33,7 +33,7 @@ class StoreNewsletterRequest extends FormRequest
     public function attributes()
     {
         return [
-            'mobile' => 'شماره همراه',
+            'mobile' => 'شماره موبایل',
         ];
     }
 }

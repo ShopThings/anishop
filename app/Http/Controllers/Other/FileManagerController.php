@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Other;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Exceptions\FileDuplicationException;
 use App\Exceptions\InvalidDiskException;
@@ -9,9 +11,11 @@ use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FileRequest;
+use App\Http\Requests\Filters\FileListFilter;
 use App\Http\Requests\StoreFileRequest;
 use App\Models\FileManager;
 use App\Services\FileService;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -34,14 +38,9 @@ class FileManagerController extends Controller
     {
         $this->authorize('viewAny', FileManager::class);
 
-        $list = $this->service->list(
-            $request->input('path', ''),
-            $request->input('disk', ''),
-            $request->input('search'),
-            $request->input('size'),
-            $request->input('extensions', []),
-            [$request->input('column', 'name') => $request->input('sort', 'asc')]
-        );
+        $filter = new FileListFilter($request);
+
+        $list = $this->service->list($filter);
 
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
@@ -112,7 +111,13 @@ class FileManagerController extends Controller
      */
     public function show($file, $size, FileRequest $request): BinaryFileResponse|JsonResponse
     {
-        $theFile = $this->service->findFile($file, $request->input('disk'), $size);
+        $user = $request->user();
+        $isAuthenticated = !!$user?->can(PermissionHelper::permission(
+            PermissionsEnum::READ,
+            PermissionPlacesEnum::FILE_MANAGER
+        ));
+
+        $theFile = $this->service->findFile($file, $request->input('disk'), $size, $isAuthenticated);
         return response()->file($theFile);
     }
 
@@ -250,6 +255,9 @@ class FileManagerController extends Controller
     public function destroy($file, FileRequest $request): JsonResponse
     {
         $path = $request->input('path', '');
+        /**
+         * @var FileManager $dbFile
+         */
         $dbFile = $this->service->find($path . '/' . rtrim($file));
 
         if (!$dbFile) throw new InvalidFileException();

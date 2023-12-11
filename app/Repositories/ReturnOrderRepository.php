@@ -6,6 +6,7 @@ use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
 use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -29,14 +30,16 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
      * @inheritDoc
      */
     public function getOrdersSearchFilterPaginated(
-        ?int    $userId = null,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        ?int   $userId = null,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
             ->when($userId, function (Builder $query, $uId) {

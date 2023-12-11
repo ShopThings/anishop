@@ -42,6 +42,8 @@ Route::name('api.')
                 ->name('signup.verify-code');
             Route::post('signup/new-password', [SignupController::class, 'assignPassword'])
                 ->name('signup.assign-password');
+            Route::post('signup/resend-code', [SignupController::class, 'resendCode'])
+                ->name('signup.resend-code');
 
             /*
              * recover password routes
@@ -52,6 +54,8 @@ Route::name('api.')
                 ->name('recover-password.verify-code');
             Route::post('recover-password/new-password', [RecoverPasswordController::class, 'assignNewPassword'])
                 ->name('recover-password.assign-password');
+            Route::post('recover-password/resend-code', [RecoverPasswordController::class, 'resendCode'])
+                ->name('recover-password.resend-code');
 
             /*
              * main page routes
@@ -94,7 +98,7 @@ Route::name('api.')
             Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
                 ->middleware('log_visit')->where(['product' => $codeRegex]);
             Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
-                ->where(['product' => $codeRegex]);
+                ->where(['blog' => $codeRegex]);
             Route::get('blogs/archive', [HomeBlogController::class, 'archive'])->name('blogs.archive');
             Route::get('blogs/sliders/main', [HomeBlogController::class, 'mainSlider'])->name('blogs.sliders.main');
             Route::get('blogs/sliders/side-slides', [HomeBlogController::class, 'mainSideSlides'])->name('blogs.sliders.side-slides');
@@ -107,8 +111,6 @@ Route::name('api.')
             Route::get('blogs/{blog}/comments', [HomeBlogCommentController::class, 'index'])->name('blogs.comments.index')
                 ->where(['blog' => $codeRegex]);
             Route::put('blogs/{blog}/comments/{comment}/report', [HomeBlogCommentController::class, 'report'])->name('blogs.comments.report')
-                ->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
-            Route::put('blogs/{blog}/comments/{comment}/vote', [HomeBlogCommentController::class, 'vote'])->name('blogs.comments.vote')
                 ->where(['blog' => $codeRegex, 'comment' => '[0-9]+']);
 
             /*

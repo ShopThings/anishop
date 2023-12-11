@@ -10,8 +10,8 @@ use App\Http\Resources\FaqResource;
 use App\Models\Faq;
 use App\Models\User;
 use App\Services\Contracts\FaqServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class FaqController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param FaqServiceInterface $service
@@ -35,19 +34,14 @@ class FaqController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return FaqResource::collection($this->service->getFaqs(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return FaqResource::collection($this->service->getFaqs($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class FaqController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreFaqRequest $request)
+    public function store(StoreFaqRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class FaqController extends Controller
      * @return FaqResource
      * @throws AuthorizationException
      */
-    public function show(Faq $faq)
+    public function show(Faq $faq): FaqResource
     {
         $this->authorize('view', $faq);
         return new FaqResource($faq);
@@ -99,7 +93,7 @@ class FaqController extends Controller
      * @return FaqResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateFaqRequest $request, Faq $faq)
+    public function update(UpdateFaqRequest $request, Faq $faq): FaqResource|JsonResponse
     {
         $this->authorize('update', $faq);
 
@@ -124,7 +118,7 @@ class FaqController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Faq $faq)
+    public function destroy(Request $request, Faq $faq): JsonResponse
     {
         $this->authorize('delete', $faq);
 

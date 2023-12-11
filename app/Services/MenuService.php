@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\MenuRepositoryInterface;
 use App\Services\Contracts\MenuServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -24,20 +25,18 @@ class MenuService extends Service implements MenuServiceInterface
     /**
      * @inheritDoc
      */
-    public function getMenus(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getMenus(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('menus');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('title', $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

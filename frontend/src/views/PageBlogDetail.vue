@@ -354,7 +354,7 @@
                 class="shrink-0 lg:w-80"
                 containerSelector=".sticky-container"
                 innerWrapperSelector='.sidebar__inner'
-                :top-spacing="84"
+                :top-spacing="114"
                 :bottom-spacing="20"
                 :min-width="1024"
             >

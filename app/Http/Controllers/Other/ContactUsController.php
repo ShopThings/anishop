@@ -9,8 +9,8 @@ use App\Http\Resources\ContactUsResource;
 use App\Models\ContactUs;
 use App\Models\User;
 use App\Services\Contracts\ContactUsServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,8 +19,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ContactUsController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ContactUsServiceInterface $service
@@ -34,19 +33,14 @@ class ContactUsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ContactUsResource::collection($this->service->getContacts(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return ContactUsResource::collection($this->service->getContacts($filter));
     }
 
     /**
@@ -56,7 +50,7 @@ class ContactUsController extends Controller
      * @return ContactUsResource
      * @throws AuthorizationException
      */
-    public function show(ContactUs $contactUs)
+    public function show(ContactUs $contactUs): ContactUsResource
     {
         $this->authorize('view', $contactUs);
         return new ContactUsResource($contactUs);
@@ -70,7 +64,7 @@ class ContactUsController extends Controller
      * @return ContactUsResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateContactUsRequest $request, ContactUs $contactUs)
+    public function update(UpdateContactUsRequest $request, ContactUs $contactUs): JsonResponse|ContactUsResource
     {
         $this->authorize('update', $contactUs);
 
@@ -95,7 +89,7 @@ class ContactUsController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, ContactUs $contactUs)
+    public function destroy(Request $request, ContactUs $contactUs): JsonResponse
     {
         $this->authorize('delete', $contactUs);
 

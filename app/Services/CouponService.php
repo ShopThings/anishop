@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\CouponRepositoryInterface;
 use App\Services\Contracts\CouponServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -24,20 +25,18 @@ class CouponService extends Service implements CouponServiceInterface
     /**
      * @inheritDoc
      */
-    public function getCoupons(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getCoupons(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('coupons');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike(['title', 'code'], $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

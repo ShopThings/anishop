@@ -6,10 +6,11 @@ use App\Exceptions\FileDuplicationException;
 use App\Exceptions\InvalidDiskException;
 use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
+use App\Http\Requests\Filters\FileListFilter;
 use App\Models\FileManager;
+use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Repositories\FileRepository;
 use App\Services\Contracts\FileServiceInterface;
-use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Traits\VersionTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -42,26 +43,13 @@ class FileService implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
-    public function list(
-        string  $path,
-        string  $disk,
-        ?string $search = null,
-        ?string $fileSize = null,
-        array   $extensions = [],
-        array   $order = ['name' => 'asc']
-    ): array
+    public function list(FileListFilter $filter): array
     {
-        if (is_null($fileSize) || !$this->isValidThumbSize($fileSize))
+        $fileSize = $filter->getSize();
+        if (!$this->isValidThumbSize($fileSize))
             $fileSize = $this->repository::ORIGINAL;
 
-        return $this->repository->list(
-            $path,
-            $disk,
-            $search,
-            $fileSize,
-            $extensions,
-            $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->list($filter);
     }
 
     /**
@@ -121,7 +109,7 @@ class FileService implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
-    public function delete(array|FileManager $files, ?string $path, string $disk): bool
+    public function delete(FileManager|array $files, ?string $path, string $disk): bool
     {
         if ($files instanceof FileManager) {
             $path = $files->path;
@@ -158,20 +146,29 @@ class FileService implements FileServiceInterface
     /**
      * @inheritDoc
      */
-    public function find($file): Model|null
+    public function find($file, bool $isAuthenticated = false): Model|null
     {
         $where = new WhereBuilder('file_manager');
-        $where->orWhereEqual('id', $file)
-            ->orWhereEqual('CONCAT(file_manager.path, \'/\', file_manager.name)', $file);
+        $where->orWhereEqual('full_path', $file);
+
+        if ($isAuthenticated) {
+            $where->orWhereEqual('id', $file);
+        }
+
         return $this->repository->findWhere($where->build());
     }
 
     /**
      * @inheritDoc
      */
-    public function findFile($file, ?string $disk = null, ?string $size = null): ?string
+    public function findFile(
+        $file,
+        ?string $disk = null,
+        ?string $size = null,
+        bool $isAuthenticated = false
+    ): ?string
     {
-        $dbFile = $this->find($file);
+        $dbFile = $this->find($file, $isAuthenticated);
 
         if (!$dbFile) return null;
 
@@ -179,7 +176,7 @@ class FileService implements FileServiceInterface
 
         if (
             is_null($disk) ||
-            !in_array($disk, $this->repository::$storageDisks)
+            !in_array($disk, $this->repository::STORAGE_DISKS)
         ) {
             $files = $this->repository->fileExists($dbFile->path, $disk, true);
         } else {
@@ -201,10 +198,10 @@ class FileService implements FileServiceInterface
     public function isValidThumbSize(string $size): bool
     {
         return in_array($size, [
-            $this->repository::ORIGINAL,
-            $this->repository::SMALL,
-            $this->repository::MEDIUM,
-            $this->repository::LARGE,
+            FileRepositoryInterface::ORIGINAL,
+            FileRepositoryInterface::SMALL,
+            FileRepositoryInterface::MEDIUM,
+            FileRepositoryInterface::LARGE,
         ]);
     }
 }

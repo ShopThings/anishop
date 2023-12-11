@@ -34,8 +34,8 @@ trait FileTrait
         $searchFiles = [];
         foreach ($files as $file) {
             if (
-                preg_match('/[^\-]*\-[0-9](\-' . preg_quote($fileSize) . ')?\.[a-z]+$/i', $file) ||
-                preg_match('/[^\-]*\-[0-9]\.[a-z]+$/i', $file)
+                preg_match('/[^\-]*-[0-9](-' . preg_quote($fileSize) . ')?\.[a-z]+$/i', $file) ||
+                preg_match('/[^\-]*-[0-9]\.[a-z]+$/i', $file)
             ) {
                 $parts = explode('-', $file);
 
@@ -106,7 +106,7 @@ trait FileTrait
         if ($this->isSupportedImage($extension)) {
             foreach ($thumbs as $size => $thumb) {
                 $storedPath = $file->storeAs($path, $thumb . '.' . $extension, $disk);
-                $size = self::$validSizes[$size] ?? self::$validSizes[self::MEDIUM];
+                $size = self::VALID_SIZES[$size] ?? self::VALID_SIZES[self::MEDIUM];
                 $img = Image::make($storedPath)->resize($size[0], $size[1], function ($constraint) {
                     $constraint->aspectRatio();
                 });
@@ -256,7 +256,7 @@ trait FileTrait
      */
     public function checkDiskValidation(string $disk, bool $throw = true): bool
     {
-        if (!in_array(strtolower($disk), self::$storageDisks)) {
+        if (!in_array(strtolower($disk), self::STORAGE_DISKS)) {
             if ($throw)
                 throw new InvalidDiskException();
             else

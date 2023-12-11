@@ -10,8 +10,8 @@ use App\Http\Resources\ColorResource;
 use App\Models\Color;
 use App\Models\User;
 use App\Services\Contracts\ColorServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ColorController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ColorServiceInterface $service
@@ -35,19 +34,14 @@ class ColorController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ColorResource::collection($this->service->getColors(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return ColorResource::collection($this->service->getColors($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class ColorController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreColorRequest $request)
+    public function store(StoreColorRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class ColorController extends Controller
      * @return ColorResource
      * @throws AuthorizationException
      */
-    public function show(Color $color)
+    public function show(Color $color): ColorResource
     {
         $this->authorize('view', $color);
         return new ColorResource($color);
@@ -99,7 +93,7 @@ class ColorController extends Controller
      * @return ColorResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateColorRequest $request, Color $color)
+    public function update(UpdateColorRequest $request, Color $color): ColorResource|JsonResponse
     {
         $this->authorize('update', $color);
 
@@ -125,7 +119,7 @@ class ColorController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Color $color)
+    public function destroy(Request $request, Color $color): JsonResponse
     {
         $this->authorize('delete', $color);
 

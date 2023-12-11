@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\UnitRepositoryInterface;
 use App\Services\Contracts\UnitServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -23,20 +24,18 @@ class UnitService extends Service implements UnitServiceInterface
     /**
      * @inheritDoc
      */
-    public function getUnits(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getUnits(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('units');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('name', $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

@@ -30,6 +30,7 @@
                                         <li class="pt-6 px-2 border-2 border-dashed border-slate-300 rounded-lg mb-3">
                                             <div class="mt-2 relative mb-4">
                                                 <base-button
+                                                    v-if="!isBlogSidePlace"
                                                     class="!absolute top-0 left-0 -translate-y-8 -translate-x-1/4 bg-rose-500 !p-1 z-[1]"
                                                     @click="removeSlideHandler(index)"
                                                 >
@@ -39,45 +40,90 @@
                                                 <base-button
                                                     v-tooltip.left="'برای جابجایی بکشید'"
                                                     :class="[
-                                                    'handle cursor-grab active:cursor-grabbing !px-8 sm:!px-10 !rounded-t-none !rounded-br-none',
-                                                    '!absolute top-0 right-0 -translate-y-8 translate-x-2 bg-gray-100 !py-1 z-[1]',
-                                                    'border-b-2 border-l-2 !border-t-none !border-r-none',
-                                                ]"
+                                                        'handle cursor-grab active:cursor-grabbing !px-8 sm:!px-10 !rounded-t-none !rounded-br-none',
+                                                        '!absolute top-0 right-0 -translate-y-8 translate-x-2 bg-gray-100 !py-1 z-[1]',
+                                                        'border-b-2 border-l-2 !border-t-none !border-r-none',
+                                                    ]"
                                                 >
                                                     <Bars2Icon class="h-6 w-6 text-gray-500"/>
                                                 </base-button>
 
-                                                <div class="p-2 flex flex-col items-center">
-                                                    <partial-input-label
-                                                        title="انتخاب تصویر"
-                                                    />
-                                                    <base-media-placeholder
-                                                        type="image"
-                                                        :selected="element?.image"
-                                                    />
-                                                </div>
-
-                                                <div class="flex flex-wrap">
-                                                    <div class="p-2 w-full">
-                                                        <base-input
-                                                            label-title="لینک"
-                                                            placeholder="وارد نمایید"
-                                                            :name="'link' + element.id"
-                                                            :value="element?.link"
-                                                            @input="(v) => {element.link = v}"
-                                                        >
-                                                            <template #icon>
-                                                                <CurrencyDollarIcon class="h-6 w-6 text-gray-400"/>
-                                                            </template>
-                                                        </base-input>
+                                                <template v-if="isBlogPlace || isBlogSidePlace">
+                                                    <div class="flex flex-wrap">
+                                                        <div class="p-2 w-full md:w-1/2">
+                                                            <partial-input-label title="انتخاب بلاگ"/>
+                                                            <base-select-searchable
+                                                                :options="blogs"
+                                                                options-key="id"
+                                                                options-text="title"
+                                                                name="blog"
+                                                                :is-loading="searchBlogLoading"
+                                                                :is-local-search="false"
+                                                                placeholder="جستجوی بلاگ..."
+                                                                @change="(selected) => {element.blog = selected}"
+                                                                @query="searchBlog"
+                                                            />
+                                                            <partial-input-error-message
+                                                                :error-message="errors.blog"/>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                </template>
+                                                <template v-else-if="isAmazingOfferPlace">
+                                                    <div class="flex flex-wrap">
+                                                        <div class="p-2 w-full md:w-1/2">
+                                                            <partial-input-label title="انتخاب محصول"/>
+                                                            <base-select-searchable
+                                                                :options="products"
+                                                                options-key="id"
+                                                                options-text="title"
+                                                                name="product"
+                                                                :is-loading="searchProductLoading"
+                                                                :is-local-search="false"
+                                                                placeholder="جستجوی محصول..."
+                                                                @change="(selected) => {element.product = selected}"
+                                                                @query="searchProduct"
+                                                            />
+                                                            <partial-input-error-message
+                                                                :error-message="errors.product"/>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                                <template v-else>
+                                                    <div class="p-2 flex flex-col items-center">
+                                                        <partial-input-label
+                                                            title="انتخاب تصویر"
+                                                        />
+                                                        <base-media-placeholder
+                                                            type="image"
+                                                            :selected="element?.image"
+                                                        />
+                                                    </div>
+
+                                                    <div class="flex flex-wrap">
+                                                        <div class="p-2 w-full md:w-2/3">
+                                                            <base-input
+                                                                label-title="لینک"
+                                                                placeholder="وارد نمایید"
+                                                                :name="'link' + element.id"
+                                                                :value="element?.link"
+                                                                @input="(v) => {element.link = v}"
+                                                            >
+                                                                <template #icon>
+                                                                    <CurrencyDollarIcon class="h-6 w-6 text-gray-400"/>
+                                                                </template>
+                                                            </base-input>
+                                                        </div>
+                                                    </div>
+                                                </template>
                                             </div>
                                         </li>
                                     </template>
                                 </draggable>
 
-                                <div class="mt-3 mb-1">
+                                <div
+                                    v-if="!isBlogSidePlace"
+                                    class="mt-3 mb-1"
+                                >
                                     <base-button
                                         class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
                                         @click="handleNewSlideClick"
@@ -128,7 +174,6 @@ import VTransitionFade from "../../../transitions/VTransitionFade.vue";
 import {
     CheckIcon,
     CurrencyDollarIcon,
-    ArrowLeftCircleIcon,
     PlusIcon,
     Bars2Icon, TrashIcon
 } from "@heroicons/vue/24/outline/index.js";
@@ -136,15 +181,16 @@ import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue"
 import BaseInput from "../../../components/base/BaseInput.vue";
 import {useRequest} from "../../../composables/api-request.js";
 import {apiRoutes} from "../../../router/api-routes.js";
-import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
 import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 import {useToast} from "vue-toastification";
 import {useRoute} from "vue-router";
 import uniqueId from "lodash.uniqueid";
-import LoaderDotOrbit from "../../../components/base/loader/LoaderDotOrbit.vue";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseMediaPlaceholder from "../../../components/base/BaseMediaPlaceholder.vue";
 import BaseButton from "../../../components/base/BaseButton.vue";
+import {SLIDER_PLACES} from "../../../composables/constants.js";
+import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
+import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.vue";
 
 const route = useRoute()
 const toast = useToast()
@@ -178,8 +224,69 @@ function handleNewSlideClick() {
         id: parseInt(uniqueId()),
         link: '',
         image: null,
+        blog: null,
+        product: null,
     })
 }
+
+//-----------------------------
+// Search in blog
+//-----------------------------
+const isBlogPlace = computed(() => {
+    return slider?.slider_place.place_in === SLIDER_PLACES.MAIN_BLOG.value
+})
+const isBlogSidePlace = computed(() => {
+    return slider?.slider_place.place_in === SLIDER_PLACES.MAIN_BLOG_SIDE.value
+})
+
+const blogs = ref([])
+const searchBlogLoading = ref(true)
+
+function searchBlog(query) {
+    // searchBlogLoading.value = true
+    // useRequest(apiRoutes.admin.blogs.index, {
+    //     data: {
+    //         query,
+    //     },
+    // }, {
+    //     success: (response) => {
+    //         blogs.value = response.data
+    //     },
+    //     finally: () => {
+    //         searchBlogLoading.value = false
+    //     }
+    // })
+}
+
+//-----------------------------
+
+//-----------------------------
+// Search in product
+//-----------------------------
+const isAmazingOfferPlace = computed(() => {
+    return slider?.slider_place.place_in === SLIDER_PLACES.AMAZING_OFFER.value
+})
+
+const products = ref([])
+const searchProductLoading = ref(true)
+
+function searchProduct(query) {
+    // searchProductLoading.value = true
+    // useRequest(apiRoutes.admin.products.index, {
+    //     data: {
+    //         query,
+    //     },
+    // }, {
+    //     success: (response) => {
+    //         products.value = response.data
+    //     },
+    //     finally: () => {
+    //         searchProductLoading.value = false
+    //     }
+    // })
+}
+
+//-----------------------------
 
 onMounted(() => {
     // useRequest(apiReplaceParams(apiRoutes.admin.sliders.show, {slider: idParam.value}), null, {
@@ -195,8 +302,7 @@ onMounted(() => {
 
 <style scoped>
 .ghost {
-    opacity: 0.5;
-    background: rgb(226 232 240 / var(--tw-bg-opacity));
+    background: rgb(226 232 240 / .5);
     border-radius: .5rem;
 }
 </style>

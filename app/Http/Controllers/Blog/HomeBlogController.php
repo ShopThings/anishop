@@ -2,48 +2,120 @@
 
 namespace App\Http\Controllers\Blog;
 
+use App\Enums\Blogs\BlogVotingTypesEnum;
+use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Filters\HomeBlogFilter;
+use App\Http\Requests\UpdateHomeBlogRequest;
+use App\Http\Resources\Home\ArchiveResource;
+use App\Http\Resources\Home\BlogCategoryResource as HomeBlogCategoryResource;
+use App\Http\Resources\Home\BlogResource as HomeBLogResource;
+use App\Models\Blog;
+use App\Services\Contracts\BlogCategoryServiceInterface;
+use App\Services\Contracts\BlogServiceInterface;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class HomeBlogController extends Controller
 {
-    public function index()
+    /**
+     * @param BlogServiceInterface $service
+     */
+    public function __construct(
+        protected BlogServiceInterface $service
+    )
     {
-
     }
 
-    public function show()
+    /**
+     * @param HomeBlogFilter $filter
+     * @return AnonymousResourceCollection
+     */
+    public function index(HomeBlogFilter $filter): AnonymousResourceCollection
     {
-
+        return HomeBlogResource::collection($this->service->getFilteredBlogs($filter));
     }
 
-    public function vote()
+    /**
+     * @param Blog $blog
+     * @return HomeBlogResource
+     */
+    public function show(Blog $blog): HomeBlogResource
     {
-
+        return new HomeBlogResource($blog);
     }
 
-    public function archive()
+    /**
+     * @param UpdateHomeBlogRequest $request
+     * @param Blog $blog
+     * @return JsonResponse
+     */
+    public function vote(UpdateHomeBlogRequest $request, Blog $blog): JsonResponse
     {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'لطفا ابتدا به پنل خود وارد شوید.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
+        $vote = $request->validated('vote');
+        $isVoted = $this->service->toggleVote($user->id, $blog->id, BlogVotingTypesEnum::tryFrom($vote));
+
+        if ($isVoted) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'message' => 'رأی شما با موفقیت ثبت شد.',
+            ]);
+        } else {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'خطا در ثبت رأی',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
-    public function mainSlider()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function archive(): AnonymousResourceCollection
     {
-
+        return ArchiveResource::collection($this->service->getArchive());
     }
 
-    public function mainSideSlides()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function mainSlider(): AnonymousResourceCollection
     {
-
+        return HomeBlogResource::collection($this->service->getMainSlider());
     }
 
-    public function popularCategories()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function mainSideSlides(): AnonymousResourceCollection
     {
-
+        return HomeBLogResource::collection($this->service->getMainSideSlides());
     }
 
-    public function mostViewed()
+    /**
+     * @param BlogCategoryServiceInterface $service
+     * @return AnonymousResourceCollection
+     */
+    public function popularCategories(BlogCategoryServiceInterface $service): AnonymousResourceCollection
     {
+        return HomeBlogCategoryResource::collection($service->getSideCategories());
+    }
 
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function mostViewed(): AnonymousResourceCollection
+    {
+        return HomeBlogResource::collection($this->service->getLatestMostViewedBlogs());
     }
 }

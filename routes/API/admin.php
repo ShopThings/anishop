@@ -363,7 +363,7 @@ Route::prefix('admin')
                 /*
                  * menu routes
                  */
-                Route::apiResource('menus', MenuController::class)->except(['store', 'update', 'destroy'])
+                Route::apiResource('menus', MenuController::class)->only(['index', 'show'])
                     ->whereNumber('menu');
                 Route::post('menus/{menu}/modify', [MenuController::class, 'modifyMenus'])
                     ->whereNumber('menu')->name('menus.modify-menus');
@@ -371,7 +371,7 @@ Route::prefix('admin')
                 /*
                  * setting routes
                  */
-                Route::apiResource('settings', SettingController::class)->except(['index', 'update'])
+                Route::apiResource('settings', SettingController::class)->only(['index', 'update'])
                     ->whereNumber('setting');
             });
 

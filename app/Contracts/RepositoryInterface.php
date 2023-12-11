@@ -117,7 +117,7 @@ interface RepositoryInterface
      * @param array $columns
      * @param bool $withTrashed
      * @param bool $onlyTrashed
-     * @return Collection|Model|null
+     * @return Model|null
      */
     public function findWhere(
         GetterExpressionInterface $where,

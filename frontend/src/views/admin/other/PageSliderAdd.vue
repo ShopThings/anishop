@@ -145,7 +145,7 @@
                                 <base-input
                                     label-title="لینک مشاهده همه"
                                     placeholder="وارد نمایید"
-                                    name="link"
+                                    name="link_all"
                                 >
                                     <template #icon>
                                         <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -159,7 +159,7 @@
                                     <div class="grow">
                                         <base-range-slider
                                             :min="0"
-                                            :max="30"
+                                            :max="20"
                                             show-tooltip="always"
                                             v-model="slideCount"
                                         />
@@ -226,20 +226,15 @@ import BaseRangeSlider from "../../../components/base/BaseRangeSlider.vue";
 
 const canSubmit = ref(true)
 
-const sliderPlaces = [
-    {
-        value: SLIDER_PLACES.MAIN.value,
-        text: SLIDER_PLACES.MAIN.text,
-    },
-    {
-        value: SLIDER_PLACES.MAIN_SLIDERS.value,
-        text: SLIDER_PLACES.MAIN_SLIDERS.text,
-    },
-    {
-        value: SLIDER_PLACES.MAIN_SLIDER_IMAGES.value,
-        text: SLIDER_PLACES.MAIN_SLIDER_IMAGES.text,
-    },
-]
+const sliderPlaces = []
+for (const p in SLIDER_PLACES) {
+    if (SLIDER_PLACES.hasOwnProperty(p)) {
+        sliderPlaces.push({
+            value: SLIDER_PLACES[p].value,
+            text: SLIDER_PLACES[p].text,
+        })
+    }
+}
 
 const selectedSliderPlace = ref(null)
 const publishStatus = ref(true)

@@ -10,8 +10,8 @@ use App\Http\Resources\StaticPageResource;
 use App\Models\StaticPage;
 use App\Models\User;
 use App\Services\Contracts\StaticPageServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class StaticPageController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param StaticPageServiceInterface $service
@@ -35,19 +34,14 @@ class StaticPageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return StaticPageResource::collection($this->service->getPages(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return StaticPageResource::collection($this->service->getPages($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class StaticPageController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreStaticPageRequest $request)
+    public function store(StoreStaticPageRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class StaticPageController extends Controller
      * @return StaticPageResource
      * @throws AuthorizationException
      */
-    public function show(StaticPage $staticPage)
+    public function show(StaticPage $staticPage): StaticPageResource
     {
         $this->authorize('view', $staticPage);
         return new StaticPageResource($staticPage);
@@ -99,7 +93,7 @@ class StaticPageController extends Controller
      * @return StaticPageResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateStaticPageRequest $request, StaticPage $staticPage)
+    public function update(UpdateStaticPageRequest $request, StaticPage $staticPage): JsonResponse|StaticPageResource
     {
         $this->authorize('update', $staticPage);
 
@@ -125,7 +119,7 @@ class StaticPageController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, StaticPage $staticPage)
+    public function destroy(Request $request, StaticPage $staticPage): JsonResponse
     {
         $this->authorize('delete', $staticPage);
 

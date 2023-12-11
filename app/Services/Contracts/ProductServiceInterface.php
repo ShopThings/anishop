@@ -3,6 +3,8 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
+use App\Support\Filter;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -10,17 +12,13 @@ use Illuminate\Database\Eloquent\Model;
 interface ProductServiceInterface extends ServiceInterface
 {
     /**
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
+     * @param GetterExpressionInterface|null $where
      * @return Collection|LengthAwarePaginator
      */
     public function getProducts(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
+        Filter                    $filter,
+        GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator;
 
     /**

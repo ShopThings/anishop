@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Services\Contracts\BrandServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -24,15 +25,10 @@ class BrandService extends Service implements BrandServiceInterface
     /**
      * @inheritDoc
      */
-    public function getBrands(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getBrands(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('brands');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'latin_name',
                 'escaped_name',
@@ -41,7 +37,10 @@ class BrandService extends Service implements BrandServiceInterface
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

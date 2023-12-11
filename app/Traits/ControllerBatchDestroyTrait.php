@@ -16,7 +16,7 @@ trait ControllerBatchDestroyTrait
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function batchDestroy(Request $request)
+    public function batchDestroy(Request $request): JsonResponse
     {
         $this->authorize('batchDelete', User::class);
 

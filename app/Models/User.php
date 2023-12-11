@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\SettingsEnum;
+use App\Enums\SMS\SMSTypesEnum;
+use App\Notifications\VerifyCodeNotification;
 use App\Support\Model\AuthenticatableExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -52,6 +55,60 @@ class User extends Model
     protected static function newFactory()
     {
         return UserFactory::new();
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Some Needed Functionality
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * @return bool
+     */
+    public function shouldSendActivationVerifyCode(): bool
+    {
+        return $this->verified_at !== null && now()->gt($this->verify_wait_for_code);
+    }
+
+    /**
+     * @param string $code
+     * @return void
+     */
+    public function notifyActivationVerificationCode(string $code): void
+    {
+        $this->verification_code = $code;
+        $this->verify_wait_for_code = now()->addMinute();
+        $this->save();
+
+        $model = $this->settingService->getSetting(SettingsEnum::SMS_ACTIVATION->value);
+        $this->notify(
+            (new VerifyCodeNotification($this, $code, $model, SMSTypesEnum::ACTIVATION))->afterCommit()
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSendForgotPasswordVerifyCode(): bool
+    {
+        return now()->gt($this->forget_password_wait_for_code);
+    }
+
+    /**
+     * @param string $code
+     * @return void
+     */
+    public function notifyForgetPasswordVerificationCode(string $code): void
+    {
+        $this->forget_password_code = $code;
+        $this->forget_password_wait_for_code = now()->addMinute();
+        $this->save();
+
+        $model = $this->settingService->getSetting(SettingsEnum::SMS_RECOVER_PASS->value);
+        $this->notify(
+            (new VerifyCodeNotification($this, $code, $model, SMSTypesEnum::RECOVER_PASS))->afterCommit()
+        );
     }
 
     /**

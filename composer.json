@@ -1,8 +1,8 @@
 {
-    "name": "laravel/laravel",
+    "name": "mmdm/anishop",
     "type": "project",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "description": "Laravel and Vue Online Shop.",
+    "keywords": ["online-shop", "e-commerce", "laravel-e-commerce"],
     "license": "MIT",
     "require": {
         "php": "^8.1",

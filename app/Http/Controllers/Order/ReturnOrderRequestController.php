@@ -11,6 +11,7 @@ use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
 use App\Models\User;
 use App\Services\Contracts\ReturnOrderServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -34,24 +35,15 @@ class ReturnOrderRequestController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @param User|null $user
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request, ?User $user = null)
+    public function index(Filter $filter, ?User $user = null): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ReturnOrderResource::collection($this->service->getOrders(
-            userId: $user?->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
-        ));
+        return ReturnOrderResource::collection($this->service->getOrders(userId: $user?->id, filter: $filter));
     }
 
     /**
@@ -61,7 +53,7 @@ class ReturnOrderRequestController extends Controller
      * @return ReturnOrderResource
      * @throws AuthorizationException
      */
-    public function show(ReturnOrderRequest $returnOrderRequest)
+    public function show(ReturnOrderRequest $returnOrderRequest): ReturnOrderResource
     {
         $this->authorize('view', $returnOrderRequest);
         return new ReturnOrderResource($returnOrderRequest);
@@ -75,7 +67,10 @@ class ReturnOrderRequestController extends Controller
      * @return ReturnOrderResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateReturnOrderRequest $request, ReturnOrderRequest $returnOrderRequest)
+    public function update(
+        UpdateReturnOrderRequest $request,
+        ReturnOrderRequest       $returnOrderRequest
+    ): ReturnOrderResource|JsonResponse
     {
         $this->authorize('update', $returnOrderRequest);
 
@@ -99,7 +94,7 @@ class ReturnOrderRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, ReturnOrderRequest $returnOrderRequest)
+    public function destroy(Request $request, ReturnOrderRequest $returnOrderRequest): JsonResponse
     {
         $this->authorize('delete', $returnOrderRequest);
 
@@ -125,7 +120,7 @@ class ReturnOrderRequestController extends Controller
         UpdateReturnOrderItemRequest $request,
         ReturnOrderRequest           $returnOrderRequest,
         ReturnOrderRequestItem       $returnOrderRequestItem
-    )
+    ): JsonResponse
     {
         $this->authorize('update', $returnOrderRequest);
 

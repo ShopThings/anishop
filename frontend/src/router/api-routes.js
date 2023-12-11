@@ -407,12 +407,14 @@ export const apiRoutes = {
         stepMobile: 'api/signup/mobile',
         stepCode: 'api/signup/code',
         stepPass: 'api/signup/new-password',
+        resendCode: 'api/signup/resend-code',
     },
 
     recoverPass: {
         stepMobile: 'api/recover-password/mobile',
         stepCode: 'api/recover-password/code',
         stepNewPass: 'api/recover-password/new-password',
+        resendCode: 'api/recover-password/resend-code',
     },
 
     main: {
@@ -454,7 +456,6 @@ export const apiRoutes = {
     blogComments: {
         index: 'api/blogs/{blog}/comments',
         report: 'api/blogs/{blog}/comments/{comment}/report',
-        vote: 'api/blogs/{blog}/comments/{comment}/vote',
     },
 
     contactUs: 'api/contact-us',

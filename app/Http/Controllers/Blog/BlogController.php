@@ -10,8 +10,8 @@ use App\Http\Resources\BlogResource;
 use App\Models\Blog;
 use App\Models\User;
 use App\Services\Contracts\BlogServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param BlogServiceInterface $service
@@ -35,19 +34,14 @@ class BlogController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return BlogResource::collection($this->service->getBlogs(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return BlogResource::collection($this->service->getBlogs($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class BlogController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreBlogRequest $request)
+    public function store(StoreBlogRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class BlogController extends Controller
      * @return BlogResource
      * @throws AuthorizationException
      */
-    public function show(Blog $blog)
+    public function show(Blog $blog): BlogResource
     {
         $this->authorize('view', $blog);
         return new BlogResource($blog);
@@ -99,7 +93,7 @@ class BlogController extends Controller
      * @return BlogResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBlogRequest $request, Blog $blog)
+    public function update(UpdateBlogRequest $request, Blog $blog): JsonResponse|BlogResource
     {
         $this->authorize('update', $blog);
 
@@ -126,7 +120,7 @@ class BlogController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Blog $blog)
+    public function destroy(Request $request, Blog $blog): JsonResponse
     {
         $this->authorize('delete', $blog);
 

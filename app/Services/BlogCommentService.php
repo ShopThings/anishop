@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\BlogComment;
+use App\Repositories\BlogCommentRepository;
 use App\Repositories\Contracts\BlogCommentRepositoryInterface;
 use App\Services\Contracts\BlogCommentServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -20,21 +23,18 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
     /**
      * @inheritDoc
      */
-    public function getComments(
-        int     $blogId,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getComments(int $blogId, Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCommentsSearchFilterPaginated(
-            blogId: $blogId,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getCommentsSearchFilterPaginated(blogId: $blogId, filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function reportComment(BlogComment $comment): bool
+    {
+        $repository = new BlogCommentRepository($comment);
+        return $repository->reportComment();
     }
 
     /**

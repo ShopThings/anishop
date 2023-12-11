@@ -35,7 +35,6 @@ class ProductSingleResource extends JsonResource
             'items' => $this->whenLoaded('items'),
             'festivals' => $this->whenLoaded('festivals'),
             'related_products' => $this->whenLoaded('relatedProducts'),
-            'related_product_items' => $this->whenLoaded('relatedProductItems'),
             'product_attr_values' => $this->whenLoaded('productAttrValues'),
             'favorite_products' => $this->whenLoaded('favoriteProducts'),
             'is_available' => $this->is_available,

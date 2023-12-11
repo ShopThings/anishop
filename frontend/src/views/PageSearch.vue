@@ -185,6 +185,7 @@ import AppNewsletter from "../components/AppNewsletter.vue";
 import {formatPriceLikeNumber} from "../composables/helper.js";
 import BasePopoverSide from "../components/base/BasePopoverSide.vue";
 import {XMarkIcon} from "@heroicons/vue/24/solid/index.js";
+import {PRODUCT_ORDER_TYPES} from "../composables/constants.js";
 
 function clearAllFilters() {
     // ...
@@ -193,20 +194,21 @@ function clearAllFilters() {
 //----------------------------
 // Search Products
 //----------------------------
-const productOrder = [
-    {
-        id: 1,
-        key: 'newest',
-        text: 'جدیدترین',
-        sort: 'desc',
-    },
-    {
-        id: 2,
-        key: 'most_seen',
-        text: 'پربازدیدترین',
-        sort: 'asc',
-    },
-]
+const productOrder = []
+
+// create orders
+let counter = 1
+for (const t in PRODUCT_ORDER_TYPES) {
+    if (PRODUCT_ORDER_TYPES.hasOwnProperty(t)) {
+        productOrder.push({
+            id: counter++,
+            key: PRODUCT_ORDER_TYPES[t].value,
+            text: PRODUCT_ORDER_TYPES[t].text,
+        })
+    }
+}
+//
+
 const products = ref([
     {
         id: 1,

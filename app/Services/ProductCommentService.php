@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ProductCommentRepositoryInterface;
 use App\Services\Contracts\ProductCommentServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -21,20 +22,11 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
     /**
      * @inheritDoc
      */
-    public function getComments(
-        int     $productId,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getComments(int $productId, Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getCommentsSearchFilterPaginated(
             productId: $productId,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
+            filter: $filter
         );
     }
 

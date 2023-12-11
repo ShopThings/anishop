@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Enums\Responses\ResponseTypesEnum;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

@@ -17,7 +17,7 @@ class SliderItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'slider_id' => $this->slider_place,
+            'slider_id' => $this->slider_id,
             'slider' => $this->whenLoaded('slider'),
             'priority' => $this->priority,
             'options' => $this->options,

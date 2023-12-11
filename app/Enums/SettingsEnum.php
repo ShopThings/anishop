@@ -12,6 +12,7 @@ enum SettingsEnum: string
     case DESCRIPTION = 'description';
     case KEYWORDS = 'keywords';
 
+    case SMS_SIGNUP = 'sms_signup';
     case SMS_ACTIVATION = 'sms_activation';
     case SMS_RECOVER_PASS = 'sms_recover_pass';
     case SMS_BUY = 'sms_buy';
@@ -25,8 +26,7 @@ enum SettingsEnum: string
     case STORE_CITY = 'store_city';
     case LAT_LNG = 'lat_lng';
 
-    case CURRENT_CITY_POST_PRICE = 'current_city_post_price';
-    case MIN_FREE_PRICE = 'min_free_price';
+    case MIN_FREE_POST_PRICE = 'min_free_post_price';
 
     case PRODUCT_EACH_PAGE = 'product_each_page';
     case BLOG_EACH_PAGE = 'blog_each_page';

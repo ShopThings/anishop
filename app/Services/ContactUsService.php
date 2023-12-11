@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ContactUsRepositoryInterface;
 use App\Services\Contracts\ContactUsServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -23,15 +24,10 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     /**
      * @inheritDoc
      */
-    public function getContacts(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getContacts(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('contact_us');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'title',
                 'name',
@@ -41,7 +37,10 @@ class ContactUsService extends Service implements ContactUsServiceInterface
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

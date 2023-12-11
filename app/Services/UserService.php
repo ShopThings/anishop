@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\UserServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -28,79 +29,33 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function getUsers(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getUsers(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getUsersSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getUsersSearchFilterPaginated(filter: $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function getUserAddresses(
-        User    $user,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getUserAddresses(User $user, Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getUserAddressesSearchFilterPaginated(
-            user: $user,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getUserAddressesSearchFilterPaginated(user: $user, filter: $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function getUserFavoriteProduct(
-        User    $user,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getUserFavoriteProduct(User $user, Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getUserFavoriteProductsSearchFilterPaginated(
-            user: $user,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getUserFavoriteProductsSearchFilterPaginated(user: $user, filter: $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function getUserPurchases(
-        User    $user,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getUserPurchases(User $user, Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getUserPurchasesSearchFilterPaginated(
-            user: $user,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getUserPurchasesSearchFilterPaginated(user: $user, filter: $filter);
     }
 
     /**

@@ -168,7 +168,7 @@
                                             <div class="grow">
                                                 <base-range-slider
                                                     :min="0"
-                                                    :max="30"
+                                                    :max="20"
                                                     show-tooltip="always"
                                                     v-model="slideCount"
                                                 />

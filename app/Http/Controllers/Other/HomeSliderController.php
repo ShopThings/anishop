@@ -3,27 +3,55 @@
 namespace App\Http\Controllers\Other;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\Home\AmazingOfferSliderResource;
+use App\Http\Resources\Home\MainAllSlidersResource;
+use App\Http\Resources\Home\MainCategorySliderResource;
+use App\Http\Resources\Home\MainSliderResource;
+use App\Services\Contracts\CategoryServiceInterface;
+use App\Services\Contracts\SliderServiceInterface;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class HomeSliderController extends Controller
 {
-    public function main()
+    /**
+     * @param SliderServiceInterface $service
+     */
+    public function __construct(
+        protected SliderServiceInterface $service
+    )
     {
-
     }
 
-    public function categories()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function main(): AnonymousResourceCollection
     {
-
+        return MainSliderResource::collection($this->service->getMainSlider());
     }
 
-    public function amazingOffers()
+    /**
+     * @param CategoryServiceInterface $service
+     * @return AnonymousResourceCollection
+     */
+    public function categories(CategoryServiceInterface $service): AnonymousResourceCollection
     {
-
+        return MainCategorySliderResource::collection($service->getSliderCategories());
     }
 
-    public function allSliders()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function amazingOffers(): AnonymousResourceCollection
     {
+        return AmazingOfferSliderResource::collection($this->service->getAmazingOfferSlider());
+    }
 
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function allSliders(): AnonymousResourceCollection
+    {
+        return MainAllSlidersResource::collection($this->service->getAllMainSliders());
     }
 }

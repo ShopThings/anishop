@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ColorRepositoryInterface;
 use App\Services\Contracts\ColorServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -23,20 +24,18 @@ class ColorService extends Service implements ColorServiceInterface
     /**
      * @inheritDoc
      */
-    public function getColors(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getColors(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('colors');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('name', $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

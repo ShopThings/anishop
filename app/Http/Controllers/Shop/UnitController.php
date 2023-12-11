@@ -10,8 +10,8 @@ use App\Http\Resources\UnitResource;
 use App\Models\Unit;
 use App\Models\User;
 use App\Services\Contracts\UnitServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UnitController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param UnitServiceInterface $service
@@ -35,19 +34,14 @@ class UnitController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return UnitResource::collection($this->service->getUnits(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return UnitResource::collection($this->service->getUnits($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class UnitController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreUnitRequest $request)
+    public function store(StoreUnitRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class UnitController extends Controller
      * @return UnitResource
      * @throws AuthorizationException
      */
-    public function show(Unit $unit)
+    public function show(Unit $unit): UnitResource
     {
         $this->authorize('view', $unit);
         return new UnitResource($unit);
@@ -99,7 +93,7 @@ class UnitController extends Controller
      * @return UnitResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateUnitRequest $request, Unit $unit)
+    public function update(UpdateUnitRequest $request, Unit $unit): JsonResponse|UnitResource
     {
         $this->authorize('update', $unit);
 
@@ -125,7 +119,7 @@ class UnitController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Unit $unit)
+    public function destroy(Request $request, Unit $unit): JsonResponse
     {
         $this->authorize('delete', $unit);
 

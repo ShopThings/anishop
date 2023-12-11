@@ -22,6 +22,10 @@ return new class extends Migration {
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
 
+            // for MySQL only (I guess)
+            $table->text('full_path')
+                ->virtualAs('CONCAT(file_manager.path, \'/\', file_manager.name, \'/\', file_manager.extension)');
+
             $table->index('name');
             $table->index('extension');
             $table->index('path');

@@ -14,7 +14,7 @@ class PermissionController extends Controller
      * @param RoleServiceInterface $service
      * @return JsonResponse
      */
-    public function index(RoleServiceInterface $service)
+    public function index(RoleServiceInterface $service): JsonResponse
     {
         $permissions = $service->getPermissions();
         $status = ResponseCodes::HTTP_OK;

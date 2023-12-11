@@ -10,8 +10,8 @@ use App\Http\Resources\BlogBadgeResource;
 use App\Models\BlogCommentBadge;
 use App\Models\User;
 use App\Services\Contracts\BlogBadgeServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogCommentBadgeController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param BlogBadgeServiceInterface $service
@@ -35,19 +34,14 @@ class BlogCommentBadgeController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return BlogBadgeResource::collection($this->service->getBadges(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return BlogBadgeResource::collection($this->service->getBadges($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class BlogCommentBadgeController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreBlogBadgeRequest $request)
+    public function store(StoreBlogBadgeRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class BlogCommentBadgeController extends Controller
      * @return BlogBadgeResource
      * @throws AuthorizationException
      */
-    public function show(BlogCommentBadge $blogCommentBadge)
+    public function show(BlogCommentBadge $blogCommentBadge): BlogBadgeResource
     {
         $this->authorize('view', $blogCommentBadge);
         return new BlogBadgeResource($blogCommentBadge);
@@ -99,7 +93,7 @@ class BlogCommentBadgeController extends Controller
      * @return BlogBadgeResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBlogBadgeRequest $request, BlogCommentBadge $blogCommentBadge)
+    public function update(UpdateBlogBadgeRequest $request, BlogCommentBadge $blogCommentBadge): JsonResponse|BlogBadgeResource
     {
         $this->authorize('update', $blogCommentBadge);
 
@@ -128,7 +122,7 @@ class BlogCommentBadgeController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, BlogCommentBadge $blogCommentBadge)
+    public function destroy(Request $request, BlogCommentBadge $blogCommentBadge): JsonResponse
     {
         $this->authorize('delete', $blogCommentBadge);
 

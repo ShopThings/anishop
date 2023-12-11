@@ -239,6 +239,14 @@ export const HomeSignupAPI = {
             callbacks
         )
     },
+
+    resendVerifyCode(callbacks) {
+        useRequest(
+            apiRoutes.signup.resendCode,
+            {method: 'POST'},
+            callbacks
+        )
+    },
 }
 
 export const HomeRecoverPasswordAPI = {
@@ -271,6 +279,14 @@ export const HomeRecoverPasswordAPI = {
                 method: 'POST',
                 data,
             },
+            callbacks
+        )
+    },
+
+    resendVerifyCode(callbacks) {
+        useRequest(
+            apiRoutes.recoverPass.resendCode,
+            {method: 'POST'},
             callbacks
         )
     },

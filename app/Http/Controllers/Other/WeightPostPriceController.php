@@ -10,8 +10,8 @@ use App\Http\Resources\WeightPostPriceResource;
 use App\Models\User;
 use App\Models\WeightPostPrice;
 use App\Services\Contracts\WeightPostPriceServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class WeightPostPriceController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param WeightPostPriceServiceInterface $service
@@ -35,19 +34,14 @@ class WeightPostPriceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter)
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return WeightPostPriceResource::collection($this->service->getPostPrices(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return WeightPostPriceResource::collection($this->service->getPostPrices($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class WeightPostPriceController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreWeightPostPriceRequest $request)
+    public function store(StoreWeightPostPriceRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class WeightPostPriceController extends Controller
      * @return WeightPostPriceResource
      * @throws AuthorizationException
      */
-    public function show(WeightPostPrice $weightPostPrice)
+    public function show(WeightPostPrice $weightPostPrice): WeightPostPriceResource
     {
         $this->authorize('view', $weightPostPrice);
         return new WeightPostPriceResource($weightPostPrice);
@@ -99,7 +93,7 @@ class WeightPostPriceController extends Controller
      * @return WeightPostPriceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateWeightPostPriceRequest $request, WeightPostPrice $weightPostPrice)
+    public function update(UpdateWeightPostPriceRequest $request, WeightPostPrice $weightPostPrice): JsonResponse|WeightPostPriceResource
     {
         $this->authorize('update', $weightPostPrice);
 
@@ -124,7 +118,7 @@ class WeightPostPriceController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, WeightPostPrice $weightPostPrice)
+    public function destroy(Request $request, WeightPostPrice $weightPostPrice): JsonResponse
     {
         $this->authorize('delete', $weightPostPrice);
 

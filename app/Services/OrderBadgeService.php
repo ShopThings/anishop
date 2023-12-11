@@ -4,13 +4,16 @@ namespace App\Services;
 
 use App\Repositories\Contracts\OrderBadgeRepositoryInterface;
 use App\Services\Contracts\OrderBadgeServiceInterface;
-use App\Support\Model\CodeGeneratorHelper;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Snortlin\NanoId\NanoId;
+use Snortlin\NanoId\NanoIdInterface;
+use function App\Support\Helper\get_nanoid;
 use function App\Support\Helper\to_boolean;
 
 class OrderBadgeService extends Service implements OrderBadgeServiceInterface
@@ -24,20 +27,18 @@ class OrderBadgeService extends Service implements OrderBadgeServiceInterface
     /**
      * @inheritDoc
      */
-    public function getBadges(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getBadges(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('order_badges');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('title', $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 
@@ -47,7 +48,7 @@ class OrderBadgeService extends Service implements OrderBadgeServiceInterface
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'code' => CodeGeneratorHelper::orderBadgeCode(),
+            'code' => get_nanoid(),
             'title' => $attributes['title'],
             'color_hex' => $attributes['color_hex'],
             'should_return_order_product' => to_boolean($attributes['should_return_order_product']),

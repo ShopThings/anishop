@@ -41,7 +41,7 @@
                 class="shrink-0 lg:w-80"
                 containerSelector=".sticky-container"
                 innerWrapperSelector='.sidebar__inner'
-                :top-spacing="84"
+                :top-spacing="114"
                 :bottom-spacing="20"
                 :min-width="1024"
             >
@@ -136,24 +136,28 @@ import PartialEmptyRows from "../components/partials/PartialEmptyRows.vue";
 import BlogCard from "../components/blog/BlogCard.vue";
 import LoaderListSingleBlog from "../components/base/loader/LoaderListSingleBlog.vue";
 import AppNavigationHeader from "../components/AppNavigationHeader.vue";
+import {BLOG_ORDER_TYPES} from "../composables/constants.js";
 
 //----------------------------
 // Search Blogs
 //----------------------------
-const blogOrder = [
-    {
-        id: 1,
-        key: 'newest',
-        text: 'جدیدترین',
-        sort: 'desc',
-    },
-    {
-        id: 2,
-        key: 'most_seen',
-        text: 'پربازدیدترین',
-        sort: 'asc',
-    },
-]
+
+const blogOrder = []
+
+// create orders
+let counter = 1
+for(const t in BLOG_ORDER_TYPES) {
+    if(BLOG_ORDER_TYPES.hasOwnProperty(t)) {
+        console.log(t)
+        blogOrder.push({
+            id: counter++,
+            key: BLOG_ORDER_TYPES[t].value,
+            text: BLOG_ORDER_TYPES[t].text,
+        })
+    }
+}
+//
+
 const blogs = ref([
     {
         id: 9,

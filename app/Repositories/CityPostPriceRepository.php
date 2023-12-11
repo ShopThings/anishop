@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\DatabaseEnum;
 use App\Models\CityPostPrice;
 use App\Repositories\Contracts\CityPostPriceRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -26,13 +27,15 @@ class CityPostPriceRepository extends Repository implements CityPostPriceReposit
      * @inheritDoc
      */
     public function getPostPricesSearchFilterPaginated(
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query->when($search, function (Builder $query, string $search) {
             $query

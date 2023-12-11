@@ -6,6 +6,7 @@ use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Models\Comment;
 use App\Repositories\Contracts\ProductCommentRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -25,14 +26,16 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
      * @inheritDoc
      */
     public function getCommentsSearchFilterPaginated(
-        int     $productId,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        int    $productId,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
             ->when($search, function (Builder $query, string $search) {

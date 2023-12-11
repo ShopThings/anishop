@@ -9,6 +9,7 @@ use App\Repositories\Contracts\OrderBadgeRepositoryInterface;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ProvinceRepositoryInterface;
 use App\Services\Contracts\OrderServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -30,21 +31,9 @@ class OrderService extends Service implements OrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function getOrders(
-        ?int    $userId = null,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getOrders(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator
     {
-        return $this->repository->getOrdersSearchFilterPaginated(
-            userId: $userId,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
     }
 
     /**

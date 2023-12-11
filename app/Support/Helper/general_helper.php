@@ -2,6 +2,10 @@
 
 namespace App\Support\Helper;
 
+use App\Enums\SMS\SMSTypesEnum;
+use Snortlin\NanoId\NanoId;
+use Snortlin\NanoId\NanoIdInterface;
+
 if (!function_exists('to_boolean')) {
     /**
      * Convert to boolean
@@ -15,29 +19,28 @@ if (!function_exists('to_boolean')) {
     }
 }
 
-if (!function_exists('get_color_from_bg')) {
+if (!function_exists('get_random_verification_code')) {
     /**
-     * @see https://betterprogramming.pub/generate-contrasting-text-for-your-random-background-color-ac302dc87b4
-     *
-     * @param string $bgColor
-     * @param string $lightColor
-     * @param string $darkColor
+     * @param int $length
      * @return string
      */
-    function get_color_from_bg(string $bgColor, string $lightColor = '#ffffff', string $darkColor = '#000000'): string
+    function get_random_verification_code($length = 6): string
     {
-        $color = ($bgColor[0] === '#') ? substr($bgColor, 1) : $bgColor;
-        if (strlen($color) === 3) {
-            $colorArr = array_map(function ($value) {
-                return $value . $value;
-            }, str_split($color));
-            $color = implode('', $colorArr);
-        }
-        $r = hexdec(substr($color, 0, 2)); // hexToR
-        $g = hexdec(substr($color, 2, 2)); // hexToG
-        $b = hexdec(substr($color, 4, 2)); // hexToB
-        $brightness = round((($r * 299) + ($g * 587) + ($b * 114)) / 1000);
-        return $brightness > 150 ? $darkColor : $lightColor;
+        $pool = '0123456789';
+        return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
+    }
+}
+
+if (!function_exists('get_nanoid')) {
+    /**
+     * @return string
+     */
+    function get_nanoid(): string
+    {
+        return NanoId::nanoId(
+            NanoIdInterface::SIZE_DEFAULT,
+            NanoIdInterface::ALPHABET_ALPHA_NUMERIC_READABLE
+        );
     }
 }
 
@@ -52,36 +55,26 @@ if (!function_exists('get_db_ancestry_regex_string')) {
     }
 }
 
-if (!function_exists('replaced_sms_body')) {
+if (!function_exists('replace_sms_variables')) {
     /**
-     * @param $type
-     * @param array $placeholders
+     * @param string $body
+     * @param SMSTypesEnum $type
+     * @param array $replacements
      * @return string
      */
-    function replaced_sms_body($type, array $placeholders = []): string
+    function replace_sms_variables(string $body, SMSTypesEnum $type, array $replacements = []): string
     {
-        if (!function_exists('message_replacer')) {
-            /**
-             * @param string $message
-             * @param array $placeholders
-             * @return string
-             */
-            function message_replacer(string $message, array $placeholders): string
-            {
-                if (!empty($message)) {
-                    foreach ($placeholders as $placeholder => $value) {
-                        if (is_scalar($value)) {
-                            $message = str_replace($placeholder, $value, $message);
-                        }
-                    }
-                }
-                return $message;
+        $allReplacements = config('market:sms.replacements', []);
+        if (!count($allReplacements)) return $body;
+
+        $availableReplacements = SMSTypesEnum::replacementsArray($type);
+
+        foreach ($replacements as $key => $value) {
+            if (is_scalar($value) && in_array($key, $availableReplacements)) {
+                $body = str_replace($allReplacements[$key], $value, $body);
             }
         }
 
-        // ...
-        $body = '';
-
-        return message_replacer($body, $placeholders);
+        return $body;
     }
 }

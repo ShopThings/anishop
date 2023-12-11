@@ -20,7 +20,6 @@ class BlogCategoryResource extends JsonResource
             'name' => $this->name,
             'escaped_name' => $this->escaped_name,
             'slug' => $this->slug,
-            'ancestry' => $this->ancestry,
             'priority' => $this->priority,
             'keywords' => $this->keywords,
             'is_published' => $this->is_published,

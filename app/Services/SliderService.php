@@ -2,8 +2,19 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
+use App\Enums\Products\ProductOrderTypesEnum;
+use App\Enums\Sliders\SliderItemOptionsEnum;
+use App\Enums\Sliders\SliderOptionsEnum;
+use App\Enums\Sliders\SliderPlacesEnum;
+use App\Http\Requests\Filters\HomeProductFilter;
 use App\Repositories\Contracts\SliderRepositoryInterface;
+use App\Services\Contracts\BrandServiceInterface;
+use App\Services\Contracts\CategoryServiceInterface;
+use App\Services\Contracts\FileServiceInterface;
+use App\Services\Contracts\ProductServiceInterface;
 use App\Services\Contracts\SliderServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -24,21 +35,152 @@ class SliderService extends Service implements SliderServiceInterface
     /**
      * @inheritDoc
      */
-    public function getSliders(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getSliders(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('sliders');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('title', $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSlider(SliderPlacesEnum|array $place, bool $withUnpublished = false): Collection
+    {
+        if (is_array($place)) {
+            $place = collect($place)->filter(fn($item) => $item instanceof SliderPlacesEnum)->toArray();
+        }
+
+        return $this->repository->getSlider($place, $withUnpublished);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMainSlider(): Collection
+    {
+        $slider = $this->getSlider(SliderPlacesEnum::MAIN)->first();
+        if (null === $slider) return collect();
+
+        /**
+         * @var FileServiceInterface $fileService
+         */
+        $fileService = app()->get(FileServiceInterface::class);
+
+        /**
+         * @var Collection $slides
+         */
+        $slides = $slider->items->pluck('options');
+        return $slides->map(function ($item) use ($fileService) {
+            $file = $fileService->find($item[SliderItemOptionsEnum::IMAGE->value]);
+
+            return [
+                'image' => $file->full_path ?? null,
+                'link' => $item[SliderItemOptionsEnum::LINK->value],
+            ];
+        });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAmazingOfferSlider(): Collection
+    {
+        $slider = $this->getSlider(SliderPlacesEnum::AMAZING_OFFER)->first();
+        if (null === $slider) return collect();
+
+        /**
+         * @var ProductServiceInterface $productService
+         */
+        $productService = app()->get(ProductServiceInterface::class);
+
+        /**
+         * @var Collection $slides
+         */
+        $slides = $slider->items->pluck('options');
+        return $slides->map(function ($item) use ($productService) {
+            if (!isset($item['product_id'])) return null;
+
+            $item = $productService->getById($item['product_id']);
+            return $item['is_published'] ? $item : null;
+        })->filter(fn($item) => null !== $item);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllMainSliders(): Collection
+    {
+        $sliders = $this->getSlider([SliderPlacesEnum::MAIN_SLIDERS, SliderPlacesEnum::MAIN_SLIDER_IMAGES]);
+        if ($sliders->isEmpty()) return collect();
+
+        /**
+         * @var ProductServiceInterface $productService
+         */
+        $productService = app()->get(ProductServiceInterface::class);
+        /**
+         * @var FileServiceInterface $fileService
+         */
+        $fileService = app()->get(FileServiceInterface::class);
+
+        return $sliders->map(function ($item) use ($productService, $fileService) {
+            if ($item->place->place_in === SliderPlacesEnum::MAIN_SLIDER_IMAGES) {
+                $slides = $item->items->map(function ($slide) use ($fileService) {
+                    $file = $fileService->find($slide[SliderItemOptionsEnum::IMAGE->value]);
+
+                    return [
+                        'image' => $file->full_path ?? null,
+                        'link' => $slide[SliderItemOptionsEnum::LINK->value],
+                    ];
+                });
+            } else {
+                $options = $this->_validateSliderOptions($item->options);
+
+                $filter = new HomeProductFilter(request());
+                $filter->reset();
+
+                $filter->setBrand($options['brand']);
+                $filter->setCategory($options['category']);
+                $filter->setProductOrder(
+                    $options['sort'] == 'asc'
+                        ? ProductOrderTypesEnum::OLDEST
+                        : ProductOrderTypesEnum::NEWEST
+                );
+                $filter->setIsSpecial($options['is_special']);
+                $filter->setLimit($options['count']);
+                $filter->setIsAvailable(true);
+
+                $where = new WhereBuilder('products');
+                $where->whereEqual('is_published', DatabaseEnum::DB_YES)
+                    ->whereEqual('is_available', DatabaseEnum::DB_YES);
+
+                $slides = collect(
+                    $productService->getProducts(
+                        filter: $filter,
+                        where: $where->build()
+                    )->items()
+                );
+            }
+
+            return [
+                'id' => $item['id'],
+                'title' => $item['title'],
+                'place' => $item->place,
+                'items' => $slides,
+                'options' => [
+                    SliderOptionsEnum::BESIDE_IMAGES->value => $item->options[SliderOptionsEnum::BESIDE_IMAGES->value] ?? 1,
+                    SliderOptionsEnum::SHOW_ALL_LINK->value => $item->options[SliderOptionsEnum::SHOW_ALL_LINK->value] ?? null,
+                ],
+            ];
+        });
     }
 
     /**
@@ -103,5 +245,40 @@ class SliderService extends Service implements SliderServiceInterface
         }
 
         return $this->repository->updateOrCreateItems($slides);
+    }
+
+    /**
+     * @param array $options
+     * @return array
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     */
+    public function _validateSliderOptions(array $options): array
+    {
+        /**
+         * @var BrandServiceInterface $brandService
+         */
+        $brandService = app()->get(BrandServiceInterface::class);
+        /**
+         * @var CategoryServiceInterface $categoryService
+         */
+        $categoryService = app()->get(CategoryServiceInterface::class);
+
+        $hasBrand = $brandService->exists($options[SliderOptionsEnum::BRAND_ID->value]);
+        $hasCategory = $categoryService->exists($options[SliderOptionsEnum::CATEGORY_ID->value]);
+
+        $sort = $options[SliderOptionsEnum::ORDER_BY->value];
+        $sort = !in_array($sort, ['asc', 'desc']) ? 'desc' : $sort;
+
+        $count = $options[SliderOptionsEnum::COUNT->value];
+        $count = $count <= 0 || $count > 20 ? 12 : $count;
+
+        return [
+            'brand' => $hasBrand ? $options[SliderOptionsEnum::BRAND_ID->value] : null,
+            'category' => $hasCategory ? $options[SliderOptionsEnum::CATEGORY_ID->value] : null,
+            'sort' => $sort,
+            'is_special' => !!$options[SliderOptionsEnum::IS_SPECIAL->value],
+            'count' => $count,
+        ];
     }
 }

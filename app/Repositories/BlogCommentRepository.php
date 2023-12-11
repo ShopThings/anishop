@@ -6,6 +6,7 @@ use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Models\BlogComment;
 use App\Repositories\Contracts\BlogCommentRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -25,14 +26,16 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
      * @inheritDoc
      */
     public function getCommentsSearchFilterPaginated(
-        int     $blogId,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        int    $blogId,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
             ->when($search, function (Builder $query, string $search) {
@@ -73,5 +76,13 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
             ->where('blog_comments.blog_id', $blogId);
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function reportComment(): bool
+    {
+        return !!$this->model->increment('flag_count', 1);
     }
 }

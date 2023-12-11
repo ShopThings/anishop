@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\CategoryImage;
 use App\Repositories\Contracts\CategoryImageRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -23,13 +24,15 @@ class CategoryImageRepository extends Repository implements CategoryImageReposit
      * @inheritDoc
      */
     public function getCategoryImagesSearchFilterPaginated(
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query->when($search, function (Builder $query, string $search) {
             $query

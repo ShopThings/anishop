@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Repositories\FileRepository;
+use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Services\Contracts\FileServiceInterface;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
@@ -41,7 +41,7 @@ class StoreFileRequest extends FormRequest
                 'required',
                 'string',
                 function ($attribute, $value, $fail) {
-                    if (!in_array($value, FileRepository::$storageDisks)) {
+                    if (!in_array($value, FileRepositoryInterface::STORAGE_DISKS)) {
                         $fail('محل ذخیره‌سازی انتخاب شده نامعتبر می‌باشد.');
                     }
                 },
