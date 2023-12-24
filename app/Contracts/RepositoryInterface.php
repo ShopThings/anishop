@@ -17,9 +17,13 @@ interface RepositoryInterface
 
     /**
      * @param GetterExpressionInterface|null $where
+     * @param bool $withTrashed
      * @return int
      */
-    public function count(?GetterExpressionInterface $where = null): int;
+    public function count(
+        ?GetterExpressionInterface $where = null,
+        bool                       $withTrashed = false
+    ): int;
 
     /**
      * @param array $columns
@@ -61,7 +65,7 @@ interface RepositoryInterface
      *
      * @param array $columns
      * @param GetterExpressionInterface|null $where
-     * @param int $limit
+     * @param int|null $limit
      * @param int $page
      * @param array $order
      * @param bool $withTrashed
@@ -71,7 +75,7 @@ interface RepositoryInterface
     public function paginate(
         array                      $columns = ['*'],
         ?GetterExpressionInterface $where = null,
-        int                        $limit = 15,
+        ?int                       $limit = 15,
         int                        $page = 1,
         array                      $order = [],
         bool                       $withTrashed = false,

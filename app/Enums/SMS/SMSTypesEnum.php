@@ -14,6 +14,7 @@ enum SMSTypesEnum: string
     case BUY = 'buy';
     case ORDER_STATUS = 'order_status';
     case RETURN_ORDER = 'return_order';
+    case RETURN_ORDER_STATUS = 'return_order_status';
     case OTHERS = 'others';
 
     /**
@@ -28,6 +29,7 @@ enum SMSTypesEnum: string
             self::BUY->value => 'خرید',
             self::ORDER_STATUS->value => 'وضعیت سفارش',
             self::RETURN_ORDER->value => 'مرجوع کالا',
+            self::ORDER_STATUS->value => 'وضعیت مرجوع سفارش',
             self::OTHERS->value => 'متفرقه',
         ];
     }
@@ -35,7 +37,7 @@ enum SMSTypesEnum: string
     public static function replacementsArray(SMSTypesEnum $type): array
     {
         return match ($type) {
-            self::SIGNUP => [
+            self::SIGNUP, self::OTHERS => [
                 'shop', 'username',
             ],
             self::ACTIVATION => [
@@ -47,11 +49,8 @@ enum SMSTypesEnum: string
             self::BUY, self::RETURN_ORDER => [
                 'shop', 'username', 'first_name', 'order_code',
             ],
-            self::ORDER_STATUS => [
+            self::ORDER_STATUS, self::RETURN_ORDER_STATUS => [
                 'shop', 'username', 'first_name', 'order_code', 'status',
-            ],
-            self::OTHERS => [
-                'shop', 'username',
             ],
         };
     }

@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Enums\SettingsEnum;
+use App\Enums\Settings\SettingsEnum;
 use App\Enums\SMS\SMSTypesEnum;
 use App\Models\Setting;
 use App\Models\User;

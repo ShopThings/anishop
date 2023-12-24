@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Enums\Blogs\BlogOrderTypesEnum;
 use App\Enums\Blogs\BlogVotingTypesEnum;
-use App\Enums\SettingsEnum;
+use App\Enums\DatabaseEnum;
+use App\Enums\Settings\SettingsEnum;
 use App\Enums\Sliders\SliderItemOptionsEnum;
 use App\Enums\Sliders\SliderPlacesEnum;
 use App\Http\Requests\Filters\HomeBlogFilter;
@@ -18,8 +19,8 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use function App\Support\Helper\to_boolean;
 
 class BlogService extends Service implements BlogServiceInterface
@@ -172,7 +173,8 @@ class BlogService extends Service implements BlogServiceInterface
 
         // get all blogs with slides ids
         $where = new WhereBuilder('blogs');
-        $where->whereIn('id', $ids->toArray());
+        $where->whereIn('id', $ids->toArray())
+            ->whereEqual('is_published', DatabaseEnum::DB_YES);
         return $this->repository->all(where: $where->build());
     }
 }

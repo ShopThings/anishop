@@ -8,9 +8,12 @@ use App\Repositories\Contracts\BlogCommentRepositoryInterface;
 use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
+use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class BlogCommentService extends Service implements BlogCommentServiceInterface
 {
@@ -31,6 +34,30 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
     /**
      * @inheritDoc
      */
+    public function getUserComments($userId, Filter $filter): Collection|LengthAwarePaginator
+    {
+        $filter->setOrder(['id' => 'desc']);
+        return $this->repository->getUserCommentsFilterPaginated(
+            userId: $userId,
+            filter: $filter,
+            columns: ['id', 'condition', 'status', 'created_at']
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserCommentsCount($userId): int
+    {
+        $where = new WhereBuilder('blog_comments');
+        $where->whereEqual('created_by', $userId);
+
+        return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function reportComment(BlogComment $comment): bool
     {
         $repository = new BlogCommentRepository($comment);
@@ -46,7 +73,6 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
             'blog_id' => $attributes['blog'],
             'badge_id' => $attributes['badge'],
             'comment_id' => $attributes['comment'] ?? null,
-            'answer_to' => $attributes['answer_to'] ?? null,
             'condition' => $attributes['condition'],
             'status' => $attributes['status'],
             'description' => $attributes['description'],
@@ -71,9 +97,6 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
         if (isset($attributes['comment'])) {
             $updateAttributes['comment_id'] = $attributes['comment'];
         }
-        if (isset($attributes['answer_to'])) {
-            $updateAttributes['answer_to'] = $attributes['answer_to'];
-        }
         if (isset($attributes['condition'])) {
             $updateAttributes['condition'] = $attributes['condition'];
         }
@@ -89,5 +112,17 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteUserCommentById($userId, $id): bool
+    {
+        $where = new WhereBuilder('blog_comments');
+        $where->whereEqual('created_by', $userId)
+            ->whereEqual('id', $id);
+
+        return (bool)$this->repository->deleteWhere($where->build(), true);
     }
 }

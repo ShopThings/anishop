@@ -33,11 +33,11 @@ class RoleService implements RoleServiceInterface
         if ($user->hasRole(RolesEnum::DEVELOPER->value))
             return array_map(fn($item) => [
                 'name' => RolesEnum::getTranslations($item->value),
-                'value' => $item->value
+                'value' => $item->value,
             ], RolesEnum::cases());
         return array_map(fn($item) => [
             'name' => RolesEnum::getTranslations($item->value),
-            'value' => $item->value
+            'value' => $item->value,
         ], RolesEnum::getAssignableRoles());
     }
 

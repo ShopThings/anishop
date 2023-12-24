@@ -6,6 +6,7 @@ use App\Enums\SMS\SMSSenderTypesEnum;
 use App\Enums\SMS\SMSTypesEnum;
 use App\Repositories\Contracts\StaticPageRepositoryInterface;
 use App\Services\Contracts\SmsLogServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -24,13 +25,10 @@ class SmsLogService extends Service implements SmsLogServiceInterface
     /**
      * @inheritDoc
      */
-    public function getLogs(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getLogs(Filter $filter): Collection|LengthAwarePaginator
     {
+        $searchText = $filter->getSearchText();
+
         $where = new WhereBuilder('sms_logs');
         $where
             ->when($searchText, function (WhereBuilderInterface $query, $search) {
@@ -40,15 +38,24 @@ class SmsLogService extends Service implements SmsLogServiceInterface
                     'receiver_numbers',
                 ], $search);
             })
-            ->when(SMSTypesEnum::getSimilarValuesFromString($searchText), function (WhereBuilderInterface $q, array $types) {
-                $q->whereIn('type', $types);
-            })
-            ->when(SMSSenderTypesEnum::getSimilarValuesFromString($searchText), function (WhereBuilderInterface $q, array $types) {
-                $q->whereIn('sender', $types);
-            });
+            ->when(
+                SMSTypesEnum::getSimilarValuesFromString($searchText),
+                function (WhereBuilderInterface $q, array $types) {
+                    $q->whereIn('type', $types);
+                }
+            )
+            ->when(
+                SMSSenderTypesEnum::getSimilarValuesFromString($searchText),
+                function (WhereBuilderInterface $q, array $types) {
+                    $q->whereIn('sender', $types);
+                }
+            );
 
         return $this->repository->paginate(
-            where: $where->build(), limit: $limit, page: $page, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

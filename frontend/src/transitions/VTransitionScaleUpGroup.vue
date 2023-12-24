@@ -1,7 +1,7 @@
 <template>
-    <TransitionGroup name="scale-up-group">
-        <slot></slot>
-    </TransitionGroup>
+  <TransitionGroup name="scale-up-group">
+    <slot></slot>
+  </TransitionGroup>
 </template>
 
 <script setup>
@@ -10,23 +10,23 @@
 <style scoped>
 .scale-up-group-enter-active,
 .scale-up-group-leave-active {
-    transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
 }
 
 .scale-up-group-enter-from {
-    opacity: 0;
+  opacity: 0;
 }
 
 .scale-up-group-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 
 .scale-up-group-enter-from,
 .scale-up-group-leave-to {
-    transform: scale(.9);
+  transform: scale(.9);
 }
 
 .scale-up-group-leave-active {
-    position: absolute;
+  position: absolute;
 }
 </style>

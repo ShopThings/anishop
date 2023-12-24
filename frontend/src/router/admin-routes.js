@@ -1,4 +1,5 @@
 import {useAdminAuthStore} from "../store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "../composables/helper.js";
 
 export const adminRoutes = {
     path: '/admin',
@@ -20,7 +21,10 @@ export const adminRoutes = {
                 if (from.meta.requiresAuth) {
                     const pushObj = {name: 'admin.login'}
 
-                    if (to.query.redirect) pushObj.query = {redirect: to.query.redirect}
+                    if (
+                        to.query.redirect &&
+                        isValidInternalRedirectLink(to.query.redirect)
+                    ) pushObj.query = {redirect: to.query.redirect}
 
                     return next(pushObj);
                 }

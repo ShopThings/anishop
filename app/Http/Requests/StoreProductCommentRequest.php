@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductCommentRequest extends FormRequest
@@ -22,7 +23,30 @@ class StoreProductCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product' => [
+                'required',
+                'exists:' . Product::class . ',id',
+            ],
+            'pros' => [
+                'sometimes',
+                'array',
+            ],
+            'cons' => [
+                'sometimes',
+                'array',
+            ],
+            'description' => [
+                'required',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'product' => 'محصول برای ثبت دیدگاه',
+            'pros' => 'مزایای محصول',
+            'cons' => 'معایب محصول',
         ];
     }
 }

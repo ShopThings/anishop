@@ -1,15 +1,15 @@
 <template>
-    <app-navbar-blog/>
+  <app-navbar-blog/>
 
-    <router-view v-slot="{ Component, route }">
-        <VTransitionSlideFadeUpY>
-            <div>
-                <component :is="Component" :key="route.path"/>
-            </div>
-        </VTransitionSlideFadeUpY>
-    </router-view>
+  <router-view v-slot="{ Component, route }">
+    <VTransitionSlideFadeUpY>
+      <div>
+        <component :is="Component" :key="route.path"/>
+      </div>
+    </VTransitionSlideFadeUpY>
+  </router-view>
 
-    <app-footer-user/>
+  <app-footer-user/>
 </template>
 
 <script setup>

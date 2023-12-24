@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
 use App\Traits\HasUpdatedRelationTrait;
+use App\Traits\SelfHealingRouteTrait;
 
 class Setting extends Model
 {
@@ -20,4 +21,9 @@ class Setting extends Model
     protected $casts = [
         'updated_at' => 'datetime',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
 }

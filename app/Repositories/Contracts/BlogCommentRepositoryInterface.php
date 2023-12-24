@@ -23,6 +23,18 @@ interface BlogCommentRepositoryInterface extends RepositoryInterface
     ): Collection|LengthAwarePaginator;
 
     /**
+     * @param int $userId
+     * @param Filter $filter
+     * @param array $columns
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getUserCommentsFilterPaginated(
+        int    $userId,
+        Filter $filter,
+        array  $columns = ['*']
+    ): Collection|LengthAwarePaginator;
+
+    /**
      * @return bool
      */
     public function reportComment(): bool;

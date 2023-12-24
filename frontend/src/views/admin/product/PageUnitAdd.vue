@@ -1,58 +1,58 @@
 <template>
-    <partial-card>
-        <template #header>
-            ایجاد واحد محصول جدید
-        </template>
-        <template #body>
-            <div class="p-3">
-                <form @submit.prevent="onSubmit">
-                    <div class="flex flex-wrap items-end justify-between">
-                        <div class="w-full p-2 sm:w-1/2">
-                            <base-input label-title="عنوان واحد"
-                                        placeholder="عنوان واحد را وارد نمایید"
-                                        name="name">
-                                <template #icon>
-                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                </template>
-                            </base-input>
-                        </div>
-                        <div class="p-2">
-                            <base-switch
-                                label="عدم نمایش واحد"
-                                on-label="نمایش واحد"
-                                name="is_published"
-                                :enabled="true"
-                                sr-text="نمایش/عدم نمایش واحد"
-                                @change="(status) => {publishStatus=status}"
-                            />
-                        </div>
-                    </div>
-
-                    <div class="px-2 py-3">
-                        <base-animated-button
-                            type="submit"
-                            class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                            :disabled="isSubmitting"
-                        >
-                            <VTransitionFade>
-                                <loader-circle
-                                    v-if="isSubmitting"
-                                    main-container-klass="absolute w-full h-full top-0 left-0"
-                                    big-circle-color="border-transparent"
-                                />
-                            </VTransitionFade>
-
-                            <template #icon="{klass}">
-                                <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
-                            </template>
-
-                            <span class="ml-auto">افزودن واحد</span>
-                        </base-animated-button>
-                    </div>
-                </form>
+  <partial-card>
+    <template #header>
+      ایجاد واحد محصول جدید
+    </template>
+    <template #body>
+      <div class="p-3">
+        <form @submit.prevent="onSubmit">
+          <div class="flex flex-wrap items-end justify-between">
+            <div class="w-full p-2 sm:w-1/2">
+              <base-input label-title="عنوان واحد"
+                          placeholder="عنوان واحد را وارد نمایید"
+                          name="name">
+                <template #icon>
+                  <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                </template>
+              </base-input>
             </div>
-        </template>
-    </partial-card>
+            <div class="p-2">
+              <base-switch
+                  label="عدم نمایش واحد"
+                  on-label="نمایش واحد"
+                  name="is_published"
+                  :enabled="true"
+                  sr-text="نمایش/عدم نمایش واحد"
+                  @change="(status) => {publishStatus=status}"
+              />
+            </div>
+          </div>
+
+          <div class="px-2 py-3">
+            <base-animated-button
+                type="submit"
+                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                :disabled="isSubmitting"
+            >
+              <VTransitionFade>
+                <loader-circle
+                    v-if="isSubmitting"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
+                    big-circle-color="border-transparent"
+                />
+              </VTransitionFade>
+
+              <template #icon="{klass}">
+                <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
+              </template>
+
+              <span class="ml-auto">افزودن واحد</span>
+            </base-animated-button>
+          </div>
+        </form>
+      </div>
+    </template>
+  </partial-card>
 </template>
 
 <script setup>
@@ -72,11 +72,11 @@ const canSubmit = ref(true)
 const publishStatus = ref(true)
 
 const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
+  validationSchema: yup.object().shape({}),
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+  if (!canSubmit.value) return
 })
 </script>
 

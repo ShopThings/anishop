@@ -2,6 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Unit;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMultiProductInfo extends FormRequest
@@ -22,7 +25,46 @@ class UpdateMultiProductInfo extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'ids' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'unit' => [
+                'sometimes',
+                'exists:' . Unit::class . ',id',
+            ],
+            'brand' => [
+                'sometimes',
+                'exists:' . Brand::class . ',id',
+            ],
+            'category' => [
+                'sometimes',
+                'exists:' . Category::class . ',id',
+            ],
+            'is_available' => [
+                'sometimes',
+                'boolean',
+            ],
+            'is_published' => [
+                'sometimes',
+                'boolean',
+            ],
+            'is_commenting_allowed' => [
+                'sometimes',
+                'boolean',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'ids' => 'شناسه محصولات',
+            'unit' => 'واحد شمارش محصول',
+            'is_available' => 'وضعیت موجود بودن',
+            'is_published' => 'نمایش محصول در سایت',
+            'is_commenting_allowed' => 'اجازه ارسال دیدگاه',
         ];
     }
 }

@@ -99,6 +99,9 @@ class AppServiceProvider extends ServiceProvider
 
         //
 
+        /*
+         * where like expression
+         */
         Builder::macro('whereLike', function (string|array $columns, string $search, string $operator = 'or') {
             $this->where(function (Builder $query) use ($columns, $search, $operator) {
                 $columns = !is_array($columns) ? [$columns] : $columns;
@@ -116,6 +119,31 @@ class AppServiceProvider extends ServiceProvider
         Builder::macro('orWhereLike', function (string|array $columns, string $search, string $operator = 'or') {
             $this->orWhere(function (Builder $query) use ($columns, $search, $operator) {
                 $query->whereLike($columns, $search, $operator);
+            });
+
+            return $this;
+        });
+
+        /*
+         * where regexp expression
+         */
+        Builder::macro('whereRegex', function (string|array $columns, string $search, string $operator = 'or') {
+            $this->where(function (Builder $query) use ($columns, $search, $operator) {
+                $columns = !is_array($columns) ? [$columns] : $columns;
+                foreach ($columns as $column) {
+                    if (mb_strtolower($operator) == 'and') {
+                        $query->where($column, 'REGEXP', $search);
+                    } else {
+                        $query->orWhere($column, 'REGEXP', $search);
+                    }
+                }
+            });
+
+            return $this;
+        });
+        Builder::macro('orWhereRegex', function (string|array $columns, string $search, string $operator = 'or') {
+            $this->orWhere(function (Builder $query) use ($columns, $search, $operator) {
+                $query->whereRegex($columns, $search, $operator);
             });
 
             return $this;

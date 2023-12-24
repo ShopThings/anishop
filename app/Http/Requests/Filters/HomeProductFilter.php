@@ -38,6 +38,11 @@ class HomeProductFilter extends Filter
      */
     protected bool $isAvailable = true;
 
+    /**
+     * @var array|null
+     */
+    protected ?array $dynamicFilters = null;
+
     public function __construct(Request $request)
     {
         parent::__construct($request);
@@ -47,6 +52,7 @@ class HomeProductFilter extends Filter
         $this->setProductOrder($request->enum('order', ProductOrderTypesEnum::class));
         $this->setIsSpecial($request->boolean('is_spacial'));
         $this->setOnlyAvailable($request->boolean('only_available'));
+        $this->setDynamicFilters($request->input('dynamic_filters'));
     }
 
     /**
@@ -131,7 +137,7 @@ class HomeProductFilter extends Filter
     }
 
     /**
-     * It is different from <b>setIsAvailable</b> method because
+     * It is different from <b>setIsAvailable()</b> method because
      * this method will measure other factor like "stock_count" too
      *
      * @param bool $onlyAvailable
@@ -152,7 +158,7 @@ class HomeProductFilter extends Filter
     }
 
     /**
-     * It will check a simple availability check
+     * It'll do a simple availability check
      *
      * @param bool $isAvailable
      * @return static
@@ -160,6 +166,36 @@ class HomeProductFilter extends Filter
     public function setIsAvailable(bool $isAvailable): static
     {
         $this->isAvailable = $isAvailable;
+        return $this;
+    }
+
+    /**
+     * It Should give following structure:
+     * <pre>
+     * [
+     * 'attribute_1' => [ // attribute means 'attribute_id'
+     * 'value-1', // selected value of attribute(actually it is 'attribute_value')
+     * 'value-2', // more than one value is OPTIONAL and is mostly for multiselect attributes
+     * ...
+     * ],
+     * ...
+     * ]
+     * </pre>
+     *
+     * @return array|null
+     */
+    public function getDynamicFilters(): ?array
+    {
+        return $this->dynamicFilters;
+    }
+
+    /**
+     * @param array|null $filters
+     * @return static
+     */
+    public function setDynamicFilters(?array $filters): static
+    {
+        $this->dynamicFilters = $filters;
         return $this;
     }
 
@@ -176,6 +212,7 @@ class HomeProductFilter extends Filter
         $this->isSpecial = false;
         $this->onlyAvailable = false;
         $this->isAvailable = true;
+        $this->dynamicFilters = null;
 
         return $this;
     }

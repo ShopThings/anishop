@@ -1,5 +1,5 @@
 import {createApp} from 'vue';
-import { createHead } from '@unhead/vue'
+import {createHead} from '@unhead/vue'
 import {createPinia} from 'pinia';
 import Toast, {POSITION} from "vue-toastification";
 import FloatingVue from 'floating-vue';
@@ -9,7 +9,7 @@ import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 import VueEasyLightbox from "vue-easy-lightbox";
 
 // import function to register Swiper custom elements
-import { register } from 'swiper/element/bundle';
+import {register} from 'swiper/element/bundle';
 
 import "vue-toastification/dist/index.css";
 import 'floating-vue/dist/style.css';

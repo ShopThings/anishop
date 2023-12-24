@@ -2,14 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Enums\SettingsEnum;
+use App\Enums\Settings\SettingsEnum;
 use App\Enums\SMS\SMSTypesEnum;
 use App\Events\ForgetPasswordEvent;
 use App\Events\RegisteredEvent;
 use App\Models\Setting;
 use App\Notifications\PasswordChangedNotification;
 use App\Notifications\UserRegisteredNotification;
-use App\Notifications\VerifyCodeNotification;
 use App\Services\Contracts\SettingServiceInterface;
 use App\Support\Event\AbstractListener;
 use Illuminate\Auth\Events\Login;

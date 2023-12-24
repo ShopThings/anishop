@@ -107,9 +107,9 @@ class SliderService extends Service implements SliderServiceInterface
          */
         $slides = $slider->items->pluck('options');
         return $slides->map(function ($item) use ($productService) {
-            if (!isset($item['product_id'])) return null;
+            if (!isset($item[SliderItemOptionsEnum::PRODUCT_ID->value])) return null;
 
-            $item = $productService->getById($item['product_id']);
+            $item = $productService->getById($item[SliderItemOptionsEnum::PRODUCT_ID->value]);
             return $item['is_published'] ? $item : null;
         })->filter(fn($item) => null !== $item);
     }

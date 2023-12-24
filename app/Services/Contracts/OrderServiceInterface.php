@@ -33,4 +33,10 @@ interface OrderServiceInterface extends ServiceInterface
      * @return Collection
      */
     public function getSendStatuses(): Collection;
+
+    /**
+     * @param $userId
+     * @return int
+     */
+    public function getUserOrdersCount($userId): int;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductPropertyRequest;
@@ -124,13 +125,12 @@ class ProductController extends Controller
 
         $permanent = $request->user()->id === $product->creator()?->id;
         $res = $this->service->deleteById($product->id, $permanent);
-        if ($res)
-            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        if ($res) return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
 
     /**
@@ -152,13 +152,55 @@ class ProductController extends Controller
     {
         $this->authorize('batchUpdate', User::class);
 
-        //
+        $validated = $request->validated();
+
+        $res = $this->service->updateBatchInfo($validated['ids'], $validated);
+
+        if ($res) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'message' => 'عملیات با موفقیت انجام شد.',
+            ], ResponseCodes::HTTP_OK);
+        }
+
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در تغییر دسته‌ای مشخصات',
+        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function batchUpdatePrice(UpdateMultiProductPrice $request)
+    /**
+     * @param UpdateMultiProductPrice $request
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function batchUpdatePrice(UpdateMultiProductPrice $request): JsonResponse
     {
         $this->authorize('batchUpdate', User::class);
 
-        //
+        $validated = $request->validated();
+
+        $res = $this->service->updateBatchPrice(
+            ids: $validated['ids'],
+            percentage: $validated['price_percentage'],
+            changeType: ChangeMultipleProductPriceTypesEnum::tryFrom($validated['change_type'])
+        );
+
+        if ($res) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'message' => 'قیمت محصولات انتخاب شده ' . $validated['price_percentage'] . ' درصد'
+                    . (
+                    ChangeMultipleProductPriceTypesEnum::INCREASE->value === $validated['change_type']
+                        ? 'افزایش'
+                        : 'کاهش'
+                    ) . ' یافت.'
+            ], ResponseCodes::HTTP_OK);
+        }
+
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در تغییر دسته‌ای قیمت',
+        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
 }

@@ -61,7 +61,6 @@ class BlogCommentController extends Controller
             'blog',
             'badge',
             'comment',
-            'answer_to',
             'description',
         ]);
         $model = $this->service->create($validated);

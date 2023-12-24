@@ -57,6 +57,8 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
         });
 
         if ($filter instanceof HomeBlogFilter) {
+            // need published stuffs
+            $query = $query->published();
             $query = $this->_getBlogOrderEquivalent($query, $filter->getBlogOrder());
 
             $tag = $filter->getTag();

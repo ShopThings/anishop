@@ -309,7 +309,7 @@ export const apiRoutes = {
         },
 
         settings: {
-            index: 'api/admin/settings',
+            index: 'api/admin/settings/{group?}',
             update: 'api/admin/settings/{setting}',
         },
 
@@ -431,9 +431,9 @@ export const apiRoutes = {
     products: {
         index: 'api/products',
         show: 'api/products/{product}',
-        colors: 'api/products/colors',
-        sizes: 'api/products/sizes',
+        colorsAndSizes: 'api/products/colors-and-sizes',
         priceRange: 'api/products/price-range',
+        dynamicFilters: 'api/products/get-dynamic-filters',
     },
 
     comments: {

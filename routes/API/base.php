@@ -77,9 +77,12 @@ Route::name('api.')
             Route::get('products', [HomeProductController::class, 'index'])->name('products.index');
             Route::get('products/{product}', [HomeProductController::class, 'show'])->name('products.show')
                 ->middleware('log_visit');
-            Route::get('products/colors', [HomeProductController::class, 'colors'])->name('products.colors');
-            Route::get('products/sizes', [HomeProductController::class, 'sizes'])->name('products.sizes');
-            Route::get('products/price-range', [HomeProductController::class, 'priceRange'])->name('products.price-range');
+            Route::get('products/colors-and-sizes', [HomeProductController::class, 'colorsAndSizes'])
+                ->name('products.colors-and-sizes');
+            Route::get('products/price-range', [HomeProductController::class, 'priceRange'])
+                ->name('products.price-range');
+            Route::get('products/get-dynamic-filters', [HomeProductController::class, 'getDynamicFilters'])
+                ->name('products.dynamic-filters');
 
             /*
              * product comment routes

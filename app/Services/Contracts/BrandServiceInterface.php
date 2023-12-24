@@ -14,4 +14,14 @@ interface BrandServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getBrands(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return Collection
+     */
+    public function getPublishedBrands(): Collection;
+
+    /**
+     * @return Collection
+     */
+    public function getSliderBrands(): Collection;
 }

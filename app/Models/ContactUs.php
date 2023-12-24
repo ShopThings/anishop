@@ -28,6 +28,7 @@ class ContactUs extends Model
     ];
 
     protected $casts = [
+        'message' => CleanHtml::class,
         'answer' => CleanHtml::class,
         'is_seen' => 'boolean',
         'answered_at' => 'datetime',

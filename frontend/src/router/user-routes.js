@@ -1,4 +1,5 @@
 import {useUserAuthStore} from "../store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "../composables/helper.js";
 
 export const userRoutes = {
     path: '/user',
@@ -12,7 +13,10 @@ export const userRoutes = {
                 if (from.meta.requiresAuth) {
                     const pushObj = {name: 'user.login'}
 
-                    if (to.query.redirect) pushObj.query = {redirect: to.query.redirect}
+                    if (
+                        to.query.redirect &&
+                        isValidInternalRedirectLink(to.query.redirect)
+                    ) pushObj.query = {redirect: to.query.redirect}
 
                     return next(pushObj);
                 }

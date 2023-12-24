@@ -47,6 +47,42 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     /**
      * @inheritDoc
      */
+    public function getUserContacts($userId, Filter $filter): Collection|LengthAwarePaginator
+    {
+        $where = new WhereBuilder('contact_us');
+        $where
+            ->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
+                $query->orWhereLike([
+                    'title',
+                    'name',
+                    'mobile',
+                    'description',
+                ], $search);
+            })
+            ->whereEqual('user_id', $userId);
+
+        return $this->repository->paginate(
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContactsCount($userId): int
+    {
+        $where = new WhereBuilder('contact_us');
+        $where->whereEqual('user_id', $userId);
+
+        return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $attrs = [
@@ -77,5 +113,13 @@ class ContactUsService extends Service implements ContactUsServiceInterface
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteUserContactById($id): bool
+    {
+        return (bool)$this->repository->delete($id, false);
     }
 }

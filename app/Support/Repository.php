@@ -50,11 +50,20 @@ abstract class Repository implements RepositoryInterface
     /**
      * @inheritDoc
      */
-    public function count(?GetterExpressionInterface $where = null): int
+    public function count(
+        ?GetterExpressionInterface $where = null,
+        bool                       $withTrashed = false
+    ): int
     {
-        return $this->model->when($where, function (Builder $query) use ($where) {
+        $query = $this->model->when($where, function (Builder $query) use ($where) {
             $query->whereRaw($where->getStatement(), $where->getBindings());
-        })->count();
+        });
+
+        if ($withTrashed) {
+            $query->withTrashed();
+        }
+
+        return $query->count();
     }
 
     /**
@@ -94,7 +103,7 @@ abstract class Repository implements RepositoryInterface
     public function paginate(
         array                      $columns = ['*'],
         ?GetterExpressionInterface $where = null,
-        int                        $limit = 15,
+        ?int                       $limit = 15,
         int                        $page = 1,
         array                      $order = [],
         bool                       $withTrashed = false,
@@ -102,7 +111,7 @@ abstract class Repository implements RepositoryInterface
     ): LengthAwarePaginator
     {
         $page = max($page, 1);
-        $limit = $limit <= 0 ? null : $limit;
+        $limit = !$limit || $limit <= 0 ? null : $limit;
         $query = $this->prepareGetQuery($where, $order, $withTrashed, $onlyTrashed);
         return $query->paginate(perPage: $limit, columns: $columns, page: $page);
     }
@@ -209,9 +218,8 @@ abstract class Repository implements RepositoryInterface
      */
     public function deleteWhere(GetterExpressionInterface $where, bool $permanent = false): mixed
     {
-        $query = $this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        });
+        $query = $this->model->newQuery()
+            ->whereRaw($where->getStatement(), $where->getBindings());
 
         if ($permanent) {
             return $query->forceDelete();

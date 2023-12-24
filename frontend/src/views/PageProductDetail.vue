@@ -1,9 +1,9 @@
 <template>
-    <div class="p-3">
-        <product-detail/>
-    </div>
+  <div class="p-3">
+    <product-detail/>
+  </div>
 
-    <app-newsletter/>
+  <app-newsletter/>
 </template>
 
 <script setup>

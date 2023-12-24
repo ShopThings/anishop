@@ -76,16 +76,16 @@ export const HomeProductAPI = Object.assign(
         only: ['index', 'show'],
         replacement: 'product',
     }), {
-        fetchColors(callbacks) {
-            useRequest(apiRoutes.products.colors, null, callbacks)
-        },
-
-        fetchSizes(callbacks) {
-            useRequest(apiRoutes.products.sizes, null, callbacks)
+        fetchColorsAndSizes(callbacks) {
+            useRequest(apiRoutes.products.colorsAndSizes, null, callbacks)
         },
 
         getPriceRange(callbacks) {
             useRequest(apiRoutes.products.priceRange, null, callbacks)
+        },
+
+        getDynamicFilters(callbacks) {
+            useRequest(apiRoutes.products.dynamicFilters, null, callbacks)
         },
     }
 )

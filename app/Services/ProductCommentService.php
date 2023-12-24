@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+use App\Enums\Comments\CommentConditionsEnum;
+use App\Enums\Comments\CommentStatusesEnum;
+use App\Enums\Comments\CommentVotingTypesEnum;
+use App\Models\Comment;
 use App\Repositories\Contracts\ProductCommentRepositoryInterface;
+use App\Repositories\ProductCommentRepository;
 use App\Services\Contracts\ProductCommentServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -33,14 +39,56 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
     /**
      * @inheritDoc
      */
+    public function getUserComments($userId, Filter $filter): Collection|LengthAwarePaginator
+    {
+        $filter->setOrder(['id' => 'desc']);
+        return $this->repository->getUserCommentsFilterPaginated(
+            userId: $userId,
+            filter: $filter,
+            columns: ['id', 'condition', 'status', 'up_vote_count', 'down_vote_count', 'created_at']
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserCommentsCount($userId): int
+    {
+        $where = new WhereBuilder('comments');
+        $where->whereEqual('created_by', $userId);
+
+        return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function reportComment(Comment $comment): bool
+    {
+        $repository = new ProductCommentRepository($comment);
+        return $repository->reportComment();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function voteComment(Comment $comment, CommentVotingTypesEnum $type): bool
+    {
+        $repository = new ProductCommentRepository($comment);
+        return $repository->voteComment($type);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $attrs = [
             'product_id' => $attributes['product'],
-            'condition' => $attributes['condition'],
-            'status' => $attributes['status'],
-            'pros' => $attributes['pros'],
-            'cons' => $attributes['cons'],
+            'condition' => $attributes['condition'] ?? CommentConditionsEnum::UNSET,
+            'status' => $attributes['status'] ?? CommentStatusesEnum::UNREAD,
+            'pros' => $attributes['pros'] ?? [],
+            'cons' => $attributes['cons'] ?? [],
             'description' => $attributes['description'],
         ];
 
@@ -78,5 +126,17 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteUserCommentById($userId, $id): bool
+    {
+        $where = new WhereBuilder('comments');
+        $where->whereEqual('id', $id)
+            ->whereEqual('created_by', $userId);
+
+        return (bool)$this->repository->deleteWhere($where->build(), true);
     }
 }

@@ -49,10 +49,6 @@ class StoreBlogCommentRequest extends FormRequest
                 'required',
                 'exists:' . BlogComment::class . ',id',
             ],
-            'answer_to' => [
-                'required',
-                'exists:' . User::class . ',id',
-            ],
             'description' => [
                 'required',
             ],
@@ -65,7 +61,6 @@ class StoreBlogCommentRequest extends FormRequest
             'blog' => 'بلاگ برای ثبت دیدگاه',
             'badge' => 'برچسب دیدگاه',
             'comment' => 'دیدگاه مورد پاسخ',
-            'answer_to' => 'پاسخ گیرنده',
         ];
     }
 }

@@ -133,4 +133,15 @@ class OrderService extends Service implements OrderServiceInterface
             where: $where->build(), order: ['id' => 'asc']
         );
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserOrdersCount($userId): int
+    {
+        $where = new WhereBuilder('order_details');
+        $where->whereEqual('user_id', $userId);
+
+        return $this->repository->count($where->build());
+    }
 }

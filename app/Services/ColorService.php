@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
+use App\Http\Requests\Filters\HomeProductSideFilter;
 use App\Repositories\Contracts\ColorRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\Contracts\ColorServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;

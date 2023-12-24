@@ -1,56 +1,56 @@
 <template>
-    <base-loading-panel
-        :loading="loading"
-        type="content"
-    >
-        <template #content>
-            <div class="bg-white mb-3 rounded-lg border p-3">
-                نمایش محصولات مورد علاقه کاربر -
-                <span
-                    v-if="user?.id"
-                    class="text-teal-600"
-                >{{
-                        (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
-                    }}</span>
-            </div>
+  <base-loading-panel
+      :loading="loading"
+      type="content"
+  >
+    <template #content>
+      <div class="bg-white mb-3 rounded-lg border p-3">
+        نمایش محصولات مورد علاقه کاربر -
+        <span
+            v-if="user?.id"
+            class="text-teal-600"
+        >{{
+            (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
+          }}</span>
+      </div>
 
-            <base-paginator
-                container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-                :items="favoriteProducts"
-            >
-                <template #item="{item}">
-                    <partial-card class="h-full">
-                        <template #body>
-                            <div class="flex items-center md:flex-col">
-                                <router-link
-                                    :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                    target="_blank"
-                                    class="p-2 shrink-0"
-                                >
-                                    <base-lazy-image
-                                        alt="تصویر محصول"
-                                        :lazy-src="item.image.path"
-                                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                    />
-                                </router-link>
-                                <router-link
-                                    :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                    target="_blank"
-                                    class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
-                                >
-                                    {{ item.title }}
-                                </router-link>
-                            </div>
-                        </template>
-                    </partial-card>
-                </template>
-
-                <template #loading>
-                    <loader-card/>
-                </template>
-            </base-paginator>
+      <base-paginator
+          container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+          :items="favoriteProducts"
+      >
+        <template #item="{item}">
+          <partial-card class="h-full">
+            <template #body>
+              <div class="flex items-center md:flex-col">
+                <router-link
+                    :to="{name: 'admin.product.detail', params: {id: 1}}"
+                    target="_blank"
+                    class="p-2 shrink-0"
+                >
+                  <base-lazy-image
+                      alt="تصویر محصول"
+                      :lazy-src="item.image.path"
+                      class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
+                  />
+                </router-link>
+                <router-link
+                    :to="{name: 'admin.product.detail', params: {id: 1}}"
+                    target="_blank"
+                    class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
+                >
+                  {{ item.title }}
+                </router-link>
+              </div>
+            </template>
+          </partial-card>
         </template>
-    </base-loading-panel>
+
+        <template #loading>
+          <loader-card/>
+        </template>
+      </base-paginator>
+    </template>
+  </base-loading-panel>
 </template>
 
 <script setup>
@@ -68,51 +68,51 @@ const loading = ref(false)
 
 const route = useRoute()
 const idParam = computed(() => {
-    const id = parseInt(route.params.id, 10)
-    if (isNaN(id)) return route.params.id
-    return id
+  const id = parseInt(route.params.id, 10)
+  if (isNaN(id)) return route.params.id
+  return id
 })
 
 const user = ref(null)
 const favoriteProducts = ref([
-    {
-        image: {
-            path: '/src/assets/products/p1.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+  {
+    image: {
+      path: '/src/assets/products/p1.jpg',
     },
-    {
-        image: {
-            path: '/src/assets/products/p2.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+  },
+  {
+    image: {
+      path: '/src/assets/products/p2.jpg',
     },
-    {
-        image: {
-            path: '/src/assets/products/p3.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با گرافیک بسیار زیاد را دارا می‌باشد',
+    title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+  },
+  {
+    image: {
+      path: '/src/assets/products/p3.jpg',
     },
-    {
-        image: {
-            path: '/src/assets/products/p4.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با گرافیک بسیار زیاد را دارا می‌باشد',
+  },
+  {
+    image: {
+      path: '/src/assets/products/p4.jpg',
     },
-    {
-        image: {
-            path: '/src/assets/products/p5.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+    title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+  },
+  {
+    image: {
+      path: '/src/assets/products/p5.jpg',
     },
+    title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
+  },
 ])
 
 onMounted(() => {
-    useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
-        success: (response) => {
-            user.value = response.data
-        },
-    })
+  useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
+    success: (response) => {
+      user.value = response.data
+    },
+  })
 })
 </script>
 

@@ -1,113 +1,113 @@
 <template>
-    <partial-card>
-        <template #header>
-            ویرایش دسته‌بندی بلاگ
-        </template>
-        <template #body>
-            <div class="p-3">
-                <base-loading-panel
-                    :loading="loading"
-                    type="form"
-                >
-                    <template #content>
-                        <form @submit.prevent="onSubmit">
-                            <div class="p-2">
-                                <base-switch
-                                    label="عدم نمایش بلاگ"
-                                    on-label="نمایش بلاگ"
-                                    name="is_published"
-                                    :enabled="blogCategory?.is_published"
-                                    sr-text="نمایش/عدم نمایش بلاگ"
-                                    @change="(status) => {publishStatus=status}"
-                                />
-                            </div>
+  <partial-card>
+    <template #header>
+      ویرایش دسته‌بندی بلاگ
+    </template>
+    <template #body>
+      <div class="p-3">
+        <base-loading-panel
+            :loading="loading"
+            type="form"
+        >
+          <template #content>
+            <form @submit.prevent="onSubmit">
+              <div class="p-2">
+                <base-switch
+                    label="عدم نمایش بلاگ"
+                    on-label="نمایش بلاگ"
+                    name="is_published"
+                    :enabled="blogCategory?.is_published"
+                    sr-text="نمایش/عدم نمایش بلاگ"
+                    @change="(status) => {publishStatus=status}"
+                />
+              </div>
 
-                            <div class="flex flex-wrap">
-                                <div class="w-full p-2 sm:w-1/2">
-                                    <base-input
-                                        label-title="نام دسته‌بندی"
-                                        placeholder="وارد نمایید"
-                                        name="title"
-                                        :value="blogCategory?.title"
-                                    >
-                                        <template #icon>
-                                            <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                        </template>
-                                    </base-input>
-                                </div>
-                                <div class="w-full p-2 sm:w-1/2">
-                                    <base-input
-                                        type="number"
-                                        label-title="اولویت"
-                                        placeholder="وارد نمایید"
-                                        name="priority"
-                                        :value="blogCategory?.priority"
-                                        :min="0"
-                                    >
-                                        <template #icon>
-                                            <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                        </template>
-                                    </base-input>
-                                </div>
-                            </div>
-
-                            <div class="flex flex-wrap">
-                                <div class="w-full p-2 sm:w-1/2">
-                                    <base-switch
-                                        label="نمایش در منوی اصلی"
-                                        name="show_in_menu"
-                                        :enabled="blogCategory?.show_in_menu"
-                                        sr-text="نمایش/عدم نمایش در منوی اصلی"
-                                        @change="(status) => {showInMenuStatus=status}"
-                                    />
-                                </div>
-                                <div class="w-full p-2 sm:w-1/2">
-                                    <base-switch
-                                        label="نمایش در منوی کناری"
-                                        name="show_in_side_menu"
-                                        :enabled="blogCategory?.show_in_side_menu"
-                                        sr-text="نمایش/عدم نمایش در منوی کناری"
-                                        @change="(status) => {showInSideMenuStatus=status}"
-                                    />
-                                </div>
-                            </div>
-
-                            <div class="p-2">
-                                <partial-input-label title="کلمات کلیدی"/>
-                                <vue3-tags-input
-                                    :tags="tags"
-                                    placeholder="کلمات کلیدی خود را وارد نمایید"
-                                    @on-tags-changed="(t) => {tags = t}"
-                                />
-                            </div>
-
-                            <div class="px-2 py-3">
-                                <base-animated-button
-                                    type="submit"
-                                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                                    :disabled="isSubmitting"
-                                >
-                                    <VTransitionFade>
-                                        <loader-circle
-                                            v-if="isSubmitting"
-                                            main-container-klass="absolute w-full h-full top-0 left-0"
-                                            big-circle-color="border-transparent"
-                                        />
-                                    </VTransitionFade>
-
-                                    <template #icon="{klass}">
-                                        <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
-                                    </template>
-
-                                    <span class="ml-auto">ایجاد دسته‌بندی بلاگ</span>
-                                </base-animated-button>
-                            </div>
-                        </form>
+              <div class="flex flex-wrap">
+                <div class="w-full p-2 sm:w-1/2">
+                  <base-input
+                      label-title="نام دسته‌بندی"
+                      placeholder="وارد نمایید"
+                      name="title"
+                      :value="blogCategory?.title"
+                  >
+                    <template #icon>
+                      <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
-                </base-loading-panel>
-            </div>
-        </template>
-    </partial-card>
+                  </base-input>
+                </div>
+                <div class="w-full p-2 sm:w-1/2">
+                  <base-input
+                      type="number"
+                      label-title="اولویت"
+                      placeholder="وارد نمایید"
+                      name="priority"
+                      :value="blogCategory?.priority"
+                      :min="0"
+                  >
+                    <template #icon>
+                      <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                    </template>
+                  </base-input>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap">
+                <div class="w-full p-2 sm:w-1/2">
+                  <base-switch
+                      label="نمایش در منوی اصلی"
+                      name="show_in_menu"
+                      :enabled="blogCategory?.show_in_menu"
+                      sr-text="نمایش/عدم نمایش در منوی اصلی"
+                      @change="(status) => {showInMenuStatus=status}"
+                  />
+                </div>
+                <div class="w-full p-2 sm:w-1/2">
+                  <base-switch
+                      label="نمایش در منوی کناری"
+                      name="show_in_side_menu"
+                      :enabled="blogCategory?.show_in_side_menu"
+                      sr-text="نمایش/عدم نمایش در منوی کناری"
+                      @change="(status) => {showInSideMenuStatus=status}"
+                  />
+                </div>
+              </div>
+
+              <div class="p-2">
+                <partial-input-label title="کلمات کلیدی"/>
+                <vue3-tags-input
+                    :tags="tags"
+                    placeholder="کلمات کلیدی خود را وارد نمایید"
+                    @on-tags-changed="(t) => {tags = t}"
+                />
+              </div>
+
+              <div class="px-2 py-3">
+                <base-animated-button
+                    type="submit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    :disabled="isSubmitting"
+                >
+                  <VTransitionFade>
+                    <loader-circle
+                        v-if="isSubmitting"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                        big-circle-color="border-transparent"
+                    />
+                  </VTransitionFade>
+
+                  <template #icon="{klass}">
+                    <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
+                  </template>
+
+                  <span class="ml-auto">ایجاد دسته‌بندی بلاگ</span>
+                </base-animated-button>
+              </div>
+            </form>
+          </template>
+        </base-loading-panel>
+      </div>
+    </template>
+  </partial-card>
 </template>
 
 <script setup>
@@ -132,9 +132,9 @@ import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
 const route = useRoute()
 const toast = useToast()
 const idParam = computed(() => {
-    const id = parseInt(route.params.id, 10)
-    if (isNaN(id)) return route.params.id
-    return id
+  const id = parseInt(route.params.id, 10)
+  if (isNaN(id)) return route.params.id
+  return id
 })
 
 const loading = ref(false)
@@ -148,23 +148,23 @@ const showInMenuStatus = ref(true)
 const showInSideMenuStatus = ref(true)
 
 const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
+  validationSchema: yup.object().shape({}),
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+  if (!canSubmit.value) return
 })
 
-// onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.blogCategories.show, {blog_category: idParam.value}), null, {
-//         success: (response) => {
-//             blogCategory.value = response.data
-//             tags.value = response.data.keywords
-//
-//             loading.value = false
-//         },
-//     })
-// })
+onMounted(() => {
+  // useRequest(apiReplaceParams(apiRoutes.admin.blogCategories.show, {blog_category: idParam.value}), null, {
+  //     success: (response) => {
+  //         blogCategory.value = response.data
+  //         tags.value = response.data.keywords
+  //
+  //         loading.value = false
+  //     },
+  // })
+})
 </script>
 
 <style scoped>

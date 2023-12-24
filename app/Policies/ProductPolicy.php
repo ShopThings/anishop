@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Support\Gate\PermissionHelper;
 use App\Support\Traits\PolicyTrait;
+use Illuminate\Support\Facades\Auth;
 
 class ProductPolicy
 {
@@ -32,5 +33,25 @@ class ProductPolicy
                 PermissionsEnum::UPDATE,
                 PermissionPlacesEnum::PRODUCT)
         );
+    }
+
+    /**
+     * @param User $user
+     * @param Product $model
+     * @return bool
+     */
+    public function reportComment(User $user, Product $model): bool
+    {
+        return $model->is_published && $model->is_commenting_allowed;
+    }
+
+    /**
+     * @param User $user
+     * @param Product $model
+     * @return bool
+     */
+    public function voteComment(User $user, Product $model): bool
+    {
+        return Auth::check() && $model->is_commenting_allowed;
     }
 }

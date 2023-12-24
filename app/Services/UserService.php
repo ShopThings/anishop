@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\DatabaseEnum;
 use App\Enums\Gates\RolesEnum;
 use App\Models\User;
 use App\Repositories\Contracts\CartRepositoryInterface;
@@ -10,6 +9,7 @@ use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\UserServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -69,6 +69,60 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
+    public function getUserAddressById($id): ?Model
+    {
+        $where = new WhereBuilder('address_user');
+        $where->whereEqual('id', $id);
+
+        return $this->repository->getUserAddressWhere($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserAddressesCount($userId): int
+    {
+        $where = new WhereBuilder('address_user');
+        $where->whereEqual('user_id', $userId);
+
+        return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserFavoriteProductsCount($userId): int
+    {
+        $where = new WhereBuilder('user_favorite_products');
+        $where->whereEqual('user_id', $userId);
+
+        return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserNotifications(User $user, Filter $filter): Collection|LengthAwarePaginator
+    {
+        $filter->setOrder(['created_at' => 'desc']);
+        return $this->repository->getUserNotifications(
+            user: $user,
+            filter: $filter,
+            columns: ['data', 'read_at', 'created_at']
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addFavoriteProduct($userId, $productId): bool
+    {
+        return $this->repository->addFavoriteProduct($userId, $productId);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $roles = array_map(function ($value) {
@@ -107,6 +161,32 @@ class UserService extends Service implements UserServiceInterface
             DB::rollBack();
             return null;
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createAddress(array $attributes): ?Model
+    {
+        $attrs = [
+            'user_id' => $attributes['user_id'],
+            'full_name' => $attributes['full_name'],
+            'mobile' => $attributes['mobile'],
+            'address' => $attributes['address'],
+            'postal_code' => $attributes['postal_code'],
+            'province_id' => $attributes['province'],
+            'city_id' => $attributes['city'],
+        ];
+
+        return $this->repository->createAddress($attrs);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function makeAllNotificationAsRead(User $user): bool
+    {
+        return (bool)$this->repository->makeAllNotificationAsRead($user);
     }
 
     /**
@@ -175,5 +255,64 @@ class UserService extends Service implements UserServiceInterface
         }
 
         return $user;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateUserAddressByUserIdAndId($userId, $id, array $attributes): ?Model
+    {
+        $updateAttributes = [];
+
+        if (isset($attributes['full_name'])) {
+            $updateAttributes['full_name'] = $attributes['full_name'];
+        }
+        if (isset($attributes['mobile'])) {
+            $updateAttributes['mobile'] = $attributes['mobile'];
+        }
+        if (isset($attributes['address'])) {
+            $updateAttributes['address'] = $attributes['address'];
+        }
+        if (isset($attributes['postal_code'])) {
+            $updateAttributes['postal_code'] = $attributes['postal_code'];
+        }
+        if (isset($attributes['province'])) {
+            $updateAttributes['province_id'] = $attributes['province'];
+        }
+        if (isset($attributes['city'])) {
+            $updateAttributes['city_id'] = $attributes['city'];
+        }
+
+        $where = new WhereBuilder('address_user');
+        $where->whereEqual('id', $id)
+            ->whereEqual('user_id', $userId);
+
+        $res = $this->repository->updateUserAddressWhere($updateAttributes, $where->build());
+
+        return !$res ? null : $this->getUserAddressById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteAddressByUserIdAndId($userId, $id): bool
+    {
+        $where = new WhereBuilder('address_user');
+        $where->whereEqual('id', $id)
+            ->whereEqual('user_id', $userId);
+
+        return (bool)$this->repository->deleteAddressWhere($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteUserFavoriteProductById($userId, $productId): bool
+    {
+        $where = new WhereBuilder('user_favorite_products');
+        $where->whereEqual('user_id', $userId)
+            ->whereEqual('product_id', $productId);
+
+        return (bool)$this->repository->deleteFavoriteProductWhere($where->build());
     }
 }

@@ -4,9 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderDetailRequest;
-use App\Http\Requests\UpdateOrderItemRequest;
 use App\Models\OrderDetail;
-use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class UserOrderController extends Controller
@@ -15,6 +13,7 @@ class UserOrderController extends Controller
     {
 
     }
+
     /**
      * Display a listing of the resource.
      */

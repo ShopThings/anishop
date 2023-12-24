@@ -18,6 +18,12 @@ interface ReturnOrderServiceInterface extends ServiceInterface
     public function getOrders(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator;
 
     /**
+     * @param $userId
+     * @return int
+     */
+    public function getUserOrdersCount($userId): int;
+
+    /**
      * @param array $items
      * @return Collection
      */

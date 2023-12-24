@@ -27,11 +27,11 @@ class AddressResource extends JsonResource
             'province' => $this->whenLoaded('province'),
             'user' => $this->whenLoaded('user'),
             'created_at' => $this->created_at
-                ? verta($this->verified_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->verified_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

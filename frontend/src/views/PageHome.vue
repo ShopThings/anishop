@@ -1,29 +1,29 @@
 <template>
-    <div class="p-3">
-        <main-slider/>
-    </div>
+  <div class="p-3">
+    <main-slider/>
+  </div>
 
-    <div class="px-3 mb-6 lg:mb-8">
-        <amazing-offers/>
-    </div>
+  <div class="px-3 mb-6 lg:mb-8">
+    <amazing-offers/>
+  </div>
 
-    <div class="px-3 mb-6 lg:mb-8">
-        <chosen-categories/>
-    </div>
+  <div class="px-3 mb-6 lg:mb-8">
+    <chosen-categories/>
+  </div>
 
-    <div class="mb-6 lg:mb-8">
-        <sliders/>
-    </div>
+  <div class="mb-6 lg:mb-8">
+    <sliders/>
+  </div>
 
-    <div class="mb-6 lg:mb-8">
-        <popular-brands/>
-    </div>
+  <div class="mb-6 lg:mb-8">
+    <popular-brands/>
+  </div>
 
-    <div class="mb-6 lg:mb-8">
-        <latest-blogs/>
-    </div>
+  <div class="mb-6 lg:mb-8">
+    <latest-blogs/>
+  </div>
 
-    <app-newsletter/>
+  <app-newsletter/>
 </template>
 
 <script setup>

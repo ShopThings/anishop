@@ -1,9 +1,10 @@
 import {computed} from "vue";
 import {useRoute} from "vue-router";
 
-/**
- * TODO: Test it! because not sure if it has side effects or not :(
- */
+export function isValidInternalRedirectLink(link) {
+    return link && /^\/[a-z][a-zA-Z0-9]*g/.test(link)
+}
+
 export function getRouteParamByKey(key, defaultValue) {
     const route = useRoute()
 

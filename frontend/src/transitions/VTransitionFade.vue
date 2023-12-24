@@ -1,7 +1,7 @@
 <template>
-    <Transition name="fade">
-        <slot></slot>
-    </Transition>
+  <Transition name="fade">
+    <slot></slot>
+  </Transition>
 </template>
 
 <script setup>
@@ -10,12 +10,12 @@
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.3s ease;
-    transition-delay: .05s;
+  transition: opacity 0.3s ease;
+  transition-delay: .05s;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-    opacity: 0;
+  opacity: 0;
 }
 </style>

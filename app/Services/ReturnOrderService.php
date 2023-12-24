@@ -6,6 +6,7 @@ use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
 use App\Services\Contracts\ReturnOrderServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -29,6 +30,17 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserOrdersCount($userId): int
+    {
+        $where = new WhereBuilder('return_order_requests');
+        $where->whereEqual('user_id', $userId);
+
+        return $this->repository->count($where->build());
     }
 
     /**

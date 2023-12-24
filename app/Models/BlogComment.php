@@ -47,14 +47,6 @@ class BlogComment extends Model
     }
 
     /**
-     * @return BelongsTo
-     */
-    public function answerTo(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'answer_to');
-    }
-
-    /**
      * @return HasMany
      */
     public function children(): HasMany

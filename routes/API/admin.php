@@ -371,8 +371,10 @@ Route::prefix('admin')
                 /*
                  * setting routes
                  */
-                Route::apiResource('settings', SettingController::class)->only(['index', 'update'])
-                    ->whereNumber('setting');
+                Route::get('settings/{group?}', [SettingController::class, 'index'])
+                    ->whereAlpha('group')->name('settings.index');
+                Route::put('settings', [SettingController::class, 'update'])
+                    ->name('settings.update');
             });
 
             /*

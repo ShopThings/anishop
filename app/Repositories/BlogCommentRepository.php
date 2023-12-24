@@ -81,6 +81,27 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
     /**
      * @inheritDoc
      */
+    public function getUserCommentsFilterPaginated(
+        int    $userId,
+        Filter $filter,
+        array  $columns = ['*']
+    ): Collection|LengthAwarePaginator
+    {
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->model->newQuery();
+        $query
+            ->with(['blog', 'blog.image', 'badge'])
+            ->where('created_by', $userId);
+
+        return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function reportComment(): bool
     {
         return !!$this->model->increment('flag_count', 1);

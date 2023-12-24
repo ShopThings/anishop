@@ -11,17 +11,17 @@ trait RepositoryTrait
     /**
      * @param $query
      * @param array $columns
-     * @param int $limit
+     * @param int|null $limit
      * @param int $page
      * @param array $order
      * @return LengthAwarePaginator|Collection
      */
     protected function _paginateWithOrder(
         $query,
-        array   $columns = ['*'],
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        array $columns = ['*'],
+        ?int $limit = 15,
+        int $page = 1,
+        array $order = []
     )
     {
         if (count($order)) {
@@ -30,7 +30,7 @@ trait RepositoryTrait
             }
         }
 
-        if ($limit > 0) {
+        if ($limit && $limit > 0) {
             return $query->paginate(perPage: $limit, columns: $columns, page: $page);
         } else {
             return $query->get($columns);

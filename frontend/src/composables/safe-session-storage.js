@@ -7,7 +7,7 @@ const cookieName = 'ensureSafeDataSession'
 const encryptionToken = Cookie.get(cookieName) || v4()
 
 // Store the encryption token in a secure cookie.
-Cookie.set(cookieName, encryptionToken, {secure: true, expires: 180})
+Cookie.set(cookieName, encryptionToken, {secure: true, expires: 180, sameSite: 'lax'})
 
 export const useSafeSessionStorage = {
     getItem: (key) => {

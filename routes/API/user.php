@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\UserAddressController;
-use App\Http\Controllers\User\UserBlogCommentContrller;
+use App\Http\Controllers\User\UserBlogCommentController;
 use App\Http\Controllers\User\UserCommentController;
 use App\Http\Controllers\User\UserContactUsController;
 use App\Http\Controllers\User\UserFavoriteProductController;
@@ -33,8 +33,8 @@ Route::prefix('user')
         /*
          * notification routes
          */
-        Route::apiResource('notifications', UserNotificationController::class)->only(['index', 'update'])
-            ->whereNumber('notification');
+        Route::get('notifications', [UserNotificationController::class, 'index'])->name('notifications.index');
+        Route::put('notifications', [UserNotificationController::class, 'update'])->name('notifications.update');
 
         /*
          * order routes
@@ -69,15 +69,15 @@ Route::prefix('user')
         /*
          * blog comment routes
          */
-        Route::get('blog/comments', [UserBlogCommentContrller::class, 'index'])
+        Route::get('blog/comments', [UserBlogCommentController::class, 'index'])
             ->name('blog.comments.index');
-        Route::get('blog/comments/{comment}', [UserBlogCommentContrller::class, 'show'])
+        Route::get('blog/comments/{comment}', [UserBlogCommentController::class, 'show'])
             ->whereNumber('comment')->name('blog.comments.show');
-        Route::post('blog/{blog}/comments', [UserBlogCommentContrller::class, 'store'])
+        Route::post('blog/{blog}/comments', [UserBlogCommentController::class, 'store'])
             ->whereNumber('blog')->name('blog.comments.store');
-        Route::put('blog/comments/{comment}', [UserBlogCommentContrller::class, 'update'])
+        Route::put('blog/comments/{comment}', [UserBlogCommentController::class, 'update'])
             ->whereNumber('comment')->name('blog.comments.update');
-        Route::delete('blog/comments/{comment}', [UserBlogCommentContrller::class, 'destroy'])
+        Route::delete('blog/comments/{comment}', [UserBlogCommentController::class, 'destroy'])
             ->whereNumber('comment')->name('blog.comments.destroy');
 
         /*

@@ -3,17 +3,35 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\Home\BrandResource;
+use App\Http\Resources\Home\MainBrandSliderResource;
+use App\Services\Contracts\BrandServiceInterface;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class HomeBrandController extends Controller
 {
-    public function brandSlider()
+    /**
+     * @param BrandServiceInterface $service
+     */
+    public function __construct(
+        protected BrandServiceInterface $service
+    )
     {
-
     }
 
-    public function brands()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function brandSlider(): AnonymousResourceCollection
     {
+        return MainBrandSliderResource::collection($this->service->getSliderBrands());
+    }
 
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function brands(): AnonymousResourceCollection
+    {
+        return BrandResource::collection($this->service->getPublishedBrands());
     }
 }

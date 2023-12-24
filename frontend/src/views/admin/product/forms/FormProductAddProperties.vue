@@ -1,35 +1,35 @@
 <template>
-    <form>
-        <partial-card class="mb-3 p-3 relative">
-            <template #body>
-                <loader-dot-orbit
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-                    container-bg-color="bg-blue-50 opacity-40"
-                />
+  <form>
+    <partial-card class="mb-3 p-3 relative">
+      <template #body>
+        <loader-dot-orbit
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+            container-bg-color="bg-blue-50 opacity-40"
+        />
 
-                <div class="p-2">
-                    <partial-input-label title="ویژگی‌ها"/>
-                </div>
-                <base-property-builder v-model:properties="properties"/>
-            </template>
-        </partial-card>
+        <div class="p-2">
+          <partial-input-label title="ویژگی‌ها"/>
+        </div>
+        <base-property-builder v-model:properties="properties"/>
+      </template>
+    </partial-card>
 
-        <partial-card>
-            <template #body>
-                <partial-stepy-next-prev-buttons
-                    :current-step="options.currentStep"
-                    :current-step-index="options.currentStepIndex"
-                    :last-step="options.lastStep"
-                    :allow-next-step="!isSubmitting"
-                    :allow-prev-step="false"
-                    :show-prev-step-button="false"
-                    :loading="isSubmitting"
-                    @finish="handleFinishClick"
-                />
-            </template>
-        </partial-card>
-    </form>
+    <partial-card>
+      <template #body>
+        <partial-stepy-next-prev-buttons
+            :current-step="options.currentStep"
+            :current-step-index="options.currentStepIndex"
+            :last-step="options.lastStep"
+            :allow-next-step="!isSubmitting"
+            :allow-prev-step="false"
+            :show-prev-step-button="false"
+            :loading="isSubmitting"
+            @finish="handleFinishClick"
+        />
+      </template>
+    </partial-card>
+  </form>
 </template>
 
 <script setup>
@@ -43,10 +43,10 @@ import BasePropertyBuilder from "../../../../components/base/BasePropertyBuilder
 import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
 
 defineProps({
-    options: {
-        type: Object,
-        required: true,
-    },
+  options: {
+    type: Object,
+    required: true,
+  },
 })
 
 const canSubmit = ref(true)
@@ -54,21 +54,21 @@ const canSubmit = ref(true)
 const properties = ref([])
 
 function handleFinishClick() {
-    onSubmit()
+  onSubmit()
 }
 
 const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
+  validationSchema: yup.object().shape({}),
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+  if (!canSubmit.value) return
 
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve()
-        }, 2000)
-    })
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve()
+    }, 2000)
+  })
 })
 </script>
 

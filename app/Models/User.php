@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\SettingsEnum;
+use App\Enums\Settings\SettingsEnum;
 use App\Enums\SMS\SMSTypesEnum;
 use App\Notifications\VerifyCodeNotification;
 use App\Support\Model\AuthenticatableExtendedModel as Model;

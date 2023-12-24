@@ -52,7 +52,7 @@ class HomeBlogCommentController extends Controller
         $this->authorize('reportComment', $blog);
 
         // check for previous report footprint
-        $cookieName = 'comment_report_' . $comment->id;
+        $cookieName = 'blog_comment_report_' . $comment->id;
         $ip = $request->ip();
 
         $commentCookie = Cookie::get($cookieName);

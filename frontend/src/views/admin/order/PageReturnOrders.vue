@@ -1,57 +1,57 @@
 <template>
-    <partial-card ref="tableContainer">
-        <template #header>
-            لیست سفارشات مرجوعی
+  <partial-card ref="tableContainer">
+    <template #header>
+      لیست سفارشات مرجوعی
+    </template>
+
+    <template #body>
+      <base-loading-panel :loading="loading" type="table">
+        <template #content>
+          <base-datatable
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="false"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="false"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
+          >
+            <template v-slot:order_code="{value}">
+
+            </template>
+            <template v-slot:user="{value}">
+
+            </template>
+            <template v-slot:status="{value}">
+
+            </template>
+            <template v-slot:seen_status="{value}">
+
+            </template>
+            <template v-slot:requested_at="{value}">
+              <span v-if="value.requested_at" class="text-xs">{{ value.requested_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+            <template v-slot:status_changed_by="{value}">
+
+            </template>
+            <template v-slot:op="{value}">
+              <base-datatable-menu
+                  :items="operations"
+                  :data="value"
+                  :container="getMenuContainer"
+                  :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
+              />
+            </template>
+          </base-datatable>
         </template>
-
-        <template #body>
-            <base-loading-panel :loading="loading" type="table">
-                <template #content>
-                    <base-datatable
-                        ref="datatable"
-                        :enable-search-box="true"
-                        :enable-multi-operation="false"
-                        :is-slot-mode="true"
-                        :is-loading="table.isLoading"
-                        :columns="table.columns"
-                        :rows="table.rows"
-                        :has-checkbox="false"
-                        :total="table.totalRecordCount"
-                        :sortable="table.sortable"
-                        @do-search="doSearch"
-                    >
-                        <template v-slot:order_code="{value}">
-
-                        </template>
-                        <template v-slot:user="{value}">
-
-                        </template>
-                        <template v-slot:status="{value}">
-
-                        </template>
-                        <template v-slot:seen_status="{value}">
-
-                        </template>
-                        <template v-slot:requested_at="{value}">
-                            <span v-if="value.requested_at" class="text-xs">{{ value.requested_at }}</span>
-                            <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
-                        </template>
-                        <template v-slot:status_changed_by="{value}">
-
-                        </template>
-                        <template v-slot:op="{value}">
-                            <base-datatable-menu
-                                :items="operations"
-                                :data="value"
-                                :container="getMenuContainer"
-                                :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
-                            />
-                        </template>
-                    </base-datatable>
-                </template>
-            </base-loading-panel>
-        </template>
-    </partial-card>
+      </base-loading-panel>
+    </template>
+  </partial-card>
 </template>
 
 <script setup>
@@ -78,152 +78,152 @@ const datatable = ref(null)
 const tableContainer = ref(null)
 const loading = ref(true)
 const table = reactive({
-    isLoading: false,
-    columns: [
-        {
-            label: "#",
-            field: "id",
-            columnStyles: "width: 3%;",
-            sortable: true,
-            isKey: true,
-        },
-        {
-            label: "کد مرجوعی",
-            field: "code",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-        {
-            label: "کد سفارش",
-            field: "order_code",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-        {
-            label: "مرجوع کننده",
-            field: "user",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-        {
-            label: "تعداد محصولات مرجوعی",
-            field: "items_count",
-        },
-        {
-            label: "وضعیت ارجاع",
-            field: "status",
-        },
-        {
-            label: "وضعیت بازدید",
-            field: "seen_status",
-        },
-        {
-            label: "تاریخ درخواست",
-            field: "requested_at",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-        {
-            label: "تغییر وضعیت توسط",
-            field: "status_changed_by ",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-        {
-            label: 'عملیات',
-            field: 'op',
-            width: '7%',
-        },
-    ],
-    rows: [],
-    totalRecordCount: 0,
-    sortable: {
-        order: "id",
-        sort: "desc",
+  isLoading: false,
+  columns: [
+    {
+      label: "#",
+      field: "id",
+      columnStyles: "width: 3%;",
+      sortable: true,
+      isKey: true,
     },
+    {
+      label: "کد مرجوعی",
+      field: "code",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "کد سفارش",
+      field: "order_code",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "مرجوع کننده",
+      field: "user",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "تعداد محصولات مرجوعی",
+      field: "items_count",
+    },
+    {
+      label: "وضعیت ارجاع",
+      field: "status",
+    },
+    {
+      label: "وضعیت بازدید",
+      field: "seen_status",
+    },
+    {
+      label: "تاریخ درخواست",
+      field: "requested_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "تغییر وضعیت توسط",
+      field: "status_changed_by ",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: 'عملیات',
+      field: 'op',
+      width: '7%',
+    },
+  ],
+  rows: [],
+  totalRecordCount: 0,
+  sortable: {
+    order: "id",
+    sort: "desc",
+  },
 })
 
 const getMenuContainer = computed(() => {
-    return datatable.value?.tableContainer ?? 'body'
+  return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
-    {
-        id: 'detail',
-        link: {
-            text: 'مشاهده جزئیات',
-            icon: 'EyeIcon',
-        },
-        event: {
-            click: (data) => {
-                router.push({
-                    name: 'admin.return_order.detail',
-                    params: {
-                        id: data.id,
-                    }
-                })
-            },
-        },
+  {
+    id: 'detail',
+    link: {
+      text: 'مشاهده جزئیات',
+      icon: 'EyeIcon',
     },
-    {
-        id: 'delete',
-        link: {
-            text: 'حذف',
-            icon: 'TrashIcon',
-            class: 'text-rose-500',
-        },
-        event: {
-            click: (data) => {
-                hideAllPoppers()
-                toast.clear()
-
-                if (!data.is_deletable)
-                    toast.warning('این آیتم قابل حذف نمی‌باشد.')
-
-                useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.returnOrders.destroy, {return_order: data.id}), {
-                        method: 'DELETE',
-                    }, {
-                        success: () => {
-                            toast.success('عملیات با موفقیت انجام شد.')
-                            datatable.value?.refresh()
-                            datatable.value?.resetSelectionItem(data)
-
-                            return false
-                        },
-                    })
-                })
-            },
-        },
+    event: {
+      click: (data) => {
+        router.push({
+          name: 'admin.return_order.detail',
+          params: {
+            id: data.id,
+          }
+        })
+      },
     },
+  },
+  {
+    id: 'delete',
+    link: {
+      text: 'حذف',
+      icon: 'TrashIcon',
+      class: 'text-rose-500',
+    },
+    event: {
+      click: (data) => {
+        hideAllPoppers()
+        toast.clear()
+
+        if (!data.is_deletable)
+          toast.warning('این آیتم قابل حذف نمی‌باشد.')
+
+        useConfirmToast(() => {
+          useRequest(apiReplaceParams(apiRoutes.admin.returnOrders.destroy, {return_order: data.id}), {
+            method: 'DELETE',
+          }, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
+      },
+    },
+  },
 ]
 
 const doSearch = (offset, limit, order, sort, text) => {
-    table.isLoading = true
+  table.isLoading = true
 
-    // useRequest(apiRoutes.admin.returnOrders.index, {
-    //     params: {limit, offset, order, sort, text},
-    // }, {
-    //     success: (response) => {
-    //         table.rows = response.data
-    //         table.totalRecordCount = response.meta.total
-    //
-    //         return false
-    //     },
-    //     error: () => {
-    //         table.rows = []
-    //         table.totalRecordCount = 0
-    //     },
-    //     finally: () => {
-    loading.value = false
-    table.isLoading = false
-    //         table.sortable.order = order
-    //         table.sortable.sort = sort
-    //
-    //         if (tableContainer.value && tableContainer.value.card)
-    //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-    //     },
-    // })
+  // useRequest(apiRoutes.admin.returnOrders.index, {
+  //     params: {limit, offset, order, sort, text},
+  // }, {
+  //     success: (response) => {
+  //         table.rows = response.data
+  //         table.totalRecordCount = response.meta.total
+  //
+  //         return false
+  //     },
+  //     error: () => {
+  //         table.rows = []
+  //         table.totalRecordCount = 0
+  //     },
+  //     finally: () => {
+  loading.value = false
+  table.isLoading = false
+  //         table.sortable.order = order
+  //         table.sortable.sort = sort
+  //
+  //         if (tableContainer.value && tableContainer.value.card)
+  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+  //     },
+  // })
 }
 
 doSearch(0, 15, 'id', 'desc')

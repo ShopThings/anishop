@@ -1,23 +1,23 @@
 <template>
-    <div class="relative bg-white">
-        <footer class="pt-20 pb-10 lg:pt-[120px] lg:pb-20 relative z-[1]">
-            <div class="px-6">
-                <div class="flex flex-wrap">
-                    <div class="w-full px-4 sm:w-2/3 lg:w-3/12">
-                        <div class="mb-8 w-full">
-                            <router-link :to="{name: 'home'}"
-                                         class="mb-6 inline-block max-w-[160px]">
-                                <img class="mt-[10px] max-w-full"
-                                     src="/logo-with-type.png"
-                                     alt="لوگو">
-                            </router-link>
+  <div class="relative bg-white">
+    <footer class="pt-20 pb-10 lg:pt-[120px] lg:pb-20 relative z-[1]">
+      <div class="px-6">
+        <div class="flex flex-wrap">
+          <div class="w-full px-4 sm:w-2/3 lg:w-3/12">
+            <div class="mb-8 w-full">
+              <router-link :to="{name: 'home'}"
+                           class="mb-6 inline-block max-w-[160px]">
+                <img class="mt-[10px] max-w-full"
+                     src="/logo-with-type.png"
+                     alt="لوگو">
+              </router-link>
 
-                            <p class="text-body-color mb-7 text-base leading-7">
-                                تیم هیوا با استفاده از جدیدترین متدهای تبلیغات، کسب و کار شما را به بهترین آن تبدیل
-                                می‌کند. خودتان را به ما بسپارید :)
-                            </p>
+              <p class="text-body-color mb-7 text-base leading-7">
+                تیم هیوا با استفاده از جدیدترین متدهای تبلیغات، کسب و کار شما را به بهترین آن تبدیل
+                می‌کند. خودتان را به ما بسپارید :)
+              </p>
 
-                            <p class="text-dark flex items-center text-sm font-medium">
+              <p class="text-dark flex items-center text-sm font-medium">
                             <span class="text-primary ml-3">
                                   <svg
                                       width="19"
@@ -36,194 +36,194 @@
                                     />
                                   </svg>
                             </span>
-                                <span dir="ltr">+98 9017 951 6271</span>
-                            </p>
-                        </div>
-                    </div>
+                <span dir="ltr">+98 9017 951 6271</span>
+              </p>
+            </div>
+          </div>
 
-                    <div class="w-full px-4 sm:w-1/2 lg:w-2/12">
-                        <div class="mb-8 w-full">
-                            <h4 class="text-dark mb-6 text-lg font-iranyekan-bold">دسترسی سریع</h4>
-                            <ul>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        محصولات
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        برند‌ها
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        سوالات متداول
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+          <div class="w-full px-4 sm:w-1/2 lg:w-2/12">
+            <div class="mb-8 w-full">
+              <h4 class="text-dark mb-6 text-lg font-iranyekan-bold">دسترسی سریع</h4>
+              <ul>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    محصولات
+                  </a>
+                </li>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    برند‌ها
+                  </a>
+                </li>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    سوالات متداول
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-                    <div class="w-full px-4 sm:w-1/2 lg:w-2/12">
-                        <div class="mb-8 w-full">
-                            <h4 class="text-dark mb-6 text-lg font-iranyekan-bold">لینک‌های مفید</h4>
-                            <ul>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        درباره ما
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        تماس با ما
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        ثبت شکایت
-                                    </a>
-                                </li>
-                                <li>
-                                    <a
-                                        href="javascript:void(0)"
-                                        class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
-                                    >
-                                        قوانین و مقررات
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+          <div class="w-full px-4 sm:w-1/2 lg:w-2/12">
+            <div class="mb-8 w-full">
+              <h4 class="text-dark mb-6 text-lg font-iranyekan-bold">لینک‌های مفید</h4>
+              <ul>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    درباره ما
+                  </a>
+                </li>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    تماس با ما
+                  </a>
+                </li>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    ثبت شکایت
+                  </a>
+                </li>
+                <li>
+                  <a
+                      href="javascript:void(0)"
+                      class="text-body-color hover:text-primary mb-2 inline-block text-base leading-loose"
+                  >
+                    قوانین و مقررات
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-                    <div class="w-full px-4 sm:w-full lg:w-5/12 flex flex-col-reverse lg:flex-col">
-                        <div class="mb-8 w-full text-center lg:text-right">
-                            <h4 class="text-dark mb-6 text-lg font-iranyekan-bold">ما را دنبال کنید</h4>
-                            <div class="mb-6 flex items-center justify-center lg:justify-start">
-                                <a
-                                    href="javascript:void(0)"
-                                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
-                                >
-                                    <svg
-                                        width="8"
-                                        height="16"
-                                        viewBox="0 0 8 16"
-                                        class="fill-current"
-                                    >
-                                        <path
-                                            d="M7.43902 6.4H6.19918H5.75639V5.88387V4.28387V3.76774H6.19918H7.12906C7.3726 3.76774 7.57186 3.56129 7.57186 3.25161V0.516129C7.57186 0.232258 7.39474 0 7.12906 0H5.51285C3.76379 0 2.54609 1.44516 2.54609 3.5871V5.83226V6.34839H2.10329H0.597778C0.287819 6.34839 0 6.63226 0 7.04516V8.90323C0 9.26452 0.243539 9.6 0.597778 9.6H2.05902H2.50181V10.1161V15.3032C2.50181 15.6645 2.74535 16 3.09959 16H5.18075C5.31359 16 5.42429 15.9226 5.51285 15.8194C5.60141 15.7161 5.66783 15.5355 5.66783 15.3806V10.1419V9.62581H6.13276H7.12906C7.41688 9.62581 7.63828 9.41935 7.68256 9.10968V9.08387V9.05806L7.99252 7.27742C8.01466 7.09677 7.99252 6.89032 7.85968 6.68387C7.8154 6.55484 7.61614 6.42581 7.43902 6.4Z"
-                                        />
-                                    </svg>
-                                </a>
-                                <a
-                                    href="javascript:void(0)"
-                                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
-                                >
-                                    <svg
-                                        class="fill-current"
-                                        width="17"
-                                        height="17"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                                        style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"
-                                        xml:space="preserve">
+          <div class="w-full px-4 sm:w-full lg:w-5/12 flex flex-col-reverse lg:flex-col">
+            <div class="mb-8 w-full text-center lg:text-right">
+              <h4 class="text-dark mb-6 text-lg font-iranyekan-bold">ما را دنبال کنید</h4>
+              <div class="mb-6 flex items-center justify-center lg:justify-start">
+                <a
+                    href="javascript:void(0)"
+                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                >
+                  <svg
+                      width="8"
+                      height="16"
+                      viewBox="0 0 8 16"
+                      class="fill-current"
+                  >
+                    <path
+                        d="M7.43902 6.4H6.19918H5.75639V5.88387V4.28387V3.76774H6.19918H7.12906C7.3726 3.76774 7.57186 3.56129 7.57186 3.25161V0.516129C7.57186 0.232258 7.39474 0 7.12906 0H5.51285C3.76379 0 2.54609 1.44516 2.54609 3.5871V5.83226V6.34839H2.10329H0.597778C0.287819 6.34839 0 6.63226 0 7.04516V8.90323C0 9.26452 0.243539 9.6 0.597778 9.6H2.05902H2.50181V10.1161V15.3032C2.50181 15.6645 2.74535 16 3.09959 16H5.18075C5.31359 16 5.42429 15.9226 5.51285 15.8194C5.60141 15.7161 5.66783 15.5355 5.66783 15.3806V10.1419V9.62581H6.13276H7.12906C7.41688 9.62581 7.63828 9.41935 7.68256 9.10968V9.08387V9.05806L7.99252 7.27742C8.01466 7.09677 7.99252 6.89032 7.85968 6.68387C7.8154 6.55484 7.61614 6.42581 7.43902 6.4Z"
+                    />
+                  </svg>
+                </a>
+                <a
+                    href="javascript:void(0)"
+                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                >
+                  <svg
+                      class="fill-current"
+                      width="17"
+                      height="17"
+                      xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                      style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"
+                      xml:space="preserve">
                                                     <g>
                                                         <path
                                                             d="M21.159809,2C21.623091,2,22,2.376909,22,2.840191v18.319618C22,21.623091,21.623091,22,21.159809,22H2.84019   C2.37691,22,2,21.623091,2,21.159809V2.840191C2,2.376909,2.37691,2,2.84019,2H21.159809 M21.159809,1H2.84019   C1.82388,1,1,1.823879,1,2.840191v18.319618C1,22.176121,1.82388,23,2.84019,23h18.319618C22.176121,23,23,22.176121,23,21.159809   V2.840191C23,1.823879,22.176121,1,21.159809,1L21.159809,1z"/>
                                                     </g>
-                                        <path
-                                            d="M13.523985,10.775623L19.480984,4h-1.41143l-5.174801,5.88195L8.764665,4H4l6.246901,8.895341L4,20h1.411431  l5.461361-6.21299L15.235336,20H20L13.523985,10.775623z M11.590199,12.973429l-0.633908-0.886331L5.920428,5.041171h2.168246  l4.065295,5.6884l0.631236,0.886331l5.283681,7.39365H15.90064L11.590199,12.973429z"/>
+                    <path
+                        d="M13.523985,10.775623L19.480984,4h-1.41143l-5.174801,5.88195L8.764665,4H4l6.246901,8.895341L4,20h1.411431  l5.461361-6.21299L15.235336,20H20L13.523985,10.775623z M11.590199,12.973429l-0.633908-0.886331L5.920428,5.041171h2.168246  l4.065295,5.6884l0.631236,0.886331l5.283681,7.39365H15.90064L11.590199,12.973429z"/>
                                                 </svg>
-                                </a>
-                                <a
-                                    href="javascript:void(0)"
-                                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
-                                >
-                                    <svg
-                                        width="16"
-                                        height="12"
-                                        viewBox="0 0 16 12"
-                                        class="fill-current"
-                                    >
-                                        <path
-                                            d="M15.6645 1.88018C15.4839 1.13364 14.9419 0.552995 14.2452 0.359447C13.0065 6.59222e-08 8 0 8 0C8 0 2.99355 6.59222e-08 1.75484 0.359447C1.05806 0.552995 0.516129 1.13364 0.335484 1.88018C0 3.23502 0 6 0 6C0 6 0 8.79263 0.335484 10.1198C0.516129 10.8664 1.05806 11.447 1.75484 11.6406C2.99355 12 8 12 8 12C8 12 13.0065 12 14.2452 11.6406C14.9419 11.447 15.4839 10.8664 15.6645 10.1198C16 8.79263 16 6 16 6C16 6 16 3.23502 15.6645 1.88018ZM6.4 8.57143V3.42857L10.5548 6L6.4 8.57143Z"
-                                        />
-                                    </svg>
-                                </a>
-                                <a
-                                    href="javascript:void(0)"
-                                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
-                                >
-                                    <svg
-                                        width="14"
-                                        height="14"
-                                        viewBox="0 0 14 14"
-                                        class="fill-current"
-                                    >
-                                        <path
-                                            d="M13.0214 0H1.02084C0.453707 0 0 0.451613 0 1.01613V12.9839C0 13.5258 0.453707 14 1.02084 14H12.976C13.5432 14 13.9969 13.5484 13.9969 12.9839V0.993548C14.0422 0.451613 13.5885 0 13.0214 0ZM4.15142 11.9H2.08705V5.23871H4.15142V11.9ZM3.10789 4.3129C2.42733 4.3129 1.90557 3.77097 1.90557 3.11613C1.90557 2.46129 2.45002 1.91935 3.10789 1.91935C3.76577 1.91935 4.31022 2.46129 4.31022 3.11613C4.31022 3.77097 3.81114 4.3129 3.10789 4.3129ZM11.9779 11.9H9.9135V8.67097C9.9135 7.90323 9.89082 6.8871 8.82461 6.8871C7.73571 6.8871 7.57691 7.74516 7.57691 8.60323V11.9H5.51254V5.23871H7.53154V6.16452H7.55423C7.84914 5.62258 8.50701 5.08065 9.52785 5.08065C11.6376 5.08065 12.0232 6.43548 12.0232 8.2871V11.9H11.9779Z"
-                                        />
-                                    </svg>
-                                </a>
-                            </div>
-                        </div>
+                </a>
+                <a
+                    href="javascript:void(0)"
+                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                >
+                  <svg
+                      width="16"
+                      height="12"
+                      viewBox="0 0 16 12"
+                      class="fill-current"
+                  >
+                    <path
+                        d="M15.6645 1.88018C15.4839 1.13364 14.9419 0.552995 14.2452 0.359447C13.0065 6.59222e-08 8 0 8 0C8 0 2.99355 6.59222e-08 1.75484 0.359447C1.05806 0.552995 0.516129 1.13364 0.335484 1.88018C0 3.23502 0 6 0 6C0 6 0 8.79263 0.335484 10.1198C0.516129 10.8664 1.05806 11.447 1.75484 11.6406C2.99355 12 8 12 8 12C8 12 13.0065 12 14.2452 11.6406C14.9419 11.447 15.4839 10.8664 15.6645 10.1198C16 8.79263 16 6 16 6C16 6 16 3.23502 15.6645 1.88018ZM6.4 8.57143V3.42857L10.5548 6L6.4 8.57143Z"
+                    />
+                  </svg>
+                </a>
+                <a
+                    href="javascript:void(0)"
+                    class="text-dark hover:bg-primary hover:border-primary mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-[#E5E5E5] hover:text-white sm:mr-4 lg:mr-3 xl:mr-4"
+                >
+                  <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      class="fill-current"
+                  >
+                    <path
+                        d="M13.0214 0H1.02084C0.453707 0 0 0.451613 0 1.01613V12.9839C0 13.5258 0.453707 14 1.02084 14H12.976C13.5432 14 13.9969 13.5484 13.9969 12.9839V0.993548C14.0422 0.451613 13.5885 0 13.0214 0ZM4.15142 11.9H2.08705V5.23871H4.15142V11.9ZM3.10789 4.3129C2.42733 4.3129 1.90557 3.77097 1.90557 3.11613C1.90557 2.46129 2.45002 1.91935 3.10789 1.91935C3.76577 1.91935 4.31022 2.46129 4.31022 3.11613C4.31022 3.77097 3.81114 4.3129 3.10789 4.3129ZM11.9779 11.9H9.9135V8.67097C9.9135 7.90323 9.89082 6.8871 8.82461 6.8871C7.73571 6.8871 7.57691 7.74516 7.57691 8.60323V11.9H5.51254V5.23871H7.53154V6.16452H7.55423C7.84914 5.62258 8.50701 5.08065 9.52785 5.08065C11.6376 5.08065 12.0232 6.43548 12.0232 8.2871V11.9H11.9779Z"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
 
-                        <div class="mb-8 w-full">
-                            <div class="flex flex-wrap justify-center lg:justify-start">
-                                <div
-                                    class="rounded-lg bg-white p-1 mr-2 my-1 border border-cool shadow-lg text-center w-[6rem] h-[7rem] overflow-hidden mb-5 lg:w-[5rem] lg:h-[6rem]">
-                                    <a href="javascript:void(0)" class="inline-block w-full h-full">
-                                        <img src="/src/assets/namad/1.jpg" alt=""
-                                             class="object-contain w-full h-full">
-                                    </a>
-                                </div>
-                                <div
-                                    class="rounded-lg bg-white p-1 mr-2 my-1 border border-cool shadow-lg text-center w-[6rem] h-[7rem] overflow-hidden mb-5 lg:w-[5rem] lg:h-[6rem]">
-                                    <a href="javascript:void(0)" class="inline-block w-full h-full">
-                                        <img src="/src/assets/namad/2.jpg" alt=""
-                                             class="object-contain w-full h-full">
-                                    </a>
-                                </div>
-                                <div
-                                    class="rounded-lg bg-white p-1 mr-2 my-1 border border-cool shadow-lg text-center w-[6rem] h-[7rem] overflow-hidden mb-5 lg:w-[5rem] lg:h-[6rem]">
-                                    <a href="javascript:void(0)" class="inline-block w-full h-full">
-                                        <img src="/src/assets/namad/3.jpg" alt=""
-                                             class="object-contain w-full h-full">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="mb-8 w-full">
+              <div class="flex flex-wrap justify-center lg:justify-start">
+                <div
+                    class="rounded-lg bg-white p-1 mr-2 my-1 border border-cool shadow-lg text-center w-[6rem] h-[7rem] overflow-hidden mb-5 lg:w-[5rem] lg:h-[6rem]">
+                  <a href="javascript:void(0)" class="inline-block w-full h-full">
+                    <img src="/src/assets/namad/1.jpg" alt=""
+                         class="object-contain w-full h-full">
+                  </a>
                 </div>
+                <div
+                    class="rounded-lg bg-white p-1 mr-2 my-1 border border-cool shadow-lg text-center w-[6rem] h-[7rem] overflow-hidden mb-5 lg:w-[5rem] lg:h-[6rem]">
+                  <a href="javascript:void(0)" class="inline-block w-full h-full">
+                    <img src="/src/assets/namad/2.jpg" alt=""
+                         class="object-contain w-full h-full">
+                  </a>
+                </div>
+                <div
+                    class="rounded-lg bg-white p-1 mr-2 my-1 border border-cool shadow-lg text-center w-[6rem] h-[7rem] overflow-hidden mb-5 lg:w-[5rem] lg:h-[6rem]">
+                  <a href="javascript:void(0)" class="inline-block w-full h-full">
+                    <img src="/src/assets/namad/3.jpg" alt=""
+                         class="object-contain w-full h-full">
+                  </a>
+                </div>
+              </div>
             </div>
-        </footer>
+          </div>
+        </div>
+      </div>
+    </footer>
 
-        <footer class="bg-gradient-to-b from-white to-sky-100 p-2 pb-8 text-center z-[1]">
-            <div class="md:container md:mx-auto">
-                <p class="text-zinc-800 text-sm">
-                    &copy;
-                    کلیه حقوق این فروشگاه متعلق به شرکت هیوا می‌باشد و هرگونه کپی برداری از آن پیگرد قانونی دارد.
-                </p>
-            </div>
-        </footer>
+    <footer class="bg-gradient-to-b from-white to-sky-100 p-2 pb-8 text-center z-[1]">
+      <div class="md:container md:mx-auto">
+        <p class="text-zinc-800 text-sm">
+          &copy;
+          کلیه حقوق این فروشگاه متعلق به شرکت هیوا می‌باشد و هرگونه کپی برداری از آن پیگرد قانونی دارد.
+        </p>
+      </div>
+    </footer>
 
-        <div>
+    <div>
             <span class="absolute left-0 bottom-0 z-0">
       <svg
           width="217"
@@ -251,7 +251,7 @@
         </defs>
       </svg>
     </span>
-            <span class="absolute top-10 right-10 z-0">
+      <span class="absolute top-10 right-10 z-0">
       <svg
           width="75"
           height="75"
@@ -278,8 +278,8 @@
         </defs>
       </svg>
     </span>
-        </div>
     </div>
+  </div>
 </template>
 
 <script setup>

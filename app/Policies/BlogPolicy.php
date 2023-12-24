@@ -20,7 +20,12 @@ class BlogPolicy
         $this->checkIsDeletable = false;
     }
 
-    public function reportComment(User $user, Blog $model)
+    /**
+     * @param User $user
+     * @param Blog $model
+     * @return bool
+     */
+    public function reportComment(User $user, Blog $model): bool
     {
         return $model->is_published;
     }

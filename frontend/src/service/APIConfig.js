@@ -39,10 +39,16 @@ export const MenuAPI = Object.assign(
 
 export const SettingAPI = Object.assign(
     GenericAPI(apiRoutes.admin.settings, {
-        only: ['index', 'update'],
+        only: ['update'],
         replacement: 'setting',
     }),
     {
-        // extra functionality goes here
+        fetchAll(groupName, params, callbacks) {
+            useRequest(
+                apiReplaceParams(apiRoutes.admin.settings.index, {group: groupName}),
+                null,
+                callbacks
+            )
+        },
     }
 )

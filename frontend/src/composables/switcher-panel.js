@@ -10,7 +10,7 @@ export function useSwitcherPanel(payload) {
 
     function panelChangeMonitor(callback) {
         watchImmediate(panels, () => {
-            if(isFunction(callback)) {
+            if (isFunction(callback)) {
                 callback()
             }
         })

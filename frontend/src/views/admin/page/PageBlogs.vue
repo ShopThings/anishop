@@ -1,55 +1,55 @@
 <template>
-    <new-creation-guide-top route-name="admin.blog.add">
-        <template #text>
-            با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش بلاگ نمایید
-        </template>
-        <template #buttonText>
-            <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
-            افزودن بلاگ جدید
-        </template>
-    </new-creation-guide-top>
+  <new-creation-guide-top route-name="admin.blog.add">
+    <template #text>
+      با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش بلاگ نمایید
+    </template>
+    <template #buttonText>
+      <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
+      افزودن بلاگ جدید
+    </template>
+  </new-creation-guide-top>
 
-    <partial-card ref="tableContainer">
-        <template #header>
-            لیست بلاگ‌ها
+  <partial-card ref="tableContainer">
+    <template #header>
+      لیست بلاگ‌ها
+    </template>
+
+    <template #body>
+      <base-loading-panel :loading="loading" type="table">
+        <template #content>
+          <base-datatable
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="true"
+              :selection-operations="selectionOperations"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="true"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
+          >
+            <template v-slot:image="{value}">
+
+            </template>
+            <template v-slot:is_published="{value}">
+
+            </template>
+            <template v-slot:updated_at="{value}">
+              <span v-if="value.updated_at" class="text-xs">{{ value.updated_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+            <template v-slot:op="{value}">
+              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+            </template>
+          </base-datatable>
         </template>
-
-        <template #body>
-            <base-loading-panel :loading="loading" type="table">
-                <template #content>
-                    <base-datatable
-                        ref="datatable"
-                        :enable-search-box="true"
-                        :enable-multi-operation="true"
-                        :selection-operations="selectionOperations"
-                        :is-slot-mode="true"
-                        :is-loading="table.isLoading"
-                        :selection-columns="table.selectionColumns"
-                        :columns="table.columns"
-                        :rows="table.rows"
-                        :has-checkbox="true"
-                        :total="table.totalRecordCount"
-                        :sortable="table.sortable"
-                        @do-search="doSearch"
-                    >
-                        <template v-slot:image="{value}">
-
-                        </template>
-                        <template v-slot:is_published="{value}">
-
-                        </template>
-                        <template v-slot:updated_at="{value}">
-                            <span v-if="value.updated_at" class="text-xs">{{ value.updated_at }}</span>
-                            <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
-                        </template>
-                        <template v-slot:op="{value}">
-                            <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
-                        </template>
-                    </base-datatable>
-                </template>
-            </base-loading-panel>
-        </template>
-    </partial-card>
+      </base-loading-panel>
+    </template>
+  </partial-card>
 </template>
 
 <script setup>
@@ -74,219 +74,219 @@ const datatable = ref(null)
 const tableContainer = ref(null)
 const loading = ref(true)
 const table = reactive({
-    isLoading: false,
-    selectionColumns: [
-        {
-            label: "#",
-            field: "id",
-            columnStyles: "width: 3%;",
-            sortable: true,
-            isKey: true,
-        },
-        {
-            label: "تصویر",
-            field: "image",
-        },
-        {
-            label: "موضوع",
-            field: "title",
-            sortable: true,
-        },
-        {
-            label: "نویسنده",
-            field: "writer",
-            sortable: true,
-        },
-        {
-            label: "دسته‌بندی",
-            field: "category",
-            sortable: true,
-        },
-        {
-            label: "وضعیت نمایش",
-            field: "is_published",
-            sortable: true,
-        },
-        {
-            label: "تاریخ ویرایش",
-            field: "updated_at",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-    ],
-    columns: [
-        {
-            label: "#",
-            field: "id",
-            columnStyles: "width: 3%;",
-            sortable: true,
-            isKey: true,
-        },
-        {
-            label: "تصویر",
-            field: "image",
-        },
-        {
-            label: "موضوع",
-            field: "title",
-            sortable: true,
-        },
-        {
-            label: "نویسنده",
-            field: "writer",
-            sortable: true,
-        },
-        {
-            label: "دسته‌بندی",
-            field: "category",
-            sortable: true,
-        },
-        {
-            label: "وضعیت نمایش",
-            field: "is_published",
-            sortable: true,
-        },
-        {
-            label: "تاریخ ویرایش",
-            field: "updated_at",
-            columnClasses: 'whitespace-nowrap',
-            sortable: true,
-        },
-        {
-            label: 'عملیات',
-            field: 'op',
-            width: '7%',
-        },
-    ],
-    rows: [],
-    totalRecordCount: 0,
-    sortable: {
-        order: "id",
-        sort: "desc",
+  isLoading: false,
+  selectionColumns: [
+    {
+      label: "#",
+      field: "id",
+      columnStyles: "width: 3%;",
+      sortable: true,
+      isKey: true,
     },
+    {
+      label: "تصویر",
+      field: "image",
+    },
+    {
+      label: "موضوع",
+      field: "title",
+      sortable: true,
+    },
+    {
+      label: "نویسنده",
+      field: "writer",
+      sortable: true,
+    },
+    {
+      label: "دسته‌بندی",
+      field: "category",
+      sortable: true,
+    },
+    {
+      label: "وضعیت نمایش",
+      field: "is_published",
+      sortable: true,
+    },
+    {
+      label: "تاریخ ویرایش",
+      field: "updated_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+  ],
+  columns: [
+    {
+      label: "#",
+      field: "id",
+      columnStyles: "width: 3%;",
+      sortable: true,
+      isKey: true,
+    },
+    {
+      label: "تصویر",
+      field: "image",
+    },
+    {
+      label: "موضوع",
+      field: "title",
+      sortable: true,
+    },
+    {
+      label: "نویسنده",
+      field: "writer",
+      sortable: true,
+    },
+    {
+      label: "دسته‌بندی",
+      field: "category",
+      sortable: true,
+    },
+    {
+      label: "وضعیت نمایش",
+      field: "is_published",
+      sortable: true,
+    },
+    {
+      label: "تاریخ ویرایش",
+      field: "updated_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: 'عملیات',
+      field: 'op',
+      width: '7%',
+    },
+  ],
+  rows: [],
+  totalRecordCount: 0,
+  sortable: {
+    order: "id",
+    sort: "desc",
+  },
 })
 
 const getMenuContainer = computed(() => {
-    return datatable.value?.tableContainer ?? 'body'
+  return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
-    {
-        link: {
-            text: 'ویرایش',
-            icon: 'PencilIcon',
-        },
-        event: {
-            click: (data) => {
-                router.push({
-                    name: 'admin.blog.edit',
-                    params: {
-                        id: data.id,
-                    }
-                })
-            },
-        },
+  {
+    link: {
+      text: 'ویرایش',
+      icon: 'PencilIcon',
     },
-    {
-        link: {
-            text: 'حذف',
-            icon: 'TrashIcon',
-            class: 'text-rose-500',
-        },
-        event: {
-            click: (data) => {
-                hideAllPoppers()
-                toast.clear()
-
-                useConfirmToast(() => {
-                    useRequest(apiReplaceParams(apiRoutes.admin.blogs.destroy, {blog: data.id}), {
-                        method: 'DELETE',
-                    }, {
-                        success: () => {
-                            toast.success('عملیات با موفقیت انجام شد.')
-                            datatable.value?.refresh()
-                            datatable.value?.resetSelectionItem(data)
-
-                            return false
-                        },
-                    })
-                })
-            },
-        },
+    event: {
+      click: (data) => {
+        router.push({
+          name: 'admin.blog.edit',
+          params: {
+            id: data.id,
+          }
+        })
+      },
     },
+  },
+  {
+    link: {
+      text: 'حذف',
+      icon: 'TrashIcon',
+      class: 'text-rose-500',
+    },
+    event: {
+      click: (data) => {
+        hideAllPoppers()
+        toast.clear()
+
+        useConfirmToast(() => {
+          useRequest(apiReplaceParams(apiRoutes.admin.blogs.destroy, {blog: data.id}), {
+            method: 'DELETE',
+          }, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
+      },
+    },
+  },
 ]
 
 const selectionOperations = [
-    {
-        btn: {
-            tooltip: 'حذف موارد انتخاب شده',
-            icon: 'TrashIcon',
-            class: 'bg-rose-500 border-rose-600',
-        },
-        event: {
-            click: (items) => {
-                const ids = []
-                for (const item in items) {
-                    if (items.hasOwnProperty(item)) {
-                        if (items[item].id)
-                            ids.push(items[item].id)
-                    }
-                }
-
-                if (!ids.length) {
-                    toast.info('ابتدا آیتم‌های مورد نیاز را انتخاب کنید و سپس دوباره تلاش نمایید.')
-                    return
-                }
-
-                toast.clear()
-
-                useConfirmToast(() => {
-                    useRequest(apiRoutes.admin.blogs.batchDestroy, {
-                        method: 'DELETE',
-                        data: {
-                            ids,
-                        },
-                    }, {
-                        success: () => {
-                            toast.success('عملیات با موفقیت انجام شد.')
-                            datatable.value?.refresh()
-                            datatable.value?.resetSelection()
-
-                            return false
-                        },
-                    })
-                })
-            },
-        },
+  {
+    btn: {
+      tooltip: 'حذف موارد انتخاب شده',
+      icon: 'TrashIcon',
+      class: 'bg-rose-500 border-rose-600',
     },
+    event: {
+      click: (items) => {
+        const ids = []
+        for (const item in items) {
+          if (items.hasOwnProperty(item)) {
+            if (items[item].id)
+              ids.push(items[item].id)
+          }
+        }
+
+        if (!ids.length) {
+          toast.info('ابتدا آیتم‌های مورد نیاز را انتخاب کنید و سپس دوباره تلاش نمایید.')
+          return
+        }
+
+        toast.clear()
+
+        useConfirmToast(() => {
+          useRequest(apiRoutes.admin.blogs.batchDestroy, {
+            method: 'DELETE',
+            data: {
+              ids,
+            },
+          }, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelection()
+
+              return false
+            },
+          })
+        })
+      },
+    },
+  },
 ]
 
 const doSearch = (offset, limit, order, sort, text) => {
-    table.isLoading = true
+  table.isLoading = true
 
-    // useRequest(apiRoutes.admin.blogs.index, {
-    //     params: {limit, offset, order, sort, text},
-    // }, {
-    //     success: (response) => {
-    //         table.rows = response.data
-    //         table.totalRecordCount = response.meta.total
-    //
-    //         return false
-    //     },
-    //     error: () => {
-    //         table.rows = []
-    //         table.totalRecordCount = 0
-    //     },
-    //     finally: () => {
-    loading.value = false
-    table.isLoading = false
-    //     table.sortable.order = order
-    //     table.sortable.sort = sort
-    //
-    //     if (tableContainer.value && tableContainer.value.card)
-    //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-    // },
-    // })
+  // useRequest(apiRoutes.admin.blogs.index, {
+  //     params: {limit, offset, order, sort, text},
+  // }, {
+  //     success: (response) => {
+  //         table.rows = response.data
+  //         table.totalRecordCount = response.meta.total
+  //
+  //         return false
+  //     },
+  //     error: () => {
+  //         table.rows = []
+  //         table.totalRecordCount = 0
+  //     },
+  //     finally: () => {
+  loading.value = false
+  table.isLoading = false
+  //     table.sortable.order = order
+  //     table.sortable.sort = sort
+  //
+  //     if (tableContainer.value && tableContainer.value.card)
+  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+  // },
+  // })
 }
 
 doSearch(0, 15, 'id', 'desc')

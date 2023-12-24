@@ -25,7 +25,6 @@ class BlogCommentResource extends JsonResource
             'badge' => $this->whenLoaded('badge'),
             'comment_id' => $this->comment_id,
             'comment' => $this->whenLoaded('parent'),
-            'answer_to' => $this->whenLoaded('answerTo'),
             'all_children' => $this->whenLoaded('allChildren'),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition),

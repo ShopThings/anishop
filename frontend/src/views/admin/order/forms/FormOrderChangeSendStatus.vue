@@ -1,37 +1,37 @@
 <template>
-    <form @submit.prevent="onSubmit">
-        <div class="p-2">
-            <partial-input-label title="وضعیت ارسال"/>
-            <base-select
-                :options="statuses"
-                options-key="value"
-                options-text="name"
-                :is-loading="loading"
-                :selected="selectedStatus"
-                name="send_status"
-                @change="sendStatusChange"
-            />
-            <partial-input-error-message :error-message="errors.type"/>
-        </div>
+  <form @submit.prevent="onSubmit">
+    <div class="p-2">
+      <partial-input-label title="وضعیت ارسال"/>
+      <base-select
+          :options="statuses"
+          options-key="value"
+          options-text="name"
+          :is-loading="loading"
+          :selected="selectedStatus"
+          name="send_status"
+          @change="sendStatusChange"
+      />
+      <partial-input-error-message :error-message="errors.type"/>
+    </div>
 
-        <div class="px-2 py-3 text-left">
-            <base-button
-                type="submit"
-                class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-                :disabled="isSubmitting"
-            >
-                <VTransitionFade>
-                    <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
-                    />
-                </VTransitionFade>
+    <div class="px-2 py-3 text-left">
+      <base-button
+          type="submit"
+          class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+          :disabled="isSubmitting"
+      >
+        <VTransitionFade>
+          <loader-circle
+              v-if="isSubmitting"
+              main-container-klass="absolute w-full h-full top-0 left-0"
+              big-circle-color="border-transparent"
+          />
+        </VTransitionFade>
 
-                <span>تغییر وضعیت ارسال</span>
-            </base-button>
-        </div>
-    </form>
+        <span>تغییر وضعیت ارسال</span>
+      </base-button>
+    </div>
+  </form>
 </template>
 
 <script setup>
@@ -48,7 +48,7 @@ import PartialInputErrorMessage from "../../../../components/partials/PartialInp
 import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
 
 const props = defineProps({
-    selected: Object,
+  selected: Object,
 })
 const emit = defineEmits(['update:selected'])
 
@@ -57,35 +57,35 @@ const canSubmit = ref(true)
 
 const statuses = ref([])
 const selectedStatus = computed({
-    get() {
-        return props.selected
-    },
-    set(value) {
-        emit('update:selected', value)
-    },
+  get() {
+    return props.selected
+  },
+  set(value) {
+    emit('update:selected', value)
+  },
 })
 
 function sendStatusChange(selected) {
-    selectedStatus.value = selected
+  selectedStatus.value = selected
 }
 
 const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
+  validationSchema: yup.object().shape({}),
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+  if (!canSubmit.value) return
 })
 
-// onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.orders.sendStatuses), null, {
-//         success: (response) => {
-//             statuses.value = response.data
-//
-//             loading.value = false
-//         },
-//     })
-// })
+onMounted(() => {
+  // useRequest(apiReplaceParams(apiRoutes.admin.orders.sendStatuses), null, {
+  //     success: (response) => {
+  //         statuses.value = response.data
+  //
+  //         loading.value = false
+  //     },
+  // })
+})
 </script>
 
 <style scoped>

@@ -128,3 +128,79 @@ export const BLOG_VOTING_TYPES = {
     NOT_VOTED: 2,
     NOT_SET: 3,
 }
+
+export const SETTING_KEYS = {
+    LOGO: 'logo',
+    LOGO_LIGHT: 'logo_light',
+    FAVICON: 'favicon',
+    TITLE: 'title',
+    DESCRIPTION: 'description',
+    KEYWORDS: 'keywords',
+    SMS_SIGNUP: 'sms_signup',
+    SMS_ACTIVATION: 'sms_activation',
+    SMS_RECOVER_PASS: 'sms_recover_pass',
+    SMS_BUY: 'sms_buy',
+    SMS_ORDER_STATUS: 'sms_order_status',
+    SMS_WALLET_CHARGE: 'sms_wallet_charge',
+    SMS_RETURN_ORDER: 'sms_return_order',
+    SMS_RETURN_ORDER_STATUS: 'sms_return_order_status',
+    ADDRESS: 'address',
+    PHONES: 'phones',
+    STORE_PROVINCE: 'store_province',
+    STORE_CITY: 'store_city',
+    LAT_LNG: 'lat_lng',
+    MIN_FREE_POST_PRICE: 'min_free_post_price',
+    PRODUCT_EACH_PAGE: 'product_each_page',
+    BLOG_EACH_PAGE: 'blog_each_page',
+    SOCIALS: 'socials',
+    FOOTER_DESCRIPTION: 'footer_description',
+    FOOTER_COPYRIGHT: 'footer_copyright',
+    FOOTER_NAMADS: 'footer_namads',
+    DEFAULT_IMAGE_PLACEHOLDER: 'default_image_placeholder',
+    DEFAULT_POST_PRICE: 'default_post_price',
+}
+
+export const SETTING_GROUPS = {
+    MAIN: 'main',
+    SMS: 'sms',
+    INFO: 'info',
+    SHOP: 'shop',
+    SOCIAL: 'social',
+    GENERAL: 'general',
+    FOOTER: 'footer',
+}
+
+export const SOCIAL_NETWORKS = {
+    EMAIL: {
+        value: 'email',
+        text: 'ایمیل',
+    },
+    X: {
+        value: 'x',
+        text: 'اکس',
+    },
+    INSTAGRAM: {
+        value: 'instagram',
+        text: 'اینستاگرام',
+    },
+    TELEGRAM: {
+        value: 'telegram',
+        text: 'تلگرام',
+    },
+    WHATSAPP: {
+        value: 'whatsapp',
+        text: 'واتساپ',
+    },
+    FACEBOOK: {
+        value: 'facebook',
+        text: 'فیسبوک',
+    },
+    YOUTUBE: {
+        value: 'youtube',
+        text: 'یوتیوب',
+    },
+    LINKEDIN: {
+        value: 'linked_in',
+        text: 'لینکدین',
+    },
+}

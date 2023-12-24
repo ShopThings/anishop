@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Services\Contracts\BrandServiceInterface;
 use App\Support\Converters\NumberConverter;
@@ -42,6 +43,34 @@ class BrandService extends Service implements BrandServiceInterface
             page: $filter->getPage(),
             order: $filter->getOrder()
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPublishedBrands(): Collection
+    {
+        $where = new WhereBuilder('brands');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->all(
+            columns: ['id', 'name', 'slug'],
+            where: $where->build()
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSliderBrands(): Collection
+    {
+        $where = new WhereBuilder('brands');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->whereEqual('show_in_slider', DatabaseEnum::DB_YES);
+
+        return $this->repository->all(
+            columns: ['id', 'name', 'latin_name', 'slug'],
+            where: $where->build());
     }
 
     /**

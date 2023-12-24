@@ -1,80 +1,80 @@
 <template>
-    <!-- ====== Forms Section Start -->
-    <section class="py-10">
-        <div class="md:container md:mx-auto">
-            <div class="flex flex-wrap justify-center items-center min-h-screen">
-                <div class="w-full">
-                    <div
-                        class="relative mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-xl shadow-gray-200 py-6 px-10 text-center"
-                    >
-                        <div class="mb-6 text-center">
-                            <UserCircleIcon class="w-24 h-24 mx-auto text-slate-400"/>
-                            <h1 class="text-xl text-black">
-                                ورود به پنل ادمین
-                            </h1>
-                        </div>
-                        <VTransitionSlideFadeDownY>
-                            <base-message v-if="err.message && err.type" :type="err.type" @close="closeAlert">
-                                {{ err.message }}
-                            </base-message>
-                        </VTransitionSlideFadeDownY>
-                        <form @submit.prevent="onSubmit">
-                            <div class="mb-3">
-                                <base-input name="username"
-                                            placeholder="نام کاربری"
-                                            label-title="نام کاربری:">
-                                    <template #icon>
-                                        <UserIcon class="w-6 h-6 text-gray-400"/>
-                                    </template>
-                                </base-input>
-                            </div>
-                            <div>
-                                <base-input name="password" type="password"
-                                            placeholder="کلمه عبور" label-title="کلمه عبور:">
-                                    <template #icon>
-                                        <KeyIcon class="w-6 h-6 text-gray-400"/>
-                                    </template>
-                                </base-input>
-                            </div>
-                            <div class="border-t my-6"></div>
-                            <div class="mb-2">
-                                <v-captcha v-model="captchaKey" ref="captchaCom"/>
-                            </div>
-                            <div class="mb-6">
-                                <base-input name="captcha" placeholder="کد تصویر" label-title="کد تصویر:">
-                                    <template #icon>
-                                        <QrCodeIcon class="w-6 h-6 text-gray-400"/>
-                                    </template>
-                                </base-input>
-                            </div>
-                            <div class="mb-8">
-                                <base-button
-                                    type="submit"
-                                    class="relative w-full flex justify-center items-center group bg-primary border-indigo-700 text-white"
-                                    :class="store.isLoading ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
-                                    :disabled="store.isLoading"
-                                >
-                                    <loader-circle v-if="store.isLoading"
-                                                   main-container-klass="absolute h-6 w-6 right-3"
-                                                   container-bg-color=""
-                                                   small-circle-color="border-t-white"
-                                                   big-circle-color="border-transparent"/>
+  <!-- ====== Forms Section Start -->
+  <section class="py-10">
+    <div class="md:container md:mx-auto">
+      <div class="flex flex-wrap justify-center items-center min-h-screen">
+        <div class="w-full">
+          <div
+              class="relative mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-xl shadow-gray-200 py-6 px-10 text-center"
+          >
+            <div class="mb-6 text-center">
+              <UserCircleIcon class="w-24 h-24 mx-auto text-slate-400"/>
+              <h1 class="text-xl text-black">
+                ورود به پنل ادمین
+              </h1>
+            </div>
+            <VTransitionSlideFadeDownY>
+              <base-message v-if="err.message && err.type" :type="err.type" @close="closeAlert">
+                {{ err.message }}
+              </base-message>
+            </VTransitionSlideFadeDownY>
+            <form @submit.prevent="onSubmit">
+              <div class="mb-3">
+                <base-input name="username"
+                            placeholder="نام کاربری"
+                            label-title="نام کاربری:">
+                  <template #icon>
+                    <UserIcon class="w-6 h-6 text-gray-400"/>
+                  </template>
+                </base-input>
+              </div>
+              <div>
+                <base-input name="password" type="password"
+                            placeholder="کلمه عبور" label-title="کلمه عبور:">
+                  <template #icon>
+                    <KeyIcon class="w-6 h-6 text-gray-400"/>
+                  </template>
+                </base-input>
+              </div>
+              <div class="border-t my-6"></div>
+              <div class="mb-2">
+                <v-captcha v-model="captchaKey" ref="captchaCom"/>
+              </div>
+              <div class="mb-6">
+                <base-input name="captcha" placeholder="کد تصویر" label-title="کد تصویر:">
+                  <template #icon>
+                    <QrCodeIcon class="w-6 h-6 text-gray-400"/>
+                  </template>
+                </base-input>
+              </div>
+              <div class="mb-8">
+                <base-button
+                    type="submit"
+                    class="relative w-full flex justify-center items-center group bg-primary border-indigo-700 text-white"
+                    :class="store.isLoading ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
+                    :disabled="store.isLoading"
+                >
+                  <loader-circle v-if="store.isLoading"
+                                 main-container-klass="absolute h-6 w-6 right-3"
+                                 container-bg-color=""
+                                 small-circle-color="border-t-white"
+                                 big-circle-color="border-transparent"/>
 
-                                    <span class="mr-auto">وارد شوید</span>
-                                    <ArrowLeftIcon
-                                        class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
-                                </base-button>
-                            </div>
-                        </form>
+                  <span class="mr-auto">وارد شوید</span>
+                  <ArrowLeftIcon
+                      class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
+                </base-button>
+              </div>
+            </form>
 
-                        <p class="text-base text-[#adadad]">
-                            طراحی و توسعه توسط
-                            <a href="javascript:void(0)" class="text-primary transition-all p-2 hover:shadow">
-                                تیم هیوا
-                            </a>
-                        </p>
+            <p class="text-base text-[#adadad]">
+              طراحی و توسعه توسط
+              <a href="javascript:void(0)" class="text-primary transition-all p-2 hover:shadow">
+                تیم هیوا
+              </a>
+            </p>
 
-                        <div>
+            <div>
                             <span class="absolute top-1 right-1">
                                 <svg
                                     width="40"
@@ -197,7 +197,7 @@
                                     />
                                 </svg>
                             </span>
-                            <span class="absolute left-1 bottom-1">
+              <span class="absolute left-1 bottom-1">
                                 <svg
                                     width="29"
                                     height="40"
@@ -291,12 +291,12 @@
                                     />
                                 </svg>
                             </span>
-                        </div>
-                    </div>
-                </div>
             </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </section>
 </template>
 
 <script setup>
@@ -313,17 +313,18 @@ import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDow
 import yup from '../../validation/index.js';
 import {useForm} from "vee-validate";
 import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "../../composables/helper.js";
 
 const captchaKey = ref(null)
 const err = reactive({})
 const captchaCom = ref(null)
 
 const {handleSubmit} = useForm({
-    validationSchema: yup.object().shape({
-        username: yup.string().required('نام کاربری اجباری می‌باشد.'),
-        password: yup.string().required('کلمه عبور اجباری می‌باشد.'),
-        captcha: yup.string().required('کد تصویر را وارد نمایید.'),
-    }),
+  validationSchema: yup.object().shape({
+    username: yup.string().required('نام کاربری اجباری می‌باشد.'),
+    password: yup.string().required('کلمه عبور اجباری می‌باشد.'),
+    captcha: yup.string().required('کد تصویر را وارد نمایید.'),
+  }),
 })
 
 const router = useRouter()
@@ -333,53 +334,54 @@ const store = useAdminAuthStore()
 const canSubmit = ref(true)
 
 function closeAlert() {
-    err.message = null
-    err.type = null
+  err.message = null
+  err.type = null
 }
 
 const onSubmit = handleSubmit((values, actions) => {
-    if (store.isLoading) return
+  if (store.isLoading) return
 
-    closeAlert()
+  closeAlert()
 
-    if (!captchaKey.value) {
-        err.message = 'تصویر را دوباره بارگذاری نمایید.'
-        err.type = 'error'
-        return
-    }
+  if (!captchaKey.value) {
+    err.message = 'تصویر را دوباره بارگذاری نمایید.'
+    err.type = 'error'
+    return
+  }
 
-    values.key = captchaKey.value
+  values.key = captchaKey.value
 
-    store.login(values, {
-        success() {
-            actions.resetForm();
+  store.login(values, {
+    success() {
+      actions.resetForm();
 
-            if (captchaCom.value)
-                captchaCom.value.getCaptcha()
+      if (captchaCom.value)
+        captchaCom.value.getCaptcha()
 
-            if (
-                route.query.redirect &&
-                ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
-            ) router.push(route.query.redirect)
-            else router.push({name: 'admin.home'})
+      if (
+          route.query.redirect &&
+          isValidInternalRedirectLink(route.query.redirect) &&
+          ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
+      ) router.push(route.query.redirect)
+      else router.push({name: 'admin.home'})
 
-            return false
-        },
-        error(error) {
-            if (captchaCom.value)
-                captchaCom.value.getCaptcha()
+      return false
+    },
+    error(error) {
+      if (captchaCom.value)
+        captchaCom.value.getCaptcha()
 
-            actions.resetField('password')
-            actions.resetField('captcha')
+      actions.resetField('password')
+      actions.resetField('captcha')
 
-            if (error.errors && Object.keys(error.errors).length >= 1)
-                actions.setErrors(error.errors)
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
 
-            err.message = error.message || 'خطا در عملیات ورود!'
-            err.type = 'error'
-            return false
-        },
-    })
+      err.message = error.message || 'خطا در عملیات ورود!'
+      err.type = 'error'
+      return false
+    },
+  })
 })
 </script>
 

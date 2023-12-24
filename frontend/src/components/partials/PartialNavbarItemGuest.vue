@@ -1,15 +1,15 @@
 <template>
-    <component :is="as">
-        <slot></slot>
-    </component>
+  <component :is="as">
+    <slot></slot>
+  </component>
 </template>
 
 <script setup>
 defineProps({
-    as: {
-        type: String,
-        default: 'li',
-    },
+  as: {
+    type: String,
+    default: 'li',
+  },
 })
 </script>
 

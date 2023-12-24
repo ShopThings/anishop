@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums;
+namespace App\Enums\Settings;
 
 enum SettingsEnum: string
 {
@@ -19,6 +19,7 @@ enum SettingsEnum: string
     case SMS_ORDER_STATUS = 'sms_order_status';
     case SMS_WALLET_CHARGE = 'sms_wallet_charge';
     case SMS_RETURN_ORDER = 'sms_return_order';
+    case SMS_RETURN_ORDER_STATUS = 'sms_return_order_status';
 
     case ADDRESS = 'address';
     case PHONES = 'phones';
