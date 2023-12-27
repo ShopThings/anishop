@@ -9,6 +9,7 @@ use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -42,12 +43,13 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
 
         $query = $this->model->newQuery();
         $query
+            ->with('order')
             ->when($userId, function (Builder $query, $uId) {
                 $query->where('user_id', $uId);
             })
             ->when($search, function (Builder $query, string $search) {
                 $query
-                    ->withWhereHas('user', function ($q) use ($search) {
+                    ->whereHas('user', function ($q) use ($search) {
                         $q->orWhereLike([
                             'username',
                             'first_name',
@@ -55,7 +57,7 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
                             'national_code',
                         ], $search);
                     })
-                    ->withWhereHas('order', function ($q) use ($search) {
+                    ->whereHas('order', function ($q) use ($search) {
                         $q->orWhereLike([
                             'first_name',
                             'last_name',
@@ -78,18 +80,23 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
     /**
      * @inheritDoc
      */
-    public function updateOrCreateItems(array $items): Collection
+    public function updateOrCreateItems(string $returnCode, array $items): Collection
     {
         $modified = collect();
 
         foreach ($items as $item) {
             if (isset($item['id'])) {
-                $isUpdated = $this->returnOrderRequestItemModel->findOrFail($item['id'])->update($item);
+                $model = $this->returnOrderRequestItemModel->findOrFail($item['id']);
+                $isUpdated = false;
+
+                if ($model->return_code === $returnCode) {
+                    $model->update($item);
+                }
 
                 if ($isUpdated)
                     $modified->add($this->returnOrderRequestItemModel::first($item['id']));
             } else {
-                $created = $this->returnOrderRequestItemModel::create($item);
+                $created = $this->returnOrderRequestItemModel::create($item + ['return_code' => $returnCode]);
 
                 if ($created instanceof Model)
                     $modified->add($created);
@@ -110,8 +117,10 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
     /**
      * @inheritDoc
      */
-    public function getItem(int $itemId): ?Model
+    public function getItemWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model
     {
-        return $this->returnOrderRequestItemModel->newQuery()->find($itemId);
+        return $this->returnOrderRequestItemModel->newQuery()
+            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->first($columns);
     }
 }

@@ -235,6 +235,16 @@ class UserRepository extends Repository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function addressCount(GetterExpressionInterface $where): int
+    {
+        return $this->addressUserModel->newQuery()
+            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function createAddress(array $data): Builder|Model
     {
         return $this->addressUserModel->create($data);

@@ -314,11 +314,6 @@ const topOrdersTableSetting = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      field: 'payment_method',
-      label: 'طریقه پرداخت',
-      columnClasses: 'whitespace-nowrap',
-    },
-    {
       field: 'op',
       label: 'عملیات',
       columnClasses: 'whitespace-nowrap',
@@ -331,7 +326,6 @@ const topOrdersTableSetting = reactive({
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
       total_price: '۵۰۰,۰۰۰ تومان',
-      payment_method: 'به پرداخت ملت',
     },
     {
       code: '978418891011307',
@@ -339,7 +333,6 @@ const topOrdersTableSetting = reactive({
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
       total_price: '۵۰۰,۰۰۰ تومان',
-      payment_method: 'به پرداخت ملت',
     },
     {
       code: '652605648895526',
@@ -347,7 +340,6 @@ const topOrdersTableSetting = reactive({
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
       total_price: '۵۰۰,۰۰۰ تومان',
-      payment_method: 'به پرداخت ملت',
     },
   ],
   total: 3,

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\Payments\PaymentStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -63,6 +65,58 @@ class OrderDetail extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'key_id');
+    }
+
+    /**
+     * Determine if current order has paid any(even partially).
+     *
+     * @return bool
+     */
+    public function hasAnyPaid(): bool
+    {
+        return $this->orders()
+                ->where('payment_status', PaymentStatusesEnum::SUCCESS)
+                ->count() > 0;
+    }
+
+    /**
+     * Determine if current order has paid completely.
+     *
+     * @return bool
+     */
+    public function hasCompletePaid(): bool
+    {
+        $successOrdersCount = $this->orders()
+            ->where('payment_status', PaymentStatusesEnum::SUCCESS)
+            ->count();
+        $allOrdersCount = $this->orders()->count();
+
+        return $successOrdersCount === $allOrdersCount;
+    }
+
+    /**
+     * @param Builder $query
+     * @return mixed
+     */
+    public function scopeWithAnyPaidOrder(Builder $query): mixed
+    {
+        return $query->whereHas('orders', function ($query) {
+            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
+        });
+    }
+
+    /**
+     * @param Builder $query
+     * @return mixed
+     */
+    public function scopeWithCompletePaidOrder(Builder $query): mixed
+    {
+        return $query->whereHas('orders', function ($query) {
+            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
+        }, '=', function ($query) {
+            // The count of all related payments
+            $query->count();
+        });
     }
 
     /**

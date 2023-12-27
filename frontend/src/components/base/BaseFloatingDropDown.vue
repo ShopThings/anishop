@@ -20,7 +20,6 @@
 <script setup>
 import {computed} from "vue";
 import isObject from "lodash.isobject";
-import isArray from "lodash.isarray";
 
 const props = defineProps({
   placement: {
@@ -46,7 +45,7 @@ const props = defineProps({
 const itemsLength = computed(() => {
   if (isObject(props.items))
     return Object.keys(props.items).length
-  else if (isArray(props.items))
+  else if (Array.isArray(props.items))
     return props.items.length
   return 0
 })

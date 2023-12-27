@@ -39,7 +39,7 @@ class StoreStaticPageRequest extends FormRequest
             ],
             'url' => [
                 'required',
-                'regex:/[a-z]+[a-z\\\-][a-z]+/i',
+                'regex:/[a-z]+[a-z\/\-][a-z]+/i',
             ],
             'keywords' => [
                 'array',

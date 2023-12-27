@@ -49,7 +49,7 @@ const routes = [
         meta: {layout: 'layout-empty'},
     },
     {
-        path: '/pages/:url([a-zA-Z0-9\/]*)',
+        path: '/pages/:url([a-z]+[a-z\/\-][a-z]+)',
         name: 'pages',
         component: () => import('../views/PagePages.vue'),
         meta: {layout: 'layout-guest'},

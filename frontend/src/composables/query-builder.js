@@ -1,5 +1,4 @@
 import {isRef} from "vue";
-import isArray from "lodash.isarray";
 
 export const TYPES = {
     STRING: 'string',
@@ -173,7 +172,7 @@ export function removeEmptyRules(query) {
     let newQuery = []
     let tmpQ
 
-    if (!isArray(q)) return query
+    if (!Array.isArray(q)) return query
 
     for (let i = 0; i < q.length; i++) {
         if (
@@ -227,7 +226,7 @@ export function toSql(query, useNamedParameter, level) {
     q = removeEmptyRules(q)
     params = useQuestionMark ? [] : {}
 
-    if (!isArray(q)) return {sql, params}
+    if (!Array.isArray(q)) return {sql, params}
 
     for (let i = 0; i < q.length; i++) {
         if (q[i].children) {

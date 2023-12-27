@@ -52,8 +52,18 @@ class UserAddressController extends Controller
     public function store(StoreAddressRequest $request): JsonResponse
     {
         $validated = $request->validated();
-        $model = $this->service->create([
-                'user_id' => $request->user()->id,
+
+        $user = $request->user();
+
+        if (!$this->service->canCreateAddress($user->id)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'تعداد مجاز ثبت آدرس به حداکثر آن رسیده است.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
+        $model = $this->service->createAddress([
+                'user_id' => $user->id,
             ] + $validated);
 
         if (!is_null($model)) {

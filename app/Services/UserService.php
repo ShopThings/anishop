@@ -123,6 +123,18 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
+    public function canCreateAddress($userId): bool
+    {
+        $where = new WhereBuilder('address_user');
+        $where->whereEqual('user_id', $userId);
+
+        $max = config('market.user.max_address_count', 0);
+        return $this->repository->addressCount($where->build()) >= $max;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $roles = array_map(function ($value) {

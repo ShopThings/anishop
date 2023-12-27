@@ -12,7 +12,8 @@
   >
     <div
         class="w-full h-full bg-black bg-opacity-30 flex flex-col items-center justify-center text-white text-center p-3 py-20">
-      <h1 class="text-3xl pb-2 bg-white bg-opacity-20 py-2 px-6 rounded-full border border-yellow-400 text-yellow-400 text-shadow-sm shadow-black supports-[backdrop-filter]:backdrop-blur-sm">
+      <h1
+          class="text-3xl pb-2 bg-white bg-opacity-20 py-2 px-6 rounded-full border border-yellow-400 text-yellow-400 text-shadow-sm shadow-black supports-[backdrop-filter]:backdrop-blur-sm">
         راه‌های ارتباطی
       </h1>
       <div class="mt-8 font-iranyekan-light leading-relaxed text-shadow-lg shadow-black">

@@ -86,7 +86,6 @@ import {computed, ref, watch} from "vue"
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue"
 import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
-import isArray from "lodash.isarray";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import isObject from "lodash.isobject";
 import LoaderProgress from "./loader/LoaderProgress.vue";
@@ -160,13 +159,13 @@ function resetSelectedItems() {
 
 function setToSelectedItems(value) {
   if (
-      (isArray(value) && value.length === 0) ||
+      (Array.isArray(value) && value.length === 0) ||
       (isObject(value) && Object.keys(value).length === 0)
   ) return
 
   if (props.multiple) {
     if (value) {
-      if (isArray(value)) {
+      if (Array.isArray(value)) {
         for (const a of value) {
           if (selectedItems.value.indexOf(a) === -1)
             selectedItems.value.push(a)
@@ -177,7 +176,7 @@ function setToSelectedItems(value) {
       }
     }
   } else {
-    selectedItems.value = isArray(value) ? value.shift() : value;
+    selectedItems.value = Array.isArray(value) ? value.shift() : value;
   }
 }
 

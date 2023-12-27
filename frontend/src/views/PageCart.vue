@@ -44,7 +44,7 @@
                       <base-button
                           class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                       >
-                        <PlusSmallIcon class="h-6 w-6"/>
+                        <PlusIcon class="h-6 w-6"/>
                       </base-button>
                       <div
                           class="py-1 px-6 ring-1 ring-inset ring-gray-300 grow text-center flex items-center gap-2"
@@ -55,7 +55,7 @@
                       <base-button
                           class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                       >
-                        <MinusSmallIcon class="h-6 w-6"/>
+                        <MinusIcon class="h-6 w-6"/>
                       </base-button>
                     </div>
                   </div>
@@ -144,7 +144,7 @@
                       <base-button
                           class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                       >
-                        <PlusSmallIcon class="h-6 w-6"/>
+                        <PlusIcon class="h-6 w-6"/>
                       </base-button>
                       <div
                           class="py-1 px-6 ring-1 ring-inset ring-gray-300 grow text-center flex items-center gap-2"
@@ -155,7 +155,7 @@
                       <base-button
                           class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                       >
-                        <MinusSmallIcon class="h-6 w-6"/>
+                        <MinusIcon class="h-6 w-6"/>
                       </base-button>
                     </div>
                   </div>
@@ -244,7 +244,7 @@
                       <base-button
                           class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                       >
-                        <PlusSmallIcon class="h-6 w-6"/>
+                        <PlusIcon class="h-6 w-6"/>
                       </base-button>
                       <div
                           class="py-1 px-6 ring-1 ring-inset ring-gray-300 grow text-center flex items-center gap-2"
@@ -255,7 +255,7 @@
                       <base-button
                           class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                       >
-                        <MinusSmallIcon class="h-6 w-6"/>
+                        <MinusIcon class="h-6 w-6"/>
                       </base-button>
                     </div>
                   </div>
@@ -403,8 +403,8 @@
 import {ref} from "vue";
 import {
   XMarkIcon,
-  MinusSmallIcon,
-  PlusSmallIcon,
+  MinusIcon,
+  PlusIcon,
   ShoppingCartIcon,
 } from "@heroicons/vue/24/outline/index.js";
 import AppNavigationHeader from "../components/AppNavigationHeader.vue";

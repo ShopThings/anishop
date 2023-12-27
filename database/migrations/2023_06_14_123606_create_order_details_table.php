@@ -33,6 +33,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('discount_price');
             $table->unsignedBigInteger('final_price');
             $table->unsignedBigInteger('total_price');
+            $table->boolean('send_status_is_starting_badge')->default(false);
+            $table->boolean('send_status_is_end_badge')->default(false);
+            $table->boolean('send_status_can_return_order')->default(false);
             $table->string('send_status_title');
             $table->string('send_status_color_hex', 12);
             $table->timestamp('send_status_changed_at')->nullable();

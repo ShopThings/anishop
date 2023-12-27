@@ -337,7 +337,7 @@
               <base-button
                   class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0"
               >
-                <PlusSmallIcon class="h-6 w-6"/>
+                <PlusIcon class="h-6 w-6"/>
               </base-button>
               <span
                   class="block py-3 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center"
@@ -347,7 +347,7 @@
               <base-button
                   class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0"
               >
-                <MinusSmallIcon class="h-6 w-6"/>
+                <MinusIcon class="h-6 w-6"/>
               </base-button>
             </div>
 
@@ -600,8 +600,8 @@ import {
   MagnifyingGlassPlusIcon,
   CheckBadgeIcon,
   ShoppingCartIcon,
-  PlusSmallIcon,
-  MinusSmallIcon,
+  PlusIcon,
+  MinusIcon,
   HeartIcon,
   ShareIcon,
   ScaleIcon,
@@ -637,7 +637,7 @@ defineProps({
 
 const mainGallerySettings = {
   className: 'detail-slider',
-  effect: 'flip',
+  effect: 'fade',
   wrapAround: true,
   hasNavigation: true,
   useThumbnail: true,

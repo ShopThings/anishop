@@ -40,7 +40,7 @@ Route::prefix('user')
          * order routes
          */
         Route::get('orders/latest', [UserOrderController::class, 'latest'])->name('orders.latest');
-        Route::apiResource('orders', UserOrderController::class)->except(['store'])
+        Route::apiResource('orders', UserOrderController::class)->except(['store', 'destroy'])
             ->where(['order' => $codeRegex]);
 
         /*
@@ -49,6 +49,8 @@ Route::prefix('user')
         Route::get('return-orders/latest', [UserReturnOrderRequestController::class, 'latest'])->name('return-orders.latest');
         Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
             ->where(['return_order' => $codeRegex]);
+        Route::get('return-orders/returnable-orders', [UserReturnOrderRequestController::class, 'returnableOrders'])
+            ->name('return-orders.returnable-orders');
         Route::post('return-orders/{order}', [UserReturnOrderRequestController::class, 'store'])
             ->where(['order' => $codeRegex])->name('return-orders.store');
 

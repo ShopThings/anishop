@@ -28,7 +28,7 @@
             v-else
             class="w-10 h-10 text-slate-400 group-hover:text-slate-500 transition"
         />
-        <PlusSmallIcon
+        <PlusIcon
             class="absolute w-4 h-4 text-white rounded-full bg-orange-400 top-4 left-3 z-[1] group-hover:bg-orange-500 transition"
         />
       </div>
@@ -122,7 +122,7 @@ import {
   MusicalNoteIcon,
   FilmIcon,
   QuestionMarkCircleIcon,
-  PlusSmallIcon,
+  PlusIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline"
 import BaseFileManager from "./BaseFileManager.vue";

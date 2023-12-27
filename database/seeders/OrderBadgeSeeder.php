@@ -28,6 +28,7 @@ class OrderBadgeSeeder extends Seeder
             'code' => get_nanoid(),
             'title' => 'تایید نشده',
             'color_hex' => '#222428',
+            'is_end_badge' => true,
             'should_return_order_product' => true,
             'is_title_editable' => false,
             'is_deletable' => false,
@@ -36,6 +37,7 @@ class OrderBadgeSeeder extends Seeder
             'code' => get_nanoid(),
             'title' => 'لغو شده',
             'color_hex' => '#E44444',
+            'is_end_badge' => true,
             'should_return_order_product' => true,
             'is_title_editable' => false,
             'is_deletable' => false,
@@ -44,6 +46,7 @@ class OrderBadgeSeeder extends Seeder
             'code' => get_nanoid(),
             'title' => 'مرجوع شده',
             'color_hex' => '#FF9635',
+            'is_end_badge' => true,
             'should_return_order_product' => true,
             'is_title_editable' => false,
             'is_deletable' => false,
@@ -51,6 +54,7 @@ class OrderBadgeSeeder extends Seeder
         OrderBadge::create([
             'code' => get_nanoid(),
             'title' => 'تحویل به مشتری',
+            'can_return_order' => true,
             'color_hex' => '#35FF9D',
             'is_deletable' => false,
         ]);

@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
 use App\Support\Filter;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -17,16 +18,17 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getOrdersSearchFilterPaginated(
-        ?int     $userId = null,
-        array   $columns = ['*'],
+        ?int  $userId = null,
+        array $columns = ['*'],
         Filter $filter = null
     ): Collection|LengthAwarePaginator;
 
     /**
+     * @param string $returnCode
      * @param array $items
-     * @return Model|Collection
+     * @return Collection
      */
-    public function updateOrCreateItems(array $items): Collection;
+    public function updateOrCreateItems(string $returnCode, array $items): Collection;
 
     /**
      * @param int $itemId
@@ -36,8 +38,9 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
     public function modifyItem(int $itemId, array $attributes): bool|int;
 
     /**
-     * @param int $itemId
+     * @param GetterExpressionInterface $where
+     * @param array $columns
      * @return Model|null
      */
-    public function getItem(int $itemId): ?Model;
+    public function getItemWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model;
 }

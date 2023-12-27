@@ -351,7 +351,6 @@ export const apiRoutes = {
             index: 'api/user/orders',
             show: 'api/user/orders/{order}',
             update: 'api/user/orders/{order}',
-            destroy: 'api/user/orders/{order}',
         },
 
         returnOrders: {
@@ -360,6 +359,7 @@ export const apiRoutes = {
             store: 'api/user/return-orders/{order}',
             update: 'api/user/return-orders/{return_order}',
             destroy: 'api/user/return-orders/{return_order}',
+            returnableOrders: 'api/user/return-orders/returnable-orders',
         },
 
         comments: {

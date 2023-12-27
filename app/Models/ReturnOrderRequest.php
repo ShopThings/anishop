@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use App\Traits\HasDeletedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -69,6 +70,15 @@ class ReturnOrderRequest extends Model
     public function returnOrderItems(): HasMany
     {
         return $this->hasMany(ReturnOrderRequestItem::class, 'return_code', 'code');
+    }
+
+    /**
+     * @param GetterExpressionInterface $where
+     * @return bool
+     */
+    public function hasReturnOrderItemWhere(GetterExpressionInterface $where): bool
+    {
+        return $this->returnOrderItems()->whereRaw($where->getStatement(), $where->getBindings())->count();
     }
 
     /**

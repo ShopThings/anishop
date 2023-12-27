@@ -1,7 +1,6 @@
 import {computed, ref, toValue} from "vue"
 import {defineStore} from "pinia"
 import {useSafeLocalStorage} from "../composables/safe-local-storage.js";
-import isArray from "lodash.isarray";
 import {useRequestWrapper} from "../composables/api-request.js";
 import {apiRoutes} from "../router/api-routes.js";
 
@@ -44,7 +43,7 @@ export const useUserAuthStore = defineStore('user_auth', () => {
 
         if (!roles) return false
 
-        role = !isArray(role) ? [role] : role
+        role = !Array.isArray(role) ? [role] : role
         role = role.filter((item, i, ar) => ar.indexOf(item) === i)
 
         let counter = 0
@@ -63,7 +62,7 @@ export const useUserAuthStore = defineStore('user_auth', () => {
 
         if (!roles) return false
 
-        role = !isArray(role) ? [role] : role
+        role = !Array.isArray(role) ? [role] : role
         role = role.filter((item, i, ar) => ar.indexOf(item) === i)
 
         for (let r in roles) {
@@ -153,7 +152,7 @@ export const useAdminAuthStore = defineStore('admin_auth', () => {
 
         if (!roles) return false
 
-        role = !isArray(role) ? [role] : role
+        role = !Array.isArray(role) ? [role] : role
         role = role.filter((item, i, ar) => ar.indexOf(item) === i)
 
         let counter = 0
@@ -171,7 +170,7 @@ export const useAdminAuthStore = defineStore('admin_auth', () => {
 
         if (!roles) return false
 
-        role = !isArray(role) ? [role] : role
+        role = !Array.isArray(role) ? [role] : role
         role = role.filter((item, i, ar) => ar.indexOf(item) === i)
 
         for (let r in roles) {

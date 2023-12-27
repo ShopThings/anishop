@@ -4,9 +4,17 @@
       :has-close="false"
       class="rounded-lg"
   >
-    <div class="leading-relaxed">
-      سفارشاتی قابلیت مرجوع شدن را دارند که پرداخت آنها کامل انجام شده و تا حداکثر یک هفته از خرید آنها میگذرد.
-    </div>
+    <h3 class="font-iranyekan-bold text-base mb-1.5">
+      نکات قابل توجه
+    </h3>
+    <ul class="leading-relaxed flex flex-col gap-3 list-inside list-disc">
+      <li>
+        سفارشاتی قابلیت مرجوع شدن را دارند که پرداخت آن به صورت کامل انجام شده و تا حداکثر یک هفته از خرید آنها میگذرد.
+      </li>
+      <li>
+        پس از ثبت درخواست، برای وارد نمودن علت مرجوع نمودن یا حذف درخواست، وارد مشاهده جزئیات شوید.
+      </li>
+    </ul>
   </base-message>
 
   <form @submit.prevent="onSubmit">

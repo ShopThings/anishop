@@ -12,7 +12,7 @@
       <li class="my-1">
         <base-floating-drop-down
             placement="bottom-start"
-            :items="isArray(storages) ? storages : [storages]"
+            :items="Array.isArray(storages) ? storages : [storages]"
         >
           <template #button>
             <button type="button" v-tooltip.top="'فضای ذخیره سازی'"
@@ -154,7 +154,6 @@ import BaseFileManagerContextMenu from "./filemanager/BaseFileManagerContextMenu
 import BaseLoadingPanel from "./BaseLoadingPanel.vue";
 import {useRoute} from "vue-router";
 import BaseFloatingDropDown from "./BaseFloatingDropDown.vue";
-import isArray from "lodash.isarray";
 import {FileSizes} from "../../composables/file-list.js";
 import {useConfirmToast} from "../../composables/toast-confirm.js";
 import BaseFileManagerTreeDirectory from "./filemanager/BaseFileManagerTreeDirectory.vue";
@@ -203,7 +202,7 @@ const props = defineProps({
     type: [Array, String],
     default: () => ['public', 'local'],
     validator(value) {
-      if (isArray(value)) {
+      if (Array.isArray(value)) {
         for (const v of value) {
           if (['public', 'local'].indexOf(v.toLowerCase()) === -1)
             return false

@@ -34,8 +34,10 @@ class Filter
      */
     protected ?string $searchText = null;
 
-    public function __construct(Request $request)
+    public function __construct(?Request $request = null)
     {
+        if (is_null($request)) $request = request();
+
         $offset = $request->integer('offset');
         $page = $request->integer('page');
         $orderColumn = $request->string('column', 'id')->toString();

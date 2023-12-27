@@ -65,7 +65,8 @@
   </template>
 
   <template v-else-if="theme === 'modern'">
-    <ul class="flex justify-center items-start rtl:flex-row-reverse whitespace-nowrap no-underline flex-wrap border-t border-slate-300">
+    <ul
+        class="flex justify-center items-start rtl:flex-row-reverse whitespace-nowrap no-underline flex-wrap border-t border-slate-300">
       <li>
         <a v-tooltip.top="'صفحه اول'"
            class="h-full border-t-2 mt-[-1px] border-transparent hover:border-slate-400 transition cursor-pointer relative inline-flex items-center px-3 py-3 text-slate-500 hover:text-slate-900 focus:z-20 focus:outline-offset-0 text-sm"

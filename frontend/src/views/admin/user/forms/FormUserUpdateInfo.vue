@@ -125,7 +125,6 @@ import PartialInputLabel from "../../../../components/partials/PartialInputLabel
 import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
 import yup, {transformNumbersToEnglish} from "../../../../validation/index.js";
-import isArray from "lodash.isarray";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 import {RoleAPI} from "../../../../service/APIRole.js";
@@ -198,7 +197,7 @@ const onSubmit = handleSubmit((values, actions) => {
     return
   }
 
-  if (isArray(selectedRole.value)) {
+  if (Array.isArray(selectedRole.value)) {
     for (let i of selectedRole.value) {
       if (roles.value.map(val => val.value).indexOf(i.value) === -1) {
         actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')

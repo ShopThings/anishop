@@ -1,4 +1,19 @@
 <template>
+  <div class="px-3 py-5 flex gap-3 mb-6 border bg-white">
+    <StarIcon class="w-6 h-6 text-orange-600 shrink-0"/>
+    <div class="text-orange-600">
+      در صورت نیاز به لغو سفارش، صفحه
+      <router-link
+          :to="{name: 'pages', params: {url: 'how-to-cancel-order'}}"
+          target="_blank"
+          class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
+      >
+        نحوه لغو سفارش
+      </router-link>
+      را مطالعه نمایید.
+    </div>
+  </div>
+
   <base-loading-panel :loading="loading" type="table">
     <template #content>
       <base-semi-datatable
@@ -57,6 +72,7 @@ import PartialBadgeStatusPayment from "../../components/partials/PartialBadgeSta
 import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusSend from "../../components/partials/PartialBadgeStatusSend.vue";
 import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
+import {StarIcon} from "@heroicons/vue/24/outline/index.js";
 
 const loading = ref(true)
 const table = reactive({
@@ -88,11 +104,6 @@ const table = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      field: 'payment_method',
-      label: 'طریقه پرداخت',
-      columnClasses: 'whitespace-nowrap',
-    },
-    {
       field: 'op',
       label: 'عملیات',
       columnClasses: 'whitespace-nowrap',
@@ -104,7 +115,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -112,7 +122,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -120,7 +129,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -128,7 +136,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -136,7 +143,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -144,7 +150,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -152,7 +157,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -160,7 +164,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -168,7 +171,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -176,7 +178,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -184,7 +185,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -192,7 +192,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -200,7 +199,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -208,7 +206,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -216,7 +213,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -224,7 +220,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۳۰ مهر ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -232,7 +227,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۲۴ شهریور ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
     {
@@ -240,7 +234,6 @@ const table = reactive({
       send_status: '',
       payment_status: '',
       ordered_at: '۱۰ خرداد ۱۴۰۲',
-      payment_method: 'به پرداخت ملت',
       total_price: '۵۰۰,۰۰۰ تومان',
     },
   ],

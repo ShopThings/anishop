@@ -46,7 +46,7 @@ export const UserPanelInfoAPI = {
 
 export const UserPanelOrderAPI = Object.assign(
     GenericAPI(apiRoutes.user.orders, {
-        except: ['store', 'batchDestroy'],
+        except: ['index', 'show', 'update'],
         replacement: 'order',
     }),
     {
@@ -60,6 +60,10 @@ export const UserPanelReturnOrderAPI = Object.assign(
         replacement: 'return_order',
     }),
     {
+        fetchReturnableOrders(callbacks) {
+            useRequest(apiRoutes.user.returnOrders.returnableOrders, null, callbacks);
+        },
+
         create(orderCode, data, callbacks) {
             useRequest(
                 apiReplaceParams(apiRoutes.user.returnOrders.store, {order: orderCode}),

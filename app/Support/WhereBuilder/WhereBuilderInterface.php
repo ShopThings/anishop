@@ -395,4 +395,9 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @return mixed
      */
     public function unless($value = null, callable $callback = null, callable $default = null);
+
+    /**
+     * @return static
+     */
+    public function reset(): static;
 }

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\User;
 
 use App\Enums\Times\TimeFormatsEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderDetailResource extends JsonResource
+class UserOrderSingleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,15 +16,12 @@ class OrderDetailResource extends JsonResource
     public function toArray(Request $request): array
     {
         $this->resource->load('user');
-        $this->resource->load('sendStatusChanger');
         $this->resource->load('orders');
         $this->resource->load('orders.payments');
         $this->resource->load('items');
-        $this->resource->load('returnOrder');
 
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
             'user' => $this->user,
             'code' => $this->code,
             'first_name' => $this->first_name,
@@ -48,7 +45,6 @@ class OrderDetailResource extends JsonResource
             'send_status_changed_at' => $this->send_status_changed_at
                 ? verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'send_status_changed_by' => $this->sendStatusChanger,
             'is_needed_factor' => $this->is_needed_factor,
             'is_in_place_delivery' => $this->is_in_place_delivery,
             'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
@@ -56,9 +52,9 @@ class OrderDetailResource extends JsonResource
                 ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'orders' => $this->orders,
+            'has_paid' => $this->orders->hasPaid(),
             'payments' => $this->whenLoaded('orders.payments'),
             'items' => $this->items,
-            'return_order' => $this->returnOrder,
         ];
     }
 }

@@ -138,7 +138,6 @@ import yup, {transformNumbersToEnglish} from "../../../validation/index.js";
 import {useRouter} from "vue-router";
 import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
 import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.vue";
-import isArray from "lodash.isarray";
 import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
 import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "../../../transitions/VTransitionFade.vue";
@@ -191,7 +190,7 @@ const onSubmit = handleSubmit((values, actions) => {
     return
   }
 
-  if (isArray(selectedRole.value)) {
+  if (Array.isArray(selectedRole.value)) {
     for (let i of selectedRole.value) {
       if (roles.value.map(val => val.value).indexOf(i.value) === -1) {
         actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')

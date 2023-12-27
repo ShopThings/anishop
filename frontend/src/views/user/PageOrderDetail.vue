@@ -120,7 +120,17 @@
             <template #body>
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">نام:</span>
-                <div class="text-sm">
+                <base-input
+                    v-if="1"
+                    name="receiver_name"
+                    value="محمد مهدی دهقان منشادی"
+                    :is-editable="true"
+                    :has-edit-mode="false"
+                />
+                <div
+                    v-else
+                    class="text-sm"
+                >
                   محمد مهدی دهقان منشادی
                 </div>
               </div>
@@ -130,7 +140,17 @@
             <template #body>
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">شماره تماس:</span>
-                <div class="text-sm tracking-widest">
+                <base-input
+                    v-if="1"
+                    name="receiver_mobile"
+                    value="09179516271"
+                    :is-editable="true"
+                    :has-edit-mode="false"
+                />
+                <div
+                    v-else
+                    class="text-sm tracking-widest"
+                >
                   09179516271
                 </div>
               </div>
@@ -140,7 +160,8 @@
             <template #body>
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">کد ملی:</span>
-                <div class="text-sm tracking-widest">
+                <div class="text-sm tracking-widest"
+                >
                   4420549033
                 </div>
               </div>
@@ -170,7 +191,17 @@
             <template #body>
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
-                <div class="text-sm tracking-widest">
+                <base-input
+                    v-if="1"
+                    name="postal_code"
+                    value="1234567891"
+                    :is-editable="true"
+                    :has-edit-mode="false"
+                />
+                <div
+                    v-else
+                    class="text-sm tracking-widest"
+                >
                   1234567891
                 </div>
               </div>
@@ -180,7 +211,17 @@
             <template #body>
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">آدرس:</span>
-                <div class="text-sm">
+                <base-textarea
+                    v-if="1"
+                    name="address"
+                    value="خونمونم فعلا"
+                    :is-editable="true"
+                    :has-edit-mode="false"
+                />
+                <div
+                    v-else
+                    class="text-sm"
+                >
                   خونمونم فعلا
                 </div>
               </div>
@@ -309,13 +350,13 @@
                       placement="right-start"
                       :shift="false"
                       :items="[
-                                            {
-                                                text: 'ثبت دیدگاه',
-                                            },
-                                            {
-                                                text: 'خرید مجدد کالا',
-                                            },
-                                        ]"
+                          {
+                              text: 'ثبت دیدگاه',
+                          },
+                          {
+                              text: 'خرید مجدد کالا',
+                          },
+                      ]"
                   >
                     <template #button>
                       <button type="button"
@@ -344,7 +385,7 @@
                     <base-lazy-image
                         alt="تصویر محصول"
                         lazy-src="/src/assets/products/p1.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                     />
                   </router-link>
                 </div>
@@ -397,13 +438,13 @@
                       placement="right-start"
                       :shift="false"
                       :items="[
-                                            {
-                                                text: 'ثبت دیدگاه',
-                                            },
-                                            {
-                                                text: 'خرید مجدد کالا',
-                                            },
-                                        ]"
+                          {
+                              text: 'ثبت دیدگاه',
+                          },
+                          {
+                              text: 'خرید مجدد کالا',
+                          },
+                      ]"
                   >
                     <template #button>
                       <button type="button"
@@ -432,7 +473,7 @@
                     <base-lazy-image
                         alt="تصویر محصول"
                         lazy-src="/src/assets/products/p2.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                     />
                   </router-link>
                 </div>
@@ -486,13 +527,13 @@
                       placement="right-start"
                       :shift="false"
                       :items="[
-                                            {
-                                                text: 'ثبت دیدگاه',
-                                            },
-                                            {
-                                                text: 'خرید مجدد کالا',
-                                            },
-                                        ]"
+                          {
+                              text: 'ثبت دیدگاه',
+                          },
+                          {
+                              text: 'خرید مجدد کالا',
+                          },
+                      ]"
                   >
                     <template #button>
                       <button type="button"
@@ -521,7 +562,7 @@
                     <base-lazy-image
                         alt="تصویر محصول"
                         lazy-src="/src/assets/products/p3.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                     />
                   </router-link>
                 </div>
@@ -583,6 +624,8 @@ import BaseDatatable from "../../components/base/BaseDatatable.vue";
 import PartialDialog from "../../components/partials/PartialDialog.vue";
 import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
 import BaseFloatingDropDown from "../../components/base/BaseFloatingDropDown.vue";
+import BaseInput from "../../components/base/BaseInput.vue";
+import BaseTextarea from "../../components/base/BaseTextarea.vue";
 
 const loadingInfo = ref(false)
 const loadingItems = ref(false)

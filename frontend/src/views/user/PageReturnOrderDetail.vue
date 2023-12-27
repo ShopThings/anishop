@@ -111,7 +111,7 @@
                       <base-lazy-image
                           alt="تصویر محصول"
                           lazy-src="/src/assets/products/p1.jpg"
-                          class="!w-24 h-auto hover:scale-95 transition"
+                          class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
@@ -136,7 +136,7 @@
                         <base-button
                             class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
-                          <PlusSmallIcon class="h-6 w-6"/>
+                          <PlusIcon class="h-6 w-6"/>
                         </base-button>
                         <div
                             class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
@@ -146,7 +146,7 @@
                         <base-button
                             class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
-                          <MinusSmallIcon class="h-6 w-6"/>
+                          <MinusIcon class="h-6 w-6"/>
                         </base-button>
                       </div>
                       <span class="py-1 px-2 text-xs border-2 border-green-500 rounded-full">تایید مرجوع</span>
@@ -168,7 +168,7 @@
                       <base-lazy-image
                           alt="تصویر محصول"
                           lazy-src="/src/assets/products/p2.jpg"
-                          class="!w-24 h-auto hover:scale-95 transition"
+                          class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
@@ -195,7 +195,7 @@
                         <base-button
                             class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
-                          <PlusSmallIcon class="h-6 w-6"/>
+                          <PlusIcon class="h-6 w-6"/>
                         </base-button>
                         <div
                             class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
@@ -205,7 +205,7 @@
                         <base-button
                             class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
-                          <MinusSmallIcon class="h-6 w-6"/>
+                          <MinusIcon class="h-6 w-6"/>
                         </base-button>
                       </div>
                       <span class="py-1 px-2 text-xs border-2 border-rose-500 rounded-full">عدم تایید</span>
@@ -240,7 +240,7 @@
                       <base-lazy-image
                           alt="تصویر محصول"
                           lazy-src="/src/assets/products/p3.jpg"
-                          class="!w-24 h-auto hover:scale-95 transition"
+                          class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
@@ -265,7 +265,7 @@
                         <base-button
                             class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
-                          <PlusSmallIcon class="h-6 w-6"/>
+                          <PlusIcon class="h-6 w-6"/>
                         </base-button>
                         <div
                             class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
@@ -275,7 +275,7 @@
                         <base-button
                             class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
-                          <MinusSmallIcon class="h-6 w-6"/>
+                          <MinusIcon class="h-6 w-6"/>
                         </base-button>
                       </div>
                     </div>
@@ -329,7 +329,7 @@
 
 <script setup>
 import {ref} from "vue";
-import {CheckIcon, ArrowLongLeftIcon, MinusSmallIcon, PlusSmallIcon} from "@heroicons/vue/24/outline/index.js";
+import {CheckIcon, ArrowLongLeftIcon, MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseMessage from "../../components/base/BaseMessage.vue";
 import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
 import PartialCard from "../../components/partials/PartialCard.vue";

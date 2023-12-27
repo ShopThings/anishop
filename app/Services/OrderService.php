@@ -96,26 +96,6 @@ class OrderService extends Service implements OrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function updatePayment(int $orderId, array $attributes): ?Model
-    {
-        $updateAttributes = [];
-
-        if (isset($attributes['payment_status'])) {
-            $updateAttributes['payment_status'] = $attributes['payment_status'];
-            $updateAttributes['payment_status_changed_at'] = now();
-            $updateAttributes['payment_status_changed_by'] = Auth::user()?->id;
-        }
-
-        $res = $this->repository->updatePayment($orderId, $updateAttributes);
-
-        if (!$res) return null;
-
-        return $this->repository->getPayment($orderId);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function getPaymentStatuses(): array
     {
         return PaymentStatusesEnum::translationArray();
@@ -143,5 +123,45 @@ class OrderService extends Service implements OrderServiceInterface
         $where->whereEqual('user_id', $userId);
 
         return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLatestUserOrders($userId, int $limit): Collection
+    {
+        $filter = new Filter();
+        $filter->reset()
+            ->setLimit($limit)
+            ->setOrder([
+                'ordered_at' => 'desc',
+                'id' => 'desc',
+            ]);
+
+        return collect($this->repository->getOrdersSearchFilterPaginated(
+            userId: $userId,
+            columns: ['code', 'send_status_title', 'send_status_color_hex', 'final_price', 'ordered_at'],
+            filter: $filter
+        )->items());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePayment(int $orderId, array $attributes): ?Model
+    {
+        $updateAttributes = [];
+
+        if (isset($attributes['payment_status'])) {
+            $updateAttributes['payment_status'] = $attributes['payment_status'];
+            $updateAttributes['payment_status_changed_at'] = now();
+            $updateAttributes['payment_status_changed_by'] = Auth::user()?->id;
+        }
+
+        $res = $this->repository->updatePayment($orderId, $updateAttributes);
+
+        if (!$res) return null;
+
+        return $this->repository->getPayment($orderId);
     }
 }

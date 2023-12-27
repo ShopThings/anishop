@@ -31,7 +31,7 @@ enum ReturnOrderStatusesEnum: string
             self::SENDING->value => 'ارسال مرسولات توسط کاربر',
             self::RECEIVED->value => 'دریافت مرسولات توسط پذیرنده',
             self::RETURN_TO_USER->value => 'بازگشت مرسولات توسط پذیرنده',
-            self::RECEIVED_BY_USER->value => 'دریافت مرسولات ارسال شده توسط پذیرنده',
+            self::RECEIVED_BY_USER->value => 'دریافت مرسولات ارسال شده توسط کاربر',
             self::MONEY_RETURNED->value => 'بازگشت وجه پرداخت شده به کاربر',
         ];
     }

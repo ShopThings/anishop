@@ -84,6 +84,12 @@ interface UserRepositoryInterface extends RepositoryInterface
     public function addFavoriteProduct($userId, $productId): bool;
 
     /**
+     * @param GetterExpressionInterface $where
+     * @return int
+     */
+    public function addressCount(GetterExpressionInterface $where): int;
+
+    /**
      * @param array $data
      * @return mixed
      */

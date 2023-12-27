@@ -1,6 +1,21 @@
 <template>
   <app-navigation-header title="بازنگری و پرداخت"/>
 
+  <div class="px-3 py-5 flex gap-3 mb-6 border-t border-b bg-white">
+    <StarIcon class="w-6 h-6 text-orange-600 shrink-0"/>
+    <div class="text-orange-600">
+      لطفا قبل از پرداخت، حتما صفحه
+      <router-link
+          :to="{name: 'pages', params: {url: 'how-payment-works'}}"
+          target="_blank"
+          class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
+      >
+        نحوه پرداخت و پرداخت‌های چند مرحله‌ای
+      </router-link>
+      را مطالعه نمایید.
+    </div>
+  </div>
+
   <div class="px-3 mb-12">
     <template v-if="user">
       <form v-if="items.length" @submit.prevent="onSubmit">
@@ -32,35 +47,38 @@
 
             <partial-card class="border-0 p-6 w-full mt-6">
               <template #body>
-                <div class="mb-6 border-b pb-6">
-                  <div class="flex items-start text-lime-600 gap-3 text-sm mb-3">
-                    <InformationCircleIcon class="w-6 h-6 shrink-0"/>
-                    <div class="leading-relaxed">
-                      در صورت فعال نمودن این گزینه، فاکتور خرید همراه مرسولات برای شما ارسال
-                      میگردد.
+                <div class="flex flex-col md:flex-row lg:flex-col gap-6">
+                  <div
+                      class="border-b border-l-0 md:border-b-0 md:border-l lg:border-b lg:border-l-0 pb-6 md:pb-0 md:pl-6 lg:pb-6 lg:pl-0 md:w-1/2 lg:w-auto">
+                    <div class="flex items-start text-lime-600 gap-3 text-sm mb-3">
+                      <InformationCircleIcon class="w-6 h-6 shrink-0"/>
+                      <div class="leading-relaxed">
+                        در صورت فعال نمودن این گزینه، فاکتور خرید همراه مرسولات برای شما ارسال
+                        میگردد.
+                      </div>
                     </div>
-                  </div>
-                  <base-switch
+                    <base-switch
                       name="is_needed_factor"
                       label="فاکتور برای من ارسال شود"
                       :enabled="isNeededFactorStatus"
                       sr-text="فاکتور برای من ارسال شود"
-                  />
-                </div>
-                <div>
-                  <div class="flex items-start text-lime-600 gap-3 text-sm mb-3">
-                    <InformationCircleIcon class="w-6 h-6 shrink-0"/>
-                    <div class="leading-relaxed">
-                      در صورت فعال نمودن این گزینه، هزینه ارسال در نظر گرفته نمی‌شود و کالا توسط
-                      خریدار به صورت حضوری بایستی دریافت شود.
-                    </div>
+                    />
                   </div>
-                  <base-switch
+                  <div class="md:w-1/2 lg:w-auto">
+                    <div class="flex items-start text-lime-600 gap-3 text-sm mb-3">
+                      <InformationCircleIcon class="w-6 h-6 shrink-0"/>
+                      <div class="leading-relaxed">
+                        در صورت فعال نمودن این گزینه، هزینه ارسال در نظر گرفته نمی‌شود و کالا توسط
+                        خریدار به صورت حضوری بایستی دریافت شود.
+                      </div>
+                    </div>
+                    <base-switch
                       name="is_in_place_delivery"
                       label="تحویل کالا به صورت حضوری"
                       :enabled="isInPlaceDeliveryStatus"
                       sr-text="تحویل کالا به صورت حضوری"
-                  />
+                    />
+                  </div>
                 </div>
               </template>
             </partial-card>
@@ -194,7 +212,8 @@
             <partial-card class="border-0 p-4">
               <template #body>
                 <partial-general-title title="محصولات انتخاب شده" container-class="mb-6"/>
-                <ul class="flex flex-col divide-y divide-slate-200 max-h-[32rem] my-custom-scrollbar bg-slate-50 rounded-lg">
+                <ul
+                    class="flex flex-col divide-y divide-slate-200 max-h-[32rem] my-custom-scrollbar bg-slate-50 rounded-lg">
                   <li class="relative flex flex-col gap-3 py-6 pr-3 pl-10">
                     <div class="shrink-0 flex flex-col sm:flex-row gap-3">
                       <div class="shrink-0">
@@ -544,7 +563,7 @@ import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js";
 import PartialCard from "../components/partials/PartialCard.vue";
 import PartialEmptyCard from "../components/partials/pages/PartialEmptyCard.vue";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
-import {CreditCardIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
+import {CreditCardIcon, InformationCircleIcon, StarIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "../components/base/BaseButton.vue";
 import BaseLazyImage from "../components/base/BaseLazyImage.vue";
 import PartialGeneralTitle from "../components/partials/PartialGeneralTitle.vue";

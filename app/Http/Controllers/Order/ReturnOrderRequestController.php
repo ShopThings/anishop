@@ -43,7 +43,7 @@ class ReturnOrderRequestController extends Controller
     public function index(Filter $filter, ?User $user = null): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-        return ReturnOrderResource::collection($this->service->getOrders(userId: $user?->id, filter: $filter));
+        return ReturnOrderResource::collection($this->service->getRequests(userId: $user?->id, filter: $filter));
     }
 
     /**

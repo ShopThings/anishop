@@ -77,7 +77,6 @@ import PartialInputLabel from "../../../../components/partials/PartialInputLabel
 import {useRequest} from "../../../../composables/api-request.js";
 import {apiRoutes} from "../../../../router/api-routes.js";
 import BaseButtonClose from "../../../../components/base/BaseButtonClose.vue";
-import isArray from "lodash.isarray";
 import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
@@ -155,7 +154,7 @@ function searchProduct(query) {
 }
 
 function removeProduct(idx) {
-  if (isArray(selectedProducts.value))
+  if (Array.isArray(selectedProducts.value))
     selectedProducts.value.splice(idx, 1)
 }
 </script>

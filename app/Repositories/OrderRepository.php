@@ -2,14 +2,18 @@
 
 namespace App\Repositories;
 
+use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\OrderItem;
+use App\Models\ReturnOrderRequest;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -48,7 +52,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             })
             ->when($search, function (Builder $query, string $search) {
                 $query
-                    ->withWhereHas('user', function ($q) use ($search) {
+                    ->whereHas('user', function ($q) use ($search) {
                         $q->orWhereLike([
                             'username',
                             'first_name',
@@ -56,7 +60,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                             'national_code',
                         ], $search);
                     })
-                    ->withWhereHas('orders', function ($q) use ($search) {
+                    ->whereHas('orders', function ($q) use ($search) {
                         $q
                             ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
                                 $q2->whereIn('payment_method_type', $types);
@@ -84,16 +88,45 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function updatePayment(int $orderId, array $attributes): bool|int
+    public function getPayment(int $orderId): ?Model
     {
-        return $this->orderModel->newQuery()->find($orderId)->update($attributes);
+        return $this->orderModel->newQuery()->find($orderId);
     }
 
     /**
      * @inheritDoc
      */
-    public function getPayment(int $orderId): ?Model
+    public function getUserReturnableOrders(int $userId, array $columns = ['*']): Collection
     {
-        return $this->orderModel->newQuery()->find($orderId);
+        return $this->model->newQuery()
+            ->withAnyPaidOrder()
+            ->where('ordered_at', '>=', now()->subWeek())
+            ->get($columns);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isOrderReturnable(OrderDetail $orderDetail): bool
+    {
+        return $orderDetail->hasCompletePaid() &&
+            $orderDetail->ordered_at >= now()->subWeek() &&
+            $orderDetail->send_status_can_return_order;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isOrderCancelable(ReturnOrderRequest $orderRequest): bool
+    {
+        return $orderRequest->status === ReturnOrderStatusesEnum::CHECKING->value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePayment(int $orderId, array $attributes): bool|int
+    {
+        return $this->orderModel->newQuery()->find($orderId)->update($attributes);
     }
 }

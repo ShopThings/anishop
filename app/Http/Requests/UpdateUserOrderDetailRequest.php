@@ -2,14 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Models\OrderBadge;
 use App\Models\Province;
 use App\Rules\CityInProvince;
 use App\Rules\PersianMobileRule;
 use App\Rules\PersianNameRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOrderDetailRequest extends FormRequest
+class UpdateUserOrderDetailRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -52,13 +51,6 @@ class UpdateOrderDetailRequest extends FormRequest
                 'sometimes',
                 new PersianMobileRule(),
             ],
-            'send_status' => [
-                'sometimes',
-                'exists:' . OrderBadge::class . ',id',
-            ],
-            'description' => [
-                'sometimes',
-            ],
         ];
     }
 
@@ -67,7 +59,6 @@ class UpdateOrderDetailRequest extends FormRequest
         return [
             'receiver_name' => 'نام گیرنده',
             'receiver_mobile' => 'شماره گیرنده',
-            'send_status' => 'وضعیت ارسال',
         ];
     }
 }

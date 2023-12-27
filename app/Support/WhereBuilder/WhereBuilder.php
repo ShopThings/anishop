@@ -504,6 +504,17 @@ class WhereBuilder implements WhereBuilderInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function reset(): static
+    {
+        $this->where = [];
+        $this->bindings = [];
+
+        return $this;
+    }
+
+    /**
      * @param $column
      * @param $value
      * @param $operator

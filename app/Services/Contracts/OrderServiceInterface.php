@@ -18,13 +18,6 @@ interface OrderServiceInterface extends ServiceInterface
     public function getOrders(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator;
 
     /**
-     * @param int $orderId
-     * @param array $attributes
-     * @return Model|null
-     */
-    public function updatePayment(int $orderId, array $attributes): ?Model;
-
-    /**
      * @return array
      */
     public function getPaymentStatuses(): array;
@@ -39,4 +32,18 @@ interface OrderServiceInterface extends ServiceInterface
      * @return int
      */
     public function getUserOrdersCount($userId): int;
+
+    /**
+     * @param $userId
+     * @param int $limit
+     * @return Collection
+     */
+    public function getLatestUserOrders($userId, int $limit): Collection;
+
+    /**
+     * @param int $orderId
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function updatePayment(int $orderId, array $attributes): ?Model;
 }

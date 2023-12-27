@@ -4,7 +4,6 @@ import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js"
 import {useToast} from "vue-toastification"
 import router from "../router/index.js";
 import isObject from "lodash.isobject";
-import isArray from "lodash.isarray";
 
 export const responseTypes = {
     success: 'success',
@@ -147,7 +146,7 @@ export const useRequest = (url, config, resultConfig) => {
             let total = 0
             if (data?.meta?.total) {
                 total = data?.meta?.total
-            } else if (isArray(data?.data) || isArray(data)) {
+            } else if (Array.isArray(data?.data) || Array.isArray(data)) {
                 total = data?.data?.length || data.length
             } else if (isObject(data?.data) || isObject(data)) {
                 total = 1
@@ -175,7 +174,7 @@ export const useRequest = (url, config, resultConfig) => {
 
             // mostly it has debugging purposes
             if ((isObject(data) && !Object.keys(data).length) ||
-                (isArray(data) && !data.length) ||
+                (Array.isArray(data) && !data.length) ||
                 error?.response.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR ||
                 error?.request.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR
             ) {

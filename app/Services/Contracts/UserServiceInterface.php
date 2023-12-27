@@ -77,6 +77,12 @@ interface UserServiceInterface extends ServiceInterface
     public function addFavoriteProduct($userId, $productId): bool;
 
     /**
+     * @param $userId
+     * @return bool
+     */
+    public function canCreateAddress($userId): bool;
+
+    /**
      * @param array $attributes
      * @return Model|null
      */
