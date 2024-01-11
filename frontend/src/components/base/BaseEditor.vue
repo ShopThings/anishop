@@ -1,13 +1,16 @@
 <template>
     <textarea
-        :name="name"
-        class="content-editor hidden"
-        @change="handleChange($event, false)"
+      :name="name"
+      class="content-editor hidden"
+      @change="handleChange($event, false)"
     >{{ value }}</textarea>
   <partial-input-error-message :error-message="errorMessage"/>
 </template>
 
 <script setup>
+import '~/assets/js/tinymce/skins/skin.min.css';
+import '~/assets/js/tinymce/tinymce.min.js';
+
 import {onMounted, onUnmounted, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useField} from "vee-validate";
@@ -77,7 +80,3 @@ onUnmounted(() => {
   tinymce.remove(".content-editor");
 })
 </script>
-
-<style scoped>
-
-</style>

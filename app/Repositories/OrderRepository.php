@@ -13,7 +13,6 @@ use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
-use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;

@@ -2,17 +2,17 @@
   <div class="min-h-screen relative flex flex-col items-center justify-center lg:px-10">
     <div class="h-full w-full max-w-5xl grid grid-cols-2">
       <div
-          class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-r-lg">
+        class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-r-lg">
         <div class="py-10 flex-col justify-center h-full mx-auto relative z-[2] hidden lg:flex">
           <div class="flex flex-col items-center justify-center">
             <router-link
-                :to="{name: 'home'}"
-                class="mb-6"
+              :to="{name: 'home'}"
+              class="mb-6"
             >
               <img
-                  src="/logo-light.png"
-                  alt="آیریا کالا"
-                  class="h-16"
+                src="/logo-light.png"
+                alt="آیریا کالا"
+                class="h-16"
               />
             </router-link>
 
@@ -38,17 +38,17 @@
 
       <div class="h-full col-span-2 lg:col-span-1 z-[2]">
         <div
-            class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:items-start mx-auto lg:rounded-l-lg">
+          class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:items-start mx-auto lg:rounded-l-lg">
           <router-link :to="{name: 'home'}">
             <img
-                src="/logo-with-type-light.png"
-                alt="آیریا کالا"
-                class="h-12 my-4 lg:hidden"
+              src="/logo-with-type-light.png"
+              alt="آیریا کالا"
+              class="h-12 my-4 lg:hidden"
             />
           </router-link>
 
           <div
-              class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
+            class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
           >
             <form @submit.prevent="loginCheck">
               <div class="mb-3">
@@ -91,7 +91,7 @@
                              class="w-full flex justify-center items-center group bg-primary border-primary text-white">
                   <span class="mr-auto">وارد شوید</span>
                   <ArrowLeftIcon
-                      class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
+                    class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
                 </base-button>
               </div>
             </form>

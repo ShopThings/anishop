@@ -4,9 +4,9 @@
     <div class="text-orange-600">
       در صورت نیاز به لغو سفارش، صفحه
       <router-link
-          :to="{name: 'pages', params: {url: 'how-to-cancel-order'}}"
-          target="_blank"
-          class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
+        :to="{name: 'pages', params: {url: 'how-to-cancel-order'}}"
+        target="_blank"
+        class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
       >
         نحوه لغو سفارش
       </router-link>
@@ -17,18 +17,18 @@
   <base-loading-panel :loading="loading" type="table">
     <template #content>
       <base-semi-datatable
-          pagination-theme="modern"
-          :is-loading="table.isLoading"
-          :columns="table.columns"
-          :rows="table.rows"
-          :total="table.total"
-          @do-search="doSearch"
+        pagination-theme="modern"
+        :is-loading="table.isLoading"
+        :columns="table.columns"
+        :rows="table.rows"
+        :total="table.total"
+        @do-search="doSearch"
       >
         <template #emptyTableRows>
           <partial-empty-rows
-              image="/empty-statuses/empty-order.svg"
-              image-class="w-64"
-              message="هیچ سفارشی ثبت نشده است"
+            image="/empty-statuses/empty-order.svg"
+            image-class="w-64"
+            message="هیچ سفارشی ثبت نشده است"
           />
         </template>
 
@@ -54,8 +54,8 @@
 
         <template #op="{value}">
           <router-link
-              :to="{name: 'user.order.detail', params: {code: 12345}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.order.detail', params: {code: 12345}}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             مشاهده جزئیات
           </router-link>
@@ -265,7 +265,3 @@ const doSearch = (offset, limit) => {
 
 doSearch(0, 15)
 </script>
-
-<style scoped>
-
-</style>

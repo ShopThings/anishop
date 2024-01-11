@@ -2,29 +2,51 @@ import {computed} from "vue";
 import {useRoute} from "vue-router";
 
 export function isValidInternalRedirectLink(link) {
-    return link && /^\/[a-z][a-zA-Z0-9]*g/.test(link)
+  return link && /^\/[a-z][a-zA-Z0-9]*g/.test(link)
+}
+
+export function trimChar(str, char) {
+  if (char === "]") char = "\\]";
+  if (char === "\\") char = "\\\\";
+  return str.replace(new RegExp(
+    "^[" + char + "]+|[" + char + "]+$", "g"
+  ), "");
+}
+
+export function concatPath(...paths) {
+  const r = new RegExp('[\\\\]*')
+  let path = []
+  for (const p of paths) {
+    path.push(trimChar(p.replace(r, '/'), '/'))
+  }
+
+  path = path.filter((item) => {
+    return ['', '.', '..'].indexOf(item.trim()) === -1
+  })
+
+  return path.join('/')
 }
 
 export function getRouteParamByKey(key, defaultValue) {
-    const route = useRoute()
+  const route = useRoute()
 
-    return computed(() => {
-        if (!parseInt(route.params[key])) return defaultValue ?? null
+  return computed(() => {
+    if (!parseInt(route.params[key])) return defaultValue ?? null
 
-        const id = parseInt(route.params[key], 10)
-        if (isNaN(id)) return route.params[key]
-        return id
-    })
+    const id = parseInt(route.params[key], 10)
+    if (isNaN(id)) return route.params[key]
+    return id
+  })
 }
 
 export function formatPriceLikeNumber(value, separator) {
-    const numRegex = /(?=(?<!\.\d*)(?!^)\d{3}(?:\b|(?:\d{3})+)\b)/g
+  const numRegex = /(?=(?<!\.\d*)(?!^)\d{3}(?:\b|(?:\d{3})+)\b)/g
 
-    if (!separator) separator = ','
-    value = value + ''
+  if (!separator) separator = ','
+  value = value + ''
 
-    return value
-        .replace(/^0+$/g, '0')
-        .replace(/(\.+|,+|\D+)/g, '')
-        .replace(numRegex, separator)
+  return value
+    .replace(/^0+$/g, '0')
+    .replace(/(\.+|,+|\D+)/g, '')
+    .replace(numRegex, separator)
 }

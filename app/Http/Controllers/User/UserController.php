@@ -10,6 +10,7 @@ use App\Http\Resources\AddressResource;
 use App\Http\Resources\FavoriteProductResource;
 use App\Http\Resources\PurchaseResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserSingleResource;
 use App\Models\User;
 use App\Services\Contracts\UserServiceInterface;
 use App\Support\Filter;
@@ -76,13 +77,13 @@ class UserController extends Controller
      * Display the specified resource.
      *
      * @param User $user
-     * @return UserResource
+     * @return UserSingleResource
      * @throws AuthorizationException
      */
-    public function show(User $user): UserResource
+    public function show(User $user): UserSingleResource
     {
         $this->authorize('view', $user);
-        return new UserResource($user);
+        return new UserSingleResource($user);
     }
 
     /**
@@ -90,10 +91,10 @@ class UserController extends Controller
      *
      * @param UpdateUserRequest $request
      * @param User $user
-     * @return UserResource|JsonResponse
+     * @return UserSingleResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateUserRequest $request, User $user): UserResource|JsonResponse
+    public function update(UpdateUserRequest $request, User $user): UserSingleResource|JsonResponse
     {
         $this->authorize('update', $user);
 
@@ -102,7 +103,7 @@ class UserController extends Controller
         $model = $this->service->updateById($user->id, $validated);
 
         if (!is_null($model)) {
-            return new UserResource($model);
+            return new UserSingleResource($model);
         } else {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,

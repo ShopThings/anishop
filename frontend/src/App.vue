@@ -19,7 +19,3 @@ const layout = computed(() => {
   return 'layout-empty'
 })
 </script>
-
-<style scoped>
-
-</style>

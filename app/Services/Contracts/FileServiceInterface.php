@@ -2,9 +2,7 @@
 
 namespace App\Services\Contracts;
 
-use App\Contracts\ServiceInterface;
 use App\Http\Requests\Filters\FileListFilter;
-use App\Models\FileManager;
 use Illuminate\Database\Eloquent\Model;
 
 interface FileServiceInterface
@@ -66,12 +64,12 @@ interface FileServiceInterface
     public function copy(array $paths, string $destination, string $disk): bool;
 
     /**
-     * @param FileManager|array $files
+     * @param string|array $files
      * @param string|null $path
      * @param string $disk
      * @return bool
      */
-    public function delete(FileManager|array $files, ?string $path, string $disk): bool;
+    public function delete(string|array $files, ?string $path, string $disk): bool;
 
     /**
      * @param $file

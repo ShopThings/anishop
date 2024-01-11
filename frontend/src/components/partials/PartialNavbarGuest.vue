@@ -6,7 +6,7 @@
         خانه
       </a>
       <span
-          class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
+        class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
     </partial-navbar-item-guest>
 
     <partial-navbar-item-guest :as="asChild" class="relative">
@@ -15,7 +15,7 @@
         اخبار
       </a>
       <span
-          class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
+        class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
     </partial-navbar-item-guest>
 
     <partial-navbar-item-guest :as="asChild" class="relative">
@@ -24,7 +24,7 @@
         دسته‌بندی‌ها
       </a>
       <span
-          class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
+        class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
     </partial-navbar-item-guest>
 
     <partial-navbar-item-guest :as="asChild" class="relative">
@@ -33,7 +33,7 @@
         درباره ما
       </a>
       <span
-          class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
+        class="w-0 h-0.5 bg-sky-400 rounded-full absolute -bottom-2 right-0 peer-hover:w-5 transition-all"></span>
     </partial-navbar-item-guest>
   </component>
 </template>
@@ -52,7 +52,3 @@ defineProps({
   }
 })
 </script>
-
-<style scoped>
-
-</style>

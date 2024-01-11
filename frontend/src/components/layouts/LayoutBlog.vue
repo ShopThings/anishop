@@ -17,7 +17,3 @@ import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.v
 import AppNavbarBlog from "../AppNavbarBlog.vue";
 import AppFooterUser from "../user/AppFooterUser.vue";
 </script>
-
-<style scoped>
-
-</style>

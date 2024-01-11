@@ -9,19 +9,19 @@
           <div class="flex flex-wrap items-end justify-between">
             <div class="p-2">
               <partial-input-label
-                  title="انتخاب تصویر"
+                title="انتخاب تصویر"
               />
               <base-media-placeholder type="image"/>
             </div>
 
             <div class="p-2">
               <base-switch
-                  label="عدم نمایش روش پرداخت"
-                  on-label="نمایش روش پرداخت"
-                  name="is_published"
-                  :enabled="true"
-                  sr-text="نمایش/عدم نمایش روش پرداخت"
-                  @change="(status) => {publishStatus=status}"
+                label="عدم نمایش روش پرداخت"
+                on-label="نمایش روش پرداخت"
+                name="is_published"
+                :enabled="true"
+                sr-text="نمایش/عدم نمایش روش پرداخت"
+                @change="(status) => {publishStatus=status}"
               />
             </div>
           </div>
@@ -39,21 +39,21 @@
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <partial-input-label title="نوع روش پرداخت"/>
               <base-select
-                  :options="paymentTypes"
-                  options-key="value"
-                  options-text="name"
-                  name="type"
-                  @change="paymentTypeChange"
+                :options="paymentTypes"
+                options-key="value"
+                options-text="name"
+                name="type"
+                @change="paymentTypeChange"
               >
                 <template #item="{item, selected}">
                   <div class="flex items-center">
                     <base-lazy-image
-                        :lazy-src="item.image"
-                        :alt="item.name"
-                        class="!w-14 h-auto ml-3"
+                      :lazy-src="item.image"
+                      :alt="item.name"
+                      class="!w-14 h-auto ml-3"
                     />
                     <span
-                        :class="{'text-primary': selected}"
+                      :class="{'text-primary': selected}"
                     >{{ item.name }}</span>
                   </div>
                 </template>
@@ -63,14 +63,14 @@
           </div>
 
           <template
-              v-if="selectedPaymentType"
+            v-if="selectedPaymentType"
           >
             <hr class="my-3">
 
             <VTransitionSlideFadeDownY mode="out-in">
               <div
-                  v-if="selectedPaymentType.value === 'behpardakht'"
-                  class="flex flex-wrap"
+                v-if="selectedPaymentType.value === 'behpardakht'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input label-title="شماره ترمینال"
@@ -102,8 +102,8 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'idpay'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'idpay'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input label-title="کلید API"
@@ -116,8 +116,8 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'irankish'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'irankish'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input label-title="شماره ترمینال"
@@ -149,9 +149,9 @@
                 </div>
                 <div class="w-full p-2">
                   <base-textarea
-                      name="public_key"
-                      placeholder="وارد نمایید"
-                      label-title="کلید عمومی"
+                    name="public_key"
+                    placeholder="وارد نمایید"
+                    label-title="کلید عمومی"
                   >
                     <template #icon>
                       <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -160,8 +160,8 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'parsian'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'parsian'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input label-title="رمز پذیرنده"
@@ -175,8 +175,8 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'sadad'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'sadad'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input label-title="کلید"
@@ -208,8 +208,8 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'sepehr'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'sepehr'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input label-title="شماره ترمینال"
@@ -222,8 +222,8 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'zarinpal'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'zarinpal'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input label-title="شماره مرچنت"
@@ -240,15 +240,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                :disabled="isSubmitting"
+              type="submit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              :disabled="isSubmitting"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                  v-if="isSubmitting"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                  big-circle-color="border-transparent"
                 />
               </VTransitionFade>
 
@@ -338,7 +338,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

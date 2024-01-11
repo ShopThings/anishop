@@ -13,7 +13,7 @@
 
           <div class="h-full grow">
             <partial-navbar-blog
-                class="hidden justify-center space-x-10 space-x-reverse mt-[10px] lg:flex"/>
+              class="hidden justify-center space-x-10 space-x-reverse mt-[10px] lg:flex"/>
           </div>
 
           <div class="h-full">
@@ -43,9 +43,9 @@
 
                     <div class="mb-3 py-3">
                       <base-button
-                          type="link"
-                          :to="{name: 'home'}"
-                          class="w-full border-2 border-indigo-500 text-sm !text-black hover:bg-indigo-100 transition flex items-center gap-3 justify-center"
+                        type="link"
+                        :to="{name: 'home'}"
+                        class="w-full border-2 border-indigo-500 text-sm !text-black hover:bg-indigo-100 transition flex items-center gap-3 justify-center"
                       >
                         <span class="mx-auto">مشاهده فروشگاه</span>
                         <ShoppingCartIcon class="w-6 h-6 text-indigo-400"/>
@@ -72,7 +72,3 @@ import {ShoppingCartIcon} from "@heroicons/vue/24/outline/index.js";
 import BasePopoverSide from "./base/BasePopoverSide.vue";
 import BaseButton from "./base/BaseButton.vue";
 </script>
-
-<style scoped>
-
-</style>

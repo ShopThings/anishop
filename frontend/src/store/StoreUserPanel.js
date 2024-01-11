@@ -15,13 +15,13 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
 
   function fetchCounting() {
     useRequest(
-        apiRoutes.user.main.countOfStuffs,
-        null,
-        {
-          success(response) {
-            counts = response.data
-          },
-        }
+      apiRoutes.user.main.countOfStuffs,
+      null,
+      {
+        success(response) {
+          counts = response.data
+        },
+      }
     )
   }
 

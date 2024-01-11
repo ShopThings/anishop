@@ -27,18 +27,18 @@
   </base-message>
 
   <base-message type="info" :has-close="false" class="mb-3">
-    محدودیت سایز آپلود فایل
+    محدودیت سایز آپلود هر فایل
     <code class="rounded bg-sky-200 bg-opacity-80 text-black py-1 px-2 m-1 text-xs">512</code>
     مگابایت می‌باشد.
   </base-message>
 
   <div
-      @dragenter.prevent="setActive"
-      @dragover.prevent="setActive"
-      @dragleave.prevent="setInactive"
-      @drop.prevent="onDrop"
-      class="bg-slate-200 py-6 px-4 rounded-lg mb-3 border-4 border-dashed border-slate-300 bg-opacity-60 relative overflow-hidden"
-      :class="{'border-blue-500': active}"
+    @dragenter.prevent="setActive"
+    @dragover.prevent="setActive"
+    @dragleave.prevent="setInactive"
+    @drop.prevent="onDrop"
+    class="bg-slate-200 py-6 px-4 rounded-lg mb-3 border-4 border-dashed border-slate-300 bg-opacity-60 relative overflow-hidden"
+    :class="{'border-blue-500': active}"
   >
     <VTransitionSlideFadeDownY>
       <div v-if="active"
@@ -63,15 +63,15 @@
         <span class="text-gray-400 block sm:inline-block my-3 sm:mx-3 sm:my-0">یا</span>
         <div class="block sm:inline-block">
           <input
-              @change="onChange"
-              type="file"
-              id="fileUpload"
-              multiple
-              class="hidden"
+            @change="onChange"
+            type="file"
+            id="fileUpload"
+            multiple
+            class="hidden"
           >
           <label
-              for="fileUpload"
-              class="inline-block rounded-md border-2 border-pink-600 bg-pink-200 bg-opacity-30 py-2 px-4 cursor-pointer hover:bg-opacity-50 transition"
+            for="fileUpload"
+            class="inline-block rounded-md border-2 border-pink-600 bg-pink-200 bg-opacity-30 py-2 px-4 cursor-pointer hover:bg-opacity-50 transition"
           >
             انتخاب فایل
           </label>
@@ -83,47 +83,45 @@
   <div v-show="files.length > 0">
     <div class="block md:grid md:grid-cols-2 gap-3 mb-3">
       <div
-          v-for="file of files"
-          :key="file.id"
-          class="flex p-3 bg-white mb-3 md:mb-0 rounded-lg shadow-md items-center relative"
+        v-for="file of files"
+        :key="file.id"
+        class="flex p-3 bg-white mb-3 md:mb-0 rounded-lg shadow-md items-center relative"
       >
         <img
-            v-if="isImageExt(file.extension)"
-            :src="file.url"
-            :alt="file.file.name"
-            :title="file.file.name"
-            class="w-20 h-20 object-contain shrink-0 border rounded-lg"
+          v-if="isImageExt(file.extension)"
+          :src="file.url"
+          :alt="file.file.name"
+          :title="file.file.name"
+          class="w-20 h-20 object-contain shrink-0 border rounded-lg"
         />
         <MusicalNoteIcon
-            v-else-if="isAudioExt(file.extension)"
-            class="w-16 h-16 text-cyan-600 shrink-0"
+          v-else-if="isAudioExt(file.extension)"
+          class="w-16 h-16 text-cyan-600 shrink-0"
         />
         <FilmIcon
-            v-else-if="isVideoExt(file.extension)"
-            class="w-16 h-16 text-rose-600 shrink-0"
+          v-else-if="isVideoExt(file.extension)"
+          class="w-16 h-16 text-rose-600 shrink-0"
         />
         <DocumentTextIcon
-            v-else
-            class="w-16 h-16 text-gray-700 shrink-0"
+          v-else
+          class="w-16 h-16 text-gray-700 shrink-0"
         />
-        <DocumentTextIcon
-            v-else
-            class="w-16 h-16 text-gray-700 shrink-0"
-        />
+
         <span class="grow mx-3 overflow-hidden text-ellipsis text-gray-600">{{ file.file.name }}</span>
         <base-button-close
-            @click="removeFile(file)"
-            class="shrink-0 px-1 h-full"
+          v-tooltip.right="'حذف فایل'"
+          @click="removeFile(file)"
+          class="shrink-0 px-1 h-full"
         ></base-button-close>
 
         <div
-            v-if="file.status !== UploadTypes.NOT_SET"
-            class="absolute w-full h-full top-0 left-0 bg-opacity-90 rounded-lg z-[1] flex flex-col items-center justify-center p-5"
-            :class="{
-                        'bg-sky-400': file.status === UploadTypes.UPLOADING,
-                        'bg-green-400': file.status === UploadTypes.SUCCESS,
-                        'bg-rose-400': file.status === UploadTypes.FAILED
-                    }"
+          v-if="file.status !== UploadTypes.NOT_SET"
+          class="absolute w-full h-full top-0 left-0 bg-opacity-90 rounded-lg z-[1] flex flex-col items-center justify-center p-5"
+          :class="{
+              'bg-sky-400': file.status === UploadTypes.UPLOADING,
+              'bg-green-400': file.status === UploadTypes.SUCCESS,
+              'bg-rose-400': file.status === UploadTypes.FAILED
+            }"
         >
           <span v-if="file.status === UploadTypes.UPLOADING">در حال بارگذاری فایل...</span>
           <span v-else-if="file.status === UploadTypes.SUCCESS" class="text-lg flex items-center">
@@ -136,23 +134,23 @@
               خطا در بارگذاری
             </div>
             <div
-                v-if="file.errorMessage"
-                class="text-xs text-black mt-2"
+              v-if="file.errorMessage"
+              class="text-xs text-black mt-2"
             >
               {{ file.errorMessage }}
             </div>
           </div>
           <div
-              v-if="file.status === UploadTypes.UPLOADING"
-              class="flex flex-row flex-row-reverse grow items-center w-full"
+            v-if="file.status === UploadTypes.UPLOADING"
+            class="flex flex-row flex-row-reverse grow items-center w-full"
           >
             <div class="h-2 w-full grow rounded-full bg-white bg-opacity-80 shadow-md">
               <div class="bg-blue-700 h-full rounded-full" :style="'width:' + file.progress + '%'"></div>
             </div>
             <base-button-close
-                @click="cancelUpload(file)"
-                v-tooltip.top="'لغو بارگذاری'"
-                class="shrink-0 ml-3 bg-white rounded bg-opacity-70 shadow-md"
+              @click="cancelUpload(file)"
+              v-tooltip.top="'لغو بارگذاری'"
+              class="shrink-0 ml-3 bg-white rounded bg-opacity-70 shadow-md"
             ></base-button-close>
           </div>
         </div>
@@ -160,22 +158,22 @@
     </div>
 
     <div
-        v-if="canUpload"
-        class="mt-3 flex flex-col sm:flex-row md:block md:mt-0 text-left"
+      v-if="canUpload"
+      class="mt-3 flex flex-col sm:flex-row md:block md:mt-0 text-left"
     >
       <base-button
-          @click="startUploadFiles"
-          :disabled="!canUpload"
-          class="text-sm bg-emerald-500 border-emerald-600 border-2 grow mb-3"
+        @click="startUploadFiles"
+        :disabled="!canUpload"
+        class="text-sm bg-emerald-500 border-emerald-600 border-2 grow mb-3"
       >
-        آپولود تمامی فایل‌ها
+        آپلود تمامی فایل‌ها
       </base-button>
       <base-button
-          @click="clearUploadItems"
-          :disabled="!canUpload"
-          class="!text-black text-sm rounded-md border-2 border-rose-600 bg-rose-300 bg-opacity-20 py-2 px-4 mb-3 hover:bg-opacity-30 transition grow sm:mr-2"
+        @click="clearUploadItems"
+        :disabled="!canUpload"
+        class="!text-black text-sm rounded-md border-2 border-rose-600 bg-rose-300 bg-opacity-20 py-2 px-4 mb-3 hover:bg-opacity-30 transition grow sm:mr-2"
       >
-        حذف تمامی فایل‌های آپولد
+        حذف تمامی فایل‌های آپلود
       </base-button>
     </div>
   </div>
@@ -187,14 +185,14 @@ import {
   CheckCircleIcon, XCircleIcon, FilmIcon
 } from '@heroicons/vue/24/outline';
 import {onMounted, onUnmounted, ref} from "vue";
-import {useFileList, UploadTypes} from "../../../composables/file-list.js";
+import {useFileList, UploadTypes} from "@/composables/file-list.js";
 import BaseButtonClose from "../BaseButtonClose.vue";
 import BaseMessage from "../BaseMessage.vue";
 import VTransitionSlideFadeDownY from "../../../transitions/VTransitionSlideFadeDownY.vue";
 import BaseButton from "../BaseButton.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
+import {useConfirmToast} from "@/composables/toast-helper.js";
 import {useToast} from "vue-toastification";
 
 const props = defineProps({
@@ -239,7 +237,7 @@ function startUploadFiles() {
 
     useRequest(apiRoutes.admin.files.upload, {
       method: 'POST',
-      Headers: {'Content-Type': 'multipart/form-data'},
+      headers: {'Content-Type': 'multipart/form-data'},
       onUploadProgress: progressEvent => {
         file.progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
       },
@@ -340,6 +338,3 @@ onUnmounted(() => {
   })
 })
 </script>
-
-<style scoped>
-</style>

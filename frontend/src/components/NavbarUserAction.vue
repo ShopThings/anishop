@@ -7,7 +7,7 @@
     </template>
     <template #items>
       <MenuItems
-          class="absolute z-[10] left-0 mt-3 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        class="absolute z-[10] left-0 mt-3 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
         <div class="px-1 py-1">
           <MenuItem v-slot="{ active }">
             <router-link :to="{name: 'login'}"
@@ -17,9 +17,9 @@
                                      ]"
             >
               <ArrowLeftOnRectangleIcon
-                  :active="active"
-                  class="ml-2 h-5 w-5 text-sky-400"
-                  aria-hidden="true"
+                :active="active"
+                class="ml-2 h-5 w-5 text-sky-400"
+                aria-hidden="true"
               />
               ورود
             </router-link>
@@ -35,9 +35,9 @@
                                      ]"
             >
               <UserPlusIcon
-                  :active="active"
-                  class="ml-2 h-5 w-5 text-sky-400"
-                  aria-hidden="true"
+                :active="active"
+                class="ml-2 h-5 w-5 text-sky-400"
+                aria-hidden="true"
               />
               ثبت نام
             </router-link>
@@ -62,7 +62,3 @@ defineProps({
 })
 const emit = defineEmits(['open'])
 </script>
-
-<style scoped>
-
-</style>

@@ -78,7 +78,19 @@ class ReturnOrderRequest extends Model
      */
     public function hasReturnOrderItemWhere(GetterExpressionInterface $where): bool
     {
-        return $this->returnOrderItems()->whereRaw($where->getStatement(), $where->getBindings())->count();
+        return $this->returnOrderItems()
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
+            ->count();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function statusChanger(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'status_changed_by');
     }
 
     /**

@@ -2,9 +2,9 @@
   <SwitchGroup>
     <div class="flex items-center">
       <SwitchLabel
-          v-if="label"
-          class="ml-3 text-sm text-gray-500"
-          :class="[
+        v-if="label"
+        class="ml-3 text-sm text-gray-500"
+        :class="[
                     labelClass,
                     !onLabel ? 'grow sm:grow-0' : '',
                 ]"
@@ -16,34 +16,34 @@
       </SwitchLabel>
 
       <input
-          type="checkbox"
-          hidden="hidden"
-          readonly="readonly"
-          :name="name"
-          :value="value"
-          class="checkInput"
-          @change="handleChange($event, false)"
+        type="checkbox"
+        hidden="hidden"
+        readonly="readonly"
+        :name="name"
+        :value="value"
+        class="checkInput"
+        @change="handleChange($event, false)"
       />
 
       <Switch
-          v-model="value"
-          :class="value ? (enabledColor || 'bg-indigo-600') : (disabledColor || 'bg-slate-300')"
-          class="relative flex h-6 w-11 items-center rounded-full shrink-0 transition"
+        v-model="value"
+        :class="value ? (enabledColor || 'bg-indigo-600') : (disabledColor || 'bg-slate-300')"
+        class="relative flex h-6 w-11 items-center rounded-full shrink-0 transition"
       >
         <span v-if="srText" class="sr-only">{{ srText }}</span>
         <span
-            :class="[
+          :class="[
                         bulletClass,
                         value ? 'rtl:-translate-x-6 translate-x-6' : 'rtl:-translate-x-1 translate-x-1',
                         value ? enabledBulletColor : disabledBulletColor
                     ]"
-            class="inline-block h-4 w-4 transform rounded-full bg-white transition"
+          class="inline-block h-4 w-4 transform rounded-full bg-white transition"
         />
       </Switch>
       <SwitchLabel
-          v-if="onLabel"
-          class="mr-3 text-sm text-gray-500"
-          :class="{'grow sm:grow-0': !label}"
+        v-if="onLabel"
+        class="mr-3 text-sm text-gray-500"
+        :class="{'grow sm:grow-0': !label}"
       >{{ onLabel }}
       </SwitchLabel>
     </div>

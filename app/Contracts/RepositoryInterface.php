@@ -131,6 +131,13 @@ interface RepositoryInterface
     ): Model|null;
 
     /**
+     * @param array $data
+     * @param array $values
+     * @return mixed
+     */
+    public function updateOrCreate(array $data, array $values = []): mixed;
+
+    /**
      * @param $id
      * @param array $data
      * @return int

@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\ProductShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +22,7 @@ class ProductCommentResource extends JsonResource
         return [
             'id' => $this->id,
             'product_id' => $this->product_id,
-            'product' => $this->whenLoaded('product'),
+            'product' => new ProductShowResource($this->whenLoaded('product')),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition),
                 'value' => $this->condition,
@@ -35,9 +37,9 @@ class ProductCommentResource extends JsonResource
             'flag_count' => $this->flag_count,
             'up_vote_count' => $this->up_vote_count,
             'down_vote_count' => $this->down_vote_count,
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
+            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
             'created_at' => verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value),
             'updated_at' => $this->when(
                 $this->updated_at,

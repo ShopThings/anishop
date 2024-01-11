@@ -12,8 +12,8 @@
   <div class="flex flex-wrap gap-3 mb-3">
     <div class="grow">
       <partial-card-navigation
-          :to="{name: 'admin.category_images'}"
-          bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
+        :to="{name: 'admin.category_images'}"
+        bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
       >
         <span class="text-white text-lg grow">تصاویر دسته‌بندی‌ها</span>
         <PhotoIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -30,19 +30,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="true"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="true"
+            :selection-operations="selectionOperations"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="true"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:name="{value}">
 
@@ -64,10 +64,10 @@
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
-                  :container="getMenuContainer"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                :items="operations"
+                :data="value"
+                :container="getMenuContainer"
+                :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -90,7 +90,7 @@ import PartialCard from "../../../components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useConfirmToast} from "../../../composables/toast-helper.js";
 import PartialCardNavigation from "../../../components/partials/PartialCardNavigation.vue";
 
 const router = useRouter()
@@ -322,7 +322,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 
 doSearch(0, 15, 'id', 'desc')
 </script>
-
-<style scoped>
-
-</style>

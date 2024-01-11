@@ -27,15 +27,11 @@
 </template>
 
 <script setup>
-import MainSlider from "../components/main-page/MainSlider.vue";
-import AppNewsletter from "../components/AppNewsletter.vue";
-import ChosenCategories from "../components/main-page/ChosenCategories.vue";
-import AmazingOffers from "../components/main-page/AmazingOffers.vue";
-import Sliders from "../components/main-page/Sliders.vue";
-import LatestBlogs from "../components/main-page/LatestBlogs.vue";
-import PopularBrands from "../components/main-page/PopularBrands.vue";
+import MainSlider from "@/components/main-page/MainSlider.vue";
+import AppNewsletter from "@/components/AppNewsletter.vue";
+import ChosenCategories from "@/components/main-page/ChosenCategories.vue";
+import AmazingOffers from "@/components/main-page/AmazingOffers.vue";
+import Sliders from "@/components/main-page/Sliders.vue";
+import LatestBlogs from "@/components/main-page/LatestBlogs.vue";
+import PopularBrands from "@/components/main-page/PopularBrands.vue";
 </script>
-
-<style scoped>
-
-</style>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Showing\CityShowResource;
+use App\Http\Resources\Showing\ProvinceShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +18,7 @@ class UserAddressResource extends JsonResource
     {
         // MUST eager load these relations
         // NOTE: Because we don't have too much addresses per user,
-        // I think it won't cause any performance problem(hope so)
+        //       I think it won't cause any performance problem(hope so)
         $this->resource->load('city');
         $this->resource->load('province');
 
@@ -25,10 +27,8 @@ class UserAddressResource extends JsonResource
             'full_name' => $this->full_name,
             'mobile' => $this->mobile,
             'address' => $this->address,
-            'city_id' => $this->city_id,
-            'city' => $this->city,
-            'province' => $this->province,
-            'province_id' => $this->province_id,
+            'city' => new CityShowResource($this->city),
+            'province' => new ProvinceShowResource($this->province),
             'postal_code' => $this->postal_code,
         ];
     }

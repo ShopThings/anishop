@@ -5,6 +5,8 @@ namespace App\Http\Resources\User;
 use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\BlogBadgeShowResource;
+use App\Http\Resources\Showing\BlogShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,9 +27,9 @@ class UserBlogCommentSingleResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'blog' => $this->blog,
-            'badge' => $this->badge,
-            'parent' => $this->parent,
+            'blog' => new BlogShowResource($this->blog),
+            'badge' => new BlogBadgeShowResource($this->badge),
+            'parent' => new UserBlogCommentSingleResource($this->parent),
             'children' => UserBlogCommentSingleResource::collection($this->whenCounted('children')),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition),

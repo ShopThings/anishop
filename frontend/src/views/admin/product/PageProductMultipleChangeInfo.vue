@@ -1,12 +1,12 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="content"
+    :loading="loading"
+    type="content"
   >
     <template #content>
       <base-accordion
-          btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
-          panel-class="max-h-96 overflow-auto"
+        btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
+        panel-class="max-h-96 overflow-auto"
       >
         <template #button>
           محصولات انتخاب شده
@@ -19,28 +19,28 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="p-2 shrink-0"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="p-2 shrink-0"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p1.jpg"
-                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p1.jpg"
+                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="px-3 py-2 text-primary hover:text-opacity-90"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="px-3 py-2 text-primary hover:text-opacity-90"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
                   </div>
                   <base-button-close
-                      v-tooltip.right="'حذف از لیست'"
-                      class="mx-3"
-                      @click="removeFromListHandler(0)"
+                    v-tooltip.right="'حذف از لیست'"
+                    class="mx-3"
+                    @click="removeFromListHandler(0)"
                   />
                 </div>
               </template>
@@ -50,28 +50,28 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="p-2 shrink-0"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="p-2 shrink-0"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p2.jpg"
-                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p2.jpg"
+                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="px-3 py-2 text-primary hover:text-opacity-90"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="px-3 py-2 text-primary hover:text-opacity-90"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
                   </div>
                   <base-button-close
-                      v-tooltip.right="'حذف از لیست'"
-                      class="mx-3"
-                      @click="removeFromListHandler(1)"
+                    v-tooltip.right="'حذف از لیست'"
+                    class="mx-3"
+                    @click="removeFromListHandler(1)"
                   />
                 </div>
               </template>
@@ -81,20 +81,20 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="p-2 shrink-0"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="p-2 shrink-0"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p3.jpg"
-                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p3.jpg"
+                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="px-3 py-2 text-primary hover:text-opacity-90"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="px-3 py-2 text-primary hover:text-opacity-90"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با
                       گرافیک
@@ -102,9 +102,9 @@
                     </router-link>
                   </div>
                   <base-button-close
-                      v-tooltip.right="'حذف از لیست'"
-                      class="mx-3"
-                      @click="removeFromListHandler(2)"
+                    v-tooltip.right="'حذف از لیست'"
+                    class="mx-3"
+                    @click="removeFromListHandler(2)"
                   />
                 </div>
               </template>
@@ -114,28 +114,28 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="p-2 shrink-0"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="p-2 shrink-0"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p4.jpg"
-                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p4.jpg"
+                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="px-3 py-2 text-primary hover:text-opacity-90"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="px-3 py-2 text-primary hover:text-opacity-90"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
                   </div>
                   <base-button-close
-                      v-tooltip.right="'حذف از لیست'"
-                      class="mx-3"
-                      @click="removeFromListHandler(3)"
+                    v-tooltip.right="'حذف از لیست'"
+                    class="mx-3"
+                    @click="removeFromListHandler(3)"
                   />
                 </div>
               </template>
@@ -145,28 +145,28 @@
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="p-2 shrink-0"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="p-2 shrink-0"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p5.jpg"
-                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p5.jpg"
+                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {id: 1}}"
-                        target="_blank"
-                        class="px-3 py-2 text-primary hover:text-opacity-90"
+                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      target="_blank"
+                      class="px-3 py-2 text-primary hover:text-opacity-90"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
                   </div>
                   <base-button-close
-                      v-tooltip.right="'حذف از لیست'"
-                      class="mx-3"
-                      @click="removeFromListHandler(4)"
+                    v-tooltip.right="'حذف از لیست'"
+                    class="mx-3"
+                    @click="removeFromListHandler(4)"
                   />
                 </div>
               </template>
@@ -190,18 +190,18 @@
               <div class="flex">
                 <div class="grow">
                   <base-select-searchable
-                      :options="units"
-                      options-key="value"
-                      options-text="name"
-                      name="unit"
-                      :is-loading="loadingGetUnits"
-                      @change="(selected) => {selectedUnit = selected}"
+                    :options="units"
+                    options-key="value"
+                    options-text="name"
+                    name="unit"
+                    :is-loading="loadingGetUnits"
+                    @change="(selected) => {selectedUnit = selected}"
                   />
                 </div>
                 <base-button-close
-                    v-tooltip.right="'حذف انتخاب'"
-                    class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
-                    @click="selectedUnit = null"
+                  v-tooltip.right="'حذف انتخاب'"
+                  class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
+                  @click="selectedUnit = null"
                 />
               </div>
               <partial-input-error-message :error-message="errors.unit"/>
@@ -211,18 +211,18 @@
               <div class="flex">
                 <div class="grow">
                   <base-select-searchable
-                      :options="brands"
-                      options-key="value"
-                      options-text="name"
-                      name="brand"
-                      :is-loading="loadingGetBrands"
-                      @change="(selected) => {selectedBrand = selected}"
+                    :options="brands"
+                    options-key="value"
+                    options-text="name"
+                    name="brand"
+                    :is-loading="loadingGetBrands"
+                    @change="(selected) => {selectedBrand = selected}"
                   />
                 </div>
                 <base-button-close
-                    v-tooltip.right="'حذف انتخاب'"
-                    class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
-                    @click="selectedBrand = null"
+                  v-tooltip.right="'حذف انتخاب'"
+                  class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
+                  @click="selectedBrand = null"
                 />
               </div>
               <partial-input-error-message :error-message="errors.brand"/>
@@ -232,18 +232,18 @@
               <div class="flex">
                 <div class="grow">
                   <base-select-searchable
-                      :options="categories"
-                      options-key="value"
-                      options-text="name"
-                      name="category"
-                      :is-loading="loadingGetCategories"
-                      @change="(selected) => {selectedCategory = selected}"
+                    :options="categories"
+                    options-key="value"
+                    options-text="name"
+                    name="category"
+                    :is-loading="loadingGetCategories"
+                    @change="(selected) => {selectedCategory = selected}"
                   />
                 </div>
                 <base-button-close
-                    v-tooltip.right="'حذف انتخاب'"
-                    class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
-                    @click="selectedCategory = null"
+                  v-tooltip.right="'حذف انتخاب'"
+                  class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
+                  @click="selectedCategory = null"
                 />
               </div>
               <partial-input-error-message :error-message="errors.category"/>
@@ -261,19 +261,19 @@
               عدم در نظر گرفتن موجود بودن
             </label>
             <base-checkbox
-                id="dismissAvailability"
-                name="dismiss_availability"
-                v-model="dismissAvailableStatus"
+              id="dismissAvailability"
+              name="dismiss_availability"
+              v-model="dismissAvailableStatus"
             />
           </div>
 
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                label="وضعیت موجود بودن"
-                name="is_available"
-                :enabled="true"
-                sr-text="موجود/ناموجود بودن محصول"
-                @change="(status) => {availableStatus = status}"
+              label="وضعیت موجود بودن"
+              name="is_available"
+              :enabled="true"
+              sr-text="موجود/ناموجود بودن محصول"
+              @change="(status) => {availableStatus = status}"
             />
           </div>
         </template>
@@ -286,19 +286,19 @@
               عدم در نظر گرفتن وضعیت نمایش
             </label>
             <base-checkbox
-                id="dismissPublish"
-                name="dismiss_publish"
-                v-model="dismissPublishStatus"
+              id="dismissPublish"
+              name="dismiss_publish"
+              v-model="dismissPublishStatus"
             />
           </div>
 
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                label="نمایش محصول در سایت"
-                name="is_published"
-                :enabled="true"
-                sr-text="نمایش/عدم نمایش تمامی محصولات"
-                @change="(status) => {publishStatus = status}"
+              label="نمایش محصول در سایت"
+              name="is_published"
+              :enabled="true"
+              sr-text="نمایش/عدم نمایش تمامی محصولات"
+              @change="(status) => {publishStatus = status}"
             />
           </div>
         </template>
@@ -311,19 +311,19 @@
               عدم در نظر گرفتن اجازه ارسال دیدگاه
             </label>
             <base-checkbox
-                id="dismissCommenting"
-                name="dismiss_commenting"
-                v-model="dismissAllowCommentingStatus"
+              id="dismissCommenting"
+              name="dismiss_commenting"
+              v-model="dismissAllowCommentingStatus"
             />
           </div>
 
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                label="اجازه ارسال دیدگاه"
-                name="is_commenting_allowed"
-                :enabled="true"
-                sr-text="اجازه/عدم اجازه ارسال دیدگاه"
-                @change="(status) => {allowCommentingStatus = status}"
+              label="اجازه ارسال دیدگاه"
+              name="is_commenting_allowed"
+              :enabled="true"
+              sr-text="اجازه/عدم اجازه ارسال دیدگاه"
+              @change="(status) => {allowCommentingStatus = status}"
             />
           </div>
         </template>
@@ -334,15 +334,15 @@
       <template #body>
         <div class="px-2 py-3">
           <base-animated-button
-              type="submit"
-              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-              :disabled="isSubmitting"
+            type="submit"
+            class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+            :disabled="isSubmitting"
           >
             <VTransitionFade>
               <loader-circle
-                  v-if="isSubmitting"
-                  main-container-klass="absolute w-full h-full top-0 left-0"
-                  big-circle-color="border-transparent"
+                v-if="isSubmitting"
+                main-container-klass="absolute w-full h-full top-0 left-0"
+                big-circle-color="border-transparent"
               />
             </VTransitionFade>
 
@@ -457,7 +457,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

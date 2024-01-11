@@ -1,11 +1,11 @@
 <template>
   <base-stepy
-      v-model:current-step="currentStep"
-      :steps="steps"
-      :allow-change-steps-by-click="false"
-      :loading="loading"
-      :manual="true"
-      :simple="true"
+    v-model:current-step="currentStep"
+    :steps="steps"
+    :allow-change-steps-by-click="false"
+    :loading="loading"
+    :manual="true"
+    :simple="true"
   >
     <template #information="options">
       <form-product-add-info :options="options"/>
@@ -72,7 +72,3 @@ const steps = reactive({
   },
 })
 </script>
-
-<style scoped>
-
-</style>

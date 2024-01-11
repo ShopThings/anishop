@@ -8,12 +8,12 @@
         <form @submit.prevent="onSubmit">
           <div class="p-2">
             <base-switch
-                label="عدم نمایش سؤال"
-                on-label="نمایش سؤال"
-                name="is_published"
-                :enabled="true"
-                sr-text="نمایش/عدم نمایش سؤال"
-                @change="(status) => {publishStatus=status}"
+              label="عدم نمایش سؤال"
+              on-label="نمایش سؤال"
+              name="is_published"
+              :enabled="true"
+              sr-text="نمایش/عدم نمایش سؤال"
+              @change="(status) => {publishStatus=status}"
             />
           </div>
 
@@ -30,9 +30,9 @@
           <div class="p-2">
             <partial-input-label title="کلمات کلیدی"/>
             <vue3-tags-input
-                :tags="tags"
-                placeholder="کلمات کلیدی خود را وارد نمایید"
-                @on-tags-changed="(t) => {tags = t}"
+              :tags="tags"
+              placeholder="کلمات کلیدی خود را وارد نمایید"
+              @on-tags-changed="(t) => {tags = t}"
             />
           </div>
 
@@ -43,15 +43,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                :disabled="isSubmitting"
+              type="submit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              :disabled="isSubmitting"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                  v-if="isSubmitting"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                  big-circle-color="border-transparent"
                 />
               </VTransitionFade>
 
@@ -96,7 +96,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

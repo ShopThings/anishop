@@ -2,18 +2,18 @@
   <base-loading-panel :loading="loading" type="table">
     <template #content>
       <base-semi-datatable
-          pagination-theme="modern"
-          :is-loading="table.isLoading"
-          :columns="table.columns"
-          :rows="table.rows"
-          :total="table.total"
-          @do-search="doSearch"
+        pagination-theme="modern"
+        :is-loading="table.isLoading"
+        :columns="table.columns"
+        :rows="table.rows"
+        :total="table.total"
+        @do-search="doSearch"
       >
         <template #emptyTableRows>
           <partial-empty-rows
-              image="/empty-statuses/empty-contact.svg"
-              image-class="w-60"
-              message="شما هیچ تماسی ثبت نکرده‌اید"
+            image="/empty-statuses/empty-contact.svg"
+            image-class="w-60"
+            message="شما هیچ تماسی ثبت نکرده‌اید"
           />
         </template>
 
@@ -34,8 +34,8 @@
 
         <template #op="{value}">
           <router-link
-              :to="{name: 'user.contact.detail', params: {id: 12345}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.contact.detail', params: {id: 12345}}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             مشاهده جزئیات
           </router-link>
@@ -106,7 +106,3 @@ const doSearch = (offset, limit) => {
 
 doSearch(0, 15)
 </script>
-
-<style scoped>
-
-</style>

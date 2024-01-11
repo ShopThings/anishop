@@ -1,15 +1,15 @@
 <template>
   <div>
     <partial-input-label
-        v-if="labelTitle && labelTitle.length"
-        :title="labelTitle"
-        :id="id || labelId"
-        :is-optional="isOptional"
+      v-if="labelTitle && labelTitle.length"
+      :title="labelTitle"
+      :id="id || labelId"
+      :is-optional="isOptional"
     />
     <partial-input-label
-        v-else-if="hasLabelSlot"
-        :id="id || labelId"
-        :is-optional="isOptional"
+      v-else-if="hasLabelSlot"
+      :id="id || labelId"
+      :is-optional="isOptional"
     >
       <template #label>
         <slot name="label"></slot>
@@ -25,28 +25,28 @@
             <slot name="icon"/>
           </div>
           <input
-              ref="inp"
-              :id="id || labelId"
-              :value="value"
-              :name="name"
-              :type="type"
-              :placeholder="placeholder"
-              :class="[
+            ref="inp"
+            :id="id || labelId"
+            :value="value"
+            :name="name"
+            :type="type"
+            :placeholder="placeholder"
+            :class="[
                         'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
                         'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
                         klass,
                         isVisiblePassword ? '!ring-amber-500' : '',
                         hasIconSlot ? 'pr-10' : '',
                         ]"
-              :min="min"
-              :max="max"
-              :minlength="minLength"
-              :maxlength="maxLength"
-              @change="handleChange($event, false)"
-              @input="checkInput($event)"
-              @blur="checkInput($event)"
-              @keydown="checkInput($event)"
-              @keyup="checkInput($event)"
+            :min="min"
+            :max="max"
+            :minlength="minLength"
+            :maxlength="maxLength"
+            @change="handleChange($event, false)"
+            @input="checkInput($event)"
+            @blur="checkInput($event)"
+            @keydown="checkInput($event)"
+            @keyup="checkInput($event)"
           />
         </div>
         <button v-if="isTypePassword"
@@ -68,24 +68,24 @@
       </div>
     </template>
     <div
-        v-else
-        class="flex items-center"
+      v-else
+      class="flex items-center"
     >
       <input
-          type="hidden"
-          :value="value"
-          :name="name"
-          @change="handleChange($event, false)"
+        type="hidden"
+        :value="value"
+        :name="name"
+        @change="handleChange($event, false)"
       >
       <span class="grow text-gray-500 text-sm">{{ value || '-' }}</span>
       <button
-          v-if="isEditable"
-          type="button"
-          class="shrink-0 mr-2"
+        v-if="isEditable"
+        type="button"
+        class="shrink-0 mr-2"
       >
         <PencilSquareIcon
-            @click="toggleEditMode"
-            class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+          @click="toggleEditMode"
+          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
         />
       </button>
     </div>
@@ -187,7 +187,3 @@ defineExpose({
   input: inp,
 })
 </script>
-
-<style scoped>
-
-</style>

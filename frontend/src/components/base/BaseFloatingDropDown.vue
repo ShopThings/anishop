@@ -50,7 +50,3 @@ const itemsLength = computed(() => {
   return 0
 })
 </script>
-
-<style scoped>
-
-</style>

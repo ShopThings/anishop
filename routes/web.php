@@ -22,6 +22,89 @@ Route::get('/', function () {
 //    var_dump(is_dir(Storage::disk('public')->path('')));
 //    var_dump(is_dir(storage_path()));
 //    var_dump(is_dir('/storage/public/'));
+
+//    var_dump(Storage::disk('public')->move('example.txt', 'test.txt'));
+//    var_dump(Storage::disk('public')->move('test.txt', 'example.txt'));
+
+    //------------------------------------------------------------------------------------
+    // Test filesystem and move/copy operations
+    //------------------------------------------------------------------------------------
+
+//    $files = [
+//        "b6-1-large.jpg",
+//        "b6-1-medium.jpg",
+//        "b6-1-small.jpg",
+//        "b6-1.jpg",
+//    ];
+//    $files = [
+//        "b66-1-large.jpg",
+//        "b66-1-medium.jpg",
+//        "b66-1-small.jpg",
+//        "b66-1.jpg",
+//    ];
+//    $files = [
+//        "b66-1-large.png",
+//        "b66-1-medium.png",
+//        "b66-1-small.png",
+//        "b66-1.png",
+//    ];
+//
+//    $storage = Storage::disk('public');
+//
+//    $source = '';
+//    $dest = 'test/b66.jpg';
+//    $sourceInfo = pathinfo($source);
+//    $destInfo = pathinfo($dest);
+//
+//    if (empty($sourceInfo['dirname'])) {
+//        $sourceInfo['dirname'] = '';
+//    } else {
+//        $sourceInfo['dirname'] = trim(
+//            str_replace(
+//                '\\',
+//                '/',
+//                str_replace('.', '', $sourceInfo['dirname'])
+//            )
+//        );
+//    }
+//
+//    if (empty($destInfo['dirname'])) {
+//        $destInfo['dirname'] = '';
+//    } else {
+//        $destInfo['dirname'] = trim(
+//            str_replace(
+//                '\\',
+//                '/',
+//                str_replace('.', '', $destInfo['dirname'])
+//            )
+//        );
+//    }
+//
+//    foreach ($files as $file) {
+//        $fileParts = explode('-', $file);
+//        if (!empty($destInfo['extension'])) $fileParts[0] = $destInfo['filename'];
+//        $newFile = implode('-', $fileParts);
+//
+//        $fileExtension = pathinfo($newFile, PATHINFO_EXTENSION);
+//        $extPos = mb_strrpos($newFile, $fileExtension ?: '');
+//        if ($extPos !== false && !empty($destInfo['extension'])) {
+//            $newFile = mb_substr($newFile, 0, $extPos) . $destInfo['extension'];
+//        }
+//
+//        $from = $sourceInfo['dirname'] . '/' . $file;
+//        $to = $destInfo['dirname'] . '/' . $newFile;
+//        if (empty($sourceInfo['extension']))
+//            $from = $source . '/' . $file;
+//        if (empty($destInfo['extension']))
+//            $to = $dest . '/' . $newFile;
+//
+//        echo '<pre>';
+//        var_dump($from, $to);
+//        echo '</pre>';
+//
+//        var_dump($storage->move($from, $to));
+//        var_dump($storage->copy($from, $to));
+//    }
 });
 
 Route::fallback(function () {

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateReturnOrderItemRequest;
 use App\Http\Requests\UpdateReturnOrderRequest;
 use App\Http\Resources\ReturnOrderResource;
+use App\Http\Resources\ReturnOrderSingleResource;
 use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
 use App\Models\User;
@@ -50,13 +51,13 @@ class ReturnOrderRequestController extends Controller
      * Display the specified resource.
      *
      * @param ReturnOrderRequest $returnOrderRequest
-     * @return ReturnOrderResource
+     * @return ReturnOrderSingleResource
      * @throws AuthorizationException
      */
-    public function show(ReturnOrderRequest $returnOrderRequest): ReturnOrderResource
+    public function show(ReturnOrderRequest $returnOrderRequest): ReturnOrderSingleResource
     {
         $this->authorize('view', $returnOrderRequest);
-        return new ReturnOrderResource($returnOrderRequest);
+        return new ReturnOrderSingleResource($returnOrderRequest);
     }
 
     /**
@@ -64,13 +65,13 @@ class ReturnOrderRequestController extends Controller
      *
      * @param UpdateReturnOrderRequest $request
      * @param ReturnOrderRequest $returnOrderRequest
-     * @return ReturnOrderResource|JsonResponse
+     * @return ReturnOrderSingleResource|JsonResponse
      * @throws AuthorizationException
      */
     public function update(
         UpdateReturnOrderRequest $request,
         ReturnOrderRequest       $returnOrderRequest
-    ): ReturnOrderResource|JsonResponse
+    ): ReturnOrderSingleResource|JsonResponse
     {
         $this->authorize('update', $returnOrderRequest);
 
@@ -82,7 +83,7 @@ class ReturnOrderRequestController extends Controller
         $model = $this->service->updateById($returnOrderRequest->id, $validated);
 
         if (!is_null($model)) {
-            return new ReturnOrderResource($model);
+            return new ReturnOrderSingleResource($model);
         } else {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,

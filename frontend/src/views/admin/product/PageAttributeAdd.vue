@@ -9,9 +9,9 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2">
               <base-input
-                  label-title="عنوان"
-                  placeholder="وارد نمایید"
-                  name="title"
+                label-title="عنوان"
+                placeholder="وارد نمایید"
+                name="title"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -21,11 +21,11 @@
             <div class="w-full p-2 sm:w-1/2">
               <partial-input-label title="نوع ویژگی"/>
               <base-select
-                  :options="types"
-                  options-key="value"
-                  options-text="name"
-                  name="type"
-                  @change="(t) => {selectedType = t}"
+                :options="types"
+                options-key="value"
+                options-text="name"
+                name="type"
+                @change="(t) => {selectedType = t}"
               />
               <partial-input-error-message :error-message="errors.type"/>
             </div>
@@ -33,15 +33,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                :disabled="isSubmitting"
+              type="submit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              :disabled="isSubmitting"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                  v-if="isSubmitting"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                  big-circle-color="border-transparent"
                 />
               </VTransitionFade>
 
@@ -102,7 +102,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

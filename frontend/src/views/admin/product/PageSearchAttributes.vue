@@ -18,19 +18,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="true"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="true"
+            :selection-operations="selectionOperations"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="true"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:type="{value}">
 
@@ -62,7 +62,7 @@ import PartialCard from "../../../components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useConfirmToast} from "../../../composables/toast-helper.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -265,7 +265,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 
 doSearch(0, 15, 'id', 'desc')
 </script>
-
-<style scoped>
-
-</style>

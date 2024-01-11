@@ -19,7 +19,9 @@ class ArchiveResource extends JsonResource
             'year' => verta()->month($this->year)->format('Y'),
             'month' => verta()->month($this->month)->format('F'),
             'count' => $this->count,
-            'created_at' => verta($this->created_at)->format(TimeFormatsEnum::ARCHIVE->value),
+            'created_at' => $this->created_at
+                ? verta($this->created_at)->format(TimeFormatsEnum::ARCHIVE->value)
+                : null,
         ];
     }
 }

@@ -27,7 +27,7 @@ Route::name('api.')
             Route::any('payments/{payment}/verify', [PaymentController::class, 'verify'])
                 ->name('payment.verify');
 
-            Route::get('files/{file}/{size?}', [FileManagerController::class, 'show'])
+            Route::get('files', [FileManagerController::class, 'show'])
                 ->name('files.show');
 
             Route::post('login', [AuthController::class, 'login'])

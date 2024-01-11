@@ -3,35 +3,35 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-            v-if="isSubmitting"
-            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-            container-bg-color="bg-blue-50 opacity-40"
+          v-if="isSubmitting"
+          main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+          container-bg-color="bg-blue-50 opacity-40"
         />
 
         <div class="w-full p-2">
           <partial-input-label title="انتخاب محصول مرتبط"/>
           <base-select-searchable
-              :options="products"
-              options-key="id"
-              options-text="title"
-              name="products"
-              :multiple="true"
-              :is-loading="productLoading"
-              :is-local-search="false"
-              placeholder="جستجوی محصول..."
-              @change="(p) => {selectedProducts = p}"
-              @query="searchProduct"
+            :options="products"
+            options-key="id"
+            options-text="title"
+            name="products"
+            :multiple="true"
+            :is-loading="productLoading"
+            :is-local-search="false"
+            placeholder="جستجوی محصول..."
+            @change="(p) => {selectedProducts = p}"
+            @query="searchProduct"
           />
         </div>
 
         <div v-if="selectedProducts && selectedProducts.length">
           <partial-input-label title="محصولات انتخاب شده"/>
           <div
-              class="mt-3 p-2 py-1 border-2 border-dashed rounded-lg border-indigo-200 mb-3 relative flex flex-wrap"
+            class="mt-3 p-2 py-1 border-2 border-dashed rounded-lg border-indigo-200 mb-3 relative flex flex-wrap"
           >
             <div
-                v-for="(product, idx) in products"
-                class="rounded bg-blue-100 text-sm text-blue-700 py-1 px-2 flex items-center ml-2 my-1"
+              v-for="(product, idx) in products"
+              class="rounded bg-blue-100 text-sm text-blue-700 py-1 px-2 flex items-center ml-2 my-1"
             >
               <span class="ml-3">{{ product?.title }}</span>
               <base-button-close v-tooltip.top="'حذف از لیست'" @click="removeProduct(idx)"/>
@@ -44,14 +44,14 @@
     <partial-card>
       <template #body>
         <partial-stepy-next-prev-buttons
-            :current-step="options.currentStep"
-            :current-step-index="options.currentStepIndex"
-            :last-step="options.lastStep"
-            :allow-next-step="!isSubmitting"
-            :allow-prev-step="false"
-            :show-prev-step-button="false"
-            :loading="isSubmitting"
-            @next="handleNextClick(options.next)"
+          :current-step="options.currentStep"
+          :current-step-index="options.currentStepIndex"
+          :last-step="options.lastStep"
+          :allow-next-step="!isSubmitting"
+          :allow-prev-step="false"
+          :show-prev-step-button="false"
+          :loading="isSubmitting"
+          @next="handleNextClick(options.next)"
         />
       </template>
     </partial-card>
@@ -130,7 +130,3 @@ function removeProduct(idx) {
     selectedProducts.value.splice(idx, 1)
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -3,34 +3,34 @@
     <div class="flex mb-3 items-end">
       <div class="grow flex flex-col gap-3">
         <div
-            v-for="(item, idx) in socialItems"
-            :key="item.id"
-            class="flex flex-wrap relative border rounded-md border-violet-500"
+          v-for="(item, idx) in socialItems"
+          :key="item.id"
+          class="flex flex-wrap relative border rounded-md border-violet-500"
         >
           <partial-builder-remove-btn
-              v-if="socialItems.length > 1"
-              @click="removeSocialHandler(idx)"
+            v-if="socialItems.length > 1"
+            @click="removeSocialHandler(idx)"
           />
 
           <div class="p-2 w-full sm:w-1/3 md:w-1/4">
             <partial-input-label title="نوع شبکه اجتماعی"/>
             <base-select
-                options-text="text"
-                options-key="value"
-                :options="socials"
-                :name="'type_' + item.id"
-                :selected="item.type"
-                @change="(selected) => {item.type = selected}"
+              options-text="text"
+              options-key="value"
+              :options="socials"
+              :name="'type_' + item.id"
+              :selected="item.type"
+              @change="(selected) => {item.type = selected}"
             />
           </div>
           <div class="p-2 w-full sm:w-2/3 md:w-3/4">
             <base-input
-                v-tooltip.right="'افزودن شبکه اجتماعی جدید'"
-                label-title="آدرس شبکه اجتماعی"
-                placeholder="وارد نمایید"
-                :name="'url_' + item.id"
-                :value="item.link"
-                @input="(val) => {item.link = val}"
+              v-tooltip.right="'افزودن شبکه اجتماعی جدید'"
+              label-title="آدرس شبکه اجتماعی"
+              placeholder="وارد نمایید"
+              :name="'url_' + item.id"
+              :value="item.link"
+              @input="(val) => {item.link = val}"
             >
               <template #icon>
                 <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -41,9 +41,9 @@
       </div>
       <div class="p-2">
         <button
-            type="button"
-            class="rounded-full p-3 flex justify-center items-center bg-emerald-400 text-white group"
-            @click="newSocialHandler"
+          type="button"
+          class="rounded-full p-3 flex justify-center items-center bg-emerald-400 text-white group"
+          @click="newSocialHandler"
         >
           <PlusIcon class="w-6 h-6 group-hover:rotate-90 transition"/>
         </button>
@@ -52,15 +52,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -140,7 +140,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

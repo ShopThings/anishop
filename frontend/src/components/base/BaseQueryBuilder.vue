@@ -1,33 +1,33 @@
 <template>
   <div class="border-2 border-slate-300 rounded-lg bg-white p-3">
     <partial-q-b-buttons
-        :buttons-text="{...labels.buttons, ...labels.conditions}"
-        @add="addRuleHandler"
-        @group="addGroupHandler"
-        :show-and-or-button="false"
-        :show-remove-button="false"
+      :buttons-text="{...labels.buttons, ...labels.conditions}"
+      @add="addRuleHandler"
+      @group="addGroupHandler"
+      :show-and-or-button="false"
+      :show-remove-button="false"
     />
 
     <div v-for="(q, idx) in query" :key="idx">
       <partial-q-b-group
-          v-if="q.children"
-          :query="q.children"
-          :columns="columns"
-          :labels="labels"
-          :dragging="dragging"
-          :depth="2"
-          :max-depth="maxDepth"
-          @remove-group="removeHandler(idx)"
-          @change-condition="changeConditionHandler(idx, $event)"
+        v-if="q.children"
+        :query="q.children"
+        :columns="columns"
+        :labels="labels"
+        :dragging="dragging"
+        :depth="2"
+        :max-depth="maxDepth"
+        @remove-group="removeHandler(idx)"
+        @change-condition="changeConditionHandler(idx, $event)"
       />
       <partial-q-b-rule
-          v-else
-          v-model="q.rule"
-          :operators="labels.operators"
-          :columns="columns"
-          :buttons-text="{...labels.buttons, ...labels.conditions}"
-          :operators-text="{...labels.operators}"
-          @remove="removeHandler(idx)"
+        v-else
+        v-model="q.rule"
+        :operators="labels.operators"
+        :columns="columns"
+        :buttons-text="{...labels.buttons, ...labels.conditions}"
+        :operators-text="{...labels.operators}"
+        @remove="removeHandler(idx)"
       />
     </div>
   </div>
@@ -150,7 +150,3 @@ function changeConditionHandler(idx, cond) {
     props.query[idx].condition = cond
 }
 </script>
-
-<style scoped>
-
-</style>

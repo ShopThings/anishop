@@ -396,8 +396,8 @@ Route::prefix('admin')
                 ->name('files.store');
             Route::get('files/{file}', [FileManagerController::class, 'download'])
                 ->name('files.download');
-            Route::delete('files/{file}', [FileManagerController::class, 'destroy'])
-                ->name('files.destroy')->whereNumber('file');
+            Route::delete('files', [FileManagerController::class, 'destroy'])
+                ->name('files.destroy');
             Route::delete('files/batch', [FileManagerController::class, 'batchDestroy'])
                 ->name('files.destroy.batch');
         });

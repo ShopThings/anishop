@@ -44,6 +44,12 @@ interface FileRepositoryInterface extends RepositoryInterface
     ];
 
     /**
+     * File operations
+     */
+    public const OPERATION_MOVE = 'move';
+    public const OPERATION_COPY = 'copy';
+
+    /**
      * @param string $path
      * @param UploadedFile $file
      * @param string $disk
@@ -122,13 +128,15 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @param string $disk
      * @param bool $getFiles
      * @param string|null $fileSize
+     * @param bool $getAllVariants
      * @return bool|array
      */
     public function fileExists(
         string  $filePath,
         string  $disk,
         bool    $getFiles = false,
-        ?string $fileSize = null
+        ?string $fileSize = null,
+        bool    $getAllVariants = false
     ): bool|array;
 
     /**

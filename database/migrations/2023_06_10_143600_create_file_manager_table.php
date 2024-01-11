@@ -24,7 +24,7 @@ return new class extends Migration {
 
             // for MySQL only (I guess)
             $table->text('full_path')
-                ->virtualAs('CONCAT(file_manager.path, \'/\', file_manager.name, \'/\', file_manager.extension)');
+                ->virtualAs('CONCAT(file_manager.path, \'/\', file_manager.name, \'.\', file_manager.extension)');
 
             $table->index('name');
             $table->index('extension');

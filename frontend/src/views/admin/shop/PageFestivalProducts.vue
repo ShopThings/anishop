@@ -16,19 +16,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="true"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="true"
+            :selection-operations="selectionOperations"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="true"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:start_at="{value}">
 
@@ -45,9 +45,9 @@
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
-                  :container="getMenuContainer"
+                :items="operations"
+                :data="value"
+                :container="getMenuContainer"
               />
             </template>
           </base-datatable>
@@ -69,7 +69,7 @@ import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useConfirmToast} from "../../../composables/toast-helper.js";
 import {useRequest} from "../../../composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
 
@@ -279,7 +279,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 
 doSearch(0, 15, 'id', 'desc')
 </script>
-
-<style scoped>
-
-</style>

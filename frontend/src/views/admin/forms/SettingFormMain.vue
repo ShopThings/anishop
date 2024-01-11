@@ -2,10 +2,10 @@
   <form @submit.prevent="onSubmit">
     <div class="p-2 w-full md:w-1/2">
       <base-input
-          label-title="عنوان سایت"
-          placeholder="وارد نمایید"
-          name="title"
-          :value="setting[SETTING_KEYS.TITLE] ?? ''"
+        label-title="عنوان سایت"
+        placeholder="وارد نمایید"
+        name="title"
+        :value="setting[SETTING_KEYS.TITLE] ?? ''"
       >
         <template #icon>
           <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -16,17 +16,17 @@
     <div class="p-2">
       <partial-input-label title="کلمات کلیدی"/>
       <vue3-tags-input
-          :tags="tags"
-          placeholder="کلمات کلیدی خود را وارد نمایید"
-          @on-tags-changed="(t) => {tags = t}"
+        :tags="tags"
+        placeholder="کلمات کلیدی خود را وارد نمایید"
+        @on-tags-changed="(t) => {tags = t}"
       />
     </div>
 
     <div class="p-2">
       <base-textarea
-          label-title="توضیحات مختصر"
-          name="description"
-          :value="setting[SETTING_KEYS.DESCRIPTION] ?? ''"
+        label-title="توضیحات مختصر"
+        name="description"
+        :value="setting[SETTING_KEYS.DESCRIPTION] ?? ''"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -36,15 +36,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -92,7 +92,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

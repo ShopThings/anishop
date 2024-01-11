@@ -1,29 +1,29 @@
 <template>
   <partial-general-title
-      type="side"
-      title="محبوب‌ترین برندها"
-      title-size="text-xl"
-      container-class="mb-5 mt-6 p-2"
+    type="side"
+    title="محبوب‌ترین برندها"
+    title-size="text-xl"
+    container-class="mb-5 mt-6 p-2"
   />
 
   <base-carousel
-      v-slot="{slide, index}"
-      v-model="brands"
-      v-model:current="currentSlide"
-      :class-name="carouselSettings.className"
-      :space-between="carouselSettings.spaceBetween"
-      :wrap-around="carouselSettings.wrapAround"
-      :has-navigation="carouselSettings.hasNavigation"
-      :navigation-display="carouselSettings.navigationDisplay"
-      :has-pagination="carouselSettings.hasPagination"
-      :free-mode="carouselSettings.freeMode"
-      :breakpoints="carouselSettings.breakpoints"
+    v-slot="{slide, index}"
+    v-model="brands"
+    v-model:current="currentSlide"
+    :class-name="carouselSettings.className"
+    :space-between="carouselSettings.spaceBetween"
+    :wrap-around="carouselSettings.wrapAround"
+    :has-navigation="carouselSettings.hasNavigation"
+    :navigation-display="carouselSettings.navigationDisplay"
+    :has-pagination="carouselSettings.hasPagination"
+    :free-mode="carouselSettings.freeMode"
+    :breakpoints="carouselSettings.breakpoints"
   >
     <div class="p-3 h-36 flex items-center justify-center bg-white">
       <router-link to="">
         <base-lazy-image
-            :lazy-src="slide.image.path"
-            :alt="slide?.title"
+          :lazy-src="slide.image.path"
+          :alt="slide?.title"
         />
       </router-link>
     </div>
@@ -126,7 +126,3 @@ const carouselSettings = {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

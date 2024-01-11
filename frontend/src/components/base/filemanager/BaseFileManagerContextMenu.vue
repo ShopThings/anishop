@@ -1,7 +1,7 @@
 <template>
   <context-menu
-      v-model:show="menuShow"
-      :options="options"
+    v-model:show="menuShow"
+    :options="options"
   >
     <context-menu-item v-if="hasOperation('preview')"
                        @click="menuItemClick('preview')">
@@ -19,14 +19,22 @@
         <ArrowDownTrayIcon class="h-4 w-4 text-emerald-500"/>
       </template>
       <template #label>
-        <span class="text-sm text-emerald-500">دانلود</span>
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="text-sm text-emerald-500">دانلود</span>
+          <span class="text-sm text-slate-300">-</span>
+          <span class="text-sm text-emerald-200">download</span>
+        </div>
       </template>
     </context-menu-item>
     <context-menu-separator v-if="hasOperation('download')"/>
     <context-menu-item v-if="hasOperation('paste')"
                        @click="menuItemClick('paste')">
       <template #label>
-        <span class="text-sm">چسباندن (paste)</span>
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="text-sm">چسباندن</span>
+          <span class="text-sm text-slate-300">-</span>
+          <span class="text-sm text-slate-300">paste</span>
+        </div>
       </template>
     </context-menu-item>
     <context-menu-item v-if="hasOperation('cut')"
@@ -35,7 +43,11 @@
         <ScissorsIcon class="h-4 w-4"/>
       </template>
       <template #label>
-        <span class="text-sm">جابجا کردن</span>
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="text-sm">جابجا کردن</span>
+          <span class="text-sm text-slate-300">-</span>
+          <span class="text-sm text-slate-300">cut</span>
+        </div>
       </template>
     </context-menu-item>
     <context-menu-item v-if="hasOperation('copy')"
@@ -44,7 +56,11 @@
         <DocumentDuplicateIcon class="h-4 w-4"/>
       </template>
       <template #label>
-        <span class="text-sm">کپی کردن</span>
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="text-sm">کپی کردن</span>
+          <span class="text-sm text-slate-300">-</span>
+          <span class="text-sm text-slate-300">copy</span>
+        </div>
       </template>
     </context-menu-item>
     <context-menu-item v-if="hasOperation('rename')"
@@ -53,7 +69,11 @@
         <PencilSquareIcon class="h-4 w-4"/>
       </template>
       <template #label>
-        <span class="text-sm">تغییر نام</span>
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="text-sm">تغییر نام</span>
+          <span class="text-sm text-slate-300">-</span>
+          <span class="text-sm text-slate-300">rename</span>
+        </div>
       </template>
     </context-menu-item>
     <context-menu-item v-if="hasOperation('delete')"
@@ -63,7 +83,11 @@
         <TrashIcon class="h-4 w-4 text-rose-500"/>
       </template>
       <template #label>
-        <span class="text-sm text-rose-500">حذف</span>
+        <div class="flex items-center justify-between gap-2.5">
+          <span class="text-sm text-rose-500">حذف</span>
+          <span class="text-sm text-slate-300">-</span>
+          <span class="text-sm text-rose-200">delete</span>
+        </div>
       </template>
     </context-menu-item>
   </context-menu>
@@ -123,7 +147,3 @@ function menuItemClick(operation) {
   emit(operation + '-click', isProxy(props.data) ? toRaw(props.data) : props.data)
 }
 </script>
-
-<style scoped>
-
-</style>

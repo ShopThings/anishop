@@ -65,6 +65,14 @@ class BlogComment extends Model
     /**
      * @return bool
      */
+    public function hasChildren(): bool
+    {
+        return $this->children()->count() > 0;
+    }
+
+    /**
+     * @return bool
+     */
     public function hasAcceptedChildren(): bool
     {
         return $this->children()->where('condition', CommentConditionsEnum::ACCEPTED->name)->count() > 0;

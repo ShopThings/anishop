@@ -1,16 +1,16 @@
 <template>
   <partial-general-title
-      type="side"
-      title="آخرین نوشته‌ها"
-      title-size="text-xl"
-      container-class="mb-5 mt-6 p-2"
+    type="side"
+    title="آخرین نوشته‌ها"
+    title-size="text-xl"
+    container-class="mb-5 mt-6 p-2"
   />
 
   <div class="flex flex-wrap">
     <div
-        v-for="(blog, idx) in latestBlogs"
-        :key="idx"
-        class="w-full lg:w-1/3 p-3 rounded-lg"
+      v-for="(blog, idx) in latestBlogs"
+      :key="idx"
+      class="w-full lg:w-1/3 p-3 rounded-lg"
     >
       <blog-card-main :blog="blog"/>
     </div>
@@ -70,7 +70,3 @@ const latestBlogs = ref([
   },
 ])
 </script>
-
-<style scoped>
-
-</style>

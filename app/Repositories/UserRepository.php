@@ -157,12 +157,12 @@ class UserRepository extends Repository implements UserRepositoryInterface
             $query
                 ->where(function (Builder $builder) use ($search) {
                     $builder
-                        ->withWhereHas('orders', function ($q) use ($search) {
+                        ->whereHas('orders', function ($q) use ($search) {
                             $q
                                 ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function (Builder $q2, array $statuses) {
                                     $q2->orWhereIn('payment_status', $statuses);
                                 })
-                                ->withWhereHas('items', function ($q2) use ($search) {
+                                ->whereHas('items', function ($q2) use ($search) {
                                     $q2->orWhereLike([
                                         'order_items.product_title',
                                         'order_items.color_name',
@@ -196,7 +196,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function getUserAddressWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model
     {
         return $this->addressUserModel->newQuery()
-            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
             ->first($columns);
     }
 
@@ -238,7 +240,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function addressCount(GetterExpressionInterface $where): int
     {
         return $this->addressUserModel->newQuery()
-            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
             ->count();
     }
 
@@ -266,7 +270,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function updateUserAddressWhere(array $data, GetterExpressionInterface $where): int
     {
         return $this->addressUserModel->newQuery()
-            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
             ->update($data);
     }
 
@@ -286,7 +292,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function deleteAddressWhere(GetterExpressionInterface $where): mixed
     {
         return $this->addressUserModel->newQuery()
-            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
             ->forceDelete();
     }
 
@@ -296,7 +304,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function deleteFavoriteProductWhere(GetterExpressionInterface $where): mixed
     {
         return $this->userFavoriteProductModel->newQuery()
-            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
             ->forceDelete();
     }
 }

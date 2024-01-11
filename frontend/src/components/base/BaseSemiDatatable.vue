@@ -23,25 +23,25 @@
         </thead>
         <tbody>
         <template
-            v-if="!isLoading"
-            v-for="(row, i) in rows"
-            :key="i"
+          v-if="!isLoading"
+          v-for="(row, i) in rows"
+          :key="i"
         >
           <tr
-              class="text-black"
-              :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+            class="text-black"
+            :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
           >
             <td
-                v-for="(col, j) in columns"
-                :key="j"
-                class="py-3 px-4 bg-white"
-                :class="[
+              v-for="(col, j) in columns"
+              :key="j"
+              class="py-3 px-4 bg-white"
+              :class="[
                         col.cellClasses,
                         col.columnClasses,
                         j === 0 ? 'rounded-r-xl' : '',
                         j === columns.length - 1 ? 'rounded-l-xl' : '',
                     ]"
-                :style="[col?.cellStyles, col?.columnStyles]"
+              :style="[col?.cellStyles, col?.columnStyles]"
             >
               <div v-if="slots[col.field]">
                 <slot :name="col.field" :value="row" :index="i + setting.offset"></slot>
@@ -57,7 +57,7 @@
         <tr v-else>
           <td :colspan="columns.length">
             <div
-                class="absolute z-[3] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur flex flex-col transition"
+              class="absolute z-[3] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur flex flex-col transition"
             >
               <slot name="loadingBlock">
                 <div class="flex items-center justify-center flex-1">
@@ -65,9 +65,9 @@
                       {{ loadingMessage }}
                   </span>
                   <loader-circle
-                      container-bg-color=""
-                      main-container-klass="h-6 w-6 relative mr-2"
-                      small-circle-color="border-t-rose-700"
+                    container-bg-color=""
+                    main-container-klass="h-6 w-6 relative mr-2"
+                    small-circle-color="border-t-rose-700"
                   ></loader-circle>
                 </div>
               </slot>
@@ -80,13 +80,13 @@
 
     <div class="mt-3" v-if="setting.maxPage > 1">
       <base-pagination
-          :theme="paginationTheme"
-          :next-page="nextPage"
-          :move-page="movePage"
-          :prev-page="prevPage"
-          v-model:max-page="setting.maxPage"
-          v-model:paging="setting.paging"
-          v-model:current-page="setting.page"
+        :theme="paginationTheme"
+        :next-page="nextPage"
+        :move-page="movePage"
+        :prev-page="prevPage"
+        v-model:max-page="setting.maxPage"
+        v-model:paging="setting.paging"
+        v-model:current-page="setting.page"
       />
     </div>
   </template>
@@ -98,9 +98,9 @@
       </div>
     </template>
     <partial-empty-rows
-        v-else
-        image="/empty-statuses/empty-data.svg"
-        :message="emptyMessage"
+      v-else
+      image="/empty-statuses/empty-data.svg"
+      :message="emptyMessage"
     />
   </template>
 </template>
@@ -208,16 +208,16 @@ const changePage = (page, prevPage) => {
 watch(() => setting.page, changePage);
 // Monitor manual page switching
 watch(
-    () => props.page,
-    (val) => {
-      if (val <= 1) {
-        setting.page = 1;
-      } else if (val >= setting.maxPage) {
-        setting.page = setting.maxPage;
-      } else {
-        setting.page = val;
-      }
+  () => props.page,
+  (val) => {
+    if (val <= 1) {
+      setting.page = 1;
+    } else if (val >= setting.maxPage) {
+      setting.page = setting.maxPage;
+    } else {
+      setting.page = val;
     }
+  }
 );
 
 const changePageSize = () => {
@@ -234,10 +234,10 @@ const changePageSize = () => {
 watch(() => setting.pageSize, changePageSize);
 // Monitor display number switch from prop
 watch(
-    () => props.pageSize,
-    (newPageSize) => {
-      setting.pageSize = newPageSize;
-    }
+  () => props.pageSize,
+  (newPageSize) => {
+    setting.pageSize = newPageSize;
+  }
 );
 
 const prevPage = () => {
@@ -263,7 +263,3 @@ const nextPage = () => {
   setting.page++;
 };
 </script>
-
-<style scoped>
-
-</style>

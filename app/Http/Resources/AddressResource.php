@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\CityShowResource;
+use App\Http\Resources\Showing\ProvinceShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,11 +24,9 @@ class AddressResource extends JsonResource
             'mobile' => $this->mobile,
             'address' => $this->address,
             'postal_code' => $this->postal_code,
-            'city_id' => $this->city_id,
-            'province_id' => $this->province_id,
-            'city' => $this->whenLoaded('city'),
-            'province' => $this->whenLoaded('province'),
-            'user' => $this->whenLoaded('user'),
+            'city' => new CityShowResource($this->whenLoaded('city')),
+            'province' => new ProvinceShowResource($this->whenLoaded('province')),
+            'user' => new UserShowResource($this->whenLoaded('user')),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

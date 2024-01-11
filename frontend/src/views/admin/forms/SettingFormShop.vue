@@ -3,14 +3,14 @@
     <div class="flex flex-wrap">
       <div class="p-2 w-full md:w-1/2">
         <base-input
-            label-title="حداقل قیمت جهت رایگان شدن هزینه ارسال (به تومان)"
-            placeholder="وارد نمایید"
-            type="number"
-            name="min_free_post_price"
-            :min="0"
-            klass="no-spin-arrow"
-            :value="minFreePostPrice.toString()"
-            @input="(val) => {
+          label-title="حداقل قیمت جهت رایگان شدن هزینه ارسال (به تومان)"
+          placeholder="وارد نمایید"
+          type="number"
+          name="min_free_post_price"
+          :min="0"
+          klass="no-spin-arrow"
+          :value="minFreePostPrice.toString()"
+          @input="(val) => {
               if(val.trim() === '') minFreePostPrice = 0
               else minFreePostPrice = val
             }"
@@ -26,14 +26,14 @@
       </div>
       <div class="p-2 w-full md:w-1/2">
         <base-input
-            label-title="هزینه ارسال پیش‌فرض (به تومان)"
-            placeholder="وارد نمایید"
-            type="number"
-            name="default_post_price"
-            :min="0"
-            klass="no-spin-arrow"
-            :value="defaultPostPrice.toString()"
-            @input="(val) => {
+          label-title="هزینه ارسال پیش‌فرض (به تومان)"
+          placeholder="وارد نمایید"
+          type="number"
+          name="default_post_price"
+          :min="0"
+          klass="no-spin-arrow"
+          :value="defaultPostPrice.toString()"
+          @input="(val) => {
               if(val.trim() === '') defaultPostPrice = 0
               else defaultPostPrice = val
             }"
@@ -51,15 +51,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -105,7 +105,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

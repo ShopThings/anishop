@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Enums\SMS\SMSSenderTypesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,7 +25,7 @@ class SmsLogResource extends JsonResource
             'body' => $this->body,
             'type' => SMSSenderTypesEnum::getTranslations($this->type),
             'sender' => SMSSenderTypesEnum::getTranslations($this->sender),
-            'created_by' => $this->when($this->created_by, $this->creator()),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

@@ -3,25 +3,25 @@
     <template #header>
       ویرایش ویژگی جستجو -
       <span
-          v-if="attribute?.id"
-          class="text-teal-600"
+        v-if="attribute?.id"
+        class="text-teal-600"
       >{{ attribute?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap">
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="عنوان"
-                      placeholder="وارد نمایید"
-                      name="title"
-                      :value="attribute?.title"
+                    label-title="عنوان"
+                    placeholder="وارد نمایید"
+                    name="title"
+                    :value="attribute?.title"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -31,12 +31,12 @@
                 <div class="w-full p-2 sm:w-1/2">
                   <partial-input-label title="نوع ویژگی"/>
                   <base-select
-                      :options="types"
-                      options-key="value"
-                      options-text="name"
-                      :selected="selectedType"
-                      name="type"
-                      @change="(t) => {selectedType = t}"
+                    :options="types"
+                    options-key="value"
+                    options-text="name"
+                    :selected="selectedType"
+                    name="type"
+                    @change="(t) => {selectedType = t}"
                   />
                   <partial-input-error-message :error-message="errors.type"/>
                 </div>
@@ -44,15 +44,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -139,7 +139,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

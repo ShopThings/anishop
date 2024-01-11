@@ -1,11 +1,11 @@
 <template>
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-3 my-6">
     <div
-        class="p-10 h-56 rounded-lg bg-indigo-600 text-center text-white flex flex-col items-center justify-center relative">
+      class="p-10 h-56 rounded-lg bg-indigo-600 text-center text-white flex flex-col items-center justify-center relative">
       <img
-          src="/images/newsletter-bg.jpg"
-          alt=""
-          class="w-full h-full object-cover absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg z-[1] opacity-10"
+        src="/images/newsletter-bg.jpg"
+        alt=""
+        class="w-full h-full object-cover absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg z-[1] opacity-10"
       >
 
       <div class="relative z-[2]">
@@ -20,9 +20,9 @@
 
     <div class="p-6 h-56 rounded-lg bg-slate-200 flex flex-col items-center justify-center">
       <partial-general-title
-          title="ثبت شماره موبایل"
-          type="side"
-          container-class="mb-2 p-2"
+        title="ثبت شماره موبایل"
+        type="side"
+        container-class="mb-2 p-2"
       />
 
       <p class="text-sm mb-4 text-slate-500 leading-relaxed text-center">
@@ -33,22 +33,22 @@
         <div class="flex items-center gap-3">
           <div class="grow">
             <base-input
-                placeholder="09xxxxxxxxx"
-                name="mobile"
-                klass="tracking-widest"
+              placeholder="09xxxxxxxxx"
+              name="mobile"
+              klass="tracking-widest"
             />
           </div>
 
           <base-button
-              type="submit"
-              class="bg-primary px-4 shrink-0"
-              :disabled="isSubmitting"
+            type="submit"
+            class="bg-primary px-4 shrink-0"
+            :disabled="isSubmitting"
           >
             <VTransitionFade>
               <loader-circle
-                  v-if="isSubmitting"
-                  main-container-klass="absolute w-full h-full top-0 left-0"
-                  big-circle-color="border-transparent"
+                v-if="isSubmitting"
+                main-container-klass="absolute w-full h-full top-0 left-0"
+                big-circle-color="border-transparent"
               />
             </VTransitionFade>
 
@@ -80,7 +80,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

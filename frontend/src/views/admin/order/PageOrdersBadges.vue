@@ -10,8 +10,8 @@
   </new-creation-guide-top>
 
   <base-message
-      type="info"
-      :has-close="false"
+    type="info"
+    :has-close="false"
   >
     در صورت تغییر وضعیت به
     <span class="bg-white rounded mx-2 text-black px-2">بازگشت محصول به انبار</span>
@@ -27,30 +27,30 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="true"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="true"
+            :selection-operations="selectionOperations"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="true"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:title="{value}">
                             <span
-                                v-tooltip.top="{message: value.title}"
-                                class="inline-block w-5 h-5 rounded-full border ml-2"
-                                :style="'background-color: ' + value.color_hex + ';'"
+                              v-tooltip.top="{message: value.title}"
+                              class="inline-block w-5 h-5 rounded-full border ml-2"
+                              :style="'background-color: ' + value.color_hex + ';'"
                             ></span>
               <span>{{ value.title }}</span>
               <span
-                  v-if="value.is_starting_badge"
-                  class="rounded mr-2 bg-green-600 text-white"
+                v-if="value.is_starting_badge"
+                class="rounded mr-2 bg-green-600 text-white"
               >پیش فرض</span>
             </template>
             <template v-slot:should_return_order_product="{value}">
@@ -65,10 +65,10 @@
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
-                  :container="getMenuContainer"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                :items="operations"
+                :data="value"
+                :container="getMenuContainer"
+                :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -85,7 +85,7 @@ import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useConfirmToast} from "../../../composables/toast-helper.js";
 import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
@@ -305,7 +305,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 
 doSearch(0, 15, 'id', 'desc')
 </script>
-
-<style scoped>
-
-</style>

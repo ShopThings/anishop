@@ -1,13 +1,13 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="content"
+    :loading="loading"
+    type="content"
   >
     <template #content>
       <div class="mb-3">
         <partial-card-navigation
-            :to="{name: 'admin.order.detail', params: {id: order?.id}}"
-            bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
+          :to="{name: 'admin.order.detail', params: {id: order?.id}}"
+          bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
         >
           <span class="text-white text-lg grow">جزئیات سفارش</span>
           <ShoppingBagIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -17,17 +17,17 @@
       <div class="bg-white mb-3 rounded-lg border p-3">
         جزئیات سفارش مرجوعی به کد
         <span
-            v-if="returnOrder?.id"
-            class="text-teal-600"
+          v-if="returnOrder?.id"
+          class="text-teal-600"
         >{{ returnOrder?.code }}</span>
       </div>
 
       <div class="bg-white mb-3 rounded-lg border p-3">
         مرجوع کننده -
         <router-link
-            v-if="order?.user.id"
-            :to="{name: 'admin.user.profile', params: {id: order?.user.id}}"
-            class="text-blue-600 hover:text-opacity-90"
+          v-if="order?.user.id"
+          :to="{name: 'admin.user.profile', params: {id: order?.user.id}}"
+          class="text-blue-600 hover:text-opacity-90"
         >{{
             (order?.user?.first_name || order?.user?.last_name) ? (order?.user?.first_name + ' ' + order?.user?.last_name).trim() : order?.user.username
           }}
@@ -41,7 +41,7 @@
         <template #body>
           <div class="p-3">
             <form-return-order-change-status
-                v-model:selected="returnStatus"
+              v-model:selected="returnStatus"
             />
           </div>
         </template>
@@ -105,16 +105,16 @@
           <base-loading-panel :loading="itemsLoading" type="table">
             <template #content>
               <base-datatable
-                  ref="datatable"
-                  :enable-search-box="false"
-                  :enable-multi-operation="false"
-                  :is-slot-mode="true"
-                  :is-loading="table.isLoading"
-                  :columns="table.columns"
-                  :rows="table.rows"
-                  :has-checkbox="false"
-                  :total="table.totalRecordCount"
-                  @do-search="doSearch"
+                ref="datatable"
+                :enable-search-box="false"
+                :enable-multi-operation="false"
+                :is-slot-mode="true"
+                :is-loading="table.isLoading"
+                :columns="table.columns"
+                :rows="table.rows"
+                :has-checkbox="false"
+                :total="table.totalRecordCount"
+                @do-search="doSearch"
               >
                 <template v-slot:product="{value}">
 
@@ -253,7 +253,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 doSearch(0, 15, 'id', 'desc')
 //-----------------------------------
 </script>
-
-<style scoped>
-
-</style>

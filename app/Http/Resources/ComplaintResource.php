@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,9 +27,9 @@ class ComplaintResource extends JsonResource
                 $this->changed_status_at,
                 verta($this->changed_status_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'changed_status_by' => $this->when($this->changed_status_by, $this->statusChanger()),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'changed_status_by' => new UserShowResource($this->when($this->changed_status_by, $this->statusChanger())),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

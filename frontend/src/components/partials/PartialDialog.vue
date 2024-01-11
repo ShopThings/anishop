@@ -2,29 +2,29 @@
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" @close="closeModal" class="relative z-20">
       <TransitionChild
-          as="template"
-          enter="duration-300 ease-out"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="duration-200 ease-in"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
       >
         <div @click.self="closeModal" class="fixed z-20 inset-0 bg-black bg-opacity-25"/>
       </TransitionChild>
 
       <div class="fixed z-20 inset-0 overflow-y-auto">
         <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
+          class="flex min-h-full items-center justify-center p-4 text-center"
         >
           <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0 scale-90"
-              enter-to="opacity-100 scale-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-90"
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-90"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-90"
           >
             <DialogPanel :class="[
                             'relative w-full rounded-2xl bg-white text-right align-middle shadow-xl transition-all',
@@ -40,8 +40,8 @@
                 <div v-if="slots['title']"
                      class="p-6 border-b">
                   <DialogTitle
-                      as="h3"
-                      class="text-lg font-medium leading-6 text-gray-900"
+                    as="h3"
+                    class="text-lg font-medium leading-6 text-gray-900"
                   >
                     <slot name="title"></slot>
                   </DialogTitle>
@@ -104,7 +104,3 @@ function openModal() {
   emit('open')
 }
 </script>
-
-<style scoped>
-
-</style>

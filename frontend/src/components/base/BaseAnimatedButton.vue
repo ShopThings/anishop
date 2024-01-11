@@ -1,8 +1,8 @@
 <template>
   <base-button
-      @click="checkButton"
-      :type="type"
-      class="group flex justify-center items-center"
+    @click="checkButton"
+    :type="type"
+    class="group flex justify-center items-center"
   >
     <slot name="icon" klass="group-hover:scale-110 group-hover:scale-110 transition-all"></slot>
     <slot></slot>
@@ -28,7 +28,3 @@ function checkButton() {
   emit('click')
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\BlogCategoryShowResource;
+use App\Http\Resources\Showing\ImageShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,22 +21,21 @@ class BlogResource extends JsonResource
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'category' => $this->whenLoaded('category'),
+            'category' => new BlogCategoryShowResource($this->whenLoaded('category')),
             'title' => $this->title,
-            'escaped_title' => $this->escaped_title,
             'slug' => $this->slug,
-            'image_id' => $this->image_id,
-            'image' => $this->whenLoaded('image'),
+            'image' => new ImageShowResource($this->whenLoaded('image')),
             'description' => $this->description,
             'archive_tag' => $this->archive_tag,
             'keywords' => $this->keywords,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'is_published' => $this->is_published,
-            'view_counts' => $this->whenCounted('views'),
-            'vote_counts' => $this->whenCounted('votes'),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'view_counts' => $this->resource->uniqueIPViews(),
+            'up_vote_counts' => $this->resource->upVoteCount(),
+            'down_vote_counts' => $this->resource->downVoteCount(),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
+            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

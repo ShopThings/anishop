@@ -9,27 +9,29 @@
 
     <div v-if="setting.enableMultiOperation && hasCheckbox">
       <base-datatable-multi-operation
-          @clear-selected-items="clearSelectedItems"
-          :items="selectedItems"
-          :operations="setting.selectionOperations"
+        @clear-selected-items="clearSelectedItems"
+        :items="selectedItems"
+        :operations="setting.selectionOperations"
       >
         <template #selectedItems="{items, close}">
           <slot name="beforeSelectedFilesTable" :close="close"></slot>
 
           <base-datatable
-              :is-slot-mode="setting.isSlotMode"
-              :is-static-mode="true"
-              :columns="setting.selectionColumns"
-              :rows="items"
-              :total="items.length"
+            :is-slot-mode="setting.isSlotMode"
+            :is-static-mode="true"
+            :columns="setting.selectionColumns"
+            :rows="items"
+            :total="items.length"
           >
             <template v-for="(slot, index) of Object.keys(slots)" :key="index" v-slot:[slot]="data">
               <slot :name="slot" :value="data.value" :index="index + setting.offset"></slot>
             </template>
             <template v-slot:selection_remover="data">
-              <BackspaceIcon @click="removeFromSelectedItem(data.value)"
-                             v-tooltip.left="'حذف از انتخاب‌ها'"
-                             class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"/>
+              <BackspaceIcon
+                v-tooltip.left="'حذف از انتخاب‌ها'"
+                class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"
+                @click="removeFromSelectedItem(data.value)"
+              />
             </template>
           </base-datatable>
 
@@ -49,28 +51,28 @@
 
     <div v-if="setting.enableSearchBox">
       <base-datatable-search
-          @search="doSearchText"
-          @clear-filter="clearSearchFilter"
-          @refresh="refresh"
+        @search="doSearchText"
+        @clear-filter="clearSearchFilter"
+        @refresh="refresh"
       />
     </div>
 
     <div
-        class="flex flex-col relative overflow-hidden"
-        :class="{
-                    '__fixed-first-column': isFixedFirstColumn,
-                    '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
-                  }"
+      class="flex flex-col relative overflow-hidden"
+      :class="{
+          '__fixed-first-column': isFixedFirstColumn,
+          '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
+        }"
     >
       <div v-show="isLoading"
-           class="absolute z-[3] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur flex flex-col transition">
+           class="absolute z-[3] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/20 supports-[backdrop-filter]:backdrop-blur-sm flex flex-col transition">
         <slot name="loadingBlock">
           <div class="flex items-center justify-center flex-1">
-                        <span style="color: white">
-                            {{ messages.loading }}
-                        </span>
-            <loader-circle container-bg-color=""
-                           main-container-klass="h-6 w-6 relative mr-2"></loader-circle>
+            <span class="text-white text-shadow">{{ messages.loading }}</span>
+            <loader-circle
+              container-bg-color=""
+              main-container-klass="h-6 w-6 relative mr-2.5"
+            ></loader-circle>
           </div>
         </slot>
       </div>
@@ -78,21 +80,21 @@
       <div class="my-custom-scrollbar overflow-x-auto">
         <div class="inline-block min-w-full">
           <div class="overflow-hidden" ref="tableContainer">
-            <table ref="localTable"
-                   class="text-sm text-left text-gray-500 rtl:text-right w-full"
-                   :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
+            <table
+              ref="localTable"
+              class="text-sm text-left text-gray-500 rtl:text-right w-full"
+              :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
             >
-              <thead
-                  class="text-xs text-gray-700 uppercase border-b-2 bg-cyan-400">
+              <thead class="text-xs text-gray-700 uppercase border-b-2 bg-cyan-400">
               <tr>
                 <th v-if="hasCheckbox" scope="col"
                     class="w-[1%] min-w-[38px] px-5 py-2.5">
                   <div class="flex items-center">
                     <input
-                        type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
-                        v-model="setting.isCheckAll"
-                        @change="changeCheckAll"
+                      type="checkbox"
+                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      v-model="setting.isCheckAll"
+                      @change="changeCheckAll"
                     >
                   </div>
                 </th>
@@ -102,22 +104,26 @@
                     :style="[col.width ? 'width: ' + col.width : 'width: auto', col.columnStyles]"
                 >
                   <div
-                      class="py-2.5 px-2"
-                      :class="{
-                                            'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
-                                        }"
-                      @click.prevent="col.sortable ? doSort(col.field) : false"
+                    class="py-2.5 px-2"
+                    :class="{
+                        'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
+                      }"
+                    @click.prevent="col.sortable ? doSort(col.field) : false"
                   >
                     <div
-                        class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
+                      class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
                       <ArrowSmallUpIcon
-                          v-if="setting.order === col.field && setting.sort === 'desc'"
-                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"/>
+                        v-if="setting.order === col.field && setting.sort === 'desc'"
+                        class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
+                      />
                       <ArrowSmallDownIcon
-                          v-else-if="setting.order === col.field && setting.sort === 'asc'"
-                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"/>
-                      <ArrowsUpDownIcon v-else-if="col.sortable"
-                                        class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"/>
+                        v-else-if="setting.order === col.field && setting.sort === 'asc'"
+                        class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
+                      />
+                      <ArrowsUpDownIcon
+                        v-else-if="col.sortable"
+                        class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"
+                      />
                       <span class="ml-2 leading-relaxed">{{ col.label }}</span>
                     </div>
                   </div>
@@ -127,92 +133,93 @@
 
               <template v-if="rows.length > 0">
                 <tbody
-                    v-if="isStaticMode"
-                    :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
+                  v-if="isStaticMode"
+                  :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
                 >
                 <template
-                    v-for="(rows, groupingIndex) in templateRows"
-                    :key="groupingIndex"
+                  v-for="(rows, groupingIndex) in templateRows"
+                  :key="groupingIndex"
                 >
                   <tr v-if="groupingKey !== ''"
                       class="border-b transition">
                     <td
-                        :colspan="hasCheckbox ? columns.length + 1 : columns.length"
-                        class="px-6 py-4"
+                      :colspan="hasCheckbox ? columns.length + 1 : columns.length"
+                      class="px-6 py-4"
                     >
                       <div class="flex">
                         <div v-if="hasGroupToggle">
                           <a
-                              :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                              class="cursor-pointer"
-                              @click.prevent="toggleGroup(groupingIndex)"
+                            :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                            class="cursor-pointer"
+                            @click.prevent="toggleGroup(groupingIndex)"
                           >
                             <ChevronDownIcon class="w-4 h-4"/>
                           </a>
                         </div>
                         <div
-                            class="ml-2"
-                            v-html="
-                                                            groupingDisplay
-                                                              ? groupingDisplay(groupingIndex)
-                                                              : groupingIndex
-                                                          "
+                          class="ml-2"
+                          v-html="
+                              groupingDisplay
+                                ? groupingDisplay(groupingIndex)
+                                : groupingIndex
+                            "
                         ></div>
                       </div>
                     </td>
                   </tr>
 
                   <tr
-                      v-for="(row, i) in rows"
-                      :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
-                      :ref="
-                                              (el) => {
-                                                if (!groupingRowsRefs[groupingIndex]) {
-                                                  groupingRowsRefs[groupingIndex] = [];
-                                                }
-                                                groupingRowsRefs[groupingIndex][i] = el;
-                                              }
-                                            "
-                      :name="'vtl-group-' + groupingIndex"
-                      class="border-b transition"
-                      :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                      @click="emit('row-clicked', row, this)"
-                      @contextmenu="emit('row-context-menu', $event, row)"
+                    v-for="(row, i) in rows"
+                    :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
+                    :ref="
+                        (el) => {
+                          if (!groupingRowsRefs[groupingIndex]) {
+                            groupingRowsRefs[groupingIndex] = [];
+                          }
+                          groupingRowsRefs[groupingIndex][i] = el;
+                        }
+                      "
+                    :name="'vtl-group-' + groupingIndex"
+                    class="border-b transition"
+                    :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+                    @click="emit('row-clicked', row, this)"
+                    @contextmenu="emit('row-context-menu', $event, row)"
                   >
                     <td v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5">
                       <div class="flex items-center">
                         <input
-                            type="checkbox"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
-                            :ref="
-                                                        (el) => {
-                                                          if(el && hasSelectedItemWithProperty(row)) {
-                                                            el.checked = true;
-                                                          }
-                                                          rowCheckbox.push(el);
-                                                        }
-                                                      "
-                            :value="row[setting.keyColumn]"
-                            @click="checked(row, $event)"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
+                          :ref="
+                            (el) => {
+                              if(el && hasSelectedItemWithProperty(row)) {
+                                el.checked = true;
+                              }
+                              rowCheckbox.push(el);
+                            }
+                            "
+                          :value="row[setting.keyColumn]"
+                          @click="checked(row, $event)"
                         >
                       </div>
                     </td>
                     <td
-                        v-for="(col, j) in columns"
-                        :key="j"
-                        class="px-5 py-2.5"
-                        :class="[col.cellClasses, col.columnClasses]"
-                        :style="[col.cellStyles, col.columnStyles]"
-                        @mouseenter="addHoverClassToTd"
-                        @mouseleave="removeHoverClassFromTd"
+                      v-for="(col, j) in columns"
+                      :key="j"
+                      class="px-5 py-2.5"
+                      :dir="col.columnDir ?? 'rtl'"
+                      :class="[col.cellClasses, col.columnClasses]"
+                      :style="[col.cellStyles, col.columnStyles]"
+                      @mouseenter="addHoverClassToTd"
+                      @mouseleave="removeHoverClassFromTd"
                     >
                       <div v-if="col.display" v-html="col.display(row)"></div>
                       <div v-else>
                         <div v-if="setting.isSlotMode && slots[col.field]">
                           <slot
-                              :name="col.field"
-                              :value="row"
-                              :index="i + setting.offset"
+                            :name="col.field"
+                            :value="row"
+                            :index="i + setting.offset"
                           ></slot>
                         </div>
                         <span v-else>{{ row[col.field] }}</span>
@@ -222,96 +229,97 @@
                 </template>
                 </tbody>
                 <tbody
-                    v-else
-                    :set="(templateRows = groupingKey === '' ? [rows] : groupingRows)"
+                  v-else
+                  :set="(templateRows = groupingKey === '' ? [rows] : groupingRows)"
                 >
                 <template
-                    v-for="(rows, groupingIndex) in templateRows"
-                    :key="groupingIndex"
+                  v-for="(rows, groupingIndex) in templateRows"
+                  :key="groupingIndex"
                 >
                   <tr v-if="groupingKey !== ''"
                       class="border-b transition">
                     <td
-                        :colspan="hasCheckbox ? columns.length + 1 : columns.length"
-                        class="px-6 py-4"
+                      :colspan="hasCheckbox ? columns.length + 1 : columns.length"
+                      class="px-6 py-4"
                     >
                       <div class="flex">
                         <div v-if="hasGroupToggle">
                           <a
-                              :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                              class="cursor-pointer"
-                              @click.prevent="toggleGroup(groupingIndex)"
+                            :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                            class="cursor-pointer"
+                            @click.prevent="toggleGroup(groupingIndex)"
                           >
                             <ChevronDownIcon class="w-4 h-4"/>
                           </a>
                         </div>
                         <div
-                            class="ml-2"
-                            v-html="
-                                                            groupingDisplay
-                                                              ? groupingDisplay(groupingIndex)
-                                                              : groupingIndex
-                                                          "
+                          class="ml-2"
+                          v-html="
+                              groupingDisplay
+                                ? groupingDisplay(groupingIndex)
+                                : groupingIndex
+                            "
                         ></div>
                       </div>
                     </td>
                   </tr>
 
                   <tr
-                      v-for="(row, i) in rows"
-                      :ref="
-                                                  (el) => {
-                                                    if (!groupingRowsRefs[groupingIndex]) {
-                                                      groupingRowsRefs[groupingIndex] = [];
-                                                    }
-                                                    groupingRowsRefs[groupingIndex][i] = el;
-                                                  }
-                                                "
-                      :name="'vtl-group-' + groupingIndex"
-                      :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
-                      class="border-b transition"
-                      :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                      @click="emit('row-clicked', row, this)"
-                      @contextmenu="emit('row-context-menu', $event, row)"
+                    v-for="(row, i) in rows"
+                    :ref="
+                        (el) => {
+                          if (!groupingRowsRefs[groupingIndex]) {
+                            groupingRowsRefs[groupingIndex] = [];
+                          }
+                          groupingRowsRefs[groupingIndex][i] = el;
+                        }
+                      "
+                    :name="'vtl-group-' + groupingIndex"
+                    :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
+                    class="border-b transition"
+                    :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+                    @click="emit('row-clicked', row, this)"
+                    @contextmenu="emit('row-context-menu', $event, row)"
                   >
                     <td v-if="hasCheckbox" class="px-6 py-4">
                       <div class="flex items-center">
                         <input
-                            type="checkbox"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
-                            :ref="
-                                                            (el) => {
-                                                              if(el && hasSelectedItemWithProperty(row)) {
-                                                                el.checked = true;
-                                                                const tr = getParent(el, 'tr');
-                                                                if(tr) {
-                                                                    tr.classList.add('row-is-checked');
-                                                                }
-                                                              }
-                                                              rowCheckbox.push(el);
-                                                            }
-                                                          "
-                            :value="row[setting.keyColumn]"
-                            @click="checked(row, $event)"
+                          type="checkbox"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
+                          :ref="
+                              (el) => {
+                                if(el && hasSelectedItemWithProperty(row)) {
+                                  el.checked = true;
+                                  const tr = getParent(el, 'tr');
+                                  if(tr) {
+                                      tr.classList.add('row-is-checked');
+                                  }
+                                }
+                                rowCheckbox.push(el);
+                              }
+                            "
+                          :value="row[setting.keyColumn]"
+                          @click="checked(row, $event)"
                         >
                       </div>
                     </td>
                     <td
-                        v-for="(col, j) in columns"
-                        :key="j"
-                        class="px-6 py-4"
-                        :class="[col.cellClasses, col.columnClasses]"
-                        :style="[col.cellStyles, col.columnStyles]"
-                        @mouseenter="addHoverClassToTd"
-                        @mouseleave="removeHoverClassFromTd"
+                      v-for="(col, j) in columns"
+                      :key="j"
+                      class="px-6 py-4"
+                      :dir="col.columnDir ?? 'rtl'"
+                      :class="[col.cellClasses, col.columnClasses]"
+                      :style="[col.cellStyles, col.columnStyles]"
+                      @mouseenter="addHoverClassToTd"
+                      @mouseleave="removeHoverClassFromTd"
                     >
                       <div v-if="col.display" v-html="col.display(row)"></div>
                       <div v-else>
                         <div v-if="setting.isSlotMode && slots[col.field]">
                           <slot
-                              :name="col.field"
-                              :value="row"
-                              :index="i + setting.offset"
+                            :name="col.field"
+                            :value="row"
+                            :index="i + setting.offset"
                           ></slot>
                         </div>
                         <span v-else>{{ row[col.field] }}</span>
@@ -323,16 +331,16 @@
               </template>
 
               <tfoot
-                  class="text-xs text-gray-700 uppercase border-b-2 bg-cyan-400">
+                class="text-xs text-gray-700 uppercase border-b-2 bg-cyan-400">
               <tr>
                 <th v-if="hasCheckbox" scope="col"
                     class="w-[1%] min-w-[38px] px-5 py-2.5">
                   <div class="flex items-center">
                     <input
-                        type="checkbox"
-                        class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
-                        v-model="setting.isCheckAll"
-                        @change="changeCheckAll"
+                      type="checkbox"
+                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      v-model="setting.isCheckAll"
+                      @change="changeCheckAll"
                     >
                   </div>
                 </th>
@@ -342,20 +350,20 @@
                     :style="[col.width ? 'width: ' + col.width : 'width: auto', col.columnStyles]"
                 >
                   <div
-                      class="py-2.5 px-2"
-                      :class="{
+                    class="py-2.5 px-2"
+                    :class="{
                                             'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
                                         }"
-                      @click.prevent="col.sortable ? doSort(col.field) : false"
+                    @click.prevent="col.sortable ? doSort(col.field) : false"
                   >
                     <div
-                        class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
+                      class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
                       <ArrowSmallUpIcon
-                          v-if="setting.order === col.field && setting.sort === 'desc'"
-                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"/>
+                        v-if="setting.order === col.field && setting.sort === 'desc'"
+                        class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"/>
                       <ArrowSmallDownIcon
-                          v-else-if="setting.order === col.field && setting.sort === 'asc'"
-                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"/>
+                        v-else-if="setting.order === col.field && setting.sort === 'asc'"
+                        class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"/>
                       <ArrowsUpDownIcon v-else-if="col.sortable"
                                         class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"/>
                       <span class="ml-2 leading-relaxed">{{ col.label }}</span>
@@ -411,13 +419,13 @@
 
         <div class="mt-3" v-if="setting.maxPage > 1">
           <base-pagination
-              :theme="paginationTheme"
-              :next-page="nextPage"
-              :move-page="movePage"
-              :prev-page="prevPage"
-              v-model:max-page="setting.maxPage"
-              v-model:paging="setting.paging"
-              v-model:current-page="setting.page"
+            :theme="paginationTheme"
+            :next-page="nextPage"
+            :move-page="movePage"
+            :prev-page="prevPage"
+            v-model:max-page="setting.maxPage"
+            v-model:paging="setting.paging"
+            v-model:current-page="setting.page"
           />
         </div>
       </template>
@@ -515,8 +523,8 @@ const props = defineProps({
     default: () => {
       return {
         pagingInfo: 'نمایش' + " <span class=\"text-blue-500\">" + "{0}" + "</span>"
-            + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
-            + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
+          + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
+          + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
         pageSizeChangeLabel: "تعداد نمایش در هر صفحه:",
         gotoPageLabel: "رفتن به صفحه:",
         noDataAvailable: "هیچ داده‌ای وجود ندارد.",
@@ -619,15 +627,15 @@ const tableContainer = ref(null);
 let localTable = ref(null);
 
 let defaultPageSize =
-    props.pageOptions.length > 0
-        ? ref(props.pageOptions[0].value)
-        : ref(props.pageSize);
+  props.pageOptions.length > 0
+    ? ref(props.pageOptions[0].value)
+    : ref(props.pageSize);
 if (props.pageOptions.length > 0) {
   props.pageOptions.forEach((v) => {
     if (
-        Object.prototype.hasOwnProperty.call(v, "value") &&
-        Object.prototype.hasOwnProperty.call(v, "text") &&
-        props.pageSize === v.value
+      Object.prototype.hasOwnProperty.call(v, "value") &&
+      Object.prototype.hasOwnProperty.call(v, "text") &&
+      props.pageSize === v.value
     ) {
       defaultPageSize.value = v.value;
     }
@@ -771,37 +779,37 @@ onBeforeUpdate(() => {
  * Check all checkboxes for monitoring
  */
 watch(
-    () => setting.isCheckAll,
-    (state) => {
-      if (props.hasCheckbox) {
-        isChecked.value = [];
-        let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
-        if (state) {
-          if (props.checkedReturnType === "row") {
-            isChecked.value = tmpRows;
-          } else {
-            tmpRows.forEach((val) => {
-              isChecked.value.push(val[setting.keyColumn]);
-            });
-          }
+  () => setting.isCheckAll,
+  (state) => {
+    if (props.hasCheckbox) {
+      isChecked.value = [];
+      let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
+      if (state) {
+        if (props.checkedReturnType === "row") {
+          isChecked.value = tmpRows;
+        } else {
+          tmpRows.forEach((val) => {
+            isChecked.value.push(val[setting.keyColumn]);
+          });
         }
-
-        // Return the selected data on the screen
-        emit("return-checked-rows", isChecked.value);
       }
+
+      // Return the selected data on the screen
+      emit("return-checked-rows", isChecked.value);
     }
+  }
 );
 
 /**
  * hasCheckbox props for monitoring
  */
 watch(
-    () => props.hasCheckbox,
-    (v) => {
-      if (!v) {
-        setting.isCheckAll = false;
-      }
+  () => props.hasCheckbox,
+  (v) => {
+    if (!v) {
+      setting.isCheckAll = false;
     }
+  }
 );
 
 function changeCheckAll(e) {
@@ -981,18 +989,18 @@ const changePage = (page, prevPage) => {
 watch(() => setting.page, changePage);
 // Monitor manual page switching
 watch(
-    () => props.page,
-    (val) => {
-      if (val <= 1) {
-        setting.page = 1;
-        emit("get-now-page", setting.page);
-      } else if (val >= setting.maxPage) {
-        setting.page = setting.maxPage;
-        emit("get-now-page", setting.page);
-      } else {
-        setting.page = val;
-      }
+  () => props.page,
+  (val) => {
+    if (val <= 1) {
+      setting.page = 1;
+      emit("get-now-page", setting.page);
+    } else if (val >= setting.maxPage) {
+      setting.page = setting.maxPage;
+      emit("get-now-page", setting.page);
+    } else {
+      setting.page = val;
     }
+  }
 );
 
 const changePageSize = () => {
@@ -1009,10 +1017,10 @@ const changePageSize = () => {
 watch(() => setting.pageSize, changePageSize);
 // Monitor display number switch from prop
 watch(
-    () => props.pageSize,
-    (newPageSize) => {
-      setting.pageSize = newPageSize;
-    }
+  () => props.pageSize,
+  (newPageSize) => {
+    setting.pageSize = newPageSize;
+  }
 );
 
 const prevPage = () => {
@@ -1040,18 +1048,18 @@ const nextPage = () => {
 
 // Monitoring data changes
 watch(
-    () => props.rows,
-    () => {
-      if (props.isReSearch || props.isStaticMode) {
-        setting.page = 1;
-      }
-      nextTick(function () {
-        // 資料完成渲染後回傳私有元件 (Return the private components after the data is rendered)
-        if (!props.isStaticMode) {
-          callIsFinished();
-        }
-      });
+  () => props.rows,
+  () => {
+    if (props.isReSearch || props.isStaticMode) {
+      setting.page = 1;
     }
+    nextTick(function () {
+      // 資料完成渲染後回傳私有元件 (Return the private components after the data is rendered)
+      if (!props.isStaticMode) {
+        callIsFinished();
+      }
+    });
+  }
 );
 
 const stringFormat = (template, ...args) => {
@@ -1092,14 +1100,14 @@ const groupingRows = computed(() => {
         if (el) {
           let isOpen = !props.startCollapsed;
           if (
-              props.isKeepCollapsed &&
-              groupingToggleStatus.value[groupIndex] !== undefined
+            props.isKeepCollapsed &&
+            groupingToggleStatus.value[groupIndex] !== undefined
           ) {
             isOpen = !groupingToggleStatus.value[groupIndex];
           }
           if (
-              (isOpen && el.parentElement.classList.contains("__group-open")) ||
-              (!isOpen && !el.parentElement.classList.contains("__group-open"))
+            (isOpen && el.parentElement.classList.contains("__group-open")) ||
+            (!isOpen && !el.parentElement.classList.contains("__group-open"))
           ) {
             el.parentElement.classList.toggle("__group-open");
             el.parentElement.classList.toggle("rotate-90 transition");

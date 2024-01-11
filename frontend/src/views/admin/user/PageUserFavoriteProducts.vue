@@ -1,42 +1,42 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="content"
+    :loading="loading"
+    type="content"
   >
     <template #content>
       <div class="bg-white mb-3 rounded-lg border p-3">
         نمایش محصولات مورد علاقه کاربر -
         <span
-            v-if="user?.id"
-            class="text-teal-600"
+          v-if="user?.id"
+          class="text-teal-600"
         >{{
             (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
           }}</span>
       </div>
 
       <base-paginator
-          container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-          :items="favoriteProducts"
+        container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+        :items="favoriteProducts"
       >
         <template #item="{item}">
           <partial-card class="h-full">
             <template #body>
               <div class="flex items-center md:flex-col">
                 <router-link
-                    :to="{name: 'admin.product.detail', params: {id: 1}}"
-                    target="_blank"
-                    class="p-2 shrink-0"
+                  :to="{name: 'admin.product.detail', params: {id: 1}}"
+                  target="_blank"
+                  class="p-2 shrink-0"
                 >
                   <base-lazy-image
-                      alt="تصویر محصول"
-                      :lazy-src="item.image.path"
-                      class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
+                    alt="تصویر محصول"
+                    :lazy-src="item.image.path"
+                    class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
                   />
                 </router-link>
                 <router-link
-                    :to="{name: 'admin.product.detail', params: {id: 1}}"
-                    target="_blank"
-                    class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
+                  :to="{name: 'admin.product.detail', params: {id: 1}}"
+                  target="_blank"
+                  class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
                 >
                   {{ item.title }}
                 </router-link>
@@ -115,7 +115,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

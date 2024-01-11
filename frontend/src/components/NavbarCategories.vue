@@ -1,7 +1,7 @@
 <template>
   <base-popover-side
-      ref="sidebarContainer"
-      btn-class="w-full lg:hidden"
+    ref="sidebarContainer"
+    btn-class="w-full lg:hidden"
   >
     <template #button>
       <div class="flex items-center gap-2 cursor-pointer group">
@@ -22,31 +22,31 @@
       </div>
 
       <base-switcher-panel
-          v-model:active-panel="activePanel"
-          v-model:active-back-text="activeBackText"
-          v-model:panels="panels"
-          v-model:back-history="panelsBackHistory"
-          v-model:fixed-height="calculateMobileMenuHeight"
-          :use-fixed-height="true"
-          container-class=""
-          back-extra-class="rounded-md !bg-amber-200"
-          back-text-class=""
+        v-model:active-panel="activePanel"
+        v-model:active-back-text="activeBackText"
+        v-model:panels="panels"
+        v-model:back-history="panelsBackHistory"
+        v-model:fixed-height="calculateMobileMenuHeight"
+        :use-fixed-height="true"
+        container-class=""
+        back-extra-class="rounded-md !bg-amber-200"
+        back-text-class=""
       >
         <template
-            v-for="(name, idx) in Object.keys(panels)"
-            :key="idx"
-            #[name]="{data, goTo}"
+          v-for="(name, idx) in Object.keys(panels)"
+          :key="idx"
+          #[name]="{data, goTo}"
         >
           <base-loading-panel :loading="mobileMenuLoadings[name].loading">
             <template #loader>
               <div class="space-y-6 px-4 py-3">
                 <div
-                    v-for="index in 13"
-                    :key="index"
+                  v-for="index in 13"
+                  :key="index"
                 >
                   <div
-                      role="status"
-                      class="animate-pulse"
+                    role="status"
+                    class="animate-pulse"
                   >
                     <div class="h-6 bg-slate-200 rounded-md dark:bg-slate-700 w-full"></div>
                     <span class="sr-only">در حال بارگذاری...</span>
@@ -57,15 +57,15 @@
 
             <template #content>
               <div
-                  v-for="category in data"
-                  :key="category.id"
-                  class="divide-y divide-slate-200"
+                v-for="category in data"
+                :key="category.id"
+                class="divide-y divide-slate-200"
               >
                 <div class="flex items-center gap-2">
                   <router-link
-                      to=""
-                      class="w-full px-3 py-3.5 text-sm cursor-pointer flex items-center gap-3 justify-between hover:bg-slate-100 transition rounded-md"
-                      @click="(e) => {
+                    to=""
+                    class="w-full px-3 py-3.5 text-sm cursor-pointer flex items-center gap-3 justify-between hover:bg-slate-100 transition rounded-md"
+                    @click="(e) => {
                           if(category?.hasChildren || category?.children?.length)
                               panelChangeClickHandler(category, goTo, e)
                           else
@@ -74,20 +74,20 @@
                   >
                     <span>{{ category.name }}</span>
                     <ChevronLeftIcon
-                        v-if="category?.hasChildren || category?.children?.length"
-                        class="w-5 h-5 shrink-0"
+                      v-if="category?.hasChildren || category?.children?.length"
+                      class="w-5 h-5 shrink-0"
                     />
                   </router-link>
 
                   <router-link
-                      v-if="category?.hasChildren || category?.children?.length"
-                      v-tooltip.bottom="'مشاهده تمامی محصولات در دسته‌بندی'"
-                      to=""
-                      class="shrink-0 h-full w-8 py-3.5 group"
-                      @click="close()"
+                    v-if="category?.hasChildren || category?.children?.length"
+                    v-tooltip.bottom="'مشاهده تمامی محصولات در دسته‌بندی'"
+                    to=""
+                    class="shrink-0 h-full w-8 py-3.5 group"
+                    @click="close()"
                   >
                     <ArrowTopRightOnSquareIcon
-                        class="w-5 h-5 text-amber-600 group-hover:text-amber-300 mx-auto transition"/>
+                      class="w-5 h-5 text-amber-600 group-hover:text-amber-300 mx-auto transition"/>
                   </router-link>
                 </div>
               </div>
@@ -99,8 +99,8 @@
   </base-popover-side>
 
   <div
-      class="hidden lg:flex lg:items-center lg:gap-2 cursor-pointer group"
-      @click="() => {showCategoriesMenu = !showCategoriesMenu}"
+    class="hidden lg:flex lg:items-center lg:gap-2 cursor-pointer group"
+    @click="() => {showCategoriesMenu = !showCategoriesMenu}"
   >
     <Bars4Icon class="w-6 h-6 group-hover:text-primary transition"/>
     <span class="font-iranyekan-bold group-hover:text-primary transition select-none">دسته‌بندی‌ها</span>
@@ -108,22 +108,22 @@
 
   <VTransitionSlideFadeLeftX>
     <div
-        v-if="showCategoriesMenu"
-        class="absolute top-[30px] right-0 w-full z-[4] max-w-5xl hidden lg:flex lg:items-stretch rounded-b-xl overflow-hidden bg-white shadow-lg"
+      v-if="showCategoriesMenu"
+      class="absolute top-[30px] right-0 w-full z-[4] max-w-5xl hidden lg:flex lg:items-stretch rounded-b-xl overflow-hidden bg-white shadow-lg"
     >
       <ul
-          dir="ltr"
-          class="my-custom-scrollbar my-custom-scrollbar-light w-44 md:w-52 rounded-br-xl flex flex-col shrink-0 py-5 pr-1 bg-primary text-right text-white"
-          ref="mainCategoriesItems"
+        dir="ltr"
+        class="my-custom-scrollbar my-custom-scrollbar-light w-44 md:w-52 rounded-br-xl flex flex-col shrink-0 py-5 pr-1 bg-primary text-right text-white"
+        ref="mainCategoriesItems"
       >
         <li
-            v-for="category in mainCategories"
-            :key="category.id"
+          v-for="category in mainCategories"
+          :key="category.id"
         >
           <button
-              type="button"
-              class="w-full text-right font-iranyekan-bold leading-relaxed py-3 px-4 text-sm block rounded-r-full hover:bg-white hover:bg-opacity-75 hover:text-black transition"
-              :class="{'!bg-white text-black shadow-sm main-category-active': activeMainMenu.id === category.id}"
+            type="button"
+            class="w-full text-right font-iranyekan-bold leading-relaxed py-3 px-4 text-sm block rounded-r-full hover:bg-white hover:bg-opacity-75 hover:text-black transition"
+            :class="{'!bg-white text-black shadow-sm main-category-active': activeMainMenu.id === category.id}"
           >
             {{ category.name }}
           </button>
@@ -131,16 +131,16 @@
       </ul>
 
       <div
-          dir="ltr"
-          class="my-custom-scrollbar grow rounded-bl-xl px-4 py-4 h-full flex flex-row-reverse flex-wrap text-right"
-          ref="subCategoriesItems"
+        dir="ltr"
+        class="my-custom-scrollbar grow rounded-bl-xl px-4 py-4 h-full flex flex-row-reverse flex-wrap text-right"
+        ref="subCategoriesItems"
       >
         <div dir="rtl" class="w-full">
           <div class="flex items-center gap-1.5 mb-6">
             <span class="text-slate-400 text-sm">مشاهده تمامی محصولات در دسته‌بندی</span>
             <router-link
-                to=""
-                class="text-orange-600 hover:text-opacity-80 transition text-sm font-iranyekan-bold"
+              to=""
+              class="text-orange-600 hover:text-opacity-80 transition text-sm font-iranyekan-bold"
             >
               {{ activeMainMenu.name }}
             </router-link>
@@ -148,31 +148,31 @@
         </div>
 
         <div
-            v-for="(column, idx) in categories[activeMainMenuId]"
-            :key="idx"
-            class="px-2 grow"
+          v-for="(column, idx) in categories[activeMainMenuId]"
+          :key="idx"
+          class="px-2 grow"
         >
           <template
-              v-for="category in column"
-              :key="category.id"
+            v-for="category in column"
+            :key="category.id"
           >
             <router-link
-                to=""
-                class="block relative group pr-4 mb-4 text-sm"
+              to=""
+              class="block relative group pr-4 mb-4 text-sm"
             >
               <div
-                  class="absolute w-2.5 h-2.5 rounded-full border-2 border-cyan-500 right-0 top-1.5 transition"></div>
+                class="absolute w-2.5 h-2.5 rounded-full border-2 border-cyan-500 right-0 top-1.5 transition"></div>
               <span class="font-iranyekan-bold group-hover:text-cyan-500 transition">{{
                   category.name
                 }}</span>
             </router-link>
 
             <router-link
-                v-if="category.children"
-                v-for="childCategory in category.children"
-                :key="childCategory.id"
-                to=""
-                class="text-sm block mb-4 pr-4 text-slate-500 hover:text-slate-700 transition"
+              v-if="category.children"
+              v-for="childCategory in category.children"
+              :key="childCategory.id"
+              to=""
+              class="text-sm block mb-4 pr-4 text-slate-500 hover:text-slate-700 transition"
             >
               {{ childCategory.name }}
             </router-link>
@@ -186,9 +186,9 @@
   <Teleport to="body">
     <VTransitionFade>
       <div
-          v-if="showCategoriesMenu"
-          class="hidden lg:block fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
-          @click="() => {showCategoriesMenu = !showCategoriesMenu}"
+        v-if="showCategoriesMenu"
+        class="hidden lg:block fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
+        @click="() => {showCategoriesMenu = !showCategoriesMenu}"
       ></div>
     </VTransitionFade>
   </Teleport>

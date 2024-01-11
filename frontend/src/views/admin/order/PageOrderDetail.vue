@@ -1,15 +1,15 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="content"
+    :loading="loading"
+    type="content"
   >
     <template #content>
       <div class="bg-white mb-3 rounded-lg border p-3">
         سفارش دهنده -
         <router-link
-            v-if="order?.user.id"
-            :to="{name: 'admin.user.profile', params: {id: order?.user.id}}"
-            class="text-blue-600 hover:text-opacity-90"
+          v-if="order?.user.id"
+          :to="{name: 'admin.user.profile', params: {id: order?.user.id}}"
+          class="text-blue-600 hover:text-opacity-90"
         >{{
             (order?.user?.first_name || order?.user?.last_name) ? (order?.user?.first_name + ' ' + order?.user?.last_name).trim() : order?.user.username
           }}
@@ -86,10 +86,10 @@
                 <base-loading-panel type="table" :loading="ordersTableSetting.isLoading">
                   <template #content>
                     <base-semi-datatable
-                        :is-loading="ordersTableSetting.isLoading"
-                        :columns="ordersTableSetting.columns"
-                        :rows="ordersTableSetting.rows"
-                        :total="ordersTableSetting.total"
+                      :is-loading="ordersTableSetting.isLoading"
+                      :columns="ordersTableSetting.columns"
+                      :rows="ordersTableSetting.rows"
+                      :total="ordersTableSetting.total"
                     >
                       <template #payment_status="{value}">
                         <partial-badge-status-payment/>
@@ -121,19 +121,19 @@
 
                       <template #op_1="{value}">
                         <base-select
-                            options-text="text"
-                            options-key="value"
-                            options="paymentStatuses"
-                            :selected="value.payment_status"
-                            @change="(selected) => {changePaymentStatus(selected, value)}"
+                          options-text="text"
+                          options-key="value"
+                          options="paymentStatuses"
+                          :selected="value.payment_status"
+                          @change="(selected) => {changePaymentStatus(selected, value)}"
                         />
                       </template>
 
                       <template #op_2="{value}">
                         <a
-                            href="javascript:void(0)"
-                            class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
-                            @click="() => {showOrderPaymentDetail(value)}"
+                          href="javascript:void(0)"
+                          class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
+                          @click="() => {showOrderPaymentDetail(value)}"
                         >
                           مشاهده جزئیات پرداخت
                         </a>
@@ -145,8 +145,8 @@
             </div>
 
             <partial-dialog
-                v-model:open="orderPaymentDetailOpen"
-                container-klass="overflow-auto"
+              v-model:open="orderPaymentDetailOpen"
+              container-klass="overflow-auto"
             >
               <template #title>
                 جزئیات پرداخت
@@ -154,11 +154,11 @@
 
               <template #body>
                 <base-datatable
-                    :is-loading="false"
-                    :is-static-mode="true"
-                    :is-slot-mode="true"
-                    :columns="orderPaymentsTableSetting.columns"
-                    :rows="orderPaymentsTableSetting.rows"
+                  :is-loading="false"
+                  :is-static-mode="true"
+                  :is-slot-mode="true"
+                  :columns="orderPaymentsTableSetting.columns"
+                  :rows="orderPaymentsTableSetting.rows"
                 >
                   <template #id="{value, index}">
                     {{ index }}
@@ -195,7 +195,7 @@
         <template #body>
           <div class="p-3">
             <form-order-change-send-status
-                v-model:selected="sendStatus"
+              v-model:selected="sendStatus"
             />
           </div>
         </template>
@@ -373,20 +373,20 @@
     </template>
     <template #body>
       <div
-          v-if="!itemsLoading"
-          class="p-3"
+        v-if="!itemsLoading"
+        class="p-3"
       >
         <base-button
-            type="submit"
-            class="bg-orange-500 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
-            :disabled="isDownloadFactor"
-            @click="factorDownloadHandler"
+          type="submit"
+          class="bg-orange-500 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
+          :disabled="isDownloadFactor"
+          @click="factorDownloadHandler"
         >
           <VTransitionFade>
             <loader-circle
-                v-if="isDownloadFactor"
-                main-container-klass="absolute w-full h-full top-0 left-0"
-                big-circle-color="border-transparent"
+              v-if="isDownloadFactor"
+              main-container-klass="absolute w-full h-full top-0 left-0"
+              big-circle-color="border-transparent"
             />
           </VTransitionFade>
 
@@ -398,16 +398,16 @@
       <base-loading-panel :loading="itemsLoading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="false"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="false"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="false"
+            :enable-multi-operation="false"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="false"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:product="{value}">
 
@@ -699,7 +699,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 doSearch(0, 15, 'id', 'desc')
 //-----------------------------------
 </script>
-
-<style scoped>
-
-</style>

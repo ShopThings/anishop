@@ -3,12 +3,12 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام کاربری"
-            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
-            name="username"
-            :has-edit-mode="false"
-            :is-editable="false"
-            :value="user?.username"
+          label-title="نام کاربری"
+          placeholder="(معمولا شماره تلفن همراه می‌باشد)"
+          name="username"
+          :has-edit-mode="false"
+          :is-editable="false"
+          :value="user?.username"
         >
           <template #icon>
             <UserIcon class="h-6 w-6 text-gray-400"/>
@@ -18,14 +18,14 @@
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <partial-input-label title="نقش کاربر"/>
         <base-select-searchable
-            :options="roles"
-            options-key="value"
-            options-text="name"
-            name="roles"
-            :multiple="true"
-            :selected="initialRoles"
-            :has-edit-mode="false"
-            @change="roleChange"
+          :options="roles"
+          options-key="value"
+          options-text="name"
+          name="roles"
+          :multiple="true"
+          :selected="initialRoles"
+          :has-edit-mode="false"
+          @change="roleChange"
         />
         <partial-input-error-message :error-message="errors.roles"/>
       </div>
@@ -36,11 +36,11 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام"
-            placeholder="حروف فارسی"
-            name="first_name"
-            :has-edit-mode="false"
-            :value="user?.first_name"
+          label-title="نام"
+          placeholder="حروف فارسی"
+          name="first_name"
+          :has-edit-mode="false"
+          :value="user?.first_name"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -49,11 +49,11 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام خانوادگی"
-            placeholder="حروف فارسی"
-            name="last_name"
-            :has-edit-mode="false"
-            :value="user?.last_name"
+          label-title="نام خانوادگی"
+          placeholder="حروف فارسی"
+          name="last_name"
+          :has-edit-mode="false"
+          :value="user?.last_name"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -62,11 +62,11 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="کد ملی"
-            placeholder="فقط شامل اعداد"
-            name="national_code"
-            :has-edit-mode="false"
-            :value="user?.national_code"
+          label-title="کد ملی"
+          placeholder="فقط شامل اعداد"
+          name="national_code"
+          :has-edit-mode="false"
+          :value="user?.national_code"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -75,12 +75,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="شماره شبا"
-            is-optional
-            placeholder="xxxxxxxxxxxxxxxx"
-            name="shaba_number"
-            :has-edit-mode="false"
-            :value="user?.shaba_number"
+          label-title="شماره شبا"
+          is-optional
+          placeholder="xxxxxxxxxxxxxxxx"
+          name="shaba_number"
+          :has-edit-mode="false"
+          :value="user?.shaba_number"
         >
           <template #icon>
             <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -91,15 +91,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -179,11 +179,11 @@ const {handleSubmit, isSubmitting, errors} = useForm({
     first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام اجباری می‌باشد.'),
     last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی اجباری می‌باشد.'),
     national_code: yup.string()
-        .transform(transformNumbersToEnglish)
-        .persianNationalCode('کد ملی نامعتبر است.').required('کد ملی اجباری می‌باشد.'),
+      .transform(transformNumbersToEnglish)
+      .persianNationalCode('کد ملی نامعتبر است.').required('کد ملی اجباری می‌باشد.'),
     shaba_number: yup.string()
-        .transform(transformNumbersToEnglish)
-        .optional().nullable(),
+      .transform(transformNumbersToEnglish)
+      .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
 })
@@ -255,7 +255,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

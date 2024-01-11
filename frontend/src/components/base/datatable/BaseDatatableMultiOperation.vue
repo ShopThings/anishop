@@ -9,9 +9,9 @@
     </div>
     <div class="flex">
       <base-button
-          @click="clearSelectedItems"
-          v-tooltip.top="'حذف انتخاب‌ها'"
-          class="cursor-pointer rounded-md border py-2 px-3 rounded-r-lg rounded-l-none transition hover:bg-opacity-90 bg-slate-300 border-slate-400 !text-black text-sm mt-3"
+        @click="clearSelectedItems"
+        v-tooltip.top="'حذف انتخاب‌ها'"
+        class="cursor-pointer rounded-md border py-2 px-3 rounded-r-lg rounded-l-none transition hover:bg-opacity-90 bg-slate-300 border-slate-400 !text-black text-sm mt-3"
       >
         <outline.BackspaceIcon class="h-6 w-6"/>
       </base-button>
@@ -19,10 +19,10 @@
       <base-dialog container-klass="overflow-auto">
         <template #button="{open}">
           <base-button
-              @click="open"
-              v-tooltip.top="'مشاهده موارد انتخاب شده'"
-              class="cursor-pointer rounded-md border py-2 px-3 transition hover:bg-opacity-90 bg-slate-300 border-slate-400 !text-black text-sm mt-3"
-              :class="props.operations.length ? 'rounded-none' : 'rounded-l-lg'"
+            @click="open"
+            v-tooltip.top="'مشاهده موارد انتخاب شده'"
+            class="cursor-pointer rounded-md border py-2 px-3 transition hover:bg-opacity-90 bg-slate-300 border-slate-400 !text-black text-sm mt-3"
+            :class="props.operations.length ? 'rounded-none' : 'rounded-l-lg'"
           >
             <outline.QueueListIcon class="h-6 w-6"/>
           </base-button>
@@ -41,16 +41,16 @@
 
       <template v-for="(operation, key) in props.operations">
         <base-floating-drop-down
-            placement="bottom-end"
-            :shift="false"
-            :items="operation.children ?? {}"
+          placement="bottom-end"
+          :shift="false"
+          :items="operation.children ?? {}"
         >
           <template #button>
             <base-button
-                @click="operationClicked(operation)"
-                v-tooltip.top="operation.btn.tooltip ? operation.btn.tooltip : ''"
-                class="text-sm mt-3 flex items-center"
-                :class="[
+              @click="operationClicked(operation)"
+              v-tooltip.top="operation.btn.tooltip ? operation.btn.tooltip : ''"
+              class="text-sm mt-3 flex items-center"
+              :class="[
                                 key !== props.operations.length - 1 ? 'rounded-none' : 'rounded-l-lg rounded-r-none',
                                 operation.btn.class ? operation.btn.class : '',
                             ]"
@@ -66,9 +66,9 @@
 
           <template #item="{item, hide}">
             <div
-                @click="operationClicked(item, hide)"
-                class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md cursor-pointer"
-                :class="item.btn.class ? item.btn.class : ''"
+              @click="operationClicked(item, hide)"
+              class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md cursor-pointer"
+              :class="item.btn.class ? item.btn.class : ''"
             >
               <component v-if="item.btn.icon"
                          :is="outline[item.btn.icon]"
@@ -120,7 +120,3 @@ function operationClicked(operation, hide) {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

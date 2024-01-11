@@ -7,14 +7,14 @@
     </div>
 
     <div
-        v-if="allowFindMyLocation"
-        class="absolute right-3 top-3 z-10"
+      v-if="allowFindMyLocation"
+      class="absolute right-3 top-3 z-10"
     >
       <button
-          v-tooltip.bottom-start="'پیدا کردن/رفتن به موقعیت من'"
-          type="button"
-          class="rounded-full p-2 flex items-center justify-center shadow-md bg-white group"
-          @click="handleGeolocation"
+        v-tooltip.bottom-start="'پیدا کردن/رفتن به موقعیت من'"
+        type="button"
+        class="rounded-full p-2 flex items-center justify-center shadow-md bg-white group"
+        @click="handleGeolocation"
       >
         <MapPinIcon class="w-6 h-6 group-hover:text-rose-600 transition"/>
       </button>
@@ -91,8 +91,8 @@ function handleGeolocation() {
 
   const notAllowed = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]
   if (
-      notAllowed.indexOf(coords.value.latitude) === -1 &&
-      notAllowed.indexOf(coords.value.longitude) === -1
+    notAllowed.indexOf(coords.value.latitude) === -1 &&
+    notAllowed.indexOf(coords.value.longitude) === -1
   ) {
     center.value = [coords.value.latitude, coords.value.longitude]
   } else {

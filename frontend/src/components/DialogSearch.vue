@@ -17,9 +17,9 @@
     <template #body>
       <form @submit.prevent>
         <base-input
-            placeholder="متن جستجو را وارد نمایید..."
-            name="search"
-            @mount="focusOnInput"
+          placeholder="متن جستجو را وارد نمایید..."
+          name="search"
+          @mount="focusOnInput"
         >
           <template #icon>
             <MagnifyingGlassCircleIcon class="h-6 w-6 text-gray-300"/>
@@ -28,8 +28,8 @@
 
         <div class="mt-4">
           <button
-              type="submit"
-              class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition"
+            type="submit"
+            class="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 transition"
           >
             <MagnifyingGlassIcon class="w-5 h-5 ml-2"/>
             انجام جستجو
@@ -57,7 +57,3 @@ function focusOnInput(input) {
   input.focus()
 }
 </script>
-
-<style scoped>
-
-</style>

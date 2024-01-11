@@ -1,11 +1,11 @@
 <template>
   <div
-      class="tilt-card transition duration-[50ms]"
-      ref="tiltCard"
-      @mousemove="handleCardMouseMovement"
-      @mouseleave="handleCardMouseLeave"
-      @touchmove="handleCardMouseMovement"
-      @touchend="handleCardMouseLeave"
+    class="tilt-card transition duration-[50ms]"
+    ref="tiltCard"
+    @mousemove="handleCardMouseMovement"
+    @mouseleave="handleCardMouseLeave"
+    @touchmove="handleCardMouseMovement"
+    @touchend="handleCardMouseLeave"
   >
     <slot></slot>
   </div>

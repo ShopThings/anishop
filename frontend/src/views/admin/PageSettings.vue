@@ -6,16 +6,16 @@
           <div class="font-iranyekan-light text-sm flex gap-3 items-center">
             <span>زمان باقی‌مانده تا بارگذاری مجدد تنظیمات</span>
             <div
-                ref="refreshTimeElem"
-                dir="ltr"
-                class="text-orange-600 font-iranyekan-bold text-xl"
+              ref="refreshTimeElem"
+              dir="ltr"
+              class="text-orange-600 font-iranyekan-bold text-xl"
             ></div>
           </div>
           <div>
             <button
-                type="button"
-                class="rounded-md border py-2 px-4 text-sm bg-white hover:bg-gray-50 transition shadow-lg"
-                @click="loadSetting"
+              type="button"
+              class="rounded-md border py-2 px-4 text-sm bg-white hover:bg-gray-50 transition shadow-lg"
+              @click="loadSetting"
             >
               بارگذاری مجدد
             </button>
@@ -31,8 +31,8 @@
         <base-loading-panel :loading="loading" type="circle">
           <template #content>
             <base-tab-panel
-                :tabs="tabs"
-                tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
+              :tabs="tabs"
+              tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
             >
               <template #main>
                 <setting-form-main :setting="settings"/>
@@ -128,7 +128,3 @@ onUnmounted(() => {
   countdown.stop()
 })
 </script>
-
-<style scoped>
-
-</style>

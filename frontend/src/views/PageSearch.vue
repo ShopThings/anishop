@@ -5,26 +5,26 @@
     <div class="flex flex-col lg:flex-row-reverse gap-6 sticky-container">
       <div class="grow">
         <base-paginator
-            container-class="flex flex-wrap"
-            item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 ml-[-1px] mt-[-1px]"
-            pagination-theme="modern"
-            :per-page="16"
-            :show-search="true"
-            :order="productOrder"
-            v-model:items="products"
-            :is-local="true"
-            :show-pagination-detail="true"
+          container-class="flex flex-wrap"
+          item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 ml-[-1px] mt-[-1px]"
+          pagination-theme="modern"
+          :per-page="16"
+          :show-search="true"
+          :order="productOrder"
+          v-model:items="products"
+          :is-local="true"
+          :show-pagination-detail="true"
         >
           <template #BeforeItemsPanel="{offset, page, perPage, maxPage, total}">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3">
               <div class="lg:hidden">
                 <base-popover-side
-                    panel-class=""
+                  panel-class=""
                 >
                   <template #button>
                     <base-button
-                        type="button"
-                        class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black hover:bg-white/40"
+                      type="button"
+                      class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black hover:bg-white/40"
                     >
                       <FunnelIcon class="w-6 h-6"/>
                       <span class="text-sm font-iranyekan-bold">نمایش فیلترها</span>
@@ -43,16 +43,16 @@
                       <div class="flex items-center p-3 gap-3 justify-between">
                         <span class="font-iranyekan-bold text-xl">فیلترها</span>
                         <button
-                            type="button"
-                            class="p-1 text-cyan-600 text-sm hover:text-opacity-80 transition"
-                            @click="clearAllFilters"
+                          type="button"
+                          class="p-1 text-cyan-600 text-sm hover:text-opacity-80 transition"
+                          @click="clearAllFilters"
                         >
                           حذف فیلترها
                         </button>
                       </div>
 
                       <div
-                          class="text-emerald-700 px-3 py-1.5 text-xs leading-relaxed bg-emerald-50">
+                        class="text-emerald-700 px-3 py-1.5 text-xs leading-relaxed bg-emerald-50">
                         پس از انتخاب فیلترها، از دکمه
                         <span class="text-black">اعمال فیلتر</span>
                         در پایین صفحه برای اعمال فیلترها، استفاده نمایید.
@@ -64,7 +64,7 @@
 
                       <div class="px-3 pb-3 pt-5 bg-white sticky bottom-0 z-[1]">
                         <base-button
-                            class="w-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:bg-gradient-to-bl">
+                          class="w-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:bg-gradient-to-bl">
                           اعمال فیلترها
                         </base-button>
                       </div>
@@ -74,7 +74,7 @@
               </div>
 
               <div
-                  class="flex flex-wrap items-center justify-end gap-4 px-3 text-slate-400 divide-x-2 divide-x-reverse divide-slate-200 mr-auto">
+                class="flex flex-wrap items-center justify-end gap-4 px-3 text-slate-400 divide-x-2 divide-x-reverse divide-slate-200 mr-auto">
                 <div>
                   <span class="ml-1.5 text-sm font-iranyekan-light">نمایش</span>
                   <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(offset + 1) }}</span>
@@ -99,16 +99,16 @@
 
           <template #empty>
             <partial-empty-rows
-                image="/empty-statuses/empty-product.svg"
-                image-class="w-60"
-                message="هیچ محصولی پیدا نشد!"
+              image="/empty-statuses/empty-product.svg"
+              image-class="w-60"
+              message="هیچ محصولی پیدا نشد!"
             />
           </template>
 
           <template #item="{item}">
             <product-card
-                :product="item"
-                container-class="hover:shadow-lg w-full hover:z-[1] hover:relative transition"
+              :product="item"
+              container-class="hover:shadow-lg w-full hover:z-[1] hover:relative transition"
             />
           </template>
 
@@ -121,23 +121,23 @@
       </div>
 
       <Vue3StickySidebar
-          class="shrink-0 hidden lg:block lg:w-80"
-          containerSelector=".sticky-container"
-          innerWrapperSelector='.sidebar__inner'
-          :top-spacing="114"
-          :bottom-spacing="20"
-          :min-width="1024"
+        class="shrink-0 hidden lg:block lg:w-80"
+        containerSelector=".sticky-container"
+        innerWrapperSelector='.sidebar__inner'
+        :top-spacing="114"
+        :bottom-spacing="20"
+        :min-width="1024"
       >
         <div class="flex flex-col gap-6">
           <partial-card
-              class="border-0 flex flex-col pb-3">
+            class="border-0 flex flex-col pb-3">
             <template #body>
               <div class="flex items-center p-3 gap-3 justify-between">
                 <span class="font-iranyekan-bold text-xl">فیلترها</span>
                 <button
-                    type="button"
-                    class="p-1 text-cyan-600 text-sm hover:text-opacity-80 transition"
-                    @click="clearAllFilters"
+                  type="button"
+                  class="p-1 text-cyan-600 text-sm hover:text-opacity-80 transition"
+                  @click="clearAllFilters"
                 >
                   حذف فیلترها
                 </button>
@@ -155,7 +155,7 @@
 
               <div class="px-3 pb-3 pt-5 bg-white">
                 <base-button
-                    class="w-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:bg-gradient-to-bl">
+                  class="w-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 hover:bg-gradient-to-bl">
                   اعمال فیلترها
                 </base-button>
               </div>
@@ -633,7 +633,3 @@ const products = ref([
 ])
 //----------------------------
 </script>
-
-<style scoped>
-
-</style>

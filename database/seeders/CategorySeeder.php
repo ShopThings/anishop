@@ -16,7 +16,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'بدون دسته‌بندی',
             'escaped_name' => 'بدون دسته‌بندی',
-            'slug' => Str::slug('بدون دسته‌بندی'),
+            'slug' => Str::slug(title: 'بدون دسته‌بندی', language: 'fa'),
             'show_in_menu' => false,
             'show_in_search_side_menu' => false,
             'show_in_slider' => false,

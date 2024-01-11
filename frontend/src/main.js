@@ -36,103 +36,103 @@ const pinia = createPinia()
 register();
 
 createApp(App)
-    .use(head)
-    .use(pinia)
-    .use(router)
-    .use(FloatingVue)
-    .use(VueLazyLoad)
-    .use(ContextMenu)
-    .use(Vue3ColorPicker)
-    .use(VueEasyLightbox)
-    .use(Vue3PersianDatetimePicker, {
-        name: 'DatePicker',
-        props: {
-            dir: 'rtl',
-            clearable: true,
-            format: 'YYYY-MM-DD HH:mm',
-            displayFormat: 'jYYYY-jMM-jDD HH:mm',
-            editable: false,
-            inputClass: 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-            placeholder: 'تاریخ مورد نظر خود را انتخاب نمایید',
-            altFormat: 'YYYY-MM-DD HH:mm',
-            color: '#4F46E5',
-            autoSubmit: false,
-            compactTime: true,
-            type: 'datetime',
-            localConfig: {
-                ar: {
-                    dow: 0,
-                    dir: 'rtl',
-                    displayFormat: vm => {
-                        switch (vm.type) {
-                            case 'date':
-                                return 'YYYY/MM/DD'
-                            case 'datetime':
-                                return 'YYYY/MM/DD HH:mm'
-                            case 'year':
-                                return 'YYYY'
-                            case 'month':
-                                return 'MM'
-                            case 'yearmonth':
-                                return 'YY/MM'
-                            case 'time':
-                                return 'HH:mm'
-                        }
-                    },
-                    lang: {
-                        label: 'AR',
-                        submit: 'اختيار',
-                        cancel: 'إلغاء',
-                        now: 'الآن',
-                        nextMonth: 'الشهر القادم',
-                        prevMonth: 'الشهر الماضي'
-                    }
-                },
-                en: {
-                    dow: 0,
-                    dir: 'ltr',
-                    displayFormat: vm => {
-                        switch (vm.type) {
-                            case 'date':
-                                return 'YYYY/MM/DD'
-                            case 'datetime':
-                                return 'YYYY/MM/DD HH:mm'
-                            case 'year':
-                                return 'YYYY'
-                            case 'month':
-                                return 'MM'
-                            case 'yearmonth':
-                                return 'YY/MM'
-                            case 'time':
-                                return 'HH:mm'
-                        }
-                    }
-                }
-            },
+  .use(head)
+  .use(pinia)
+  .use(router)
+  .use(FloatingVue)
+  .use(VueLazyLoad)
+  .use(ContextMenu)
+  .use(Vue3ColorPicker)
+  .use(VueEasyLightbox)
+  .use(Vue3PersianDatetimePicker, {
+    name: 'DatePicker',
+    props: {
+      dir: 'rtl',
+      clearable: true,
+      format: 'YYYY-MM-DD HH:mm',
+      displayFormat: 'jYYYY-jMM-jDD HH:mm',
+      editable: false,
+      inputClass: 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+      placeholder: 'تاریخ مورد نظر خود را انتخاب نمایید',
+      altFormat: 'YYYY-MM-DD HH:mm',
+      color: '#4F46E5',
+      autoSubmit: false,
+      compactTime: true,
+      type: 'datetime',
+      localConfig: {
+        ar: {
+          dow: 0,
+          dir: 'rtl',
+          displayFormat: vm => {
+            switch (vm.type) {
+              case 'date':
+                return 'YYYY/MM/DD'
+              case 'datetime':
+                return 'YYYY/MM/DD HH:mm'
+              case 'year':
+                return 'YYYY'
+              case 'month':
+                return 'MM'
+              case 'yearmonth':
+                return 'YY/MM'
+              case 'time':
+                return 'HH:mm'
+            }
+          },
+          lang: {
+            label: 'AR',
+            submit: 'اختيار',
+            cancel: 'إلغاء',
+            now: 'الآن',
+            nextMonth: 'الشهر القادم',
+            prevMonth: 'الشهر الماضي'
+          }
+        },
+        en: {
+          dow: 0,
+          dir: 'ltr',
+          displayFormat: vm => {
+            switch (vm.type) {
+              case 'date':
+                return 'YYYY/MM/DD'
+              case 'datetime':
+                return 'YYYY/MM/DD HH:mm'
+              case 'year':
+                return 'YYYY'
+              case 'month':
+                return 'MM'
+              case 'yearmonth':
+                return 'YY/MM'
+              case 'time':
+                return 'HH:mm'
+            }
+          }
         }
-    })
-    .use(Toast, {
-        transition: 'Vue-Toastification__fade',
-        rtl: true,
-        position: POSITION.TOP_LEFT,
-        timeout: 5000,
-        // Enqueues toasts of the same type, preventing duplicates
-        filterToasts: (toasts) => {
-            // Keep track of existing types
-            const types = {};
-            return toasts.reduce((aggToasts, toast) => {
-                // Check if type was not seen before
-                if (!types[toast.type] || parseInt(types[toast.type], 10) < 2) {
-                    aggToasts.push(toast);
-                    types[toast.type] = types[toast.type] ? (parseInt(types[toast.type], 10) + 1) : 1;
-                }
-                return aggToasts;
-            }, []);
+      },
+    }
+  })
+  .use(Toast, {
+    transition: 'Vue-Toastification__fade',
+    rtl: true,
+    position: POSITION.TOP_LEFT,
+    timeout: 5000,
+    // Enqueues toasts of the same type, preventing duplicates
+    filterToasts: (toasts) => {
+      // Keep track of existing types
+      const types = {};
+      return toasts.reduce((aggToasts, toast) => {
+        // Check if type was not seen before
+        if (!types[toast.type] || parseInt(types[toast.type], 10) < 2) {
+          aggToasts.push(toast);
+          types[toast.type] = types[toast.type] ? (parseInt(types[toast.type], 10) + 1) : 1;
         }
-    })
-    .component('layout-guest', LayoutGuest)
-    .component('layout-blog', LayoutBlog)
-    .component('layout-user', LayoutUser)
-    .component('layout-admin', LayoutAdmin)
-    .component('layout-empty', LayoutEmpty)
-    .mount('#app')
+        return aggToasts;
+      }, []);
+    }
+  })
+  .component('layout-guest', LayoutGuest)
+  .component('layout-blog', LayoutBlog)
+  .component('layout-user', LayoutUser)
+  .component('layout-admin', LayoutAdmin)
+  .component('layout-empty', LayoutEmpty)
+  .mount('#app')

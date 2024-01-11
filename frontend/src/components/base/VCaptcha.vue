@@ -19,7 +19,7 @@
             @click="getCaptcha" :disabled="!canLoad"
     >
       <ArrowPathRoundedSquareIcon
-          :class="[
+        :class="[
                     'w-6 h-6 mx-auto transition-all',
                     canLoad ? 'group-active:w-5 group-active:h-5 group-hover:rotate-90' : '',
                 ]"/>
@@ -55,17 +55,17 @@ function getCaptcha() {
     hasCaptcha.value = false
 
     useRequest(apiRoutes.captcha, null, {
-          success: (response) => {
-            captcha.image = response.img
-            captcha.key = response.key
-            emit('update:modelValue', response.key)
-            hasCaptcha.value = true
-            return false
-          },
-          finally: () => {
-            canLoad.value = true
-          },
-        }
+        success: (response) => {
+          captcha.image = response.img
+          captcha.key = response.key
+          emit('update:modelValue', response.key)
+          hasCaptcha.value = true
+          return false
+        },
+        finally: () => {
+          canLoad.value = true
+        },
+      }
     )
   }
 }
@@ -78,7 +78,3 @@ onMounted(() => {
   getCaptcha()
 })
 </script>
-
-<style scoped>
-
-</style>

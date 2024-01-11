@@ -1,29 +1,29 @@
 <template>
   <VTransitionSlideFadeUpY mode="out-in">
     <div
-        v-if="blog && blog?.id"
-        :class="[containerClass]"
-        class="w-full h-full p-3 border bg-white"
+      v-if="blog && blog?.id"
+      :class="[containerClass]"
+      class="w-full h-full p-3 border bg-white"
     >
       <div class="flex flex-col sm:flex-row gap-3 h-full">
         <router-link
-            :to="{name: 'blog.detail', params: {id: blog.id}}"
-            target="_blank"
-            class="group block shrink-0"
+          :to="{name: 'blog.detail', params: {id: blog.id}}"
+          target="_blank"
+          class="group block shrink-0"
         >
           <base-lazy-image
-              :alt="blog.title"
-              :lazy-src="blog.image.path"
-              class="bg-white !object-cover rounded-lg transition group-hover:scale-95 w-full h-56 sm:w-20 sm:h-20"
+            :alt="blog.title"
+            :lazy-src="blog.image.path"
+            class="bg-white !object-cover rounded-lg transition group-hover:scale-95 w-full h-56 sm:w-20 sm:h-20"
           />
         </router-link>
 
         <div class="w-full px-2 flex flex-col justify-center gap-3">
           <router-link
-              :to="{name: 'blog.detail', params: {id: blog.id}}"
-              target="_blank"
-              class="text-sm leading-loose h-[40px] ellipsis-2 hover:text-indigo-600 transition"
-              :title="blog.title"
+            :to="{name: 'blog.detail', params: {id: blog.id}}"
+            target="_blank"
+            class="text-sm leading-loose h-[40px] ellipsis-2 hover:text-indigo-600 transition"
+            :title="blog.title"
           >
             <h1 class="font-iranyekan-bold text-sm">
               {{ blog.title }}
@@ -58,7 +58,3 @@ const props = defineProps({
   },
 })
 </script>
-
-<style scoped>
-
-</style>

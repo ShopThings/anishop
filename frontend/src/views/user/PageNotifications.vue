@@ -1,16 +1,16 @@
 <template>
   <base-paginator
-      container-class="flex flex-col gap-3"
-      pagination-theme="modern"
-      v-model:items="notifications"
-      :per-page="10"
-      :path="getPath"
+    container-class="flex flex-col gap-3"
+    pagination-theme="modern"
+    v-model:items="notifications"
+    :per-page="10"
+    :path="getPath"
   >
     <template #empty>
       <partial-empty-rows
-          image="/empty-statuses/empty-notification.svg"
-          image-class="w-60"
-          message="هیچ اعلانی برای شما وجود ندارد"
+        image="/empty-statuses/empty-notification.svg"
+        image-class="w-60"
+        message="هیچ اعلانی برای شما وجود ندارد"
       />
     </template>
 
@@ -54,7 +54,3 @@ const getPath = computed(() => {
 })
 const notifications = ref([])
 </script>
-
-<style scoped>
-
-</style>

@@ -80,18 +80,18 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @inheritDoc
      */
-    public function whereLike($column, $value): static
+    public function whereLike($column, $value, string $operand = '%{value}%'): static
     {
-        $this->_whereLike($column, $value);
+        $this->_whereLike($column, $value, $operand);
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function whereNotLike($column, $value): static
+    public function whereNotLike($column, $value, string $operand = '%{value}%'): static
     {
-        $this->_whereLike($column, $value, true);
+        $this->_whereLike($column, $value, $operand, true);
         return $this;
     }
 
@@ -161,6 +161,15 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @inheritDoc
      */
+    public function whereRaw(string $expression, array $bindings): static
+    {
+        $this->_whereRaw($expression, $bindings);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function group(Closure $callback, ?string $prefix = ''): static
     {
         $this->_group($callback, $prefix);
@@ -221,18 +230,18 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @inheritDoc
      */
-    public function orWhereLike($column, $value): static
+    public function orWhereLike($column, $value, string $operand = '%{value}%'): static
     {
-        $this->_whereLike($column, $value, false, 'or');
+        $this->_whereLike($column, $value, $operand, false, 'or');
         return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function orWhereNotLike($column, $value): static
+    public function orWhereNotLike($column, $value, string $operand = '%{value}%'): static
     {
-        $this->_whereLike($column, $value, true, 'or');
+        $this->_whereLike($column, $value, $operand, true, 'or');
         return $this;
     }
 
@@ -296,6 +305,15 @@ class WhereBuilder implements WhereBuilderInterface
     public function orWhereRegexp($column, $pattern): static
     {
         $this->_whereRegexp($column, $pattern, 'or');
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function orWhereRaw(string $expression, array $bindings): static
+    {
+        $this->_whereRaw($expression, $bindings, 'or');
         return $this;
     }
 
@@ -571,18 +589,19 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @param $column
      * @param $value
+     * @param string $operand
      * @param bool $not
      * @param string $boolean
      * @return void
      */
-    protected function _whereLike($column, $value, bool $not = false, string $boolean = 'and'): void
+    protected function _whereLike($column, $value, string $operand, bool $not = false, string $boolean = 'and'): void
     {
         if (is_array($column)) {
             foreach ($column as $val) {
-                $this->_whereLikeOne($val, $value, $not, $boolean);
+                $this->_whereLikeOne($val, $value, $operand, $not, $boolean);
             }
         } else {
-            $this->_whereLikeOne($column, $value, $not, $boolean);
+            $this->_whereLikeOne($column, $value, $operand, $not, $boolean);
         }
     }
 
@@ -640,6 +659,24 @@ class WhereBuilder implements WhereBuilderInterface
             }
         } else {
             $this->_whereRegexpOne($column, $pattern, $boolean);
+        }
+    }
+
+    /**
+     * @param string $expression
+     * @param array $bindings
+     * @param string $boolean
+     * @return void
+     */
+    protected function _whereRaw(string $expression, array $bindings, string $boolean = 'and'): void
+    {
+        $this->where[] = [
+            'query' => '(' . $expression . ')',
+            'bool' => $boolean,
+        ];
+
+        foreach ($bindings as $binding) {
+            $this->bindings[] = $binding;
         }
     }
 
@@ -752,18 +789,23 @@ class WhereBuilder implements WhereBuilderInterface
     /**
      * @param $column
      * @param $value
+     * @param string $operand
      * @param bool $not
      * @param string $boolean
      * @return void
      */
-    protected function _whereLikeOne($column, $value, bool $not = false, string $boolean = 'and'): void
+    protected function _whereLikeOne($column, $value, string $operand, bool $not = false, string $boolean = 'and'): void
     {
         $column = $this->getColumnWithPrefix($column);
         $this->where[] = [
             'query' => $column . ($not ? ' NOT' : '') . ' LIKE ?',
             'bool' => $boolean,
         ];
-        $this->bindings[] = '%' . $value . '%';
+
+        $value = str_replace('%', '\\%', $value);
+        $value = str_replace('_', '\\_', $value);
+
+        $this->bindings[] = str_replace('{value}', $value, $operand);
     }
 
     /**

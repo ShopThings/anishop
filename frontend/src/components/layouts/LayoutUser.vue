@@ -79,7 +79,3 @@ watch(route, (to) => {
   breadcrumb.value = to.meta?.breadcrumb || []
 }, {flush: 'pre', immediate: true, deep: true})
 </script>
-
-<style scoped>
-
-</style>

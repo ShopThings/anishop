@@ -6,18 +6,18 @@
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap items-end mb-3">
                 <div class="p-2 w-full sm:w-1/2 lg:w-4/12">
                   <base-input
-                      label-title="نام منو"
-                      placeholder="وارد نمایید"
-                      name="title"
-                      :value="menu?.title"
+                    label-title="نام منو"
+                    placeholder="وارد نمایید"
+                    name="title"
+                    :value="menu?.title"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -26,10 +26,10 @@
                 </div>
                 <div class="p-2 w-full sm:w-1/2 lg:w-6/12">
                   <base-input
-                      label-title="لینک"
-                      placeholder="وارد نمایید"
-                      name="link"
-                      :value="menu?.link"
+                    label-title="لینک"
+                    placeholder="وارد نمایید"
+                    name="link"
+                    :value="menu?.link"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -38,12 +38,12 @@
                 </div>
                 <div class="p-2 w-full sm:w-1/2 lg:w-2/12">
                   <base-input
-                      label-title="اولویت"
-                      placeholder="وارد نمایید"
-                      type="number"
-                      :min="0"
-                      name="priority"
-                      :value="menu?.priority"
+                    label-title="اولویت"
+                    placeholder="وارد نمایید"
+                    type="number"
+                    :min="0"
+                    name="priority"
+                    :value="menu?.priority"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -52,11 +52,11 @@
                 </div>
                 <div class="p-2 w-full sm:w-auto">
                   <base-switch
-                      label="نمایش منو"
-                      name="is_published"
-                      :enabled="menu?.is_published"
-                      sr-text="نمایش/عدم نمایش منو"
-                      @change="(status) => {menu.is_published=status}"
+                    label="نمایش منو"
+                    name="is_published"
+                    :enabled="menu?.is_published"
+                    sr-text="نمایش/عدم نمایش منو"
+                    @change="(status) => {menu.is_published=status}"
                   />
                 </div>
               </div>
@@ -65,12 +65,12 @@
                 <nested-menus v-if="menu && menu.children" :menus="menu.children"/>
 
                 <div
-                    v-if="menu?.can_have_children"
-                    class="mt-3 mb-1"
+                  v-if="menu?.can_have_children"
+                  class="mt-3 mb-1"
                 >
                   <base-button
-                      class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
-                      @click="handleNewMenuClick"
+                    class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
+                    @click="handleNewMenuClick"
                   >
                     <span class="mr-auto text-sm">ساخت زیر منو</span>
                     <PlusIcon class="h-6 w-6 mr-auto sm:mr-2"/>
@@ -80,15 +80,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -176,7 +176,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

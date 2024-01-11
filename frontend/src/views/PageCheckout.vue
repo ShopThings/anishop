@@ -6,9 +6,9 @@
     <div class="text-orange-600">
       لطفا قبل از پرداخت، حتما صفحه
       <router-link
-          :to="{name: 'pages', params: {url: 'how-payment-works'}}"
-          target="_blank"
-          class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
+        :to="{name: 'pages', params: {url: 'how-payment-works'}}"
+        target="_blank"
+        class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
       >
         نحوه پرداخت و پرداخت‌های چند مرحله‌ای
       </router-link>
@@ -29,14 +29,14 @@
                 <div class="flex flex-col sm:flex-row items-end sm:items-center">
                   <div class="p-2 w-full">
                     <base-input
-                        placeholder="کد را وارد نمایید"
-                        name="receiver_name"
+                      placeholder="کد را وارد نمایید"
+                      name="receiver_name"
                     />
                   </div>
                   <div class="p-2 w-full sm:w-auto shrink-0">
                     <base-button
-                        type="button"
-                        class="bg-primary px-6 w-full"
+                      type="button"
+                      class="bg-primary px-6 w-full"
                     >
                       <span>اعمال کوپن</span>
                     </base-button>
@@ -49,7 +49,7 @@
               <template #body>
                 <div class="flex flex-col md:flex-row lg:flex-col gap-6">
                   <div
-                      class="border-b border-l-0 md:border-b-0 md:border-l lg:border-b lg:border-l-0 pb-6 md:pb-0 md:pl-6 lg:pb-6 lg:pl-0 md:w-1/2 lg:w-auto">
+                    class="border-b border-l-0 md:border-b-0 md:border-l lg:border-b lg:border-l-0 pb-6 md:pb-0 md:pl-6 lg:pb-6 lg:pl-0 md:w-1/2 lg:w-auto">
                     <div class="flex items-start text-lime-600 gap-3 text-sm mb-3">
                       <InformationCircleIcon class="w-6 h-6 shrink-0"/>
                       <div class="leading-relaxed">
@@ -93,10 +93,10 @@
                     <div class="flex sm:flex-col gap-2">
                       <partial-input-label title="نام:"/>
                       <base-input
-                          name="first_name"
-                          :value="user?.first_name"
-                          :is-editable="false"
-                          :has-edit-mode="false"
+                        name="first_name"
+                        :value="user?.first_name"
+                        :is-editable="false"
+                        :has-edit-mode="false"
                       />
                     </div>
                   </div>
@@ -104,10 +104,10 @@
                     <div class="flex sm:flex-col gap-2">
                       <partial-input-label title="نام خانوادگی:"/>
                       <base-input
-                          name="last_name"
-                          :value="user?.last_name"
-                          :is-editable="false"
-                          :has-edit-mode="false"
+                        name="last_name"
+                        :value="user?.last_name"
+                        :is-editable="false"
+                        :has-edit-mode="false"
                       />
                     </div>
                   </div>
@@ -115,10 +115,10 @@
                     <div class="flex sm:flex-col gap-2">
                       <partial-input-label title="کد ملی:"/>
                       <base-input
-                          name="last_name"
-                          :value="user?.national_code"
-                          :is-editable="false"
-                          :has-edit-mode="false"
+                        name="last_name"
+                        :value="user?.national_code"
+                        :is-editable="false"
+                        :has-edit-mode="false"
                       />
                     </div>
                   </div>
@@ -134,8 +134,8 @@
                   </h2>
 
                   <base-button
-                      type="button"
-                      class="bg-secondary px-6"
+                    type="button"
+                    class="bg-secondary px-6"
                   >
                     <span>انتخاب آدرس</span>
                   </base-button>
@@ -144,56 +144,56 @@
                 <div class="flex flex-wrap">
                   <div class="p-2 w-full sm:w-1/2 lg:w-full">
                     <base-input
-                        label-title="نام"
-                        placeholder="حروف فارسی"
-                        name="receiver_name"
+                      label-title="نام"
+                      placeholder="حروف فارسی"
+                      name="receiver_name"
                     />
                   </div>
                   <div class="p-2 w-full sm:w-1/2 lg:w-full">
                     <base-input
-                        label-title="شماره تماس"
-                        placeholder="09xxxxxxxxx"
-                        name="receiver_mobile"
+                      label-title="شماره تماس"
+                      placeholder="09xxxxxxxxx"
+                      name="receiver_mobile"
                     />
                   </div>
                   <div class="p-2 w-full sm:w-1/2 lg:w-full">
                     <partial-input-label title="انتخاب استان"/>
                     <base-select
-                        :options="provinces"
-                        options-key="id"
-                        options-text="name"
-                        :is-loading="provinceLoading"
-                        :selected="selectedProvince"
-                        name="province"
-                        @change="(status) => {selectedProvince = status}"
+                      :options="provinces"
+                      options-key="id"
+                      options-text="name"
+                      :is-loading="provinceLoading"
+                      :selected="selectedProvince"
+                      name="province"
+                      @change="(status) => {selectedProvince = status}"
                     />
                     <partial-input-error-message :error-message="errors.province"/>
                   </div>
                   <div class="p-2 w-full sm:w-1/2 lg:w-full">
                     <partial-input-label title="انتخاب شهرستان"/>
                     <base-select
-                        :options="cities"
-                        options-key="id"
-                        options-text="name"
-                        :is-loading="cityLoading"
-                        :selected="selectedCity"
-                        name="city"
-                        @change="(status) => {selectedCity = status}"
+                      :options="cities"
+                      options-key="id"
+                      options-text="name"
+                      :is-loading="cityLoading"
+                      :selected="selectedCity"
+                      name="city"
+                      @change="(status) => {selectedCity = status}"
                     />
                     <partial-input-error-message :error-message="errors.city"/>
                   </div>
                   <div class="p-2 w-full sm:w-1/2 lg:w-full">
                     <base-input
-                        :is-optional="true"
-                        label-title="کد پستی"
-                        placeholder="وارد نمایید"
-                        name="postal_code"
+                      :is-optional="true"
+                      label-title="کد پستی"
+                      placeholder="وارد نمایید"
+                      name="postal_code"
                     />
                   </div>
                   <div class="p-2 w-full">
                     <base-textarea
-                        label-title="آدرس محل سکونت"
-                        name="address"
+                      label-title="آدرس محل سکونت"
+                      name="address"
                     />
                   </div>
                 </div>
@@ -202,37 +202,37 @@
           </div>
 
           <Vue3StickySidebar
-              class="w-full lg:w-1/2"
-              containerSelector=".cart-checkout-sticky-container"
-              innerWrapperSelector='.sidebar__inner'
-              :top-spacing="114"
-              :bottom-spacing="20"
-              :min-width="1024"
+            class="w-full lg:w-1/2"
+            containerSelector=".cart-checkout-sticky-container"
+            innerWrapperSelector='.sidebar__inner'
+            :top-spacing="114"
+            :bottom-spacing="20"
+            :min-width="1024"
           >
             <partial-card class="border-0 p-4">
               <template #body>
                 <partial-general-title title="محصولات انتخاب شده" container-class="mb-6"/>
                 <ul
-                    class="flex flex-col divide-y divide-slate-200 max-h-[32rem] my-custom-scrollbar bg-slate-50 rounded-lg">
+                  class="flex flex-col divide-y divide-slate-200 max-h-[32rem] my-custom-scrollbar bg-slate-50 rounded-lg">
                   <li class="relative flex flex-col gap-3 py-6 pr-3 pl-10">
                     <div class="shrink-0 flex flex-col sm:flex-row gap-3">
                       <div class="shrink-0">
                         <router-link
-                            :to="{name: 'product.detail', params: {id: 1}}"
-                            class="inline-block border rounded-lg"
+                          :to="{name: 'product.detail', params: {id: 1}}"
+                          class="inline-block border rounded-lg"
                         >
                           <base-lazy-image
-                              alt="تصویر محصول"
-                              lazy-src="/src/assets/products/p1.jpg"
-                              class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
+                            alt="تصویر محصول"
+                            lazy-src="/src/assets/products/p1.jpg"
+                            class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
                           />
                         </router-link>
                       </div>
 
                       <div class="flex gap-3 flex-col">
                         <router-link
-                            :to="{name: 'product.detail', params: {id: 1}}"
-                            class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
+                          :to="{name: 'product.detail', params: {id: 1}}"
+                          class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
                         >
                           لپتاپ گیمینگ عمو فردوس مدل RTX 1600 با صفحه تمام لمسی (الکی مثلا)
                         </router-link>
@@ -256,14 +256,14 @@
                     </div>
 
                     <div
-                        class="shrink-0 text-sm flex flex-col sm:flex-row flex-wrap gap-3 sm:items-center sm:divide-x sm:divide-x-reverse">
+                      class="shrink-0 text-sm flex flex-col sm:flex-row flex-wrap gap-3 sm:items-center sm:divide-x sm:divide-x-reverse">
                       <div class="flex items-center">
                         <span class="text-gray-600 ml-2 text-xs sm:hidden">رنگ:</span>
                         قهوه‌ای تیره
                         <span
-                            v-tooltip.top="'قهوه‌ای تیره'"
-                            class="inline-block w-5 h-5 rounded-full border mr-2"
-                            style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                         ></span>
                       </div>
                       <div class="sm:pr-3">
@@ -280,21 +280,21 @@
                     <div class="shrink-0 flex flex-col sm:flex-row gap-3">
                       <div class="shrink-0">
                         <router-link
-                            :to="{name: 'product.detail', params: {id: 1}}"
-                            class="inline-block border rounded-lg"
+                          :to="{name: 'product.detail', params: {id: 1}}"
+                          class="inline-block border rounded-lg"
                         >
                           <base-lazy-image
-                              alt="تصویر محصول"
-                              lazy-src="/src/assets/products/p2.jpg"
-                              class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
+                            alt="تصویر محصول"
+                            lazy-src="/src/assets/products/p2.jpg"
+                            class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
                           />
                         </router-link>
                       </div>
 
                       <div class="flex gap-3 flex-col">
                         <router-link
-                            :to="{name: 'product.detail', params: {id: 1}}"
-                            class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
+                          :to="{name: 'product.detail', params: {id: 1}}"
+                          class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
                         >
                           لپتاپ گیمینگ عمو فردوس مدل RTX 1600 با صفحه تمام لمسی (الکی مثلا)
                         </router-link>
@@ -318,14 +318,14 @@
                     </div>
 
                     <div
-                        class="shrink-0 text-sm flex flex-col sm:flex-row flex-wrap gap-3 sm:items-center sm:divide-x sm:divide-x-reverse">
+                      class="shrink-0 text-sm flex flex-col sm:flex-row flex-wrap gap-3 sm:items-center sm:divide-x sm:divide-x-reverse">
                       <div class="flex items-center">
                         <span class="text-gray-600 ml-2 text-xs sm:hidden">رنگ:</span>
                         قهوه‌ای تیره
                         <span
-                            v-tooltip.top="'قهوه‌ای تیره'"
-                            class="inline-block w-5 h-5 rounded-full border mr-2"
-                            style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                         ></span>
                       </div>
                       <div class="sm:pr-3">
@@ -342,21 +342,21 @@
                     <div class="shrink-0 flex flex-col sm:flex-row gap-3">
                       <div class="shrink-0">
                         <router-link
-                            :to="{name: 'product.detail', params: {id: 1}}"
-                            class="inline-block border rounded-lg"
+                          :to="{name: 'product.detail', params: {id: 1}}"
+                          class="inline-block border rounded-lg"
                         >
                           <base-lazy-image
-                              alt="تصویر محصول"
-                              lazy-src="/src/assets/products/p3.jpg"
-                              class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
+                            alt="تصویر محصول"
+                            lazy-src="/src/assets/products/p3.jpg"
+                            class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
                           />
                         </router-link>
                       </div>
 
                       <div class="flex gap-3 flex-col">
                         <router-link
-                            :to="{name: 'product.detail', params: {id: 1}}"
-                            class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
+                          :to="{name: 'product.detail', params: {id: 1}}"
+                          class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
                         >
                           لپتاپ گیمینگ عمو فردوس مدل RTX 1600 با صفحه تمام لمسی (الکی مثلا)
                         </router-link>
@@ -380,14 +380,14 @@
                     </div>
 
                     <div
-                        class="shrink-0 text-sm flex flex-col sm:flex-row flex-wrap gap-3 sm:items-center sm:divide-x sm:divide-x-reverse">
+                      class="shrink-0 text-sm flex flex-col sm:flex-row flex-wrap gap-3 sm:items-center sm:divide-x sm:divide-x-reverse">
                       <div class="flex items-center">
                         <span class="text-gray-600 ml-2 text-xs sm:hidden">رنگ:</span>
                         قهوه‌ای تیره
                         <span
-                            v-tooltip.top="'قهوه‌ای تیره'"
-                            class="inline-block w-5 h-5 rounded-full border mr-2"
-                            style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                         ></span>
                       </div>
                       <div class="sm:pr-3">
@@ -456,18 +456,18 @@
                   <ul class="space-y-3">
                     <li>
                       <base-radio
-                          v-model="paymentMethod"
-                          label-title="پرداخت آیدی پی"
-                          value="id_pay"
-                          name="payment_method"
-                          container-class="flex-row-reverse justify-end"
+                        v-model="paymentMethod"
+                        label-title="پرداخت آیدی پی"
+                        value="id_pay"
+                        name="payment_method"
+                        container-class="flex-row-reverse justify-end"
                       >
                         <template #text="{title}">
                           <div class="flex items-center gap-3">
                             <img
-                                src="/src/assets/gateways/IdPay.png"
-                                alt=""
-                                class="w-16 h-16 object-contain rounded-lg"
+                              src="/src/assets/gateways/IdPay.png"
+                              alt=""
+                              class="w-16 h-16 object-contain rounded-lg"
                             />
                             <span>{{ title }}</span>
                           </div>
@@ -476,18 +476,18 @@
                     </li>
                     <li>
                       <base-radio
-                          v-model="paymentMethod"
-                          label-title="پرداخت الکترونیک سداد"
-                          value="sadad"
-                          name="payment_method"
-                          container-class="flex-row-reverse justify-end"
+                        v-model="paymentMethod"
+                        label-title="پرداخت الکترونیک سداد"
+                        value="sadad"
+                        name="payment_method"
+                        container-class="flex-row-reverse justify-end"
                       >
                         <template #text="{title}">
                           <div class="flex items-center gap-3">
                             <img
-                                src="/src/assets/gateways/sadad.jpg"
-                                alt=""
-                                class="w-16 h-16 object-contain rounded-lg"
+                              src="/src/assets/gateways/sadad.jpg"
+                              alt=""
+                              class="w-16 h-16 object-contain rounded-lg"
                             />
                             <span>{{ title }}</span>
                           </div>
@@ -496,18 +496,18 @@
                     </li>
                     <li>
                       <base-radio
-                          v-model="paymentMethod"
-                          label-title="به پرداخت ملت"
-                          value="beh_pardakht"
-                          name="payment_method"
-                          container-class="flex-row-reverse justify-end"
+                        v-model="paymentMethod"
+                        label-title="به پرداخت ملت"
+                        value="beh_pardakht"
+                        name="payment_method"
+                        container-class="flex-row-reverse justify-end"
                       >
                         <template #text="{title}">
                           <div class="flex items-center gap-3">
                             <img
-                                src="/src/assets/gateways/beh-pardakht.png"
-                                alt=""
-                                class="w-16 h-16 object-contain rounded-lg"
+                              src="/src/assets/gateways/beh-pardakht.png"
+                              alt=""
+                              class="w-16 h-16 object-contain rounded-lg"
                             />
                             <span>{{ title }}</span>
                           </div>
@@ -517,15 +517,15 @@
                   </ul>
 
                   <base-button
-                      type="submit"
-                      class="bg-emerald-500 w-full mt-6 flex items-center gap-3 justify-center"
-                      :disabled="isSubmitting"
+                    type="submit"
+                    class="bg-emerald-500 w-full mt-6 flex items-center gap-3 justify-center"
+                    :disabled="isSubmitting"
                   >
                     <VTransitionFade>
                       <loader-circle
-                          v-if="isSubmitting"
-                          main-container-klass="absolute w-full h-full top-0 left-0"
-                          big-circle-color="border-transparent"
+                        v-if="isSubmitting"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                        big-circle-color="border-transparent"
                       />
                     </VTransitionFade>
 
@@ -609,7 +609,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

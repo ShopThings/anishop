@@ -1,8 +1,8 @@
 <template>
 
   <div
-      v-if="type === 'side'"
-      :class="containerClass"
+    v-if="type === 'side'"
+    :class="containerClass"
   >
     <h1 class="text-center font-iranyekan-bold">
       <template v-if="slots['title']">
@@ -17,13 +17,13 @@
   </div>
 
   <div
-      v-else
-      class="flex gap-3 items-center justify-between"
-      :class="containerClass"
+    v-else
+    class="flex gap-3 items-center justify-between"
+    :class="containerClass"
   >
     <h1
-        :class="titleSize"
-        class="border-b-[3px] border-primary inline-block pb-2 font-iranyekan-bold"
+      :class="titleSize"
+      class="border-b-[3px] border-primary inline-block pb-2 font-iranyekan-bold"
     >
       <template v-if="slots['title']">
         <slot name="title"></slot>
@@ -63,7 +63,3 @@ defineProps({
 })
 const slots = useSlots()
 </script>
-
-<style scoped>
-
-</style>

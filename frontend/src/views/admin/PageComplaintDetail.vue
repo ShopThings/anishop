@@ -3,15 +3,15 @@
     <template #header>
       جزئیات شکایت -
       <span
-          v-if="complaint?.id"
-          class="text-teal-600"
+        v-if="complaint?.id"
+        class="text-teal-600"
       >{{ complaint?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="content"
+          :loading="loading"
+          type="content"
         >
           <template #content>
             <ul class="grid grid-cols-1 lg:grid-cols-3 gap-3">
@@ -68,7 +68,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

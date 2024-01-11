@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Home;
 
+use App\Http\Resources\Showing\ProductShowResource;
+use App\Http\Resources\Showing\SliderPlaceShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,8 +19,8 @@ class MainAllSlidersResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'place' => $this->place,
-            'items' => $this->items,
+            'place' => new SliderPlaceShowResource($this->place),
+            'items' => ProductShowResource::collection($this->items),
             'options' => $this->options,
         ];
     }

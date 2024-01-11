@@ -20,7 +20,3 @@ defineExpose({
   card,
 })
 </script>
-
-<style scoped>
-
-</style>

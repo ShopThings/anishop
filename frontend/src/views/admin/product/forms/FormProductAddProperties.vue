@@ -3,9 +3,9 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-            v-if="isSubmitting"
-            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-            container-bg-color="bg-blue-50 opacity-40"
+          v-if="isSubmitting"
+          main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+          container-bg-color="bg-blue-50 opacity-40"
         />
 
         <div class="p-2">
@@ -18,14 +18,14 @@
     <partial-card>
       <template #body>
         <partial-stepy-next-prev-buttons
-            :current-step="options.currentStep"
-            :current-step-index="options.currentStepIndex"
-            :last-step="options.lastStep"
-            :allow-next-step="!isSubmitting"
-            :allow-prev-step="false"
-            :show-prev-step-button="false"
-            :loading="isSubmitting"
-            @finish="handleFinishClick"
+          :current-step="options.currentStep"
+          :current-step-index="options.currentStepIndex"
+          :last-step="options.lastStep"
+          :allow-next-step="!isSubmitting"
+          :allow-prev-step="false"
+          :show-prev-step-button="false"
+          :loading="isSubmitting"
+          @finish="handleFinishClick"
         />
       </template>
     </partial-card>
@@ -71,7 +71,3 @@ const onSubmit = handleSubmit((values, actions) => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

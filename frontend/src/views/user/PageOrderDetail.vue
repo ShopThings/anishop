@@ -1,7 +1,7 @@
 <template>
   <div
-      v-if="1"
-      class="my-3"
+    v-if="1"
+    class="my-3"
   >
     <partial-badge-status-send class="w-full py-2 !text-sm"/>
   </div>
@@ -12,8 +12,8 @@
     </h2>
 
     <base-loading-panel
-        type="list"
-        :loading="loadingInfo"
+      type="list"
+      :loading="loadingInfo"
     >
       <template #content>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -111,8 +111,8 @@
     </h2>
 
     <base-loading-panel
-        type="list"
-        :loading="loadingInfo"
+      type="list"
+      :loading="loadingInfo"
     >
       <template #content>
         <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
@@ -121,15 +121,15 @@
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">نام:</span>
                 <base-input
-                    v-if="1"
-                    name="receiver_name"
-                    value="محمد مهدی دهقان منشادی"
-                    :is-editable="true"
-                    :has-edit-mode="false"
+                  v-if="1"
+                  name="receiver_name"
+                  value="محمد مهدی دهقان منشادی"
+                  :is-editable="true"
+                  :has-edit-mode="false"
                 />
                 <div
-                    v-else
-                    class="text-sm"
+                  v-else
+                  class="text-sm"
                 >
                   محمد مهدی دهقان منشادی
                 </div>
@@ -141,15 +141,15 @@
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">شماره تماس:</span>
                 <base-input
-                    v-if="1"
-                    name="receiver_mobile"
-                    value="09179516271"
-                    :is-editable="true"
-                    :has-edit-mode="false"
+                  v-if="1"
+                  name="receiver_mobile"
+                  value="09179516271"
+                  :is-editable="true"
+                  :has-edit-mode="false"
                 />
                 <div
-                    v-else
-                    class="text-sm tracking-widest"
+                  v-else
+                  class="text-sm tracking-widest"
                 >
                   09179516271
                 </div>
@@ -192,15 +192,15 @@
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
                 <base-input
-                    v-if="1"
-                    name="postal_code"
-                    value="1234567891"
-                    :is-editable="true"
-                    :has-edit-mode="false"
+                  v-if="1"
+                  name="postal_code"
+                  value="1234567891"
+                  :is-editable="true"
+                  :has-edit-mode="false"
                 />
                 <div
-                    v-else
-                    class="text-sm tracking-widest"
+                  v-else
+                  class="text-sm tracking-widest"
                 >
                   1234567891
                 </div>
@@ -212,15 +212,15 @@
               <div class="flex flex-col">
                 <span class="text-xs text-gray-400 mb-1">آدرس:</span>
                 <base-textarea
-                    v-if="1"
-                    name="address"
-                    value="خونمونم فعلا"
-                    :is-editable="true"
-                    :has-edit-mode="false"
+                  v-if="1"
+                  name="address"
+                  value="خونمونم فعلا"
+                  :is-editable="true"
+                  :has-edit-mode="false"
                 />
                 <div
-                    v-else
-                    class="text-sm"
+                  v-else
+                  class="text-sm"
                 >
                   خونمونم فعلا
                 </div>
@@ -238,15 +238,15 @@
     </h2>
 
     <base-loading-panel
-        type="list"
-        :loading="loadingInfo"
+      type="list"
+      :loading="loadingInfo"
     >
       <template #content>
         <base-semi-datatable
-            :is-loading="ordersTableSetting.isLoading"
-            :columns="ordersTableSetting.columns"
-            :rows="ordersTableSetting.rows"
-            :total="ordersTableSetting.total"
+          :is-loading="ordersTableSetting.isLoading"
+          :columns="ordersTableSetting.columns"
+          :rows="ordersTableSetting.rows"
+          :total="ordersTableSetting.total"
         >
           <template #payment_status="{value}">
             <partial-badge-status-payment/>
@@ -278,9 +278,9 @@
 
           <template #op="{value}">
             <a
-                href="javascript:void(0)"
-                class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
-                @click="() => {showOrderPaymentDetail(value)}"
+              href="javascript:void(0)"
+              class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
+              @click="() => {showOrderPaymentDetail(value)}"
             >
               مشاهده جزئیات پرداخت
             </a>
@@ -288,8 +288,8 @@
         </base-semi-datatable>
 
         <partial-dialog
-            v-model:open="orderPaymentDetailOpen"
-            container-klass="overflow-auto"
+          v-model:open="orderPaymentDetailOpen"
+          container-klass="overflow-auto"
         >
           <template #title>
             جزئیات پرداخت
@@ -297,11 +297,11 @@
 
           <template #body>
             <base-datatable
-                :is-loading="false"
-                :is-static-mode="true"
-                :is-slot-mode="true"
-                :columns="orderPaymentsTableSetting.columns"
-                :rows="orderPaymentsTableSetting.rows"
+              :is-loading="false"
+              :is-static-mode="true"
+              :is-slot-mode="true"
+              :columns="orderPaymentsTableSetting.columns"
+              :rows="orderPaymentsTableSetting.rows"
             >
               <template #id="{value, index}">
                 {{ index }}
@@ -337,8 +337,8 @@
     </h2>
 
     <base-loading-panel
-        type="table"
-        :loading="loadingItems"
+      type="table"
+      :loading="loadingItems"
     >
       <template #content>
         <partial-card class="border-0 p-3 sm:col-span-4">
@@ -347,9 +347,9 @@
               <li class="relative flex flex-col md:flex-row mb-2 py-3 pr-3 pl-10">
                 <div class="absolute left-0 top-1.5">
                   <base-floating-drop-down
-                      placement="right-start"
-                      :shift="false"
-                      :items="[
+                    placement="right-start"
+                    :shift="false"
+                    :items="[
                           {
                               text: 'ثبت دیدگاه',
                           },
@@ -367,9 +367,9 @@
 
                     <template #item="{item, hide}">
                       <a
-                          href="javascript:void(0)"
-                          class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
-                          @click="hide()"
+                        href="javascript:void(0)"
+                        class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+                        @click="hide()"
                       >
                         <span class="text-sm">{{ item.text }}</span>
                       </a>
@@ -379,26 +379,26 @@
 
                 <div class="shrink-0">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="inline-block"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="inline-block"
                   >
                     <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p1.jpg"
-                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
+                      alt="تصویر محصول"
+                      lazy-src="/src/assets/products/p1.jpg"
+                      class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                     />
                   </router-link>
                 </div>
                 <div class="grow mr-3">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                   >
                     لپتاپ خیلی باحال و کاربردی عمو فردوس
                   </router-link>
                   <div class="flex flex-wrap mb-2 items-center">
                     <div
-                        class="rounded-lg bg-rose-500 text-white py-1 px-2 my-1 ml-3 flex items-center justify-center">
+                      class="rounded-lg bg-rose-500 text-white py-1 px-2 my-1 ml-3 flex items-center justify-center">
                       <span class="text-xs">%</span>
                       <div class="mr-1 inline-block text-sm">10</div>
                     </div>
@@ -410,7 +410,7 @@
 
                       <div class="relative text-center">
                                                 <span
-                                                    class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
+                                                  class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
                         <div class="text-slate-500 text-sm">
                           500,000
                           <span class="text-xs text-gray-400">تومان</span>
@@ -435,9 +435,9 @@
               <li class="relative flex flex-col md:flex-row mb-2 py-3 pr-3 pl-10">
                 <div class="absolute left-0 top-1.5">
                   <base-floating-drop-down
-                      placement="right-start"
-                      :shift="false"
-                      :items="[
+                    placement="right-start"
+                    :shift="false"
+                    :items="[
                           {
                               text: 'ثبت دیدگاه',
                           },
@@ -455,9 +455,9 @@
 
                     <template #item="{item, hide}">
                       <a
-                          href="javascript:void(0)"
-                          class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
-                          @click="hide()"
+                        href="javascript:void(0)"
+                        class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+                        @click="hide()"
                       >
                         <span class="text-sm">{{ item.text }}</span>
                       </a>
@@ -467,20 +467,20 @@
 
                 <div class="shrink-0">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="inline-block"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="inline-block"
                   >
                     <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p2.jpg"
-                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
+                      alt="تصویر محصول"
+                      lazy-src="/src/assets/products/p2.jpg"
+                      class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                     />
                   </router-link>
                 </div>
                 <div class="grow mr-3">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                   >
                     ماوس آبکی و مسخره‌ای که خیلی قیمت نداره ولی میتونی هر وقت خراب شد یکیشو بگیری
                     چون ارزونه مثلا
@@ -506,9 +506,9 @@
                     <span class="text-gray-600 ml-2 text-xs">رنگ:</span>
                     قهوه‌ای تیره
                     <span
-                        v-tooltip.top="'قهوه‌ای تیره'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #833406;"
+                      v-tooltip.top="'قهوه‌ای تیره'"
+                      class="inline-block w-5 h-5 rounded-full border mr-2"
+                      style="background-color: #833406;"
                     ></span>
                   </div>
                   <div class="mb-2">
@@ -524,9 +524,9 @@
               <li class="relative flex flex-col md:flex-row mb-2 py-3 pr-3 pl-10">
                 <div class="absolute left-0 top-1.5">
                   <base-floating-drop-down
-                      placement="right-start"
-                      :shift="false"
-                      :items="[
+                    placement="right-start"
+                    :shift="false"
+                    :items="[
                           {
                               text: 'ثبت دیدگاه',
                           },
@@ -544,9 +544,9 @@
 
                     <template #item="{item, hide}">
                       <a
-                          href="javascript:void(0)"
-                          class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
-                          @click="hide()"
+                        href="javascript:void(0)"
+                        class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+                        @click="hide()"
                       >
                         <span class="text-sm">{{ item.text }}</span>
                       </a>
@@ -556,20 +556,20 @@
 
                 <div class="shrink-0">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="inline-block"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="inline-block"
                   >
                     <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p3.jpg"
-                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
+                      alt="تصویر محصول"
+                      lazy-src="/src/assets/products/p3.jpg"
+                      class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                     />
                   </router-link>
                 </div>
                 <div class="grow mr-3">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                   >
                     لپتاپ خیلی باحال و کاربردی عمو فردوس
                   </router-link>
@@ -593,9 +593,9 @@
                     <span class="text-gray-600 ml-2 text-xs">رنگ:</span>
                     قرمز
                     <span
-                        v-tooltip.top="'قرمز'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #e44444;"
+                      v-tooltip.top="'قرمز'"
+                      class="inline-block w-5 h-5 rounded-full border mr-2"
+                      style="background-color: #e44444;"
                     ></span>
                   </div>
                   <div>
@@ -735,7 +735,3 @@ function showOrderPaymentDetail(item) {
 
 //--------------------------------
 </script>
-
-<style scoped>
-
-</style>

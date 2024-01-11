@@ -3,11 +3,11 @@
     <div class="sm:flex sm:items-start">
       <div class="grow sm:ml-3 mb-3 relative">
         <base-input
-            :klass="showRemoveFilterButtonOnInput ? 'pl-10' : ''"
-            name="search"
-            placeholder="عبارت جستجو را وارد کنید..."
-            @input="checkFilterButtonAppearance"
-            @focus="checkFilterButtonAppearance"
+          :klass="showRemoveFilterButtonOnInput ? 'pl-10' : ''"
+          name="search"
+          placeholder="عبارت جستجو را وارد کنید..."
+          @input="checkFilterButtonAppearance"
+          @focus="checkFilterButtonAppearance"
         >
           <template #icon>
             <MagnifyingGlassCircleIcon class="w-6 h-6 text-gray-400"/>
@@ -15,11 +15,11 @@
         </base-input>
 
         <button
-            v-if="showRemoveFilterButtonOnInput && showInputRemoveFilterButton"
-            v-tooltip.bottom="'حذف فیلتر'"
-            type="button"
-            class="absolute top-0 translate-y-1 left-0 p-2 group"
-            @click="clearFilter"
+          v-if="showRemoveFilterButtonOnInput && showInputRemoveFilterButton"
+          v-tooltip.bottom="'حذف فیلتر'"
+          type="button"
+          class="absolute top-0 translate-y-1 left-0 p-2 group"
+          @click="clearFilter"
         >
           <XMarkIcon class="w-6 h-6 text-gray-400 group-hover:text-gray-500 transition"/>
         </button>
@@ -27,27 +27,27 @@
       <div class="flex shrink-0">
         <div class="flex grow">
           <base-button
-              type="submit"
-              :class="[
+            type="submit"
+            :class="[
                             showRemoveFilterButtonOnInput ? 'rounded-lg' : 'rounded-r-lg rounded-l-none',
                         ]"
-              class="bg-primary grow border-primary text-sm mb-3"
+            class="bg-primary grow border-primary text-sm mb-3"
           >
             انجام جستجو
           </base-button>
           <base-button
-              v-if="!showRemoveFilterButtonOnInput"
-              @click="clearFilter"
-              class="bg-gray-200 !text-black grow border border-gray-300 rounded-l-lg rounded-r-none text-sm mb-3"
+            v-if="!showRemoveFilterButtonOnInput"
+            @click="clearFilter"
+            class="bg-gray-200 !text-black grow border border-gray-300 rounded-l-lg rounded-r-none text-sm mb-3"
           >
             حذف فیلتر
           </base-button>
         </div>
         <base-animated-button
-            v-if="showRefreshButton"
-            @click="emit('refresh')"
-            v-tooltip.top="'بارگذاری مجدد'"
-            class="bg-gray-200 !text-black border border-gray-300 rounded-lg text-sm mb-3 mr-3 shrink-0"
+          v-if="showRefreshButton"
+          @click="emit('refresh')"
+          v-tooltip.top="'بارگذاری مجدد'"
+          class="bg-gray-200 !text-black border border-gray-300 rounded-lg text-sm mb-3 mr-3 shrink-0"
         >
           <template #icon="{klass}">
             <ArrowPathIcon class="h-6 w-6 my-[.12rem]" :class="klass"/>
@@ -102,7 +102,3 @@ function clearFilter() {
   })
 }
 </script>
-
-<style scoped>
-
-</style>

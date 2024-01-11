@@ -3,15 +3,15 @@
     <template #header>
       جزئیات دیدگاه برای محصول -
       <span
-          v-if="product?.id"
-          class="text-teal-600"
+        v-if="product?.id"
+        class="text-teal-600"
       >{{ product?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="content"
+          :loading="loading"
+          type="content"
         >
           <template #content>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -26,8 +26,8 @@
             </ul>
 
             <div
-                v-if="comment?.prev_comment"
-                class="mt-3"
+              v-if="comment?.prev_comment"
+              class="mt-3"
             >
               <partial-input-label title="دیدگاه پیشین"/>
               <div class="rounded bg-gray-100 p-3 border leading-loose">
@@ -45,8 +45,8 @@
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <base-textarea
-                    label-title="پاسخ خود را وارد نمایید"
-                    name="answer"
+                  label-title="پاسخ خود را وارد نمایید"
+                  name="answer"
                 >
                   <template #icon>
                     <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -56,15 +56,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -147,7 +147,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

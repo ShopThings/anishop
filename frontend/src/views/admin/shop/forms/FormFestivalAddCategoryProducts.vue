@@ -9,16 +9,16 @@
         <div class="w-full p-3">
           <partial-input-label title="انتخاب دسته‌بندی"/>
           <base-select-searchable
-              :options="categories"
-              options-key="id"
-              options-text="name"
-              name="category"
-              :multiple="true"
-              :is-loading="loading"
-              :is-local-search="false"
-              placeholder="جستجوی دسته‌بندی..."
-              @change="categorySelectionChange"
-              @query="searchCategory"
+            :options="categories"
+            options-key="id"
+            options-text="name"
+            name="category"
+            :multiple="true"
+            :is-loading="loading"
+            :is-local-search="false"
+            placeholder="جستجوی دسته‌بندی..."
+            @change="categorySelectionChange"
+            @query="searchCategory"
           >
             <template #item="{item}">
               {{ item.name }}
@@ -30,17 +30,17 @@
         <div class="sm:flex sm:flex-wrap sm:flex-row-reverse">
           <div class="px-3 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-purple-500 text-white px-6 w-full sm:w-auto"
-                :class="{'!cursor-not-allowed': isSubmitting}"
-                :disabled="isSubmitting"
-                @click="handleSubmitOperation('add')"
+              type="submit"
+              class="bg-purple-500 text-white px-6 w-full sm:w-auto"
+              :class="{'!cursor-not-allowed': isSubmitting}"
+              :disabled="isSubmitting"
+              @click="handleSubmitOperation('add')"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="isSubmitting && submitOperation === 'add'"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                  v-if="isSubmitting && submitOperation === 'add'"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                  big-circle-color="border-transparent"
                 />
               </VTransitionFade>
 
@@ -53,17 +53,17 @@
           </div>
           <div class="px-3 py-3">
             <base-animated-button
-                type="submit"
-                class="!text-pink-500 border-pink-500 px-6 w-full sm:w-auto hover:bg-pink-50"
-                :class="{'!cursor-not-allowed': isSubmitting}"
-                :disabled="isSubmitting"
-                @click="handleSubmitOperation('remove')"
+              type="submit"
+              class="!text-pink-500 border-pink-500 px-6 w-full sm:w-auto hover:bg-pink-50"
+              :class="{'!cursor-not-allowed': isSubmitting}"
+              :disabled="isSubmitting"
+              @click="handleSubmitOperation('remove')"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="isSubmitting && submitOperation === 'remove'"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                  v-if="isSubmitting && submitOperation === 'remove'"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                  big-circle-color="border-transparent"
                 />
               </VTransitionFade>
 
@@ -149,7 +149,3 @@ function handleSubmitOperation(operation) {
   onSubmit()
 }
 </script>
-
-<style scoped>
-
-</style>

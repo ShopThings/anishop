@@ -18,7 +18,9 @@ class MainCategorySliderResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'full_path' => $this->full_path,
+            'image' => [
+                'path' => $this->full_path,
+            ],
         ];
     }
 }

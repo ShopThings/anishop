@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Showing;
 
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderPaymentResource extends JsonResource
+class PaymentShowResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,18 +17,13 @@ class OrderPaymentResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'order_id' => $this->order_id,
-            'order' => $this->whenLoaded('order'),
             'status' => $this->status,
             'message' => $this->message,
-            'transaction' => $this->transaction,
             'receipt' => $this->receipt,
             'gateway_type' => [
                 'text' => $this->gateway_type,
                 'value' => GatewaysEnum::getTranslations($this->gateway_type),
             ],
-            'meta' => $this->meta,
             'payed_at' => $this->payed_at
                 ? verta($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

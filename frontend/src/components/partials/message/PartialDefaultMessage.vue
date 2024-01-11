@@ -38,7 +38,3 @@ function closeAlert() {
   emit('close')
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -3,37 +3,37 @@
     <div class="p-2">
       <partial-input-label title="وضعیت ارجاع"/>
       <base-select
-          :options="statuses"
-          options-key="value"
-          options-text="name"
-          :is-loading="loading"
-          :selected="selectedStatus"
-          name="return_status"
-          @change="paymentStatusChange"
+        :options="statuses"
+        options-key="value"
+        options-text="name"
+        :is-loading="loading"
+        :selected="selectedStatus"
+        name="return_status"
+        @change="paymentStatusChange"
       />
       <partial-input-error-message :error-message="errors.type"/>
     </div>
     <div class="p-2">
       <base-textarea
-          name="description"
-          label-title="علت تغییر وضعیت جهت نمایش به کاربر"
-          placeholder="توضیحات خود را وارد نمایید"
-          :value="yourDescription"
-          :has-edit-mode="!(!!yourDescription)"
+        name="description"
+        label-title="علت تغییر وضعیت جهت نمایش به کاربر"
+        placeholder="توضیحات خود را وارد نمایید"
+        :value="yourDescription"
+        :has-edit-mode="!(!!yourDescription)"
       />
     </div>
 
     <div class="px-2 py-3 text-left">
       <base-button
-          type="submit"
-          class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -106,7 +106,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

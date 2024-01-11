@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class ColorRule implements ValidationRule
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {

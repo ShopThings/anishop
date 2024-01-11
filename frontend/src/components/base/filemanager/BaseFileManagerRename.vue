@@ -1,7 +1,7 @@
 <template>
   <partial-dialog
-      v-model:open="isOpen"
-      @close="$emit('close')"
+    v-model:open="isOpen"
+    @close="$emit('close')"
   >
     <template #title>
       <div class="flex items-center">
@@ -12,16 +12,30 @@
 
     <template #body>
       <form @submit.prevent="onSubmit">
-        <base-input class="grow mb-3" name="newName"
-                    :value="name"
-                    placeholder="نام جدید را وارد کنید...">
+        <base-input
+          class="grow mb-3"
+          name="newName"
+          :value="item.full_name"
+          placeholder="نام جدید را وارد کنید..."
+        >
           <template #icon>
             <PencilIcon class="w-6 h-6 text-gray-400"/>
           </template>
         </base-input>
         <div class="text-left">
-          <base-button type="submit"
-                       class="bg-emerald-500 border-emerald-600 grow rounded-lg text-sm px-5">
+          <base-button
+            type="submit"
+            class="relative bg-emerald-500 border-emerald-600 grow rounded-lg text-sm px-6"
+            :disabled="!canSubmit"
+          >
+            <VTransitionFade>
+              <loader-circle
+                v-if="!canSubmit"
+                main-container-klass="absolute w-full h-full top-0 left-0"
+                big-circle-color="border-transparent"
+              />
+            </VTransitionFade>
+
             تغییر نام
           </base-button>
         </div>
@@ -31,22 +45,23 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {useForm} from "vee-validate";
+import {computed} from "vue";
 import {PencilSquareIcon, PencilIcon} from "@heroicons/vue/24/outline/index.js";
-import yup from "../../../validation/index.js";
-import PartialDialog from "../../partials/PartialDialog.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
+import yup from "@/validation/index.js";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
 import BaseInput from "../BaseInput.vue";
 import BaseButton from "../BaseButton.vue";
+import {FilemanagerAPI} from "@/service/APIFilemanager.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 const props = defineProps({
-  name: {
-    type: String,
+  open: Boolean,
+  item: {
+    type: Object,
     required: true,
   },
-  open: Boolean,
   path: {
     type: String,
     required: true,
@@ -54,41 +69,44 @@ const props = defineProps({
   disk: String,
 })
 
-const emit = defineEmits(['success'])
+const emit = defineEmits(['update:open', 'success', 'close'])
 
-const isOpen = ref(props.open)
+const isOpen = computed({
+  get() {
+    return props.open
+  },
+  set(value) {
+    emit('update:open', value)
+  },
+})
 
-const {handleSubmit} = useForm({
+const {canSubmit, onSubmit, errors} = useFormSubmit({
   validationSchema: yup.object().shape({
     newName: yup.string().required('نام جدید فایل/پوشه را وارد نمایید.')
   })
-})
-
-const onSubmit = handleSubmit((values, actions) => {
-  if (values.newName === props.name) {
+}, (values, actions) => {
+  if (values.newName === props.item.full_name) {
     actions.setFieldError('newName', 'نام جدید با نام پیشین یکسان می‌باشد!')
     return
   }
 
-  useRequest(apiRoutes.admin.files.rename, {
-    method: 'POST',
-    data: {
-      old_name: props.name,
-      new_name: values.newName,
-      path: props.path,
-      disk: props.disk,
-    },
+  canSubmit.value = false
+
+  FilemanagerAPI.rename({
+    old_name: props.item.full_name,
+    new_name: values.newName,
+    path: props.path,
+    disk: props.disk,
   }, {
-    success: () => {
-      emit('success', values.newName, props.name)
+    success() {
+      emit('success', values.newName, props.item.full_name)
 
       actions.resetForm()
       isOpen.value = false
     },
+    finally() {
+      canSubmit.value = true
+    },
   })
 })
 </script>
-
-<style scoped>
-
-</style>

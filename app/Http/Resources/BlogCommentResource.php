@@ -5,6 +5,10 @@ namespace App\Http\Resources;
 use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\BlogBadgeShowResource;
+use App\Http\Resources\Showing\BlogCommentShowResource;
+use App\Http\Resources\Showing\BlogShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,12 +24,12 @@ class BlogCommentResource extends JsonResource
         return [
             'id' => $this->id,
             'blog_id' => $this->blog_id,
-            'blog' => $this->whenLoaded('blog'),
+            'blog' => new BlogShowResource($this->whenLoaded('blog')),
             'badge_id' => $this->badge_id,
-            'badge' => $this->whenLoaded('badge'),
+            'badge' => new BlogBadgeShowResource($this->whenLoaded('badge')),
             'comment_id' => $this->comment_id,
-            'comment' => $this->whenLoaded('parent'),
-            'all_children' => $this->whenLoaded('allChildren'),
+            'comment' => new BlogCommentShowResource($this->whenLoaded('parent')),
+            'has_children' => $this->resource->hasChildren(),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition),
                 'value' => $this->condition,
@@ -36,9 +40,9 @@ class BlogCommentResource extends JsonResource
             ],
             'description' => $this->description,
             'flag_count' => $this->flag_count,
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
+            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

@@ -16,24 +16,24 @@
                 <template #panel="{close}">
                   <nav class="bg-awesome text-black h-full" ref="sidebar">
                     <button
-                        type="button"
-                        class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
-                        @click="close"
+                      type="button"
+                      class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
+                      @click="close"
                     >
                       <XMarkIcon class="w-6 h-6 group-hover:scale-110 transition"/>
                     </button>
 
                     <div
-                        ref="topSection"
-                        class="flex flex-col"
+                      ref="topSection"
+                      class="flex flex-col"
                     >
                       <div
-                          class="flex flex-row items-center gap-3 border-b-2 border-slate-200 py-3 px-2">
+                        class="flex flex-row items-center gap-3 border-b-2 border-slate-200 py-3 px-2">
                         <div
-                            class="text-center w-12 h-12 rounded-full bg-indigo-400 p-1 bg-opacity-90">
+                          class="text-center w-12 h-12 rounded-full bg-indigo-400 p-1 bg-opacity-90">
                           <div
-                              v-if="user.first_name || user.last_name"
-                              class="w-full h-full text-center text-2xl text-indigo-900"
+                            v-if="user.first_name || user.last_name"
+                            class="w-full h-full text-center text-2xl text-indigo-900"
                           >
                             {{ (user.first_name + ' ' + user.last_name).trim().at(0) }}
                           </div>
@@ -55,21 +55,21 @@
                                                             <span v-for="(role, key, idx) in user.roles">
                                                                 {{ role }}
                                                                 <span
-                                                                    v-if="idx !== Object.keys(user.roles).length - 1">, </span>
+                                                                  v-if="idx !== Object.keys(user.roles).length - 1">, </span>
                                                             </span>
                             </template>
                             <template v-else>
                                                             <span
-                                                                class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
+                                                              class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
                             </template>
                           </div>
                         </div>
                         <div class="flex items-center justify-center mr-auto">
                           <base-button
-                              v-tooltip.bottom="'اعلانات'"
-                              type="link"
-                              :to="{name: 'user.notifications'}"
-                              class="relative w-[40] h-[40] border-0 !px-2 rounded-lg bg-transparent !text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
+                            v-tooltip.bottom="'اعلانات'"
+                            type="link"
+                            :to="{name: 'user.notifications'}"
+                            class="relative w-[40] h-[40] border-0 !px-2 rounded-lg bg-transparent !text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
                           >
                             <BellIcon class="h-5 w-5"/>
                           </base-button>
@@ -90,7 +90,7 @@
                                        class="rounded-lg border-2 border-transparent py-2.5 px-3 flex hover:border-indigo-400 hover:bg-indigo-100 transition">
                             <PowerIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span
-                                class="grow">خروج</span>
+                              class="grow">خروج</span>
                           </router-link>
                         </li>
                       </ul>
@@ -109,18 +109,18 @@
           <ul class="flex mt-[4px] space-x-reverse shrink-0 w-full sm:w-auto">
             <li class="px-1 grow sm:grow-0">
               <base-button
-                  type="link"
-                  :to="{name: 'home'}"
-                  class="text-sm !text-black border-2 hover:bg-primary hover:!bg-opacity-[15%] w-full border-primary !py-1"
+                type="link"
+                :to="{name: 'home'}"
+                class="text-sm !text-black border-2 hover:bg-primary hover:!bg-opacity-[15%] w-full border-primary !py-1"
               >
                 مشاهده سایت
               </base-button>
             </li>
             <li class="relative px-1 grow sm:grow-0">
               <base-button
-                  type="link"
-                  :to="{name: 'user.profile'}"
-                  class="bg-primary border-primary w-full border-2 !py-1"
+                type="link"
+                :to="{name: 'user.profile'}"
+                class="bg-primary border-primary w-full border-2 !py-1"
               >
                 <span class="grow text-sm">اطلاعات حساب</span>
               </base-button>

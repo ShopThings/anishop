@@ -2,10 +2,10 @@
   <slot name="button" :open="openModal"></slot>
 
   <partial-dialog
-      @open="openModal"
-      @close="closeModal"
-      v-model:open="isOpen"
-      :container-klass="containerKlass"
+    @open="openModal"
+    @close="closeModal"
+    v-model:open="isOpen"
+    :container-klass="containerKlass"
   >
     <template v-if="slots['closeButton']" #closeButton="{close}">
       <slot name="closeButton" :close="close"></slot>
@@ -56,7 +56,3 @@ function openModal() {
   emit('open')
 }
 </script>
-
-<style scoped>
-
-</style>

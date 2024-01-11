@@ -1,19 +1,19 @@
 <template>
   <base-sidebar
-      :mini="isMini"
-      ref="sidebar"
+    :mini="isMini"
+    ref="sidebar"
   >
     <button
-        type="button"
-        :class="[
+      type="button"
+      :class="[
                 'w-8 h-8 absolute left-0 top-12 -translate-x-1/2 rounded-xl p-1 bg-white text-black group transition',
                 'border hover:bg-opacity-80 z-[1] shadow-lg hidden xl:inline-block'
             ]"
-        @click="toggleMiniMenu"
+      @click="toggleMiniMenu"
     >
       <ChevronLeftIcon
-          class="w-6 h-6 group-hover:scale-110 transition"
-          :class="{'rotate-180': !isMini}"
+        class="w-6 h-6 group-hover:scale-110 transition"
+        :class="{'rotate-180': !isMini}"
       />
     </button>
 
@@ -21,8 +21,8 @@
       <div ref="scrollableSection">
         <VTransitionFade mode="out-in">
           <div
-              v-if="!isMini"
-              class="flex flex-col pb-4 bg-gradient-to-b from-[#ffffff4f]"
+            v-if="!isMini"
+            class="flex flex-col pb-4 bg-gradient-to-b from-[#ffffff4f]"
           >
             <div class="py-4 bg-gradient-to-b from-[#ffffff4f] mb-0 lg:mb-4">
               <router-link :to="{name: 'home'}" target="_blank">
@@ -35,7 +35,7 @@
             <div class="flex flex-col px-3">
               <div class="flex flex-col">
                 <div
-                    class="text-center w-21 h-21 lg:w-24 lg:h-24 rounded-full bg-white mx-auto p-6 bg-opacity-90 shadow-lg">
+                  class="text-center w-21 h-21 lg:w-24 lg:h-24 rounded-full bg-white mx-auto p-6 bg-opacity-90 shadow-lg">
                   <UserIcon class="h-10 w-10 lg:h-12 lg:w-12 mx-auto text-slate-700"/>
                 </div>
                 <span class="text-center mt-3">
@@ -53,12 +53,12 @@
                                     <span v-for="(role, key, idx) in user.roles">
                                         {{ role }}
                                         <span
-                                            v-if="idx !== Object.keys(user.roles).length - 1">, </span>
+                                          v-if="idx !== Object.keys(user.roles).length - 1">, </span>
                                     </span>
                                 </template>
                                 <template v-else>
                                     <span
-                                        class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
+                                      class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
                                 </template>
                             </span>
               </div>
@@ -81,8 +81,8 @@
           </div>
 
           <div
-              v-else
-              class="flex flex-col pb-4 bg-gradient-to-b from-[#ffffff4f]"
+            v-else
+            class="flex flex-col pb-4 bg-gradient-to-b from-[#ffffff4f]"
           >
             <div class="py-4 bg-gradient-to-b from-[#ffffff4f] mb-0 lg:mb-4">
               <router-link :to="{name: 'home'}" target="_blank">
@@ -95,8 +95,8 @@
             <div class="flex flex-col px-3">
               <div class="flex flex-col">
                 <div
-                    v-tooltip.left="'' + (user.first_name || user.last_name ? (user.first_name + ' ' + user.last_name).trim() : user.username) + ''"
-                    class="text-center w-12 h-12 rounded-full bg-white mx-auto p-3 bg-opacity-90 shadow-lg">
+                  v-tooltip.left="'' + (user.first_name || user.last_name ? (user.first_name + ' ' + user.last_name).trim() : user.username) + ''"
+                  class="text-center w-12 h-12 rounded-full bg-white mx-auto p-3 bg-opacity-90 shadow-lg">
                   <UserIcon class="h-6 w-6 mx-auto text-slate-700"/>
                 </div>
               </div>
@@ -120,14 +120,14 @@
 
         <VTransitionFade mode="out-in">
           <div
-              v-if="!isMini"
-              class="px-3 pb-3 text-sm"
+            v-if="!isMini"
+            class="px-3 pb-3 text-sm"
           >
             <sidebar-links-admin/>
           </div>
           <div
-              v-else
-              class="px-3 pb-3 text-sm"
+            v-else
+            class="px-3 pb-3 text-sm"
           >
             <sidebar-links-admin :mini="isMini"/>
           </div>
@@ -138,22 +138,22 @@
     <div class="flex flex-col px-3 py-3 bg-gradient-to-b from-[#ffffff0f]" ref="bottomSection">
       <VTransitionFade mode="out-in">
         <ul
-            v-if="!isMini"
-            class="flex flex-col"
+          v-if="!isMini"
+          class="flex flex-col"
         >
           <li>
             <router-link :to="{name: 'admin.logout'}"
                          class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
               <PowerIcon class="h-6 w-6 ml-2 shrink-0"/>
               <span
-                  class="grow">خروج</span>
+                class="grow">خروج</span>
             </router-link>
           </li>
         </ul>
 
         <ul
-            v-else
-            class="flex flex-col"
+          v-else
+          class="flex flex-col"
         >
           <li v-tooltip.left="'خروج'">
             <router-link :to="{name: 'admin.logout'}"

@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\ImageShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,8 +21,7 @@ class PaymentMethodResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'image_id' => $this->image_id,
-            'image' => $this->whenLoaded('image'),
+            'image' => new ImageShowResource($this->whenLoaded('image')),
             'type' => [
                 'text' => PaymentTypesEnum::getTranslations($this->type),
                 'value' => $this->type,

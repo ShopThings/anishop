@@ -1,7 +1,7 @@
 <template>
   <label
-      class="mb-1 text-right text-black flex justify-between items-center"
-      :for="id"
+    class="mb-1 text-right text-black flex justify-between items-center"
+    :for="id"
   >
         <span class="text-sm">
             <slot name="label">{{ title }}</slot>
@@ -17,7 +17,3 @@ defineProps({
   isOptional: Boolean,
 })
 </script>
-
-<style scoped>
-
-</style>

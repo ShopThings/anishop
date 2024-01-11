@@ -2,8 +2,8 @@
   <partial-card class="border-0 p-3">
     <template #body>
       <base-loading-panel
-          :loading="loading"
-          type="content"
+        :loading="loading"
+        type="content"
       >
         <template #content>
           <ul class="flex items-center flex-wrap gap-3">
@@ -55,7 +55,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

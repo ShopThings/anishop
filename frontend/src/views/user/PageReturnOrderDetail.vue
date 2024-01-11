@@ -1,8 +1,8 @@
 <template>
   <base-message
-      type="warning"
-      :has-close="false"
-      class="rounded-lg"
+    type="warning"
+    :has-close="false"
+    class="rounded-lg"
   >
     <div class="leading-relaxed">
       در صورتی می‌توانید اطلاعات سفارش مرجوع شده را تغییر دهید که توسط سایت تغییر وضعیت داده نشده باشد.
@@ -18,8 +18,8 @@
             <span class="tracking-widest">861247269716759</span>
           </div>
           <router-link
-              :to="{name: 'user.order.detail', params: {code: 1}}"
-              class="flex gap-2 items-center text-blue-600 group ml-auto mr-auto sm:ml-0"
+            :to="{name: 'user.order.detail', params: {code: 1}}"
+            class="flex gap-2 items-center text-blue-600 group ml-auto mr-auto sm:ml-0"
           >
             <span>مشاهده جزئیات</span>
             <ArrowLongLeftIcon class="w-5 h-5 group-hover:-translate-x-1.5 transition"/>
@@ -30,8 +30,8 @@
   </partial-card>
 
   <div
-      v-if="1"
-      class="mb-3"
+    v-if="1"
+    class="mb-3"
   >
     <partial-badge-status-return-order class="w-full py-2 !text-sm"/>
   </div>
@@ -43,43 +43,43 @@
       </h2>
 
       <base-loading-panel
-          type="form"
-          :loading="loading"
+        type="form"
+        :loading="loading"
       >
         <template #content>
           <partial-card class="border-0">
             <template #body>
               <div class="p-3">
                 <div
-                    v-if="1"
-                    class="mb-4 text-left"
+                  v-if="1"
+                  class="mb-4 text-left"
                 >
                   <base-button
-                      v-if="1"
-                      type="button"
-                      class="bg-rose-500 px-4 text-sm !py-1"
-                      @click="console.log('do something...')"
+                    v-if="1"
+                    type="button"
+                    class="bg-rose-500 px-4 text-sm !py-1"
+                    @click="console.log('do something...')"
                   >
                     لغو درخواست
                   </base-button>
                 </div>
                 <div class="mb-3">
                   <base-textarea
-                      name="description"
-                      label-title="علت مرجوع نمودن محصول"
-                      placeholder="توضیحات خود را وارد نمایید..."
-                      :has-edit-mode="true"
-                      :is-editable="true"
-                      value=""
+                    name="description"
+                    label-title="علت مرجوع نمودن محصول"
+                    placeholder="توضیحات خود را وارد نمایید..."
+                    :has-edit-mode="true"
+                    :is-editable="true"
+                    value=""
                   />
                 </div>
                 <div>
                   <base-textarea
-                      name="not_accepted_description"
-                      label-title="پاسخ درخواست"
-                      :has-edit-mode="false"
-                      :is-editable="false"
-                      value=""
+                    name="not_accepted_description"
+                    label-title="پاسخ درخواست"
+                    :has-edit-mode="false"
+                    :is-editable="false"
+                    value=""
                   />
                 </div>
               </div>
@@ -95,8 +95,8 @@
       </h2>
 
       <base-loading-panel
-          type="list"
-          :loading="loading"
+        type="list"
+        :loading="loading"
       >
         <template #content>
           <partial-card class="border-0">
@@ -105,20 +105,20 @@
                 <li class="relative flex flex-col md:flex-row mb-2 py-3 pr-3 pl-10">
                   <div class="shrink-0">
                     <router-link
-                        :to="{name: 'product.detail', params: {id: 1}}"
-                        class="inline-block"
+                      :to="{name: 'product.detail', params: {id: 1}}"
+                      class="inline-block"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p1.jpg"
-                          class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p1.jpg"
+                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                        :to="{name: 'product.detail', params: {id: 1}}"
-                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                      :to="{name: 'product.detail', params: {id: 1}}"
+                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
@@ -134,17 +134,17 @@
                       <span class="text-gray-400 text-sm">تعداد محصول بازگشتی:</span>
                       <div class="flex">
                         <base-button
-                            class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
+                          class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
                           <PlusIcon class="h-6 w-6"/>
                         </base-button>
                         <div
-                            class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
+                          class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
                         >
                           2
                         </div>
                         <base-button
-                            class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
+                          class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
                           <MinusIcon class="h-6 w-6"/>
                         </base-button>
@@ -162,20 +162,20 @@
                 <li class="relative flex flex-col md:flex-row mb-2 py-3 pr-3 pl-10">
                   <div class="shrink-0">
                     <router-link
-                        :to="{name: 'product.detail', params: {id: 1}}"
-                        class="inline-block"
+                      :to="{name: 'product.detail', params: {id: 1}}"
+                      class="inline-block"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p2.jpg"
-                          class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p2.jpg"
+                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                        :to="{name: 'product.detail', params: {id: 1}}"
-                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                      :to="{name: 'product.detail', params: {id: 1}}"
+                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       ماوس آبکی و مسخره‌ای که خیلی قیمت نداره ولی میتونی هر وقت خراب شد یکیشو
                       بگیری
@@ -193,17 +193,17 @@
                       <span class="text-gray-400 text-sm">تعداد محصول بازگشتی:</span>
                       <div class="flex">
                         <base-button
-                            class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
+                          class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
                           <PlusIcon class="h-6 w-6"/>
                         </base-button>
                         <div
-                            class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
+                          class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
                         >
                           5
                         </div>
                         <base-button
-                            class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
+                          class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
                           <MinusIcon class="h-6 w-6"/>
                         </base-button>
@@ -216,9 +216,9 @@
                       <span class="text-gray-600 ml-2 text-xs">رنگ:</span>
                       قهوه‌ای تیره
                       <span
-                          v-tooltip.top="'قهوه‌ای تیره'"
-                          class="inline-block w-5 h-5 rounded-full border mr-2"
-                          style="background-color: #833406;"
+                        v-tooltip.top="'قهوه‌ای تیره'"
+                        class="inline-block w-5 h-5 rounded-full border mr-2"
+                        style="background-color: #833406;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -234,20 +234,20 @@
                 <li class="relative flex flex-col md:flex-row mb-2 py-3 pr-3 pl-10">
                   <div class="shrink-0">
                     <router-link
-                        :to="{name: 'product.detail', params: {id: 1}}"
-                        class="inline-block"
+                      :to="{name: 'product.detail', params: {id: 1}}"
+                      class="inline-block"
                     >
                       <base-lazy-image
-                          alt="تصویر محصول"
-                          lazy-src="/src/assets/products/p3.jpg"
-                          class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
+                        alt="تصویر محصول"
+                        lazy-src="/src/assets/products/p3.jpg"
+                        class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                        :to="{name: 'product.detail', params: {id: 1}}"
-                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                      :to="{name: 'product.detail', params: {id: 1}}"
+                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
@@ -263,17 +263,17 @@
                       <span class="text-gray-400 text-sm">تعداد محصول بازگشتی:</span>
                       <div class="flex">
                         <base-button
-                            class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
+                          class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
                           <PlusIcon class="h-6 w-6"/>
                         </base-button>
                         <div
-                            class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
+                          class="block py-1 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg"
                         >
                           1
                         </div>
                         <base-button
-                            class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
+                          class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0 !py-1"
                         >
                           <MinusIcon class="h-6 w-6"/>
                         </base-button>
@@ -285,9 +285,9 @@
                       <span class="text-gray-600 ml-2 text-xs">رنگ:</span>
                       قرمز
                       <span
-                          v-tooltip.top="'قرمز'"
-                          class="inline-block w-5 h-5 rounded-full border mr-2"
-                          style="background-color: #e44444;"
+                        v-tooltip.top="'قرمز'"
+                        class="inline-block w-5 h-5 rounded-full border mr-2"
+                        style="background-color: #e44444;"
                       ></span>
                     </div>
                     <div>
@@ -305,15 +305,15 @@
 
     <div class="mt-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -356,7 +356,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -1,26 +1,26 @@
 <template>
   <div class="w-full rounded-lg">
     <base-carousel
-        v-slot="{slide}"
-        v-model="slides"
-        v-model:current="currentSlide"
-        :class-name="carouselSettings.className"
-        :effect="carouselSettings.effect"
-        :has-navigation="carouselSettings.hasNavigation"
-        :navigation-display="carouselSettings.navigationDisplay"
-        :has-pagination="carouselSettings.hasPagination"
-        :breakpoints="carouselSettings.breakpoints"
-        :autoplay="carouselSettings.autoplay"
-        :wrap-around="carouselSettings.wrapAround"
+      v-slot="{slide}"
+      v-model="slides"
+      v-model:current="currentSlide"
+      :class-name="carouselSettings.className"
+      :effect="carouselSettings.effect"
+      :has-navigation="carouselSettings.hasNavigation"
+      :navigation-display="carouselSettings.navigationDisplay"
+      :has-pagination="carouselSettings.hasPagination"
+      :breakpoints="carouselSettings.breakpoints"
+      :autoplay="carouselSettings.autoplay"
+      :wrap-around="carouselSettings.wrapAround"
     >
       <router-link
-          :to="slide.link"
-          class="w-full h-full rounded-lg"
+        :to="slide.link"
+        class="w-full h-full rounded-lg"
       >
         <img
-            :src="slide.image.path"
-            alt=""
-            class="w-full h-60 md:h-72 lg:h-80 xl:h-96 object-cover rounded-lg"
+          :src="slide.image.path"
+          alt=""
+          class="w-full h-60 md:h-72 lg:h-80 xl:h-96 object-cover rounded-lg"
         >
       </router-link>
     </base-carousel>
@@ -82,7 +82,3 @@ const slides = ref([
   },
 ])
 </script>
-
-<style scoped>
-
-</style>

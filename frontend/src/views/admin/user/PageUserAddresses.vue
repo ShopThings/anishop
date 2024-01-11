@@ -3,8 +3,8 @@
     <template #header>
       نمایش آدرس‌های کاربر -
       <span
-          v-if="user?.id"
-          class="text-teal-600"
+        v-if="user?.id"
+        class="text-teal-600"
       >{{
           (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
         }}</span>
@@ -14,18 +14,18 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="false"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="false"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="false"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
@@ -33,8 +33,8 @@
             </template>
             <template v-slot:op="{value}">
               <base-button
-                  class="text-white bg-black text-sm !py-1"
-                  @click="showDetails(value)"
+                class="text-white bg-black text-sm !py-1"
+                @click="showDetails(value)"
               >
                 مشاهده جزئیات
               </base-button>
@@ -162,7 +162,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

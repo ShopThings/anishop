@@ -3,46 +3,46 @@
     <template #header>
       ویرایش ویژگی جستجوی
       <span
-          v-if="product?.id"
-          class="text-teal-600"
+        v-if="product?.id"
+        class="text-teal-600"
       >{{ product?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap">
                 <div
-                    v-for="(attr) in productAttributes"
-                    class="w-full p-2 sm:w-1/2 xl:w-1/3"
+                  v-for="(attr) in productAttributes"
+                  class="w-full p-2 sm:w-1/2 xl:w-1/3"
                 >
                   <partial-input-label :title="attr.title"/>
                   <base-select
-                      :options="attr.attr_values"
-                      options-key="id"
-                      options-text="attribute_value"
-                      :selected="attr.product_attr_values[attr.id]"
-                      :name="'attr' + attr.id"
-                      @change="(t) => {attr.product_attr_values[attr.id] = t}"
+                    :options="attr.attr_values"
+                    options-key="id"
+                    options-text="attribute_value"
+                    :selected="attr.product_attr_values[attr.id]"
+                    :name="'attr' + attr.id"
+                    @change="(t) => {attr.product_attr_values[attr.id] = t}"
                   />
                 </div>
               </div>
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -117,7 +117,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

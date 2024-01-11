@@ -1,25 +1,25 @@
 <template>
   <router-link
-      v-if="type === 'link'"
-      :to="to"
-      :class="[
+    v-if="type === 'link'"
+    :to="to"
+    :class="[
             defaultClass,
             'relative inline-block cursor-pointer text-center',
             'py-2 px-3 text-base leading-7 transition',
         ]"
-      @click="checkButton"
+    @click="checkButton"
   >
     <slot/>
   </router-link>
   <button
-      v-else
-      :type="type"
-      :class="[
+    v-else
+    :type="type"
+    :class="[
             defaultClass,
             'relative cursor-pointer text-center',
             'py-2 px-3 text-base leading-7 transition',
         ]"
-      @click="checkButton"
+    @click="checkButton"
   >
     <slot/>
   </button>
@@ -47,7 +47,3 @@ function checkButton(e) {
   emit('click', e)
 }
 </script>
-
-<style scoped>
-
-</style>

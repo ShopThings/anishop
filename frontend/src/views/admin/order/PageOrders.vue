@@ -8,25 +8,25 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="false"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="false"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="false"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:user="{value}">
 
             </template>
             <template v-slot:receiver_info="{value}">
               <base-button
-                  class="text-white bg-black text-sm !py-1"
-                  @click="showReceiverDetails(value)"
+                class="text-white bg-black text-sm !py-1"
+                @click="showReceiverDetails(value)"
               >
                 مشاهده
               </base-button>
@@ -43,10 +43,10 @@
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
-                  :container="getMenuContainer"
-                  :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
+                :items="operations"
+                :data="value"
+                :container="getMenuContainer"
+                :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -68,7 +68,7 @@ import PartialCard from "../../../components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useConfirmToast} from "../../../composables/toast-helper.js";
 import {useAdminAuthStore, ROLES} from "../../../store/StoreUserAuth.js";
 import BaseButton from "../../../components/base/BaseButton.vue";
 
@@ -224,7 +224,3 @@ function showReceiverDetails(value) {
   // ...
 }
 </script>
-
-<style scoped>
-
-</style>

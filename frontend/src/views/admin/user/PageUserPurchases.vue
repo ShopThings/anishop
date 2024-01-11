@@ -3,8 +3,8 @@
     <template #header>
       نمایش سفارشات کاربر -
       <span
-          v-if="user?.id"
-          class="text-teal-600"
+        v-if="user?.id"
+        class="text-teal-600"
       >{{
           (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
         }}</span>
@@ -14,26 +14,26 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="false"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="false"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="false"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:code="{value}">
 
             </template>
             <template v-slot:receiver_info="{value}">
               <base-button
-                  class="text-white bg-black text-sm !py-1"
-                  @click="showReceiverDetails(value)"
+                class="text-white bg-black text-sm !py-1"
+                @click="showReceiverDetails(value)"
               >
                 مشاهده
               </base-button>
@@ -199,7 +199,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -110,7 +110,7 @@ class SliderService extends Service implements SliderServiceInterface
             if (!isset($item[SliderItemOptionsEnum::PRODUCT_ID->value])) return null;
 
             $item = $productService->getById($item[SliderItemOptionsEnum::PRODUCT_ID->value]);
-            return $item['is_published'] ? $item : null;
+            return $item && $item['is_published'] ? $item : null;
         })->filter(fn($item) => null !== $item);
     }
 

@@ -45,10 +45,6 @@ class FileService implements FileServiceInterface
      */
     public function list(FileListFilter $filter): array
     {
-        $fileSize = $filter->getSize();
-        if (!$this->isValidThumbSize($fileSize))
-            $fileSize = $this->repository::ORIGINAL;
-
         return $this->repository->list($filter);
     }
 
@@ -109,13 +105,8 @@ class FileService implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
-    public function delete(FileManager|array $files, ?string $path, string $disk): bool
+    public function delete(string|array $files, ?string $path, string $disk): bool
     {
-        if ($files instanceof FileManager) {
-            $path = $files->path;
-            $files = $files->name . '.' . $files->extension;
-        }
-
         return $this->repository->remove($files, $path, $disk);
     }
 
@@ -140,7 +131,7 @@ class FileService implements FileServiceInterface
 
         if (!$hasDisk) return false;
 
-        return $this->repository->checkPathExists($path, false);
+        return $this->repository->checkPathExists($path, $disk, false);
     }
 
     /**
@@ -168,25 +159,23 @@ class FileService implements FileServiceInterface
         bool $isAuthenticated = false
     ): ?string
     {
-        $dbFile = $this->find($file, $isAuthenticated);
-
-        if (!$dbFile) return null;
-
-        $size = $this->isValidThumbSize($size) ? $size : $this->repository::ORIGINAL;
+        $size = $this->isValidThumbSize($size ?: '') ? $size : $this->repository::ORIGINAL;
 
         if (
             is_null($disk) ||
             !in_array($disk, $this->repository::STORAGE_DISKS)
         ) {
-            $files = $this->repository->fileExists($dbFile->path, $disk, true);
+            $files = $this->repository->fileExists($file, $disk, true, $size);
         } else {
             $disk = $this->repository::STORAGE_DISK_PUBLIC;
-            $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);
-            if (!count($files)) {
+            $files = $this->repository->fileExists($file, $disk, true, $size);
+            if (!count($files) && $isAuthenticated) {
                 $disk = $this->repository::STORAGE_DISK_LOCAL;
-                $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);
+                $files = $this->repository->fileExists($file, $disk, true, $size);
             }
         }
+
+        if (!count($files)) return null;
 
         return Storage::disk($disk)->path($files[0]);
     }

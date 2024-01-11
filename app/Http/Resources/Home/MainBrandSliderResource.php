@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Home;
 
+use App\Http\Resources\Showing\ImageShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,9 +19,7 @@ class MainBrandSliderResource extends JsonResource
             'id' => $this->id,
             'latin_name' => $this->latin_name,
             'slug' => $this->slug,
-            'image' => $this->whenLoaded('image', function () {
-                return ['path' => $this->image->full_path];
-            }),
+            'image' => new ImageShowResource($this->whenLoaded('image')),
         ];
     }
 }

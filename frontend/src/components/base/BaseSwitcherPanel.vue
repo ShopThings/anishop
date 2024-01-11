@@ -1,8 +1,8 @@
 <template>
   <div
-      ref="container"
-      class="overflow-hidden min-h-[38px]"
-      :class="[
+    ref="container"
+    class="overflow-hidden min-h-[38px]"
+    :class="[
             containerClass,
             extraContainerClass,
             useHeightAnimation ? 'transition-all' : '',
@@ -12,37 +12,37 @@
       <Transition name="slide-fade-down-y">
         <slot v-if="activeTopText" name="backHeader">
           <div
-              :class="backExtraClass"
-              class="flex items-center gap-2 justify-between bg-slate-200 py-1.5 px-2"
+            :class="backExtraClass"
+            class="flex items-center gap-2 justify-between bg-slate-200 py-1.5 px-2"
           >
             <span :class="backTextClass" class="mx-auto text-sm">{{ activeTopText }}</span>
             <div
-                v-if="showBackButton"
-                class="text-center p-1 rounded-full group shadow-lg bg-white cursor-pointer"
-                @click="back"
+              v-if="showBackButton"
+              class="text-center p-1 rounded-full group shadow-lg bg-white cursor-pointer"
+              @click="back"
             >
               <ArrowLeftIcon
-                  class="w-5 h-5 text-black group-hover:text-blue-600 transition"/>
+                class="w-5 h-5 text-black group-hover:text-blue-600 transition"/>
             </div>
           </div>
         </slot>
       </Transition>
     </div>
     <div
-        ref="scrollingContainer"
-        :class="[
+      ref="scrollingContainer"
+      :class="[
                 'relative',
                 useFixedHeight ? 'my-custom-scrollbar !overflow-x-hidden' : '',
             ]"
     >
       <template v-for="(panel, name) in panels" :key="name">
         <div
-            v-if="slots[name]"
-            :class="[
+          v-if="slots[name]"
+          :class="[
                     'hidden w-full absolute top-0 right-0 z-[1]',
                     panelClass,
                 ]"
-            :ref="(el) => (allPanels[name] = el)"
+          :ref="(el) => (allPanels[name] = el)"
         >
           <slot :name="name" :data="panel" :goTo="gotTo"></slot>
         </div>
@@ -242,26 +242,26 @@ function setHeight(panel, text) {
       container.value.style.height = initialContainerHeight.value + 2 + 'px'
     } else {
       container.value.style.height = allPanels[panel].offsetHeight +
-          (
-              text
-                  ? backContainer.value.offsetHeight
-                  : 0
-          )
-          + 2
-          + 'px'
+        (
+          text
+            ? backContainer.value.offsetHeight
+            : 0
+        )
+        + 2
+        + 'px'
     }
 
     useResizeObserver(container, () => {
       scrollingContainer.value.style.height =
+        (
+          container.value.offsetHeight -
           (
-              container.value.offsetHeight -
-              (
-                  text
-                      ? backContainer.value.offsetHeight
-                      : 0
-              )
+            text
+              ? backContainer.value.offsetHeight
+              : 0
           )
-          + 'px'
+        )
+        + 'px'
     })
   })
 }

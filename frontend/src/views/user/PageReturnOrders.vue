@@ -1,8 +1,8 @@
 <template>
   <base-message
-      type="info"
-      :has-close="false"
-      class="rounded-lg"
+    type="info"
+    :has-close="false"
+    class="rounded-lg"
   >
     <h3 class="font-iranyekan-bold text-base mb-1.5">
       نکات قابل توجه
@@ -22,11 +22,11 @@
       <div class="w-full sm:w-auto sm:grow">
         <partial-input-label title="انتخاب سفارش جهت مرجوع نمودن"/>
         <base-select-searchable
-            options-text="code"
-            options-key="id"
-            :options="orders"
-            :is-loading="ordersLoading"
-            @change="(selected) => {selectedOrder=selected}"
+          options-text="code"
+          options-key="id"
+          :options="orders"
+          :is-loading="ordersLoading"
+          @change="(selected) => {selectedOrder=selected}"
         >
           <template #item="{item}">
             <span class="tracking-widest">{{ item.code }}</span>
@@ -35,15 +35,15 @@
       </div>
 
       <base-button
-          type="submit"
-          class="flex items-center justify-center gap-2 bg-primary group text-sm shrink-0 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="flex items-center justify-center gap-2 bg-primary group text-sm shrink-0 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -58,12 +58,12 @@
       <partial-general-title title="سفارشات مرجوع شده"/>
 
       <base-semi-datatable
-          pagination-theme="modern"
-          :is-loading="returnOrdersTableSetting.isLoading"
-          :columns="returnOrdersTableSetting.columns"
-          :rows="returnOrdersTableSetting.rows"
-          :total="returnOrdersTableSetting.total"
-          @do-search="getReturnOrders"
+        pagination-theme="modern"
+        :is-loading="returnOrdersTableSetting.isLoading"
+        :columns="returnOrdersTableSetting.columns"
+        :rows="returnOrdersTableSetting.rows"
+        :total="returnOrdersTableSetting.total"
+        @do-search="getReturnOrders"
       >
         <template #status="{value}">
           <partial-badge-status-return-order/>
@@ -75,8 +75,8 @@
 
         <template #op="{value}">
           <router-link
-              :to="{name: 'user.return_order.detail', params: {code: 12345}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.return_order.detail', params: {code: 12345}}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             مشاهده جزئیات
           </router-link>
@@ -185,7 +185,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -14,7 +14,3 @@
 <script setup>
 import {ShoppingBagIcon} from "@heroicons/vue/24/outline";
 </script>
-
-<style scoped>
-
-</style>

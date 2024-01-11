@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Showing\ProvinceShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,10 +15,11 @@ class CityResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('province');
+
         return [
             'id' => $this->id,
-            'province_id' => $this->province_id,
-            'province' => $this->whenLoaded('province'),
+            'province' => new ProvinceShowResource($this->whenLoaded('province')),
             'name' => $this->name,
             'is_published' => $this->is_published,
         ];

@@ -6,13 +6,13 @@
 
 <script setup>
 defineProps({
-  bgColor: {
-    type: String,
-    default: 'bg-indigo-700',
-  },
   containerBgColor: {
     type: String,
     default: 'bg-blue-50 opacity-70',
+  },
+  bgColor: {
+    type: String,
+    default: 'bg-indigo-700',
   },
 })
 </script>

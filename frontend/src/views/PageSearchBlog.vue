@@ -5,27 +5,27 @@
     <div class="flex flex-col lg:flex-row-reverse gap-6 sticky-container">
       <div class="grow">
         <base-paginator
-            container-class="flex flex-wrap"
-            item-container-class="w-full xl:w-1/2 ml-[-1px] mt-[-1px]"
-            pagination-theme="modern"
-            :per-page="16"
-            :show-search="true"
-            :order="blogOrder"
-            v-model:items="blogs"
-            :is-local="true"
+          container-class="flex flex-wrap"
+          item-container-class="w-full xl:w-1/2 ml-[-1px] mt-[-1px]"
+          pagination-theme="modern"
+          :per-page="16"
+          :show-search="true"
+          :order="blogOrder"
+          v-model:items="blogs"
+          :is-local="true"
         >
           <template #empty>
             <partial-empty-rows
-                image="/empty-statuses/empty-blog.svg"
-                image-class="w-60"
-                message="هیچ نوشته‌ای پیدا نشد!"
+              image="/empty-statuses/empty-blog.svg"
+              image-class="w-60"
+              message="هیچ نوشته‌ای پیدا نشد!"
             />
           </template>
 
           <template #item="{item}">
             <blog-card
-                :blog="item"
-                container-class=""
+              :blog="item"
+              container-class=""
             />
           </template>
 
@@ -38,20 +38,20 @@
       </div>
 
       <Vue3StickySidebar
-          class="shrink-0 lg:w-80"
-          containerSelector=".sticky-container"
-          innerWrapperSelector='.sidebar__inner'
-          :top-spacing="114"
-          :bottom-spacing="20"
-          :min-width="1024"
+        class="shrink-0 lg:w-80"
+        containerSelector=".sticky-container"
+        innerWrapperSelector='.sidebar__inner'
+        :top-spacing="114"
+        :bottom-spacing="20"
+        :min-width="1024"
       >
         <div class="flex flex-col gap-6">
           <partial-card
-              class="border-0 flex flex-col">
+            class="border-0 flex flex-col">
             <template #body>
               <partial-general-title
-                  type="side"
-                  title="دسته‌بندی‌های پرطرفدار"
+                type="side"
+                title="دسته‌بندی‌های پرطرفدار"
               />
 
               <app-side-categories-blog/>
@@ -59,60 +59,60 @@
           </partial-card>
 
           <partial-card
-              class="border-0 flex flex-col">
+            class="border-0 flex flex-col">
             <template #body>
               <partial-general-title
-                  type="side"
-                  title="آرشیو نوشته‌ها"
+                type="side"
+                title="آرشیو نوشته‌ها"
               />
 
               <div class="flex flex-col divide-y">
                 <router-link
-                    to="#"
-                    class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+                  to="#"
+                  class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
                 >
                   <ArchiveBoxIcon
-                      class="w-5 h-5 text-slate-300 group-hover:text-violet-500"></ArchiveBoxIcon>
+                    class="w-5 h-5 text-slate-300 group-hover:text-violet-500"></ArchiveBoxIcon>
                   <span>اردیبهشت ۱۴۰۲</span>
                 </router-link>
                 <router-link
-                    to="#"
-                    class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+                  to="#"
+                  class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
                 >
                   <ArchiveBoxIcon
-                      class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
+                    class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
                   <span>خرداد ۱۴۰۲</span>
                 </router-link>
                 <router-link
-                    to="#"
-                    class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+                  to="#"
+                  class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
                 >
                   <ArchiveBoxIcon
-                      class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
+                    class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
                   <span>تیر ۱۴۰۲</span>
                 </router-link>
                 <router-link
-                    to="#"
-                    class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+                  to="#"
+                  class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
                 >
                   <ArchiveBoxIcon
-                      class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
+                    class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
                   <span>مرداد ۱۴۰۲</span>
                 </router-link>
                 <router-link
-                    to="#"
-                    class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+                  to="#"
+                  class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
                 >
                   <ArchiveBoxIcon
-                      class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
+                    class="w-5 h-5 text-slate-300 group-hover:text-violet-500"/>
                   <span>شهریور ۱۴۰۲</span>
                 </router-link>
                 <router-link
-                    to="#"
-                    class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+                  to="#"
+                  class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
                 >
                   <ArchiveBoxIcon
-                      class="w-5 h-5 text-slate-300 group-hover:text-violet-500"></ArchiveBoxIcon>
+                    class="w-5 h-5 text-slate-300 group-hover:text-violet-500"></ArchiveBoxIcon>
                   <span>مهر ۱۴۰۲</span>
                 </router-link>
               </div>
@@ -298,7 +298,3 @@ const blogs = ref([
 
 //----------------------------
 </script>
-
-<style scoped>
-
-</style>

@@ -1,7 +1,7 @@
 <template>
   <div
-      :class="containerClass"
-      class="flex flex-col gap-3 shadow-md bg-white p-6 grow border border-slate-50"
+    :class="containerClass"
+    class="flex flex-col gap-3 shadow-md bg-white p-6 grow border border-slate-50"
   >
     <ul class="flex flex-wrap gap-4 items-center">
       <li class="text-sm text-slate-500">
@@ -23,8 +23,8 @@
 
     <div v-if="showAnswerButton" class="flex justify-end">
       <a
-          href="javascript:void(0)"
-          class="text-slate-500 hover:text-slate-600 transition text-sm flex items-center gap-2"
+        href="javascript:void(0)"
+        class="text-slate-500 hover:text-slate-600 transition text-sm flex items-center gap-2"
       >
         <span>پاسخ</span>
         <ArrowUturnLeftIcon class="w-5 h-5"/>
@@ -49,7 +49,3 @@ defineProps({
   },
 })
 </script>
-
-<style scoped>
-
-</style>

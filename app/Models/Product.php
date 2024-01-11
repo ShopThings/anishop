@@ -10,6 +10,7 @@ use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use App\Traits\SelfHealingRouteTrait;
+use App\Traits\VisitorViewTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Mews\Purifier\Casts\CleanHtml;
@@ -23,7 +24,8 @@ class Product extends Model
         HasUpdatedRelationTrait,
         HasSluggableTrait,
         SelfHealingRouteTrait,
-        Visitable;
+        Visitable,
+        VisitorViewTrait;
 
     protected $guarded = [
         'id',

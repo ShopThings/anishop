@@ -19,47 +19,47 @@
 
   <div ref="mainPageContainer">
     <app-navigation-header
-        container-class="text-center"
-        title="بلاگ آیریا کالا"
+      container-class="text-center"
+      title="بلاگ آیریا کالا"
     />
 
     <div class="p-3 grid grid-cols-3 gap-6">
       <div class="col-span-3 lg:col-span-2">
         <base-carousel
-            v-slot="{slide, index}"
-            v-model="slides"
-            v-model:current="currentSlide"
-            :class-name="carouselSettings.className"
-            :has-navigation="carouselSettings.hasNavigation"
-            :navigation-position="carouselSettings.navigationPosition"
-            :navigation-display="carouselSettings.navigationDisplay"
-            :has-pagination="carouselSettings.hasPagination"
-            :breakpoints="carouselSettings.breakpoints"
-            :autoplay="carouselSettings.autoplay"
-            :wrap-around="carouselSettings.wrapAround"
-            :effect="carouselSettings.effect"
+          v-slot="{slide, index}"
+          v-model="slides"
+          v-model:current="currentSlide"
+          :class-name="carouselSettings.className"
+          :has-navigation="carouselSettings.hasNavigation"
+          :navigation-position="carouselSettings.navigationPosition"
+          :navigation-display="carouselSettings.navigationDisplay"
+          :has-pagination="carouselSettings.hasPagination"
+          :breakpoints="carouselSettings.breakpoints"
+          :autoplay="carouselSettings.autoplay"
+          :wrap-around="carouselSettings.wrapAround"
+          :effect="carouselSettings.effect"
         >
           <div class="bg-white rounded-lg relative">
             <base-lazy-image
-                :lazy-src="slide.path"
-                :alt="slide.title"
-                class="rounded-lg h-[30rem] w-full !object-cover"
+              :lazy-src="slide.path"
+              :alt="slide.title"
+              class="rounded-lg h-[30rem] w-full !object-cover"
             />
 
             <div
-                class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-16 text-shadow flex items-end">
+              class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-16 text-shadow flex items-end">
               <div>
                 <router-link
-                    to="#"
-                    class="text-xs rounded-full py-1.5 px-4 inline-block mb-3 bg-indigo-600 text-white hover:bg-indigo-500 transition"
+                  to="#"
+                  class="text-xs rounded-full py-1.5 px-4 inline-block mb-3 bg-indigo-600 text-white hover:bg-indigo-500 transition"
                 >
                   {{ slide.category }}
                 </router-link>
                 <h1 class="w-full text-right">
 
                   <router-link
-                      to="#"
-                      class="text-xl text-white leading-relaxed hover:text-opacity-80 transition"
+                    to="#"
+                    class="text-xl text-white leading-relaxed hover:text-opacity-80 transition"
                   >
                     {{ slide.title }}
                   </router-link>
@@ -73,24 +73,24 @@
       <div class="col-span-3 lg:col-span-1 flex flex-col sm:flex-row lg:flex-col gap-6">
         <div class="relative w-full">
           <base-lazy-image
-              lazy-src="/src/assets/blogs/b4.jpg"
-              alt="بلاگ 1"
-              class="rounded-lg h-[calc(15rem-12px)] w-full !object-cover"
+            lazy-src="/src/assets/blogs/b4.jpg"
+            alt="بلاگ 1"
+            class="rounded-lg h-[calc(15rem-12px)] w-full !object-cover"
           />
 
           <div
-              class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-9 text-shadow flex items-end">
+            class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-9 text-shadow flex items-end">
             <h1 class="w-full text-right">
               <router-link
-                  to="#"
-                  class="text-lg text-white leading-relaxed hover:text-opacity-80 transition"
+                to="#"
+                class="text-lg text-white leading-relaxed hover:text-opacity-80 transition"
               >
                 داستان ساخت Civilization II؛ اثری که تصادفا آینده‌ی محتمل جهان را پیشگویی کرد
               </router-link>
 
               <router-link
-                  to="#"
-                  class="text-xs rounded-tr-lg rounded-bl-lg py-1.5 px-4 bg-indigo-600 text-white absolute left-0 bottom-0 hover:bg-indigo-500 transition"
+                to="#"
+                class="text-xs rounded-tr-lg rounded-bl-lg py-1.5 px-4 bg-indigo-600 text-white absolute left-0 bottom-0 hover:bg-indigo-500 transition"
               >
                 خلاقیت
               </router-link>
@@ -99,24 +99,24 @@
         </div>
         <div class="relative w-full">
           <base-lazy-image
-              lazy-src="/src/assets/blogs/b5.jpg"
-              alt="بلاگ 2"
-              class="rounded-lg h-[calc(15rem-12px)] w-full !object-cover"
+            lazy-src="/src/assets/blogs/b5.jpg"
+            alt="بلاگ 2"
+            class="rounded-lg h-[calc(15rem-12px)] w-full !object-cover"
           />
 
           <div
-              class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-9 text-shadow flex items-end">
+            class="absolute z-[1] bg-gradient-to-t from-slate-950/70 bottom-0 w-full h-full rounded-b-lg pt-6 px-6 pb-9 text-shadow flex items-end">
             <h1 class="w-full text-right">
               <router-link
-                  to="#"
-                  class="text-lg text-white leading-relaxed hover:text-opacity-80 transition"
+                to="#"
+                class="text-lg text-white leading-relaxed hover:text-opacity-80 transition"
               >
                 بررسی پاوربانک بی‌سیم سامسونگ EB-U1200؛ مناسب گوشی، ساعت و هدفون
               </router-link>
 
               <router-link
-                  to="#"
-                  class="text-xs rounded-tr-lg rounded-bl-lg py-1.5 px-4 bg-indigo-600 text-white absolute left-0 bottom-0 hover:bg-indigo-500 transition"
+                to="#"
+                class="text-xs rounded-tr-lg rounded-bl-lg py-1.5 px-4 bg-indigo-600 text-white absolute left-0 bottom-0 hover:bg-indigo-500 transition"
               >
                 نوآوری
               </router-link>
@@ -130,20 +130,20 @@
       <div class="flex flex-col lg:flex-row gap-3">
         <div class="grow">
           <partial-general-title
-              container-class="mb-2 p-2"
-              title="جدیدترین نوشته‌ها"
+            container-class="mb-2 p-2"
+            title="جدیدترین نوشته‌ها"
           />
 
           <div class="flex flex-wrap items-start">
             <div
-                v-for="blog in latestBlogs"
-                :key="blog.id"
-                class="w-full md:w-1/2 xl:w-1/3 p-3"
+              v-for="blog in latestBlogs"
+              :key="blog.id"
+              class="w-full md:w-1/2 xl:w-1/3 p-3"
             >
               <blog-card
-                  type="vertical"
-                  :blog="blog"
-                  container-class="border-0 rounded-lg supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80"
+                type="vertical"
+                :blog="blog"
+                container-class="border-0 rounded-lg supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80"
               />
             </div>
           </div>
@@ -151,9 +151,9 @@
           <div class="mt-5 text-left p-3 flex items-center">
             <div class="h-0.5 rounded-full grow bg-slate-200"></div>
             <base-button
-                type="link"
-                :to="{name: 'blog.search'}"
-                class="border-2 border-slate-200 px-5 !text-black bg-white bg-opacity-50 text-sm flex items-center gap-3 group shrink-0"
+              type="link"
+              :to="{name: 'blog.search'}"
+              class="border-2 border-slate-200 px-5 !text-black bg-white bg-opacity-50 text-sm flex items-center gap-3 group shrink-0"
             >
               <ArrowLongRightIcon class="w-6 h-6 group-hover:translate-x-1 transition"/>
               <span>مشاهده تمامی نوشته‌ها</span>
@@ -163,11 +163,11 @@
 
         <div class="shrink-0 lg:w-80 flex flex-col gap-6">
           <partial-card
-              class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
+            class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
             <template #body>
               <partial-general-title
-                  type="side"
-                  title="دسته‌بندی‌های پرطرفدار"
+                type="side"
+                title="دسته‌بندی‌های پرطرفدار"
               />
 
               <app-side-categories-blog/>
@@ -175,22 +175,22 @@
           </partial-card>
 
           <partial-card
-              class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
+            class="border-0 flex flex-col supports-[backdrop-filter]:backdrop-blur-sm supports-[backdrop-filter]:bg-opacity-80">
             <template #body>
               <partial-general-title
-                  type="side"
-                  title="پربازدیدترین نوشته‌ها"
+                type="side"
+                title="پربازدیدترین نوشته‌ها"
               />
 
               <div class="flex flex-col divide-y">
                 <div
-                    v-for="blog in latestBlogs"
-                    :key="blog.id"
-                    class="w-full py-2"
+                  v-for="blog in latestBlogs"
+                  :key="blog.id"
+                  class="w-full py-2"
                 >
                   <blog-card-small
-                      container-class="border-0 !bg-transparent"
-                      :blog="blog"
+                    container-class="border-0 !bg-transparent"
+                    :blog="blog"
                   />
                 </div>
               </div>

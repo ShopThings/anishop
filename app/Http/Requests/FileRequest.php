@@ -70,4 +70,13 @@ class FileRequest extends FormRequest
             ],
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'disk' => 'محل ذخیره‌سازی',
+            'path' => 'مسیر فایل/پوشه',
+            'destination' => 'مسیر فایل/پوشه مقصد',
+        ];
+    }
 }

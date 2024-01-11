@@ -1,31 +1,31 @@
 <template>
   <div
-      :class="containerClass"
-      class="text-sm flex items-center gap-3"
+    :class="containerClass"
+    class="text-sm flex items-center gap-3"
   >
     <label
-        v-if="labelTitle && showLabel"
-        :for="id ? id : labelId"
-        :class="labelClass"
-        class="cursor-pointer grow sm:grow-0"
+      v-if="labelTitle && showLabel"
+      :for="id ? id : labelId"
+      :class="labelClass"
+      class="cursor-pointer grow sm:grow-0"
     >
       <slot name="text" :title="labelTitle">
         {{ labelTitle }}
       </slot>
     </label>
     <input
-        :id="id ? id : labelId"
-        type="radio"
-        :name="name"
-        :value="value"
-        v-model="localValue"
-        class="radioInput"
-        :disabled="disabled"
-        @change="emit('change', localValue)"
+      :id="id ? id : labelId"
+      type="radio"
+      :name="name"
+      :value="value"
+      v-model="localValue"
+      class="radioInput"
+      :disabled="disabled"
+      @change="emit('change', localValue)"
     >
     <div
-        class="rounded-full w-6 h-6 cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
-        :class="[
+      class="rounded-full w-6 h-6 cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
+      :class="[
                 disabled
                 ? (
                     modelValue === value
@@ -38,7 +38,7 @@
                     : uncheckedClass + ' ' + uncheckedHoverClass
                 ),
             ]"
-        @click="() => {
+      @click="() => {
                 if(!disabled) {
                     localValue = value
                     nextTick(() => {

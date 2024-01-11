@@ -8,11 +8,11 @@
         <form @submit.prevent="onSubmit">
           <div class="p-2">
             <base-switch
-                label="قابل استفاده نمودن کوپن"
-                name="is_published"
-                :enabled="true"
-                sr-text="قابل استفاده نمودن کوپن"
-                @change="(status) => {publishStatus=status}"
+              label="قابل استفاده نمودن کوپن"
+              name="is_published"
+              :enabled="true"
+              sr-text="قابل استفاده نمودن کوپن"
+              @change="(status) => {publishStatus=status}"
             />
           </div>
 
@@ -37,10 +37,10 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  type="number"
-                  label-title="قیمت تخفیف"
-                  placeholder="وارد نمایید"
-                  name="price"
+                type="number"
+                label-title="قیمت تخفیف"
+                placeholder="وارد نمایید"
+                name="price"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -54,11 +54,11 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  type="number"
-                  label-title="حداقل قیمت اعمال"
-                  placeholder="وارد نمایید"
-                  name="apply_min_price"
-                  :is-optional="true"
+                type="number"
+                label-title="حداقل قیمت اعمال"
+                placeholder="وارد نمایید"
+                name="apply_min_price"
+                :is-optional="true"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -67,11 +67,11 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  type="number"
-                  label-title="حداکثر قیمت اعمال"
-                  placeholder="وارد نمایید"
-                  name="apply_max_price"
-                  :is-optional="true"
+                type="number"
+                label-title="حداکثر قیمت اعمال"
+                placeholder="وارد نمایید"
+                name="apply_max_price"
+                :is-optional="true"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -80,10 +80,10 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  type="number"
-                  label-title="تعداد قابل استفاده"
-                  placeholder="وارد نمایید"
-                  name="use_count"
+                type="number"
+                label-title="تعداد قابل استفاده"
+                placeholder="وارد نمایید"
+                name="use_count"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -92,11 +92,11 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  type="number"
-                  label-title="قابل استفاده مجدد پس از(بر حسب روز)"
-                  placeholder="وارد نمایید"
-                  name="reusable_after"
-                  :is-optional="true"
+                type="number"
+                label-title="قابل استفاده مجدد پس از(بر حسب روز)"
+                placeholder="وارد نمایید"
+                name="reusable_after"
+                :is-optional="true"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -111,37 +111,37 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <partial-input-label
-                  title="تاریخ شروع"
-                  :is-optional="true"
+                title="تاریخ شروع"
+                :is-optional="true"
               />
               <date-picker
-                  v-model="startDate"
-                  placeholder="انتخاب تاریخ شروع"
+                v-model="startDate"
+                placeholder="انتخاب تاریخ شروع"
               />
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <partial-input-label
-                  title="تاریخ پایان"
-                  :is-optional="true"
+                title="تاریخ پایان"
+                :is-optional="true"
               />
               <date-picker
-                  v-model="endDate"
-                  placeholder="انتخاب تاریخ پایان"
+                v-model="endDate"
+                placeholder="انتخاب تاریخ پایان"
               />
             </div>
           </div>
 
           <div class="px-2 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                :disabled="isSubmitting"
+              type="submit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              :disabled="isSubmitting"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                  v-if="isSubmitting"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                  big-circle-color="border-transparent"
                 />
               </VTransitionFade>
 
@@ -186,7 +186,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

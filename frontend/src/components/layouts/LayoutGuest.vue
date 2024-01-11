@@ -28,7 +28,3 @@ const transitionProps = defineTransitionProps({
   transitionDuration: 300,
 })
 </script>
-
-<style scoped>
-
-</style>

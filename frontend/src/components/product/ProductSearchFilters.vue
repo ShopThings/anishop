@@ -1,13 +1,13 @@
 <template>
   <partial-filter-card
-      item-key="id"
-      item-text-key="name"
-      item-unique-key-text="color"
-      :items="colors"
-      v-model:selected-items="selectedColors"
-      :show-selected-items="true"
-      :displaying-selected-items="{selectedItems: selectedColors, length: Object.keys(selectedColors).length}"
-      panel-container-class="flex flex-wrap items-center gap-2"
+    item-key="id"
+    item-text-key="name"
+    item-unique-key-text="color"
+    :items="colors"
+    v-model:selected-items="selectedColors"
+    :show-selected-items="true"
+    :displaying-selected-items="{selectedItems: selectedColors, length: Object.keys(selectedColors).length}"
+    panel-container-class="flex flex-wrap items-center gap-2"
   >
     <template #default>
       <div class="flex items-center justify-between gap-3 w-full pl-3">
@@ -21,21 +21,21 @@
 
     <template #item="{item}">
       <div
-          class="flex flex-col items-center cursor-pointer"
-          :class="{
+        class="flex flex-col items-center cursor-pointer"
+        :class="{
                     'text-indigo-600': selectedColors[item.id],
                 }"
-          @click="toggleColorSelection(item)"
+        @click="toggleColorSelection(item)"
       >
         <div
-            :class="{
+          :class="{
                         'border-indigo-500': selectedColors[item.id],
                     }"
-            class="p-1 flex items-center justify-center border-2 rounded-lg"
+          class="p-1 flex items-center justify-center border-2 rounded-lg"
         >
           <div
-              :style="'background-color:' + item.hex + ';'"
-              class="w-8 h-8 rounded-md shadow-md"
+            :style="'background-color:' + item.hex + ';'"
+            class="w-8 h-8 rounded-md shadow-md"
           ></div>
         </div>
         <span class="text-xs">{{ item.name }}</span>
@@ -44,14 +44,14 @@
   </partial-filter-card>
 
   <partial-filter-card
-      item-key="id"
-      item-text-key="size"
-      item-unique-key-text="size"
-      :items="sizes"
-      v-model:selected-items="selectedSizes"
-      :show-selected-items="true"
-      :displaying-selected-items="{selectedItems: selectedSizes, length: Object.keys(selectedSizes).length}"
-      panel-container-class="flex flex-wrap items-center gap-2"
+    item-key="id"
+    item-text-key="size"
+    item-unique-key-text="size"
+    :items="sizes"
+    v-model:selected-items="selectedSizes"
+    :show-selected-items="true"
+    :displaying-selected-items="{selectedItems: selectedSizes, length: Object.keys(selectedSizes).length}"
+    panel-container-class="flex flex-wrap items-center gap-2"
   >
     <template #default>
       <div class="flex items-center justify-between gap-3 w-full pl-3">
@@ -65,14 +65,14 @@
 
     <template #item="{item}">
       <div
-          :class="{
+        :class="{
                     'border-indigo-500 bg-indigo-50': selectedSizes[item.id]
                 }"
-          class="flex items-center justify-center border-2 rounded-lg cursor-pointer"
-          @click="toggleSizeSelection(item)"
+        class="flex items-center justify-center border-2 rounded-lg cursor-pointer"
+        @click="toggleSizeSelection(item)"
       >
         <div
-            class="rounded-md py-1.5 px-3"
+          class="rounded-md py-1.5 px-3"
         >
           <span class="text-black">{{ item.size }}</span>
         </div>
@@ -81,24 +81,24 @@
   </partial-filter-card>
 
   <partial-filter-card
-      item-key="id"
-      item-text-key="size"
-      item-unique-key-text="price"
-      panel-container-class="flex flex-wrap items-center gap-2"
+    item-key="id"
+    item-text-key="size"
+    item-unique-key-text="price"
+    panel-container-class="flex flex-wrap items-center gap-2"
   >
     <template #default>
       <div class="flex items-center gap-3 w-full pl-3">
         <span class="font-iranyekan-bold">محدوده قیمت</span>
         <span
-            v-if="selectedMinmaxPrice.length"
-            class="rounded-full w-2 h-2 bg-sky-400"></span>
+          v-if="selectedMinmaxPrice.length"
+          class="rounded-full w-2 h-2 bg-sky-400"></span>
       </div>
     </template>
 
     <template #panelClosed>
       <div
-          v-if="selectedMinmaxPrice.length"
-          class="px-3 pb-2 mt-[-2px] bg-white border-b border-slate-100"
+        v-if="selectedMinmaxPrice.length"
+        class="px-3 pb-2 mt-[-2px] bg-white border-b border-slate-100"
       >
         <div class="flex flex-wrap items-center gap-3 justify-between text-xs text-slate-400">
           <div class="flex gap-2 items-center">
@@ -130,12 +130,12 @@
           <span class="text-slate-500">از</span>
           <div class="grow">
             <base-input
-                name="min_price"
-                klass="no-spin-arrow !py-1.5 !text-xl font-iranyekan-bold"
-                :value="formatPriceLikeNumber(selectedMinmaxPrice[0])"
-                @keydown="formatPriceNumberInput"
-                @keyup="formatPriceNumberInput"
-                @input="formatPriceNumberInput"
+              name="min_price"
+              klass="no-spin-arrow !py-1.5 !text-xl font-iranyekan-bold"
+              :value="formatPriceLikeNumber(selectedMinmaxPrice[0])"
+              @keydown="formatPriceNumberInput"
+              @keyup="formatPriceNumberInput"
+              @input="formatPriceNumberInput"
             />
           </div>
           <span class="text-xs text-slate-400">تومان</span>
@@ -144,12 +144,12 @@
           <span class="text-slate-500">تا</span>
           <div class="grow">
             <base-input
-                name="max_price"
-                klass="no-spin-arrow !py-1.5 !text-xl font-iranyekan-bold"
-                :value="formatPriceLikeNumber(selectedMinmaxPrice[1])"
-                @keydown="formatPriceNumberInput"
-                @keyup="formatPriceNumberInput"
-                @input="formatPriceNumberInput"
+              name="max_price"
+              klass="no-spin-arrow !py-1.5 !text-xl font-iranyekan-bold"
+              :value="formatPriceLikeNumber(selectedMinmaxPrice[1])"
+              @keydown="formatPriceNumberInput"
+              @keyup="formatPriceNumberInput"
+              @input="formatPriceNumberInput"
             />
           </div>
           <span class="text-xs text-slate-400">تومان</span>
@@ -158,12 +158,12 @@
 
       <div class="px-3">
         <base-range-slider
-            :tooltips="false"
-            :min="minmaxPrice[0]"
-            :max="minmaxPrice[1]"
-            v-model="selectedMinmaxPrice"
-            direction="rtl"
-            @change="(val) => {selectedMinmaxPrice = val}"
+          :tooltips="false"
+          :min="minmaxPrice[0]"
+          :max="minmaxPrice[1]"
+          v-model="selectedMinmaxPrice"
+          direction="rtl"
+          @change="(val) => {selectedMinmaxPrice = val}"
         />
       </div>
       <div class="mt-2 flex items-center justify-between">
@@ -175,57 +175,57 @@
 
   <div class="border-b border-slate-100 px-4 py-2">
     <base-switch
-        name="available_products"
-        label="فقط کالاهای موجود"
-        label-class="!grow cursor-pointer py-2 font-iranyekan-bold !text-black"
-        enabled-color="bg-indigo-600 border-2 border-indigo-600"
-        disabled-color="bg-transparent border-2 border-slate-300"
-        disabled-bullet-color="!bg-slate-300"
-        sr-text="فقط کالاهای موجود"
-        @change="(status) => {availableProductsStatus = status}"
+      name="available_products"
+      label="فقط کالاهای موجود"
+      label-class="!grow cursor-pointer py-2 font-iranyekan-bold !text-black"
+      enabled-color="bg-indigo-600 border-2 border-indigo-600"
+      disabled-color="bg-transparent border-2 border-slate-300"
+      disabled-bullet-color="!bg-slate-300"
+      sr-text="فقط کالاهای موجود"
+      @change="(status) => {availableProductsStatus = status}"
     />
   </div>
 
   <div class="border-b border-slate-100 px-4 py-2">
     <base-switch
-        name="special_products"
-        label="محصولات ویژه"
-        label-class="!grow cursor-pointer py-2 font-iranyekan-bold !text-black"
-        enabled-color="bg-indigo-600 border-2 border-indigo-600"
-        disabled-color="bg-transparent border-2 border-slate-300"
-        disabled-bullet-color="!bg-slate-300"
-        sr-text="محصولات ویژه"
-        @change="(status) => {specialProductsStatus = status}"
+      name="special_products"
+      label="محصولات ویژه"
+      label-class="!grow cursor-pointer py-2 font-iranyekan-bold !text-black"
+      enabled-color="bg-indigo-600 border-2 border-indigo-600"
+      disabled-color="bg-transparent border-2 border-slate-300"
+      disabled-bullet-color="!bg-slate-300"
+      sr-text="محصولات ویژه"
+      @change="(status) => {specialProductsStatus = status}"
     />
   </div>
 
   <template
-      v-for="attribute in attributes"
-      :key="attribute.id"
+    v-for="attribute in attributes"
+    :key="attribute.id"
   >
     <partial-filter-card
-        panel-container-class="divide-y divide-slate-100"
-        item-key="id"
-        item-text-key="attribute_value"
-        :item-unique-key-text="`attr${attribute.id}`"
-        :items="attribute.values"
-        :show-selected-items="true"
-        :displaying-selected-items="getAttributeActualSelectedItems(selectedAttributes[attribute.id], attribute.id)"
-        :type="attribute.type === PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value ? 'multi' : 'single'"
-        v-model:selected-items="selectedAttributes[attribute.id]"
+      panel-container-class="divide-y divide-slate-100"
+      item-key="id"
+      item-text-key="attribute_value"
+      :item-unique-key-text="`attr${attribute.id}`"
+      :items="attribute.values"
+      :show-selected-items="true"
+      :displaying-selected-items="getAttributeActualSelectedItems(selectedAttributes[attribute.id], attribute.id)"
+      :type="attribute.type === PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value ? 'multi' : 'single'"
+      v-model:selected-items="selectedAttributes[attribute.id]"
     >
       <template #default>
         <div
-            class="flex items-center gap-3 w-full pl-3"
-            :class="{
+          class="flex items-center gap-3 w-full pl-3"
+          :class="{
                         'justify-between': attribute.type === PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value
                     }"
         >
           <span class="font-iranyekan-bold">{{ attribute.title }}</span>
 
           <div
-              v-if="attribute.type === PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value"
-              class="rounded-full py-0.5 px-2.5 border-2 border-rose-400 flex items-center gap-1.5"
+            v-if="attribute.type === PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value"
+            class="rounded-full py-0.5 px-2.5 border-2 border-rose-400 flex items-center gap-1.5"
           >
                         <span>{{
                             getSelectedAttributeObject(selectedAttributes[attribute.id], attribute.id).length
@@ -233,8 +233,8 @@
             <span class="text-xs">انتخاب</span>
           </div>
           <span
-              v-else-if="selectedAttributes[attribute.id]"
-              class="rounded-full w-2 h-2 bg-sky-400"></span>
+            v-else-if="selectedAttributes[attribute.id]"
+            class="rounded-full w-2 h-2 bg-sky-400"></span>
         </div>
       </template>
     </partial-filter-card>
@@ -466,7 +466,3 @@ function getAttributeActualSelectedItems(attributeObj, attributeId) {
 
 //----------------------------
 </script>
-
-<style scoped>
-
-</style>

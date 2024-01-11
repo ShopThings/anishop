@@ -35,7 +35,3 @@ onMounted(() => {
   if (isOpen.value) button.value.el.click()
 })
 </script>
-
-<style scoped>
-
-</style>

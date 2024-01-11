@@ -1,19 +1,19 @@
 <template>
   <div
-      v-for="(slider, idx) in sliders"
-      :key="idx"
-      class="px-3 mb-6 lg:mb-8"
+    v-for="(slider, idx) in sliders"
+    :key="idx"
+    class="px-3 mb-6 lg:mb-8"
   >
     <template v-if="slider.type === SLIDER_PLACES.MAIN_SLIDERS.value">
       <partial-general-title
-          :title="slider.title"
-          title-size="text-lg"
+        :title="slider.title"
+        title-size="text-lg"
       >
         <template #extra>
           <router-link
-              v-if="slider?.options?.show_all_link && slider.options.show_all_link.trim() !== ''"
-              :to="slider.options?.show_all_link"
-              class="text-sm text-blue-600 hover:opacity-80 transition"
+            v-if="slider?.options?.show_all_link && slider.options.show_all_link.trim() !== ''"
+            :to="slider.options?.show_all_link"
+            class="text-sm text-blue-600 hover:opacity-80 transition"
           >
             مشاهده همه
           </router-link>
@@ -24,21 +24,21 @@
 
     <template v-else-if="slider.type === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value">
       <div
-          :class="gridImageClass[slider?.options?.beside_images ?? 1]"
-          class="grid gap-4"
+        :class="gridImageClass[slider?.options?.beside_images ?? 1]"
+        class="grid gap-4"
       >
         <div
-            v-for="(item, idx) in slider.items"
-            :key="idx"
+          v-for="(item, idx) in slider.items"
+          :key="idx"
         >
           <router-link
-              :to="item?.link"
-              class="block rounded-lg shadow"
+            :to="item?.link"
+            class="block rounded-lg shadow"
           >
             <img
-                :src="item?.image.path"
-                alt=""
-                class="w-full h-auto object-contain rounded-lg"
+              :src="item?.image.path"
+              alt=""
+              class="w-full h-auto object-contain rounded-lg"
             />
           </router-link>
         </div>
@@ -578,7 +578,3 @@ const sliders = ref([
 ])
 
 </script>
-
-<style scoped>
-
-</style>

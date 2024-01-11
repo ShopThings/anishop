@@ -4,8 +4,8 @@
       <slot name="link" :open="open"></slot>
 
       <MenuButton
-          class="shrink-0 rounded-lg border border-white border-opacity-25 bg-white"
-          :class="[
+        class="shrink-0 rounded-lg border border-white border-opacity-25 bg-white"
+        :class="[
                     open ? 'bg-opacity-20' : 'bg-opacity-5',
                     mini ? 'w-full flex justify-center p-0.5' : 'p-3 mr-2 '
                 ]">
@@ -16,8 +16,8 @@
     <VTransitionSlideFadeDownY>
       <MenuItems>
         <ul
-            class="flex flex-col py-2"
-            :class="{'pr-3': !mini}"
+          class="flex flex-col py-2"
+          :class="{'pr-3': !mini}"
         >
           <slot name="children"></slot>
         </ul>
@@ -38,7 +38,3 @@ defineProps({
   },
 })
 </script>
-
-<style scoped>
-
-</style>

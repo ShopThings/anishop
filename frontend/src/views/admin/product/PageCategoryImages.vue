@@ -14,22 +14,22 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="false"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="false"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="false"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:image="{value}">
               <base-media-placeholder
-                  type="image"
-                  :has-clear-button="true"
+                type="image"
+                :has-clear-button="true"
               />
             </template>
           </base-datatable>
@@ -115,7 +115,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 
 doSearch(0, 15, 'id', 'desc')
 </script>
-
-<style scoped>
-
-</style>

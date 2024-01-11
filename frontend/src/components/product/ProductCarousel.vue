@@ -1,13 +1,13 @@
 <template>
   <base-carousel
-      v-slot="{slide, index}"
-      v-model="relatedProducts"
-      v-model:current="currentSlide"
-      :has-navigation="carouselSettings.hasNavigation"
-      :navigation-display="carouselSettings.navigationDisplay"
-      :has-pagination="carouselSettings.hasPagination"
-      :free-mode="carouselSettings.freeMode"
-      :breakpoints="carouselSettings.breakpoints"
+    v-slot="{slide, index}"
+    v-model="relatedProducts"
+    v-model:current="currentSlide"
+    :has-navigation="carouselSettings.hasNavigation"
+    :navigation-display="carouselSettings.navigationDisplay"
+    :has-pagination="carouselSettings.hasPagination"
+    :free-mode="carouselSettings.freeMode"
+    :breakpoints="carouselSettings.breakpoints"
   >
     <slot name="slide" :slide="slide" :index="index">
       <div class="w-full h-full">
@@ -60,7 +60,3 @@ const carouselSettings = {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

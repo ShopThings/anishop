@@ -3,6 +3,9 @@
 namespace App\Http\Resources\User;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\OrderItemShowResource;
+use App\Http\Resources\Showing\OrderShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,7 +25,7 @@ class UserOrderSingleResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'user' => $this->user,
+            'user' => new UserShowResource($this->user),
             'code' => $this->code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -47,14 +50,11 @@ class UserOrderSingleResource extends JsonResource
                 : null,
             'is_needed_factor' => $this->is_needed_factor,
             'is_in_place_delivery' => $this->is_in_place_delivery,
-            'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
             'ordered_at' => $this->ordered_at
                 ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'orders' => $this->orders,
-            'has_paid' => $this->orders->hasPaid(),
-            'payments' => $this->whenLoaded('orders.payments'),
-            'items' => $this->items,
+            'orders' => OrderShowResource::collection($this->orders),
+            'items' => OrderItemShowResource::collection($this->items),
         ];
     }
 }

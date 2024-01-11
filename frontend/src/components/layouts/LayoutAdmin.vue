@@ -127,7 +127,3 @@ function calcCrumbLink(crumb) {
   return obj;
 }
 </script>
-
-<style scoped>
-
-</style>

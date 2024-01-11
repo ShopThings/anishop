@@ -4,8 +4,8 @@
       <div class="flex gap-3 items-center justify-between">
         <ShoppingBagIcon class="h-8 w-8 text-indigo-500"/>
         <router-link
-            :to="{name: 'user.orders'}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+          :to="{name: 'user.orders'}"
+          class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -29,8 +29,8 @@
       <div class="flex gap-3 items-center justify-between">
         <ArchiveBoxXMarkIcon class="h-8 w-8 text-teal-500"/>
         <router-link
-            :to="{name: 'user.return_orders'}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+          :to="{name: 'user.return_orders'}"
+          class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -54,8 +54,8 @@
       <div class="flex gap-3 items-center justify-between">
         <ChatBubbleLeftRightIcon class="h-8 w-8 text-yellow-400"/>
         <router-link
-            :to="{name: 'user.comments'}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+          :to="{name: 'user.comments'}"
+          class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -79,8 +79,8 @@
       <div class="flex gap-3 items-center justify-between">
         <HeartIcon class="h-8 w-8 text-rose-400"/>
         <router-link
-            :to="{name: 'user.favorite_products'}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+          :to="{name: 'user.favorite_products'}"
+          class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -104,8 +104,8 @@
       <div class="flex gap-3 items-center justify-between">
         <BookOpenIcon class="h-8 w-8 text-blue-500"/>
         <router-link
-            :to="{name: 'user.addresses'}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+          :to="{name: 'user.addresses'}"
+          class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -129,8 +129,8 @@
       <div class="flex gap-3 items-center justify-between">
         <ChatBubbleLeftEllipsisIcon class="h-8 w-8 text-fuchsia-500"/>
         <router-link
-            :to="{name: 'user.contacts'}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+          :to="{name: 'user.contacts'}"
+          class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -158,8 +158,8 @@
         <partial-general-title title="آخرین سفارشات">
           <template #extra>
             <router-link
-                :to="{name: 'user.orders'}"
-                class="text-blue-600 hover:text-opacity-80 text-sm"
+              :to="{name: 'user.orders'}"
+              class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               <div class="flex items-center">
                 <span class="ml-2">مشاهده همه</span>
@@ -170,17 +170,17 @@
         </partial-general-title>
 
         <base-semi-datatable
-            :is-loading="topOrdersTableSetting.isLoading"
-            :columns="topOrdersTableSetting.columns"
-            :rows="topOrdersTableSetting.rows"
-            :total="topOrdersTableSetting.total"
-            @do-search="getLatestOrders"
+          :is-loading="topOrdersTableSetting.isLoading"
+          :columns="topOrdersTableSetting.columns"
+          :rows="topOrdersTableSetting.rows"
+          :total="topOrdersTableSetting.total"
+          @do-search="getLatestOrders"
         >
           <template #emptyTableRows>
             <partial-empty-rows
-                image="/empty-statuses/empty-order.svg"
-                image-class="w-60"
-                message="هیچ سفارشی ثبت نشده است"
+              image="/empty-statuses/empty-order.svg"
+              image-class="w-60"
+              message="هیچ سفارشی ثبت نشده است"
             />
           </template>
 
@@ -206,8 +206,8 @@
 
           <template #op="{value}">
             <router-link
-                :to="{name: 'user.order.detail', params: {code: 12345}}"
-                class="text-blue-600 hover:text-opacity-80 text-sm"
+              :to="{name: 'user.order.detail', params: {code: 12345}}"
+              class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               مشاهده جزئیات
             </router-link>
@@ -223,8 +223,8 @@
         <partial-general-title title="آخرین سفارشات مرجوع شده">
           <template #extra>
             <router-link
-                :to="{name: 'user.return_orders'}"
-                class="text-blue-600 hover:text-opacity-80 text-sm"
+              :to="{name: 'user.return_orders'}"
+              class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               <div class="flex items-center">
                 <span class="ml-2">مشاهده همه</span>
@@ -235,11 +235,11 @@
         </partial-general-title>
 
         <base-semi-datatable
-            :is-loading="topReturnOrdersTableSetting.isLoading"
-            :columns="topReturnOrdersTableSetting.columns"
-            :rows="topReturnOrdersTableSetting.rows"
-            :total="topReturnOrdersTableSetting.total"
-            @do-search="getLatestReturnOrders"
+          :is-loading="topReturnOrdersTableSetting.isLoading"
+          :columns="topReturnOrdersTableSetting.columns"
+          :rows="topReturnOrdersTableSetting.rows"
+          :total="topReturnOrdersTableSetting.total"
+          @do-search="getLatestReturnOrders"
         >
           <template #status="{value}">
             <partial-badge-status-return-order/>
@@ -251,8 +251,8 @@
 
           <template #op="{value}">
             <router-link
-                :to="{name: 'user.return_order.detail', params: {code: 12345}}"
-                class="text-blue-600 hover:text-opacity-80 text-sm"
+              :to="{name: 'user.return_order.detail', params: {code: 12345}}"
+              class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               مشاهده جزئیات
             </router-link>
@@ -423,7 +423,3 @@ const getLatestReturnOrders = (offset, limit) => {
 
 getLatestReturnOrders(0, 15)
 </script>
-
-<style scoped>
-
-</style>

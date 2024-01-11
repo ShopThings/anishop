@@ -14,19 +14,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="true"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="true"
+            :enable-multi-operation="true"
+            :selection-operations="selectionOperations"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :selection-columns="table.selectionColumns"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="true"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:place="{value}">
 
@@ -36,10 +36,10 @@
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
-                  :container="getMenuContainer"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                :items="operations"
+                :data="value"
+                :container="getMenuContainer"
+                :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -56,7 +56,7 @@ import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-confirm.js";
+import {useConfirmToast} from "../../../composables/toast-helper.js";
 import PartialCard from "../../../components/partials/PartialCard.vue";
 import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
 import BaseDatatable from "../../../components/base/BaseDatatable.vue";
@@ -260,7 +260,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 
 doSearch(0, 15, 'id', 'desc')
 </script>
-
-<style scoped>
-
-</style>

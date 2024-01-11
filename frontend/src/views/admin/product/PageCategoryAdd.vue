@@ -6,19 +6,19 @@
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <base-switch
-                    label="عدم نمایش دسته‌بندی"
-                    on-label="نمایش دسته‌بندی"
-                    name="is_published"
-                    :enabled="true"
-                    sr-text="نمایش/عدم نمایش دسته‌بندی"
-                    @change="(status) => {publishStatus=status}"
+                  label="عدم نمایش دسته‌بندی"
+                  on-label="نمایش دسته‌بندی"
+                  name="is_published"
+                  :enabled="true"
+                  sr-text="نمایش/عدم نمایش دسته‌بندی"
+                  @change="(status) => {publishStatus=status}"
                 />
               </div>
 
@@ -34,11 +34,11 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      type="number"
-                      label-title="اولویت"
-                      placeholder="وارد نمایید"
-                      name="priority"
-                      :min="0"
+                    type="number"
+                    label-title="اولویت"
+                    placeholder="وارد نمایید"
+                    name="priority"
+                    :min="0"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -49,22 +49,22 @@
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <partial-input-label title="دسته‌بندی والد"/>
                   <base-select-searchable
-                      :options="categories"
-                      options-key="id"
-                      options-text="name"
-                      name="parent_category"
-                      :multiple="true"
-                      :is-loading="searchLoading"
-                      :is-local-search="false"
-                      placeholder="جستجوی دسته‌بندی..."
-                      @change="categorySelectionChange"
-                      @query="searchCategory"
+                    :options="categories"
+                    options-key="id"
+                    options-text="name"
+                    name="parent_category"
+                    :multiple="true"
+                    :is-loading="searchLoading"
+                    :is-local-search="false"
+                    placeholder="جستجوی دسته‌بندی..."
+                    @change="categorySelectionChange"
+                    @query="searchCategory"
                   >
                     <template #item="{item}">
                       <div class="flex items-center">
                         <span>{{ item.name }}</span>
                         <span
-                            class="py-1 px-2 text-sm bg-blue-500 text-white mr-2"
+                          class="py-1 px-2 text-sm bg-blue-500 text-white mr-2"
                         >
                                                     سطح
                                                     {{ item.level }}
@@ -81,44 +81,44 @@
               <div class="flex flex-wrap">
                 <div class="p-2 w-full sm:w-auto sm:grow">
                   <base-switch
-                      label="نمایش در منو"
-                      name="show_in_menu"
-                      :enabled="true"
-                      sr-text="نمایش/عدم نمایش دسته‌بندی در منو"
-                      @change="(status) => {showInMenuStatus=status}"
+                    label="نمایش در منو"
+                    name="show_in_menu"
+                    :enabled="true"
+                    sr-text="نمایش/عدم نمایش دسته‌بندی در منو"
+                    @change="(status) => {showInMenuStatus=status}"
                   />
                 </div>
                 <div class="p-2 w-full sm:w-auto sm:grow">
                   <base-switch
-                      label="نمایش در منوی صفحه جستجو"
-                      name="show_in_search_side_menu"
-                      :enabled="true"
-                      sr-text="نمایش/عدم نمایش دسته‌بندی در منوی صفحه جستجو"
-                      @change="(status) => {showInSearchSideMenuStatus=status}"
+                    label="نمایش در منوی صفحه جستجو"
+                    name="show_in_search_side_menu"
+                    :enabled="true"
+                    sr-text="نمایش/عدم نمایش دسته‌بندی در منوی صفحه جستجو"
+                    @change="(status) => {showInSearchSideMenuStatus=status}"
                   />
                 </div>
                 <div class="p-2 w-full sm:w-auto sm:grow">
                   <base-switch
-                      label="نمایش در اسلایدر"
-                      name="show_in_slider"
-                      :enabled="true"
-                      sr-text="نمایش/عدم نمایش دسته‌بندی در اسلایدر"
-                      @change="(status) => {showInSliderStatus=status}"
+                    label="نمایش در اسلایدر"
+                    name="show_in_slider"
+                    :enabled="true"
+                    sr-text="نمایش/عدم نمایش دسته‌بندی در اسلایدر"
+                    @change="(status) => {showInSliderStatus=status}"
                   />
                 </div>
               </div>
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -203,7 +203,3 @@ onMounted(() => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

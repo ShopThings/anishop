@@ -9,31 +9,31 @@
         <div class="w-full p-2">
           <partial-input-label title="انتخاب محصول"/>
           <base-select-searchable
-              :options="products"
-              options-key="id"
-              options-text="title"
-              name="product"
-              :multiple="true"
-              :is-loading="loading"
-              :is-local-search="false"
-              placeholder="جستجوی محصول..."
-              @change="productSelectionChange"
-              @query="searchProduct"
+            :options="products"
+            options-key="id"
+            options-text="title"
+            name="product"
+            :multiple="true"
+            :is-loading="loading"
+            :is-local-search="false"
+            placeholder="جستجوی محصول..."
+            @change="productSelectionChange"
+            @query="searchProduct"
           />
           <partial-input-error-message :error-message="errors.product"/>
         </div>
 
         <div class="px-2 py-3">
           <base-animated-button
-              type="submit"
-              class="bg-blue-500 text-white mr-auto px-6 w-full sm:w-auto"
-              :disabled="isSubmitting"
+            type="submit"
+            class="bg-blue-500 text-white mr-auto px-6 w-full sm:w-auto"
+            :disabled="isSubmitting"
           >
             <VTransitionFade>
               <loader-circle
-                  v-if="isSubmitting"
-                  main-container-klass="absolute w-full h-full top-0 left-0"
-                  big-circle-color="border-transparent"
+                v-if="isSubmitting"
+                main-container-klass="absolute w-full h-full top-0 left-0"
+                big-circle-color="border-transparent"
               />
             </VTransitionFade>
 
@@ -97,7 +97,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

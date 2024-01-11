@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Filters;
 
+use App\Enums\Gates\RolesEnum;
 use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Support\Traits\OrderingTrait;
 use Illuminate\Http\Request;
@@ -40,11 +41,11 @@ class FileListFilter
      */
     protected ?string $searchText = null;
 
-    public function __construct(Request $request)
+    public function __construct(protected Request $request)
     {
         $this->setPath($request->string('path', ''));
-        $this->setDisk($request->string('disk', ''));
-        $this->setSize($request->string('size', ''));
+        $this->setDisk($request->string('disk', FileRepositoryInterface::STORAGE_DISK_PUBLIC));
+        $this->setSize($request->string('size', FileRepositoryInterface::ORIGINAL));
 
         $extensions = $request->input('extensions', []);
         if (is_array($extensions)) $this->setExtensions($extensions);
@@ -91,9 +92,28 @@ class FileListFilter
      */
     public function setDisk(string $disk): static
     {
-        if (in_array($disk, FileRepositoryInterface::STORAGE_DISKS)) {
+        $user = $this->request->user();
+
+        if (
+            !$user ||
+            // only below roles can access other storages than "public"
+            !$user->hasAnyRole(
+                [
+                    RolesEnum::DEVELOPER->value,
+                    RolesEnum::SUPER_ADMIN->value,
+                    RolesEnum::ADMIN->value
+                ]
+            ) ||
+            !in_array(
+                $disk,
+                FileRepositoryInterface::STORAGE_DISKS
+            )
+        ) {
+            $this->disk = FileRepositoryInterface::STORAGE_DISK_PUBLIC;
+        } else {
             $this->disk = $disk;
         }
+
         return $this;
     }
 
@@ -111,8 +131,10 @@ class FileListFilter
      */
     public function setSize(string $size): static
     {
-        if (in_array($size, FileRepositoryInterface::VALID_SIZES)) {
+        if (in_array($size, array_keys(FileRepositoryInterface::VALID_SIZES))) {
             $this->size = $size;
+        } else {
+            $this->size = FileRepositoryInterface::ORIGINAL;
         }
         return $this;
     }

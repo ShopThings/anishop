@@ -3,15 +3,15 @@
             btnClass="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
     <template #button>
             <span
-                class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
+              class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
 
       <ShoppingBagIconOutline class="h-6 w-6 text-slate-400"/>
       <ChevronDownIcon class="h-3 w-3 mr-1 text-slate-600"/>
     </template>
     <template #items>
       <MenuItems
-          class="absolute z-[10] mt-3 w-full sm:w-[22rem] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-          :class="[
+        class="absolute z-[10] mt-3 w-full sm:w-[22rem] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        :class="[
                     position === 'right' ? 'right-0 origin-top-left' : 'left-0 origin-top-right',
                 ]"
       >
@@ -21,9 +21,9 @@
               <router-link to="#"
                            class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
                 <base-lazy-image
-                    class="w-full h-full object-contain group-hover:scale-110 transition"
-                    lazy-src="/src/assets/products/p1.jpg"
-                    alt="product 1"
+                  class="w-full h-full object-contain group-hover:scale-110 transition"
+                  lazy-src="/src/assets/products/p1.jpg"
+                  alt="product 1"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
@@ -49,9 +49,9 @@
               <router-link to="#"
                            class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
                 <base-lazy-image
-                    class="w-full h-full object-contain group-hover:scale-110 transition"
-                    lazy-src="/src/assets/products/p2.jpg"
-                    alt="product 2"
+                  class="w-full h-full object-contain group-hover:scale-110 transition"
+                  lazy-src="/src/assets/products/p2.jpg"
+                  alt="product 2"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
@@ -77,9 +77,9 @@
               <router-link to="#"
                            class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
                 <base-lazy-image
-                    class="w-full h-full object-contain group-hover:scale-110 transition"
-                    lazy-src="/src/assets/products/p3.jpg"
-                    alt="product 3"
+                  class="w-full h-full object-contain group-hover:scale-110 transition"
+                  lazy-src="/src/assets/products/p3.jpg"
+                  alt="product 3"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
@@ -105,9 +105,9 @@
               <router-link to="#"
                            class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
                 <base-lazy-image
-                    class="w-full h-full object-contain group-hover:scale-110 transition"
-                    lazy-src="/src/assets/products/p4.jpg"
-                    alt="product 4"
+                  class="w-full h-full object-contain group-hover:scale-110 transition"
+                  lazy-src="/src/assets/products/p4.jpg"
+                  alt="product 4"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
@@ -133,9 +133,9 @@
               <router-link to="#"
                            class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
                 <base-lazy-image
-                    class="w-full h-full object-contain group-hover:scale-110 transition"
-                    lazy-src="/src/assets/products/p5.jpg"
-                    alt="product 5"
+                  class="w-full h-full object-contain group-hover:scale-110 transition"
+                  lazy-src="/src/assets/products/p5.jpg"
+                  alt="product 5"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
@@ -179,9 +179,9 @@
         </div>
 
         <base-popover-side
-            panel-class="py-3 pl-6 pr-3"
-            btn-class="w-full"
-            position="left"
+          panel-class="py-3 pl-6 pr-3"
+          btn-class="w-full"
+          position="left"
         >
           <template #button>
             <base-button class="bg-slate-100 !text-black rounded-t-none w-full text-sm">
@@ -238,7 +238,3 @@ const emit = defineEmits(['open'])
 
 const dummy = ref(true)
 </script>
-
-<style scoped>
-
-</style>

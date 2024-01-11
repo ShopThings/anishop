@@ -1,24 +1,24 @@
 <template>
   <partial-general-title
-      type="side"
-      title="دسته‌بندی‌های منتخب"
-      title-size="text-xl"
-      container-class="mb-5 mt-6 p-2"
+    type="side"
+    title="دسته‌بندی‌های منتخب"
+    title-size="text-xl"
+    container-class="mb-5 mt-6 p-2"
   />
 
   <ul class="flex flex-wrap items-center justify-center gap-8">
     <li
-        v-for="category in categories"
-        :key="category.id"
+      v-for="category in categories"
+      :key="category.id"
     >
       <router-link
-          to="#"
-          class="flex flex-col items-center gap-3"
+        to="#"
+        class="flex flex-col items-center gap-3"
       >
         <base-lazy-image
-            :lazy-src="category.image.path"
-            alt=""
-            class="w-32 h-auto"
+          :lazy-src="category.image.path"
+          alt=""
+          class="w-32 h-auto"
         />
 
         <h1 class="font-iranyekan-bold text-sm">
@@ -79,7 +79,3 @@ const categories = ref([
   },
 ])
 </script>
-
-<style scoped>
-
-</style>

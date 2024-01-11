@@ -84,7 +84,7 @@ var tinyMCEPopup = {
      */
     self.onInit = {
       add: function (func, scope) {
-        self.listeners.push({ func: func, scope: scope });
+        self.listeners.push({func: func, scope: scope});
       }
     };
 
@@ -224,7 +224,8 @@ var tinyMCEPopup = {
    * @method requireLangPack
    */
   requireLangPack: function () {
-    var self = this, url = self.getWindowArg('plugin_url') || self.getWindowArg('theme_url'), settings = self.editor.settings, lang;
+    var self = this, url = self.getWindowArg('plugin_url') || self.getWindowArg('theme_url'),
+      settings = self.editor.settings, lang;
 
     if (settings.language !== false) {
       lang = settings.language || "en";
@@ -394,7 +395,7 @@ var tinyMCEPopup = {
         document.attachEvent('onmouseup', tinyMCEPopup._restoreSelection);
 
         // Add base target element for it since it would fail with modal dialogs
-        t.dom.add(t.dom.select('head')[0], 'base', { target: '_self' });
+        t.dom.add(t.dom.select('head')[0], 'base', {target: '_self'});
       } else {
         document.addEventListener('mouseup', tinyMCEPopup._restoreSelection, false);
       }
@@ -487,13 +488,13 @@ tinymce.util.Dispatcher = function (scope) {
   this.listeners = [];
 
   this.add = function (callback, scope) {
-    this.listeners.push({ cb: callback, scope: scope || this.scope });
+    this.listeners.push({cb: callback, scope: scope || this.scope});
 
     return callback;
   };
 
   this.addToTop = function (callback, scope) {
-    var self = this, listener = { cb: callback, scope: scope || self.scope };
+    var self = this, listener = {cb: callback, scope: scope || self.scope};
 
     // Create new listeners if addToTop is executed in a dispatch loop
     if (self.inDispatch) {

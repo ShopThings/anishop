@@ -13,11 +13,13 @@ use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Support\Repository;
 use App\Support\Traits\FileTrait;
 use App\Support\WhereBuilder\WhereBuilder;
+use App\Support\WhereBuilder\WhereBuilderInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use function pathinfo;
@@ -46,7 +48,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $this->checkDiskValidation($disk);
         $this->checkPathExists($path, $disk);
 
-        $name = $this->getNormalizedPath($file->getClientOriginalName() ?: $file->hashName());
+        $name = $file->getClientOriginalName() ?: $file->hashName();
         $name = pathinfo($name, PATHINFO_FILENAME);
         $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
 
@@ -56,8 +58,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         if (!$overwrite && $this->fileExists($uploadFilename, $disk))
             throw new FileDuplicationException();
 
-        $file->storeAs($path, $uploadFilename, $disk);
-        $res = $this->uploadThumbnailsIfSupported($file, $path, $disk, $origName);
+        DB::beginTransaction();
 
         $model = $this->create([
             'name' => $name,
@@ -65,7 +66,16 @@ class FileRepository extends Repository implements FileRepositoryInterface
             'path' => $path,
         ]);
 
-        return $res && $model instanceof Model;
+        $file->storeAs($path, $uploadFilename, $disk);
+        $res = $this->uploadThumbnailsIfSupported($file, $path, $disk, $origName);
+
+        if (!$res || !$model instanceof Model) {
+            DB::rollBack();
+            return false;
+        }
+
+        DB::commit();
+        return true;
     }
 
     /**
@@ -94,12 +104,14 @@ class FileRepository extends Repository implements FileRepositoryInterface
         if ($hasSearch) {
             $search = $this->getNormalizedPath($search);
 
-            $where->whereLike('name', $search)
-                ->whereRegexp('path', '^' . $path);
+            $where->group(function (WhereBuilderInterface $where) use ($search, $path) {
+                $where->orWhereLike('name', $search)
+                    ->orWhereRegexp('path', '^' . $path);
 
-            if (mb_strpos('.', $search) !== false) {
-                $where->whereLike('extension', $search);
-            }
+                if (mb_strpos('.', $search) !== false) {
+                    $where->orWhereLike('extension', $search);
+                }
+            });
         } else {
             $where->whereEqual('path', $path);
         }
@@ -109,37 +121,43 @@ class FileRepository extends Repository implements FileRepositoryInterface
         }
 
         $listFiles = [];
-        $dbFiles = [];
-        $this->chunk(function (Collection $files) use (&$dbFiles, &$listFiles, $hasSearch, $fileSize, $disk) {
-            $files->each(function (FileManager $file) use (&$dbFiles) {
-                $dbFiles[] = [
-                    'name' => $file->name,
-                    'extension' => $file->extension,
-                    'path' => $file->path,
-                ];
-            });
+        $this->chunk(function (
+            Collection $files
+        ) use (&$dbFiles, &$listFiles, $hasSearch, $fileSize, $disk) {
+            $files->groupBy('path')->each(function (
+                Collection $group,
+                           $path
+            ) use ($disk, $hasSearch, &$listFiles, $fileSize) {
+                $storageFiles = Storage::disk($disk)->files($path);
 
-            $tmpFiles = $this->getSimilarFiles(
-                $files->toArray(),
-                '(' . implode('|', array_map(function ($value) {
-                    return preg_quote($value);
-                }, Arr::pluck($dbFiles, 'name'))) . ')',
-                $hasSearch ? ['i'] : []
-            );
-            foreach ($tmpFiles as $tmpFile) {
-                if (!in_array($tmpFile, $listFiles)) {
-                    $listFiles[] = $tmpFile;
+                $tmpFiles = $this->getSimilarFiles(
+                    $storageFiles,
+                    '(' . implode('|', array_map(function ($value) {
+                        return preg_quote($value);
+                    }, Arr::pluck($group, 'name'))) . ')',
+                    $hasSearch ? ['i'] : []
+                );
+
+                $tmpFiles = $this->getSpecificThumbnail($tmpFiles, $fileSize);
+
+                // get file info of fetched files
+                foreach ($tmpFiles as $file) {
+                    $fileInfo = $this->getFileInfo($file, $disk);
+                    if (!empty($fileInfo)) {
+                        $tmpName = explode('-', $file)[0];
+                        $dbFile = $group->filter(function ($i) use ($tmpName) {
+                            return trim($i->path . '/' . $i->name, '\\/') === $tmpName;
+                        })->first();
+
+                        if (!empty($dbFile)) {
+                            $fileInfo['id'] = $dbFile->id;
+                            $fileInfo['path'] = $dbFile->path;
+                            $fileInfo['full_path'] = $dbFile->full_path;
+                            $listFiles[] = $fileInfo;
+                        }
+                    }
                 }
-            }
-
-            $tmpFiles = $this->getSpecificThumbnail($listFiles, $fileSize);
-
-            // get file info of fetched files
-            foreach ($tmpFiles as $file) {
-                $listFiles[] = $this->getFileInfo($file, $disk);
-            }
-
-            $dbFiles = [];
+            });
         }, $where->build());
 
         $treeList = $this->treeList($path, $disk);
@@ -169,7 +187,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
             });
         }
 
-        return $treeList + $listFiles;
+        return array_merge($treeList, $listFiles);
     }
 
     /**
@@ -197,7 +215,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
 
         $dirsList = [];
         foreach ($dirs as $dir) {
-            $dirsList[] = $this->getFileInfo($dir, $disk);
+            if (!empty($fileInfo = $this->getFileInfo($dir, $disk))) $dirsList[] = $fileInfo;
         }
 
         return $dirsList;
@@ -241,7 +259,6 @@ class FileRepository extends Repository implements FileRepositoryInterface
 
         $diskStorage = Storage::disk($disk);
 
-        $oldPath = $path . '/' . ltrim($oldName, '\\/');
         $newPath = $path . '/' . ltrim($newName, '\\/');
 
         $tmpOldExtension = pathinfo($oldName, PATHINFO_EXTENSION) ?? null;
@@ -249,8 +266,9 @@ class FileRepository extends Repository implements FileRepositoryInterface
         if (
             (is_null($tmpOldExtension) && !is_null($tmpNewExtension)) ||
             (!is_null($tmpOldExtension) && is_null($tmpNewExtension))
-        )
-            throw new InvalidArgumentException('نوع فایل/پوشه در تغییر نام عوض شده و نامعتبر می‌باشد!');
+        ) {
+            throw new InvalidArgumentException('نوع فایل/پوشه در تغییر نام، عوض شده و نامعتبر می‌باشد!');
+        }
 
         if (
             (!is_null($tmpNewExtension) && $this->fileExists($newPath, $disk)) ||
@@ -258,51 +276,41 @@ class FileRepository extends Repository implements FileRepositoryInterface
         )
             throw new FileDuplicationException('فایل/پوشه مورد نظر در محل ذخیره‌سازی وجود دارد.');
 
-        if (!is_null($tmpNewExtension)) {
-            $files = $this->fileExists($oldPath, $disk, true);
-            foreach ($files as $file) {
-                $diskStorage->move($file, $newPath);
-
-                // It needs to update in database too
-                $info = pathinfo($newPath);
-                $attrs = [
-                    'name' => $info['filename'],
-                    'path' => $info['dirname'],
-                    'extension' => $info['extension'],
-                ];
-
-                $where = new WhereBuilder('file_manager');
-                $where->whereEqual('name', $oldName)
-                    ->whereEqual('path', $oldPath);
-                $this->updateWhere($attrs, $where->build());
-            }
-        } else {
-            $diskStorage->move($oldPath, $newPath);
-        }
-
-        return true;
+        return $this->moveOrCopy($path, $oldName, $newPath, $disk, self::OPERATION_MOVE);
     }
 
     /**
      * @inheritDoc
-     * @throws InvalidDiskException
      * @throws InvalidPathException
      */
     public function move(array $paths, string $destination, string $disk): bool
     {
-        $this->moveOrCopy($paths, $destination, $disk);
-        return true;
+        $this->checkDiskValidation($disk);
+
+        $res = true;
+        foreach ($paths as $path) {
+            $res = $res && $this->moveOrCopyOne($path, $destination, $disk, self::OPERATION_MOVE);
+            if (!$res) break;
+        }
+
+        return $res;
     }
 
     /**
      * @inheritDoc
-     * @throws InvalidDiskException
      * @throws InvalidPathException
      */
     public function copy(array $paths, string $destination, string $disk): bool
     {
-        $this->moveOrCopy($paths, $destination, $disk, true);
-        return true;
+        $this->checkDiskValidation($disk);
+
+        $res = true;
+        foreach ($paths as $path) {
+            $res = $res && $this->moveOrCopyOne($path, $destination, $disk, self::OPERATION_COPY);
+            if (!$res) break;
+        }
+
+        return $res;
     }
 
     /**
@@ -367,36 +375,41 @@ class FileRepository extends Repository implements FileRepositoryInterface
         string  $filePath,
         string  $disk,
         bool    $getFiles = false,
-        ?string $fileSize = null
+        ?string $fileSize = null,
+        bool    $getAllVariants = false
     ): bool|array
     {
+        $filePath = $this->getNormalizedPath($filePath);
+        if (empty(trim($filePath))) return $getFiles ? [] : false;
+
         $info = pathinfo($filePath);
         $filename = $info['filename'];
-        $filePath = $info['dirname'];
+        $filePath = $this->getNormalizedPath($info['dirname']);
+        $filePath = $this->normalizeDirname($filePath);
         $extension = $info['extension'] ?? null;
 
+        if (!Storage::disk($disk)->exists($filePath)) return $getFiles ? [] : false;
+
         $where = new WhereBuilder('file_manager');
-        $where->whereEqual('name', $filename)
-            ->whereEqual('path', $filePath);
+        $where
+            ->whereEqual('path', $filePath)
+            ->whereEqual('name', $filename);
+        if (!empty($extension)) $where->whereEqual('extension', $extension);
+
         if (!$this->exists($where->build())) return $getFiles ? [] : false;
 
-        if (is_null($fileSize) && trim($fileSize) != '')
-            if ($fileSize == self::ORIGINAL) {
-                if (!is_null($extension))
-                    $pattern = '^' . preg_quote($filename) . '\-[0-9]\.' . preg_quote($extension) . '$';
-                else
-                    $pattern = '^' . preg_quote($filename) . '\-[0-9]\.[a-z]+$';
-            } else {
-                if (!is_null($extension))
-                    $pattern = '^' . preg_quote($filename) . '.*\-' . preg_quote($fileSize) . '\.' . preg_quote($extension) . '$';
-                else
-                    $pattern = '^' . preg_quote($filename) . '.*\-' . preg_quote($fileSize) . '\.[a-z]+$';
-            }
-        else {
-            if (!is_null($extension))
-                $pattern = '^' . preg_quote($filename) . '.*\.' . preg_quote($extension) . '$';
-            else
-                $pattern = '^' . preg_quote($filename) . '.*\.[a-z]+$';
+        if ($getAllVariants) $variantPattern = '(?:\-[a-zA-Z0-9]+)?';
+
+        if (is_null($fileSize) || trim($fileSize) === '' || $fileSize == self::ORIGINAL) {
+            $pattern = '^(' . $filePath . '\/)?' . preg_quote($filename) . '\-[0-9]+' . ($variantPattern ?? '');
+        } else {
+            $pattern = '^(' . $filePath . '\/)?' . preg_quote($filename) . '.*\-' . preg_quote($fileSize);
+        }
+
+        if (!is_null($extension)) {
+            $pattern .= '\.' . preg_quote($extension) . '$';
+        } else {
+            $pattern .= '\.[a-z]+$';
         }
 
         $files = $this->getSimilarFiles(Storage::disk($disk)->files($filePath), $pattern);
@@ -405,44 +418,104 @@ class FileRepository extends Repository implements FileRepositoryInterface
     }
 
     /**
+     * NOTE:
+     *   -It may return empty array in case of invalid file
+     *
      * @inheritDoc
      */
     public function getFileInfo(string $file, string $disk): array
     {
+        $file = $this->getNormalizedPath($file, true);
         $diskStorage = Storage::disk($disk);
-        $path = $diskStorage->path($file);
-        $info = pathinfo($path);
-        $createdAt = explode('-', $info['filename'])[1] ?? null;
-        $modifiedAt = $diskStorage->lastModified($path);
 
-        return [
-            'name' => $info['filename'],
-            'extension' => $info['extension'] ?? null,
-            'full_name' => $info['filename'] . (
-                $info['extension']
-                    ? '.' . $info['extension']
-                    : ''
+        if (!$diskStorage->exists($file)) return [];
+
+        $path = $diskStorage->path($file);
+        $info = pathinfo($file);
+        $info['dirname'] = $this->normalizeDirname($info['dirname']);
+
+        $ext = $info['extension'] ?? null;
+        $filename = $info['filename'];
+        $isDir = is_dir($path);
+
+        $createdAt = null;
+        $modifiedAt = $diskStorage->lastModified($file);
+
+        $filenameParts = explode('-', $filename);
+        if (count($filenameParts) == 2) {
+            $filename = $filenameParts[0];
+            $createdAt = $filenameParts[1];
+        } elseif (count($filenameParts) > 2) {
+            $sliceCount = -1;
+            $lastPart = $filenameParts[count($filenameParts) - 1];
+            if (!is_numeric($lastPart)) {
+                $sliceCount = -2;
+
+                $beforeLastPart = $filenameParts[count($filenameParts) - 2] ?? null;
+                if (is_numeric($beforeLastPart)) {
+                    $createdAt = $beforeLastPart;
+                }
+            } else {
+                $createdAt = $lastPart;
+            }
+
+            $filename = implode('-', array_slice($filenameParts, 0, $sliceCount));
+        } else {
+            $filename = $filenameParts[0];
+        }
+
+        $fileInfo = [
+            'name' => $filename,
+            'extension' => $ext,
+            'full_name' => $filename . (
+                !is_null($ext) ? '.' . $ext : ''
                 ),
-            'path' => $path,
-            'full_path' => rtrim($path, '/') . '/'
-                . $info['filename'] . (
-                $info['extension']
-                    ? '.' . $info['extension']
-                    : ''
-                ),
-            'is_dir' => is_dir($path),
-            'size' => $this->formatBytes($diskStorage->size($file)),
-            'url' => $diskStorage->url($path),
-            'mime_type' => is_file($path) ? $diskStorage->mimeType($file) : null,
-            'visibility' => $diskStorage->getVisibility($path),
-            'created_at' => $createdAt
-                ? verta(Carbon::createFromTimestamp($createdAt))
+            'path' => $info['dirname'],
+            'full_path' => $info['dirname'] . ('/' . $filename . (!is_null($ext) ? '.' . $ext : '')),
+            'is_dir' => $isDir,
+            'size' => $this->formatBytes($this->getSizeRecursive($diskStorage, $file)),
+            'mime_type' => !$isDir ? $diskStorage->mimeType($file) : null,
+            'created_at' => isset($createdAt)
+                ? verta(Carbon::createFromTimestamp(intval($createdAt)))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'last_modified' => $modifiedAt
-                ? verta(Carbon::createFromTimestamp($modifiedAt))
+            'last_modified' => isset($modifiedAt)
+                ? verta(Carbon::createFromTimestamp(intval($modifiedAt)))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
+
+        if (!$isDir) {
+            $fileInfo['visibility'] = $diskStorage->getVisibility($file);
+        }
+
+        return $fileInfo;
+    }
+
+    /**
+     * Because of same code for move and copy,
+     * we have one method to do just one move/copy for simplifying purposes
+     *
+     * @param string $path
+     * @param string $destination
+     * @param string $disk
+     * @param string $operation
+     * @return bool
+     * @throws InvalidPathException
+     */
+    protected function moveOrCopyOne(
+        string $path,
+        string $destination,
+        string $disk,
+        string $operation
+    ): bool
+    {
+        $p = $this->getNormalizedPath($path);
+        $destination = $this->getNormalizedPath($destination);
+
+        $pInfo = pathinfo($p);
+        $pInfo['dirname'] = $this->getNormalizedPath($this->normalizeDirname($pInfo['dirname']));
+
+        return $this->moveOrCopy($pInfo['dirname'], $pInfo['basename'], $destination, $disk, $operation);
     }
 }

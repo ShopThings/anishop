@@ -1,8 +1,8 @@
 <template>
   <base-loading-panel
-      type="dot-orbit"
-      :loading="builderLoading"
-      loading-text="در حال بارگذاری جستجوی پیشرفته"
+    type="dot-orbit"
+    :loading="builderLoading"
+    loading-text="در حال بارگذاری جستجوی پیشرفته"
   >
     <template #content>
       <base-query-builder :columns="columns" :query="query"/>
@@ -25,8 +25,8 @@
   </base-loading-panel>
 
   <partial-card
-      class="mt-3"
-      ref="tableContainer"
+    class="mt-3"
+    ref="tableContainer"
   >
     <template #header>
       لیست کاربران
@@ -34,20 +34,20 @@
 
     <template #body>
       <div
-          v-if="!loading"
-          class="p-3"
+        v-if="!loading"
+        class="p-3"
       >
         <base-button
-            type="submit"
-            class="bg-green-600 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
-            :disabled="isDownloadExcel"
-            @click="excelDownloadHandler"
+          type="submit"
+          class="bg-green-600 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
+          :disabled="isDownloadExcel"
+          @click="excelDownloadHandler"
         >
           <VTransitionFade>
             <loader-circle
-                v-if="isDownloadExcel"
-                main-container-klass="absolute w-full h-full top-0 left-0"
-                big-circle-color="border-transparent"
+              v-if="isDownloadExcel"
+              main-container-klass="absolute w-full h-full top-0 left-0"
+              big-circle-color="border-transparent"
             />
           </VTransitionFade>
 
@@ -59,17 +59,17 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :enable-search-box="false"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :columns="table.columns"
-              :rows="table.rows"
-              :has-checkbox="false"
-              :total="table.totalRecordCount"
-              :sortable="table.sortable"
-              @do-search="doSearch"
+            ref="datatable"
+            :enable-search-box="false"
+            :enable-multi-operation="false"
+            :is-slot-mode="true"
+            :is-loading="table.isLoading"
+            :columns="table.columns"
+            :rows="table.rows"
+            :has-checkbox="false"
+            :total="table.totalRecordCount"
+            :sortable="table.sortable"
+            @do-search="doSearch"
           >
             <template v-slot:roles="{value}">
                             <span v-if="value.roles"
@@ -87,7 +87,7 @@
             <template v-slot:verified_at="{value}">
                             <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
                                 <span
-                                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
+                                  class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
                                 {{ value.verified_at }}
                             </span>
               <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>
@@ -241,7 +241,3 @@ const doSearch = (offset, limit, order, sort, text) => {
 doSearch(0, 15, 'id', 'desc')
 //-----------------------------------
 </script>
-
-<style scoped>
-
-</style>

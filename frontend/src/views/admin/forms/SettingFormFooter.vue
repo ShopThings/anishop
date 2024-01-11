@@ -2,9 +2,9 @@
   <form @submit.prevent="onSubmit">
     <div class="p-2">
       <base-textarea
-          label-title="توضیحات مختصر"
-          name="footer_description"
-          :value="setting[SETTING_KEYS.FOOTER_DESCRIPTION] ?? ''"
+        label-title="توضیحات مختصر"
+        name="footer_description"
+        :value="setting[SETTING_KEYS.FOOTER_DESCRIPTION] ?? ''"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -16,10 +16,10 @@
 
     <div class="p-2">
       <base-input
-          label-title="حق مالکیت/کپی‌رایت"
-          placeholder="وارد نمایید"
-          name="copyright"
-          :value="setting[SETTING_KEYS.FOOTER_COPYRIGHT] ?? ''"
+        label-title="حق مالکیت/کپی‌رایت"
+        placeholder="وارد نمایید"
+        name="copyright"
+        :value="setting[SETTING_KEYS.FOOTER_COPYRIGHT] ?? ''"
       >
         <template #icon>
           <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -32,21 +32,21 @@
     <div class="flex mb-3 items-end">
       <div class="grow flex flex-col gap-3">
         <div
-            v-for="(item, idx) in namads"
-            :key="item.id"
-            class="relative border rounded-md border-violet-500"
+          v-for="(item, idx) in namads"
+          :key="item.id"
+          class="relative border rounded-md border-violet-500"
         >
           <partial-builder-remove-btn
-              v-if="namads.length > 1"
-              @click="removeNamadHandler(idx)"
+            v-if="namads.length > 1"
+            @click="removeNamadHandler(idx)"
           />
 
           <div class="p-2">
             <base-textarea
-                :label-title="'لینک نماد - نماد شماره ' + (item.id)"
-                :name="'footer_namad_' + item.id"
-                :value="item.link"
-                @input="(val) => {item.link = val}"
+              :label-title="'لینک نماد - نماد شماره ' + (item.id)"
+              :name="'footer_namad_' + item.id"
+              :value="item.link"
+              @input="(val) => {item.link = val}"
             >
               <template #icon>
                 <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -57,10 +57,10 @@
       </div>
       <div class="p-2">
         <button
-            v-tooltip.right="'افزودن نماد جدید'"
-            type="button"
-            class="rounded-full p-3 flex justify-center items-center bg-emerald-400 text-white group"
-            @click="addNamadHandler"
+          v-tooltip.right="'افزودن نماد جدید'"
+          type="button"
+          class="rounded-full p-3 flex justify-center items-center bg-emerald-400 text-white group"
+          @click="addNamadHandler"
         >
           <PlusIcon class="w-6 h-6 group-hover:rotate-90 transition"/>
         </button>
@@ -69,15 +69,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -145,7 +145,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

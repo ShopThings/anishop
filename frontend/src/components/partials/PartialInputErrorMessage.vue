@@ -15,7 +15,3 @@ defineProps({
   errorMessage: String,
 })
 </script>
-
-<style scoped>
-
-</style>

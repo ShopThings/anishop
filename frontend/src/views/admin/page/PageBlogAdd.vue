@@ -6,27 +6,27 @@
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap items-end justify-between">
                 <div class="p-2">
                   <partial-input-label
-                      title="انتخاب تصویر"
+                    title="انتخاب تصویر"
                   />
                   <base-media-placeholder type="image"/>
                 </div>
 
                 <div class="p-2">
                   <base-switch
-                      label="عدم نمایش بلاگ"
-                      on-label="نمایش بلاگ"
-                      name="is_published"
-                      :enabled="true"
-                      sr-text="نمایش/عدم نمایش بلاگ"
-                      @change="(status) => {publishStatus=status}"
+                    label="عدم نمایش بلاگ"
+                    on-label="نمایش بلاگ"
+                    name="is_published"
+                    :enabled="true"
+                    sr-text="نمایش/عدم نمایش بلاگ"
+                    @change="(status) => {publishStatus=status}"
                   />
                 </div>
               </div>
@@ -44,11 +44,11 @@
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <partial-input-label title="دسته‌بندی"/>
                   <base-select
-                      :options="categories"
-                      options-key="value"
-                      options-text="name"
-                      name="type"
-                      @change="categoryChange"
+                    :options="categories"
+                    options-key="value"
+                    options-text="name"
+                    name="type"
+                    @change="categoryChange"
                   >
                   </base-select>
                   <partial-input-error-message :error-message="errors.type"/>
@@ -57,20 +57,20 @@
 
               <div class="p-2">
                 <base-switch
-                    label="اجازه ارسال دیدگاه"
-                    name="is_commenting_allowed"
-                    :enabled="true"
-                    sr-text="اجازه/عدم اجازه ارسال دیدگاه"
-                    @change="(status) => {commentAllowing=status}"
+                  label="اجازه ارسال دیدگاه"
+                  name="is_commenting_allowed"
+                  :enabled="true"
+                  sr-text="اجازه/عدم اجازه ارسال دیدگاه"
+                  @change="(status) => {commentAllowing=status}"
                 />
               </div>
 
               <div class="p-2">
                 <partial-input-label title="کلمات کلیدی"/>
                 <vue3-tags-input
-                    :tags="tags"
-                    placeholder="کلمات کلیدی خود را وارد نمایید"
-                    @on-tags-changed="(t) => {tags = t}"
+                  :tags="tags"
+                  placeholder="کلمات کلیدی خود را وارد نمایید"
+                  @on-tags-changed="(t) => {tags = t}"
                 />
               </div>
 
@@ -81,15 +81,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -161,7 +161,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

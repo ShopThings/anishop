@@ -7,7 +7,7 @@
         <ChevronDownIcon class="h-3 w-3 mr-1"/>
 
         <span
-            class="absolute rounded-full bg-orange-400 w-2 h-2 z-[1] -top-1 -right-1"></span>
+          class="absolute rounded-full bg-orange-400 w-2 h-2 z-[1] -top-1 -right-1"></span>
       </button>
     </template>
 
@@ -51,7 +51,3 @@ import {ChevronDownIcon} from "@heroicons/vue/24/solid/index.js";
 import BasePopover from "../base/BasePopover.vue";
 import {BellAlertIcon} from "@heroicons/vue/24/outline/index.js";
 </script>
-
-<style scoped>
-
-</style>

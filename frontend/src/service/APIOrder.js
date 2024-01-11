@@ -3,81 +3,81 @@ import {apiReplaceParams, apiRoutes} from "../router/api-routes.js";
 import {useRequest} from "../composables/api-request.js";
 
 export const OrderAPI = Object.assign(
-    GenericAPI(apiRoutes.admin.orders, {
-        except: ['store', 'batchDestroy'],
-        replacement: 'order',
-    }),
-    {
-        fetchUserOrders(userId, callbacks) {
-            useRequest(
-                apiReplaceParams(apiRoutes.admin.orders.index, {user: userId}),
-                null,
-                callbacks
-            )
-        },
+  GenericAPI(apiRoutes.admin.orders, {
+    except: ['store', 'batchDestroy'],
+    replacement: 'order',
+  }),
+  {
+    fetchUserOrders(userId, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.orders.index, {user: userId}),
+        null,
+        callbacks
+      )
+    },
 
-        fetchPaymentStatuses(callbacks) {
-            useRequest(
-                apiRoutes.admin.orders.paymentStatuses,
-                null,
-                callbacks
-            )
-        },
+    fetchPaymentStatuses(callbacks) {
+      useRequest(
+        apiRoutes.admin.orders.paymentStatuses,
+        null,
+        callbacks
+      )
+    },
 
-        fetchSendStatuses(callbacks) {
-            useRequest(
-                apiRoutes.admin.orders.sendStatuses,
-                null,
-                callbacks
-            )
-        },
+    fetchSendStatuses(callbacks) {
+      useRequest(
+        apiRoutes.admin.orders.sendStatuses,
+        null,
+        callbacks
+      )
+    },
 
-        updateOrderPayment(orderId, data, callbacks) {
-            useRequest(
-                apiReplaceParams(apiRoutes.admin.orders.updatePayment, {order: orderId}),
-                {
-                    method: 'PUT',
-                    data,
-                },
-                callbacks
-            )
+    updateOrderPayment(orderId, data, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.orders.updatePayment, {order: orderId}),
+        {
+          method: 'PUT',
+          data,
         },
-    }
+        callbacks
+      )
+    },
+  }
 )
 
 export const OrderBadgeAPI = Object.assign(
-    GenericAPI(apiRoutes.admin.orderBadges, {replacement: 'order_badge'}),
-    {
-        // extra functionality goes here
-    }
+  GenericAPI(apiRoutes.admin.orderBadges, {replacement: 'order_badge'}),
+  {
+    // extra functionality goes here
+  }
 )
 
 export const ReturnOrderAPI = Object.assign(
-    GenericAPI(apiRoutes.admin.returnOrders, {
-        except: ['store', 'batchDestroy'],
-        replacement: 'return_order',
-    }),
-    {
-        fetchUserReturnOrders(userId, callbacks) {
-            useRequest(
-                apiReplaceParams(apiRoutes.admin.returnOrders.index, {user: userId}),
-                null,
-                callbacks
-            )
-        },
+  GenericAPI(apiRoutes.admin.returnOrders, {
+    except: ['store', 'batchDestroy'],
+    replacement: 'return_order',
+  }),
+  {
+    fetchUserReturnOrders(userId, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.returnOrders.index, {user: userId}),
+        null,
+        callbacks
+      )
+    },
 
-        modifyOrderItem(returnOrderId, returnOrderItemId, data, callbacks) {
-            useRequest(
-                apiReplaceParams(apiRoutes.admin.returnOrders.modifyOrderItem, {
-                    return_order: returnOrderId,
-                    return_order_item: returnOrderItemId,
-                }),
-                {
-                    method: 'PUT',
-                    data,
-                },
-                callbacks
-            )
+    modifyOrderItem(returnOrderId, returnOrderItemId, data, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.returnOrders.modifyOrderItem, {
+          return_order: returnOrderId,
+          return_order_item: returnOrderItemId,
+        }),
+        {
+          method: 'PUT',
+          data,
         },
-    }
+        callbacks
+      )
+    },
+  }
 )

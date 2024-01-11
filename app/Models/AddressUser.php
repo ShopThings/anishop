@@ -3,10 +3,14 @@
 namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
+use Database\Factories\AddressFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AddressUser extends Model
 {
+    use HasFactory;
+
     protected $table = 'address_user';
 
     protected $hasCreatedBy = false;
@@ -16,6 +20,11 @@ class AddressUser extends Model
     protected $guarded = [
         'id',
     ];
+
+    protected static function newFactory()
+    {
+        return AddressFactory::new();
+    }
 
     /**
      * @return BelongsTo

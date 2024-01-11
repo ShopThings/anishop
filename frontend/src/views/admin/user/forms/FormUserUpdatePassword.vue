@@ -25,15 +25,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-pink-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-pink-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -73,14 +73,14 @@ const canSubmit = ref(true)
 const {handleSubmit, isSubmitting} = useForm({
   validationSchema: yup.object().shape({
     password: yup.string()
-        .transform(transformNumbersToEnglish)
-        .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
-        .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
-        .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
-        .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
-        .required('کلمه عبور اجباری می‌باشد.'),
+      .transform(transformNumbersToEnglish)
+      .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
+      .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
+      .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
+      .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
+      .required('کلمه عبور اجباری می‌باشد.'),
     password_confirmation: yup.string()
-        .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
+      .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
   }),
 })
 
@@ -113,7 +113,3 @@ const onSubmit = handleSubmit((values, actions) => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

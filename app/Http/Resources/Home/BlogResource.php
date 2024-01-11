@@ -3,6 +3,9 @@
 namespace App\Http\Resources\Home;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\BlogCategoryShowResource;
+use App\Http\Resources\Showing\ImageShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,12 +21,11 @@ class BlogResource extends JsonResource
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'category' => $this->whenLoaded('category'),
+            'category' => new BlogCategoryShowResource($this->whenLoaded('category')),
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => $this->whenLoaded('image'),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
+            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,

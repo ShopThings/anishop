@@ -3,43 +3,43 @@
     <template #header>
       ویرایش اسلایدهای اسلایدر
       <span
-          v-if="slider?.id"
-          class="text-teal-600"
+        v-if="slider?.id"
+        class="text-teal-600"
       >{{ slider?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <draggable
-                    v-if="slides && slides.length"
-                    item-key="id"
-                    tag="ul"
-                    :animation="200"
-                    :list="slides"
-                    :group="{ name: 'slides' }"
-                    handle=".handle"
-                    ghost-class="ghost"
+                  v-if="slides && slides.length"
+                  item-key="id"
+                  tag="ul"
+                  :animation="200"
+                  :list="slides"
+                  :group="{ name: 'slides' }"
+                  handle=".handle"
+                  ghost-class="ghost"
                 >
                   <template #item="{ element, index }">
                     <li class="pt-6 px-2 border-2 border-dashed border-slate-300 rounded-lg mb-3">
                       <div class="mt-2 relative mb-4">
                         <base-button
-                            v-if="!isBlogSidePlace"
-                            class="!absolute top-0 left-0 -translate-y-8 -translate-x-1/4 bg-rose-500 !p-1 z-[1]"
-                            @click="removeSlideHandler(index)"
+                          v-if="!isBlogSidePlace"
+                          class="!absolute top-0 left-0 -translate-y-8 -translate-x-1/4 bg-rose-500 !p-1 z-[1]"
+                          @click="removeSlideHandler(index)"
                         >
                           <TrashIcon class="h-5 w-5"/>
                         </base-button>
 
                         <base-button
-                            v-tooltip.left="'برای جابجایی بکشید'"
-                            :class="[
+                          v-tooltip.left="'برای جابجایی بکشید'"
+                          :class="[
                                 'handle cursor-grab active:cursor-grabbing !px-8 sm:!px-10 !rounded-t-none !rounded-br-none',
                                 '!absolute top-0 right-0 -translate-y-8 translate-x-2 bg-gray-100 !py-1 z-[1]',
                                 'border-b-2 border-l-2 !border-t-none !border-r-none',
@@ -53,18 +53,18 @@
                             <div class="p-2 w-full md:w-1/2">
                               <partial-input-label title="انتخاب بلاگ"/>
                               <base-select-searchable
-                                  :options="blogs"
-                                  options-key="id"
-                                  options-text="title"
-                                  :name="'blog' + element.id"
-                                  :is-loading="searchBlogLoading"
-                                  :is-local-search="false"
-                                  placeholder="جستجوی بلاگ..."
-                                  @change="(selected) => {element.blog = selected}"
-                                  @query="searchBlog"
+                                :options="blogs"
+                                options-key="id"
+                                options-text="title"
+                                :name="'blog' + element.id"
+                                :is-loading="searchBlogLoading"
+                                :is-local-search="false"
+                                placeholder="جستجوی بلاگ..."
+                                @change="(selected) => {element.blog = selected}"
+                                @query="searchBlog"
                               />
                               <partial-input-error-message
-                                  :error-message="errors.blog"/>
+                                :error-message="errors.blog"/>
                             </div>
                           </div>
                         </template>
@@ -73,40 +73,40 @@
                             <div class="p-2 w-full md:w-1/2">
                               <partial-input-label title="انتخاب محصول"/>
                               <base-select-searchable
-                                  :options="products"
-                                  options-key="id"
-                                  options-text="title"
-                                  :name="'product' + element.id"
-                                  :is-loading="searchProductLoading"
-                                  :is-local-search="false"
-                                  placeholder="جستجوی محصول..."
-                                  @change="(selected) => {element.product = selected}"
-                                  @query="searchProduct"
+                                :options="products"
+                                options-key="id"
+                                options-text="title"
+                                :name="'product' + element.id"
+                                :is-loading="searchProductLoading"
+                                :is-local-search="false"
+                                placeholder="جستجوی محصول..."
+                                @change="(selected) => {element.product = selected}"
+                                @query="searchProduct"
                               />
                               <partial-input-error-message
-                                  :error-message="errors.product"/>
+                                :error-message="errors.product"/>
                             </div>
                           </div>
                         </template>
                         <template v-else>
                           <div class="p-2 flex flex-col items-center">
                             <partial-input-label
-                                title="انتخاب تصویر"
+                              title="انتخاب تصویر"
                             />
                             <base-media-placeholder
-                                type="image"
-                                :selected="element?.image"
+                              type="image"
+                              :selected="element?.image"
                             />
                           </div>
 
                           <div class="flex flex-wrap">
                             <div class="p-2 w-full md:w-2/3">
                               <base-input
-                                  label-title="لینک"
-                                  placeholder="وارد نمایید"
-                                  :name="'link' + element.id"
-                                  :value="element?.link"
-                                  @input="(v) => {element.link = v}"
+                                label-title="لینک"
+                                placeholder="وارد نمایید"
+                                :name="'link' + element.id"
+                                :value="element?.link"
+                                @input="(v) => {element.link = v}"
                               >
                                 <template #icon>
                                   <CurrencyDollarIcon class="h-6 w-6 text-gray-400"/>
@@ -121,12 +121,12 @@
                 </draggable>
 
                 <div
-                    v-if="!isBlogSidePlace"
-                    class="mt-3 mb-1"
+                  v-if="!isBlogSidePlace"
+                  class="mt-3 mb-1"
                 >
                   <base-button
-                      class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
-                      @click="handleNewSlideClick"
+                    class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
+                    @click="handleNewSlideClick"
                   >
                     <span class="mr-auto text-sm">ساخت اسلاید</span>
                     <PlusIcon class="h-6 w-6 mr-auto sm:mr-2"/>
@@ -136,15 +136,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 

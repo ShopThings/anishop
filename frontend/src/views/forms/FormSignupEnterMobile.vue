@@ -1,16 +1,16 @@
 <template>
   <form class="relative" @submit.prevent="onSubmit">
     <loader-dot-orbit
-        v-if="isSubmitting"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-        container-bg-color="bg-blue-50 opacity-40"
+      v-if="isSubmitting"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      container-bg-color="bg-blue-50 opacity-40"
     />
 
     <div class="mb-3 mt-12">
       <base-input
-          name="username"
-          placeholder="شماره موبایل"
-          label-title="شماره موبایل"
+        name="username"
+        placeholder="شماره موبایل"
+        label-title="شماره موبایل"
       >
         <template #icon>
           <DevicePhoneMobileIcon class="w-6 h-6 text-gray-400"/>
@@ -34,8 +34,8 @@
           <template #label>
             من با
             <router-link
-                :to="{name: 'pages', params: {url: 'privacy-policy'}}"
-                class="text-orange-500 hover:text-opacity-80 transition"
+              :to="{name: 'pages', params: {url: 'privacy-policy'}}"
+              class="text-orange-500 hover:text-opacity-80 transition"
             >
               شرایط و سیاست‌های سایت
             </router-link>
@@ -43,21 +43,21 @@
           </template>
         </partial-input-label>
         <base-checkbox
-            id="usageAgreement"
-            name="usage_agreement"
-            v-model="agreementStatus"
+          id="usageAgreement"
+          name="usage_agreement"
+          v-model="agreementStatus"
         />
       </div>
     </div>
     <div class="mb-3">
       <base-button
-          type="submit"
-          class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-          :disabled="isSubmitting"
+        type="submit"
+        class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+        :disabled="isSubmitting"
       >
         <span class="mx-auto">ارسال کد</span>
         <ArrowLeftIcon
-            class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+          class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
       </base-button>
     </div>
   </form>
@@ -104,7 +104,3 @@ const onSubmit = handleSubmit((values, actions) => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

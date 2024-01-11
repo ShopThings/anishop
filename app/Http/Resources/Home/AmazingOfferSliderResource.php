@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources\Home;
 
+use App\Http\Resources\ProductPropertyResource;
+use App\Http\Resources\Showing\FestivalShowResource;
+use App\Http\Resources\Showing\ImageShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,13 +21,10 @@ class AmazingOfferSliderResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => $this->whenLoaded('image'),
-            'unit_name' => $this->unit_name,
-            'keywords' => $this->keywords,
-            'items' => $this->whenLoaded('items'),
-            'festivals' => $this->whenLoaded('festivals'),
+            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'items' => ProductPropertyResource::collection($this->whenLoaded('items')),
+            'festivals' => FestivalShowResource::collection($this->whenLoaded('festivals')),
             'is_available' => $this->is_available,
-            'is_commenting_allowed' => $this->is_commenting_allowed,
         ];
     }
 }

@@ -3,14 +3,14 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-            v-if="isSubmitting"
-            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-            container-bg-color="bg-blue-50 opacity-40"
+          v-if="isSubmitting"
+          main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+          container-bg-color="bg-blue-50 opacity-40"
         />
 
         <div class="p-2 flex flex-col items-center">
           <partial-input-label
-              title="انتخاب تصویر شاخص"
+            title="انتخاب تصویر شاخص"
           />
           <base-media-placeholder type="image"/>
         </div>
@@ -28,36 +28,36 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
             <partial-input-label title="واحد محصول"/>
             <base-select-searchable
-                :options="units"
-                options-key="value"
-                options-text="name"
-                name="unit"
-                :is-loading="loadingGetUnits"
-                @change="(selected) => {selectedUnit = selected}"
+              :options="units"
+              options-key="value"
+              options-text="name"
+              name="unit"
+              :is-loading="loadingGetUnits"
+              @change="(selected) => {selectedUnit = selected}"
             />
             <partial-input-error-message :error-message="errors.unit"/>
           </div>
           <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
             <partial-input-label title="برند"/>
             <base-select-searchable
-                :options="brands"
-                options-key="value"
-                options-text="name"
-                name="brand"
-                :is-loading="loadingGetBrands"
-                @change="(selected) => {selectedBrand = selected}"
+              :options="brands"
+              options-key="value"
+              options-text="name"
+              name="brand"
+              :is-loading="loadingGetBrands"
+              @change="(selected) => {selectedBrand = selected}"
             />
             <partial-input-error-message :error-message="errors.brand"/>
           </div>
           <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
             <partial-input-label title="دسته‌بندی"/>
             <base-select-searchable
-                :options="categories"
-                options-key="value"
-                options-text="name"
-                name="category"
-                :is-loading="loadingGetCategories"
-                @change="(selected) => {selectedCategory = selected}"
+              :options="categories"
+              options-key="value"
+              options-text="name"
+              name="category"
+              :is-loading="loadingGetCategories"
+              @change="(selected) => {selectedCategory = selected}"
             />
             <partial-input-error-message :error-message="errors.category"/>
           </div>
@@ -66,29 +66,29 @@
         <div class="flex flex-wrap">
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                label="موجود"
-                name="is_available"
-                :enabled="true"
-                sr-text="موجود/ناموجود بودن محصول"
-                @change="(status) => {availableStatus = status}"
+              label="موجود"
+              name="is_available"
+              :enabled="true"
+              sr-text="موجود/ناموجود بودن محصول"
+              @change="(status) => {availableStatus = status}"
             />
           </div>
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                label="نمایش کلی محصول"
-                name="is_published"
-                :enabled="true"
-                sr-text="نمایش/عدم نمایش تمامی محصولات"
-                @change="(status) => {publishStatus = status}"
+              label="نمایش کلی محصول"
+              name="is_published"
+              :enabled="true"
+              sr-text="نمایش/عدم نمایش تمامی محصولات"
+              @change="(status) => {publishStatus = status}"
             />
           </div>
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                label="اجازه ارسال دیدگاه"
-                name="is_commenting_allowed"
-                :enabled="true"
-                sr-text="اجازه/عدم اجازه ارسال دیدگاه"
-                @change="(status) => {allowCommentingStatus = status}"
+              label="اجازه ارسال دیدگاه"
+              name="is_commenting_allowed"
+              :enabled="true"
+              sr-text="اجازه/عدم اجازه ارسال دیدگاه"
+              @change="(status) => {allowCommentingStatus = status}"
             />
           </div>
         </div>
@@ -96,19 +96,19 @@
         <div class="p-2">
           <partial-input-label title="کلمات کلیدی"/>
           <vue3-tags-input
-              :tags="tags"
-              placeholder="کلمات کلیدی خود را وارد نمایید"
-              @on-tags-changed="(t) => {tags = t}"
+            :tags="tags"
+            placeholder="کلمات کلیدی خود را وارد نمایید"
+            @on-tags-changed="(t) => {tags = t}"
           />
         </div>
 
         <div class="p-2">
           <partial-input-label title="ویژگی‌های سریع" class="mb-2"/>
           <partial-baby-property-builder
-              v-model:properties="babyProps"
-              property-title-text="عنوان ویژگی"
-              tags-text="ویژگی‌ها"
-              new-button-text="ویژگی جدید"
+            v-model:properties="babyProps"
+            property-title-text="عنوان ویژگی"
+            tags-text="ویژگی‌ها"
+            new-button-text="ویژگی جدید"
           />
         </div>
       </template>
@@ -117,13 +117,13 @@
     <partial-card>
       <template #body>
         <partial-stepy-next-prev-buttons
-            :current-step="options.currentStep"
-            :current-step-index="options.currentStepIndex"
-            :last-step="options.lastStep"
-            :allow-next-step="!isSubmitting"
-            :allow-prev-step="!isSubmitting"
-            :loading="isSubmitting"
-            @next="handleNextClick(options.next)"
+          :current-step="options.currentStep"
+          :current-step-index="options.currentStepIndex"
+          :last-step="options.lastStep"
+          :allow-next-step="!isSubmitting"
+          :allow-prev-step="!isSubmitting"
+          :loading="isSubmitting"
+          @next="handleNextClick(options.next)"
         />
       </template>
     </partial-card>
@@ -226,7 +226,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>

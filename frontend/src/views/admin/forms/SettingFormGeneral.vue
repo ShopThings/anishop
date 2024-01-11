@@ -3,15 +3,15 @@
     <div class="flex flex-wrap">
       <div class="p-2 w-full md:w-1/2">
         <base-input
-            label-title="تعداد نمایش کالا در هر صفحه"
-            placeholder="وارد نمایید"
-            type="number"
-            name="product_each_page"
-            :min="0"
-            :max="25"
-            klass="no-spin-arrow"
-            :value="productEachPage.toString()"
-            @input="(val) => {
+          label-title="تعداد نمایش کالا در هر صفحه"
+          placeholder="وارد نمایید"
+          type="number"
+          name="product_each_page"
+          :min="0"
+          :max="25"
+          klass="no-spin-arrow"
+          :value="productEachPage.toString()"
+          @input="(val) => {
               if(val.trim() === '') productEachPage = 0
               else productEachPage = val
             }"
@@ -23,15 +23,15 @@
       </div>
       <div class="p-2 w-full md:w-1/2">
         <base-input
-            label-title="تعداد نمایش بلاگ در هر صفحه"
-            placeholder="وارد نمایید"
-            type="number"
-            name="blog_each_page"
-            :min="0"
-            :max="25"
-            klass="no-spin-arrow"
-            :value="blogEachPage.toString()"
-            @input="(val) => {
+          label-title="تعداد نمایش بلاگ در هر صفحه"
+          placeholder="وارد نمایید"
+          type="number"
+          name="blog_each_page"
+          :min="0"
+          :max="25"
+          klass="no-spin-arrow"
+          :value="blogEachPage.toString()"
+          @input="(val) => {
               if(val.trim() === '') blogEachPage = 0
               else blogEachPage = val
             }"
@@ -45,15 +45,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -98,7 +98,3 @@ const onSubmit = handleSubmit((values, actions) => {
   if (!canSubmit.value) return
 })
 </script>
-
-<style scoped>
-
-</style>

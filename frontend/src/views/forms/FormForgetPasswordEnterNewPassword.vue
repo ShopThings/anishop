@@ -1,17 +1,17 @@
 <template>
   <form class="relative" @submit.prevent="onSubmit">
     <loader-dot-orbit
-        v-if="isSubmitting"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-        container-bg-color="bg-blue-50 opacity-40"
+      v-if="isSubmitting"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      container-bg-color="bg-blue-50 opacity-40"
     />
 
     <div class="mb-3 mt-12">
       <base-input
-          type="password"
-          name="password"
-          placeholder="حروف و عدد"
-          label-title="کلمه عبور جدید"
+        type="password"
+        name="password"
+        placeholder="حروف و عدد"
+        label-title="کلمه عبور جدید"
       >
         <template #icon>
           <LockOpenIcon class="w-6 h-6 text-gray-400"/>
@@ -20,10 +20,10 @@
     </div>
     <div class="mb-6">
       <base-input
-          type="password"
-          name="password_confirmation"
-          placeholder="حروف و عدد"
-          label-title="تکرار کلمه عبور"
+        type="password"
+        name="password_confirmation"
+        placeholder="حروف و عدد"
+        label-title="تکرار کلمه عبور"
       >
         <template #icon>
           <LockClosedIcon class="w-6 h-6 text-gray-400"/>
@@ -33,13 +33,13 @@
 
     <div class="mb-3">
       <base-button
-          type="submit"
-          class="w-full flex justify-center items-center group bg-pink-500 border-pink-600 text-white"
-          :disabled="isSubmitting"
+        type="submit"
+        class="w-full flex justify-center items-center group bg-pink-500 border-pink-600 text-white"
+        :disabled="isSubmitting"
       >
         <span class="mx-auto">تغییر کلمه عبور</span>
         <CheckIcon
-            class="h-6 w-6 text-white opacity-60 group-hover:scale-110 transition-all"/>
+          class="h-6 w-6 text-white opacity-60 group-hover:scale-110 transition-all"/>
       </base-button>
     </div>
   </form>
@@ -81,7 +81,3 @@ const onSubmit = handleSubmit((values, actions) => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -4,26 +4,26 @@
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <partial-input-label title="انتخاب استان"/>
         <base-select
-            :options="provinces"
-            options-key="id"
-            options-text="name"
-            :is-loading="provinceLoading"
-            :selected="selectedProvince"
-            name="province"
-            @change="(status) => {selectedProvince = status}"
+          :options="provinces"
+          options-key="id"
+          options-text="name"
+          :is-loading="provinceLoading"
+          :selected="selectedProvince"
+          name="province"
+          @change="(status) => {selectedProvince = status}"
         />
         <partial-input-error-message :error-message="errors.province"/>
       </div>
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <partial-input-label title="انتخاب شهرستان"/>
         <base-select
-            :options="cities"
-            options-key="id"
-            options-text="name"
-            :is-loading="cityLoading"
-            :selected="selectedCity"
-            name="city"
-            @change="(status) => {selectedCity = status}"
+          :options="cities"
+          options-key="id"
+          options-text="name"
+          :is-loading="cityLoading"
+          :selected="selectedCity"
+          name="city"
+          @change="(status) => {selectedCity = status}"
         />
         <partial-input-error-message :error-message="errors.city"/>
       </div>
@@ -31,9 +31,9 @@
 
     <div class="p-2">
       <base-textarea
-          label-title="آدرس محل فعالیت"
-          name="address"
-          :value="setting[SETTING_KEYS.ADDRESS] ?? ''"
+        label-title="آدرس محل فعالیت"
+        name="address"
+        :value="setting[SETTING_KEYS.ADDRESS] ?? ''"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -44,9 +44,9 @@
     <div class="p-2">
       <partial-input-label title="شماره‌های تماس"/>
       <vue3-tags-input
-          :tags="phones"
-          placeholder="وارد نمایید"
-          @on-tags-changed="(t) => {phones = t}"
+        :tags="phones"
+        placeholder="وارد نمایید"
+        @on-tags-changed="(t) => {phones = t}"
       />
     </div>
 
@@ -60,10 +60,10 @@
       </div>
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <base-input
-            label-title="طول جغرافیایی"
-            placeholder="وارد نمایید"
-            name="longitude"
-            :value="mapSettings.center[1].toString()"
+          label-title="طول جغرافیایی"
+          placeholder="وارد نمایید"
+          name="longitude"
+          :value="mapSettings.center[1].toString()"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -72,10 +72,10 @@
       </div>
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <base-input
-            label-title="عرض جغرافیایی"
-            placeholder="وارد نمایید"
-            name="latitude"
-            :value="mapSettings.center[0].toString()"
+          label-title="عرض جغرافیایی"
+          placeholder="وارد نمایید"
+          name="latitude"
+          :value="mapSettings.center[0].toString()"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -95,17 +95,17 @@
       <base-loading-panel :loading="mapLoading">
         <template #loader>
           <div
-              class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
+            class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
             <MapIcon class="h-16 w-16 text-slate-400"/>
             <span class="text-orange-300">در حال بارگذاری نقشه</span>
           </div>
         </template>
         <template #content>
           <base-map
-              v-model:center="mapSettings.center"
-              v-model:zoom="mapSettings.zoom"
-              :allow-edit-marker="mapSettings.allowEditMarker"
-              :allow-find-my-location="mapSettings.allowFindMyLocation"
+            v-model:center="mapSettings.center"
+            v-model:zoom="mapSettings.zoom"
+            :allow-edit-marker="mapSettings.allowEditMarker"
+            :allow-find-my-location="mapSettings.allowFindMyLocation"
           />
         </template>
       </base-loading-panel>
@@ -113,15 +113,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -198,7 +198,3 @@ onMounted(() => {
   }, 1000)
 })
 </script>
-
-<style scoped>
-
-</style>

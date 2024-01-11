@@ -1,20 +1,20 @@
 <template>
   <template v-if="editMode">
     <Combobox
-        v-model="selectedItems"
-        :name="name"
-        :multiple="multiple"
-        :by="optionsKey"
+      v-model="selectedItems"
+      :name="name"
+      :multiple="multiple"
+      :by="optionsKey"
     >
       <div class="relative">
         <ComboboxInput
-            class="block w-full rounded-md border-0 py-3 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            :displayValue="setDisplayValue"
-            :placeholder="placeholder || 'انتخاب کنید یا جستجو نمایید'"
-            @change="handleChangeValue"
+          class="block w-full rounded-md border-0 py-3 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          :displayValue="setDisplayValue"
+          :placeholder="placeholder || 'انتخاب کنید یا جستجو نمایید'"
+          @change="handleChangeValue"
         />
         <ComboboxButton
-            class="absolute inset-y-0 right-0 flex items-center pr-2">
+          class="absolute inset-y-0 right-0 flex items-center pr-2">
                 <span class="absolute inset-y-0 right-0 flex items-center px-1 bg-indigo-600 rounded-r">
                     <ChevronUpDownIcon class="h-5 w-5 text-white" aria-hidden="true"/></span>
         </ComboboxButton>
@@ -26,18 +26,18 @@
             <loader-progress v-if="isLoading"/>
 
             <div
-                v-if="!isLoading && filteredOptions && Object.keys(filteredOptions).length === 0 && query !== ''"
-                class="relative cursor-default select-none py-2 px-4 text-gray-700"
+              v-if="!isLoading && filteredOptions && Object.keys(filteredOptions).length === 0 && query !== ''"
+              class="relative cursor-default select-none py-2 px-4 text-gray-700"
             >
               هیچ موردی پیدا نشد.
             </div>
 
             <ComboboxOption
-                v-slot="{ active, selected }"
-                v-for="item in filteredOptions"
-                :key="item[optionsKey]"
-                :value="item"
-                as="template"
+              v-slot="{ active, selected }"
+              v-for="item in filteredOptions"
+              :key="item[optionsKey]"
+              :value="item"
+              as="template"
             >
               <li :class="[
                               active ? 'bg-violet-100 text-primary' : 'text-gray-900',
@@ -45,7 +45,7 @@
                             ]"
               >
                             <span
-                                :class="[
+                              :class="[
                                 selected ? 'font-medium' : 'font-normal',
                                 'block truncate',
                               ]"
@@ -55,8 +55,8 @@
                                 </slot>
                             </span>
                 <span
-                    v-if="selected"
-                    class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                  v-if="selected"
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
                                 <CheckIcon class="h-5 w-5" aria-hidden="true"/>
                             </span>
               </li>
@@ -67,18 +67,18 @@
     </Combobox>
   </template>
   <div
-      v-else
-      class="flex items-center"
+    v-else
+    class="flex items-center"
   >
     <span class="grow text-gray-500 text-sm">{{ fullTextOfSelectedItems || '-' }}</span>
     <button
-        v-if="isEditable"
-        type="button"
-        class="shrink-0 mr-2"
+      v-if="isEditable"
+      type="button"
+      class="shrink-0 mr-2"
     >
       <PencilSquareIcon
-          @click="toggleEditMode"
-          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+        @click="toggleEditMode"
+        class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
       />
     </button>
   </div>
@@ -173,8 +173,8 @@ function resetSelectedItems() {
 
 function setToSelectedItems(value) {
   if (
-      (Array.isArray(value) && value.length === 0) ||
-      (isObject(value) && Object.keys(value).length === 0)
+    (Array.isArray(value) && value.length === 0) ||
+    (isObject(value) && Object.keys(value).length === 0)
   ) return
 
   if (props.multiple) {
@@ -226,8 +226,8 @@ const fullTextOfSelectedItems = computed(() => {
 
   if (props.multiple) {
     return (selectedItems.value && selectedItems.value.length)
-        ? selectedItems.value.map((i) => i[props.optionsText]).join(', ')
-        : '-'
+      ? selectedItems.value.map((i) => i[props.optionsText]).join(', ')
+      : '-'
   } else {
     if (selectedItems.value && selectedItems.value[props.optionsText])
       return selectedItems.value[props.optionsText]
@@ -244,19 +244,15 @@ function handleChangeValue($event) {
   query.value = $event.target.value.split(',').pop().trim()
   if (props.isLocalSearch) {
     filteredOptions.value = query.value === ''
-        ? props.options
-        : props.options.filter((item) =>
-            item[props.optionsText]
-                .toLowerCase()
-                .replace(/\s+/g, '')
-                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
-        )
+      ? props.options
+      : props.options.filter((item) =>
+        item[props.optionsText]
+          .toLowerCase()
+          .replace(/\s+/g, '')
+          .includes(query.value.toLowerCase().replace(/\s+/g, ''))
+      )
   }
   emit('query', query.value)
 }
 
 </script>
-
-<style scoped>
-
-</style>

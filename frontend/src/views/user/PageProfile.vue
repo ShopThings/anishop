@@ -1,7 +1,7 @@
 <template>
   <base-loading-panel
-      type="form"
-      :loading="loading"
+    type="form"
+    :loading="loading"
   >
     <template #content>
       <partial-card class="border-0">
@@ -42,7 +42,3 @@ const tabs = {
   },
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,18 +1,18 @@
 <template>
   <Slider
-      v-model="value"
-      :format="settings.format"
-      :min="settings.min"
-      :max="settings.max"
-      :showTooltip="settings.showTooltip"
-      :tooltipPosition="settings.tooltipPosition"
-      :tooltips="settings.tooltips"
-      :orientation="settings.orientation"
-      :direction="settings.direction"
-      :class="settings.class"
-      :options="settings.options"
-      @change="onChange"
-      @update="onUpdate"
+    v-model="value"
+    :format="settings.format"
+    :min="settings.min"
+    :max="settings.max"
+    :showTooltip="settings.showTooltip"
+    :tooltipPosition="settings.tooltipPosition"
+    :tooltips="settings.tooltips"
+    :orientation="settings.orientation"
+    :direction="settings.direction"
+    :class="settings.class"
+    :options="settings.options"
+    @change="onChange"
+    @update="onUpdate"
   />
 </template>
 

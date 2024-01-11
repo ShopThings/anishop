@@ -1,51 +1,52 @@
 <template>
   <div
-      :class="containerClass"
-      class="text-sm flex items-center gap-2"
+    :class="containerClass"
+    class="text-sm flex items-center gap-2"
   >
     <label
-        v-if="labelTitle && showLabel"
-        :for="id ? id : labelId"
-        :class="labelClass"
-        class="cursor-pointer grow sm:grow-0"
+      v-if="labelTitle && showLabel"
+      :for="id ? id : labelId"
+      :class="labelClass"
+      class="cursor-pointer grow sm:grow-0"
     >
       {{ labelTitle }}
     </label>
     <input
-        :id="id ? id : labelId"
-        type="checkbox"
-        :name="name"
-        v-model="value"
-        class="checkInput"
-        :disabled="disabled"
-        @change="emit('change', value)"
+      :id="id ? id : labelId"
+      type="checkbox"
+      :name="name"
+      v-model="value"
+      class="checkInput"
+      :disabled="disabled"
+      @change="emit('change', value)"
     >
     <div
-        class="rounded w-6 h-6 border-2 cursor-pointer transition flex items-center justify-center shadow"
-        :class="[
-                disabled
-                ? disabledClass + ' ' + disabledHoverClass
-                : (
-                    value
-                    ? checkedClass + ' ' + checkedHoverClass
-                    : uncheckedClass + ' ' + uncheckedHoverClass
-                ),
-            ]"
-        @click="() => {
-                if(!disabled) {
-                    value = !value
-                    nextTick(() => {
-                        emit('change', value)
-                    })
-                }
-            }"
+      class="rounded border-2 cursor-pointer transition flex items-center justify-center shadow"
+      :class="[
+          sizeClass,
+          disabled
+          ? disabledClass + ' ' + disabledHoverClass
+          : (
+              value
+              ? checkedClass + ' ' + checkedHoverClass
+              : uncheckedClass + ' ' + uncheckedHoverClass
+          ),
+      ]"
+      @click="() => {
+          if(!disabled) {
+              value = !value
+              nextTick(() => {
+                  emit('change', value)
+              })
+          }
+      }"
     >
       <CheckIcon
-          v-if="value"
-          :class="[
-                    'h-6 w-6',
-                    disabled ? disabledIconClass : iconClass,
-                ]"
+        v-if="value"
+        :class="[
+            sizeClass,
+            disabled ? disabledIconClass : iconClass,
+        ]"
       />
     </div>
   </div>
@@ -77,6 +78,10 @@ const props = defineProps({
   id: String,
   containerClass: String,
   labelClass: String,
+  sizeClass: {
+    type: String,
+    default: 'w-6 h-6',
+  },
   disabledClass: {
     type: String,
     default: 'border-slate-300 bg-slate-200',

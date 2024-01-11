@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\CategoryShowResource;
+use App\Http\Resources\Showing\ImageShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,12 +21,11 @@ class CategoryImageResource extends JsonResource
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'category' => $this->whenLoaded('category'),
-            'image_id' => $this->image_id,
-            'image' => $this->whenLoaded('image'),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'category' => new CategoryShowResource($this->whenLoaded('category')),
+            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
+            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

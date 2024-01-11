@@ -1,7 +1,7 @@
 <template>
   <div
-      :class="containerClass"
-      class="px-3 py-6"
+    :class="containerClass"
+    class="px-3 py-6"
   >
     <h1 v-if="title && title.length" class="text-2xl font-iranyekan-bold">
       {{ title }}
@@ -15,7 +15,3 @@ defineProps({
   title: String,
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-screen relative flex flex-col items-center justify-center lg:px-10 bg-pattern">
     <router-link
-        :to="{name: 'home'}"
-        class="rounded-full my-4"
+      :to="{name: 'home'}"
+      class="rounded-full my-4"
     >
       <img
-          src="/logo-with-type.png"
-          alt="آیریا کالا"
-          class="h-12 object-contain"
+        src="/logo-with-type.png"
+        alt="آیریا کالا"
+        class="h-12 object-contain"
       />
     </router-link>
 
@@ -19,12 +19,12 @@
       </div>
 
       <base-stepy
-          v-model:current-step="currentStep"
-          :steps="steps"
-          :allow-change-steps-by-click="false"
-          :loading="loading"
-          :manual="true"
-          :simple="true"
+        v-model:current-step="currentStep"
+        :steps="steps"
+        :allow-change-steps-by-click="false"
+        :loading="loading"
+        :manual="true"
+        :simple="true"
       >
         <template #mobileEntering="options">
           <form-forget-password-enter-mobile :options="options"/>

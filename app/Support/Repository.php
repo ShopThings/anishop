@@ -42,9 +42,12 @@ abstract class Repository implements RepositoryInterface
      */
     public function exists(?GetterExpressionInterface $where = null): bool
     {
-        return $this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        })->exists();
+        return $this->model->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        )->exists();
     }
 
     /**
@@ -55,9 +58,12 @@ abstract class Repository implements RepositoryInterface
         bool                       $withTrashed = false
     ): int
     {
-        $query = $this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        });
+        $query = $this->model->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        );
 
         if ($withTrashed) {
             $query->withTrashed();
@@ -183,7 +189,15 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
+     */
+    public function updateOrCreate(array $data, array $values = []): Builder|Model
+    {
+        return $this->model->newQuery()->updateOrCreate($data, $values);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function update($id, array $data): int
     {
@@ -191,17 +205,20 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function updateWhere(array $data, GetterExpressionInterface $where): int
     {
-        return (bool)$this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        })->update($data);
+        return (bool)$this->model->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        )->update($data);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function delete($id, bool $permanent = false): mixed
     {
@@ -214,7 +231,7 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function deleteWhere(GetterExpressionInterface $where, bool $permanent = false): mixed
     {
@@ -251,9 +268,12 @@ abstract class Repository implements RepositoryInterface
             }
         }
 
-        $query->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        });
+        $query->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        );
 
         if (count($order)) {
             foreach ($order as $column => $sort) {

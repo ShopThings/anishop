@@ -5,8 +5,8 @@
     </h2>
 
     <base-loading-panel
-        type="list-single"
-        :loading="loading"
+      type="list-single"
+      :loading="loading"
     >
       <template #content>
         <partial-card class="border-0">
@@ -15,9 +15,9 @@
               <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="shrink-0">
                   <base-lazy-image
-                      alt="تصویر محصول"
-                      lazy-src="/src/assets/products/p1.jpg"
-                      class="!h-28 sm:!h-20 w-auto"
+                    alt="تصویر محصول"
+                    lazy-src="/src/assets/products/p1.jpg"
+                    class="!h-28 sm:!h-20 w-auto"
                   />
                 </div>
                 <div class="grow text-sm">
@@ -25,8 +25,8 @@
                 </div>
                 <div class="text-sm shrink-0">
                   <router-link
-                      :to="{name: 'product.detail', params: {id: 1}}"
-                      class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                    :to="{name: 'product.detail', params: {id: 1}}"
+                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                   >
                     <span class="mx-auto">مشاهده محصول</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -41,8 +41,8 @@
   </div>
 
   <div
-      v-if="1"
-      class="mb-3"
+    v-if="1"
+    class="mb-3"
   >
     <partial-badge-condition-comment class="w-full py-2 !text-sm"/>
   </div>
@@ -53,8 +53,8 @@
     </h2>
 
     <base-loading-panel
-        type="list-single"
-        :loading="loading"
+      type="list-single"
+      :loading="loading"
     >
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -62,9 +62,9 @@
             <template #body>
               <div class="px-3 pt-3">
                 <base-message
-                    type="info"
-                    :has-close="false"
-                    class="rounded-md"
+                  type="info"
+                  :has-close="false"
+                  class="rounded-md"
                 >
                   <div class="leading-relaxed">
                     امکان ویرایش پس از تغییر وضعیت توسط سایت، وجود ندارد.
@@ -75,41 +75,41 @@
               <div class="px-3 py-2 vue3-tags-pros-container">
                 <partial-input-label title="مزایای محصول" :is-optional="true"/>
                 <vue3-tags-input
-                    placeholder="وارد نمایید"
-                    :tags="pros"
-                    :read-only="false"
-                    @on-tags-changed="(t) => {pros = t}"
+                  placeholder="وارد نمایید"
+                  :tags="pros"
+                  :read-only="false"
+                  @on-tags-changed="(t) => {pros = t}"
                 />
               </div>
               <div class="px-3 py-2 vue3-tags-cons-container">
                 <partial-input-label title="معایب محصول" :is-optional="true"/>
                 <vue3-tags-input
-                    placeholder="وارد نمایید"
-                    :tags="cons"
-                    @on-tags-changed="(t) => {cons = t}"
+                  placeholder="وارد نمایید"
+                  :tags="cons"
+                  @on-tags-changed="(t) => {cons = t}"
                 />
               </div>
               <div class="px-3 py-2">
                 <base-textarea
-                    name="description"
-                    label-title="توضیحات"
-                    placeholder="دیدگاه خود را وارد نمایید..."
-                    :has-edit-mode="true"
-                    :is-editable="true"
+                  name="description"
+                  label-title="توضیحات"
+                  placeholder="دیدگاه خود را وارد نمایید..."
+                  :has-edit-mode="true"
+                  :is-editable="true"
                 />
               </div>
 
               <div class="p-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    :disabled="isSubmitting"
+                  type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  :disabled="isSubmitting"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="isSubmitting"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
-                        big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 

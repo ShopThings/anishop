@@ -1,14 +1,14 @@
 <template>
   <form class="relative text-right" @submit.prevent="onSubmit">
     <loader-dot-orbit
-        v-if="isSubmitting"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-        container-bg-color="bg-blue-50 opacity-40"
+      v-if="isSubmitting"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      container-bg-color="bg-blue-50 opacity-40"
     />
 
     <base-button
-        class="mt-10 text-sm group flex gap-2 items-center border-2 !text-black !py-1"
-        @click="options.prev"
+      class="mt-10 text-sm group flex gap-2 items-center border-2 !text-black !py-1"
+      @click="options.prev"
     >
       <ArrowLongRightIcon class="w-6 h-6 group-hover:translate-x-1 transition"/>
       <span class="mx-auto">بازگشت</span>
@@ -19,20 +19,20 @@
       <div class="flex gap-2 flex-row-reverse">
         <template v-for="index in 6" :key="index">
           <base-input
-              :name="'number' + index"
-              :id="'codeInput' + index"
-              type="number"
-              klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
-              @input="goToNextInput"
-              @keydown="handleNumberDelete"
+            :name="'number' + index"
+            :id="'codeInput' + index"
+            type="number"
+            klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
+            @input="goToNextInput"
+            @keydown="handleNumberDelete"
           />
         </template>
       </div>
 
       <a
-          href="javascript:void(0)"
-          class="text-orange-500 hover:text-opacity-80 transition inline-block mt-2 text-sm"
-          @click="sendAnotherCodeToUser"
+        href="javascript:void(0)"
+        class="text-orange-500 hover:text-opacity-80 transition inline-block mt-2 text-sm"
+        @click="sendAnotherCodeToUser"
       >
         ارسال مجدد کد
       </a>
@@ -40,13 +40,13 @@
 
     <div class="mb-3">
       <base-button
-          type="submit"
-          class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-          :disabled="isSubmitting"
+        type="submit"
+        class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+        :disabled="isSubmitting"
       >
         <span class="mx-auto">تایید موبایل</span>
         <ArrowLeftIcon
-            class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+          class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
       </base-button>
     </div>
   </form>
@@ -130,7 +130,3 @@ const onSubmit = handleSubmit((values, actions) => {
   })
 })
 </script>
-
-<style scoped>
-
-</style>

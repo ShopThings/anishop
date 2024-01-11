@@ -1,21 +1,21 @@
 <template>
   <div
-      v-if="showSearch || (order && order.length)"
-      class="pb-3 flex flex-col"
+    v-if="showSearch || (order && order.length)"
+    class="pb-3 flex flex-col"
   >
     <div v-if="showSearch" class="grow">
       <base-datatable-search
-          class="!p-0"
-          :show-remove-filter-button-on-input="true"
-          :show-refresh-button="false"
-          @search="searchHandler"
-          @clear-filter="clearSearchHandler"
-          @refresh="refreshSearchHandler"
+        class="!p-0"
+        :show-remove-filter-button-on-input="true"
+        :show-refresh-button="false"
+        @search="searchHandler"
+        @clear-filter="clearSearchHandler"
+        @refresh="refreshSearchHandler"
       />
     </div>
     <div
-        v-if="order && order.length"
-        class="mt-3 w-full sm:mt-0"
+      v-if="order && order.length"
+      class="mt-3 w-full sm:mt-0"
     >
       <div class="hidden md:flex md:items-center md:gap-2">
         <div class="font-iranyekan-light text-sm">
@@ -24,16 +24,16 @@
 
         <ul class="flex items-center gap-2.5 grow">
           <li
-              v-for="o in order"
-              :key="o.id"
+            v-for="o in order"
+            :key="o.id"
           >
             <button
-                type="button"
-                :class="[
+              type="button"
+              :class="[
                                 o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold' : 'hover:text-opacity-80',
                             ]"
-                class="border-b-2 border-transparent py-2 text-sm text-black"
-                @click="changeOrderHandler(o)"
+              class="border-b-2 border-transparent py-2 text-sm text-black"
+              @click="changeOrderHandler(o)"
             >
               {{ o.text }}
             </button>
@@ -43,28 +43,28 @@
 
       <div class="w-full sm:w-48 md:hidden mr-auto">
         <base-select
-            class="bg-white"
-            options-text="text"
-            options-key="id"
-            :options="order"
-            :selected="selectedOrder"
-            @change="changeOrderHandler"
+          class="bg-white"
+          options-text="text"
+          options-key="id"
+          :options="order"
+          :selected="selectedOrder"
+          @change="changeOrderHandler"
         />
       </div>
     </div>
   </div>
 
   <slot
-      name="BeforeItemsPanel"
-      :total="total"
-      :page="currentPage"
-      :maxPage="maxPage"
-      :perPage="+props.perPage"
-      :offset="offset"
+    name="BeforeItemsPanel"
+    :total="total"
+    :page="currentPage"
+    :maxPage="maxPage"
+    :perPage="+props.perPage"
+    :offset="offset"
   >
     <div
-        v-if="showPaginationDetail"
-        class="flex items-center justify-end gap-4 text-slate-400 px-3 pb-3 divide-x-2 divide-x-reverse divide-slate-200"
+      v-if="showPaginationDetail"
+      class="flex items-center justify-end gap-4 text-slate-400 px-3 pb-3 divide-x-2 divide-x-reverse divide-slate-200"
     >
       <div>
         <span class="ml-1.5 text-sm font-iranyekan-light">نمایش</span>
@@ -90,18 +90,18 @@
   <slot v-if="!actualItems.length" name="empty"></slot>
   <div v-else :class="containerClass">
     <div
-        v-if="!loading"
-        v-for="(item, idx) of actualItems"
-        :key="idx + '_1'"
-        :class="itemContainerClass"
+      v-if="!loading"
+      v-for="(item, idx) of actualItems"
+      :key="idx + '_1'"
+      :class="itemContainerClass"
     >
       <slot name="item" :item="item"></slot>
     </div>
     <div
-        v-else
-        v-for="idx in perPage"
-        :key="idx + '_2'"
-        :class="itemContainerClass"
+      v-else
+      v-for="idx in perPage"
+      :key="idx + '_2'"
+      :class="itemContainerClass"
     >
       <slot name="loading" :index="idx"></slot>
     </div>
@@ -109,13 +109,13 @@
 
   <div v-if="showPagination && maxPage > 1" class="mt-3">
     <base-pagination
-        :theme="paginationTheme"
-        :next-page="nextPage"
-        :move-page="movePage"
-        :prev-page="prevPage"
-        v-model:max-page="maxPage"
-        v-model:paging="paging"
-        v-model:current-page="currentPage"
+      :theme="paginationTheme"
+      :next-page="nextPage"
+      :move-page="movePage"
+      :prev-page="prevPage"
+      v-model:max-page="maxPage"
+      v-model:paging="paging"
+      v-model:current-page="currentPage"
     />
   </div>
 </template>
@@ -369,7 +369,3 @@ defineExpose({
   goToPage,
 })
 </script>
-
-<style scoped>
-
-</style>

@@ -15,9 +15,9 @@
             <div class="h-full grow">
               <div class="px-6 max-w-lg xl:max-w-2xl hidden md:block">
                 <base-input
-                    name="search"
-                    placeholder="جستجو..."
-                    klass="bg-slate-100 focus:bg-white !ring-0 focus:!ring-2 rounded-xl"
+                  name="search"
+                  placeholder="جستجو..."
+                  klass="bg-slate-100 focus:bg-white !ring-0 focus:!ring-2 rounded-xl"
                 >
                   <template #icon>
                     <MagnifyingGlassIcon class="w-6 h-6 text-slate-400"/>
@@ -70,7 +70,7 @@
                       </div>
 
                       <partial-navbar-guest
-                          class="justify-center space-y-5 w-full space-x-reverse"/>
+                        class="justify-center space-y-5 w-full space-x-reverse"/>
                     </template>
                   </base-popover-side>
                 </li>
@@ -87,7 +87,7 @@
           </div>
 
           <partial-navbar-guest
-              class="hidden space-x-10 space-x-reverse lg:flex"
+            class="hidden space-x-10 space-x-reverse lg:flex"
           />
 
           <div class="mr-auto flex items-center gap-2 bg-indigo-50 px-3 rounded-full">
@@ -117,7 +117,3 @@ import DialogSearch from "./DialogSearch.vue";
 import BaseInput from "./base/BaseInput.vue";
 import NavbarCategories from "./NavbarCategories.vue";
 </script>
-
-<style scoped>
-
-</style>

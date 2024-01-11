@@ -1,10 +1,10 @@
 <template>
   <template v-if="editMode">
     <Listbox
-        v-model="selectedItems"
-        :name="name"
-        :multiple="multiple"
-        :by="optionsKey"
+      v-model="selectedItems"
+      :name="name"
+      :multiple="multiple"
+      :by="optionsKey"
     >
       <div class="relative">
         <ListboxButton class="relative" :class="btnClass">
@@ -23,18 +23,18 @@
             <loader-progress v-if="isLoading"/>
 
             <div
-                v-if="!isLoading && options && Object.keys(options).length === 0"
-                class="relative cursor-default select-none py-2 px-4 text-gray-700"
+              v-if="!isLoading && options && Object.keys(options).length === 0"
+              class="relative cursor-default select-none py-2 px-4 text-gray-700"
             >
               هیچ موردی پیدا نشد.
             </div>
 
             <ListboxOption
-                v-slot="{ active, selected }"
-                v-for="item in options"
-                :key="item[optionsKey]"
-                :value="item"
-                as="template"
+              v-slot="{ active, selected }"
+              v-for="item in options"
+              :key="item[optionsKey]"
+              :value="item"
+              as="template"
             >
               <li :class="[
                               active ? 'bg-violet-100 text-primary' : 'text-gray-900',
@@ -42,7 +42,7 @@
                             ]"
               >
                             <span
-                                :class="[
+                              :class="[
                                 selected ? 'font-medium' : 'font-normal',
                                 'block truncate',
                               ]"
@@ -52,8 +52,8 @@
                                 </slot>
                             </span>
                 <span
-                    v-if="selected"
-                    class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                  v-if="selected"
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
                                 <CheckIcon class="h-5 w-5" aria-hidden="true"/>
                             </span>
               </li>
@@ -64,18 +64,18 @@
     </Listbox>
   </template>
   <div
-      v-else
-      class="flex items-center"
+    v-else
+    class="flex items-center"
   >
     <span class="grow text-gray-500 text-sm">{{ fullTextOfSelectedItems || '-' }}</span>
     <button
-        v-if="isEditable"
-        type="button"
-        class="shrink-0 mr-2"
+      v-if="isEditable"
+      type="button"
+      class="shrink-0 mr-2"
     >
       <PencilSquareIcon
-          @click="toggleEditMode"
-          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+        @click="toggleEditMode"
+        class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
       />
     </button>
   </div>
@@ -159,8 +159,8 @@ function resetSelectedItems() {
 
 function setToSelectedItems(value) {
   if (
-      (Array.isArray(value) && value.length === 0) ||
-      (isObject(value) && Object.keys(value).length === 0)
+    (Array.isArray(value) && value.length === 0) ||
+    (isObject(value) && Object.keys(value).length === 0)
   ) return
 
   if (props.multiple) {
@@ -221,7 +221,3 @@ watch(selectedItems, () => {
   emit('change', selectedItems.value)
 })
 </script>
-
-<style scoped>
-
-</style>

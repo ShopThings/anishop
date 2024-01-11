@@ -1,10 +1,10 @@
 <template>
   <partial-general-title
-      type="side"
-      title="پیشنهاد‌های شگفت‌انگیز"
-      title-size="text-xl bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 via-orange-500 to-rose-600"
-      container-class="mb-5 mt-6 p-2"
-      line-class="bg-gradient-to-r from-yellow-500 via-orange-500 to-rose-600"
+    type="side"
+    title="پیشنهاد‌های شگفت‌انگیز"
+    title-size="text-xl bg-clip-text text-transparent bg-gradient-to-r from-yellow-500 via-orange-500 to-rose-600"
+    container-class="mb-5 mt-6 p-2"
+    line-class="bg-gradient-to-r from-yellow-500 via-orange-500 to-rose-600"
   />
 
   <product-carousel :products="products">
@@ -446,7 +446,3 @@ const products = ref([
   },
 ])
 </script>
-
-<style scoped>
-
-</style>

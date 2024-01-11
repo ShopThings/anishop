@@ -3,28 +3,28 @@
     <div class="p-2">
       <partial-input-label title="وضعیت ارسال"/>
       <base-select
-          :options="statuses"
-          options-key="value"
-          options-text="name"
-          :is-loading="loading"
-          :selected="selectedStatus"
-          name="send_status"
-          @change="sendStatusChange"
+        :options="statuses"
+        options-key="value"
+        options-text="name"
+        :is-loading="loading"
+        :selected="selectedStatus"
+        name="send_status"
+        @change="sendStatusChange"
       />
       <partial-input-error-message :error-message="errors.type"/>
     </div>
 
     <div class="px-2 py-3 text-left">
       <base-button
-          type="submit"
-          class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+        type="submit"
+        class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+        :disabled="isSubmitting"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+            v-if="isSubmitting"
+            main-container-klass="absolute w-full h-full top-0 left-0"
+            big-circle-color="border-transparent"
           />
         </VTransitionFade>
 
@@ -87,7 +87,3 @@ onMounted(() => {
   // })
 })
 </script>
-
-<style scoped>
-
-</style>
