@@ -54,12 +54,12 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
-import BaseInput from "../../components/base/BaseInput.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import LoaderDotOrbit from "../../components/base/loader/LoaderDotOrbit.vue";
-import BaseButton from "../../components/base/BaseButton.vue";
+import yup from "@/validation/index.js";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {ArrowLeftIcon, ArrowLongRightIcon} from "@heroicons/vue/24/solid/index.js";
 import isFunction from "lodash.isfunction";
 

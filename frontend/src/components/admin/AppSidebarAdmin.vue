@@ -6,13 +6,13 @@
     <button
       type="button"
       :class="[
-                'w-8 h-8 absolute left-0 top-12 -translate-x-1/2 rounded-xl p-1 bg-white text-black group transition',
-                'border hover:bg-opacity-80 z-[1] shadow-lg hidden xl:inline-block'
-            ]"
+            'w-8 h-8 absolute left-0 top-12 -translate-x-1/2 rounded-xl p-1 bg-white text-black group transition',
+            'border hover:bg-opacity-80 z-[1] shadow-lg hidden xl:inline-block'
+        ]"
       @click="toggleMiniMenu"
     >
       <ChevronLeftIcon
-        class="w-6 h-6 group-hover:scale-110 transition"
+        class="w-6 h-6 z-10 group-hover:scale-110 transition"
         :class="{'rotate-180': !isMini}"
       />
     </button>
@@ -173,11 +173,11 @@ import {useResizeObserver, useWindowSize} from "@vueuse/core"
 import {OverlayScrollbarsComponent} from "overlayscrollbars-vue"
 import {UserIcon, Cog6ToothIcon} from '@heroicons/vue/24/solid'
 import {ComputerDesktopIcon, PowerIcon} from '@heroicons/vue/24/outline'
-import BaseSidebar from "../base/BaseSidebar.vue"
+import BaseSidebar from "@/components/base/BaseSidebar.vue"
 import SidebarLinksAdmin from "./SidebarLinksAdmin.vue"
-import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 const scrollOptions = {scrollbars: {theme: 'os-theme-light'}}
 

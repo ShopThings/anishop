@@ -65,9 +65,9 @@ import {ref} from "vue";
 import PartialGeneralTitle from "./partials/PartialGeneralTitle.vue";
 import BaseInput from "./base/BaseInput.vue";
 import {useForm} from "vee-validate";
-import yup from "../validation/index.js";
+import yup from "@/validation/index.js";
 import BaseButton from "./base/BaseButton.vue";
-import VTransitionFade from "../transitions/VTransitionFade.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import LoaderCircle from "./base/loader/LoaderCircle.vue";
 
 const canSubmit = ref(true)

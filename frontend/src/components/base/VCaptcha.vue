@@ -31,8 +31,8 @@
 import {onMounted, reactive, ref} from "vue"
 import {ArrowPathRoundedSquareIcon} from '@heroicons/vue/24/outline'
 import LoaderCircle from "./loader/LoaderCircle.vue"
-import {apiRoutes} from "../../router/api-routes.js"
-import {useRequest} from "../../composables/api-request.js"
+import {apiRoutes} from "@/router/api-routes.js"
+import {useRequest} from "@/composables/api-request.js"
 
 const props = defineProps({
   modelValue: String,

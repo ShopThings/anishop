@@ -60,9 +60,9 @@
 </template>
 
 <script setup>
-import {computed, useSlots, watch} from "vue";
+import {computed, useSlots} from "vue";
 import {TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle} from '@headlessui/vue';
-import BaseButtonClose from "../base/BaseButtonClose.vue";
+import BaseButtonClose from "@/components/base/BaseButtonClose.vue";
 
 const slots = useSlots()
 const props = defineProps({
@@ -83,24 +83,13 @@ const isOpen = computed({
     return props.open
   },
   set(value) {
+    if (value) emit('open')
     emit('update:open', value)
   }
-})
-
-watch(() => props.open, function () {
-  if (props.open)
-    openModal()
-  else
-    closeModal()
 })
 
 function closeModal() {
   isOpen.value = false
   emit('close')
-}
-
-function openModal() {
-  isOpen.value = true
-  emit('open')
 }
 </script>

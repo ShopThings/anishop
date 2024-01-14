@@ -208,7 +208,8 @@ class FileRepository extends Repository implements FileRepositoryInterface
 
         if ($hasSearch) {
             $dirs = $diskStorage->allDirectories($path);
-            $dirs = $this->getSimilarFiles($dirs, preg_quote($search), ['i']);
+            $pattern = '[^\/]*' . preg_quote($search) . '[^\/]*$';
+            $dirs = $this->getSimilarFiles($dirs, $pattern, ['i']);
         } else {
             $dirs = $diskStorage->directories($path);
         }

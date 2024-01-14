@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
-import PageNotFound from "../views/PageNotFound.vue";
-import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js";
+import PageNotFound from "@/views/PageNotFound.vue";
+import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {adminRoutes} from "./admin-routes.js";
 import {userRoutes} from "./user-routes.js";
 
@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/admin/file-manager/editor',
     name: 'admin.file_manager.editor',
-    component: () => import('../views/admin/PageFileManagerEditor.vue'),
+    component: () => import('@/views/admin/PageFileManagerEditor.vue'),
     meta: {
       title: 'مدیریت فایل‌ها',
       requiresAuth: true,
@@ -27,38 +27,38 @@ const routes = [
     path: '/home',
     alias: [''],
     name: 'home',
-    component: () => import('../views/PageHome.vue'),
+    component: () => import('@/views/PageHome.vue'),
     meta: {layout: 'layout-guest'},
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/PageLogin.vue'),
+    component: () => import('@/views/PageLogin.vue'),
     meta: {layout: 'layout-empty'},
   },
   {
     path: '/signup',
     name: 'signup',
-    component: () => import('../views/PageSignup.vue'),
+    component: () => import('@/views/PageSignup.vue'),
     meta: {layout: 'layout-empty'},
   },
   {
     path: '/forget-password',
     name: 'forget_password',
-    component: () => import('../views/PageForgetPassword.vue'),
+    component: () => import('@/views/PageForgetPassword.vue'),
     meta: {layout: 'layout-empty'},
   },
   {
     path: '/pages/:url([a-z]+[a-z\/\-][a-z]+)',
     name: 'pages',
-    component: () => import('../views/PagePages.vue'),
+    component: () => import('@/views/PagePages.vue'),
     meta: {layout: 'layout-guest'},
   },
 
   {
     path: '/blog/',
     name: 'blogs',
-    component: () => import('../views/PageBlogs.vue'),
+    component: () => import('@/views/PageBlogs.vue'),
     meta: {layout: 'layout-blog'},
   },
   {
@@ -86,13 +86,13 @@ const routes = [
   {
     path: '/blog/search',
     name: 'blog.search',
-    component: () => import('../views/PageSearchBlog.vue'),
+    component: () => import('@/views/PageSearchBlog.vue'),
     meta: {layout: 'layout-guest'},
   },
   {
     path: '/blog/:id' + idRouteRegex,
     name: 'blog.detail',
-    component: () => import('../views/PageBlogDetail.vue'),
+    component: () => import('@/views/PageBlogDetail.vue'),
     meta: {layout: 'layout-blog'},
   },
 
@@ -111,40 +111,40 @@ const routes = [
   {
     path: '/search',
     name: 'search',
-    component: () => import('../views/PageSearch.vue'),
+    component: () => import('@/views/PageSearch.vue'),
     meta: {layout: 'layout-guest'},
   },
   {
     path: '/product/:id' + idRouteRegex,
     name: 'product.detail',
-    component: () => import('../views/PageProductDetail.vue'),
+    component: () => import('@/views/PageProductDetail.vue'),
     meta: {layout: 'layout-guest'},
   },
 
   {
     path: '/brands',
     name: 'brands',
-    component: () => import('../views/PageBrands.vue'),
+    component: () => import('@/views/PageBrands.vue'),
     meta: {layout: 'layout-guest'},
   },
 
   {
     path: '/faq',
     name: 'faq',
-    component: () => import('../views/PageFaq.vue'),
+    component: () => import('@/views/PageFaq.vue'),
     meta: {layout: 'layout-guest'},
   },
   {
     path: '/contact',
     name: 'contact',
-    component: () => import('../views/PageContact.vue'),
+    component: () => import('@/views/PageContact.vue'),
     meta: {layout: 'layout-guest'},
   },
 
   {
     path: '/cart',
     name: 'cart',
-    component: () => import('../views/PageCart.vue'),
+    component: () => import('@/views/PageCart.vue'),
     meta: {
       layout: 'layout-guest',
       title: 'سبر خرید',
@@ -162,7 +162,7 @@ const routes = [
   {
     path: '/checkout',
     name: 'checkout',
-    component: () => import('../views/PageCheckout.vue'),
+    component: () => import('@/views/PageCheckout.vue'),
     meta: {
       // requiresAuth: true,
       layout: 'layout-guest',
@@ -171,7 +171,7 @@ const routes = [
   {
     path: '/result',
     name: 'result',
-    component: () => import('../views/PageResult.vue'),
+    component: () => import('@/views/PageResult.vue'),
     meta: {layout: 'layout-guest'},
   },
   //

@@ -107,13 +107,13 @@ import {
   QuestionMarkCircleIcon,
   XMarkIcon,
 } from "@heroicons/vue/24/outline/index.js";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import BaseAccordion from "../components/base/BaseAccordion.vue";
-import BasePaginator from "../components/base/BasePaginator.vue";
-import LoaderListSingle from "../components/base/loader/LoaderListSingle.vue";
-import PartialEmptyRows from "../components/partials/PartialEmptyRows.vue";
-import BaseInput from "../components/base/BaseInput.vue";
-import BaseButton from "../components/base/BaseButton.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import LoaderListSingle from "@/components/base/loader/LoaderListSingle.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 
 const paginatorCom = ref(null)
 

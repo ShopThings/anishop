@@ -139,18 +139,16 @@
 
 <script setup>
 import {computed, onMounted, reactive, ref} from "vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import FormReturnOrderChangeStatus from "./forms/FormReturnOrderChangeStatus.vue";
 import {ShoppingBagIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialCardNavigation from "../../../components/partials/PartialCardNavigation.vue";
+import PartialCardNavigation from "@/components/partials/PartialCardNavigation.vue";
 import {useToast} from "vue-toastification";
 import {useRoute} from "vue-router";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import BaseAccordion from "../../../components/base/BaseAccordion.vue";
-import BaseDatatable from "../../../components/base/BaseDatatable.vue";
-import PartialBadgeStatusReturnOrder from "../../../components/partials/PartialBadgeStatusReturnOrder.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue";
+import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
 
 const route = useRoute()
 const toast = useToast()

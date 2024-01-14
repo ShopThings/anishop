@@ -22,7 +22,7 @@ class ProductAttributeProductResource extends JsonResource
             'id' => $this->id,
             'product_attribute_value' => new ProductAttributeValueShowResource($this->whenLoaded('attrValue')),
             'product' => new ProductShowResource($this->whenLoaded('product')),
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

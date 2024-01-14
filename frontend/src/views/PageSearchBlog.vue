@@ -126,17 +126,17 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialGeneralTitle from "../components/partials/PartialGeneralTitle.vue";
-import AppSideCategoriesBlog from "../components/AppSideCategoriesBlog.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import AppSideCategoriesBlog from "@/components/AppSideCategoriesBlog.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {ArchiveBoxIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
-import BasePaginator from "../components/base/BasePaginator.vue";
-import PartialEmptyRows from "../components/partials/PartialEmptyRows.vue";
-import BlogCard from "../components/blog/BlogCard.vue";
-import LoaderListSingleBlog from "../components/base/loader/LoaderListSingleBlog.vue";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import {BLOG_ORDER_TYPES} from "../composables/constants.js";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import BlogCard from "@/components/blog/BlogCard.vue";
+import LoaderListSingleBlog from "@/components/base/loader/LoaderListSingleBlog.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import {BLOG_ORDER_TYPES} from "@/composables/constants.js";
 
 //----------------------------
 // Search Blogs

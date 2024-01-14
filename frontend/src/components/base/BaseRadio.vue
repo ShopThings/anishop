@@ -24,28 +24,29 @@
       @change="emit('change', localValue)"
     >
     <div
-      class="rounded-full w-6 h-6 cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
+      class="rounded-full cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
       :class="[
-                disabled
-                ? (
-                    modelValue === value
-                    ? disabledCheckedClass + ' ' + disabledCheckedHoverClass
-                    : disabledClass + ' ' + disabledHoverClass
-                )
-                : (
-                    modelValue === value
-                    ? checkedClass + ' ' + checkedHoverClass
-                    : uncheckedClass + ' ' + uncheckedHoverClass
-                ),
-            ]"
+            sizeClass,
+            disabled
+            ? (
+                modelValue === value
+                ? disabledCheckedClass + ' ' + disabledCheckedHoverClass
+                : disabledClass + ' ' + disabledHoverClass
+            )
+            : (
+                modelValue === value
+                ? checkedClass + ' ' + checkedHoverClass
+                : uncheckedClass + ' ' + uncheckedHoverClass
+            ),
+        ]"
       @click="() => {
-                if(!disabled) {
-                    localValue = value
-                    nextTick(() => {
-                        emit('change', localValue)
-                    })
-                }
-            }"
+          if(!disabled) {
+              localValue = value
+              nextTick(() => {
+                  emit('change', localValue)
+              })
+          }
+      }"
     >
     </div>
   </div>
@@ -80,6 +81,10 @@ const props = defineProps({
   id: String,
   containerClass: String,
   labelClass: String,
+  sizeClass: {
+    type: String,
+    default: 'w-6 h-6',
+  },
   disabledClass: {
     type: String,
     default: 'border-slate-300 bg-slate-200',

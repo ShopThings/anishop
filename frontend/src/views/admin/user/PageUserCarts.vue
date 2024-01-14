@@ -323,14 +323,14 @@
 </template>
 
 <script setup>
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {computed, onMounted, ref} from "vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRoute} from "vue-router";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import BaseLazyImage from "../../../components/base/BaseLazyImage.vue";
-import BaseAccordion from "../../../components/base/BaseAccordion.vue";
+import {useRequest} from "@/composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
 
 const loading = ref(false)
 

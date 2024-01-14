@@ -82,16 +82,14 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import yup from "@/validation/index.js";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {CheckIcon, CurrencyDollarIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {useToast} from "vue-toastification";
 import {useRoute} from "vue-router";
 

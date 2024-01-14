@@ -83,18 +83,16 @@
 <script setup>
 import {computed, ref} from "vue";
 import {useForm} from "vee-validate";
-import yup from "../../../../validation/index.js";
-import PartialCard from "../../../../components/partials/PartialCard.vue";
-import BaseSelectSearchable from "../../../../components/base/BaseSelectSearchable.vue";
-import PartialInputErrorMessage from "../../../../components/partials/PartialInputErrorMessage.vue";
-import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
-import LoaderCircle from "../../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../../../components/base/BaseAnimatedButton.vue";
+import yup from "@/validation/index.js";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import {CheckCircleIcon, XCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import {useRoute} from "vue-router";
-import {apiRoutes} from "../../../../router/api-routes.js";
-import {useRequest} from "../../../../composables/api-request.js";
 
 const route = useRoute()
 const idParam = computed(() => {

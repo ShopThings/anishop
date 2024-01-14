@@ -268,20 +268,18 @@
 import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
 import {useRoute} from "vue-router";
-import yup from "../../../validation/index.js";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import yup from "@/validation/index.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import BaseLazyImage from "../../../components/base/BaseLazyImage.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import BaseAccordion from "../../../components/base/BaseAccordion.vue";
-import BaseButtonClose from "../../../components/base/BaseButtonClose.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
-import BaseRadio from "../../../components/base/BaseRadio.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
+import BaseButtonClose from "@/components/base/BaseButtonClose.vue";
+import BaseRadio from "@/components/base/BaseRadio.vue";
 
 const route = useRoute()
 const idsParam = computed(() => {

@@ -151,20 +151,20 @@
 <script setup>
 import {ref} from "vue";
 import {ArrowLongLeftIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import BaseMessage from "../../components/base/BaseMessage.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseMessage from "@/components/base/BaseMessage.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import PartialBadgeConditionComment from "../../components/partials/PartialBadgeConditionComment.vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import PartialCommentBlogSingle from "../../components/partials/PartialCommentBlogSingle.vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
-import BaseFeedList from "../../components/base/BaseFeedList.vue";
+import yup from "@/validation/index.js";
+import PartialBadgeConditionComment from "@/components/partials/PartialBadgeConditionComment.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import PartialCommentBlogSingle from "@/components/partials/PartialCommentBlogSingle.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseFeedList from "@/components/base/BaseFeedList.vue";
 
 const loading = ref(false)
 

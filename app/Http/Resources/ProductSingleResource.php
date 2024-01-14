@@ -45,9 +45,9 @@ class ProductSingleResource extends JsonResource
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'is_published' => $this->is_published,
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
-            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
-            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

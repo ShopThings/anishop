@@ -1,5 +1,5 @@
-import {apiReplaceParams} from "../router/api-routes.js";
-import {useRequest} from "../composables/api-request.js";
+import {apiReplaceParams} from "@/router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
 import isObject from "lodash.isobject";
 
 export const GenericAPI = (url, config) => {

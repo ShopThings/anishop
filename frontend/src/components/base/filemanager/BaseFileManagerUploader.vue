@@ -188,7 +188,7 @@ import {onMounted, onUnmounted, ref} from "vue";
 import {useFileList, UploadTypes} from "@/composables/file-list.js";
 import BaseButtonClose from "../BaseButtonClose.vue";
 import BaseMessage from "../BaseMessage.vue";
-import VTransitionSlideFadeDownY from "../../../transitions/VTransitionSlideFadeDownY.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import BaseButton from "../BaseButton.vue";
 import {useRequest} from "@/composables/api-request.js";
 import {apiRoutes} from "@/router/api-routes.js";

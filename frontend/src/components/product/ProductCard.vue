@@ -144,11 +144,11 @@ import {ref} from "vue";
 import {
   CheckBadgeIcon,
 } from "@heroicons/vue/24/outline/index.js"
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
-import LoaderCard from "../base/loader/LoaderCard.vue";
-import BaseLazyImage from "../base/BaseLazyImage.vue";
-import BaseCarousel from "../base/BaseCarousel.vue";
-import {formatPriceLikeNumber} from "../../composables/helper.js";
+import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
+import LoaderCard from "@/components/base/loader/LoaderCard.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
 
 const props = defineProps({
   containerClass: {

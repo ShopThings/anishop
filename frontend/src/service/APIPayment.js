@@ -1,4 +1,4 @@
-import {apiRoutes} from "../router/api-routes.js";
+import {apiRoutes} from "@/router/api-routes.js";
 import {GenericAPI} from "./ServiceAPIs.js";
 
 export const PaymentMethodAPI = Object.assign(

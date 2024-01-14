@@ -111,9 +111,9 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseInput from '../components/base/BaseInput.vue';
-import BaseButton from "../components/base/BaseButton.vue";
-import VCaptcha from "../components/base/VCaptcha.vue";
+import BaseInput from '@/components/base/BaseInput.vue';
+import BaseButton from "@/components/base/BaseButton.vue";
+import VCaptcha from "@/components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from '@heroicons/vue/24/solid'
 import {ArrowLongLeftIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline'
 

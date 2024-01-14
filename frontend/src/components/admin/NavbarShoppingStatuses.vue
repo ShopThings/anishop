@@ -110,5 +110,5 @@
 <script setup>
 import {ChevronDownIcon} from "@heroicons/vue/24/solid/index.js";
 import {ShoppingBagIcon} from "@heroicons/vue/24/outline/index.js";
-import BasePopover from "../base/BasePopover.vue";
+import BasePopover from "@/components/base/BasePopover.vue";
 </script>

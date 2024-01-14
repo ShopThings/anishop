@@ -14,5 +14,5 @@
 </template>
 
 <script setup>
-import BaseFileManager from "../../components/base/BaseFileManager.vue";
+import BaseFileManager from "@/components/base/BaseFileManager.vue";
 </script>

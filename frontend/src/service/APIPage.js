@@ -1,6 +1,6 @@
 import {GenericAPI} from "./ServiceAPIs.js";
-import {apiRoutes} from "../router/api-routes.js";
-import {useRequest} from "../composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
 
 export const StaticPageAPI = Object.assign(
   GenericAPI(apiRoutes.admin.staticPages, {replacement: 'static_page'}),

@@ -53,13 +53,12 @@
 
 <script setup>
 import {computed, ref} from "vue";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {ArrowLongLeftIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import PartialBuilderRemoveBtn from "../../components/partials/PartialBuilderRemoveBtn.vue";
-import BasePaginator from "../../components/base/BasePaginator.vue";
-import LoaderListSingle from "../../components/base/loader/LoaderListSingle.vue";
-import {apiRoutes} from "../../router/api-routes.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialBuilderRemoveBtn from "@/components/partials/PartialBuilderRemoveBtn.vue";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import LoaderListSingle from "@/components/base/loader/LoaderListSingle.vue";
 
 const getPath = computed(() => {
   // return apiRoutes.user.favoriteProducts.index

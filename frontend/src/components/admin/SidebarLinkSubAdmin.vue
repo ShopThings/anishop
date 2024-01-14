@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue"
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue"
 import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js"
 import {Menu, MenuButton, MenuItems} from "@headlessui/vue"
 

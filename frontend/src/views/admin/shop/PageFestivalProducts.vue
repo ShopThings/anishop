@@ -60,18 +60,18 @@
 <script setup>
 import FormFestivalAddProduct from "./forms/FormFestivalAddProduct.vue";
 import FormFestivalAddCategoryProducts from "./forms/FormFestivalAddCategoryProducts.vue";
-import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseDatatable from "../../../components/base/BaseDatatable.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-helper.js";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
+import {useConfirmToast} from "@/composables/toast-helper.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 
 const route = useRoute()
 const toast = useToast()

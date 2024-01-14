@@ -230,21 +230,21 @@ import {
   InformationCircleIcon,
   ArrowLeftIcon,
 } from "@heroicons/vue/24/outline/index.js";
-import BaseMap from "../components/base/BaseMap.vue";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import BaseLoadingPanel from "../components/base/BaseLoadingPanel.vue";
-import BaseInput from "../components/base/BaseInput.vue";
-import BaseTextarea from "../components/base/BaseTextarea.vue";
-import VCaptcha from "../components/base/VCaptcha.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
-import VTransitionFade from "../transitions/VTransitionFade.vue";
-import BaseButton from "../components/base/BaseButton.vue";
-import LoaderCircle from "../components/base/loader/LoaderCircle.vue";
+import BaseMap from "@/components/base/BaseMap.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import VCaptcha from "@/components/base/VCaptcha.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {useForm} from "vee-validate";
-import yup from "../validation/index.js";
-import BaseSelect from "../components/base/BaseSelect.vue";
-import PartialInputLabel from "../components/partials/PartialInputLabel.vue";
-import {useUserAuthStore} from "../store/StoreUserAuth.js";
+import yup from "@/validation/index.js";
+import BaseSelect from "@/components/base/BaseSelect.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 
 const userStore = useUserAuthStore()
 const user = userStore.getUser

@@ -33,10 +33,10 @@
 <script setup>
 import {ref, watch, watchEffect} from "vue";
 import {useRoute} from "vue-router";
-import AppFooterUser from "../user/AppFooterUser.vue";
+import AppFooterUser from "@/components/user/AppFooterUser.vue";
 import {useResizeObserver} from "@vueuse/core";
-import AppNavbarUser from "../user/AppNavbarUser.vue";
-import AppSidebarUser from "../user/AppSidebarUser.vue";
+import AppNavbarUser from "@/components/user/AppNavbarUser.vue";
+import AppSidebarUser from "@/components/user/AppSidebarUser.vue";
 import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
 
 const transitionProps = defineTransitionProps({

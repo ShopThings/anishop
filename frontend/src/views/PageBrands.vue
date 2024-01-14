@@ -43,8 +43,8 @@
 </template>
 
 <script setup>
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import BaseTiltCard from "../components/base/BaseTiltCard.vue";
-import BaseLazyImage from "../components/base/BaseLazyImage.vue";
-import AppNewsletter from "../components/AppNewsletter.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import BaseTiltCard from "@/components/base/BaseTiltCard.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import AppNewsletter from "@/components/AppNewsletter.vue";
 </script>

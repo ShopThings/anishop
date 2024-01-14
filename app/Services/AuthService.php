@@ -10,7 +10,6 @@ use App\Services\Contracts\AuthServiceInterface;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService extends Service implements AuthServiceInterface
@@ -38,7 +37,7 @@ class AuthService extends Service implements AuthServiceInterface
     {
         $user = Auth::user();
         $user->currentAccessToken()->delete();
-        Request::session()->regenerate();
+        request()->session()->regenerate();
     }
 
     /**

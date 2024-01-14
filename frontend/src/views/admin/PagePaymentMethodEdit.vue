@@ -313,25 +313,23 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseSelect from "../../components/base/BaseSelect.vue";
-import PartialInputErrorMessage from "../../components/partials/PartialInputErrorMessage.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import BaseMediaPlaceholder from "../../components/base/BaseMediaPlaceholder.vue";
-import BaseSwitch from "../../components/base/BaseSwitch.vue";
-import BaseInput from "../../components/base/BaseInput.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
-import {useRequest} from "../../composables/api-request.js";
+import yup from "@/validation/index.js";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 

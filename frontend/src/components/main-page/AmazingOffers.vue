@@ -19,9 +19,9 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
-import ProductCarousel from "../product/ProductCarousel.vue";
-import ProductCard from "../product/ProductCard.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import ProductCarousel from "@/components/product/ProductCarousel.vue";
+import ProductCard from "@/components/product/ProductCard.vue";
 
 const products = ref([
   {

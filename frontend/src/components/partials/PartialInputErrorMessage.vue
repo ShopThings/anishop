@@ -9,7 +9,7 @@
 
 <script setup>
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionSlideFadeLeftX from "../../transitions/VTransitionSlideFadeLeftX.vue";
+import VTransitionSlideFadeLeftX from "@/transitions/VTransitionSlideFadeLeftX.vue";
 
 defineProps({
   errorMessage: String,

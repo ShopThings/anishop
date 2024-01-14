@@ -25,7 +25,7 @@ class BlogResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => new ImageShowResource($this->whenLoaded('image')),
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,

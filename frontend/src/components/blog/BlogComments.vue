@@ -60,8 +60,8 @@
 <script setup>
 import {ref} from "vue";
 import {ChatBubbleLeftEllipsisIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialCommentBlogSingle from "../partials/PartialCommentBlogSingle.vue";
-import BaseFeedList from "../base/BaseFeedList.vue";
+import PartialCommentBlogSingle from "@/partials/PartialCommentBlogSingle.vue";
+import BaseFeedList from "@/base/BaseFeedList.vue";
 
 const comments = ref([
   {},

@@ -9,7 +9,7 @@
 
 <script setup>
 import {TrashIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseButton from "../base/BaseButton.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 
 const emit = defineEmits(['click'])
 </script>

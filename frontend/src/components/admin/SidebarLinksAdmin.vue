@@ -555,7 +555,7 @@ import {
   ViewColumnsIcon, FolderOpenIcon, FlagIcon, ListBulletIcon,
 } from "@heroicons/vue/24/outline/index.js"
 import SidebarLinkSubAdmin from "./SidebarLinkSubAdmin.vue";
-import PartialSidebarItemAdmin from "../partials/PartialSidebarItemAdmin.vue";
+import PartialSidebarItemAdmin from "@/components/partials/PartialSidebarItemAdmin.vue";
 
 defineProps({
   mini: {

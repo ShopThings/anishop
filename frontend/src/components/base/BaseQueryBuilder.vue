@@ -34,9 +34,9 @@
 </template>
 
 <script setup>
-import PartialQBButtons from "../partials/querybuilder/PartialQBButtons.vue";
-import PartialQBRule from "../partials/querybuilder/PartialQBRule.vue";
-import PartialQBGroup from "../partials/querybuilder/PartialQBGroup.vue";
+import PartialQBButtons from "@/components/partials/querybuilder/PartialQBButtons.vue";
+import PartialQBRule from "@/components/partials/querybuilder/PartialQBRule.vue";
+import PartialQBGroup from "@/components/partials/querybuilder/PartialQBGroup.vue";
 
 const props = defineProps({
   query: {

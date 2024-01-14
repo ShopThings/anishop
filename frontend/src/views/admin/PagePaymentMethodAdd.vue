@@ -267,22 +267,22 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseMediaPlaceholder from "../../components/base/BaseMediaPlaceholder.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseSwitch from "../../components/base/BaseSwitch.vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
-import BaseInput from "../../components/base/BaseInput.vue";
+import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline";
-import PartialInputErrorMessage from "../../components/partials/PartialInputErrorMessage.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
-import BaseSelect from "../../components/base/BaseSelect.vue";
+import yup from "@/validation/index.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
 
 const canSubmit = ref(true)
 

@@ -54,7 +54,7 @@
 import {useSlots, watch} from "vue";
 import {Switch, SwitchGroup, SwitchLabel} from "@headlessui/vue";
 import {useField} from "vee-validate";
-import yup from "../../validation/index.js";
+import yup from "@/validation/index.js";
 
 const props = defineProps({
   name: String,

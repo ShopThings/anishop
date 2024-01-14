@@ -1,4 +1,4 @@
-import BaseConfirm from "../components/base/BaseConfirm.vue";
+import BaseConfirm from "@/components/base/BaseConfirm.vue";
 import {POSITION, TYPE, useToast} from "vue-toastification";
 import isFunction from "lodash.isfunction";
 import BaseLoading from "@/components/base/toast/BaseLoading.vue";

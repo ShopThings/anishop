@@ -79,7 +79,7 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseStepy from "../components/base/BaseStepy.vue";
+import BaseStepy from "@/components/base/BaseStepy.vue";
 import FormSignupEnterMobile from "./forms/FormSignupEnterMobile.vue";
 import FormSignupEnterCode from "./forms/FormSignupEnterCode.vue";
 import FormSignupEnterPassword from "./forms/FormSignupEnterPassword.vue";

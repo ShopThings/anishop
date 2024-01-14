@@ -49,9 +49,9 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
-import ProductCarousel from "../product/ProductCarousel.vue";
-import {SLIDER_PLACES} from "../../composables/constants.js";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import ProductCarousel from "@/components/product/ProductCarousel.vue";
+import {SLIDER_PLACES} from "@/composables/constants.js";
 
 const products = ref([
   {

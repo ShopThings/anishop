@@ -22,8 +22,8 @@ class ProductAttributeValueResource extends JsonResource
             'product_attribute ' => new ProductAttributeShowResource($this->whenLoaded('productAttr')),
             'attribute_value' => $this->attribute_value,
             'priority' => $this->priority,
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
-            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

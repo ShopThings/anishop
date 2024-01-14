@@ -717,9 +717,9 @@
 </template>
 
 <script setup>
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
-import AppNewsletter from "../components/AppNewsletter.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import AppNewsletter from "@/components/AppNewsletter.vue";
 </script>
 
 <style scoped>

@@ -227,7 +227,7 @@ import BaseFileManagerFolderCreator from "./filemanager/BaseFileManagerFolderCre
 import BaseDatatable from "./BaseDatatable.vue";
 import {useToast, TYPE} from "vue-toastification";
 import {reactive, ref, watchEffect} from "vue";
-import PartialCard from "../partials/PartialCard.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import ContextMenu from '@imengyu/vue3-context-menu'
 import BaseFileManagerContextMenu from "./filemanager/BaseFileManagerContextMenu.vue";
 import BaseLoadingPanel from "./BaseLoadingPanel.vue";
@@ -240,9 +240,9 @@ import BaseAnimatedButton from "./BaseAnimatedButton.vue";
 import BaseFileManagerRename from "./filemanager/BaseFileManagerRename.vue";
 import BaseLazyImage from "./BaseLazyImage.vue";
 import {FilemanagerAPI} from "@/service/APIFilemanager.js";
-import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import LoaderCircle from "./loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import BaseLoadingToast from "@/components/base/toast/BaseLoading.vue";
+import BaseLoadingToast from "./toast/BaseLoading.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import {useLightbox} from "@/composables/lightbox-view.js";
 import {apiRoutes} from "@/router/api-routes.js";
@@ -659,6 +659,11 @@ if (props.allowDelete) {
       click: (items) => {
         const names = getSelectedItemsProperty(items, 'full_name')
 
+        let subtitle = ''
+        if (items.some((item) => item.is_dir)) {
+          subtitle = 'توجه داشته باشید، تمام فایل‌ها و پوشه‌های داخل پوشه‌ها حذف خواهند شد و امکان بازگردانی وجود نخواهد داشت.'
+        }
+
         useConfirmToast(() => {
           FilemanagerAPI.deleteFiles({
             files: names,
@@ -673,7 +678,7 @@ if (props.allowDelete) {
               return false
             }
           })
-        })
+        }, null, subtitle)
       },
     },
   })
@@ -769,6 +774,11 @@ function cutClicked(item) {
 }
 
 function deleteClicked(item) {
+  let subtitle = ''
+  if (item.is_dir) {
+    subtitle = 'توجه داشته باشید، تمام فایل‌ها و پوشه‌های داخلی حذف خواهند شد و امکان بازگردانی وجود نخواهد داشت.'
+  }
+
   useConfirmToast(() => {
     FilemanagerAPI.deleteFile({
       path: trimChar(currentPath.value, '/') + '/' + trimChar(item.full_name, '/'),
@@ -778,7 +788,7 @@ function deleteClicked(item) {
         datatable.value?.refresh()
       },
     })
-  })
+  }, null, subtitle)
 }
 
 function downloadClicked(item) {
@@ -910,7 +920,7 @@ function checkHash() {
   let path = ''
   for (let i of pathArr) {
     if (['', '.', '..'].indexOf(i.trim()) === -1) {
-      path += i + '/'
+      path += i.trim() + '/'
       pathBreadcrumb.value.push({
         text: i,
         path: trimChar(path, '/'),

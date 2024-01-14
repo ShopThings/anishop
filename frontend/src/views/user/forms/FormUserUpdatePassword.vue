@@ -52,15 +52,15 @@
 </template>
 
 <script setup>
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {LockClosedIcon, LockOpenIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import {useForm} from "vee-validate";
-import yup, {transformNumbersToEnglish} from "../../../validation/index.js";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
 import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";

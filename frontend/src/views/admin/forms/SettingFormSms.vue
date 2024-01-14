@@ -375,15 +375,15 @@
 <script setup>
 import {ref} from "vue";
 import {useClipboard} from "@vueuse/core";
-import {SETTING_KEYS} from "../../../composables/constants.js";
+import {SETTING_KEYS} from "@/composables/constants.js";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
+import yup from "@/validation/index.js";
 import {CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseTextarea from "../../../components/base/BaseTextarea.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import PartialInputLead from "../../../components/partials/PartialInputLead.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import PartialInputLead from "@/components/partials/PartialInputLead.vue";
 import {useToast} from "vue-toastification";
 
 const props = defineProps({

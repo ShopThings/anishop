@@ -7,10 +7,10 @@ use App\Exceptions\InvalidDiskException;
 use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
 use App\Http\Requests\Filters\FileListFilter;
-use App\Models\FileManager;
 use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Repositories\FileRepository;
 use App\Services\Contracts\FileServiceInterface;
+use App\Support\Converters\NumberConverter;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Traits\VersionTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +35,7 @@ class FileService implements FileServiceInterface
     public function upload(string $path, $file, string $disk, bool $overwrite = false): bool
     {
         if (!($file instanceof UploadedFile)) return false;
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->upload($path, $file, $disk, $overwrite);
     }
 
@@ -55,6 +56,7 @@ class FileService implements FileServiceInterface
      */
     public function treeList(string $path, string $disk, ?string $search = null): array
     {
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->treeList($path, $disk, $search);
     }
 
@@ -65,6 +67,8 @@ class FileService implements FileServiceInterface
      */
     public function createDirectory(string $name, string $path, string $disk): bool
     {
+        $name = NumberConverter::toEnglish($name);
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->createDirectory($name, $path, $disk);
     }
 
@@ -77,6 +81,10 @@ class FileService implements FileServiceInterface
     public function rename(string $path, string $oldName, string $newName, string $disk): bool
     {
         if (trim($oldName) == '' || trim($newName) == '') return false;
+
+        $path = NumberConverter::toEnglish($path);
+        $oldName = NumberConverter::toEnglish($oldName);
+        $newName = NumberConverter::toEnglish($newName);
         return $this->repository->rename($path, $oldName, $newName, $disk);
     }
 
@@ -87,6 +95,8 @@ class FileService implements FileServiceInterface
      */
     public function move(array $paths, string $destination, string $disk): bool
     {
+        $paths = NumberConverter::toEnglish($paths);
+        $destination = NumberConverter::toEnglish($destination);
         return $this->repository->move($paths, $destination, $disk);
     }
 
@@ -97,6 +107,8 @@ class FileService implements FileServiceInterface
      */
     public function copy(array $paths, string $destination, string $disk): bool
     {
+        $paths = NumberConverter::toEnglish($paths);
+        $destination = NumberConverter::toEnglish($destination);
         return $this->repository->copy($paths, $destination, $disk);
     }
 
@@ -107,6 +119,8 @@ class FileService implements FileServiceInterface
      */
     public function delete(string|array $files, ?string $path, string $disk): bool
     {
+        $files = NumberConverter::toEnglish($files);
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->remove($files, $path, $disk);
     }
 
@@ -118,6 +132,9 @@ class FileService implements FileServiceInterface
      */
     public function download($file, string $path, string $disk): mixed
     {
+        $file = NumberConverter::toEnglish($file);
+        $path = NumberConverter::toEnglish($path);
+
         $file = rtrim($path, '\\/') . '/' . ltrim($file, '/');
         return $this->repository->download($file, $disk);
     }
@@ -131,7 +148,12 @@ class FileService implements FileServiceInterface
 
         if (!$hasDisk) return false;
 
-        return $this->repository->checkPathExists($path, $disk, false);
+        $path = NumberConverter::toEnglish($path);
+        $pathInfo = pathinfo($path);
+
+        return !empty($pathInfo['extension'])
+            ? $this->repository->fileExists($path, $disk)
+            : $this->repository->checkPathExists($path, $disk);
     }
 
     /**
@@ -139,6 +161,17 @@ class FileService implements FileServiceInterface
      */
     public function find($file, bool $isAuthenticated = false): Model|null
     {
+        $file = NumberConverter::toEnglish($file);
+
+        // basic normalization
+        $file = trim($file, '.');
+        $file = str_replace('\\', '/', $file);
+
+        if (explode('/', $file) > 2)
+            $file = ltrim($file, '/');
+
+        //
+
         $where = new WhereBuilder('file_manager');
         $where->orWhereEqual('full_path', $file);
 
@@ -159,6 +192,7 @@ class FileService implements FileServiceInterface
         bool $isAuthenticated = false
     ): ?string
     {
+        $file = NumberConverter::toEnglish($file);
         $size = $this->isValidThumbSize($size ?: '') ? $size : $this->repository::ORIGINAL;
 
         if (

@@ -129,13 +129,11 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {PencilIcon, PlusIcon, TrashIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import {useRequest} from "../../composables/api-request.js";
-import {apiRoutes} from "../../router/api-routes.js";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
-import BaseButton from "../../components/base/BaseButton.vue";
-import NewCreationGuideTop from "../../components/admin/NewCreationGuideTop.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 
 const loading = ref(false)
 const addresses = ref([])

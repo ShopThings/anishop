@@ -48,6 +48,6 @@
 
 <script setup>
 import {ChevronDownIcon} from "@heroicons/vue/24/solid/index.js";
-import BasePopover from "../base/BasePopover.vue";
+import BasePopover from "@/components/base/BasePopover.vue";
 import {BellAlertIcon} from "@heroicons/vue/24/outline/index.js";
 </script>

@@ -15,7 +15,7 @@
         <template #content>
           <base-datatable
             ref="datatable"
-            :enable-search-box="true"
+            :enable-search-box="false"
             :enable-multi-operation="false"
             :is-slot-mode="true"
             :is-loading="table.isLoading"
@@ -27,10 +27,13 @@
             :sortable="table.sortable"
             @do-search="doSearch"
           >
-            <template v-slot:created_at="{value}">
-              <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
-              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            <template #city_name="{value}">
+              {{ value.city.name }}
             </template>
+            <template #province_name="{value}">
+              {{ value.province.name }}
+            </template>
+
             <template v-slot:op="{value}">
               <base-button
                 class="text-white bg-black text-sm !py-1"
@@ -39,7 +42,22 @@
                 مشاهده جزئیات
               </base-button>
             </template>
+
+            <template v-slot:created_at="{value}">
+              <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
           </base-datatable>
+
+          <partial-dialog v-model:open="isDetailOpen">
+            <template #title>
+              جزئیات آدرس
+            </template>
+
+            <template #body>
+              {{ detailItem }}
+            </template>
+          </partial-dialog>
         </template>
       </base-loading-panel>
     </template>
@@ -47,22 +65,19 @@
 </template>
 
 <script setup>
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseDatatable from "../../../components/base/BaseDatatable.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
-import {computed, onMounted, reactive, ref} from "vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import BaseButton from "../../../components/base/BaseButton.vue";
+import {onMounted, reactive, ref} from "vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {useRoute} from "vue-router";
+import {UserAddressAPI, UserAPI} from "@/service/APIUser.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
 
 const route = useRoute()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
 const user = ref(null)
 
@@ -100,15 +115,16 @@ const table = reactive({
       sortable: true,
     },
     {
+      label: '',
+      field: 'op',
+      width: '7%',
+      columnClasses: 'whitespace-nowrap',
+    },
+    {
       label: "تاریخ ایجاد",
       field: "created_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
-    },
-    {
-      label: '',
-      field: 'op',
-      width: '7%',
     },
   ],
   rows: [],
@@ -119,44 +135,45 @@ const table = reactive({
   },
 })
 
+const detailItem = ref(null)
+const isDetailOpen = ref(false)
+
 function showDetails(value) {
-  // show details of address
-  // ...
+  isDetailOpen.value = true
+  detailItem.value = value
 }
 
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiReplaceParams(apiRoutes.admin.users.addresses, {user: idParam.value}), {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  UserAddressAPI.fetchAll(idParam.value, {
+    success(response) {
+      table.rows = response.data
+      table.totalRecordCount = response.data.length
+
+      return false
+    },
+    error() {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally() {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')
 
 onMounted(() => {
-  useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
-    success: (response) => {
+  UserAPI.fetchById(idParam.value, {
+    success(response) {
       user.value = response.data
     },
   })

@@ -93,18 +93,18 @@ import {
   TrashIcon,
   BookmarkSquareIcon,
 } from "@heroicons/vue/24/outline";
-import PartialCardNavigation from "../../../components/partials/PartialCardNavigation.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import BaseTabPanel from "../../../components/base/BaseTabPanel.vue";
-import {useConfirmToast} from "../../../composables/toast-helper.js";
+import PartialCardNavigation from "@/components/partials/PartialCardNavigation.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
+import {useConfirmToast} from "@/composables/toast-helper.js";
 import {useToast} from "vue-toastification";
 import FormUserUpdateInfo from "./forms/FormUserUpdateInfo.vue";
 import FormUserUpdatePassword from "./forms/FormUserUpdatePassword.vue";
 import FormUserUpdateStatus from "./forms/FormUserUpdateStatus.vue";
-import {useAdminAuthStore} from "../../../store/StoreUserAuth.js";
-import {UserAPI} from "../../../service/APIUser.js";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {UserAPI} from "@/service/APIUser.js";
 
 const router = useRouter()
 const route = useRoute()

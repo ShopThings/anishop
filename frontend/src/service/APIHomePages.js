@@ -1,5 +1,5 @@
-import {useRequest} from "../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {GenericAPI} from "./ServiceAPIs.js";
 
 export const HomeMainPageAPI = {

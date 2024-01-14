@@ -1,6 +1,6 @@
-import {apiReplaceParams, apiRoutes} from "../router/api-routes.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {GenericAPI} from "./ServiceAPIs.js";
-import {useRequest} from "../composables/api-request.js";
+import {useRequest} from "@/composables/api-request.js";
 
 export const ColorAPI = Object.assign(
   GenericAPI(apiRoutes.admin.colors, {replacement: 'color'}),

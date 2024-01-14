@@ -56,13 +56,13 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import BaseLazyImage from "../../../components/base/BaseLazyImage.vue";
-import BasePaginator from "../../../components/base/BasePaginator.vue";
-import LoaderCard from "../../../components/base/loader/LoaderCard.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {useRequest} from "@/composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import LoaderCard from "@/components/base/loader/LoaderCard.vue";
 
 const loading = ref(false)
 

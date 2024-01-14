@@ -196,15 +196,15 @@
 
 <script setup>
 import {computed, nextTick, onMounted, reactive, ref, watch} from "vue";
-import VTransitionSlideFadeLeftX from "../transitions/VTransitionSlideFadeLeftX.vue";
-import VTransitionFade from "../transitions/VTransitionFade.vue";
+import VTransitionSlideFadeLeftX from "@/transitions/VTransitionSlideFadeLeftX.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {Bars4Icon} from "@heroicons/vue/24/outline/index.js";
 import {useWindowSize} from "@vueuse/core";
 import BasePopoverSide from "./base/BasePopoverSide.vue";
 import {XMarkIcon, ChevronLeftIcon, ArrowTopRightOnSquareIcon} from "@heroicons/vue/24/solid/index.js";
 import BaseSwitcherPanel from "./base/BaseSwitcherPanel.vue";
 import BaseLoadingPanel from "./base/BaseLoadingPanel.vue";
-import {useSwitcherPanel} from "../composables/switcher-panel.js";
+import {useSwitcherPanel} from "@/composables/switcher-panel.js";
 
 const mainCategoriesItems = ref(null)
 const subCategoriesItems = ref(null)

@@ -35,7 +35,7 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseStepy from "../../../components/base/BaseStepy.vue";
+import BaseStepy from "@/components/base/BaseStepy.vue";
 import FormProductAddInfo from "./forms/FormProductAddInfo.vue";
 import FormProductAddProducts from "./forms/FormProductAddProducts.vue";
 import FormProductAddImageGallery from "./forms/FormProductAddImageGallery.vue";

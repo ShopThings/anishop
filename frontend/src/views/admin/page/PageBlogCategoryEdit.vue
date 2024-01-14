@@ -112,22 +112,20 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseSwitch from "../../../components/base/BaseSwitch.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
+import yup from "@/validation/index.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3TagsInput from "vue3-tags-input";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {useToast} from "vue-toastification";
 import {useRoute} from "vue-router";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 
 const route = useRoute()
 const toast = useToast()

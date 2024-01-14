@@ -274,13 +274,13 @@ import {
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/vue/24/solid/index.js";
 import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialGeneralTitle from "../../components/partials/PartialGeneralTitle.vue";
-import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
-import PartialBadgeStatusPayment from "../../components/partials/PartialBadgeStatusPayment.vue";
-import PartialBadgeStatusSend from "../../components/partials/PartialBadgeStatusSend.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialBadgeStatusReturnOrder from "../../components/partials/PartialBadgeStatusReturnOrder.vue";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
+import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
+import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 
 const ordersTableLoading = ref(true)
 const returnOrdersTableLoading = ref(true)

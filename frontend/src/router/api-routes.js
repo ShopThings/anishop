@@ -467,7 +467,6 @@ export const apiRoutes = {
 export const apiReplaceParams = function (url, params) {
   if (isObject(params)) {
     for (const param in params) {
-      console.log(param)
       if (params.hasOwnProperty(param)) {
         url = url.replace(
           new RegExp('\{' + param + '\??\}', 'g'),

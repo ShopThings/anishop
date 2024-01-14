@@ -46,8 +46,8 @@
 <script setup>
 import {computed} from "vue";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseButton from "../base/BaseButton.vue";
-import BaseInput from "../base/BaseInput.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import Vue3TagsInput from "vue3-tags-input";
 import PartialInputLabel from "./PartialInputLabel.vue";
 import PartialBuilderRemoveBtn from "./PartialBuilderRemoveBtn.vue";

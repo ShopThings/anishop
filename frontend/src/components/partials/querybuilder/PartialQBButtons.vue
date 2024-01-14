@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import BaseButton from "../../base/BaseButton.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {ref} from "vue";
 
 const props = defineProps({

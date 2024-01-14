@@ -47,9 +47,9 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
+import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 
 const loading = ref(true)
 const table = reactive({

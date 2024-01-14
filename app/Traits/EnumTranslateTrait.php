@@ -20,6 +20,8 @@ trait EnumTranslateTrait
     {
         $translates = self::translationArray();
 
+        $isOriginalParameterArray = is_array($needed);
+
         $needed = is_array($needed) ? $needed : [$needed];
         $newArr = [];
         foreach ($needed as $item) {
@@ -29,7 +31,14 @@ trait EnumTranslateTrait
                 $newArr[$item] = $translates[$item] ?? $item;
             }
         }
-        return count($newArr) ? $newArr : null;
+
+        return count($newArr)
+            ? (
+            !$isOriginalParameterArray
+                ? array_pop($newArr)
+                : $newArr
+            )
+            : null;
     }
 
     /**

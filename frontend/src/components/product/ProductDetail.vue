@@ -609,16 +609,16 @@ import {
   CheckCircleIcon,
   StopIcon,
 } from "@heroicons/vue/24/outline/index.js"
-import BaseCarousel from "./../base/BaseCarousel.vue";
-import BaseLazyImage from "./../base/BaseLazyImage.vue";
-import BaseAnimatedButton from "./../base/BaseAnimatedButton.vue";
-import BaseButton from "./../base/BaseButton.vue";
-import BaseSelect from "./../base/BaseSelect.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
 import ProductCarousel from "./ProductCarousel.vue";
-import BaseTabPanel from "../base/BaseTabPanel.vue";
+import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
 import ProductComment from "./ProductComment.vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
-import {formatPriceLikeNumber} from "../../composables/helper.js";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
 import {useLightbox} from "@/composables/lightbox-view.js";
 
 defineProps({

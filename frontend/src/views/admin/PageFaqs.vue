@@ -52,19 +52,17 @@
 </template>
 
 <script setup>
-import {useRequest} from "../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../composables/toast-helper.js";
+import {useConfirmToast} from "@/composables/toast-helper.js";
 import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseDatatableMenu from "../../components/base/datatable/BaseDatatableMenu.vue";
-import BaseDatatable from "../../components/base/BaseDatatable.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import NewCreationGuideTop from "../../components/admin/NewCreationGuideTop.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 
 const router = useRouter()
 const toast = useToast()

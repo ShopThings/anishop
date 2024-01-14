@@ -67,11 +67,11 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialBadgeStatusPayment from "../../components/partials/PartialBadgeStatusPayment.vue";
-import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
-import PartialBadgeStatusSend from "../../components/partials/PartialBadgeStatusSend.vue";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
+import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
+import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {StarIcon} from "@heroicons/vue/24/outline/index.js";
 
 const loading = ref(true)

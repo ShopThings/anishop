@@ -87,10 +87,10 @@ import {ref, watchEffect} from "vue"
 import {useResizeObserver} from "@vueuse/core"
 import {UserIcon} from '@heroicons/vue/24/solid'
 import {PowerIcon} from '@heroicons/vue/24/outline'
-import BaseSidebar from "../base/BaseSidebar.vue"
-import {useAdminAuthStore, useUserAuthStore} from "../../store/StoreUserAuth.js";
+import BaseSidebar from "@/components/base/BaseSidebar.vue"
+import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import SidebarLinksUser from "./SidebarLinksUser.vue";
-import BaseButton from "../base/BaseButton.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {BellAlertIcon} from "@heroicons/vue/24/outline/index.js";
 
 const scrollableSection = ref(null)

@@ -75,15 +75,15 @@
 
 <script setup>
 import {ref} from "vue";
-import {SETTING_KEYS} from "../../../composables/constants.js";
+import {SETTING_KEYS} from "@/composables/constants.js";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import BaseInput from "../../../components/base/BaseInput.vue";
+import yup from "@/validation/index.js";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import {formatPriceLikeNumber} from "../../../composables/helper.js";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
 
 const props = defineProps({
   setting: {

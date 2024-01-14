@@ -40,12 +40,11 @@
 </template>
 
 <script setup>
-import PartialCard from "../../components/partials/PartialCard.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {computed, ref} from "vue";
-import {apiRoutes} from "../../router/api-routes.js";
-import BasePaginator from "../../components/base/BasePaginator.vue";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
-import LoaderListSingle from "../../components/base/loader/LoaderListSingle.vue";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import LoaderListSingle from "@/components/base/loader/LoaderListSingle.vue";
 
 const loading = ref(false)
 const getPath = computed(() => {

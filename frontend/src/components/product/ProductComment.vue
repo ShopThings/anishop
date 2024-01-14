@@ -197,8 +197,8 @@ import {
   FlagIcon,
 } from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
-import BaseButton from "../base/BaseButton.vue";
-import BaseFloatingDropDown from "../base/BaseFloatingDropDown.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseFloatingDropDown from "@/components/base/BaseFloatingDropDown.vue";
 
 defineProps({
   productId: {

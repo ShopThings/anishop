@@ -48,11 +48,11 @@
 <script setup>
 import {ref} from "vue";
 import {LockOpenIcon, LockClosedIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseInput from "../../components/base/BaseInput.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import LoaderDotOrbit from "../../components/base/loader/LoaderDotOrbit.vue";
-import BaseButton from "../../components/base/BaseButton.vue";
+import yup from "@/validation/index.js";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {CheckIcon} from "@heroicons/vue/24/solid/index.js";
 import isFunction from "lodash.isfunction";
 

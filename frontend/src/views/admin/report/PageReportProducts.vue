@@ -106,17 +106,15 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import BaseQueryBuilder from "../../../components/base/BaseQueryBuilder.vue";
+import BaseQueryBuilder from "@/components/base/BaseQueryBuilder.vue";
 import {MinusIcon, TableCellsIcon} from "@heroicons/vue/24/outline/index.js"
-import BaseDatatable from "../../../components/base/BaseDatatable.vue"
-import {apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue"
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useToast} from "vue-toastification";
-import BaseButton from "../../../components/base/BaseButton.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 
 //-----------------------------------
 // Query-Builder stuffs

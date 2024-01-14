@@ -140,20 +140,20 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
-import BaseSwitch from "../../../components/base/BaseSwitch.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import yup from "@/validation/index.js";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
-import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.vue";
-import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {apiRoutes} from "@/router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
 const loading = ref(false)
 const canSubmit = ref(true)

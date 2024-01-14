@@ -65,15 +65,15 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {DevicePhoneMobileIcon, QrCodeIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseInput from "../../components/base/BaseInput.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import LoaderDotOrbit from "../../components/base/loader/LoaderDotOrbit.vue";
-import BaseCheckbox from "../../components/base/BaseCheckbox.vue";
-import BaseButton from "../../components/base/BaseButton.vue";
-import VCaptcha from "../../components/base/VCaptcha.vue";
+import yup from "@/validation/index.js";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
+import BaseCheckbox from "@/components/base/BaseCheckbox.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import VCaptcha from "@/components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from "@heroicons/vue/24/solid/index.js";
 import isFunction from "lodash.isfunction";
 

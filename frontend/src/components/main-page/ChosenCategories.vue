@@ -31,8 +31,8 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
-import BaseLazyImage from "../base/BaseLazyImage.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const categories = ref([
   {

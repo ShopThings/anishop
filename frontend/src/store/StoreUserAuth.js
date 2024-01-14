@@ -1,8 +1,8 @@
 import {computed, ref, toValue} from "vue"
 import {defineStore} from "pinia"
-import {useSafeLocalStorage} from "../composables/safe-local-storage.js";
-import {useRequestWrapper} from "../composables/api-request.js";
-import {apiRoutes} from "../router/api-routes.js";
+import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
+import {useRequestWrapper} from "@/composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
 
 export const ROLES = {
   DEVELOPER: 'developer',

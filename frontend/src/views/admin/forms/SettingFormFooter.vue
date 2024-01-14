@@ -93,16 +93,16 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import {SETTING_KEYS} from "../../../composables/constants.js";
+import {SETTING_KEYS} from "@/composables/constants.js";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
+import yup from "@/validation/index.js";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import BaseTextarea from "../../../components/base/BaseTextarea.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import PartialBuilderRemoveBtn from "../../../components/partials/PartialBuilderRemoveBtn.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import PartialBuilderRemoveBtn from "@/components/partials/PartialBuilderRemoveBtn.vue";
 
 const props = defineProps({
   setting: {

@@ -37,13 +37,13 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialCard from "../../../../components/partials/PartialCard.vue";
-import PartialStepyNextPrevButtons from "../../../../components/partials/PartialStepyNextPrevButtons.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
 import {useForm} from "vee-validate";
-import yup from "../../../../validation/index.js";
-import BaseEditor from "../../../../components/base/BaseEditor.vue";
-import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
-import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
+import yup from "@/validation/index.js";
+import BaseEditor from "@/components/base/BaseEditor.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
 
 defineProps({
   options: {

@@ -68,15 +68,15 @@
 <script setup>
 import {ref} from "vue";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import yup from "@/validation/index.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {EyeDropperIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import BaseSwitch from "../../../components/base/BaseSwitch.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
 
 const canSubmit = ref(true)
 

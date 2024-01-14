@@ -74,18 +74,18 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js"
-import PartialCard from "../../../../components/partials/PartialCard.vue";
-import PartialStepyNextPrevButtons from "../../../../components/partials/PartialStepyNextPrevButtons.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
 import {useForm} from "vee-validate";
-import yup from "../../../../validation/index.js";
-import BaseMediaPlaceholder from "../../../../components/base/BaseMediaPlaceholder.vue";
-import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
-import BaseButton from "../../../../components/base/BaseButton.vue";
-import PartialBuilderRemoveBtn from "../../../../components/partials/PartialBuilderRemoveBtn.vue";
-import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
+import yup from "@/validation/index.js";
+import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import PartialBuilderRemoveBtn from "@/components/partials/PartialBuilderRemoveBtn.vue";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import BaseLoadingPanel from "../../../../components/base/BaseLoadingPanel.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 
 defineProps({
   options: {

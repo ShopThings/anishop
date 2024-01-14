@@ -48,25 +48,25 @@
 </template>
 
 <script setup>
-import LoaderCircle from "../../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../../transitions/VTransitionFade.vue";
-import BaseInput from "../../../../components/base/BaseInput.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 import {LockClosedIcon, LockOpenIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../../components/base/BaseAnimatedButton.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import {useForm} from "vee-validate";
-import yup, {transformNumbersToEnglish} from "../../../../validation/index.js";
-import {useRequest} from "../../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../../router/api-routes.js";
-import {computed, ref} from "vue";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
+import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {UserAPI} from "../../../../service/APIUser.js";
 
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  return route.params.id
-})
+const idParam = getRouteParamByKey('id')
+const user = useAdminAuthStore()
 
 const canSubmit = ref(true)
 
@@ -89,24 +89,24 @@ const onSubmit = handleSubmit((values, actions) => {
 
   canSubmit.value = false
 
-  useRequest(apiReplaceParams(apiRoutes.admin.users.update, {
-    user: idParam.value,
-  }), {
+  UserAPI.updateById(idParam.value, {
     method: 'PUT',
     data: values,
   }, {
-    success: () => {
+    success() {
       toast.success('ویرایش کلمه عبور با موفقیت انجام شد.')
-      router.push({name: 'admin.logout', query: {redirect: route.path}})
+      if (user.getUser.id === idParam.value) {
+        router.push({name: 'admin.logout', query: {redirect: route.path}})
+      }
       return false
     },
-    error: (error) => {
+    error(error) {
       if (error.errors && Object.keys(error.errors).length >= 1)
         actions.setErrors(error.errors)
 
       return false
     },
-    finally: function () {
+    finally() {
       actions.resetForm();
       canSubmit.value = true
     },

@@ -34,7 +34,7 @@
 <script setup>
 import {Disclosure, DisclosureButton, DisclosurePanel} from "@headlessui/vue"
 import {ChevronUpIcon} from '@heroicons/vue/24/outline'
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue"
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue"
 import {useSlots} from "vue";
 
 defineProps({

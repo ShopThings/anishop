@@ -40,7 +40,7 @@ class Filter
 
         $offset = $request->integer('offset');
         $page = $request->integer('page');
-        $orderColumn = $request->string('column', 'id')->toString();
+        $orderColumn = $request->string('order', 'id')->toString();
         $orderSort = $request->string('sort', 'desc')->toString();
 
         //

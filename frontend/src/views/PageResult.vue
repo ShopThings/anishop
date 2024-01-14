@@ -112,9 +112,9 @@
 <script setup>
 import {ref} from "vue";
 import {CheckCircleIcon, XCircleIcon, ArrowLongLeftIcon} from "@heroicons/vue/24/outline/index.js";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
-import BaseButton from "../components/base/BaseButton.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 
 const isSuccessful = ref(false)
 </script>

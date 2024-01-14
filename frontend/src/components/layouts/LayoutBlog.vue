@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue"
-import AppNavbarBlog from "../AppNavbarBlog.vue";
-import AppFooterUser from "../user/AppFooterUser.vue";
+import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue"
+import AppNavbarBlog from "@/components/AppNavbarBlog.vue";
+import AppFooterUser from "@/components/user/AppFooterUser.vue";
 </script>

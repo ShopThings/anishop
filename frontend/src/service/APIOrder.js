@@ -1,6 +1,6 @@
 import {GenericAPI} from "./ServiceAPIs.js";
-import {apiReplaceParams, apiRoutes} from "../router/api-routes.js";
-import {useRequest} from "../composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
 
 export const OrderAPI = Object.assign(
   GenericAPI(apiRoutes.admin.orders, {

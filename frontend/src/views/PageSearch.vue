@@ -173,19 +173,19 @@
 import {ref} from "vue";
 import {FunnelIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
-import BasePaginator from "../components/base/BasePaginator.vue";
-import PartialEmptyRows from "../components/partials/PartialEmptyRows.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
-import LoaderCard from "../components/base/loader/LoaderCard.vue";
-import ProductCard from "../components/product/ProductCard.vue";
-import ProductSearchFilters from "../components/product/ProductSearchFilters.vue";
-import BaseButton from "../components/base/BaseButton.vue";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import AppNewsletter from "../components/AppNewsletter.vue";
-import {formatPriceLikeNumber} from "../composables/helper.js";
-import BasePopoverSide from "../components/base/BasePopoverSide.vue";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import LoaderCard from "@/components/base/loader/LoaderCard.vue";
+import ProductCard from "@/components/product/ProductCard.vue";
+import ProductSearchFilters from "@/components/product/ProductSearchFilters.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import AppNewsletter from "@/components/AppNewsletter.vue";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
+import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {XMarkIcon} from "@heroicons/vue/24/solid/index.js";
-import {PRODUCT_ORDER_TYPES} from "../composables/constants.js";
+import {PRODUCT_ORDER_TYPES} from "@/composables/constants.js";
 
 function clearAllFilters() {
   // ...

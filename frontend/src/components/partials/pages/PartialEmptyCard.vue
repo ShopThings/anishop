@@ -22,7 +22,7 @@
 
 <script setup>
 import {ArrowLongRightIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseButton from "../../base/BaseButton.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import PartialEmptyRows from "../PartialEmptyRows.vue";
 import PartialCard from "../PartialCard.vue";
 

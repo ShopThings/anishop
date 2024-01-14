@@ -55,16 +55,16 @@
 </template>
 
 <script setup>
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseDatatable from "../../../components/base/BaseDatatable.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {computed, onMounted, reactive, ref} from "vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
-import BaseButton from "../../../components/base/BaseButton.vue";
+import {useRequest} from "@/composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 
 const router = useRouter()
 const route = useRoute()

@@ -80,8 +80,8 @@
 import {MenuItems, MenuItem} from '@headlessui/vue'
 import {ChevronDownIcon} from '@heroicons/vue/24/solid'
 import {UserIcon, IdentificationIcon, PowerIcon, Cog6ToothIcon} from '@heroicons/vue/24/outline'
-import BaseMenu from "../base/BaseMenu.vue"
-import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
+import BaseMenu from "@/components/base/BaseMenu.vue"
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 defineProps({
   open: {

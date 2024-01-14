@@ -131,9 +131,9 @@ import NavbarShoppingStatuses from "./NavbarShoppingStatuses.vue"
 import {XMarkIcon, ComputerDesktopIcon, PowerIcon} from "@heroicons/vue/24/outline/index.js";
 import SidebarLinksAdmin from "./SidebarLinksAdmin.vue";
 import {OverlayScrollbarsComponent} from "overlayscrollbars-vue";
-import BasePopoverSide from "../base/BasePopoverSide.vue";
+import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {Cog6ToothIcon, UserIcon} from "@heroicons/vue/24/solid/index.js";
-import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
 
 const props = defineProps({

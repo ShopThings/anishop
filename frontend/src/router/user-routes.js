@@ -1,5 +1,5 @@
-import {useUserAuthStore} from "../store/StoreUserAuth.js";
-import {isValidInternalRedirectLink} from "../composables/helper.js";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 export const userRoutes = {
   path: '/user',
@@ -27,7 +27,7 @@ export const userRoutes = {
       path: 'home',
       alias: [''],
       name: 'user.home',
-      component: () => import('../views/user/PageHome.vue'),
+      component: () => import('@/views/user/PageHome.vue'),
       meta: {
         title: 'پیشخوان',
       },
@@ -39,7 +39,7 @@ export const userRoutes = {
         {
           path: '',
           name: 'user.addresses',
-          component: () => import('../views/user/PageAddresses.vue'),
+          component: () => import('@/views/user/PageAddresses.vue'),
           meta: {
             title: 'مدیریت آدرس‌ها',
             breadcrumb: [
@@ -52,7 +52,7 @@ export const userRoutes = {
         {
           path: 'new',
           name: 'user.address.add',
-          component: () => import('../views/user/PageAddressAdd.vue'),
+          component: () => import('@/views/user/PageAddressAdd.vue'),
           meta: {
             title: 'افزودن آدرس',
             breadcrumb: [
@@ -71,7 +71,7 @@ export const userRoutes = {
     {
       path: 'address/:id(\\d+)',
       name: 'user.address.edit',
-      component: () => import('../views/user/PageAddressEdit.vue'),
+      component: () => import('@/views/user/PageAddressEdit.vue'),
       meta: {
         title: 'ویرایش آدرس',
         breadcrumb: [
@@ -89,7 +89,7 @@ export const userRoutes = {
     {
       path: 'comments',
       name: 'user.comments',
-      component: () => import('../views/user/PageComments.vue'),
+      component: () => import('@/views/user/PageComments.vue'),
       meta: {
         title: 'مشاهده دیدگاه‌ها',
         breadcrumb: [
@@ -105,7 +105,7 @@ export const userRoutes = {
         {
           path: '',
           name: 'user.comment.detail',
-          component: () => import('../views/user/PageCommentDetail.vue'),
+          component: () => import('@/views/user/PageCommentDetail.vue'),
           meta: {
             title: 'جزئیات دیدگاه محصول',
             breadcrumb: [
@@ -122,7 +122,7 @@ export const userRoutes = {
         {
           path: 'blog',
           name: 'user.comment.detail.blog',
-          component: () => import('../views/user/PageCommentDetailBlog.vue'),
+          component: () => import('@/views/user/PageCommentDetailBlog.vue'),
           meta: {
             title: 'جزئیات دیدگاه بلاگ',
             breadcrumb: [
@@ -142,7 +142,7 @@ export const userRoutes = {
     {
       path: 'favorite-products',
       name: 'user.favorite_products',
-      component: () => import('../views/user/PageFavoriteProducts.vue'),
+      component: () => import('@/views/user/PageFavoriteProducts.vue'),
       meta: {
         title: 'محصولات مورد علاقه من',
         breadcrumb: [
@@ -156,7 +156,7 @@ export const userRoutes = {
     {
       path: 'profile',
       name: 'user.profile',
-      component: () => import('../views/user/PageProfile.vue'),
+      component: () => import('@/views/user/PageProfile.vue'),
       meta: {
         title: 'اطلاعات حساب',
         breadcrumb: [
@@ -170,7 +170,7 @@ export const userRoutes = {
     {
       path: 'orders',
       name: 'user.orders',
-      component: () => import('../views/user/PageOrders.vue'),
+      component: () => import('@/views/user/PageOrders.vue'),
       meta: {
         title: 'مدیریت سفارشات',
         breadcrumb: [
@@ -183,7 +183,7 @@ export const userRoutes = {
     {
       path: 'order/:code([\\d\\w]+)',
       name: 'user.order.detail',
-      component: () => import('../views/user/PageOrderDetail.vue'),
+      component: () => import('@/views/user/PageOrderDetail.vue'),
       meta: {
         title: 'جزئیات سفارش',
         breadcrumb: [
@@ -201,7 +201,7 @@ export const userRoutes = {
     {
       path: 'return-orders',
       name: 'user.return_orders',
-      component: () => import('../views/user/PageReturnOrders.vue'),
+      component: () => import('@/views/user/PageReturnOrders.vue'),
       meta: {
         title: 'مدیریت سفارشات مرجوع شده',
         breadcrumb: [
@@ -214,7 +214,7 @@ export const userRoutes = {
     {
       path: 'return-order/:code([\\d\\w]+)',
       name: 'user.return_order.detail',
-      component: () => import('../views/user/PageReturnOrderDetail.vue'),
+      component: () => import('@/views/user/PageReturnOrderDetail.vue'),
       meta: {
         title: 'جزئیات سفارش مرجوع شده',
         breadcrumb: [
@@ -232,7 +232,7 @@ export const userRoutes = {
     {
       path: 'contacts',
       name: 'user.contacts',
-      component: () => import('../views/user/PageContact.vue'),
+      component: () => import('@/views/user/PageContact.vue'),
       meta: {
         title: 'تماس‌های من',
         breadcrumb: [
@@ -245,7 +245,7 @@ export const userRoutes = {
     {
       path: 'contact/:id(\\d+)',
       name: 'user.contact.detail',
-      component: () => import('../views/user/PageContactDetail.vue'),
+      component: () => import('@/views/user/PageContactDetail.vue'),
       meta: {
         title: 'جزئیات تماس',
         breadcrumb: [
@@ -263,7 +263,7 @@ export const userRoutes = {
     {
       path: 'notifications',
       name: 'user.notifications',
-      component: () => import('../views/user/PageNotifications.vue'),
+      component: () => import('@/views/user/PageNotifications.vue'),
       meta: {
         title: 'اعلانات',
         breadcrumb: [

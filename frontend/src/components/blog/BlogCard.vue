@@ -111,9 +111,9 @@
 
 <script setup>
 import {UserCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
-import BaseLazyImage from "../base/BaseLazyImage.vue";
-import LoaderCardBlog from "../base/loader/LoaderCardBlog.vue";
+import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import LoaderCardBlog from "@/components/base/loader/LoaderCardBlog.vue";
 
 const props = defineProps({
   containerClass: {

@@ -330,20 +330,18 @@
 <script setup>
 import {ref} from "vue";
 import {CheckIcon, ArrowLongLeftIcon, MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseMessage from "../../components/base/BaseMessage.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
+import BaseMessage from "@/components/base/BaseMessage.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
-import PartialBadgeStatusReturnOrder from "../../components/partials/PartialBadgeStatusReturnOrder.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import BaseButton from "../../components/base/BaseButton.vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import BaseSelect from "../../components/base/BaseSelect.vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
+import yup from "@/validation/index.js";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 
 const loading = ref(false)
 

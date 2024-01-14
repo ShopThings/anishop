@@ -72,15 +72,15 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {PaperAirplaneIcon} from "@heroicons/vue/24/outline/index.js";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import VTransitionScaleUp from "../../transitions/VTransitionScaleUp.vue";
-import {useUserAuthStore} from "../../store/StoreUserAuth.js";
+import yup from "@/validation/index.js";
+import VTransitionScaleUp from "@/transitions/VTransitionScaleUp.vue";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useRoute} from "vue-router";
 
 const userStore = useUserAuthStore()

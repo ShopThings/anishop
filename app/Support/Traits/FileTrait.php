@@ -223,7 +223,8 @@ trait FileTrait
             }
 
             foreach ($files as $file) {
-                $fileParts = explode('-', $file);
+                $fileInfo = pathinfo($file);
+                $fileParts = explode('-', $fileInfo['basename']);
                 if (!empty($destinationPathInfo['extension'])) $fileParts[0] = $destinationPathInfo['filename'];
                 $newFile = implode('-', $fileParts);
 
@@ -233,10 +234,10 @@ trait FileTrait
                     $newFile = mb_substr($newFile, 0, $extPos) . $destinationPathInfo['extension'];
                 }
 
-                $from = $sourcePathInfo['dirname'] . '/' . $file;
+                $from = $sourcePathInfo['dirname'] . '/' . $fileInfo['basename'];
                 $to = $destinationPathInfo['dirname'] . '/' . $newFile;
                 if (empty($sourcePathInfo['extension']))
-                    $from = $sourcePath . '/' . $file;
+                    $from = $sourcePath . '/' . $fileInfo['basename'];
                 if (empty($destinationPathInfo['extension']))
                     $to = $destinationPath . '/' . $newFile;
 
@@ -287,7 +288,8 @@ trait FileTrait
             $files = $this->fileExists(filePath: $destinationPath, disk: $disk, getFiles: true, getAllVariants: true);
             if ($operation === FileRepositoryInterface::OPERATION_MOVE) {
                 foreach ($files as $file) {
-                    $fileParts = explode('-', $file);
+                    $fileInfo = pathinfo($file);
+                    $fileParts = explode('-', $fileInfo['basename']);
                     if (!empty($sourcePathInfo['extension'])) $fileParts[0] = $sourcePathInfo['filename'];
                     $oldFile = implode('-', $fileParts);
 
@@ -297,12 +299,12 @@ trait FileTrait
                         $oldFile = mb_substr($oldFile, 0, $extPos) . $sourcePathInfo['extension'];
                     }
 
-                    $from = $destinationPathInfo['dirname'] . '/' . $file;
+                    $from = $destinationPathInfo['dirname'] . '/' . $fileInfo['basename'];
                     $to = $sourcePathInfo['dirname'] . '/' . $oldFile;
                     if (empty($destinationPathInfo['extension']))
-                        $from = $destinationPath . '/' . $file;
+                        $from = $destinationPath . '/' . $fileInfo['basename'];
                     if (empty($sourcePathInfo['extension']))
-                        $to = $sourcePath . '/' . $newFile;
+                        $to = $sourcePath . '/' . $oldFile;
 
                     $diskStorage->move($from, $to);
 
@@ -352,8 +354,12 @@ trait FileTrait
         $fileExt = pathinfo($file, PATHINFO_EXTENSION) ?? null;
 
         // remove from database
-        $fullPath = rtrim($path, '\\/') . '/' . ltrim($file, '\\/');
+        $fullPath = $path . '/' . $file;
         $where = new WhereBuilder('file_manager');
+
+        // to prevent left/right extra slash in case of directory path
+        // to match database records
+        if (empty($fileExt)) $fullPath = trim($fullPath, '/');
 
         if (!empty($fileExt)) {
             $removeFiles = $this->fileExists(
@@ -394,6 +400,7 @@ trait FileTrait
      */
     public function checkPathExists(string $path, string $disk, bool $throw = true): bool
     {
+        $path = $this->getNormalizedPath($path);
         $diskStorage = Storage::disk($disk);
 
         if (!$diskStorage->exists($path) || !is_dir($diskStorage->path($path))) {
@@ -468,7 +475,7 @@ trait FileTrait
             if ('..' === $part) {
                 array_pop($absolutes);
             } else {
-                $absolutes[] = $this->_convertInvalidPathCharacters($part);
+                $absolutes[] = $this->_convertInvalidPathCharacters(trim($part));
             }
         }
 

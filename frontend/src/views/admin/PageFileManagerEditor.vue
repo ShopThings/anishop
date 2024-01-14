@@ -32,10 +32,10 @@
 </template>
 
 <script setup>
-import BaseFileManager from "../../components/base/BaseFileManager.vue";
+import BaseFileManager from "@/components/base/BaseFileManager.vue";
 import {ref} from "vue";
 import {useRoute} from "vue-router";
-import BaseButton from "../../components/base/BaseButton.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {useToast} from "vue-toastification";
 
 const route = useRoute()

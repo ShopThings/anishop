@@ -29,7 +29,7 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseCarousel from "../base/BaseCarousel.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
 
 const carouselSettings = {
   className: 'main-slider',

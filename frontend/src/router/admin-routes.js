@@ -1,5 +1,5 @@
-import {useAdminAuthStore} from "../store/StoreUserAuth.js";
-import {isValidInternalRedirectLink} from "../composables/helper.js";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 export const adminRoutes = {
   path: '/admin',
@@ -7,7 +7,7 @@ export const adminRoutes = {
     {
       path: 'login',
       name: 'admin.login',
-      component: () => import('../views/admin/PageLogin.vue'),
+      component: () => import('@/views/admin/PageLogin.vue'),
       meta: {
         layout: 'layout-empty',
       },
@@ -35,7 +35,7 @@ export const adminRoutes = {
       path: 'home',
       alias: [''],
       name: 'admin.home',
-      component: () => import('../views/admin/PageHome.vue'),
+      component: () => import('@/views/admin/PageHome.vue'),
     },
     {
       path: 'users',
@@ -43,7 +43,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.users',
-          component: () => import('../views/admin/user/PageUsers.vue'),
+          component: () => import('@/views/admin/user/PageUsers.vue'),
           meta: {
             title: 'مدیریت کاربران',
             breadcrumb: [
@@ -56,7 +56,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.user.add',
-          component: () => import('../views/admin/user/PageUserAdd.vue'),
+          component: () => import('@/views/admin/user/PageUserAdd.vue'),
           meta: {
             title: 'افزودن کاربر',
             breadcrumb: [
@@ -80,7 +80,7 @@ export const adminRoutes = {
           path: 'profile',
           alias: [''],
           name: 'admin.user.profile',
-          component: () => import('../views/admin/user/PageUserProfile.vue'),
+          component: () => import('@/views/admin/user/PageUserProfile.vue'),
           meta: {
             title: 'پروفایل کاربر',
             breadcrumb: [
@@ -97,7 +97,7 @@ export const adminRoutes = {
         {
           path: 'addresses',
           name: 'admin.user.addresses',
-          component: () => import('../views/admin/user/PageUserAddresses.vue'),
+          component: () => import('@/views/admin/user/PageUserAddresses.vue'),
           meta: {
             title: 'آدرس‌های کاربر',
             breadcrumb: [
@@ -119,7 +119,7 @@ export const adminRoutes = {
         {
           path: 'purchases',
           name: 'admin.user.purchases',
-          component: () => import('../views/admin/user/PageUserPurchases.vue'),
+          component: () => import('@/views/admin/user/PageUserPurchases.vue'),
           meta: {
             title: 'سفارشات کاربر',
             breadcrumb: [
@@ -141,7 +141,7 @@ export const adminRoutes = {
         {
           path: 'carts',
           name: 'admin.user.carts',
-          component: () => import('../views/admin/user/PageUserCarts.vue'),
+          component: () => import('@/views/admin/user/PageUserCarts.vue'),
           meta: {
             title: 'سبد خرید کاربر',
             breadcrumb: [
@@ -163,7 +163,7 @@ export const adminRoutes = {
         {
           path: 'favorite-products',
           name: 'admin.user.favorite_products',
-          component: () => import('../views/admin/user/PageUserFavoriteProducts.vue'),
+          component: () => import('@/views/admin/user/PageUserFavoriteProducts.vue'),
           meta: {
             title: 'محصولات مورد علاقه کاربر',
             breadcrumb: [
@@ -191,7 +191,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.payment_methods',
-          component: () => import('../views/admin/PagePaymentMethods.vue'),
+          component: () => import('@/views/admin/PagePaymentMethods.vue'),
           meta: {
             title: 'روش‌های پرداخت',
             breadcrumb: [
@@ -204,7 +204,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.payment_method.add',
-          component: () => import('../views/admin/PagePaymentMethodAdd.vue'),
+          component: () => import('@/views/admin/PagePaymentMethodAdd.vue'),
           meta: {
             title: 'ایجاد روش پرداخت',
             breadcrumb: [
@@ -223,7 +223,7 @@ export const adminRoutes = {
     {
       path: 'payment-method/:id(\\d+)',
       name: 'admin.payment_method.edit',
-      component: () => import('../views/admin/PagePaymentMethodEdit.vue'),
+      component: () => import('@/views/admin/PagePaymentMethodEdit.vue'),
       meta: {
         title: 'ویرایش روش پرداخت',
         breadcrumb: [
@@ -244,7 +244,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.colors',
-          component: () => import('../views/admin/product/PageColors.vue'),
+          component: () => import('@/views/admin/product/PageColors.vue'),
           meta: {
             title: 'مدیریت رنگ‌ها',
             breadcrumb: [
@@ -257,7 +257,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.color.add',
-          component: () => import('../views/admin/product/PageColorAdd.vue'),
+          component: () => import('@/views/admin/product/PageColorAdd.vue'),
           meta: {
             title: 'افزودن رنگ',
             breadcrumb: [
@@ -276,7 +276,7 @@ export const adminRoutes = {
     {
       path: 'color/:id(\\d+)',
       name: 'admin.color.edit',
-      component: () => import('../views/admin/product/PageColorEdit.vue'),
+      component: () => import('@/views/admin/product/PageColorEdit.vue'),
       meta: {
         title: 'ویرایش رنگ',
         breadcrumb: [
@@ -297,7 +297,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.brands',
-          component: () => import('../views/admin/product/PageBrands.vue'),
+          component: () => import('@/views/admin/product/PageBrands.vue'),
           meta: {
             title: 'مدیریت برندها',
             breadcrumb: [
@@ -310,7 +310,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.brand.add',
-          component: () => import('../views/admin/product/PageBrandAdd.vue'),
+          component: () => import('@/views/admin/product/PageBrandAdd.vue'),
           meta: {
             title: 'ایجاد برند',
             breadcrumb: [
@@ -329,7 +329,7 @@ export const adminRoutes = {
     {
       path: 'brand/:id(\\d+)',
       name: 'admin.brand.edit',
-      component: () => import('../views/admin/product/PageBrandEdit.vue'),
+      component: () => import('@/views/admin/product/PageBrandEdit.vue'),
       meta: {
         title: 'ویرایش برند',
         breadcrumb: [
@@ -350,7 +350,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.categories',
-          component: () => import('../views/admin/product/PageCategories.vue'),
+          component: () => import('@/views/admin/product/PageCategories.vue'),
           meta: {
             title: 'مدیریت دسته‌بندی‌ها',
             breadcrumb: [
@@ -363,7 +363,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.category.add',
-          component: () => import('../views/admin/product/PageCategoryAdd.vue'),
+          component: () => import('@/views/admin/product/PageCategoryAdd.vue'),
           meta: {
             title: 'افزودن دسته‌بندی',
             breadcrumb: [
@@ -380,7 +380,7 @@ export const adminRoutes = {
         {
           path: 'image',
           name: 'admin.category_images',
-          component: () => import('../views/admin/product/PageCategoryImages.vue'),
+          component: () => import('@/views/admin/product/PageCategoryImages.vue'),
           meta: {
             title: 'تصاویر دسته‌بندی‌ها',
             breadcrumb: [
@@ -399,7 +399,7 @@ export const adminRoutes = {
     {
       path: 'category/:id(\\d+)',
       name: 'admin.category.edit',
-      component: () => import('../views/admin/product/PageCategoryEdit.vue'),
+      component: () => import('@/views/admin/product/PageCategoryEdit.vue'),
       meta: {
         title: 'ویرایش دسته‌بندی',
         breadcrumb: [
@@ -420,7 +420,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.festivals',
-          component: () => import('../views/admin/shop/PageFestivals.vue'),
+          component: () => import('@/views/admin/shop/PageFestivals.vue'),
           meta: {
             title: 'مدیریت جشنواره‌ها',
             breadcrumb: [
@@ -433,7 +433,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.festival.add',
-          component: () => import('../views/admin/shop/PageFestivalAdd.vue'),
+          component: () => import('@/views/admin/shop/PageFestivalAdd.vue'),
           meta: {
             title: 'ایجاد جشنواره',
             breadcrumb: [
@@ -455,7 +455,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.festival.edit',
-          component: () => import('../views/admin/shop/PageFestivalEdit.vue'),
+          component: () => import('@/views/admin/shop/PageFestivalEdit.vue'),
           meta: {
             title: 'ویرایش جشنواره',
             breadcrumb: [
@@ -472,7 +472,7 @@ export const adminRoutes = {
         {
           path: 'products',
           name: 'admin.festival.products',
-          component: () => import('../views/admin/shop/PageFestivalProducts.vue'),
+          component: () => import('@/views/admin/shop/PageFestivalProducts.vue'),
           meta: {
             title: 'ویرایش محصولات جشنواره',
             breadcrumb: [
@@ -495,7 +495,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.units',
-          component: () => import('../views/admin/product/PageUnits.vue'),
+          component: () => import('@/views/admin/product/PageUnits.vue'),
           meta: {
             title: 'مدیریت واحد محصول',
             breadcrumb: [
@@ -508,7 +508,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.unit.add',
-          component: () => import('../views/admin/product/PageUnitAdd.vue'),
+          component: () => import('@/views/admin/product/PageUnitAdd.vue'),
           meta: {
             title: 'افزودن واحد محصول',
             breadcrumb: [
@@ -527,7 +527,7 @@ export const adminRoutes = {
     {
       path: 'unit/:id(\\d+)',
       name: 'admin.unit.edit',
-      component: () => import('../views/admin/product/PageUnitEdit.vue'),
+      component: () => import('@/views/admin/product/PageUnitEdit.vue'),
       meta: {
         title: 'ویرایش واحد',
         breadcrumb: [
@@ -548,7 +548,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.coupons',
-          component: () => import('../views/admin/shop/PageCoupons.vue'),
+          component: () => import('@/views/admin/shop/PageCoupons.vue'),
           meta: {
             title: 'مدیریت کوپن‌های تخفیف',
             breadcrumb: [
@@ -561,7 +561,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.coupon.add',
-          component: () => import('../views/admin/shop/PageCouponAdd.vue'),
+          component: () => import('@/views/admin/shop/PageCouponAdd.vue'),
           meta: {
             title: 'ایجاد کوپن تخفیف',
             breadcrumb: [
@@ -580,7 +580,7 @@ export const adminRoutes = {
     {
       path: 'coupon/:id(\\d+)',
       name: 'admin.coupon.edit',
-      component: () => import('../views/admin/shop/PageCouponEdit.vue'),
+      component: () => import('@/views/admin/shop/PageCouponEdit.vue'),
       meta: {
         title: 'ویرایش کوپن',
         breadcrumb: [
@@ -601,7 +601,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.products',
-          component: () => import('../views/admin/product/PageProducts.vue'),
+          component: () => import('@/views/admin/product/PageProducts.vue'),
           meta: {
             title: 'مدیریت محصولات',
             breadcrumb: [
@@ -614,7 +614,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.product.add',
-          component: () => import('../views/admin/product/PageProductAdd.vue'),
+          component: () => import('@/views/admin/product/PageProductAdd.vue'),
           meta: {
             title: 'ایجاد محصول',
             breadcrumb: [
@@ -634,7 +634,7 @@ export const adminRoutes = {
             {
               path: 'change-price',
               name: 'admin.products.change.price',
-              component: () => import('../views/admin/product/PageProductMultipleChangePrice.vue'),
+              component: () => import('@/views/admin/product/PageProductMultipleChangePrice.vue'),
               meta: {
                 title: 'تغییر دسته‌جمعی قیمت محصولات',
                 breadcrumb: [
@@ -651,7 +651,7 @@ export const adminRoutes = {
             {
               path: 'change-info',
               name: 'admin.products.change.info',
-              component: () => import('../views/admin/product/PageProductMultipleChangeInfo.vue'),
+              component: () => import('@/views/admin/product/PageProductMultipleChangeInfo.vue'),
               meta: {
                 title: 'تغییر دسته‌جمعی مشخصات محصولات',
                 breadcrumb: [
@@ -673,7 +673,7 @@ export const adminRoutes = {
             {
               path: '',
               name: 'admin.search.attrs',
-              component: () => import('../views/admin/product/PageSearchAttributes.vue'),
+              component: () => import('@/views/admin/product/PageSearchAttributes.vue'),
               meta: {
                 title: 'ویژگی‌های جستجو',
                 breadcrumb: [
@@ -686,7 +686,7 @@ export const adminRoutes = {
             {
               path: 'new',
               name: 'admin.search.attr.add',
-              component: () => import('../views/admin/product/PageAttributeAdd.vue'),
+              component: () => import('@/views/admin/product/PageAttributeAdd.vue'),
               meta: {
                 title: 'ایجاد ویژگی جستجو',
                 breadcrumb: [
@@ -708,7 +708,7 @@ export const adminRoutes = {
             {
               path: '',
               name: 'admin.search.attrs.categories',
-              component: () => import('../views/admin/product/PageAttributeCategories.vue'),
+              component: () => import('@/views/admin/product/PageAttributeCategories.vue'),
               meta: {
                 title: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
                 breadcrumb: [
@@ -725,7 +725,7 @@ export const adminRoutes = {
             {
               path: 'new',
               name: 'admin.search.attr.category.add',
-              component: () => import('../views/admin/product/PageAttributeCategoryAdd.vue'),
+              component: () => import('@/views/admin/product/PageAttributeCategoryAdd.vue'),
               meta: {
                 title: 'تخصیص ویژگی جستجو به دسته‌بندی',
                 breadcrumb: [
@@ -753,7 +753,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.product.edit',
-          component: () => import('../views/admin/product/PageProductEdit.vue'),
+          component: () => import('@/views/admin/product/PageProductEdit.vue'),
           meta: {
             title: 'ویرایش محصول',
             breadcrumb: [
@@ -770,7 +770,7 @@ export const adminRoutes = {
         {
           path: 'detail',
           name: 'admin.product.detail',
-          component: () => import('../views/admin/product/PageProductDetail.vue'),
+          component: () => import('@/views/admin/product/PageProductDetail.vue'),
           meta: {
             title: 'جزئیات محصول',
             breadcrumb: [
@@ -787,7 +787,7 @@ export const adminRoutes = {
         {
           path: 'attribute',
           name: 'admin.product.attrs.edit',
-          component: () => import('../views/admin/product/PageProductAttributeEdit.vue'),
+          component: () => import('@/views/admin/product/PageProductAttributeEdit.vue'),
           meta: {
             title: 'ویرایش ویژگی جستجو محصول',
             breadcrumb: [
@@ -804,7 +804,7 @@ export const adminRoutes = {
         {
           path: 'comments',
           name: 'admin.product.comments',
-          component: () => import('../views/admin/product/PageProductComments.vue'),
+          component: () => import('@/views/admin/product/PageProductComments.vue'),
           meta: {
             title: 'دیدگاه‌های محصول',
             breadcrumb: [
@@ -821,7 +821,7 @@ export const adminRoutes = {
         {
           path: 'comment/:detail(\\d+)',
           name: 'admin.product.comment.detail',
-          component: () => import('../views/admin/product/PageProductCommentDetail.vue'),
+          component: () => import('@/views/admin/product/PageProductCommentDetail.vue'),
           meta: {
             title: 'جزئیات دیدگاه محصول',
             breadcrumb: [
@@ -849,7 +849,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.search.attr.edit',
-          component: () => import('../views/admin/product/PageAttributeEdit.vue'),
+          component: () => import('@/views/admin/product/PageAttributeEdit.vue'),
           meta: {
             title: 'ویرایش ویژگی جستجو',
             breadcrumb: [
@@ -866,7 +866,7 @@ export const adminRoutes = {
         {
           path: 'values',
           name: 'admin.search.attr.values',
-          component: () => import('../views/admin/product/PageSearchAttributesValues.vue'),
+          component: () => import('@/views/admin/product/PageSearchAttributesValues.vue'),
           meta: {
             title: 'مقادیر ویژگی‌های جستجو',
             breadcrumb: [
@@ -883,7 +883,7 @@ export const adminRoutes = {
         {
           path: 'values/new',
           name: 'admin.search.attr.value.new',
-          component: () => import('../views/admin/product/PageSearchAttributeValueAdd.vue'),
+          component: () => import('@/views/admin/product/PageSearchAttributeValueAdd.vue'),
           meta: {
             title: 'ایجاد مقدار ویژگی جستجو',
             breadcrumb: [
@@ -908,7 +908,7 @@ export const adminRoutes = {
     {
       path: 'attribute/category/:id(\\d+)',
       name: 'admin.search.attr.category.edit',
-      component: () => import('../views/admin/product/PageAttributeCategoryEdit.vue'),
+      component: () => import('@/views/admin/product/PageAttributeCategoryEdit.vue'),
       meta: {
         title: 'ویرایش تخصیص ویژگی جستجو به دسته‌بندی',
         breadcrumb: [
@@ -930,7 +930,7 @@ export const adminRoutes = {
     {
       path: 'attribute/:id(\\d+)/value/:val(\\d+)',
       name: 'admin.search.attr.value.edit',
-      component: () => import('../views/admin/product/PageSearchAttributeValueEdit.vue'),
+      component: () => import('@/views/admin/product/PageSearchAttributeValueEdit.vue'),
       meta: {
         title: 'ویرایش مقدار ویژگی جستجو',
         breadcrumb: [
@@ -956,7 +956,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.orders',
-          component: () => import('../views/admin/order/PageOrders.vue'),
+          component: () => import('@/views/admin/order/PageOrders.vue'),
           meta: {
             title: 'مدیریت سفارشات',
             breadcrumb: [
@@ -969,7 +969,7 @@ export const adminRoutes = {
         {
           path: 'badges',
           name: 'admin.orders.badges',
-          component: () => import('../views/admin/order/PageOrdersBadges.vue'),
+          component: () => import('@/views/admin/order/PageOrdersBadges.vue'),
           meta: {
             title: 'مدیریت برچسب سفارشات',
             breadcrumb: [
@@ -982,7 +982,7 @@ export const adminRoutes = {
         {
           path: 'badges/new',
           name: 'admin.order.badge.add',
-          component: () => import('../views/admin/order/PageOrderBadgeAdd.vue'),
+          component: () => import('@/views/admin/order/PageOrderBadgeAdd.vue'),
           meta: {
             title: 'افزودن برچسب سفارش',
             breadcrumb: [
@@ -1009,7 +1009,7 @@ export const adminRoutes = {
           path: '',
           name: 'admin.order.detail',
           alias: ['detail'],
-          component: () => import('../views/admin/order/PageOrderDetail.vue'),
+          component: () => import('@/views/admin/order/PageOrderDetail.vue'),
           meta: {
             title: 'جزئیات سفارش',
             breadcrumb: [
@@ -1026,7 +1026,7 @@ export const adminRoutes = {
         {
           path: 'badge',
           name: 'admin.order.badge.edit',
-          component: () => import('../views/admin/order/PageOrderBadgeEdit.vue'),
+          component: () => import('@/views/admin/order/PageOrderBadgeEdit.vue'),
           meta: {
             title: 'ویرایش برچسب سفارش',
             breadcrumb: [
@@ -1050,7 +1050,7 @@ export const adminRoutes = {
     {
       path: 'return-orders',
       name: 'admin.return_orders',
-      component: () => import('../views/admin/order/PageReturnOrders.vue'),
+      component: () => import('@/views/admin/order/PageReturnOrders.vue'),
       meta: {
         title: 'مدیریت سفارشات مرجوعی',
         breadcrumb: [
@@ -1063,7 +1063,7 @@ export const adminRoutes = {
     {
       path: 'return-order/:id([\\d\\w]+|\\d+)',
       name: 'admin.return_order.detail',
-      component: () => import('../views/admin/order/PageReturnOrderDetail.vue'),
+      component: () => import('@/views/admin/order/PageReturnOrderDetail.vue'),
       meta: {
         title: 'جزئیات سفارش مرجوعی',
         breadcrumb: [
@@ -1084,7 +1084,7 @@ export const adminRoutes = {
         {
           path: 'users',
           name: 'admin.report.users',
-          component: () => import('../views/admin/report/PageReportUsers.vue'),
+          component: () => import('@/views/admin/report/PageReportUsers.vue'),
           meta: {
             title: 'گزارش‌گیری از کاربران',
             breadcrumb: [
@@ -1097,7 +1097,7 @@ export const adminRoutes = {
         {
           path: 'products',
           name: 'admin.report.products',
-          component: () => import('../views/admin/report/PageReportProducts.vue'),
+          component: () => import('@/views/admin/report/PageReportProducts.vue'),
           meta: {
             title: 'گزارش‌گیری از محصولات',
             breadcrumb: [
@@ -1110,7 +1110,7 @@ export const adminRoutes = {
         {
           path: 'orders',
           name: 'admin.report.orders',
-          component: () => import('../views/admin/report/PageReportOrders.vue'),
+          component: () => import('@/views/admin/report/PageReportOrders.vue'),
           meta: {
             title: 'گزارش‌گیری از سفارشات',
             breadcrumb: [
@@ -1129,7 +1129,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.blogs',
-          component: () => import('../views/admin/page/PageBlogs.vue'),
+          component: () => import('@/views/admin/page/PageBlogs.vue'),
           meta: {
             title: 'مدیریت بلاگ‌ها',
             breadcrumb: [
@@ -1142,7 +1142,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.blog.add',
-          component: () => import('../views/admin/page/PageBlogAdd.vue'),
+          component: () => import('@/views/admin/page/PageBlogAdd.vue'),
           meta: {
             title: 'ایجاد بلاگ',
             breadcrumb: [
@@ -1159,7 +1159,7 @@ export const adminRoutes = {
         {
           path: 'badges',
           name: 'admin.blogs.badges',
-          component: () => import('../views/admin/page/PageBlogsBadges.vue'),
+          component: () => import('@/views/admin/page/PageBlogsBadges.vue'),
           meta: {
             title: 'برچسب دیدگاه‌ها',
             breadcrumb: [
@@ -1176,7 +1176,7 @@ export const adminRoutes = {
         {
           path: 'badges/new',
           name: 'admin.blog.badge.add',
-          component: () => import('../views/admin/page/PageBlogBadgeAdd.vue'),
+          component: () => import('@/views/admin/page/PageBlogBadgeAdd.vue'),
           meta: {
             title: 'افزودن برچسب دیدگاه',
             breadcrumb: [
@@ -1197,7 +1197,7 @@ export const adminRoutes = {
         {
           path: 'categories',
           name: 'admin.blogs.categories',
-          component: () => import('../views/admin/page/PageBlogsCategories.vue'),
+          component: () => import('@/views/admin/page/PageBlogsCategories.vue'),
           meta: {
             title: 'مدیریت دسته‌بندی‌های بلاگ',
             breadcrumb: [
@@ -1210,7 +1210,7 @@ export const adminRoutes = {
         {
           path: 'categories/new',
           name: 'admin.blog.category.add',
-          component: () => import('../views/admin/page/PageBlogCategoryAdd.vue'),
+          component: () => import('@/views/admin/page/PageBlogCategoryAdd.vue'),
           meta: {
             title: 'افزودن دسته‌بندی بلاگ',
             breadcrumb: [
@@ -1232,7 +1232,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.blog.edit',
-          component: () => import('../views/admin/page/PageBlogEdit.vue'),
+          component: () => import('@/views/admin/page/PageBlogEdit.vue'),
           meta: {
             title: 'ویرایش بلاگ',
             breadcrumb: [
@@ -1249,7 +1249,7 @@ export const adminRoutes = {
         {
           path: 'badge',
           name: 'admin.blog.badge.edit',
-          component: () => import('../views/admin/page/PageBlogBadgeEdit.vue'),
+          component: () => import('@/views/admin/page/PageBlogBadgeEdit.vue'),
           meta: {
             title: 'ویرایش برچسب دیدگاه بلاگ',
             breadcrumb: [
@@ -1270,7 +1270,7 @@ export const adminRoutes = {
         {
           path: 'category',
           name: 'admin.blog.category.edit',
-          component: () => import('../views/admin/page/PageBlogCategoryEdit.vue'),
+          component: () => import('@/views/admin/page/PageBlogCategoryEdit.vue'),
           meta: {
             title: 'ویرایش دسته‌بندی بلاگ',
             breadcrumb: [
@@ -1290,7 +1290,7 @@ export const adminRoutes = {
             {
               path: '',
               name: 'admin.blog.comments',
-              component: () => import('../views/admin/page/PageBlogComments.vue'),
+              component: () => import('@/views/admin/page/PageBlogComments.vue'),
               meta: {
                 title: 'دیدگاه‌های بلاگ',
                 breadcrumb: [
@@ -1307,7 +1307,7 @@ export const adminRoutes = {
             {
               path: ':detail(\\d+)',
               name: 'admin.blog.comment.detail',
-              component: () => import('../views/admin/page/PageBlogCommentDetail.vue'),
+              component: () => import('@/views/admin/page/PageBlogCommentDetail.vue'),
               meta: {
                 title: 'جزئیات دیدگاه',
                 breadcrumb: [
@@ -1336,7 +1336,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.static_pages',
-          component: () => import('../views/admin/page/PageStaticPages.vue'),
+          component: () => import('@/views/admin/page/PageStaticPages.vue'),
           meta: {
             title: 'مدیریت صفحات ایستا',
             breadcrumb: [
@@ -1349,7 +1349,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.static_page.add',
-          component: () => import('../views/admin/page/PageStaticPageAdd.vue'),
+          component: () => import('@/views/admin/page/PageStaticPageAdd.vue'),
           meta: {
             title: 'ایجاد صفحه ایستا',
             breadcrumb: [
@@ -1368,7 +1368,7 @@ export const adminRoutes = {
     {
       path: 'static-page/:id(\\d+)',
       name: 'admin.static_page.edit',
-      component: () => import('../views/admin/page/PageStaticPageEdit.vue'),
+      component: () => import('@/views/admin/page/PageStaticPageEdit.vue'),
       meta: {
         title: 'ویرایش صفحه ایستا',
         breadcrumb: [
@@ -1386,7 +1386,7 @@ export const adminRoutes = {
     {
       path: 'contacts',
       name: 'admin.contacts',
-      component: () => import('../views/admin/PageContacts.vue'),
+      component: () => import('@/views/admin/PageContacts.vue'),
       meta: {
         title: 'تماس‌ها',
         breadcrumb: [
@@ -1400,7 +1400,7 @@ export const adminRoutes = {
       path: 'contact/:id(\\d+)',
       name: 'admin.contact.detail',
       alias: ['contact/:id(\\d+)/detail'],
-      component: () => import('../views/admin/PageContactDetail.vue'),
+      component: () => import('@/views/admin/PageContactDetail.vue'),
       meta: {
         title: 'جزئیات تماس',
         breadcrumb: [
@@ -1418,7 +1418,7 @@ export const adminRoutes = {
     {
       path: 'complaints',
       name: 'admin.complaints',
-      component: () => import('../views/admin/PageComplaints.vue'),
+      component: () => import('@/views/admin/PageComplaints.vue'),
       meta: {
         title: 'شکایات',
         breadcrumb: [
@@ -1432,7 +1432,7 @@ export const adminRoutes = {
       path: 'complaint/:id(\\d+)',
       name: 'admin.complaint.detail',
       alias: ['/admin/complaint/:id(\\d+)/detail'],
-      component: () => import('../views/admin/PageComplaintDetail.vue'),
+      component: () => import('@/views/admin/PageComplaintDetail.vue'),
       meta: {
         title: 'جزئیات شکایت',
         breadcrumb: [
@@ -1453,7 +1453,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.faqs',
-          component: () => import('../views/admin/PageFaqs.vue'),
+          component: () => import('@/views/admin/PageFaqs.vue'),
           meta: {
             title: 'سؤالات متداول',
             breadcrumb: [
@@ -1466,7 +1466,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.faq.add',
-          component: () => import('../views/admin/PageFaqAdd.vue'),
+          component: () => import('@/views/admin/PageFaqAdd.vue'),
           meta: {
             title: 'افزودن سؤال',
             breadcrumb: [
@@ -1485,7 +1485,7 @@ export const adminRoutes = {
     {
       path: 'faq/:id(\\d+)',
       name: 'admin.faq.edit',
-      component: () => import('../views/admin/PageFaqEdit.vue'),
+      component: () => import('@/views/admin/PageFaqEdit.vue'),
       meta: {
         title: 'ویرایش سؤال',
         breadcrumb: [
@@ -1503,7 +1503,7 @@ export const adminRoutes = {
     {
       path: 'newsletters',
       name: 'admin.newsletters',
-      component: () => import('../views/admin/PageNewsletters.vue'),
+      component: () => import('@/views/admin/PageNewsletters.vue'),
       meta: {
         title: 'کاربران خبرنامه',
         breadcrumb: [
@@ -1520,7 +1520,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.sliders',
-          component: () => import('../views/admin/other/PageSliders.vue'),
+          component: () => import('@/views/admin/other/PageSliders.vue'),
           meta: {
             title: 'مدیریت اسلایدرها',
             breadcrumb: [
@@ -1533,7 +1533,7 @@ export const adminRoutes = {
         {
           path: 'new',
           name: 'admin.slider.add',
-          component: () => import('../views/admin/other/PageSliderAdd.vue'),
+          component: () => import('@/views/admin/other/PageSliderAdd.vue'),
           meta: {
             title: 'افزودن اسلایدر',
             breadcrumb: [
@@ -1555,7 +1555,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.slider.edit',
-          component: () => import('../views/admin/other/PageSliderEdit.vue'),
+          component: () => import('@/views/admin/other/PageSliderEdit.vue'),
           meta: {
             title: 'ویرایش اسلایدر',
             breadcrumb: [
@@ -1572,7 +1572,7 @@ export const adminRoutes = {
         {
           path: 'slides',
           name: 'admin.slider.slides.edit',
-          component: () => import('../views/admin/other/PageSliderSlidesEdit.vue'),
+          component: () => import('@/views/admin/other/PageSliderSlidesEdit.vue'),
           meta: {
             title: 'ویرایش اسلایدها',
             breadcrumb: [
@@ -1595,7 +1595,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.menus',
-          component: () => import('../views/admin/other/PageMenus.vue'),
+          component: () => import('@/views/admin/other/PageMenus.vue'),
           meta: {
             title: 'مدیریت منوها',
             breadcrumb: [
@@ -1610,7 +1610,7 @@ export const adminRoutes = {
     {
       path: 'menu/:id(\\d+)',
       name: 'admin.menu.edit',
-      component: () => import('../views/admin/other/PageMenuEdit.vue'),
+      component: () => import('@/views/admin/other/PageMenuEdit.vue'),
       meta: {
         title: 'ویرایش منو',
         breadcrumb: [
@@ -1634,7 +1634,7 @@ export const adminRoutes = {
             {
               path: '',
               name: 'admin.post_prices.cities',
-              component: () => import('../views/admin/other/PagePostPricesCities.vue'),
+              component: () => import('@/views/admin/other/PagePostPricesCities.vue'),
               meta: {
                 title: 'مدیریت هزینه ارسال شهرستان',
                 breadcrumb: [
@@ -1647,7 +1647,7 @@ export const adminRoutes = {
             {
               path: 'new',
               name: 'admin.post_price.city.add',
-              component: () => import('../views/admin/other/PagePostPriceCityAdd.vue'),
+              component: () => import('@/views/admin/other/PagePostPriceCityAdd.vue'),
               meta: {
                 title: 'افزودن هزینه ارسال شهرستان',
                 breadcrumb: [
@@ -1670,7 +1670,7 @@ export const adminRoutes = {
             {
               path: '',
               name: 'admin.post_prices.weights',
-              component: () => import('../views/admin/other/PagePostPricesWeights.vue'),
+              component: () => import('@/views/admin/other/PagePostPricesWeights.vue'),
               meta: {
                 title: 'هزینه ارسال بر حسب وزن',
                 breadcrumb: [
@@ -1683,7 +1683,7 @@ export const adminRoutes = {
             {
               path: 'new',
               name: 'admin.post_price.weight.add',
-              component: () => import('../views/admin/other/PagePostPriceWeightAdd.vue'),
+              component: () => import('@/views/admin/other/PagePostPriceWeightAdd.vue'),
               meta: {
                 title: 'افزودن هزینه ارسال بر حسب وزن',
                 breadcrumb: [
@@ -1707,7 +1707,7 @@ export const adminRoutes = {
         {
           path: 'city',
           name: 'admin.post_price.city.edit',
-          component: () => import('../views/admin/other/PagePostPriceCityEdit.vue'),
+          component: () => import('@/views/admin/other/PagePostPriceCityEdit.vue'),
           meta: {
             title: 'ویرایش هزینه ارسال شهرستان',
             breadcrumb: [
@@ -1724,7 +1724,7 @@ export const adminRoutes = {
         {
           path: 'weight',
           name: 'admin.post_price.weight.edit',
-          component: () => import('../views/admin/other/PagePostPriceWeightEdit.vue'),
+          component: () => import('@/views/admin/other/PagePostPriceWeightEdit.vue'),
           meta: {
             title: 'ویرایش هزینه ارسال بر حسب وزن',
             breadcrumb: [
@@ -1744,7 +1744,7 @@ export const adminRoutes = {
     {
       path: 'file-manager',
       name: 'admin.file_manager',
-      component: () => import('../views/admin/PageFileManager.vue'),
+      component: () => import('@/views/admin/PageFileManager.vue'),
       meta: {
         title: 'مدیریت فایل‌ها',
         breadcrumb: [
@@ -1758,7 +1758,7 @@ export const adminRoutes = {
     {
       path: 'guides',
       name: 'admin.guides',
-      component: () => import('../views/admin/PageGuides.vue'),
+      component: () => import('@/views/admin/PageGuides.vue'),
       meta: {
         title: 'راهنما',
         breadcrumb: [
@@ -1772,7 +1772,7 @@ export const adminRoutes = {
     {
       path: 'settings',
       name: 'admin.settings',
-      component: () => import('../views/admin/PageSettings.vue'),
+      component: () => import('@/views/admin/PageSettings.vue'),
       meta: {
         title: 'مدیریت تنظیمات',
         breadcrumb: [

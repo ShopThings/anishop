@@ -115,25 +115,23 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import BaseInput from "../../components/base/BaseInput.vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
+import yup from "@/validation/index.js";
+import BaseInput from "@/components/base/BaseInput.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {
   CheckIcon,
   ArrowLeftCircleIcon,
   DevicePhoneMobileIcon,
   HashtagIcon,
 } from "@heroicons/vue/24/outline/index.js";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
-import PartialInputErrorMessage from "../../components/partials/PartialInputErrorMessage.vue";
-import BaseSelect from "../../components/base/BaseSelect.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import {useRequest} from "../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 

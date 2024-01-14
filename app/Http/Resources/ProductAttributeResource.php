@@ -24,8 +24,8 @@ class ProductAttributeResource extends JsonResource
                 'text' => ProductAttributeTypesEnum::getTranslations($this->type),
                 'value' => $this->type,
             ],
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
-            'updated_by' => new UserShowResource($this->when($this->updated_by, $this->updater())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

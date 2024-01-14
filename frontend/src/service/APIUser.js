@@ -1,6 +1,6 @@
-import {apiReplaceParams, apiRoutes} from "../router/api-routes.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {GenericAPI} from "./ServiceAPIs.js";
-import {useRequest} from "../composables/api-request.js";
+import {useRequest} from "@/composables/api-request.js";
 
 export const UserAPI = Object.assign(
   GenericAPI(apiRoutes.admin.users, {replacement: 'user'}),
@@ -20,21 +20,20 @@ export const UserAddressAPI = {
 }
 
 export const UserFavoriteProductAPI = {
-  fetchAll(userId, callbacks) {
+  fetchAll(userId, params, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.users.favoriteProducts, {user: userId}),
-      null,
-      null,
+      {params},
       callbacks
     )
   }
 }
 
 export const UserPurchaseAPI = {
-  fetchAll(userId, callbacks) {
+  fetchAll(userId, params, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.users.purchases, {user: userId}),
-      null,
+      {params},
       callbacks
     )
   }

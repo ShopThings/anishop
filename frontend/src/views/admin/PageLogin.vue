@@ -301,19 +301,19 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseInput from '../../components/base/BaseInput.vue';
-import BaseButton from "../../components/base/BaseButton.vue";
-import VCaptcha from "../../components/base/VCaptcha.vue";
+import BaseInput from '@/components/base/BaseInput.vue';
+import BaseButton from "@/components/base/BaseButton.vue";
+import VCaptcha from "@/components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from '@heroicons/vue/24/solid';
 import {UserCircleIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline';
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {useRoute, useRouter} from "vue-router";
-import BaseMessage from "../../components/base/BaseMessage.vue";
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
-import yup from '../../validation/index.js';
+import BaseMessage from "@/components/base/BaseMessage.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import yup from '@/validation/index.js';
 import {useForm} from "vee-validate";
-import {useAdminAuthStore} from "../../store/StoreUserAuth.js";
-import {isValidInternalRedirectLink} from "../../composables/helper.js";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 const captchaKey = ref(null)
 const err = reactive({})

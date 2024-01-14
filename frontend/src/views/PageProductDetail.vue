@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import ProductDetail from "../components/product/ProductDetail.vue";
-import AppNewsletter from "../components/AppNewsletter.vue";
+import ProductDetail from "@/components/product/ProductDetail.vue";
+import AppNewsletter from "@/components/AppNewsletter.vue";
 
 </script>

@@ -93,11 +93,11 @@
       <base-animated-button
         type="submit"
         class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-        :disabled="isSubmitting"
+        :disabled="!canSubmit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="isSubmitting"
+            v-if="!canSubmit"
             main-container-klass="absolute w-full h-full top-0 left-0"
             big-circle-color="border-transparent"
           />
@@ -115,20 +115,21 @@
 
 <script setup>
 import {ArrowLeftCircleIcon, CheckIcon, HashtagIcon, UserIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseSelectSearchable from "../../../../components/base/BaseSelectSearchable.vue";
-import PartialInputErrorMessage from "../../../../components/partials/PartialInputErrorMessage.vue";
-import LoaderCircle from "../../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../../transitions/VTransitionFade.vue";
-import BaseInput from "../../../../components/base/BaseInput.vue";
-import BaseAnimatedButton from "../../../../components/base/BaseAnimatedButton.vue";
-import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
-import yup, {transformNumbersToEnglish} from "../../../../validation/index.js";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import {RoleAPI} from "../../../../service/APIRole.js";
-import {UserAPI} from "../../../../service/APIUser.js";
+import {RoleAPI} from "@/service/APIRole.js";
+import {UserAPI} from "@/service/APIUser.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
 
 const props = defineProps({
   user: {
@@ -162,11 +163,8 @@ const initialRoles = computed({
 
 const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  return route.params.id
-})
+const idParam = getRouteParamByKey('id')
 
-const canSubmit = ref(true)
 const selectedRole = ref(null)
 const roles = ref({})
 
@@ -174,7 +172,7 @@ function roleChange(selected) {
   selectedRole.value = selected
 }
 
-const {handleSubmit, isSubmitting, errors} = useForm({
+const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام اجباری می‌باشد.'),
     last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی اجباری می‌باشد.'),
@@ -186,9 +184,7 @@ const {handleSubmit, isSubmitting, errors} = useForm({
       .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+}, (values, actions) => {
   if (!canSubmit.value) return
 
   // validate extra inputs

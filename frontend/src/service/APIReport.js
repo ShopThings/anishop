@@ -1,5 +1,5 @@
-import {useRequest} from "../composables/api-request.js";
-import {apiRoutes} from "../router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
 
 export const ReportAPI = {
   getUsersQB(callbacks) {

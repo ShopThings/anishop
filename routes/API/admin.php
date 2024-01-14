@@ -40,6 +40,8 @@ use App\Http\Controllers\Shop\ProductAttributeValueController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\Shop\UnitController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Middleware\ConvertInputsCharactersToPersian;
+use App\Http\Middleware\ConvertInputsToEnglishNumbers;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')
@@ -380,25 +382,29 @@ Route::prefix('admin')
             /*
              * file-manager routes
              */
-            Route::get('files', [FileManagerController::class, 'index'])
-                ->name('files.index');
-            Route::get('files/tree', [FileManagerController::class, 'treeList'])
-                ->name('files.tree');
-            Route::post('files/directory', [FileManagerController::class, 'createDirectory'])
-                ->name('files.create-directory');
-            Route::post('files/rename', [FileManagerController::class, 'rename'])
-                ->name('files.rename');
-            Route::post('files/move', [FileManagerController::class, 'move'])
-                ->name('files.move');
-            Route::post('files/copy', [FileManagerController::class, 'copy'])
-                ->name('files.copy');
-            Route::post('files', [FileManagerController::class, 'store'])->middleware('optimizeImages')
-                ->name('files.store');
-            Route::get('files/{file}', [FileManagerController::class, 'download'])
-                ->name('files.download');
-            Route::delete('files', [FileManagerController::class, 'destroy'])
-                ->name('files.destroy');
-            Route::delete('files/batch', [FileManagerController::class, 'batchDestroy'])
-                ->name('files.destroy.batch');
+            Route::prefix('files')
+                ->name('files.')
+                ->group(function () {
+                    Route::get('/', [FileManagerController::class, 'index'])
+                        ->name('index');
+                    Route::get('tree', [FileManagerController::class, 'treeList'])
+                        ->name('tree');
+                    Route::post('directory', [FileManagerController::class, 'createDirectory'])
+                        ->name('create-directory');
+                    Route::post('rename', [FileManagerController::class, 'rename'])
+                        ->name('rename');
+                    Route::post('move', [FileManagerController::class, 'move'])
+                        ->name('move');
+                    Route::post('copy', [FileManagerController::class, 'copy'])
+                        ->name('copy');
+                    Route::post('/', [FileManagerController::class, 'store'])->middleware('optimizeImages')
+                        ->name('store');
+                    Route::get('{file}', [FileManagerController::class, 'download'])
+                        ->name('download');
+                    Route::delete('/', [FileManagerController::class, 'destroy'])
+                        ->name('destroy');
+                    Route::delete('batch', [FileManagerController::class, 'batchDestroy'])
+                        ->name('destroy.batch');
+                });
         });
     });

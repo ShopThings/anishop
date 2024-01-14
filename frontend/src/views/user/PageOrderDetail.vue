@@ -615,17 +615,17 @@
 <script setup>
 import {reactive, ref} from "vue";
 import {EllipsisVerticalIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialBadgeStatusSend from "../../components/partials/PartialBadgeStatusSend.vue";
-import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
-import PartialBadgeStatusPayment from "../../components/partials/PartialBadgeStatusPayment.vue";
-import BaseDatatable from "../../components/base/BaseDatatable.vue";
-import PartialDialog from "../../components/partials/PartialDialog.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import BaseFloatingDropDown from "../../components/base/BaseFloatingDropDown.vue";
-import BaseInput from "../../components/base/BaseInput.vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
+import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
+import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseFloatingDropDown from "@/components/base/BaseFloatingDropDown.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
 
 const loadingInfo = ref(false)
 const loadingItems = ref(false)

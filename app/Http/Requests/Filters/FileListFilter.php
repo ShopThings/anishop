@@ -4,6 +4,7 @@ namespace App\Http\Requests\Filters;
 
 use App\Enums\Gates\RolesEnum;
 use App\Repositories\Contracts\FileRepositoryInterface;
+use App\Support\Converters\NumberConverter;
 use App\Support\Traits\OrderingTrait;
 use Illuminate\Http\Request;
 
@@ -74,7 +75,7 @@ class FileListFilter
      */
     public function setPath(string $path): static
     {
-        $this->path = $path;
+        $this->path = NumberConverter::toEnglish($path);
         return $this;
     }
 
@@ -153,7 +154,7 @@ class FileListFilter
      */
     public function setExtensions(?array $extensions): static
     {
-        $this->extensions = $extensions;
+        $this->extensions = NumberConverter::toEnglish($extensions);
         return $this;
     }
 

@@ -1,72 +1,71 @@
 <template>
-  <VTransitionSlideFadeLeftX v-show="isOpen">
-    <ul class="mr-3 block">
-      <VTransitionSlideFadeLeftXGroup>
-        <li
-          v-for="(item, idx) in items"
-          :key="idx"
-        >
-          <div
-            class="flex gap-2 items-center cursor-pointer p-2 rounded-lg relative hover:bg-violet-100 transition"
+  <ul class="mr-3 block" v-show="open">
+    <li
+      v-for="(item, idx) in items"
+      :key="itemsRef[idx].id"
+    >
+      <div class="flex gap-1 5 items-center">
+        <base-checkbox
+          :name="uniqueId('dir')"
+          :show-label="false"
+          v-model="itemsRef[idx].isChecked"
+          size-class="w-5 h-5"
+          @change="(value) => {dirCheckboxClickHandler(value, item, itemsRef[idx].id)}"
+        />
+
+        <div
+          class="w-full flex gap-2 items-center cursor-pointer p-2 rounded-lg relative hover:bg-violet-100 transition"
             @click="clickHandler(idx, item)"
-          >
-            <VTransitionFade>
-              <loader-circle
+        >
+          <VTransitionFade>
+            <loader-circle
                 v-if="isTreeLoading(idx)"
                 main-container-klass="absolute w-full h-full top-0 left-0"
                 big-circle-color="border-transparent"
                 spinner-klass="!w-5 !h-5"
-              />
-            </VTransitionFade>
+            />
+          </VTransitionFade>
 
-            <div class="ml-1">
-              <base-checkbox
-                :name="uniqueId('dir')"
-                :show-label="false"
-                v-model="itemsRef[idx].isChecked"
-                size-class="w-5 h-5"
-                @change="(value) => {if(value) emit('selection-change', item)}"
-              />
-            </div>
+          <FolderOpenIcon v-if="isTreeOpen(idx)" class="h-6 w-6 shrink-0 text-indigo-600"/>
+          <FolderIcon v-else class="h-6 w-6 shrink-0"/>
 
-            <FolderOpenIcon v-if="isTreeOpen(idx)" class="h-6 w-6 shrink-0 text-indigo-600"/>
-            <FolderIcon v-else class="h-6 w-6 shrink-0"/>
+          <span class="grow" :class="{'text-indigo-600': isTreeOpen(idx)}">{{ item.name }}</span>
 
-            <span class="grow" :class="{'text-indigo-600': isTreeOpen(idx)}">{{ item.name }}</span>
+          <template v-if="hasTreeChildren(idx)">
+            <ChevronLeftIcon class="h-5 w-5 shrink-0 transition" :class="{'-rotate-90': isTreeOpen(idx)}"/>
+          </template>
+        </div>
+      </div>
 
-            <template v-if="hasTreeChildren(idx)">
-              <ChevronDownIcon v-if="isTreeOpen(idx)" class="h-5 w-5 shrink-0"/>
-              <ChevronLeftIcon v-else class="h-5 w-5 shrink-0"/>
-            </template>
-          </div>
-
+      <VTransitionSlideFadeLeftX mode="out-in">
+        <div v-if="isTreeOpen(idx)">
           <partial-tree-directory
             v-if="hasTreeChildren(idx)"
+            :ref="(r) => {itemsRef[idx].childRef = r}"
             :open="isTreeOpen(idx)"
             :items="getTreeChildren(idx)"
             :disk="disk"
-            @selection-change="(selected) => (emit('selection-change', selected))"
+            @selection-change="childDirCheckboxClickHandler"
           />
-          <div v-else-if="isTreeFetched(idx) && isTreeOpen(idx)" class="mr-3 my-2 text-sm text-gray-400">
+          <div v-else-if="isTreeFetched(idx)" class="mr-3 my-2 text-sm text-gray-400">
             هیچ پوشه‌ای وجود ندارد
           </div>
-        </li>
-      </VTransitionSlideFadeLeftXGroup>
-    </ul>
-  </VTransitionSlideFadeLeftX>
+        </div>
+      </VTransitionSlideFadeLeftX>
+    </li>
+  </ul>
 </template>
 
 <script setup>
 import {ref} from "vue";
-import {FolderIcon, FolderOpenIcon, ChevronDownIcon, ChevronLeftIcon} from '@heroicons/vue/24/outline';
+import {FolderIcon, FolderOpenIcon, ChevronLeftIcon} from '@heroicons/vue/24/outline';
 import {FilemanagerAPI} from "@/service/APIFilemanager.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import VTransitionSlideFadeLeftXGroup from "@/transitions/VTransitionSlideFadeLeftXGroup.vue";
-import VTransitionSlideFadeLeftX from "@/transitions/VTransitionSlideFadeLeftX.vue";
 import {watchImmediate} from "@vueuse/core";
 import BaseCheckbox from "@/components/base/BaseCheckbox.vue";
 import uniqueId from "lodash.uniqueid";
+import VTransitionSlideFadeLeftX from "@/transitions/VTransitionSlideFadeLeftX.vue";
 
 const props = defineProps({
   open: {
@@ -79,16 +78,17 @@ const props = defineProps({
 
 const emit = defineEmits(['selection-change'])
 
-const isOpen = ref(props.open)
 const itemsRef = ref([])
 
 watchImmediate(() => props.items, () => {
   itemsRef.value = props.items.map(() => ({
+    id: uniqueId('child-'),
     children: [],
     open: false,
     loading: false,
     isFetched: false,
     isChecked: false,
+    childRef: ref(null),
   }))
 })
 
@@ -98,11 +98,13 @@ function clickHandler(idx, item) {
   } else {
     if (!itemsRef.value[idx]) {
       itemsRef.value[idx] = {
+        id: uniqueId('child-'),
         children: [],
         open: false,
         loading: false,
         isFetched: false,
         isChecked: false,
+        childRef: ref(null),
       }
     }
 
@@ -124,6 +126,31 @@ function clickHandler(idx, item) {
       })
     }
   }
+}
+
+function dirCheckboxClickHandler(checked, item, id) {
+  if (!checked) return
+
+  emit('selection-change', item, id)
+
+  itemsRef.value.map((i) => {
+    if (id !== i.id)
+      i.isChecked = false
+
+    if (i.childRef)
+      i.childRef.clearSelectedItems(i.id)
+  })
+}
+
+function childDirCheckboxClickHandler(item, except) {
+  emit('selection-change', item, except)
+
+  itemsRef.value.map((i) => {
+    i.isChecked = false
+
+    if (i.childRef)
+      i.childRef.clearSelectedItems(except)
+  })
 }
 
 function isTreeOpen(idx) {
@@ -150,4 +177,16 @@ function getTreeChildren(idx) {
   if (!itemsRef.value[idx]) return []
   return itemsRef.value[idx].children
 }
+
+defineExpose({
+  clearSelectedItems(except) {
+    itemsRef.value.map((item) => {
+      if (item.id !== except)
+        item.isChecked = false;
+
+      if (item.childRef)
+        item.childRef.clearSelectedItems(except);
+    });
+  },
+})
 </script>

@@ -88,7 +88,7 @@
 import {computed, ref, watch} from "vue"
 import {Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions} from "@headlessui/vue"
 import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
+import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import isObject from "lodash.isobject";
 import LoaderProgress from "./loader/LoaderProgress.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";

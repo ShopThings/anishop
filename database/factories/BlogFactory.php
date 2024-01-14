@@ -24,14 +24,14 @@ class BlogFactory extends Factory
     public function definition(): array
     {
         $title = rtrim($this->faker->sentence(), '.');
+        $blogImages = range(1, 9);
 
         return [
             'category_id' => BlogCategory::factory(),
             'title' => $title,
             'escaped_title' => NumberConverter::toEnglish(CharacterConverter::toPersian($title)),
             'slug' => Str::slug(title: $title, language: 'fa'),
-            // TODO: change this according to filesystem and filemanager items
-            'image_id' => null,
+            'image_id' => $this->faker->randomElement($blogImages),
             'description' => $this->faker->text(1000),
             'keywords' => implode(',', $this->faker->words($this->faker->randomElement([1, 3, 4, 6, 7, 10]))),
             'is_commenting_allowed' => $this->faker->randomElement([true, false]),

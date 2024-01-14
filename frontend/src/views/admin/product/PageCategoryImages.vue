@@ -41,15 +41,13 @@
 
 <script setup>
 import {reactive, ref} from "vue"
-import BaseDatatable from "../../../components/base/BaseDatatable.vue"
-import NewCreationGuideTop from "../../../components/admin/NewCreationGuideTop.vue"
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue"
+import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import BaseMediaPlaceholder from "../../../components/base/BaseMediaPlaceholder.vue";
+import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
 
 const router = useRouter()
 const toast = useToast()

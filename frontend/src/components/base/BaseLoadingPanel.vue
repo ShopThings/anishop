@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import {capitalize, shallowRef, useSlots, watchEffect} from "vue";
 
 const props = defineProps({

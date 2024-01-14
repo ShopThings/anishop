@@ -111,9 +111,9 @@ import {
   TrashIcon,
   ArrowLeftCircleIcon,
 } from "@heroicons/vue/24/outline/index.js"
-import BaseButton from "../../../../components/base/BaseButton.vue";
-import BaseInput from "../../../../components/base/BaseInput.vue";
-import BaseSwitch from "../../../../components/base/BaseSwitch.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import uniqueId from "lodash.uniqueid";
 
 const props = defineProps({

@@ -89,21 +89,19 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
 import {ArrowLeftIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseMessage from "../../components/base/BaseMessage.vue";
-import BaseSelectSearchable from "../../components/base/BaseSelectSearchable.vue";
-import {useRequest} from "../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
-import {useUserAuthStore} from "../../store/StoreUserAuth.js";
-import BaseButton from "../../components/base/BaseButton.vue";
-import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
-import PartialBadgeStatusReturnOrder from "../../components/partials/PartialBadgeStatusReturnOrder.vue";
-import PartialGeneralTitle from "../../components/partials/PartialGeneralTitle.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
+import BaseMessage from "@/components/base/BaseMessage.vue";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
+import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
+import yup from "@/validation/index.js";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 
 const store = useUserAuthStore()
 const user = store.getUser

@@ -13,7 +13,7 @@
                     ]"
       @click="handlePrevClick"
     >
-      <ArrowSmallRightIcon
+      <ArrowRightIcon
         :class="[
                             'h-6 w-6 ml-auto sm:ml-2 transition',
                             allowPrevStep ? 'group-hover:translate-x-2' : '',
@@ -31,7 +31,7 @@
       @click="handleNextClick"
     >
       <span class="mr-auto text-sm">مرحله بعد</span>
-      <ArrowSmallLeftIcon
+      <ArrowLeftIcon
         :class="[
                             'h-6 w-6 mr-auto sm:mr-2 transition',
                             allowNextStep ? 'group-hover:-translate-x-2' : '',
@@ -53,9 +53,9 @@
 </template>
 
 <script setup>
-import LoaderProgress from "../base/loader/LoaderProgress.vue";
-import BaseButton from "../base/BaseButton.vue";
-import {ArrowSmallRightIcon, ArrowSmallLeftIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
+import LoaderProgress from "@/components/base/loader/LoaderProgress.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import {ArrowRightIcon, ArrowLeftIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({
   currentStep: {

@@ -14,8 +14,8 @@
 
 <script setup>
 import {PageTransition, TransitionPresets, defineTransitionProps} from 'vue3-page-transition'
-import AppNavbar from "../AppNavbar.vue"
-import AppFooter from "../AppFooter.vue"
+import AppNavbar from "@/components/AppNavbar.vue"
+import AppFooter from "@/components/AppFooter.vue"
 
 const transitionProps = defineTransitionProps({
   mode: 'out-in',

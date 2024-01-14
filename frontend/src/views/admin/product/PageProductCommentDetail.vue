@@ -85,19 +85,17 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
-import PartialCard from "../../../components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRoute, useRouter} from "vue-router";
-import BaseTextarea from "../../../components/base/BaseTextarea.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {ArrowUturnRightIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
+import yup from "@/validation/index.js";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 
 const router = useRouter()
 const route = useRoute()

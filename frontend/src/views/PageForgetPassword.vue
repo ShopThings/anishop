@@ -54,7 +54,7 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseStepy from "../components/base/BaseStepy.vue";
+import BaseStepy from "@/components/base/BaseStepy.vue";
 import FormForgetPasswordEnterCode from "./forms/FormForgetPasswordEnterCode.vue";
 import FormForgetPasswordEnterMobile from "./forms/FormForgetPasswordEnterMobile.vue";
 import FormForgetPasswordEnterNewPassword from "./forms/FormForgetPasswordEnterNewPassword.vue";

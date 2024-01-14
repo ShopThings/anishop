@@ -135,14 +135,14 @@
 <script setup>
 import {ref, watchEffect} from "vue"
 import {XMarkIcon, PowerIcon, BellIcon, Bars3BottomRightIcon} from "@heroicons/vue/24/outline/index.js";
-import BasePopoverSide from "../base/BasePopoverSide.vue";
+import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {UserIcon} from "@heroicons/vue/24/solid/index.js";
-import {useAdminAuthStore, useUserAuthStore} from "../../store/StoreUserAuth.js";
+import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
 import SidebarLinksUser from "./SidebarLinksUser.vue";
-import BaseButton from "../base/BaseButton.vue";
-import DialogSearch from "../DialogSearch.vue";
-import NavbarCart from "../NavbarCart.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import DialogSearch from "@/components/DialogSearch.vue";
+import NavbarCart from "@/components/NavbarCart.vue";
 
 const navbar = ref(null)
 

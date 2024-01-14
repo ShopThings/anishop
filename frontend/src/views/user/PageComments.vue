@@ -141,13 +141,13 @@
 
 <script setup>
 import {reactive, ref} from "vue";
-import BaseSemiDatatable from "../../components/base/BaseSemiDatatable.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialBadgeConditionComment from "../../components/partials/PartialBadgeConditionComment.vue";
-import PartialEmptyRows from "../../components/partials/PartialEmptyRows.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import BaseTabPanel from "../../components/base/BaseTabPanel.vue";
-import PartialBadgeStatusBlogComment from "../../components/partials/PartialBadgeStatusBlogComment.vue";
+import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialBadgeConditionComment from "@/components/partials/PartialBadgeConditionComment.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
+import PartialBadgeStatusBlogComment from "@/components/partials/PartialBadgeStatusBlogComment.vue";
 
 const tabs = ref({
   productComments: {

@@ -11,7 +11,7 @@
       <div class="flex flex-wrap justify-between items-center">
         <div class="text-xs text-gray-400 mt-2 grow">
           <span class="inline-block ml-2">مسیر:</span>
-          <span dir="ltr" class="inline-block">root</span>
+          <span dir="ltr" class="inline-block">{{ currentPath }}</span>
         </div>
         <div class="text-left mt-2 shrink-0">
           <base-animated-button
@@ -84,6 +84,7 @@ import PartialTreeDirectorySearch from "@/components/partials/filemanager/Partia
 import {FilemanagerAPI} from "@/service/APIFilemanager.js";
 import {watchImmediate} from "@vueuse/core";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {trimChar} from "@/composables/helper.js";
 
 const props = defineProps({
   open: Boolean,
@@ -97,6 +98,8 @@ const isLoading = ref(false)
 const isOpen = ref(props.open)
 const items = ref([])
 const selectedDir = ref('')
+
+const currentPath = ref('/')
 
 watch(() => props.open, () => {
   isOpen.value = props.open
@@ -148,9 +151,7 @@ watchImmediate([() => props.disk, isOpen], () => {
 
 function changeSelectedDirectory(item) {
   selectedDir.value = item.name
-
-  console.log('lvl1:', item)
-
+  currentPath.value = trimChar(item.full_path, '/') || '/'
   emit('select-change', item)
 }
 

@@ -71,16 +71,16 @@
 
 <script setup>
 import {onMounted, onUnmounted, ref} from "vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import BaseTabPanel from "../../components/base/BaseTabPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
 import SettingFormMain from "./forms/SettingFormMain.vue";
 import SettingFormSms from "./forms/SettingFormSms.vue";
 import SettingFormInfo from "./forms/SettingFormInfo.vue";
 import SettingFormShop from "./forms/SettingFormShop.vue";
 import SettingFormGeneral from "./forms/SettingFormGeneral.vue";
 import SettingFormFooter from "./forms/SettingFormFooter.vue";
-import {useCountdown} from "../../composables/countdown-timer.js";
+import {useCountdown} from "@/composables/countdown-timer.js";
 import SettingFormSocial from "./forms/SettingFormSocial.vue";
 
 const loading = ref(false)

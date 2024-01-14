@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue";
-import BaseLazyImage from "../base/BaseLazyImage.vue";
-import LoaderCardBlog from "../base/loader/LoaderCardBlog.vue";
+import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import LoaderCardBlog from "@/components/base/loader/LoaderCardBlog.vue";
 
 const props = defineProps({
   containerClass: {

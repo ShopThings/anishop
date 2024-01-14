@@ -243,12 +243,12 @@
 
 <script setup>
 import {ref} from "vue";
-import PartialFilterCard from "../partials/pages/PartialFilterCard.vue";
-import BaseRangeSlider from "../base/BaseRangeSlider.vue";
-import BaseInput from "../base/BaseInput.vue";
-import {formatPriceLikeNumber} from "../../composables/helper.js";
-import BaseSwitch from "../base/BaseSwitch.vue";
-import {PRODUCT_ATTRIBUTE_TYPES} from "../../composables/constants.js";
+import PartialFilterCard from "@/components/partials/pages/PartialFilterCard.vue";
+import BaseRangeSlider from "@/components/base/BaseRangeSlider.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import {PRODUCT_ATTRIBUTE_TYPES} from "@/composables/constants.js";
 import isObject from "lodash.isobject";
 
 //----------------------------

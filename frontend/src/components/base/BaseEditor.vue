@@ -14,7 +14,7 @@ import '~/assets/js/tinymce/tinymce.min.js';
 import {onMounted, onUnmounted, watch} from "vue";
 import {useRouter} from "vue-router";
 import {useField} from "vee-validate";
-import PartialInputErrorMessage from "../partials/PartialInputErrorMessage.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
 const props = defineProps({
   readonly: {

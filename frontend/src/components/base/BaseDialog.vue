@@ -22,8 +22,8 @@
 </template>
 
 <script setup>
-import PartialDialog from "../partials/PartialDialog.vue";
-import {ref, useSlots, watch} from "vue";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
+import {computed, useSlots} from "vue";
 
 const props = defineProps({
   open: Boolean,
@@ -33,26 +33,22 @@ const props = defineProps({
 const emit = defineEmits(['open', 'close', 'update:open'])
 const slots = useSlots()
 
-const isOpen = ref(props.open)
-
-watch(() => props.open, function () {
-  if (props.open)
-    openModal()
-  else
-    closeModal()
+const isOpen = computed({
+  get() {
+    return props.open
+  },
+  set(value) {
+    emit('update:open', value)
+  }
 })
 
 function closeModal() {
   isOpen.value = false
-  emit('update:open', isOpen.value)
-
   emit('close')
 }
 
 function openModal() {
   isOpen.value = true
-  emit('update:open', isOpen.value)
-
   emit('open')
 }
 </script>

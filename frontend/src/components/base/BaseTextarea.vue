@@ -71,8 +71,8 @@
 import {onMounted, ref, useSlots, watch} from "vue";
 import uniqueId from "lodash.uniqueid";
 import {useField} from "vee-validate";
-import PartialInputLabel from "../partials/PartialInputLabel.vue";
-import PartialInputErrorMessage from "../partials/PartialInputErrorMessage.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({

@@ -230,25 +230,25 @@
 
 <script setup>
 import {computed, ref} from "vue";
-import BaseButton from "../../base/BaseButton.vue";
-import BaseSelectSearchable from "../../base/BaseSelectSearchable.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
 import {
   INPUTS,
   hasTwoValues,
   hasMultipleValues,
   noNeededInputOperators,
   operatorsMap,
-} from "../../../composables/query-builder.js";
-import BaseInput from "../../base/BaseInput.vue";
-import BaseTextarea from "../../base/BaseTextarea.vue";
-import BaseSwitch from "../../base/BaseSwitch.vue";
+} from "@/composables/query-builder.js";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import {
   InformationCircleIcon,
   ArrowLeftCircleIcon,
   HashtagIcon,
 } from "@heroicons/vue/24/outline/index.js";
-import BaseRangeSlider from "../../base/BaseRangeSlider.vue";
-import {useRequest} from "../../../composables/api-request.js";
+import BaseRangeSlider from "@/components/base/BaseRangeSlider.vue";
+import {useRequest} from "@/composables/api-request.js";
 
 const props = defineProps({
   modelValue: {

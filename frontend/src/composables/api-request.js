@@ -1,8 +1,8 @@
 import axios from "axios"
 import isFunction from 'lodash.isfunction'
-import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js"
+import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js"
 import {useToast} from "vue-toastification"
-import router from "../router/index.js";
+import router from "@/router/index.js";
 import isObject from "lodash.isobject";
 
 export const responseTypes = {

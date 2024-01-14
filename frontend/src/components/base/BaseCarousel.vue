@@ -72,8 +72,6 @@ import 'swiper/css/effect-coverflow';
 import {computed, nextTick, ref, watchEffect} from "vue";
 import {watchImmediate} from "@vueuse/core";
 import {
-  Navigation,
-  Pagination,
   Thumbs,
   Autoplay,
   FreeMode,
@@ -82,7 +80,7 @@ import {
   EffectFade,
   EffectFlip,
 } from 'swiper/modules';
-import PartialCarouselNavigation from "../partials/PartialCarouselNavigation.vue";
+import PartialCarouselNavigation from "@/components/partials/PartialCarouselNavigation.vue";
 import isObject from "lodash.isobject";
 import uniqueId from "lodash.uniqueid";
 

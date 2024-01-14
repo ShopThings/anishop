@@ -65,9 +65,9 @@ import {useResizeObserver} from "@vueuse/core"
 import {useRoute} from "vue-router"
 import {ChevronLeftIcon, ArrowLeftCircleIcon, HomeIcon} from '@heroicons/vue/24/outline'
 
-import AppNavbarAdmin from "../admin/AppNavbarAdmin.vue"
-import AppFooterAdmin from "../admin/AppFooterAdmin.vue"
-import AppSidebarAdmin from "../admin/AppSidebarAdmin.vue"
+import AppNavbarAdmin from "@/components/admin/AppNavbarAdmin.vue"
+import AppFooterAdmin from "@/components/admin/AppFooterAdmin.vue"
+import AppSidebarAdmin from "@/components/admin/AppSidebarAdmin.vue"
 import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
 
 const transitionProps = defineTransitionProps({

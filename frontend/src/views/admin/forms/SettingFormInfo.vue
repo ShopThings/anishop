@@ -137,21 +137,21 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {SETTING_KEYS} from "../../../composables/constants.js";
+import {SETTING_KEYS} from "@/composables/constants.js";
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
+import yup from "@/validation/index.js";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon, MapIcon} from "@heroicons/vue/24/outline/index.js";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import Vue3TagsInput from "vue3-tags-input";
-import BaseTextarea from "../../../components/base/BaseTextarea.vue";
-import BaseSelect from "../../../components/base/BaseSelect.vue";
-import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
-import BaseMap from "../../../components/base/BaseMap.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import BaseMap from "@/components/base/BaseMap.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
 
 const props = defineProps({
   setting: {

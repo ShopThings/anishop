@@ -25,11 +25,11 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseTabPanel from "../../components/base/BaseTabPanel.vue";
+import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
 import FormUserUpdateInfo from "./forms/FormUserUpdateInfo.vue";
 import FormUserUpdatePassword from "./forms/FormUserUpdatePassword.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 
 const loading = ref(false)
 

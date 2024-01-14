@@ -1,7 +1,7 @@
 import {ref} from "vue"
 import {defineStore} from "pinia"
-import {useRequest} from "../composables/api-request.js";
-import {apiRoutes} from "../router/api-routes.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
 
 export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   let counts = ref({})

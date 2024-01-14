@@ -558,26 +558,26 @@
 
 <script setup>
 import {ref} from "vue";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import {useAdminAuthStore, useUserAuthStore} from "../store/StoreUserAuth.js";
-import PartialCard from "../components/partials/PartialCard.vue";
-import PartialEmptyCard from "../components/partials/pages/PartialEmptyCard.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import PartialEmptyCard from "@/components/partials/pages/PartialEmptyCard.vue";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import {CreditCardIcon, InformationCircleIcon, StarIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseButton from "../components/base/BaseButton.vue";
-import BaseLazyImage from "../components/base/BaseLazyImage.vue";
-import PartialGeneralTitle from "../components/partials/PartialGeneralTitle.vue";
-import BaseSwitch from "../components/base/BaseSwitch.vue";
-import BaseInput from "../components/base/BaseInput.vue";
-import PartialInputLabel from "../components/partials/PartialInputLabel.vue";
-import PartialInputErrorMessage from "../components/partials/PartialInputErrorMessage.vue";
-import BaseSelect from "../components/base/BaseSelect.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
 import {useForm} from "vee-validate";
-import yup from "../validation/index.js";
-import BaseTextarea from "../components/base/BaseTextarea.vue";
-import BaseRadio from "../components/base/BaseRadio.vue";
-import VTransitionFade from "../transitions/VTransitionFade.vue";
-import LoaderCircle from "../components/base/loader/LoaderCircle.vue";
+import yup from "@/validation/index.js";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import BaseRadio from "@/components/base/BaseRadio.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 
 // const store = useUserAuthStore()
 const store = useAdminAuthStore()

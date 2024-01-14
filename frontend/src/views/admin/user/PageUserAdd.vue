@@ -99,11 +99,11 @@
                 <base-animated-button
                   type="submit"
                   class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                  :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
+                      v-if="!canSubmit"
                       main-container-klass="absolute w-full h-full top-0 left-0"
                       big-circle-color="border-transparent"
                     />
@@ -129,23 +129,22 @@ import {onMounted, ref} from "vue";
 import {
   UserIcon, ArrowLeftCircleIcon, CheckIcon, LockClosedIcon, HashtagIcon
 } from "@heroicons/vue/24/outline";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {useForm} from "vee-validate";
-import yup, {transformNumbersToEnglish} from "../../../validation/index.js";
+import BaseInput from "@/components/base/BaseInput.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import {useRouter} from "vue-router";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
-import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.vue";
-import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import {RoleAPI} from "../../../service/APIRole.js";
-import {UserAPI} from "../../../service/APIUser.js";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import {RoleAPI} from "@/service/APIRole.js";
+import {UserAPI} from "@/service/APIUser.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
 
 const loading = ref(true)
-const canSubmit = ref(true)
 const roles = ref({})
 
 const router = useRouter()
@@ -156,7 +155,7 @@ function roleChange(selected) {
   selectedRole.value = selected
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
+const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     username: yup.string()
       .transform(transformNumbersToEnglish)
@@ -179,9 +178,7 @@ const {handleSubmit, errors, isSubmitting} = useForm({
       .transform(transformNumbersToEnglish)
       .optional().nullable(),
   }),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+}, (values, actions) => {
   if (!canSubmit.value) return
 
   // validate extra inputs

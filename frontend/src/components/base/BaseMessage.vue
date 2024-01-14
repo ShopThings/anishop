@@ -25,7 +25,7 @@ const component = shallowRef(null)
 
 watchEffect(() => {
   const componentName = 'Partial' + capitalize(props.type) + 'Message'
-  import(`../partials/message/${componentName}.vue`).then(val => {
+  import(`@/components/partials/message/${componentName}.vue`).then(val => {
     component.value = val.default
   })
 })

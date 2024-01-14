@@ -82,10 +82,10 @@
 </template>
 
 <script setup>
-import BaseAccordion from "../../base/BaseAccordion.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
 import {computed, useSlots} from "vue";
-import BaseCheckbox from "../../base/BaseCheckbox.vue";
-import BaseRadio from "../../base/BaseRadio.vue";
+import BaseCheckbox from "@/components/base/BaseCheckbox.vue";
+import BaseRadio from "@/components/base/BaseRadio.vue";
 
 const props = defineProps({
   panelContainerClass: String,

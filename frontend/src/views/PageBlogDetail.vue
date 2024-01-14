@@ -469,13 +469,13 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseLoadingPanel from "../components/base/BaseLoadingPanel.vue";
-import LoaderContentBlog from "../components/base/loader/LoaderContentBlog.vue";
-import PartialGeneralTitle from "../components/partials/PartialGeneralTitle.vue";
-import BlogCardSmall from "../components/blog/BlogCardSmall.vue";
-import AppSideCategoriesBlog from "../components/AppSideCategoriesBlog.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
-import LoaderListSingleBlog from "../components/base/loader/LoaderListSingleBlog.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import LoaderContentBlog from "@/components/base/loader/LoaderContentBlog.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BlogCardSmall from "@/components/blog/BlogCardSmall.vue";
+import AppSideCategoriesBlog from "@/components/AppSideCategoriesBlog.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import LoaderListSingleBlog from "@/components/base/loader/LoaderListSingleBlog.vue";
 import {
   UserCircleIcon,
   CalendarIcon,
@@ -485,11 +485,11 @@ import {
   HandThumbUpIcon,
   HandThumbDownIcon,
 } from "@heroicons/vue/24/outline/index.js";
-import BaseLazyImage from "../components/base/BaseLazyImage.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import FormBlogComment from "./forms/FormBlogComment.vue";
-import PartialInputLabel from "../components/partials/PartialInputLabel.vue";
-import BlogComments from "../components/blog/BlogComments.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BlogComments from "@/components/blog/BlogComments.vue";
 
 const loading = ref(false)
 

@@ -25,7 +25,7 @@ class SmsLogResource extends JsonResource
             'body' => $this->body,
             'type' => SMSSenderTypesEnum::getTranslations($this->type),
             'sender' => SMSSenderTypesEnum::getTranslations($this->sender),
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

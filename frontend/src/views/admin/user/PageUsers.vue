@@ -71,16 +71,16 @@
 <script setup>
 import {computed, reactive, ref} from "vue"
 import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
-import BaseDatatable from "../../../components/base/BaseDatatable.vue"
-import NewCreationGuideTop from "../../../components/admin/NewCreationGuideTop.vue"
-import BaseDatatableMenu from "../../../components/base/datatable/BaseDatatableMenu.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
+import BaseDatatable from "@/components/base/BaseDatatable.vue"
+import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
+import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
-import {useConfirmToast} from "../../../composables/toast-helper.js";
-import {UserAPI} from "../../../service/APIUser.js";
+import {useConfirmToast} from "@/composables/toast-helper.js";
+import {UserAPI} from "@/service/APIUser.js";
 
 const router = useRouter()
 const toast = useToast()

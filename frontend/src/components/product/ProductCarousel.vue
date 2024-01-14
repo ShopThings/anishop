@@ -19,7 +19,7 @@
 
 <script setup>
 import {ref} from "vue";
-import BaseCarousel from "./../base/BaseCarousel.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
 import ProductCard from "./ProductCard.vue";
 
 const props = defineProps({

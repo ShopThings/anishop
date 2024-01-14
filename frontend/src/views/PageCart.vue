@@ -407,13 +407,13 @@ import {
   PlusIcon,
   ShoppingCartIcon,
 } from "@heroicons/vue/24/outline/index.js";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
-import PartialGeneralTitle from "../components/partials/PartialGeneralTitle.vue";
-import BaseButton from "../components/base/BaseButton.vue";
-import BaseLazyImage from "../components/base/BaseLazyImage.vue";
-import PartialEmptyCard from "../components/partials/pages/PartialEmptyCard.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialEmptyCard from "@/components/partials/pages/PartialEmptyCard.vue";
 
 const items = ref([
   {},

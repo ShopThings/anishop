@@ -61,7 +61,7 @@
 <script setup>
 import {MagnifyingGlassCircleIcon, ArrowPathIcon, XMarkIcon} from '@heroicons/vue/24/outline';
 import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
+import yup from "@/validation/index.js";
 import BaseInput from "../BaseInput.vue";
 import BaseButton from "../BaseButton.vue";
 import BaseAnimatedButton from "../BaseAnimatedButton.vue";

@@ -360,25 +360,23 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import yup from "../../../validation/index.js";
+import yup from "@/validation/index.js";
 import {useForm} from "vee-validate";
 import {useRoute} from "vue-router";
 import {CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import BaseAccordion from "../../../components/base/BaseAccordion.vue";
-import BaseButtonClose from "../../../components/base/BaseButtonClose.vue";
-import BaseLazyImage from "../../../components/base/BaseLazyImage.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
-import BaseSelectSearchable from "../../../components/base/BaseSelectSearchable.vue";
-import PartialInputErrorMessage from "../../../components/partials/PartialInputErrorMessage.vue";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
-import BaseSwitch from "../../../components/base/BaseSwitch.vue";
-import BaseCheckbox from "../../../components/base/BaseCheckbox.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
+import BaseButtonClose from "@/components/base/BaseButtonClose.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import BaseCheckbox from "@/components/base/BaseCheckbox.vue";
 
 const route = useRoute()
 const idsParam = computed(() => {

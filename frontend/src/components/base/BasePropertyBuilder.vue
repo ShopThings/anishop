@@ -47,8 +47,8 @@ import {computed} from "vue";
 import BaseInput from "./BaseInput.vue";
 import BaseButton from "./BaseButton.vue";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialBabyPropertyBuilder from "../partials/PartialBabyPropertyBuilder.vue";
-import PartialBuilderRemoveBtn from "../partials/PartialBuilderRemoveBtn.vue";
+import PartialBabyPropertyBuilder from "@/components/partials/PartialBabyPropertyBuilder.vue";
+import PartialBuilderRemoveBtn from "@/components/partials/PartialBuilderRemoveBtn.vue";
 
 const props = defineProps({
   properties: Array,

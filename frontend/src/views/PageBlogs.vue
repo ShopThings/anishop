@@ -207,17 +207,17 @@
 <script setup>
 import {ref} from "vue";
 import {ArrowLongRightIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseCarousel from "../components/base/BaseCarousel.vue";
-import BaseLazyImage from "../components/base/BaseLazyImage.vue";
-import PartialGeneralTitle from "../components/partials/PartialGeneralTitle.vue";
-import BlogCard from "../components/blog/BlogCard.vue";
-import AppNavigationHeader from "../components/AppNavigationHeader.vue";
-import BlogCardSmall from "../components/blog/BlogCardSmall.vue";
-import PartialCard from "../components/partials/PartialCard.vue";
-import BaseButton from "../components/base/BaseButton.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BlogCard from "@/components/blog/BlogCard.vue";
+import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
+import BlogCardSmall from "@/components/blog/BlogCardSmall.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
 import {useResizeObserver} from "@vueuse/core";
-import AppSideCategoriesBlog from "../components/AppSideCategoriesBlog.vue";
-import AppNewsletter from "../components/AppNewsletter.vue";
+import AppSideCategoriesBlog from "@/components/AppSideCategoriesBlog.vue";
+import AppNewsletter from "@/components/AppNewsletter.vue";
 
 const bgMovement = ref(null)
 const mainPageContainer = ref(null)

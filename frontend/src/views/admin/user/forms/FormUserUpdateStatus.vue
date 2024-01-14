@@ -44,11 +44,11 @@
       <base-animated-button
         type="submit"
         class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-        :disabled="isSubmitting"
+        :disabled="!canSubmit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="isSubmitting"
+            v-if="!canSubmit"
             main-container-klass="absolute w-full h-full top-0 left-0"
             big-circle-color="border-transparent"
           />
@@ -65,21 +65,21 @@
 </template>
 
 <script setup>
-import LoaderCircle from "../../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../../transitions/VTransitionFade.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseSwitch from "../../../../components/base/BaseSwitch.vue";
-import BaseAnimatedButton from "../../../../components/base/BaseAnimatedButton.vue";
-import VTransitionSlideFadeDownY from "../../../../transitions/VTransitionSlideFadeDownY.vue";
-import BaseTextarea from "../../../../components/base/BaseTextarea.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import {computed, ref} from "vue";
-import {useForm} from "vee-validate";
-import yup from "../../../../validation/index.js";
-import {useRequest} from "../../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../../router/api-routes.js";
+import yup from "@/validation/index.js";
+import {useRequest} from "@/composables/api-request.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import {useAdminAuthStore, ROLES} from "../../../../store/StoreUserAuth.js";
+import {useAdminAuthStore, ROLES} from "@/store/StoreUserAuth.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
 
 const props = defineProps({
   user: {
@@ -106,11 +106,10 @@ const idParam = computed(() => {
   return route.params.id
 })
 
-const canSubmit = ref(true)
 const banStatus = ref(!user.value?.is_banned ?? false)
 const deletableStatus = ref(!user.value?.is_deletable ?? false)
 
-const {handleSubmit, isSubmitting} = useForm({
+const {canSubmit, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     is_banned: yup.boolean(),
     ban_desc: yup.string().when('is_banned', {
@@ -123,9 +122,7 @@ const {handleSubmit, isSubmitting} = useForm({
     is_deletable: yup.boolean(),
   }),
   keepValuesOnUnmount: true,
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+}, (values, actions) => {
   if (!canSubmit.value) return
 
   canSubmit.value = false
@@ -146,18 +143,18 @@ const onSubmit = handleSubmit((values, actions) => {
     method: 'PUT',
     data: values,
   }, {
-    success: (response) => {
+    success(response) {
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
       user.value = response.data
       return false
     },
-    error: (error) => {
+    error(error) {
       if (error.errors && Object.keys(error.errors).length >= 1)
         actions.setErrors(error.errors)
 
       return false
     },
-    finally: function () {
+    finally() {
       canSubmit.value = true
     },
   })

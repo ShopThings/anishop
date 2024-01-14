@@ -108,7 +108,7 @@
 <script setup>
 import {computed, reactive, useSlots, watch} from "vue";
 import LoaderCircle from "./loader/LoaderCircle.vue";
-import PartialEmptyRows from "../partials/PartialEmptyRows.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import BasePagination from "./BasePagination.vue";
 
 const props = defineProps({

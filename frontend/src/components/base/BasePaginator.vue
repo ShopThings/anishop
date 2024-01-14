@@ -122,12 +122,12 @@
 
 <script setup>
 import {computed, nextTick, onBeforeUnmount, ref, watch} from "vue";
-import {useRequest} from "../../composables/api-request.js";
+import {useRequest} from "@/composables/api-request.js";
 import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
 import BasePagination from "./BasePagination.vue";
-import {formatPriceLikeNumber} from "../../composables/helper.js";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
 
 const props = defineProps({
   containerClass: String,

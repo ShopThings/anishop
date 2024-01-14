@@ -41,10 +41,8 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
-import {useRequest} from "../../composables/api-request.js";
-import PartialCard from "../../components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRoute, useRouter} from "vue-router";
 
 const router = useRouter()

@@ -12,7 +12,7 @@
 <script setup>
 import {onMounted, ref} from "vue"
 import {Menu, MenuButton} from '@headlessui/vue'
-import VTransitionSlideFadeUpY from "../../transitions/VTransitionSlideFadeUpY.vue"
+import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue"
 
 const props = defineProps({
   open: {

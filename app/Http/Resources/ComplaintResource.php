@@ -28,8 +28,8 @@ class ComplaintResource extends JsonResource
                 verta($this->changed_status_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'changed_status_by' => new UserShowResource($this->when($this->changed_status_by, $this->statusChanger())),
-            'created_by' => new UserShowResource($this->when($this->created_by, $this->creator())),
-            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
                 ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

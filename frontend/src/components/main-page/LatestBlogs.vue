@@ -19,8 +19,8 @@
 
 <script setup>
 import {ref} from "vue";
-import BlogCardMain from "../blog/BlogCardMain.vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
+import BlogCardMain from "@/components/blog/BlogCardMain.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
 
 const latestBlogs = ref([
   {

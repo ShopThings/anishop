@@ -114,9 +114,9 @@
 <script setup>
 import {computed} from "vue";
 import * as outline from "@heroicons/vue/24/outline/index.js";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
-import PartialStepyNextPrevButtons from "../partials/PartialStepyNextPrevButtons.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
 
 const props = defineProps({
   steps: Object,

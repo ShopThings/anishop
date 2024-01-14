@@ -63,10 +63,12 @@ const {canSubmit, onSubmit, errors} = useFormSubmit({
     disk: props.disk,
   }, {
     success() {
-      canSubmit.value = true
       actions.resetForm()
 
       emit('created')
+    },
+    finally() {
+      canSubmit.value = true
     },
   })
 })
