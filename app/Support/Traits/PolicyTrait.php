@@ -80,7 +80,7 @@ trait PolicyTrait
                     $this->permissionPlace)
             );
         } elseif ($name === 'view') { // Determine whether the user can view the model.
-            if ($this->checkCreator && $user->id === $model->creator()?->id) return true;
+            if ($this->checkCreator && $user->id === $model->creator?->id) return true;
 
             return $user->hasPermissionTo(
                 PermissionHelper::permission(
@@ -94,7 +94,7 @@ trait PolicyTrait
                     $this->permissionPlace)
             );
         } elseif ($name === 'update') { // Determine whether the user can update the model.
-            if ($this->checkCreator && $user->id === $model->creator()?->id) return true;
+            if ($this->checkCreator && $user->id === $model->creator?->id) return true;
 
             return $user->hasPermissionTo(
                 PermissionHelper::permission(
@@ -125,11 +125,11 @@ trait PolicyTrait
                 return true;
             } else {
                 if ($model instanceof $this->modelClass) {
-                    if ($user->id === $model->creator()?->id)
+                    if ($user->id === $model->creator?->id)
                         return true;
                 } else {
                     $tmp = $model->filter(function ($item) use ($user) {
-                        return isset($item->creator()->id) && $user->id !== $item->creator()->id;
+                        return isset($item->creator->id) && $user->id !== $item->creator->id;
                     });
 
                     if (!$tmp->count())

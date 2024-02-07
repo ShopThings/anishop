@@ -3,7 +3,7 @@
     <div class="text-black p-5 flex items-baseline">
       <div>
         <QuestionMarkCircleIcon
-          class="w-10 h-10 ml-2 text-yellow-600 inline-block bg-yellow-100 rounded-full p-1 shrink-0"
+            class="w-10 h-10 ml-2 text-yellow-600 inline-block bg-yellow-100 rounded-full p-1 shrink-0"
         />
       </div>
 
@@ -11,8 +11,8 @@
         <span>{{ title || 'آیا از انجام عملیات مطمئن هستید؟' }}</span>
 
         <div
-          v-if="subTitle"
-          class="text-sm text-gray-500 mt-2 max-w-sm leading-relaxed"
+            v-if="subTitle"
+            class="text-sm text-gray-500 mt-2 max-w-sm leading-relaxed"
         >
           {{ subTitle }}
         </div>
@@ -21,16 +21,16 @@
 
     <div class="flex flex-wrap justify-start py-3 px-8 bg-slate-50 border-t-2 border-slate-100">
       <button
-        type="button"
-        class="ml-3 border-gray-500 text-gray-500 px-6 py-2 hover:border-black hover:text-black bg-white text-sm rounded-md border transition"
-        @click="$emit('close-toast')"
+          type="button"
+          class="ml-3 border-gray-500 text-gray-500 px-6 py-2 hover:border-black hover:text-black bg-white text-sm rounded-md border transition"
+          @click="close"
       >
         <span>خیر</span>
       </button>
       <button
-        type="button"
-        class="bg-primary text-white border-primary px-3 py-2 text-sm rounded-md border hover:bg-opacity-90 transition"
-        @click="accept"
+          type="button"
+          class="bg-primary text-white border-primary px-3 py-2 text-sm rounded-md border hover:bg-opacity-90 transition"
+          @click="accept"
       >
         <span>انجام عملیات</span>
       </button>
@@ -39,8 +39,8 @@
     <template v-if="showBackdrop">
       <Teleport to="body">
         <div
-          class="slide-rotate-hor-t-fwd fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
-          @click="$emit('close-toast')"
+            class="slide-rotate-hor-t-fwd fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
+            @click="close"
         ></div>
       </Teleport>
     </template>
@@ -61,11 +61,16 @@ defineProps({
     default: true,
   },
 })
-const emit = defineEmits(['accept', 'close-toast'])
+const emit = defineEmits(['accept', 'decline', 'close-toast'])
 
 function accept() {
   emit('close-toast')
   emit('accept')
+}
+
+function close() {
+  emit('close-toast')
+  emit('decline')
 }
 </script>
 

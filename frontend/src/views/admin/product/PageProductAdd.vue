@@ -1,4 +1,11 @@
 <template>
+  <base-message type="warning" :has-close="false">
+    در صورت بارگذاری مجدد صفحه، اطلاعات وارد شده از بین خواهند رفت.
+  </base-message>
+  <base-message type="info" :has-close="false">
+    ابتدا اطلاعات محصول را وارد کرده و در صورت نیاز برای تغییر، به صفحه ویرایش مراجعه نمایید.
+  </base-message>
+
   <base-stepy
     v-model:current-step="currentStep"
     :steps="steps"
@@ -42,6 +49,7 @@ import FormProductAddImageGallery from "./forms/FormProductAddImageGallery.vue";
 import FormProductAddRelatedProduct from "./forms/FormProductAddRelatedProduct.vue";
 import FormProductAddDescription from "./forms/FormProductAddDescription.vue";
 import FormProductAddProperties from "./forms/FormProductAddProperties.vue";
+import BaseMessage from "@/components/base/BaseMessage.vue";
 
 const currentStep = ref('information')
 const loading = ref(false)

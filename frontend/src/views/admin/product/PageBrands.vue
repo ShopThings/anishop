@@ -18,46 +18,47 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="true"
+              :selection-operations="selectionOperations"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="true"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
           >
-            <template v-slot:name="{value}">
-              <div class="flex items-center">
-                <span>{{ value.name }}</span>
-                <span
-                  v-tooltip.top="{message: value.name}"
-                  class="inline-block w-5 h-5 rounded-full border mr-2"
-                  :style="'background-color:' + value.hex + ' ;'"
-                ></span>
-              </div>
+            <template v-slot:image="{value}">
+              <partial-show-image :item="value.image"/>
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:show_in_slider="{value}">
-
+              <partial-badge-publish
+                  :publish="value.show_in_slider"
+                  publish-text="نمایش در اسلایدر"
+                  unpublish-text="عدم نمایش در اسلایدر"
+              />
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :items="operations"
+                  :data="value"
+                  :container="getMenuContainer"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -73,14 +74,15 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {BrandAPI} from "@/service/APIProduct.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -96,6 +98,11 @@ const table = reactive({
       field: "id",
       columnStyles: "width: 3%;",
       isKey: true,
+      sortable: true,
+    },
+    {
+      label: "تصویر",
+      field: "image",
       sortable: true,
     },
     {
@@ -124,6 +131,11 @@ const table = reactive({
       columnStyles: "width: 3%;",
       sortable: true,
       isKey: true,
+    },
+    {
+      label: "تصویر",
+      field: "image",
+      sortable: true,
     },
     {
       label: "نام",
@@ -201,10 +213,8 @@ const operations = [
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.brands.destroy, {brand: data.id}), {
-            method: 'DELETE',
-          }, {
-            success: () => {
+          BrandAPI.deleteById(data.id, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelectionItem(data)
@@ -243,13 +253,8 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.brands.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
-            success: () => {
+          BrandAPI.deleteByIds(ids, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelection()
@@ -266,29 +271,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.brands.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  BrandAPI.fetchAll({limit, offset, order, sort, text}, {
+    success(response) {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error() {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally() {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

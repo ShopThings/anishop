@@ -7,7 +7,6 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\OrderItem;
 use App\Models\ReturnOrderRequest;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Support\Filter;
@@ -46,8 +45,17 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
 
         $query = $this->model->newQuery();
         $query
+            ->with('user')
             ->when($userId, function (Builder $query, $uId) {
-                $query->where('user_id', $uId);
+                $query
+                    ->with([
+                        'send_status_changer',
+                        'orders',
+                        'orders.payments',
+                        'items',
+                        'return_order'
+                    ])
+                    ->where('user_id', $uId);
             })
             ->when($search, function (Builder $query, string $search) {
                 $query

@@ -18,27 +18,29 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="true"
+              :selection-operations="selectionOperations"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="true"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
           >
             <template v-slot:type="{value}">
 
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
             </template>
@@ -55,14 +57,13 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {ProductAttributeAPI} from "@/service/APIProduct.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -173,9 +174,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.productAttributes.destroy, {product_attribute: data.id}), {
-            method: 'DELETE',
-          }, {
+          ProductAttributeAPI.deleteById(data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -215,12 +214,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.productAttributes.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          ProductAttributeAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -238,29 +232,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.productAttributes.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  ProductAttributeAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

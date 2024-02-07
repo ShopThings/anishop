@@ -14,8 +14,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
-import {FilemanagerAPI} from "@/service/APIFilemanager.js";
+import {ref} from "vue";
 import {FileSizes} from "@/composables/file-list.js";
 import {apiRoutes} from "@/router/api-routes.js";
 
@@ -27,7 +26,7 @@ const props = defineProps({
   },
   isLocal: {
     type: Boolean,
-    default: true, // "true" in test mode and "false" in production
+    default: true, // "true" to show local images and "false" to show image from server
   },
   size: {
     type: String,

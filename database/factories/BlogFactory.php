@@ -7,7 +7,7 @@ use App\Models\BlogCategory;
 use App\Support\Converters\CharacterConverter;
 use App\Support\Converters\NumberConverter;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use function App\Support\Helper\str_slug_persian;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Blog>
@@ -30,7 +30,7 @@ class BlogFactory extends Factory
             'category_id' => BlogCategory::factory(),
             'title' => $title,
             'escaped_title' => NumberConverter::toEnglish(CharacterConverter::toPersian($title)),
-            'slug' => Str::slug(title: $title, language: 'fa'),
+            'slug' => str_slug_persian($title),
             'image_id' => $this->faker->randomElement($blogImages),
             'description' => $this->faker->text(1000),
             'keywords' => implode(',', $this->faker->words($this->faker->randomElement([1, 3, 4, 6, 7, 10]))),

@@ -74,18 +74,18 @@
 
               <div class="px-3 py-2 vue3-tags-pros-container">
                 <partial-input-label title="مزایای محصول" :is-optional="true"/>
-                <vue3-tags-input
-                  placeholder="وارد نمایید"
+                <base-tags-input
                   :tags="pros"
+                  placeholder="وارد نمایید"
                   :read-only="false"
                   @on-tags-changed="(t) => {pros = t}"
                 />
               </div>
               <div class="px-3 py-2 vue3-tags-cons-container">
                 <partial-input-label title="معایب محصول" :is-optional="true"/>
-                <vue3-tags-input
-                  placeholder="وارد نمایید"
+                <base-tags-input
                   :tags="cons"
+                  placeholder="وارد نمایید"
                   @on-tags-changed="(t) => {cons = t}"
                 />
               </div>
@@ -139,11 +139,11 @@ import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
 import PartialBadgeConditionComment from "@/components/partials/PartialBadgeConditionComment.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
-import Vue3TagsInput from "vue3-tags-input";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const loading = ref(false)
 

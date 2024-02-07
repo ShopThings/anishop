@@ -123,7 +123,7 @@ class BlogCategoryController extends Controller
     {
         $this->authorize('delete', $blogCategory);
 
-        $permanent = $request->user()->id === $blogCategory->creator()?->id;
+        $permanent = $request->user()->id === $blogCategory->creator?->id;
         $res = $this->service->deleteById($blogCategory->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

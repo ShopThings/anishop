@@ -1,9 +1,9 @@
 <template>
   <base-floating-drop-down
-    placement="right-start"
-    :shift="false"
-    :container="container"
-    :items="items"
+      placement="right-start"
+      :shift="false"
+      :container="container"
+      :items="items"
   >
     <template #button>
       <button type="button"
@@ -13,14 +13,14 @@
     </template>
 
     <template #item="{item, hide}">
-      <template v-if="item.id && removals.indexOf(item.id) === -1">
+      <template v-if="!item.id || (item.id && removals.indexOf(item.id) === -1)">
         <base-button
-          :type="item?.link?.href ? 'link' : 'button'"
-          :to="item?.link?.href"
-          @click="itemClick(item, hide)"
-          class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100"
-          :class="item.link.class"
-          default-class="rounded-md"
+            :type="item?.link?.href ? 'link' : 'button'"
+            :to="item?.link?.href"
+            @click="itemClick(item, hide)"
+            class="flex items-center w-full !px-2 !py-1 text-sm transition hover:bg-gray-100"
+            :class="item.link.class"
+            default-class="rounded-md"
         >
           <component v-if="item?.link?.icon" :is="outline[item.link.icon]" class="h-5 w-5"/>
           <span :class="item.link.icon ? 'mr-2' : ''">{{ item.link.text }}</span>

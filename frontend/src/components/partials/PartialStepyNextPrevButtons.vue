@@ -8,16 +8,16 @@
     <base-button
       v-if="currentStepIndex !== 0 && showPrevStepButton"
       :class="[
-                        '!text-black my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
-                        !allowPrevStep ? '!cursor-not-allowed !text-opacity-50 border-gray-200' : 'border-gray-400 hover:bg-gray-100',
-                    ]"
+          '!text-black my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
+          !allowPrevStep ? '!cursor-not-allowed !text-opacity-50 border-gray-200' : 'border-gray-400 hover:bg-gray-100',
+      ]"
       @click="handlePrevClick"
     >
       <ArrowRightIcon
         :class="[
-                            'h-6 w-6 ml-auto sm:ml-2 transition',
-                            allowPrevStep ? 'group-hover:translate-x-2' : '',
-                        ]"
+            'h-6 w-6 ml-auto sm:ml-2 transition',
+            allowPrevStep ? 'group-hover:translate-x-2' : '',
+        ]"
       />
       <span class="ml-auto text-sm">مرحله قبل</span>
     </base-button>
@@ -25,25 +25,25 @@
     <base-button
       v-if="currentStepIndex !== lastStep && showNextStepButton"
       :class="[
-                        'bg-primary text-white my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
-                        !allowNextStep ? '!cursor-not-allowed !text-opacity-50 !bg-opacity-50' : '',
-                    ]"
+          'bg-primary text-white my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
+          !allowNextStep ? '!cursor-not-allowed !text-opacity-50 !bg-opacity-50' : '',
+      ]"
       @click="handleNextClick"
     >
       <span class="mr-auto text-sm">مرحله بعد</span>
       <ArrowLeftIcon
         :class="[
-                            'h-6 w-6 mr-auto sm:mr-2 transition',
-                            allowNextStep ? 'group-hover:-translate-x-2' : '',
-                        ]"
+            'h-6 w-6 mr-auto sm:mr-2 transition',
+            allowNextStep ? 'group-hover:-translate-x-2' : '',
+        ]"
       />
     </base-button>
     <base-button
       v-else
       :class="[
-                'bg-emerald-500 text-white my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
-                loading ? '!cursor-not-allowed !text-opacity-50 !bg-opacity-50' : '',
-            ]"
+          'bg-emerald-500 text-white my-1.5 sm:mx-1.5 px-6 w-full sm:w-auto flex items-center group',
+          loading ? '!cursor-not-allowed !text-opacity-50 !bg-opacity-50' : '',
+      ]"
       @click="handleFinishClick"
     >
       <span class="mr-auto text-sm">اتمام</span>
@@ -91,17 +91,14 @@ const props = defineProps({
 const emit = defineEmits(['next', 'prev', 'finish'])
 
 function handlePrevClick() {
-  if (!props.loading)
-    emit('prev')
+  if (!props.loading) emit('prev')
 }
 
 function handleNextClick() {
-  if (!props.loading)
-    emit('next')
+  if (!props.loading) emit('next')
 }
 
 function handleFinishClick() {
-  if (!props.loading)
-    emit('finish')
+  if (!props.loading) emit('finish')
 }
 </script>

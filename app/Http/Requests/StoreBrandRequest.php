@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\FileManager;
+use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBrandRequest extends FormRequest
@@ -31,11 +31,12 @@ class StoreBrandRequest extends FormRequest
                 'required',
                 'max:250',
             ],
-            'image_id' => [
+            'image' => [
                 'required',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
             'keywords' => [
+                'sometimes',
                 'array',
             ],
             'show_in_slider' => [

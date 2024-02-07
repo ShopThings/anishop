@@ -1,11 +1,11 @@
 <template>
   <label
-    class="mb-1 text-right text-black flex justify-between items-center"
+    class="mb-1 text-right text-black flex justify-between items-center gap-1.5"
     :for="id"
   >
-        <span class="text-sm">
-            <slot name="label">{{ title }}</slot>
-        </span>
+    <span class="text-sm">
+        <slot name="label">{{ title }}</slot>
+    </span>
     <span v-if="isOptional" class="text-sm text-gray-400">(اختیاری)</span>
   </label>
 </template>

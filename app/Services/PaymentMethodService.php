@@ -7,8 +7,8 @@ use App\Enums\Payments\PaymentTypesEnum;
 use App\Repositories\Contracts\PaymentMethodRepositoryInterface;
 use App\Services\Contracts\PaymentMethodServiceInterface;
 use App\Support\Filter;
-use App\Support\Model\CodeGeneratorHelper;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -18,6 +18,8 @@ use function App\Support\Helper\to_boolean;
 
 class PaymentMethodService extends Service implements PaymentMethodServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected PaymentMethodRepositoryInterface $repository
     )
@@ -41,12 +43,14 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
                 ->orWhereLike('title', $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['image', 'creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -54,6 +58,8 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'title' => $attributes['title'],
             'image_id' => $attributes['image'],
@@ -77,6 +83,7 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
             $updateAttributes['title'] = $attributes['title'];
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['type'])) {

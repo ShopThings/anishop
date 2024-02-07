@@ -33,7 +33,8 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'parent' => [
-                'required',
+                'sometimes',
+                'nullable',
                 'exists:' . Category::class . ',id',
             ],
             'name' => [
@@ -47,6 +48,7 @@ class StoreCategoryRequest extends FormRequest
             'priority' => [
                 'required',
                 'numeric',
+                'min:0',
             ],
             'show_in_menu' => [
                 'required',

@@ -1,9 +1,9 @@
 <template>
   <div class="relative">
     <swiper-container
-      ref="carousel"
-      init="false"
-      :class="className"
+        ref="carousel"
+        init="false"
+        :class="className"
     >
       <swiper-slide v-for="(slide, idx) in slides" :key="idx">
         <slot :slide="slide" :index="idx"></slot>
@@ -11,46 +11,46 @@
     </swiper-container>
 
     <partial-carousel-navigation
-      v-if="hasNavigation"
-      :prev-class-name="className + '-prev'"
-      :next-class-name="className + '-next'"
-      :display="navigationDisplay"
-      :position="navigationPosition"
-      :size="navigationSize"
-      :dir="dir"
+        v-if="hasNavigation"
+        :prev-class-name="className + '-prev'"
+        :next-class-name="className + '-next'"
+        :display="navigationDisplay"
+        :position="navigationPosition"
+        :size="navigationSize"
+        :dir="dir"
     />
   </div>
 
   <div
-    v-if="useThumbnail"
-    class="mt-3"
+      v-if="useThumbnail"
+      class="mt-3"
   >
     <swiper-container
-      ref="thumbsSwiper"
-      :class="className + '-thumbnail'"
-      :a11y="a11y"
-      :initial-slide="currentSlide"
-      :watch-slides-progress="true"
-      :free-mode="true"
-      :speed="transition"
-      :space-between="10"
-      :slides-per-view="4"
-      :loop="true"
-      :dir="dir"
-      :breakpoints="{
-                    360: {
-                    slidesPerView: 3.5,
-                    },
-                    640: {
-                    slidesPerView: 5,
-                    },
-                    768: {
-                    slidesPerView: 6,
-                    },
-                    1024: {
-                    slidesPerView: 3.5,
-                    },
-                }"
+        ref="thumbsSwiper"
+        :class="className + '-thumbnail'"
+        :a11y="a11y"
+        :initial-slide="currentSlide"
+        :watch-slides-progress="true"
+        :free-mode="true"
+        :speed="transition"
+        :space-between="10"
+        :slides-per-view="4"
+        :loop="true"
+        :dir="dir"
+        :breakpoints="{
+            360: {
+            slidesPerView: 3.5,
+            },
+            640: {
+            slidesPerView: 5,
+            },
+            768: {
+            slidesPerView: 6,
+            },
+            1024: {
+            slidesPerView: 3.5,
+            },
+        }"
     >
       <swiper-slide v-for="(slide, idx) in slides" :key="idx">
         <slot name="thumbSlide" :slide="slide" :index="idx"></slot>
@@ -60,25 +60,18 @@
 </template>
 
 <script setup>
-import 'swiper/css';
-import 'swiper/css/a11y';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/free-mode';
-import 'swiper/css/thumbs';
-import 'swiper/css/effect-fade';
-import 'swiper/css/effect-coverflow';
+import 'swiper/swiper-bundle.css';
 
-import {computed, nextTick, ref, watchEffect} from "vue";
+import {computed, ref, watchEffect} from "vue";
 import {watchImmediate} from "@vueuse/core";
 import {
-  Thumbs,
-  Autoplay,
-  FreeMode,
   A11y,
+  Autoplay,
   EffectCoverflow,
   EffectFade,
   EffectFlip,
+  Thumbs,
+  FreeMode,
 } from 'swiper/modules';
 import PartialCarouselNavigation from "@/components/partials/PartialCarouselNavigation.vue";
 import isObject from "lodash.isobject";

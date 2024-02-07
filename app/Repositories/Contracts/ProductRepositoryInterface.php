@@ -44,6 +44,20 @@ interface ProductRepositoryInterface extends RepositoryInterface
     public function getDynamicFilters(HomeProductSideFilter $filter): Collection;
 
     /**
+     * @param int $productId
+     * @param array $images
+     * @return bool
+     */
+    public function createGallery(int $productId, array $images): bool;
+
+    /**
+     * @param int $productId
+     * @param array $products
+     * @return bool
+     */
+    public function createRelatedProducts(int $productId, array $products): bool;
+
+    /**
      * @param array $products
      * @return Model|Collection
      */

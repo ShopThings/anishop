@@ -125,7 +125,7 @@ class ProductAttributeValueController extends Controller
     {
         $this->authorize('delete', $productAttributeValue);
 
-        $permanent = $request->user()->id === $productAttributeValue->creator()?->id;
+        $permanent = $request->user()->id === $productAttributeValue->creator?->id;
         $res = $this->service->deleteById($productAttributeValue->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

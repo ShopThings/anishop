@@ -87,7 +87,7 @@ class ComplaintController extends Controller
     {
         $this->authorize('delete', $complaint);
 
-        $permanent = $request->user()->id === $complaint->creator()?->id;
+        $permanent = $request->user()->id === $complaint->creator?->id;
         $res = $this->service->deleteById($complaint->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

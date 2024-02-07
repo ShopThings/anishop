@@ -8,7 +8,7 @@
         <partial-card class="mb-3 p-3 relative">
           <template #body>
             <loader-dot-orbit
-              v-if="isSubmitting"
+              v-if="!canSubmit"
               main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
               container-bg-color="bg-blue-50 opacity-40"
             />
@@ -58,10 +58,10 @@
               :current-step="options.currentStep"
               :current-step-index="options.currentStepIndex"
               :last-step="options.lastStep"
-              :allow-next-step="!isSubmitting"
-              :allow-prev-step="false"
-              :show-prev-step-button="false"
-              :loading="isSubmitting"
+              :allow-next-step="canSubmit"
+              :allow-prev-step="canSubmit"
+              :show-prev-step-button="canSubmit"
+              :loading="!canSubmit"
               @next="handleNextClick(options.next)"
             />
           </template>
@@ -72,20 +72,20 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
-import {useForm} from "vee-validate";
-import yup from "@/validation/index.js";
 import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import PartialBuilderRemoveBtn from "@/components/partials/PartialBuilderRemoveBtn.vue";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
-import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {ProductAPI} from "@/service/APIProduct.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
 defineProps({
   options: {
@@ -95,16 +95,10 @@ defineProps({
 })
 const emit = defineEmits(['add', 'remove'])
 
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const slugParam = getRouteParamByKey('slug', null, false)
 
-const loading = ref(false)
-const canSubmit = ref(true)
+const loading = ref(true)
 
 //------------------------
 // Product new instance
@@ -112,7 +106,7 @@ const canSubmit = ref(true)
 const images = ref([
   {
     image: null,
-  }
+  },
 ])
 
 function handleNewImageClick() {
@@ -138,30 +132,44 @@ function handleNextClick(next) {
   nextFn = next
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+const {canSubmit, errors, onSubmit} = useFormSubmit({},
+  (values, actions) => {
+    if (!canSubmit.value) return
 
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+    const definedImages = []
+    for (let i of images.value) {
+      if (i && i.image?.full_name) {
+        definedImages.push(i.image.full_name)
+      }
+    }
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve()
-      if (nextFn)
-        nextFn()
-    }, 2000)
-  })
-})
+    if (!definedImages.length) {
+      toast.error('انتخاب حداقل یک تصویر برای گالری تصاویر، الزامی می‌باشد.')
+      return
+    }
+
+    canSubmit.value = false
+
+    ProductAPI.createGallery(slugParam.value, {
+      images: definedImages,
+    }, {
+      success() {
+        if (nextFn) nextFn()
+      },
+      finally() {
+        canSubmit.value = true
+      },
+    })
+  }
+)
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.products.show, {product: idParam.value}), null, {
-  //     success: (response) => {
-  //         images.value = response.data.images
-  //
-  //         loading.value = false
-  //     }
-  // })
+  ProductAPI.fetchGallery(slugParam.value, {
+    success: (response) => {
+      images.value = response.data
+      loading.value = false
+    },
+  })
 })
 </script>
 

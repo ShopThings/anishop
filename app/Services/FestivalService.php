@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Enums\Times\TimeFormatsEnum;
 use App\Repositories\Contracts\FestivalRepositoryInterface;
 use App\Services\Contracts\FestivalServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Hekmatinasser\Verta\Verta;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -30,7 +31,7 @@ class FestivalService extends Service implements FestivalServiceInterface
         $where = new WhereBuilder('festivals');
         $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query
-                ->when(Verta::createFromFormat($search, 'Y-m-d'), function (WhereBuilderInterface $q, $date) {
+                ->when(Carbon::createFromFormat('Y-m-d', $search), function (WhereBuilderInterface $q, $date) {
                     $q
                         ->orWhereGreaterThanEqual('start_at', $date)
                         ->orWhereLessThanEqual('end_at', $date);
@@ -38,12 +39,14 @@ class FestivalService extends Service implements FestivalServiceInterface
                 ->orWhereLike('title', $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -53,11 +56,11 @@ class FestivalService extends Service implements FestivalServiceInterface
     {
         $attrs = [
             'title' => $attributes['title'],
-            'start_at' => isset($attributes['start_at'])
-                ? Verta::createFromFormat($attributes['start_at'], 'Y-m-d H:i:s')
+            'start_at' => isset($attributes['start_at']) && !empty($attributes['start_at'])
+                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['start_at'])
                 : null,
-            'end_at' => isset($attributes['end_at'])
-                ? Verta::createFromFormat($attributes['end_at'], 'Y-m-d H:i:s')
+            'end_at' => isset($attributes['end_at']) && !empty($attributes['end_at'])
+                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['end_at'])
                 : null,
             'is_published' => to_boolean($attributes['is_published']),
         ];
@@ -75,12 +78,29 @@ class FestivalService extends Service implements FestivalServiceInterface
         if (isset($attributes['title'])) {
             $updateAttributes['title'] = $attributes['title'];
         }
+
         if (isset($attributes['start_at'])) {
-            $updateAttributes['start_at'] = Verta::createFromFormat($attributes['start_at'], 'Y-m-d H:i:s');
+            if (!empty($attributes['start_at'])) {
+                $updateAttributes['start_at'] = Carbon::createFromFormat(
+                    TimeFormatsEnum::NORMAL_DATETIME->value,
+                    $attributes['start_at']
+                );
+            } else {
+                $updateAttributes['start_at'] = null;
+            }
         }
+
         if (isset($attributes['end_at'])) {
-            $updateAttributes['end_at'] = Verta::createFromFormat($attributes['end_at'], 'Y-m-d H:i:s');
+            if (!empty($attributes['end_at'])) {
+                $updateAttributes['end_at'] = Carbon::createFromFormat(
+                    TimeFormatsEnum::NORMAL_DATETIME->value,
+                    $attributes['end_at']
+                );
+            } else {
+                $updateAttributes['end_at'] = null;
+            }
         }
+
         if (isset($attributes['is_published'])) {
             $updateAttributes['is_published'] = to_boolean($attributes['is_published']);
         }

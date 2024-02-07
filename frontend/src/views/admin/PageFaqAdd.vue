@@ -29,7 +29,7 @@
 
           <div class="p-2">
             <partial-input-label title="کلمات کلیدی"/>
-            <vue3-tags-input
+            <base-tags-input
               :tags="tags"
               placeholder="کلمات کلیدی خود را وارد نمایید"
               @on-tags-changed="(t) => {tags = t}"
@@ -79,9 +79,9 @@ import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
-import Vue3TagsInput from "vue3-tags-input";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseEditor from "@/components/base/BaseEditor.vue";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const canSubmit = ref(true)
 

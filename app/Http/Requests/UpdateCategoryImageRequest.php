@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Category;
-use App\Models\FileManager;
+use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateCategoryImageRequest extends FormRequest
@@ -30,7 +30,7 @@ class UpdateCategoryImageRequest extends FormRequest
             ],
             'image' => [
                 'required',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
         ];
     }

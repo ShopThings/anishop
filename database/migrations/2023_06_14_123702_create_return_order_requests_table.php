@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->string('code', 25)->unique();
             $table->text('description');
             $table->text('not_accepted_description');
-            $table->enum('status', array_map(fn($item) => $item->name, ReturnOrderStatusesEnum::cases()))
+            $table->enum('status', array_map(fn($item) => $item->value, ReturnOrderStatusesEnum::cases()))
                 ->default(ReturnOrderStatusesEnum::CHECKING->value);
             $table->boolean('seen_status')->default(false);
             $table->timestamp('status_changed_at')->nullable();

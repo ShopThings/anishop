@@ -23,11 +23,14 @@ class ProductProperty extends Model implements Buyable
     ];
 
     protected $casts = [
+        'discounted_from' => 'datetime',
+        'discounted_until' => 'datetime',
         'is_special' => 'boolean',
         'is_available' => 'boolean',
         'show_coming_soon' => 'boolean',
         'show_call_for_more' => 'boolean',
         'is_published' => 'boolean',
+        'has_separate_shipment' => 'boolean',
     ];
 
     public function nanoIdColumn()

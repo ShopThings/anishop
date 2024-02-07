@@ -3,8 +3,8 @@
     <template #header>
       نمایش آدرس‌های کاربر -
       <span
-        v-if="user?.id"
-        class="text-teal-600"
+          v-if="user?.id"
+          class="text-teal-600"
       >{{
           (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
         }}</span>
@@ -14,18 +14,18 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="false"
-            :enable-multi-operation="false"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="false"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :enable-search-box="false"
+              :enable-multi-operation="false"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="false"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
           >
             <template #city_name="{value}">
               {{ value.city.name }}
@@ -36,8 +36,8 @@
 
             <template v-slot:op="{value}">
               <base-button
-                class="text-white bg-black text-sm !py-1"
-                @click="showDetails(value)"
+                  class="text-white bg-black text-sm !py-1"
+                  @click="showDetails(value)"
               >
                 مشاهده جزئیات
               </base-button>
@@ -55,7 +55,36 @@
             </template>
 
             <template #body>
-              {{ detailItem }}
+              <ul class="divide-y">
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">نام:</span>
+                  <span class="grow">{{ detailItem.full_name }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">موبایل:</span>
+                  <span class="grow">{{ detailItem.mobile }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">کد پستی:</span>
+                  <span class="grow">{{ detailItem.postal_code }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">آدرس:</span>
+                  <span class="grow">{{ detailItem.address }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">شهر:</span>
+                  <span class="grow">{{ detailItem.city.name }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">استان:</span>
+                  <span class="grow">{{ detailItem.province.name }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">ایجاد شده در تاریخ:</span>
+                  <span class="grow">{{ detailItem.created_at }}</span>
+                </li>
+              </ul>
             </template>
           </partial-dialog>
         </template>

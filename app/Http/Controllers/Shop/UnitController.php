@@ -123,7 +123,7 @@ class UnitController extends Controller
     {
         $this->authorize('delete', $unit);
 
-        $permanent = $request->user()->id === $unit->creator()?->id;
+        $permanent = $request->user()->id === $unit->creator?->id;
         $res = $this->service->deleteById($unit->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

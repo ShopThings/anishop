@@ -122,7 +122,7 @@ class FaqController extends Controller
     {
         $this->authorize('delete', $faq);
 
-        $permanent = $request->user()->id === $faq->creator()?->id;
+        $permanent = $request->user()->id === $faq->creator?->id;
         $res = $this->service->deleteById($faq->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

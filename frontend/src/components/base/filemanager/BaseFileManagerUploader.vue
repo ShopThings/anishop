@@ -142,7 +142,7 @@
           </div>
           <div
             v-if="file.status === UploadTypes.UPLOADING"
-            class="flex flex-row flex-row-reverse grow items-center w-full"
+            class="flex flex-row-reverse grow items-center w-full"
           >
             <div class="h-2 w-full grow rounded-full bg-white bg-opacity-80 shadow-md">
               <div class="bg-blue-700 h-full rounded-full" :style="'width:' + file.progress + '%'"></div>
@@ -224,6 +224,11 @@ function startUploadFiles() {
   canUpload.value = false
   let counter = 0;
   let uploadCheckInterval = null;
+
+  // make some props local to prevent unwanted change of uploading path and disk
+  const disk = props.disk
+  const path = props.path
+
   files.value.forEach((file) => {
     const controller = new AbortController();
 
@@ -231,8 +236,8 @@ function startUploadFiles() {
     file.errorMessage = null
 
     let formData = new FormData()
-    formData.append('disk', props.disk)
-    formData.append('path', props.path)
+    formData.append('disk', disk)
+    formData.append('path', path)
     formData.append('file', file.file)
 
     useRequest(apiRoutes.admin.files.upload, {

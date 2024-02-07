@@ -24,4 +24,12 @@ class Coupon extends Model
         'end_at' => 'datetime',
         'is_published' => 'boolean',
     ];
+
+    /**
+     * @return int
+     */
+    public function getUsedCount(): int
+    {
+        return OrderDetail::query()->where('coupon_code', $this->code)->count();
+    }
 }

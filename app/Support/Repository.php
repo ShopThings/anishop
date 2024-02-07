@@ -6,13 +6,25 @@ use App\Contracts\RepositoryInterface;
 use App\Support\Model\AuthenticatableExtendedModel;
 use App\Support\Model\ExtendedModel;
 use App\Support\WhereBuilder\GetterExpressionInterface;
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class Repository implements RepositoryInterface
 {
+    /**
+     * @var array
+     */
+    private array $with = [];
+
+    /**
+     * @var array
+     */
+    private array $withWhereHas = [];
+
     /**
      * @var bool $useSoftDeletes
      */
@@ -34,6 +46,62 @@ abstract class Repository implements RepositoryInterface
     protected function useSoftDeletes(bool $res = true): static
     {
         $this->useSoftDeletes = $res;
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function newWith(array|string $relations, Closure|null|string $callback = null): static
+    {
+        $this->resetWith();
+        return $this->with($relations, $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function with(array|string $relations, Closure|null|string $callback = null): static
+    {
+        if (is_array($relations)) {
+            foreach ($relations as $relation) {
+                $this->with[] = [
+                    'relations' => $relation,
+                    'callback' => $callback,
+                ];
+            }
+        } elseif (trim($relations) !== '') {
+            $this->with[] = compact('relations', 'callback');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function newWithWhereHas(array|string $relations, Closure|null|string $callback = null): static
+    {
+        $this->resetWithWhereHas();
+        return $this->withWhereHas($relations, $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withWhereHas(array|string $relations, Closure|null|string $callback = null): static
+    {
+        if (is_array($relations)) {
+            foreach ($relations as $relation) {
+                $this->withWhereHas[] = [
+                    'relations' => $relation,
+                    'callback' => $callback,
+                ];
+            }
+        } elseif (trim($relations) !== '') {
+            $this->withWhereHas[] = compact('relations', 'callback');
+        }
+
         return $this;
     }
 
@@ -225,9 +293,26 @@ abstract class Repository implements RepositoryInterface
         $model = $this->model->newQuery()->findOrFail($id);
 
         if ($permanent) {
-            return $model->forceDelete();
+            if ($model instanceof EloquentCollection) {
+                foreach ($model as $item) {
+                    $item->forceDelete();
+                }
+            } else {
+                $model->forceDelete();
+            }
+
+            return true;
         }
-        return $model->delete();
+
+        if ($model instanceof EloquentCollection) {
+            foreach ($model as $item) {
+                $item->delete();
+            }
+        } else {
+            $model->delete();
+        }
+
+        return true;
     }
 
     /**
@@ -268,6 +353,7 @@ abstract class Repository implements RepositoryInterface
             }
         }
 
+        $this->prepareWith($query);
         $query->when(
             !is_null($where) && !empty($where->getStatement()),
             function (Builder $query) use ($where) {
@@ -282,5 +368,52 @@ abstract class Repository implements RepositoryInterface
         }
 
         return $query;
+    }
+
+    /**
+     * @param $query
+     * @return void
+     */
+    protected function prepareWith($query): void
+    {
+        $query
+            ->when(count($this->with), function (Builder $query) {
+                foreach ($this->with as $item) {
+                    if ($item['callback'] !== null) {
+                        $query->with($item['relations'], $item['callback']);
+                    } else {
+                        $query->with($item['relations']);
+                    }
+                }
+            })
+            ->when(count($this->withWhereHas), function (Builder $query) {
+                foreach ($this->withWhereHas as $item) {
+                    if ($item['callback'] !== null) {
+                        $query->withWhereHas($item['relations'], $item['callback']);
+                    } else {
+                        $query->withWhereHas($item['relations']);
+                    }
+                }
+            });
+
+        // reset with array for further operation
+        $this->resetWith();
+        $this->resetWithWhereHas();
+    }
+
+    /**
+     * @return void
+     */
+    private function resetWith(): void
+    {
+        $this->with = [];
+    }
+
+    /**
+     * @return void
+     */
+    private function resetWithWhereHas(): void
+    {
+        $this->withWhereHas = [];
     }
 }

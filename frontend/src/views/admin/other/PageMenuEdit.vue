@@ -40,8 +40,9 @@
                   <base-input
                     label-title="اولویت"
                     placeholder="وارد نمایید"
-                    type="number"
+                    type="text"
                     :min="0"
+                    :money-mask="true"
                     name="priority"
                     :value="menu?.priority"
                   >

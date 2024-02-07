@@ -126,7 +126,7 @@ class BrandController extends Controller
     {
         $this->authorize('delete', $brand);
 
-        $permanent = $request->user()->id === $brand->creator()?->id;
+        $permanent = $request->user()->id === $brand->creator?->id;
         $res = $this->service->deleteById($brand->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

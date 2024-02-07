@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\OrderItemShowResource;
 use App\Http\Resources\Showing\ReturnOrderShowResource;
@@ -18,13 +19,6 @@ class OrderDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $this->resource->load('user');
-        $this->resource->load('sendStatusChanger');
-        $this->resource->load('orders');
-        $this->resource->load('orders.payments');
-        $this->resource->load('items');
-        $this->resource->load('returnOrder');
-
         return [
             'id' => $this->id,
             'user' => new UserShowResource($this->whenLoaded('user')),
@@ -50,16 +44,32 @@ class OrderDetailResource extends JsonResource
             'send_status_changed_at' => $this->send_status_changed_at
                 ? verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'send_status_changed_by' => new UserShowResource($this->send_status_changer),
+            'send_status_changed_by' => new UserShowResource($this->whenLoaded('send_status_changer')),
             'is_needed_factor' => $this->is_needed_factor,
             'is_in_place_delivery' => $this->is_in_place_delivery,
             'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
             'ordered_at' => $this->ordered_at
                 ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'orders' => OrderResource::collection($this->orders),
-            'items' => OrderItemShowResource::collection($this->items),
-            'return_order' => new ReturnOrderShowResource($this->return_order),
+            'payment_status' => $this->hasCompletePaid()
+                ? PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::SUCCESS)
+                : (
+                $this->hasAnyPaid()
+                    ? PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::PARTIAL_SUCCESS)
+                    : PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAYED)
+                ),
+            'orders' => OrderResource::collection($this->whenLoaded('orders')),
+            'order_payments' => $this->when(
+                $this->whenLoaded('orders') &&
+                $this->orders->relationLoaded('payments'),
+                function () {
+                    return $this->orders->payments?->id
+                        ? $this->orders->payments
+                        : null;
+                }
+            ),
+            'items' => OrderItemShowResource::collection($this->$this->whenLoaded('items')),
+            'return_order' => new ReturnOrderShowResource($this->whenLoaded('return_order')),
         ];
     }
 }

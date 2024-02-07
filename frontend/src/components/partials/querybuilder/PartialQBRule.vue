@@ -72,6 +72,7 @@
                 :max="hasTwoValues.indexOf(selectedOperator.value) !== -1 ? (rule.value2 || getInput?.max ? parseInt(rule.value2 || getInput?.max) : null) : (getInput?.max ? parseInt(getInput?.max) : null)"
                 :placeholder="getInput?.placeholder"
                 :value="rule.value"
+                klass="no-spin-arrow"
                 @input="(v) => {rule.value = v}"
               >
                 <template #icon>
@@ -159,6 +160,7 @@
                   :max="getInput?.max"
                   :placeholder="getInput?.placeholder"
                   :value="rule.value2"
+                  klass="no-spin-arrow"
                   @input="(v) => {rule.value2 = v}"
                 >
                   <template #icon>

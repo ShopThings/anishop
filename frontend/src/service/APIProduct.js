@@ -43,6 +43,52 @@ export const UnitAPI = Object.assign(
 export const ProductAPI = Object.assign(
   GenericAPI(apiRoutes.admin.products, {replacement: 'product'}),
   {
+    fetchVariants(productId, callback) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.products.showVariants, {product: productId}),
+        null,
+        callback
+      )
+    },
+
+    createGallery(productId, data, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.products.galleyStore, {product: productId}),
+        {
+          method: 'POST',
+          data,
+        },
+        callbacks
+      )
+    },
+
+    fetchGallery(productId, callback) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.products.galleyShow, {product: productId}),
+        null,
+        callback
+      )
+    },
+
+    createRelativeProducts(productId, data, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.products.relatedProductsStore, {product: productId}),
+        {
+          method: 'POST',
+          data,
+        },
+        callbacks
+      )
+    },
+
+    fetchRelativeProducts(productId, callback) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.products.relatedProductsShow, {product: productId}),
+        null,
+        callback
+      )
+    },
+
     modifyProducts(productId, data, callbacks) {
       useRequest(
         apiReplaceParams(apiRoutes.admin.products.modifyProducts, {product: productId}),

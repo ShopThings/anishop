@@ -44,7 +44,7 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.index) !== -1 && except.indexOf(defaultUrlKeys.index) === -1) {
     api.fetchAll = (params, callbacks) => {
-      useRequest(url[urlKeys.index], {params}, callbacks)
+      useRequest(apiReplaceParams(url[urlKeys.index]), {params}, callbacks)
     }
   }
 

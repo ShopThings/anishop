@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\CategoryShowResource;
-use App\Http\Resources\Showing\ImageShowResource;
+use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,10 +21,18 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'parent_id' => $this->parent_id,
-            'parent' => new CategoryShowResource($this->whenLoaded('parent')),
+            'parent' => $this->when($this->parent_id, new CategoryShowResource($this->parent)),
             'name' => $this->name,
             'slug' => $this->slug,
-            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'image' => $this->when(
+                $this->whenLoaded('categoryImage') &&
+                $this->categoryImage->relationLoaded('image'),
+                function () {
+                    return $this->categoryImage->image?->id
+                        ? new ImageShowInfoResource($this->categoryImage->image)
+                        : null;
+                }
+            ),
             'ancestry' => $this->ancestry,
             'level' => $this->level,
             'priority' => $this->priority,

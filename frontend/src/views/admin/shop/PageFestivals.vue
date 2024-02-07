@@ -18,38 +18,44 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="true"
+              :selection-operations="selectionOperations"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="true"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
           >
             <template v-slot:start_at="{value}">
-
+              <span v-if="value.start_at" class="text-xs">{{ value.start_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:end_at="{value}">
-
+              <span v-if="value.end_at" class="text-xs">{{ value.end_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
+                  :items="operations"
+                  :data="value"
+                  :container="getMenuContainer"
               />
             </template>
           </base-datatable>
@@ -65,14 +71,14 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import {FestivalAPI} from "@/service/APIShop.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -93,21 +99,45 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ شروع",
       field: "start_at",
+      cellClasses: (row) => {
+        if (!row.normal_end_at) return ''
+
+        const end = new Date(row.normal_end_at)
+        if (end < (new Date)) {
+          return 'bg-rose-100'
+        } else {
+          return 'bg-emerald-100'
+        }
+      },
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ پایان",
       field: "end_at",
+      cellClasses: (row) => {
+        if (!row.normal_end_at) return ''
+
+        const end = new Date(row.normal_end_at)
+        if (end < (new Date)) {
+          return 'bg-rose-100'
+        } else {
+          return 'bg-emerald-100'
+        }
+      },
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "وضعیت نمایش",
       field: "is_published",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "تاریخ ایجاد",
@@ -127,21 +157,45 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ شروع",
       field: "start_at",
+      cellClasses: (row) => {
+        if (!row.normal_end_at) return ''
+
+        const end = new Date(row.normal_end_at)
+        if (end < (new Date)) {
+          return 'bg-rose-100'
+        } else {
+          return 'bg-emerald-100'
+        }
+      },
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ پایان",
       field: "end_at",
+      cellClasses: (row) => {
+        if (!row.normal_end_at) return ''
+
+        const end = new Date(row.normal_end_at)
+        if (end < (new Date)) {
+          return 'bg-rose-100'
+        } else {
+          return 'bg-emerald-100'
+        }
+      },
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "وضعیت نمایش",
       field: "is_published",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "تاریخ ایجاد",
@@ -178,7 +232,7 @@ const operations = [
         router.push({
           name: 'admin.festival.products',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -194,7 +248,7 @@ const operations = [
         router.push({
           name: 'admin.festival.edit',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -212,10 +266,8 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.festivals.destroy, {festival: data.id}), {
-            method: 'DELETE',
-          }, {
-            success: () => {
+          FestivalAPI.deleteById(data.slug, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelectionItem(data)
@@ -238,15 +290,15 @@ const selectionOperations = [
     },
     event: {
       click: (items) => {
-        const ids = []
+        const slugs = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
-              ids.push(items[item].id)
+            if (items[item].slug)
+              slugs.push(items[item].slug)
           }
         }
 
-        if (!ids.length) {
+        if (!slugs.length) {
           toast.info('ابتدا آیتم‌های مورد نیاز را انتخاب کنید و سپس دوباره تلاش نمایید.')
           return
         }
@@ -254,13 +306,8 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.festivals.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
-            success: () => {
+          FestivalAPI.deleteByIds(slugs, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelection()
@@ -277,29 +324,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.festivals.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  FestivalAPI.fetchAll({limit, offset, order, sort, text}, {
+    success(response) {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error() {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally() {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

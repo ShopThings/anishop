@@ -123,7 +123,7 @@ class ColorController extends Controller
     {
         $this->authorize('delete', $color);
 
-        $permanent = $request->user()->id === $color->creator()?->id;
+        $permanent = $request->user()->id === $color->creator?->id;
         $res = $this->service->deleteById($color->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

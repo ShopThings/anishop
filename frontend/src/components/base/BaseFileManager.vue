@@ -89,39 +89,13 @@
             @row-clicked="handleFileSelection"
           >
             <template #image="{value}">
-              <FolderIcon
-                v-if="value.is_dir"
-                :title="value.name"
-                class="w-16 h-16 text-cyan-600 shrink-0 cursor-pointer hover:text-black transition"
-                @click="() => {changeHash(value.full_path)}"
-              />
-              <base-lazy-image
-                v-else-if="isImageExt(value.extension)"
-                :alt="value.name"
-                :title="value.name"
-                :lazy-src="value.full_path"
-                :is-local="false"
-                :size="FileSizes.SMALL"
-                class="w-20 h-20 object-contain shrink-0 border rounded-lg cursor-pointer"
-                @click="() => {
+              <partial-show-image
+                :item="value"
+                @click-dir="() => {changeHash(value.full_path)}"
+                @click-image="() => {
                   currentPreviewSlide = previewingItemsIndex.findIndex(item => value.full_path === item)
                   onLightboxShow()
                 }"
-              ></base-lazy-image>
-              <MusicalNoteIcon
-                v-else-if="isAudioExt(value.extension)"
-                :title="value.name"
-                class="w-16 h-16 text-cyan-600 shrink-0 hover:text-black transition"
-              />
-              <FilmIcon
-                v-else-if="isVideoExt(value.extension)"
-                :title="value.name"
-                class="w-16 h-16 text-rose-600 shrink-0 hover:text-black transition"
-              />
-              <DocumentTextIcon
-                v-else
-                :title="value.name"
-                class="w-16 h-16 text-gray-700 shrink-0 hover:text-black transition"
               />
             </template>
 
@@ -132,8 +106,8 @@
                 {{ value.full_name }}
               </div>
               <div v-else-if="isImageExt(value.extension)"
-                   class="cursor-pointer hover:text-black transition"
-                   @click="onLightboxShow">{{ value.full_name }}
+                   class="hover:text-black transition">
+                {{ value.full_name }}
               </div>
             </template>
 
@@ -219,8 +193,7 @@
 <script setup>
 import {
   ChevronLeftIcon, ServerIcon, ChevronDownIcon, ServerStackIcon,
-  ScissorsIcon, DocumentDuplicateIcon, DocumentTextIcon,
-  FilmIcon, MusicalNoteIcon, FolderIcon,
+  ScissorsIcon, DocumentDuplicateIcon,
 } from '@heroicons/vue/24/outline/index.js';
 import BaseFileManagerUploader from "./filemanager/BaseFileManagerUploader.vue";
 import BaseFileManagerFolderCreator from "./filemanager/BaseFileManagerFolderCreator.vue";
@@ -233,12 +206,11 @@ import BaseFileManagerContextMenu from "./filemanager/BaseFileManagerContextMenu
 import BaseLoadingPanel from "./BaseLoadingPanel.vue";
 import {useRoute, useRouter} from "vue-router";
 import BaseFloatingDropDown from "./BaseFloatingDropDown.vue";
-import {FileSizes, useFileList} from "@/composables/file-list.js";
+import {useFileList} from "@/composables/file-list.js";
 import {useConfirmToast, useLoadingToast} from "@/composables/toast-helper.js";
 import BaseFileManagerTreeDirectory from "./filemanager/BaseFileManagerTreeDirectory.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
 import BaseFileManagerRename from "./filemanager/BaseFileManagerRename.vue";
-import BaseLazyImage from "./BaseLazyImage.vue";
 import {FilemanagerAPI} from "@/service/APIFilemanager.js";
 import LoaderCircle from "./loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
@@ -248,6 +220,7 @@ import {useLightbox} from "@/composables/lightbox-view.js";
 import {apiRoutes} from "@/router/api-routes.js";
 import {trimChar} from "@/composables/helper.js";
 import {watchImmediate} from "@vueuse/core";
+import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 
 const props = defineProps({
   hasCreateFolder: {
@@ -314,7 +287,7 @@ const toast = useToast()
 const router = useRouter()
 const route = useRoute()
 
-const {isImageExt, isAudioExt, isVideoExt} = useFileList()
+const {isImageExt} = useFileList()
 
 const currentStorage = ref({
   path: 'public',
@@ -945,16 +918,16 @@ doSearch(0, -1, 'id', 'desc')
 
 function handleFileSelection(file, row) {
   if (datatable.value && props.selectableFiles && !file.is_dir && row) {
-    datatable.value.table.querySelector('.file-selection').removeClass('file-selection')
-    row.addClass('file-selection')
+    datatable.value.table.querySelector('.file-selection')?.classList.remove('file-selection')
+    row.classList.add('file-selection')
 
     emit('file-selected', file)
   }
 }
 </script>
 
-<style scoped>
+<style>
 .file-selection {
-  background-color: rgba(160, 42, 229, 0.07);
+  background-color: rgba(42, 223, 229, 0.14) !important;
 }
 </style>

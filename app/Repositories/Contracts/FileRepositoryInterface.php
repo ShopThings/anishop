@@ -129,6 +129,7 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @param bool $getFiles
      * @param string|null $fileSize
      * @param bool $getAllVariants
+     * @param bool $justGetFiles
      * @return bool|array
      */
     public function fileExists(
@@ -136,7 +137,8 @@ interface FileRepositoryInterface extends RepositoryInterface
         string  $disk,
         bool    $getFiles = false,
         ?string $fileSize = null,
-        bool    $getAllVariants = false
+        bool    $getAllVariants = false,
+        bool    $justGetFiles = false
     ): bool|array;
 
     /**

@@ -98,6 +98,9 @@ class CouponController extends Controller
         $this->authorize('update', $coupon);
 
         $validated = $request->validated();
+
+        unset($validated['code']);
+
         $model = $this->service->updateById($coupon->id, $validated);
 
         if (!is_null($model)) {
@@ -122,7 +125,7 @@ class CouponController extends Controller
     {
         $this->authorize('delete', $coupon);
 
-        $permanent = $request->user()->id === $coupon->creator()?->id;
+        $permanent = $request->user()->id === $coupon->creator?->id;
         $res = $this->service->deleteById($coupon->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

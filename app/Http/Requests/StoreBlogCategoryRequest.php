@@ -37,6 +37,7 @@ class StoreBlogCategoryRequest extends FormRequest
             'priority' => [
                 'required',
                 'numeric',
+                'min:0',
             ],
             'keywords' => [
                 'array',

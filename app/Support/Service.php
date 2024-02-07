@@ -48,12 +48,24 @@ abstract class Service implements ServiceInterface
      */
     public function batchDeleteByIds(array $ids, bool $permanent = false): bool
     {
+        if (!count($ids)) return true;
+
         if ($permanent) {
             Gate::authorize('forceDelete', $this->repository->find($ids));
         }
 
-        if (!count($ids)) return true;
-        return (bool)$this->repository->deleteBatch($ids, $permanent);
+        return (bool)$this->repository->delete($ids, $permanent);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function batchDeleteBySlugs(array $slugs, bool $permanent = false): bool
+    {
+        $where = new WhereBuilder();
+        $where->whereIn('slug', $slugs);
+        $ids = $this->repository->all(columns: ['id'], where: $where->build())->pluck('id');
+        return $this->batchDeleteByIds($ids->toArray(), $permanent);
     }
 
     /**

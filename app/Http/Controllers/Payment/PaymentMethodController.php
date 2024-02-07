@@ -127,7 +127,7 @@ class PaymentMethodController extends Controller
     {
         $this->authorize('delete', $paymentMethod);
 
-        $permanent = $request->user()->id === $paymentMethod->creator()?->id;
+        $permanent = $request->user()->id === $paymentMethod->creator?->id;
         $res = $this->service->deleteById($paymentMethod->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

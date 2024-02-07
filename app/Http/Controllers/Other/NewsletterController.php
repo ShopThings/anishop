@@ -96,7 +96,7 @@ class NewsletterController extends Controller
     {
         $this->authorize('delete', $newsletter);
 
-        $permanent = $request->user()->id === $newsletter->creator()?->id;
+        $permanent = $request->user()->id === $newsletter->creator?->id;
         $res = $this->service->deleteById($newsletter->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

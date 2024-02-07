@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
-use App\Http\Resources\Showing\ImageShowResource;
+use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -22,7 +22,7 @@ class BrandResource extends JsonResource
             'name' => $this->name,
             'latin_name' => $this->latin_name,
             'slug' => $this->slug,
-            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'image' => new ImageShowInfoResource($this->image),
             'keywords' => $this->keywords,
             'show_in_slider' => $this->show_in_slider,
             'is_published' => $this->is_published,

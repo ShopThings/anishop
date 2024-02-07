@@ -9,22 +9,22 @@
       ></div>
       <div
         :class="[
-                    'rounded-full border p-3 relative my-6 flex justify-center bg-white',
-                    currStepIdx === idx ? 'border-indigo-600 bg-indigo-50' : 'border-slate-300',
-                    idx < currStepIdx ? 'bg-emerald-100' : '',
-                    allowChangeStepsByClick ? 'cursor-pointer' : ''
-                ]"
+            'rounded-full border p-3 relative my-6 flex justify-center bg-white',
+            currStepIdx === idx ? 'border-indigo-600 bg-indigo-50' : 'border-slate-300',
+            idx < currStepIdx ? 'bg-emerald-100' : '',
+            allowChangeStepsByClick ? 'cursor-pointer' : ''
+        ]"
         @click="handleStepClick(step, key, idx)"
       >
         <component
           v-if="step.icon"
           :is="outline[step.icon]"
           :class="[
-                        'w-6 h-6 transition',
-                        currStepIdx === idx ? 'text-indigo-600' : 'text-slate-400',
-                        idx < currStepIdx ? 'opacity-60 scale-90' : '',
-                        step?.iconClass,
-                    ]"
+              'w-6 h-6 transition',
+              currStepIdx === idx ? 'text-indigo-600' : 'text-slate-400',
+              idx < currStepIdx ? 'opacity-60 scale-90' : '',
+              step?.iconClass,
+          ]"
         />
         <outline.CheckCircleIcon
           v-if="idx < currStepIdx"
@@ -33,20 +33,21 @@
         <label
           v-if="step.text"
           :class="[
-                        'absolute left-1/2 top-full translate-y-full -translate-x-1/2 text-xs whitespace-nowrap',
-                        currStepIdx === idx ? 'text-indigo-600' : '',
-                        idx > currStepIdx ? 'text-slate-500' : '',
-                        step?.textClass,
-                    ]"
+              'absolute left-1/2 top-full translate-y-full -translate-x-1/2 text-xs whitespace-nowrap',
+              currStepIdx === idx ? 'text-indigo-600' : '',
+              idx > currStepIdx ? 'text-slate-500' : '',
+              step?.textClass,
+          ]"
         >{{ step.text }}</label>
       </div>
     </template>
   </div>
 
   <VTransitionSlideFadeDownY mode="out-in">
-    <template is="div"
-              v-for="(step, idx) in Object.keys(steps)"
-              :key="step"
+    <template
+      is="div"
+      v-for="(step, idx) in Object.keys(steps)"
+      :key="step"
     >
       <template v-if="simple">
         <div
@@ -117,9 +118,12 @@ import * as outline from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
+import isFunction from "lodash.isfunction";
 
 const props = defineProps({
   steps: Object,
+  prevCheckFn: Function,
+  nextCheckFn: Function,
   currentStep: {
     type: String,
     required: true,
@@ -140,7 +144,12 @@ const props = defineProps({
   manual: Boolean,
   simple: Boolean,
 })
-const emit = defineEmits(['next', 'prev', 'finish', 'update:currentStep', 'update:allowNextStep', 'update:allowPrevStep'])
+const emit = defineEmits([
+  'next', 'prev', 'finish',
+  'update:currentStep',
+  'update:allowNextStep',
+  'update:allowPrevStep'
+])
 
 const stepsKeys = computed(() => {
   return Object.keys(props.steps)
@@ -196,7 +205,11 @@ function handleStepClick(step, key, idx) {
 function handlePrevClick() {
   if (currStepIdx.value - 1 < 0 || !allowPrev.value) return
 
-  const res = emit('prev', currStep.value, currStepIdx.value)
+  emit('prev', currStep.value, currStepIdx.value)
+
+  let res = true
+  if (isFunction(props.prevCheckFn))
+    res = props.prevCheckFn(currStep.value, currStepIdx.value)
 
   if (false !== res)
     currStepIdx.value = currStepIdx.value - 1
@@ -205,7 +218,11 @@ function handlePrevClick() {
 function handleNextClick() {
   if (currStepIdx.value + 1 > lastStep.value || !allowNext.value) return
 
-  const res = emit('next', currStep.value, currStepIdx.value)
+  emit('next', currStep.value, currStepIdx.value)
+
+  let res = true
+  if (isFunction(props.nextCheckFn))
+    res = props.nextCheckFn(currStep.value, currStepIdx.value)
 
   if (false !== res)
     currStepIdx.value = currStepIdx.value + 1

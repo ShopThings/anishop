@@ -3,7 +3,6 @@
 namespace App\Support\Traits;
 
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 trait RepositoryTrait
@@ -24,6 +23,7 @@ trait RepositoryTrait
         array $order = []
     )
     {
+        $this->prepareWith($query);
         if (count($order)) {
             foreach ($order as $column => $sort) {
                 $query->orderBy($column, $sort);

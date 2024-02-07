@@ -40,18 +40,20 @@
                   </base-input>
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                  <partial-input-label title="تاریخ شروع"/>
+                  <partial-input-label title="تاریخ شروع" :is-optional="true"/>
                   <date-picker
                     v-model="startDate"
                     placeholder="انتخاب تاریخ شروع"
                   />
+                  <partial-input-error-message :error-message="errors.start_at"/>
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                  <partial-input-label title="تاریخ پایان"/>
+                  <partial-input-label title="تاریخ پایان" :is-optional="true"/>
                   <date-picker
                     v-model="endDate"
                     placeholder="انتخاب تاریخ پایان"
                   />
+                  <partial-input-error-message :error-message="errors.end_at"/>
                 </div>
               </div>
 
@@ -59,11 +61,11 @@
                 <base-animated-button
                   type="submit"
                   class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                  :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
+                      v-if="!canSubmit"
                       main-container-klass="absolute w-full h-full top-0 left-0"
                       big-circle-color="border-transparent"
                     />
@@ -85,8 +87,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
+import {onMounted, ref} from "vue";
 import yup from "@/validation/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -97,44 +98,83 @@ import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {FestivalAPI} from "@/service/APIShop.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
 const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('slug', null, false)
 
-const loading = ref(false)
-const canSubmit = ref(true)
-
+const loading = ref(true)
 const festival = ref(null)
 
 const publishStatus = ref(true)
 const startDate = ref(null)
 const endDate = ref(null)
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+    title: yup.string().required('عنوان جشنواره را وارد نمایید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (startDate.value && endDate.value) {
+    const start = new Date(startDate.value)
+    const end = new Date(endDate.value)
+
+    if (start > end) {
+      actions.setFieldError('start_at', 'تاریخ شروع بزرگتر تاریخ پایان می‌باشد!')
+      return
+    }
+  }
+
+  canSubmit.value = false
+
+  FestivalAPI.updateById(idParam.value, {
+    title: values.title,
+    start_at: startDate.value,
+    end_at: endDate.value,
+    is_published: publishStatus.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+
+      if (response.data.slug !== festival.slug) {
+        router.push({name: 'admin.festival.edit', params: {slug: response.data.slug}})
+      }
+
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+
+      return false
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.festivals.show, {festival: idParam.value}), null, {
-  //     success: (response) => {
-  //         festival.value = response.data
-  //         startDate.value = response.data.start_date
-  //         endDate.value = response.data.end_date
-  //
-  //         loading.value = false
-  //     },
-  // })
+  FestivalAPI.fetchById(idParam.value, {
+    success(response) {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  festival.value = item
+  startDate.value = item.normal_start_at
+  endDate.value = item.normal_end_at
+}
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <label
-      class="text-xs py-1 px-2 mt-1 inline-block rounded-md"
+      class="text-xs py-1 px-2.5 mt-1 inline-block rounded-sm"
       :class="klass"
     >
       <slot v-if="slot['text']" name="text"></slot>
@@ -17,7 +17,7 @@ defineProps({
   text: String,
   klass: {
     type: String,
-    default: 'text-white bg-blue-500',
+    default: 'text-black bg-sky-100 border-r-4 border-sky-500',
   },
 })
 

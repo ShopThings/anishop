@@ -7,6 +7,8 @@ import VueLazyLoad from 'vue3-lazyload';
 import Vue3ColorPicker from "vue3-colorpicker";
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 import VueEasyLightbox from "vue-easy-lightbox";
+import VueTheMask from "vue-the-mask";
+import money from "v-money";
 
 // import function to register Swiper custom elements
 import {register} from 'swiper/element/bundle';
@@ -39,6 +41,15 @@ createApp(App)
   .use(head)
   .use(pinia)
   .use(router)
+  .use(VueTheMask)
+  .use(money, {
+    decimal: '.',
+    thousands: ',',
+    prefix: '',
+    suffix: '',
+    precision: 0,
+    masked: false
+  })
   .use(FloatingVue)
   .use(VueLazyLoad)
   .use(ContextMenu)

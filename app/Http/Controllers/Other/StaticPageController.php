@@ -123,7 +123,7 @@ class StaticPageController extends Controller
     {
         $this->authorize('delete', $staticPage);
 
-        $permanent = $request->user()->id === $staticPage->creator()?->id;
+        $permanent = $request->user()->id === $staticPage->creator?->id;
         $res = $this->service->deleteById($staticPage->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

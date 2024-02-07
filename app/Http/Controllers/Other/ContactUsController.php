@@ -93,7 +93,7 @@ class ContactUsController extends Controller
     {
         $this->authorize('delete', $contactUs);
 
-        $permanent = $request->user()->id === $contactUs->creator()?->id;
+        $permanent = $request->user()->id === $contactUs->creator?->id;
         $res = $this->service->deleteById($contactUs->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

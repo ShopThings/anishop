@@ -1,3 +1,41 @@
+export const PAYMENT_METHOD_TYPES = {
+  BEHPARDAKHT: {
+    value: 'behpardakht',
+    text: 'درگاه بانک - به پرداخت',
+    type: 'bank_gateway',
+  },
+  IDPAY: {
+    value: 'idpay',
+    text: 'درگاه بانک - آیدی پی',
+    type: 'bank_gateway',
+  },
+  IRANKISH: {
+    value: 'irankish',
+    text: 'درگاه بانک - ایران کیش',
+    type: 'bank_gateway',
+  },
+  PARSIAN: {
+    value: 'parsian',
+    text: 'درگاه بانک - تجارت الکترونیک پارسیان',
+    type: 'bank_gateway',
+  },
+  SADAD: {
+    value: 'sadad',
+    text: 'درگاه بانک - سداد',
+    type: 'bank_gateway',
+  },
+  SEPEHR: {
+    value: 'sepehr',
+    text: 'درگاه بانک - پرداخت الکترونیک سپهر',
+    type: 'bank_gateway',
+  },
+  ZARINPAL: {
+    value: 'zarinpal',
+    text: 'درگاه بانک - زرین پال',
+    type: 'bank_gateway',
+  },
+}
+
 export const PRODUCT_ATTRIBUTE_TYPES = {
   MULTI_SELECT: {
     value: 'multi_select',

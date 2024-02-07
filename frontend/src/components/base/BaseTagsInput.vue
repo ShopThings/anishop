@@ -1,0 +1,37 @@
+<template>
+  <vue3-tags-input
+    :tags="tags"
+    :placeholder="placeholder"
+    :read-only="readOnly"
+    :add-tag-on-keys="addTagOnKeys"
+    @on-tags-changed="(t) => {emit('on-tags-changed', t)}"
+  />
+</template>
+
+<script setup>
+import Vue3TagsInput from "vue3-tags-input";
+import {computed} from "vue";
+
+const props = defineProps({
+  tags: Array,
+  placeholder: String,
+  readOnly: Boolean,
+  addTagOnKeys: {
+    type: Array,
+    // 13: Enter
+    // 188: Comma or ','
+    // 32: Space or ' '
+    default: [13, 188, 32],
+  },
+})
+const emit = defineEmits(['update:tags', 'on-tags-changed'])
+
+const tags = computed({
+  get() {
+    return props.tags
+  },
+  set(value) {
+    emit('update:tags', value)
+  },
+})
+</script>

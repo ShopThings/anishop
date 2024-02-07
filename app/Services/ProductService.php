@@ -14,6 +14,7 @@ use App\Services\Contracts\SettingServiceInterface;
 use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -23,6 +24,8 @@ use function App\Support\Helper\to_boolean;
 
 class ProductService extends Service implements ProductServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected ProductRepositoryInterface $repository,
         protected UnitRepositoryInterface    $unitRepository,
@@ -127,6 +130,8 @@ class ProductService extends Service implements ProductServiceInterface
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'brand_id' => $attributes['brand'],
             'category_id' => $attributes['category'],
@@ -164,6 +169,7 @@ class ProductService extends Service implements ProductServiceInterface
             $updateAttributes['escaped_title'] = NumberConverter::toEnglish($attributes['title']);
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['description'])) {
@@ -196,6 +202,23 @@ class ProductService extends Service implements ProductServiceInterface
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createGalley(int $productId, array $images): bool
+    {
+        $images = $this->_refineGalleryImages($images);
+        return $this->repository->createGallery($productId, $images);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createRelatedProducts(int $productId, array $products): bool
+    {
+        return $this->repository->createRelatedProducts($productId, $products);
     }
 
     /**
@@ -257,6 +280,22 @@ class ProductService extends Service implements ProductServiceInterface
     ): bool
     {
         return $this->repository->updatePriceUsingPercentage($ids, $percentage, $changeType);
+    }
+
+    /**
+     * @param array $images
+     * @return array
+     */
+    public function _refineGalleryImages(array $images): array
+    {
+        $refined = [];
+        foreach ($images as $image) {
+            $imageId = $this->getImageId($image);
+            if (!empty($imageId)) {
+                $refined[] = $imageId;
+            }
+        }
+        return $refined;
     }
 
     /**

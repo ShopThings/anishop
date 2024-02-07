@@ -18,7 +18,8 @@ class StringToArray implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): mixed
     {
-        return explode($this->separator, $value);
+        $v = explode($this->separator, $value);
+        return array_filter($v, fn($item) => trim($item) !== '');
     }
 
     /**

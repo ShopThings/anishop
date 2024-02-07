@@ -70,7 +70,7 @@
 
               <div class="p-2">
                 <partial-input-label title="کلمات کلیدی"/>
-                <vue3-tags-input
+                <base-tags-input
                   :tags="tags"
                   placeholder="کلمات کلیدی خود را وارد نمایید"
                   @on-tags-changed="(t) => {tags = t}"
@@ -130,10 +130,10 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import Vue3TagsInput from "vue3-tags-input";
 import BaseEditor from "@/components/base/BaseEditor.vue";
 import {useToast} from "vue-toastification";
 import {useRoute} from "vue-router";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const route = useRoute()
 const toast = useToast()

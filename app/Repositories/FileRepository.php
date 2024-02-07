@@ -58,9 +58,29 @@ class FileRepository extends Repository implements FileRepositoryInterface
         if (!$overwrite && $this->fileExists($uploadFilename, $disk))
             throw new FileDuplicationException();
 
+        // it is a cleanup step if there is any file in storage but not in DB
+        // to prevent showing multiple same name files in UI
+        $filePath = trim($path . '/' . $this->getNormalizedPath($name . '.' . $extension), '\\/');
+        $cleanupFiles = $this->fileExists(
+            filePath: $filePath,
+            disk: $disk,
+            getFiles: true,
+            getAllVariants: true,
+            justGetFiles: true,
+        );
+
+        if (count($cleanupFiles)) {
+            $diskStorage = Storage::disk($disk);
+            foreach ($cleanupFiles as $f) {
+                $diskStorage->delete($f);
+            }
+        }
+
+        //
+
         DB::beginTransaction();
 
-        $model = $this->create([
+        $model = $this->updateOrCreate([
             'name' => $name,
             'extension' => $extension,
             'path' => $path,
@@ -377,7 +397,8 @@ class FileRepository extends Repository implements FileRepositoryInterface
         string  $disk,
         bool    $getFiles = false,
         ?string $fileSize = null,
-        bool    $getAllVariants = false
+        bool    $getAllVariants = false,
+        bool    $justGetFiles = false
     ): bool|array
     {
         $filePath = $this->getNormalizedPath($filePath);
@@ -391,13 +412,15 @@ class FileRepository extends Repository implements FileRepositoryInterface
 
         if (!Storage::disk($disk)->exists($filePath)) return $getFiles ? [] : false;
 
-        $where = new WhereBuilder('file_manager');
-        $where
-            ->whereEqual('path', $filePath)
-            ->whereEqual('name', $filename);
-        if (!empty($extension)) $where->whereEqual('extension', $extension);
+        if (!$justGetFiles) {
+            $where = new WhereBuilder('file_manager');
+            $where
+                ->whereEqual('path', $filePath)
+                ->whereEqual('name', $filename);
+            if (!empty($extension)) $where->whereEqual('extension', $extension);
 
-        if (!$this->exists($where->build())) return $getFiles ? [] : false;
+            if (!$this->exists($where->build())) return $getFiles ? [] : false;
+        }
 
         if ($getAllVariants) $variantPattern = '(?:\-[a-zA-Z0-9]+)?';
 

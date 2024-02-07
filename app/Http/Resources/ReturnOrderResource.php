@@ -34,7 +34,7 @@ class ReturnOrderResource extends JsonResource
             'requested_at' => $this->requested_at
                 ? verta($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'deleted_by' => new UserShowResource($this->when($this->deleted_by, $this->deleter())),
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'deleted_at' => $this->when(
                 $this->deleted_at,
                 verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

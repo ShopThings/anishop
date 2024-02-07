@@ -25,6 +25,7 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'parent' => [
                 'sometimes',
+                'nullable',
                 'exists:' . Category::class . ',id',
             ],
             'name' => [
@@ -38,6 +39,7 @@ class UpdateCategoryRequest extends FormRequest
             'priority' => [
                 'sometimes',
                 'numeric',
+                'min:0',
             ],
             'show_in_menu' => [
                 'sometimes',

@@ -46,14 +46,20 @@ export function useFileList() {
   }
 
   function isImageExt(ext) {
+    if (!ext) return false
+
     return ['jpeg', 'png', 'jpg', 'gif', 'svg'].indexOf(ext.toLowerCase()) !== -1
   }
 
   function isAudioExt(ext) {
+    if (!ext) return false
+
     return ['mp3'].indexOf(ext.toLowerCase()) !== -1
   }
 
   function isVideoExt(ext) {
+    if (!ext) return false
+
     return ['mp4'].indexOf(ext.toLowerCase()) !== -1
   }
 

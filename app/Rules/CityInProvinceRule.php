@@ -8,7 +8,7 @@ use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class CityInProvince implements DataAwareRule, ValidationRule
+class CityInProvinceRule implements DataAwareRule, ValidationRule
 {
     /**
      * All data under validation.

@@ -2,9 +2,30 @@ import BaseConfirm from "@/components/base/BaseConfirm.vue";
 import {POSITION, TYPE, useToast} from "vue-toastification";
 import isFunction from "lodash.isfunction";
 import BaseLoading from "@/components/base/toast/BaseLoading.vue";
+import isObject from "lodash.isobject";
 
 export const useConfirmToast = (onAccept, title, subTitle, showBackdrop) => {
-  onAccept = isFunction(onAccept) ? onAccept : () => {
+  const noop = () => {
+  }
+  let onDecline = noop
+
+  if (isFunction(onAccept)) {
+    onDecline = noop
+  } else if (isObject(onAccept)) {
+    if ('decline' in onAccept) {
+      onDecline = onAccept.decline
+    } else {
+      onDecline = noop
+    }
+
+    if ('accept' in onAccept) {
+      onAccept = onAccept.accept
+    } else {
+      onAccept = noop
+    }
+  } else {
+    onAccept = noop
+    onDecline = noop
   }
 
   const toast = useToast()
@@ -17,7 +38,8 @@ export const useConfirmToast = (onAccept, title, subTitle, showBackdrop) => {
       showBackdrop: showBackdrop ?? true,
     },
     listeners: {
-      accept: onAccept
+      accept: onAccept,
+      decline: onDecline,
     },
   }, {
     timeout: false,

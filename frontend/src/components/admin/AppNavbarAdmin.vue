@@ -16,9 +16,9 @@
                 <template #panel="{close}">
                   <nav class="h-full" :class="sidebarBgColor" ref="sidebar">
                     <button
-                      type="button"
-                      class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
-                      @click="close"
+                        type="button"
+                        class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
+                        @click="close"
                     >
                       <XMarkIcon class="w-6 h-6 group-hover:scale-110 transition"/>
                     </button>
@@ -37,32 +37,32 @@
                           <div class="flex flex-col px-3">
                             <div class="flex flex-col">
                               <div
-                                class="text-center w-21 h-21 lg:w-24 lg:h-24 rounded-full bg-white mx-auto p-6 bg-opacity-90 shadow-lg">
+                                  class="text-center w-21 h-21 lg:w-24 lg:h-24 rounded-full bg-white mx-auto p-6 bg-opacity-90 shadow-lg">
                                 <UserIcon class="h-10 w-10 lg:h-12 lg:w-12 mx-auto text-slate-700"/>
                               </div>
                               <span class="text-center mt-3">
-                                                                <template v-if="user.first_name || user.last_name">
-                                                                    {{
-                                                                    (user.first_name + ' ' + user.last_name).trim()
-                                                                  }}
-                                                                </template>
-                                                                <template v-else>
-                                                                    {{ user.username }}
-                                                                </template>
-                                                            </span>
+                                  <template v-if="user.first_name || user.last_name">
+                                      {{
+                                      (user.first_name + ' ' + user.last_name).trim()
+                                    }}
+                                  </template>
+                                  <template v-else>
+                                      {{ user.username }}
+                                  </template>
+                              </span>
                               <span class="text-center mt-1 text-xs opacity-80">
-                                                                <template v-if="user.roles">
-                                                                    <span v-for="(role, key, idx) in user.roles">
-                                                                        {{ role }}
-                                                                        <span
-                                                                          v-if="idx !== Object.keys(user.roles).length - 1">, </span>
-                                                                    </span>
-                                                                </template>
-                                                                <template v-else>
-                                                                    <span
-                                                                      class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
-                                                                </template>
-                                                            </span>
+                                  <template v-if="user.roles">
+                                      <span v-for="(role, key, idx) in user.roles">
+                                          {{ role }}
+                                          <span
+                                              v-if="idx !== Object.keys(user.roles).length - 1">, </span>
+                                      </span>
+                                  </template>
+                                  <template v-else>
+                                      <span
+                                          class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
+                                  </template>
+                              </span>
                             </div>
 
                             <div class="flex items-center mt-4">
@@ -95,7 +95,7 @@
                                        class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
                             <PowerIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span
-                              class="grow">خروج</span>
+                                class="grow">خروج</span>
                           </router-link>
                         </li>
                       </ul>

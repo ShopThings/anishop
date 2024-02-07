@@ -127,7 +127,7 @@ class OrderBadgeController extends Controller
     {
         $this->authorize('delete', $orderBadge);
 
-        $permanent = $request->user()->id === $orderBadge->creator()?->id;
+        $permanent = $request->user()->id === $orderBadge->creator?->id;
         $res = $this->service->deleteById($orderBadge->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

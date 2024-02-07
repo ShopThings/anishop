@@ -42,12 +42,12 @@
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <partial-input-label title="نقش کاربر"/>
                   <base-select-searchable
-                    :options="roles"
-                    options-key="value"
-                    options-text="name"
-                    name="roles"
-                    :multiple="true"
-                    @change="roleChange"
+                      :options="roles"
+                      options-key="value"
+                      options-text="name"
+                      name="roles"
+                      :multiple="true"
+                      @change="roleChange"
                   />
                   <partial-input-error-message :error-message="errors.roles"/>
                 </div>
@@ -97,15 +97,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="!canSubmit"
+                    type="submit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="!canSubmit"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="!canSubmit"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                        big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -158,25 +158,26 @@ function roleChange(selected) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     username: yup.string()
-      .transform(transformNumbersToEnglish)
-      .required('نام کاربری اجباری می‌باشد.'),
+        .transform(transformNumbersToEnglish)
+        .required('نام کاربری اجباری می‌باشد.'),
     password: yup.string()
-      .transform(transformNumbersToEnglish)
-      .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
-      .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
-      .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
-      .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
-      .required('کلمه عبور اجباری می‌باشد.'),
+        .transform(transformNumbersToEnglish)
+        .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
+        .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
+        .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
+        .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
+        .required('کلمه عبور اجباری می‌باشد.'),
     password_confirmation: yup.string()
-      .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
-    first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام اجباری می‌باشد.'),
-    last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی اجباری می‌باشد.'),
+        .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
+    first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام را وارد نمایید.'),
+    last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی را وارد نمایید.'),
     national_code: yup.string()
-      .transform(transformNumbersToEnglish)
-      .persianNationalCode('کد ملی نامعتبر است.').required('کد ملی اجباری می‌باشد.'),
+        .transform(transformNumbersToEnglish)
+        .persianNationalCode('کد ملی نامعتبر است.')
+        .required('کد ملی را وارد نمایید.'),
     shaba_number: yup.string()
-      .transform(transformNumbersToEnglish)
-      .optional().nullable(),
+        .transform(transformNumbersToEnglish)
+        .optional().nullable(),
   }),
 }, (values, actions) => {
   if (!canSubmit.value) return

@@ -5,10 +5,11 @@
         <base-input
           label-title="تعداد نمایش کالا در هر صفحه"
           placeholder="وارد نمایید"
-          type="number"
+          type="text"
           name="product_each_page"
           :min="0"
           :max="25"
+          :money-mask="true"
           klass="no-spin-arrow"
           :value="productEachPage.toString()"
           @input="(val) => {
@@ -25,10 +26,11 @@
         <base-input
           label-title="تعداد نمایش بلاگ در هر صفحه"
           placeholder="وارد نمایید"
-          type="number"
+          type="text"
           name="blog_each_page"
           :min="0"
           :max="25"
+          :money-mask="true"
           klass="no-spin-arrow"
           :value="blogEachPage.toString()"
           @input="(val) => {

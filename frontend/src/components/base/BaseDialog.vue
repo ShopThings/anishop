@@ -23,23 +23,21 @@
 
 <script setup>
 import PartialDialog from "@/components/partials/PartialDialog.vue";
-import {computed, useSlots} from "vue";
+import {ref, useSlots, watch} from "vue";
 
 const props = defineProps({
   open: Boolean,
   containerKlass: String,
 })
 
-const emit = defineEmits(['open', 'close', 'update:open'])
+const emit = defineEmits(['open', 'close'])
 const slots = useSlots()
 
-const isOpen = computed({
-  get() {
-    return props.open
-  },
-  set(value) {
-    emit('update:open', value)
-  }
+const isOpen = ref(props.open)
+
+// sorry but it should be with watching open property otherwise it doesn't work!
+watch(() => props.open, () => {
+  isOpen.value = props.open
 })
 
 function closeModal() {

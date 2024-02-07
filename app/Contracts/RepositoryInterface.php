@@ -3,12 +3,49 @@
 namespace App\Contracts;
 
 use App\Support\WhereBuilder\GetterExpressionInterface;
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 interface RepositoryInterface
 {
+    /**
+     * Use this to have a fresh with collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @return static
+     */
+    public function newWith(array|string $relations, Closure|null|string $callback = null): static;
+
+    /**
+     * Use this to continue with collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @return static
+     */
+    public function with(array|string $relations, Closure|null|string $callback = null): static;
+
+    /**
+     * Use this to have a fresh withWhereHas collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @return static
+     */
+    public function newWithWhereHas(array|string $relations, Closure|null|string $callback = null): static;
+
+    /**
+     * Use this to continue withWhereHas collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @return static
+     */
+    public function withWhereHas(array|string $relations, Closure|null|string $callback = null): static;
+
     /**
      * @param GetterExpressionInterface|null $where
      * @return bool

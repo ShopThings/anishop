@@ -5,10 +5,10 @@
         <base-input
           label-title="حداقل قیمت جهت رایگان شدن هزینه ارسال (به تومان)"
           placeholder="وارد نمایید"
-          type="number"
+          type="text"
           name="min_free_post_price"
           :min="0"
-          klass="no-spin-arrow"
+          :money-mask="true"
           :value="minFreePostPrice.toString()"
           @input="(val) => {
               if(val.trim() === '') minFreePostPrice = 0
@@ -28,10 +28,10 @@
         <base-input
           label-title="هزینه ارسال پیش‌فرض (به تومان)"
           placeholder="وارد نمایید"
-          type="number"
+          type="text"
           name="default_post_price"
           :min="0"
-          klass="no-spin-arrow"
+          :money-mask="true"
           :value="defaultPostPrice.toString()"
           @input="(val) => {
               if(val.trim() === '') defaultPostPrice = 0

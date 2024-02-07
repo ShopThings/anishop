@@ -43,7 +43,7 @@
 
     <div class="p-2">
       <partial-input-label title="شماره‌های تماس"/>
-      <vue3-tags-input
+      <base-tags-input
         :tags="phones"
         placeholder="وارد نمایید"
         @on-tags-changed="(t) => {phones = t}"
@@ -145,13 +145,13 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
-import Vue3TagsInput from "vue3-tags-input";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import BaseMap from "@/components/base/BaseMap.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const props = defineProps({
   setting: {

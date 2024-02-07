@@ -8,6 +8,7 @@ use App\Services\Contracts\BrandServiceInterface;
 use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -17,6 +18,8 @@ use function App\Support\Helper\to_boolean;
 
 class BrandService extends Service implements BrandServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected BrandRepositoryInterface $repository
     )
@@ -37,12 +40,14 @@ class BrandService extends Service implements BrandServiceInterface
             ], $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['image', 'creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -78,6 +83,8 @@ class BrandService extends Service implements BrandServiceInterface
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'name' => $attributes['name'],
             'latin_name' => $attributes['latin_name'],
@@ -108,6 +115,7 @@ class BrandService extends Service implements BrandServiceInterface
             $updateAttributes['escaped_name'] = $attributes['escaped_name'];
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['keywords'])) {

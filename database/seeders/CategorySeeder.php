@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
+use function App\Support\Helper\str_slug_persian;
 
 class CategorySeeder extends Seeder
 {
@@ -16,7 +17,7 @@ class CategorySeeder extends Seeder
         Category::create([
             'name' => 'بدون دسته‌بندی',
             'escaped_name' => 'بدون دسته‌بندی',
-            'slug' => Str::slug(title: 'بدون دسته‌بندی', language: 'fa'),
+            'slug' => str_slug_persian('بدون دسته‌بندی'),
             'show_in_menu' => false,
             'show_in_search_side_menu' => false,
             'show_in_slider' => false,

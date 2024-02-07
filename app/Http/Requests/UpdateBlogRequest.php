@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\BlogCategory;
-use App\Models\FileManager;
+use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBlogRequest extends FormRequest
@@ -34,7 +34,7 @@ class UpdateBlogRequest extends FormRequest
             ],
             'image' => [
                 'sometimes',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
             'description' => [
                 'sometimes',

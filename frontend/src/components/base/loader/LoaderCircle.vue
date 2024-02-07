@@ -2,12 +2,12 @@
   <div class="flex justify-center items-center"
        :class="mainContainerKlass">
     <div :class="[
-      'absolute top-0 left-0 w-full h-full rounded z-[1]',
+      'absolute top-0 left-0 w-full h-full rounded z-[2]',
       containerBgColor,
       containerKlass,
     ]">
     </div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[2]">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[3]">
       <div :class="[
         'h-8 w-8 border-[3px] rounded-full animate-spin',
         smallCircleColor,

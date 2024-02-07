@@ -13,9 +13,9 @@
     type="info"
     :has-close="false"
   >
-    در صورت تغییر وضعیت به
+    در صورت تغییر وضعیت به وضعیتی که
     <span class="bg-white rounded mx-2 text-black px-2">بازگشت محصول به انبار</span>
-    ، محصولات سفارش به انبار بازگشت داده می‌شود.
+    آن فعال می‌باشد، محصولات سفارش به انبار بازگشت داده می‌شود.
   </base-message>
 
   <partial-card ref="tableContainer">
@@ -42,11 +42,11 @@
             @do-search="doSearch"
           >
             <template v-slot:title="{value}">
-                            <span
-                              v-tooltip.top="{message: value.title}"
-                              class="inline-block w-5 h-5 rounded-full border ml-2"
-                              :style="'background-color: ' + value.color_hex + ';'"
-                            ></span>
+              <span
+                v-tooltip.top="{message: value.title}"
+                class="inline-block w-5 h-5 rounded-full border ml-2"
+                :style="'background-color: ' + value.color_hex + ';'"
+              ></span>
               <span>{{ value.title }}</span>
               <span
                 v-if="value.is_starting_badge"
@@ -277,6 +277,8 @@ const selectionOperations = [
 
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
+
+
 
   // useRequest(apiRoutes.admin.orderBadges.index, {
   //     params: {limit, offset, order, sort, text},

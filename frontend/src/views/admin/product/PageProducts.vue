@@ -32,32 +32,41 @@
             :sortable="table.sortable"
             @do-search="doSearch"
           >
-            <template v-slot:title="{value}">
-
-            </template>
             <template v-slot:brand="{value}">
-
+              {{ value.brand.name }}
             </template>
+
             <template v-slot:category="{value}">
-
+              {{ value.category.name }}
             </template>
+
             <template v-slot:stock_count="{value}">
-
+              <span>{{ value.stock_count }}</span>
+              <span class="text-xs text-slate-400">{{ value.unit.name }}</span>
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:is_available="{value}">
-
+              <partial-badge-publish
+                :publish="value.is_available"
+                publish-text="موجود"
+                unpublish-text="ناموجود"
+              />
             </template>
+
             <template v-slot:updated_at="{value}">
               <span v-if="value.updated_at" class="text-xs">{{ value.updated_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
             </template>
@@ -69,11 +78,9 @@
 </template>
 
 <script setup>
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {computed, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
@@ -82,6 +89,8 @@ import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import {ProductAPI} from "@/service/APIProduct.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -223,7 +232,7 @@ const operations = [
         router.push({
           name: 'admin.product.detail',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -239,7 +248,7 @@ const operations = [
         router.push({
           name: 'admin.product.edit',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -255,7 +264,7 @@ const operations = [
         router.push({
           name: 'admin.product.attrs.edit',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -271,7 +280,7 @@ const operations = [
         router.push({
           name: 'admin.product.comments',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -289,9 +298,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.products.destroy, {product: data.id}), {
-            method: 'DELETE',
-          }, {
+          ProductAPI.deleteById(data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -328,8 +335,7 @@ const selectionOperations = [
           return
         }
 
-        // redirect to multiple product price edit
-        // ...
+        router.push({name: 'admin.products.change.price', params: {ids}})
       },
     },
   },
@@ -354,8 +360,7 @@ const selectionOperations = [
           return
         }
 
-        // redirect to multiple product price edit
-        // ...
+        router.push({name: 'admin.products.change.info', params: {ids}})
       },
     },
   },
@@ -383,12 +388,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.products.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          ProductAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -406,29 +406,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.products.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  ProductAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

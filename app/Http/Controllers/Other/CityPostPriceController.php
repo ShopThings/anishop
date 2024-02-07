@@ -125,7 +125,7 @@ class CityPostPriceController extends Controller
     {
         $this->authorize('delete', $cityPostPrice);
 
-        $permanent = $request->user()->id === $cityPostPrice->creator()?->id;
+        $permanent = $request->user()->id === $cityPostPrice->creator?->id;
         $res = $this->service->deleteById($cityPostPrice->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFestivalProductRequest;
+use App\Http\Requests\StoreFestivalRequest;
 use App\Http\Requests\UpdateFestivalRequest;
 use App\Http\Resources\FestivalResource;
 use App\Models\Category;
@@ -53,7 +54,7 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreFestivalRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 

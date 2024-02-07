@@ -1,6 +1,8 @@
 import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
+const slugRouteRegex = '([^\\\/\.]+)'
+
 export const adminRoutes = {
   path: '/admin',
   children: [
@@ -397,7 +399,7 @@ export const adminRoutes = {
       ],
     },
     {
-      path: 'category/:id(\\d+)',
+      path: 'category/:slug' + slugRouteRegex,
       name: 'admin.category.edit',
       component: () => import('@/views/admin/product/PageCategoryEdit.vue'),
       meta: {
@@ -450,7 +452,7 @@ export const adminRoutes = {
       ],
     },
     {
-      path: 'festival/:id(\\d+)',
+      path: 'festival/:slug' + slugRouteRegex,
       children: [
         {
           path: '',
@@ -686,7 +688,7 @@ export const adminRoutes = {
             {
               path: 'new',
               name: 'admin.search.attr.add',
-              component: () => import('@/views/admin/product/PageAttributeAdd.vue'),
+              component: () => import('@/views/admin/product/PageSearchAttributeAdd.vue'),
               meta: {
                 title: 'ایجاد ویژگی جستجو',
                 breadcrumb: [
@@ -708,7 +710,7 @@ export const adminRoutes = {
             {
               path: '',
               name: 'admin.search.attrs.categories',
-              component: () => import('@/views/admin/product/PageAttributeCategories.vue'),
+              component: () => import('@/views/admin/product/PageSearchAttributeCategories.vue'),
               meta: {
                 title: 'دسته‌بندی‌ها و ویژگی‌های جستجو',
                 breadcrumb: [
@@ -725,7 +727,7 @@ export const adminRoutes = {
             {
               path: 'new',
               name: 'admin.search.attr.category.add',
-              component: () => import('@/views/admin/product/PageAttributeCategoryAdd.vue'),
+              component: () => import('@/views/admin/product/PageSearchAttributeCategoryAdd.vue'),
               meta: {
                 title: 'تخصیص ویژگی جستجو به دسته‌بندی',
                 breadcrumb: [
@@ -748,7 +750,7 @@ export const adminRoutes = {
       ],
     },
     {
-      path: 'product/:id(\\d+)',
+      path: 'product/:slug' + slugRouteRegex,
       children: [
         {
           path: '',
@@ -832,7 +834,7 @@ export const adminRoutes = {
               {
                 name: 'دیدگاه‌های محصول',
                 link: 'admin.product.comments',
-                params: ['id'],
+                params: ['slug'],
               },
               {
                 name: 'جزئیات دیدگاه',
@@ -849,7 +851,7 @@ export const adminRoutes = {
         {
           path: '',
           name: 'admin.search.attr.edit',
-          component: () => import('@/views/admin/product/PageAttributeEdit.vue'),
+          component: () => import('@/views/admin/product/PageSearchAttributeEdit.vue'),
           meta: {
             title: 'ویرایش ویژگی جستجو',
             breadcrumb: [
@@ -908,7 +910,7 @@ export const adminRoutes = {
     {
       path: 'attribute/category/:id(\\d+)',
       name: 'admin.search.attr.category.edit',
-      component: () => import('@/views/admin/product/PageAttributeCategoryEdit.vue'),
+      component: () => import('@/views/admin/product/PageSearchAttributeCategoryEdit.vue'),
       meta: {
         title: 'ویرایش تخصیص ویژگی جستجو به دسته‌بندی',
         breadcrumb: [

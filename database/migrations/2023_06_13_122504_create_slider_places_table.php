@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('slider_places', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('place_in', array_map(fn($item) => $item->name, SliderPlacesEnum::cases()))
+            $table->enum('place_in', array_map(fn($item) => $item->value, SliderPlacesEnum::cases()))
                 ->comment('is it an enum to place a slider in predefined places');
             $table->boolean('is_published')->default(true);
 

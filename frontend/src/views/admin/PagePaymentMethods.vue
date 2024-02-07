@@ -33,23 +33,33 @@
             @do-search="doSearch"
           >
             <template v-slot:image="{value}">
-
+              <partial-show-image :item="value.image"/>
             </template>
+
             <template v-slot:type="{value}">
-
+              {{ value.type.text }}
             </template>
+
             <template v-slot:bank_gateway_type="{value}">
-
+              {{ value.bank_gateway_type.text }}
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu
+                :items="operations"
+                :data="value"
+                :container="getMenuContainer"
+                :removals="!value.is_deletable ? ['delete'] : []"
+              />
             </template>
           </base-datatable>
         </template>
@@ -70,6 +80,9 @@ import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {PaymentMethodAPI} from "@/service/APIPayment.js";
+import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -88,6 +101,12 @@ const table = reactive({
       isKey: true,
     },
     {
+      label: "عنوان",
+      field: "title",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
       label: "تصویر",
       field: "image",
       sortable: true,
@@ -95,16 +114,19 @@ const table = reactive({
     {
       label: "نوع",
       field: "type",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نوع درگاه",
       field: "bank_gateway_type",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "وضعیت نمایش",
       field: "is_published",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -123,6 +145,12 @@ const table = reactive({
       isKey: true,
     },
     {
+      label: "عنوان",
+      field: "title",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
       label: "تصویر",
       field: "image",
       sortable: true,
@@ -130,11 +158,13 @@ const table = reactive({
     {
       label: "نوع",
       field: "type",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نوع درگاه",
       field: "bank_gateway_type",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -168,6 +198,7 @@ const getMenuContainer = computed(() => {
 
 const operations = [
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -184,6 +215,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',
@@ -194,19 +226,17 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiReplaceParams(apiRoutes.admin.users.destroy, {user: data.id}), {
-        //         method: 'DELETE',
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelectionItem(data)
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          PaymentMethodAPI.deleteById(data.id, {
+            success() {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -236,22 +266,17 @@ const selectionOperations = [
 
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiRoutes.admin.users.batchDestroy, {
-        //         method: 'DELETE',
-        //         data: {
-        //             ids,
-        //         },
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelection()
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          PaymentMethodAPI.deleteByIds(ids, {
+            success() {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelection()
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -260,29 +285,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.users.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  PaymentMethodAPI.fetchAll({limit, offset, order, sort, text}, {
+    success(response) {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error() {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally() {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

@@ -13,4 +13,11 @@ interface ProductAttributeProductServiceInterface extends ServiceInterface
      * @return Collection|Model|null
      */
     public function getProductAttributes(int $productId): Collection|Model|null;
+
+    /**
+     * @param int $productId
+     * @param array $attributes
+     * @return bool
+     */
+    public function modifyProductAttributes(int $productId, array $attributeValues): bool;
 }

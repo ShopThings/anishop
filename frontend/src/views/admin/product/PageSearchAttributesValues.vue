@@ -18,24 +18,25 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="true"
+              :selection-operations="selectionOperations"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="true"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
           >
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
             </template>
@@ -52,23 +53,18 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {ProductAttributeValueAPI} from "@/service/APIProduct.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
 const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -86,6 +82,12 @@ const table = reactive({
     {
       label: "مقدار",
       field: "attribute_value",
+      sortable: true,
+    },
+    {
+      label: "اولویت",
+      field: "priority",
+      sortable: true,
     },
     {
       label: "تاریخ ایجاد",
@@ -105,6 +107,12 @@ const table = reactive({
     {
       label: "مقدار",
       field: "attribute_value",
+      sortable: true,
+    },
+    {
+      label: "اولویت",
+      field: "priority",
+      sortable: true,
     },
     {
       label: "تاریخ ایجاد",
@@ -160,9 +168,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.productAttributeValues.destroy, {product_attribute_value: data.id}), {
-            method: 'DELETE',
-          }, {
+          ProductAttributeValueAPI.deleteById(data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -202,12 +208,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.productAttributeValues.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          ProductAttributeValueAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -225,29 +226,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.productAttributeValues.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  ProductAttributeValueAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

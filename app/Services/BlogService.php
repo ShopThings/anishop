@@ -17,6 +17,7 @@ use App\Services\Contracts\SliderServiceInterface;
 use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +26,8 @@ use function App\Support\Helper\to_boolean;
 
 class BlogService extends Service implements BlogServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected BlogRepositoryInterface      $repository,
         protected SettingServiceInterface      $settingService,
@@ -109,6 +112,8 @@ class BlogService extends Service implements BlogServiceInterface
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'category_id' => $attributes['category'],
             'title' => $attributes['title'],
@@ -138,6 +143,7 @@ class BlogService extends Service implements BlogServiceInterface
             $updateAttributes['escaped_title'] = NumberConverter::toEnglish($attributes['title']);
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['description'])) {

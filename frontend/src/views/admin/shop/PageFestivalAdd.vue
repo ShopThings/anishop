@@ -19,27 +19,31 @@
 
           <div class="flex flex-wrap items-end">
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-              <base-input label-title="عنوان"
-                          placeholder="وارد نمایید"
-                          name="title">
+              <base-input
+                label-title="عنوان"
+                placeholder="وارد نمایید"
+                name="title"
+              >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                 </template>
               </base-input>
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-              <partial-input-label title="تاریخ شروع"/>
+              <partial-input-label title="تاریخ شروع" :is-optional="true"/>
               <date-picker
                 v-model="startDate"
                 placeholder="انتخاب تاریخ شروع"
               />
+              <partial-input-error-message :error-message="errors.start_at"/>
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-              <partial-input-label title="تاریخ پایان"/>
+              <partial-input-label title="تاریخ پایان" :is-optional="true"/>
               <date-picker
                 v-model="endDate"
                 placeholder="انتخاب تاریخ پایان"
               />
+              <partial-input-error-message :error-message="errors.end_at"/>
             </div>
           </div>
 
@@ -47,11 +51,11 @@
             <base-animated-button
               type="submit"
               class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-              :disabled="isSubmitting"
+              :disabled="!canSubmit"
             >
               <VTransitionFade>
                 <loader-circle
-                  v-if="isSubmitting"
+                  v-if="!canSubmit"
                   main-container-klass="absolute w-full h-full top-0 left-0"
                   big-circle-color="border-transparent"
                 />
@@ -72,7 +76,6 @@
 
 <script setup>
 import {ref} from "vue";
-import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
@@ -82,18 +85,56 @@ import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {FestivalAPI} from "@/service/APIShop.js";
+import {useRouter} from "vue-router";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
-const canSubmit = ref(true)
+const router = useRouter()
 
 const publishStatus = ref(true)
 const startDate = ref(null)
 const endDate = ref(null)
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+    title: yup.string().required('عنوان جشنواره را وارد نمایید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (startDate.value && endDate.value) {
+    const start = new Date(startDate.value)
+    const end = new Date(endDate.value)
+
+    if (start > end) {
+      actions.setFieldError('start_at', 'تاریخ شروع بزرگتر تاریخ پایان می‌باشد!')
+      return
+    }
+  }
+
+  canSubmit.value = false
+
+  FestivalAPI.create({
+    title: values.title,
+    start_at: startDate.value,
+    end_at: endDate.value,
+    is_published: publishStatus.value,
+  }, {
+    success() {
+      actions.resetForm()
+      router.push({name: 'admin.festivals'})
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+
+      return false
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 </script>

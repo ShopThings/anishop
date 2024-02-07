@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Models\Category;
-use App\Models\FileManager;
+use App\Rules\FileExistsRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +38,7 @@ class StoreCategoryImageRequest extends FormRequest
             ],
             'image' => [
                 'sometimes',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
         ];
     }

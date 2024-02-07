@@ -15,7 +15,7 @@ return new class extends Migration
         Schema::create('menu_places', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('place_in', array_map(fn($item) => $item->name, MenuPlacesEnum::cases()))
+            $table->enum('place_in', array_map(fn($item) => $item->value, MenuPlacesEnum::cases()))
                 ->comment('is it an enum to place a menu in predefined places');
             $table->boolean('is_published')->default(true);
 

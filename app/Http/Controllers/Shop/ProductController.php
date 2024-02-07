@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Shop;
 use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductGalleryRequest;
 use App\Http\Requests\StoreProductPropertyRequest;
+use App\Http\Requests\StoreProductRelatedProductRequest;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateMultiProductInfo;
 use App\Http\Requests\UpdateMultiProductPrice;
@@ -13,6 +15,7 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductPropertyResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSingleResource;
+use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\Contracts\ProductServiceInterface;
@@ -123,7 +126,7 @@ class ProductController extends Controller
     {
         $this->authorize('delete', $product);
 
-        $permanent = $request->user()->id === $product->creator()?->id;
+        $permanent = $request->user()->id === $product->creator?->id;
         $res = $this->service->deleteById($product->id, $permanent);
         if ($res) return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
 
@@ -134,21 +137,127 @@ class ProductController extends Controller
     }
 
     /**
+     * @param Product $product
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function showVariants(Product $product): AnonymousResourceCollection
+    {
+        $this->authorize('view', $product);
+        return ProductPropertyResource::collection($product->items());
+    }
+
+    /**
+     * @param StoreProductGalleryRequest $request
+     * @param Product $product
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function storeGalleryImages(
+        StoreProductGalleryRequest $request,
+        Product                    $product
+    ): JsonResponse
+    {
+        $this->authorize('update', $product);
+
+        $validated = $request->validated();
+        $res = $this->service->createGalley($product->id, $validated['images']);
+
+        if ($res) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'message' => 'ایجاد گالری تصاویر با موفقیت انجام شد.',
+            ]);
+        } else {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'خطا در ذخیره تصاویر',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function showGalleryImages(Product $product): AnonymousResourceCollection
+    {
+        $this->authorize('view', $product);
+
+        $images = $product->images()->with('image')->get();
+        return ImageShowInfoResource::collection($images);
+    }
+
+    /**
+     * @param StoreProductRelatedProductRequest $request
+     * @param Product $product
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function storeRelatedProducts(
+        StoreProductRelatedProductRequest $request,
+        Product                           $product
+    ): JsonResponse
+    {
+        $this->authorize('update', $product);
+
+        $validated = $request->validated();
+        $res = $this->service->createRelatedProducts($product->id, $validated['products']);
+
+        if ($res) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'message' => 'محصولات مرتبط با موفقیت ثبت شد.',
+            ]);
+        } else {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'خطا در ذخیره محصولات مرتبط',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    /**
+     * @param Product $product
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function showRelatedProducts(Product $product): AnonymousResourceCollection
+    {
+        $this->authorize('view', $product);
+
+        $products = $product->relatedProducts()->with('relatedProduct')->get();
+        return ProductResource::collection($products);
+    }
+
+    /**
      * @param StoreProductPropertyRequest $request
      * @param Product $product
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function modifyProducts(StoreProductPropertyRequest $request, Product $product): AnonymousResourceCollection
+    public function modifyProducts(
+        StoreProductPropertyRequest $request,
+        Product                     $product
+    ): AnonymousResourceCollection
     {
         $this->authorize('update', $product);
 
         $validated = $request->validated();
 
-        return ProductPropertyResource::collection($this->service->modifyProducts($product->id, $validated['products']));
+        return ProductPropertyResource::collection($this->service->modifyProducts(
+            productId: $product->id,
+            products: $validated['products']
+        ));
     }
 
-    public function batchUpdateInfo(UpdateMultiProductInfo $request)
+    /**
+     * @param UpdateMultiProductInfo $request
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function batchUpdateInfo(UpdateMultiProductInfo $request): JsonResponse
     {
         $this->authorize('batchUpdate', User::class);
 

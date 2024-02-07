@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\ProductShowResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,7 +18,7 @@ class ProductPropertyResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->idid,
+            'id' => $this->id,
             'product_id' => $this->product_id,
             'product' => new ProductShowResource($this->whenLoaded('product')),
             'code' => $this->code,
@@ -28,6 +29,15 @@ class ProductPropertyResource extends JsonResource
             'weight' => $this->weight,
             'price' => $this->price,
             'discounted_price' => $this->discounted_price,
+            'normal_discounted_from' => $this->discounted_from
+                ? Carbon::parse($this->discounted_from)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'normal_discounted_until' => $this->discounted_until
+                ? Carbon::parse($this->discounted_until)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'discounted_from' => $this->discounted_from
+                ? verta($this->discounted_from)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
             'discounted_until' => $this->discounted_until
                 ? verta($this->discounted_until)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
@@ -39,6 +49,7 @@ class ProductPropertyResource extends JsonResource
             'show_coming_soon' => $this->show_coming_soon,
             'show_call_for_more' => $this->show_call_for_more,
             'is_published' => $this->is_published,
+            'has_separate_shipment' => $this->has_separate_shipment,
         ];
     }
 }

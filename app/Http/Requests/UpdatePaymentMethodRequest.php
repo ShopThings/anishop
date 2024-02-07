@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
-use App\Models\FileManager;
+use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -33,7 +33,7 @@ class UpdatePaymentMethodRequest extends FormRequest
             ],
             'image' => [
                 'sometimes',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
             'type' => [
                 'sometimes',

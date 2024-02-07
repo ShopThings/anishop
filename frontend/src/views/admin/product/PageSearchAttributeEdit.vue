@@ -3,25 +3,25 @@
     <template #header>
       ویرایش ویژگی جستجو -
       <span
-        v-if="attribute?.id"
-        class="text-teal-600"
+          v-if="attribute?.id"
+          class="text-teal-600"
       >{{ attribute?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-          :loading="loading"
-          type="form"
+            :loading="loading"
+            type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap">
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                    label-title="عنوان"
-                    placeholder="وارد نمایید"
-                    name="title"
-                    :value="attribute?.title"
+                      label-title="عنوان"
+                      placeholder="وارد نمایید"
+                      name="title"
+                      :value="attribute?.title"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -31,12 +31,12 @@
                 <div class="w-full p-2 sm:w-1/2">
                   <partial-input-label title="نوع ویژگی"/>
                   <base-select
-                    :options="types"
-                    options-key="value"
-                    options-text="name"
-                    :selected="selectedType"
-                    name="type"
-                    @change="(t) => {selectedType = t}"
+                      :options="types"
+                      options-key="value"
+                      options-text="name"
+                      :selected="selectedType"
+                      name="type"
+                      @change="(t) => {selectedType = t}"
                   />
                   <partial-input-error-message :error-message="errors.type"/>
                 </div>
@@ -44,15 +44,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                    type="submit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="!canSubmit"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                        big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -72,8 +72,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
+import {onMounted, ref} from "vue";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
@@ -88,22 +87,19 @@ import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {PRODUCT_ATTRIBUTE_TYPES} from "@/composables/constants.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {ProductAttributeAPI} from "@/service/APIProduct.js";
 
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
-const loading = ref(false)
-const canSubmit = ref(true)
-
+const loading = ref(true)
 const attribute = ref(null)
 
-const types = ref([
+const types = [
   {
     value: PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.value,
     name: PRODUCT_ATTRIBUTE_TYPES.MULTI_SELECT.text,
@@ -112,28 +108,55 @@ const types = ref([
     value: PRODUCT_ATTRIBUTE_TYPES.SINGLE_SELECT.value,
     name: PRODUCT_ATTRIBUTE_TYPES.SINGLE_SELECT.text,
   },
-])
+]
 const selectedType = ref(null)
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    title: yup.string().required('عنوان ویژگی را وارد نمایید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (!selectedType.value || !types.includes(selectedType.value)) {
+    actions.setFieldError('type', 'نوع ویژگی را انتخاب نمایید.')
+    return
+  }
+
+  canSubmit.value = false
+
+  ProductAttributeAPI.create({
+    title: values.title,
+    type: selectedType.value.value,
+  }, {
+    success(response) {
+      toast.success('ویرایش ویژگی با موفقیت انجام شد.')
+      setFormFields(response.data)
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.productAttributeValues.show, {product_attribute_value: idParam.value}), null, {
-  //     success: (response) => {
-  //         attribute.value = response.data
-  //         selectedType.value = {
-  //             value: response.data.type,
-  //             name: response.data.type_name,
-  //         }
-  //
-  //         loading.value = false
-  //     },
-  // })
+  ProductAttributeAPI.fetchById(idParam.value, {
+    success: (response) => {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  attribute.value = item
+  selectedType.value = {
+    value: item.type,
+    name: item.type_name,
+  }
+}
 </script>

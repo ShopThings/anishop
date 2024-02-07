@@ -98,7 +98,7 @@ class CommentController extends Controller
     {
         $this->authorize('delete', $comment);
 
-        $permanent = $request->user()->id === $comment->creator()?->id;
+        $permanent = $request->user()->id === $comment->creator?->id;
         $res = $this->service->deleteById($comment->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

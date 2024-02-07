@@ -126,7 +126,7 @@ class BlogCommentBadgeController extends Controller
     {
         $this->authorize('delete', $blogCommentBadge);
 
-        $permanent = $request->user()->id === $blogCommentBadge->creator()?->id;
+        $permanent = $request->user()->id === $blogCommentBadge->creator?->id;
         $res = $this->service->deleteById($blogCommentBadge->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Shop;
 
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Models\User;
@@ -45,11 +47,11 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreCategoryRequest $request
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreCategoryRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -91,7 +93,7 @@ class CategoryController extends Controller
      * @return CategoryResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(Request $request, Category $category): CategoryResource|JsonResponse
+    public function update(UpdateCategoryRequest $request, Category $category): CategoryResource|JsonResponse
     {
         $this->authorize('update', $category);
 
@@ -121,7 +123,7 @@ class CategoryController extends Controller
     {
         $this->authorize('delete', $category);
 
-        $permanent = $request->user()->id === $category->creator()?->id;
+        $permanent = $request->user()->id === $category->creator?->id;
         $res = $this->service->deleteById($category->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

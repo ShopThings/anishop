@@ -46,7 +46,9 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $order = $filter->getOrder();
 
         $query = $this->model->newQuery();
-        $query->when($search, function (Builder $query, string $search) {
+        $query
+            ->with(['creator', 'updater'])
+            ->when($search, function (Builder $query, string $search) {
             $query
                 ->when(RolesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $roles) {
                     $builder->withWhereHas('roles', function ($q) use ($roles) {

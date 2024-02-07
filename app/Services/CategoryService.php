@@ -8,6 +8,7 @@ use App\Services\Contracts\CategoryServiceInterface;
 use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +27,9 @@ class CategoryService extends Service implements CategoryServiceInterface
      */
     public function getCategories(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCategoriesSearchFilterPaginated(filter: $filter);
+        return $this->repository
+            ->newWith(['parent', 'creator', 'updater', 'deleter'])
+            ->getCategoriesSearchFilterPaginated(filter: $filter);
     }
 
     /**

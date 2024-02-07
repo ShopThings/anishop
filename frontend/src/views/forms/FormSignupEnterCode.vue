@@ -22,6 +22,7 @@
             :name="'number' + index"
             :id="'codeInput' + index"
             type="number"
+            :has-clear-button="false"
             klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
             @input="goToNextInput"
             @keydown="handleNumberDelete"
@@ -79,6 +80,8 @@ function goToNextInput(text, event) {
     target.value = target.value.at(0)
 
   if (!(event.inputType === 'deleteContentBackward')) {
+    if(target.value.trim() === '') return false
+
     const id = target.getAttribute('id')
     const idStr = id.replace(/[0-9]/gi, "")
     const idNum = parseInt(id.replace(/[^0-9]/gi, ""), 10)

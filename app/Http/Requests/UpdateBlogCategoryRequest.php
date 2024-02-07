@@ -29,6 +29,7 @@ class UpdateBlogCategoryRequest extends FormRequest
             'priority' => [
                 'sometimes',
                 'numeric',
+                'min:0',
             ],
             'keywords' => [
                 'sometimes',

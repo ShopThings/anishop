@@ -32,8 +32,9 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'product_attribute_id' => $attributes['product_attribute'],
+            'product_attribute_id' => $attributes['attribute'],
             'category_id' => $attributes['category'],
+            'priority' => $attributes['priority'] ?? 0,
         ];
 
         return $this->repository->create($attrs);
@@ -46,11 +47,14 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     {
         $updateAttributes = [];
 
-        if (isset($attributes['product_attribute'])) {
-            $updateAttributes['product_attribute_id'] = $attributes['product_attribute'];
+        if (isset($attributes['attribute'])) {
+            $updateAttributes['product_attribute_id'] = $attributes['attribute'];
         }
         if (isset($attributes['category'])) {
             $updateAttributes['category_id'] = $attributes['category'];
+        }
+        if (isset($attributes['priority'])) {
+            $updateAttributes['priority'] = $attributes['priority'];
         }
 
         $res = $this->repository->update($id, $updateAttributes);

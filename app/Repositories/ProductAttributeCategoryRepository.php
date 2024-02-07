@@ -37,12 +37,13 @@ class ProductAttributeCategoryRepository extends Repository implements ProductAt
 
         $query = $this->model->newQuery();
         $query
+            ->with(['productAttr', 'category'])
             ->when($search, function (Builder $query, string $search) {
                 $query
-                    ->withWhereHas('productAttr', function ($q) use ($search) {
+                    ->WhereHas('productAttr', function ($q) use ($search) {
                         $q->orWhereLike('title', $search);
                     })
-                    ->withWhereHas('category', function ($q) use ($search) {
+                    ->WhereHas('category', function ($q) use ($search) {
                         $q->orWhereLike([
                             'latin_name',
                             'escaped_name',

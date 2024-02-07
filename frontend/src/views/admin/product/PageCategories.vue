@@ -12,8 +12,8 @@
   <div class="flex flex-wrap gap-3 mb-3">
     <div class="grow">
       <partial-card-navigation
-        :to="{name: 'admin.category_images'}"
-        bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
+          :to="{name: 'admin.category_images'}"
+          bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
       >
         <span class="text-white text-lg grow">تصاویر دسته‌بندی‌ها</span>
         <PhotoIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -30,44 +30,67 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :enable-search-box="true"
+              :enable-multi-operation="true"
+              :selection-operations="selectionOperations"
+              :is-slot-mode="true"
+              :is-loading="table.isLoading"
+              :selection-columns="table.selectionColumns"
+              :columns="table.columns"
+              :rows="table.rows"
+              :has-checkbox="true"
+              :total="table.totalRecordCount"
+              :sortable="table.sortable"
+              @do-search="doSearch"
           >
             <template v-slot:name="{value}">
-
+              <span>{{ value.name }}</span>
+              <div class="mr-2 rounded-lg py-1 px-2 text-sm bg-blue-100 inline-block">
+                <span class="text-slate-500 ml-2 text-xs">سطح</span>
+                {{ value.level }}
+              </div>
             </template>
+
             <template v-slot:parent_name="{value}">
-
+              <span v-if="!value.parent">-</span>
+              <span v-else>{{ value.parent.name }}</span>
             </template>
+
             <template v-slot:show_in_menu="{value}">
-
+              <partial-badge-publish
+                  :publish="value.show_in_menu"
+                  publish-text="نمایش در منو"
+                  unpublish-text="عدم نمایش در منو"
+              />
             </template>
+
             <template v-slot:show_in_search_side_menu="{value}">
-
+              <partial-badge-publish
+                  :publish="value.show_in_search_side_menu"
+                  publish-text="نمایش در منوی کنار جستجو"
+                  unpublish-text="عدم نمایش در منوی کنار جستجو"
+              />
             </template>
+
             <template v-slot:show_in_slider="{value}">
-
+              <partial-badge-publish
+                  :publish="value.show_in_slider"
+                  publish-text="نمایش در اسلایدر"
+                  unpublish-text="عدم نمایش در اسلایدر"
+              />
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :items="operations"
+                  :data="value"
+                  :container="getMenuContainer"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -83,8 +106,6 @@ import {PlusIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
@@ -92,6 +113,8 @@ import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import PartialCardNavigation from "@/components/partials/PartialCardNavigation.vue";
+import {CategoryAPI} from "@/service/APIProduct.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -112,11 +135,13 @@ const table = reactive({
     {
       label: "نام",
       field: "name",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نام والد",
       field: "parent_name",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -151,11 +176,13 @@ const table = reactive({
     {
       label: "نام",
       field: "name",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نام والد",
       field: "parent_name",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -208,7 +235,7 @@ const operations = [
         router.push({
           name: 'admin.category.edit',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -230,10 +257,8 @@ const operations = [
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.categories.destroy, {category: data.id}), {
-            method: 'DELETE',
-          }, {
-            success: () => {
+          CategoryAPI.deleteById(data.slug, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelectionItem(data)
@@ -256,15 +281,15 @@ const selectionOperations = [
     },
     event: {
       click: (items) => {
-        const ids = []
+        const slugs = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
-              ids.push(items[item].id)
+            if (items[item].slug)
+              slugs.push(items[item].slug)
           }
         }
 
-        if (!ids.length) {
+        if (!slugs.length) {
           toast.info('ابتدا آیتم‌های مورد نیاز را انتخاب کنید و سپس دوباره تلاش نمایید.')
           return
         }
@@ -272,13 +297,8 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.categories.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
-            success: () => {
+          CategoryAPI.deleteByIds(slugs, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelection()
@@ -295,29 +315,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.categories.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  CategoryAPI.fetchAll({limit, offset, order, sort, text}, {
+    success(response) {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error() {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally() {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

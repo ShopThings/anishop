@@ -1,10 +1,10 @@
 <template>
   <template v-if="editMode">
     <Listbox
-      v-model="selectedItems"
-      :name="name"
-      :multiple="multiple"
-      :by="optionsKey"
+        v-model="selectedItems"
+        :name="name"
+        :multiple="multiple"
+        :by="optionsKey"
     >
       <div class="relative">
         <ListboxButton class="relative" :class="btnClass">
@@ -17,45 +17,46 @@
         </ListboxButton>
 
         <VTransitionSlideFadeUpY>
-          <ListboxOptions :class="optionsClass"
-                          class="absolute min-w-[12rem] z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+          <ListboxOptions
+              :class="optionsClass"
+              class="absolute min-w-[12rem] z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           >
             <loader-progress v-if="isLoading"/>
 
             <div
-              v-if="!isLoading && options && Object.keys(options).length === 0"
-              class="relative cursor-default select-none py-2 px-4 text-gray-700"
+                v-if="!isLoading && options && Object.keys(options).length === 0"
+                class="relative cursor-default select-none py-2 px-4 text-gray-700"
             >
               هیچ موردی پیدا نشد.
             </div>
 
             <ListboxOption
-              v-slot="{ active, selected }"
-              v-for="item in options"
-              :key="item[optionsKey]"
-              :value="item"
-              as="template"
+                v-slot="{ active, selected }"
+                v-for="item in options"
+                :key="item[optionsKey]"
+                :value="item"
+                as="template"
             >
               <li :class="[
-                              active ? 'bg-violet-100 text-primary' : 'text-gray-900',
-                              'relative cursor-default select-none py-2 pl-10 pr-4',
-                            ]"
+                active ? 'bg-violet-100 text-primary' : 'text-gray-900',
+                'relative cursor-default select-none py-2 pl-10 pr-4',
+              ]"
               >
-                            <span
-                              :class="[
-                                selected ? 'font-medium' : 'font-normal',
-                                'block truncate',
-                              ]"
-                            >
-                                <slot name="item" :item="item" :selected="selected">
-                                    {{ item[optionsText] }}
-                                </slot>
-                            </span>
                 <span
-                  v-if="selected"
-                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
-                                <CheckIcon class="h-5 w-5" aria-hidden="true"/>
-                            </span>
+                    :class="[
+                    selected ? 'font-medium' : 'font-normal',
+                    'block truncate',
+                  ]"
+                >
+                    <slot name="item" :item="item" :selected="selected">
+                        {{ nestedArray.get(item, optionsText) }}
+                    </slot>
+                </span>
+                <span
+                    v-if="selected"
+                    class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                    <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                </span>
               </li>
             </ListboxOption>
           </ListboxOptions>
@@ -64,18 +65,18 @@
     </Listbox>
   </template>
   <div
-    v-else
-    class="flex items-center"
+      v-else
+      class="flex items-center"
   >
     <span class="grow text-gray-500 text-sm">{{ fullTextOfSelectedItems || '-' }}</span>
     <button
-      v-if="isEditable"
-      type="button"
-      class="shrink-0 mr-2"
+        v-if="isEditable"
+        type="button"
+        class="shrink-0 mr-2"
     >
       <PencilSquareIcon
-        @click="toggleEditMode"
-        class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+          @click="toggleEditMode"
+          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
       />
     </button>
   </div>
@@ -89,6 +90,7 @@ import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import isObject from "lodash.isobject";
 import LoaderProgress from "./loader/LoaderProgress.vue";
+import {nestedArray} from "../../composables/helper.js";
 
 const props = defineProps({
   selected: {
@@ -159,8 +161,8 @@ function resetSelectedItems() {
 
 function setToSelectedItems(value) {
   if (
-    (Array.isArray(value) && value.length === 0) ||
-    (isObject(value) && Object.keys(value).length === 0)
+      (Array.isArray(value) && value.length === 0) ||
+      (isObject(value) && Object.keys(value).length === 0)
   ) return
 
   if (props.multiple) {
@@ -197,11 +199,11 @@ function setSelectedItemsText() {
     if (selectedItems.value.length > 2) {
       selectText.value = '(' + selectedItems.value.length + ' مورد' + ')'
     } else {
-      selectText.value = selectedItems.value.map((item) => item[props.optionsText]).join(', ')
+      selectText.value = selectedItems.value.map((item) => nestedArray.get(item, props.optionsText)).join(', ')
     }
   } else {
     if (selectedItems.value[props.optionsKey])
-      selectText.value = selectedItems.value[props.optionsText]
+      selectText.value = nestedArray.get(selectedItems.value, props.optionsText)
   }
 }
 
@@ -209,10 +211,10 @@ const fullTextOfSelectedItems = computed(() => {
   if (!selectedItems.value) return ''
 
   if (props.multiple) {
-    return selectedItems.value.map((item) => item[props.optionsText]).join(', ') || '-'
+    return selectedItems.value.map((item) => nestedArray.get(item, props.optionsText)).join(', ') || '-'
   } else {
     if (selectedItems.value[props.optionsKey])
-      return selectedItems.value[props.optionsText]
+      return nestedArray.get(selectedItems.value, props.optionsText)
   }
 })
 

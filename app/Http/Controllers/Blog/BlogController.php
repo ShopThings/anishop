@@ -124,7 +124,7 @@ class BlogController extends Controller
     {
         $this->authorize('delete', $blog);
 
-        $permanent = $request->user()->id === $blog->creator()?->id;
+        $permanent = $request->user()->id === $blog->creator?->id;
         $res = $this->service->deleteById($blog->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

@@ -15,9 +15,9 @@ return new class extends Migration {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('condition', array_map(fn($item) => $item->name, CommentConditionsEnum::cases()))
+            $table->enum('condition', array_map(fn($item) => $item->value, CommentConditionsEnum::cases()))
                 ->comment('show comment condition like if it is accepted or not');
-            $table->enum('status', array_map(fn($item) => $item->name, CommentStatusesEnum::cases()))
+            $table->enum('status', array_map(fn($item) => $item->value, CommentStatusesEnum::cases()))
                 ->comment('show comment status like if it is read or not');
             $table->text('pros')->comment('positive sides');
             $table->text('cons')->comment('negative sides');

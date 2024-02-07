@@ -29,8 +29,9 @@
             </div>
             <div class="p-2 w-full sm:w-1/2 lg:w-3/12">
               <base-input
-                type="number"
+                type="text"
                 :min="0"
+                :money-mask="true"
                 label-title="اولویت"
                 placeholder="وارد نمایید"
                 name="priority"
@@ -58,9 +59,10 @@
 
               <div class="p-2 w-full sm:w-1/2">
                 <base-input
-                  type="number"
+                  type="text"
                   :min="1"
                   :max="4"
+                  :money-mask="true"
                   label-title="تعداد تصاویر کنار هم"
                   placeholder="بین ۱ تا ۴ تصویر کنار هم"
                   name="beside_images"

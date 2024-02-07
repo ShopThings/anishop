@@ -5,9 +5,9 @@
         v-if="label"
         class="ml-3 text-sm text-gray-500"
         :class="[
-                    labelClass,
-                    !onLabel ? 'grow sm:grow-0' : '',
-                ]"
+            labelClass,
+            !onLabel ? 'grow sm:grow-0' : '',
+        ]"
       >
         <template v-if="slots['label']">
           <slot name="label"></slot>
@@ -33,10 +33,10 @@
         <span v-if="srText" class="sr-only">{{ srText }}</span>
         <span
           :class="[
-                        bulletClass,
-                        value ? 'rtl:-translate-x-6 translate-x-6' : 'rtl:-translate-x-1 translate-x-1',
-                        value ? enabledBulletColor : disabledBulletColor
-                    ]"
+              bulletClass,
+              value ? 'rtl:-translate-x-6 translate-x-6' : 'rtl:-translate-x-1 translate-x-1',
+              value ? enabledBulletColor : disabledBulletColor
+          ]"
           class="inline-block h-4 w-4 transform rounded-full bg-white transition"
         />
       </Switch>

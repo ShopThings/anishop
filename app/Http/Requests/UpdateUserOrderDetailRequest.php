@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Province;
-use App\Rules\CityInProvince;
+use App\Rules\CityInProvinceRule;
 use App\Rules\PersianMobileRule;
 use App\Rules\PersianNameRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -32,7 +32,7 @@ class UpdateUserOrderDetailRequest extends FormRequest
             ],
             'city' => [
                 'required_with:province',
-                new CityInProvince(),
+                new CityInProvinceRule(),
             ],
             'address' => [
                 'sometimes',

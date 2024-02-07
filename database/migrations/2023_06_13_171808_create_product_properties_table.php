@@ -23,6 +23,7 @@ return new class extends Migration {
                 ->comment('it is in grams');
             $table->unsignedBigInteger('price');
             $table->unsignedBigInteger('discounted_price')->nullable();
+            $table->timestamp('discounted_from')->nullable();
             $table->timestamp('discounted_until')->nullable();
             $table->unsignedDecimal('tax_rate')->nullable();
             $table->unsignedInteger('stock_count');
@@ -32,6 +33,8 @@ return new class extends Migration {
             $table->boolean('show_coming_soon')->default(true);
             $table->boolean('show_call_for_more')->default(true);
             $table->boolean('is_published')->default(true);
+            $table->boolean('has_separate_shipment')->default(false)
+                ->comment('this make send price for this product consider as another separate payment');
 
             $table->index('color_name');
             $table->index('size');

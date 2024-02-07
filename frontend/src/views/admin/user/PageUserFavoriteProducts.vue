@@ -23,7 +23,7 @@
             <template #body>
               <div class="flex items-center md:flex-col">
                 <router-link
-                  :to="{name: 'admin.product.detail', params: {id: 1}}"
+                  :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                   target="_blank"
                   class="p-2 shrink-0"
                 >
@@ -34,7 +34,7 @@
                   />
                 </router-link>
                 <router-link
-                  :to="{name: 'admin.product.detail', params: {id: 1}}"
+                  :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                   target="_blank"
                   class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
                 >

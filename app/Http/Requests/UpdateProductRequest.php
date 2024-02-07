@@ -4,8 +4,8 @@ namespace App\Http\Requests;
 
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\FileManager;
 use App\Models\Unit;
+use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -40,7 +40,7 @@ class UpdateProductRequest extends FormRequest
             ],
             'image' => [
                 'sometimes',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
             'properties' => [
                 'sometimes',

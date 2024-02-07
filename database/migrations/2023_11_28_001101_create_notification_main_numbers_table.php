@@ -16,8 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->string('account', 255)
                 ->comment('it is either user\'s number or email');
-            $table->enum('account_type', array_map(fn($item) => $item->name, AccountTypesEnum::cases()));
-            $table->enum('notification_type', array_map(fn($item) => $item->name, AccountNotificationTypesEnum::cases()))
+            $table->enum('account_type', array_map(fn($item) => $item->value, AccountTypesEnum::cases()));
+            $table->enum('notification_type', array_map(fn($item) => $item->value, AccountNotificationTypesEnum::cases()))
                 ->comment('what kind of notification should be announced to the account');
         });
     }

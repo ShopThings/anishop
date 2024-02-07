@@ -191,7 +191,7 @@ const routes = [
 
   {
     path: "/:pathMatch(.*)*",
-    name: "not.found",
+    name: "not-found",
     component: PageNotFound,
   },
 ];

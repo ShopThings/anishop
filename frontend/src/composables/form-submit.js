@@ -6,7 +6,12 @@ export const useFormSubmit = (formOptions, submitAction) => {
 
   const canSubmit = ref(true)
 
-  const {handleSubmit, errors, isSubmitting} = useForm(formOptions)
+  const {
+    handleSubmit,
+    errors,
+    isSubmitting,
+    values
+  } = useForm(formOptions)
 
   const onSubmit = handleSubmit((values, actions) => {
     if (!canSubmit.value) return
@@ -20,6 +25,7 @@ export const useFormSubmit = (formOptions, submitAction) => {
     canSubmit,
     onSubmit,
     errors,
-    isSubmitting
+    isSubmitting,
+    values,
   }
 }

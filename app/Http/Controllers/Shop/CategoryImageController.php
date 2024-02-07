@@ -6,6 +6,7 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryImageRequest;
 use App\Http\Requests\UpdateCategoryImageRequest;
+use App\Http\Resources\CategoryImageItemResource;
 use App\Http\Resources\CategoryImageResource;
 use App\Models\CategoryImage;
 use App\Models\User;
@@ -38,7 +39,7 @@ class CategoryImageController extends Controller
     public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-        return CategoryImageResource::collection($this->service->getCategoryImages($filter));
+        return CategoryImageItemResource::collection($this->service->getCategoryImages($filter));
     }
 
     /**
@@ -119,7 +120,7 @@ class CategoryImageController extends Controller
     {
         $this->authorize('delete', $categoryImage);
 
-        $permanent = $request->user()->id === $categoryImage->creator()?->id;
+        $permanent = $request->user()->id === $categoryImage->creator?->id;
         $res = $this->service->deleteById($categoryImage->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

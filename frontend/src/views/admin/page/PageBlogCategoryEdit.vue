@@ -37,12 +37,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                    type="number"
+                    type="text"
                     label-title="اولویت"
                     placeholder="وارد نمایید"
                     name="priority"
                     :value="blogCategory?.priority"
                     :min="0"
+                    :money-mask="true"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -74,7 +75,7 @@
 
               <div class="p-2">
                 <partial-input-label title="کلمات کلیدی"/>
-                <vue3-tags-input
+                <base-tags-input
                   :tags="tags"
                   placeholder="کلمات کلیدی خود را وارد نمایید"
                   @on-tags-changed="(t) => {tags = t}"
@@ -121,11 +122,11 @@ import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import Vue3TagsInput from "vue3-tags-input";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {useToast} from "vue-toastification";
 import {useRoute} from "vue-router";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const route = useRoute()
 const toast = useToast()

@@ -22,8 +22,9 @@
                   />
                   <base-media-placeholder
                     type="image"
-                    :selected="paymentMethod?.image"
+                    :selected="methodImage"
                   />
+                  <partial-input-error-message :error-message="errors.image"/>
                 </div>
 
                 <div class="p-2">
@@ -286,11 +287,11 @@
                 <base-animated-button
                   type="submit"
                   class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                  :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
+                      v-if="!canSubmit"
                       main-container-klass="absolute w-full h-full top-0 left-0"
                       big-circle-color="border-transparent"
                     />
@@ -312,7 +313,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
@@ -328,61 +329,63 @@ import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
-import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
-import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {PAYMENT_METHOD_TYPES} from "@/composables/constants.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {PaymentMethodAPI} from "@/service/APIPayment.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
-const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
+
+const loading = ref(true)
 
 const paymentMethod = ref(null)
-
-const loading = ref(false)
-const canSubmit = ref(true)
-
+const methodImage = ref(null)
 const publishStatus = ref(true)
 const paymentTypes = [
   {
-    value: 'behpardakht',
-    name: 'درگاه بانک - به پرداخت',
+    value: PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    name: PAYMENT_METHOD_TYPES.BEHPARDAKHT.text,
     image: '/gateways/beh-pardakht.png',
+    type: PAYMENT_METHOD_TYPES.BEHPARDAKHT.type,
   },
   {
-    value: 'idpay',
-    name: 'درگاه بانک - آیدی پی',
+    value: PAYMENT_METHOD_TYPES.IDPAY.value,
+    name: PAYMENT_METHOD_TYPES.IDPAY.text,
     image: '/gateways/idpay.png',
+    type: PAYMENT_METHOD_TYPES.IDPAY.type,
   },
   {
-    value: 'irankish',
-    name: 'درگاه بانک - ایران کیش',
+    value: PAYMENT_METHOD_TYPES.IRANKISH.value,
+    name: PAYMENT_METHOD_TYPES.IRANKISH.text,
     image: '/gateways/irankish.jpg',
+    type: PAYMENT_METHOD_TYPES.IRANKISH.type,
   },
   {
-    value: 'parsian',
-    name: 'درگاه بانک - تجارت الکترونیک پارسیان',
+    value: PAYMENT_METHOD_TYPES.PARSIAN.value,
+    name: PAYMENT_METHOD_TYPES.PARSIAN.text,
     image: '/gateways/tap.jpg',
+    type: PAYMENT_METHOD_TYPES.PARSIAN.type,
   },
   {
-    value: 'sadad',
-    name: 'درگاه بانک - سداد',
+    value: PAYMENT_METHOD_TYPES.SADAD.value,
+    name: PAYMENT_METHOD_TYPES.SADAD.text,
     image: '/gateways/sadad.jpg',
+    type: PAYMENT_METHOD_TYPES.SADAD.type,
   },
   {
-    value: 'sepehr',
-    name: 'درگاه بانک - پرداخت الکترونیک سپهر',
+    value: PAYMENT_METHOD_TYPES.SEPEHR.value,
+    name: PAYMENT_METHOD_TYPES.SEPEHR.text,
     image: '/gateways/mabna.png',
+    type: PAYMENT_METHOD_TYPES.SEPEHR.type,
   },
   {
-    value: 'zarinpal',
-    name: 'درگاه بانک - زرین پال',
+    value: PAYMENT_METHOD_TYPES.ZARINPAL.value,
+    name: PAYMENT_METHOD_TYPES.ZARINPAL.text,
     image: '/gateways/zarinpal.png',
+    type: PAYMENT_METHOD_TYPES.ZARINPAL.type,
   },
 ]
 const selectedPaymentType = ref(null)
@@ -391,24 +394,156 @@ function paymentTypeChange(selected) {
   selectedPaymentType.value = selected
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    title: yup.string().required('عنوان را وارد نمایید.'),
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (!methodImage.value) {
+    actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
+    return
+  }
+
+  // validate payment method type
+  if (!selectedPaymentType.value || ![
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IDPAY.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+    PAYMENT_METHOD_TYPES.PARSIAN.value,
+    PAYMENT_METHOD_TYPES.ZARINPAL.value,
+  ].includes(selectedPaymentType.value.value)) {
+    actions.setFieldError('type', 'انتخاب نوع روش پرداخت اجباری می‌باشد.')
+    return
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+  ].includes(selectedPaymentType.value.value) && (!values.terminal_id || values.terminal_id.trim() === '')) {
+    actions.setFieldError('terminal_id', 'شماره ترمینال را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.BEHPARDAKHT.value === selectedPaymentType.value.value &&
+    (!values.username || values.username.trim() === '')) {
+    actions.setFieldError('username', 'نام کاربری را وارد نمایید.')
+    return
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.PARSIAN.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+  ].includes(selectedPaymentType.value.value) && (!values.password || values.password.trim() === '')) {
+    actions.setFieldError('password', 'کلمه عبور را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.IDPAY.value === selectedPaymentType.value.value &&
+    (!values.api_key || values.api_key.trim() === '')) {
+    actions.setFieldError('api_key', 'کلید API را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.IRANKISH.value === selectedPaymentType.value.value) {
+    if (!values.acceptor_id || values.acceptor_id.trim() === '') {
+      actions.setFieldError('acceptor_id', 'شناسه پذیرنده را وارد نمایید.')
+      return
+    }
+
+    if (!values.public_key || values.public_key.trim() === '') {
+      actions.setFieldError('public_key', 'کلید عمومی را وارد نمایید.')
+      return
+    }
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.ZARINPAL.value,
+  ].includes(selectedPaymentType.value.value) && (!values.merchant_id || values.merchant_id.trim() === '')) {
+    actions.setFieldError('merchant_id', 'شماره مرچنت را وارد نمایید.')
+    return
+  }
+  //
+
+  // assemble payment options
+  const options = {}
+  switch (selectedPaymentType.value.value) {
+    case PAYMENT_METHOD_TYPES.BEHPARDAKHT.value:
+      options.terminal_id = values.terminal_id
+      options.username = values.username
+      options.password = values.password
+      break;
+    case PAYMENT_METHOD_TYPES.IDPAY.value:
+      options.api_key = values.api_key
+      break;
+    case PAYMENT_METHOD_TYPES.IRANKISH.value:
+      options.terminal_id = values.terminal_id
+      options.password = values.password
+      options.acceptor_id = values.acceptor_id
+      options.public_key = values.public_key
+      break;
+    case PAYMENT_METHOD_TYPES.PARSIAN.value:
+      options.password = values.password
+      break;
+    case PAYMENT_METHOD_TYPES.SADAD.value:
+      options.password = values.password
+      options.terminal_id = values.terminal_id
+      options.merchant_id = values.merchant_id
+      break;
+    case PAYMENT_METHOD_TYPES.SEPEHR.value:
+      options.terminal_id = values.terminal_id
+      break;
+    case PAYMENT_METHOD_TYPES.ZARINPAL.value:
+      options.merchant_id = values.merchant_id
+      break;
+  }
+  //
+
+  canSubmit.value = false
+
+  PaymentMethodAPI.updateById(idParam.value, {
+    title: values.title,
+    image: methodImage.value.full_path,
+    type: selectedPaymentType.value.type,
+    bank_gateway_type: selectedPaymentType.value.value,
+    options,
+    is_published: publishStatus.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+    },
+    finally() {
+      canSubmit.value = true
+    }
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.paymentMethods.show, {payment_method: idParam.value}), null, {
-  //     success: (response) => {
-  //         for (let i of paymentTypes) {
-  //             if (response.bank_gateway_type === i.value)
-  //                 selectedPaymentType.value = i
-  //         }
-  //
-  //         loading.value = false
-  //     },
-  // })
+  PaymentMethodAPI.fetchById(idParam.value, {
+    success(response) {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  paymentMethod.value = item
+  methodImage.value = item.image
+
+  for (let i of paymentTypes) {
+    if (item.bank_gateway_type.value === i.value)
+      selectedPaymentType.value = i
+  }
+}
 </script>

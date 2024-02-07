@@ -3,7 +3,7 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-          v-if="isSubmitting"
+          v-if="!canSubmit"
           main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
           container-bg-color="bg-blue-50 opacity-40"
         />
@@ -27,7 +27,7 @@
                   />
                   <base-media-placeholder
                     type="image"
-                    :selected="image"
+                    v-model:selected="image.image"
                   />
                 </div>
               </div>
@@ -53,11 +53,16 @@
           :current-step="options.currentStep"
           :current-step-index="options.currentStepIndex"
           :last-step="options.lastStep"
-          :allow-next-step="!isSubmitting"
-          :allow-prev-step="false"
-          :show-prev-step-button="false"
-          :loading="isSubmitting"
+          :allow-next-step="canSubmit"
+          :allow-prev-step="shouldGoPrevStep"
+          :show-prev-step-button="shouldGoPrevStep"
+          :loading="!canSubmit"
           @next="handleNextClick(options.next)"
+          @prev="() => {
+            if(shouldGoPrevStep) {
+              options.prev()
+            }
+          }"
         />
       </template>
     </partial-card>
@@ -65,17 +70,19 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
-import {useForm} from "vee-validate";
-import yup from "@/validation/index.js";
 import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import PartialBuilderRemoveBtn from "@/components/partials/PartialBuilderRemoveBtn.vue";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {ProductAPI} from "@/service/APIProduct.js";
+import {useCreationProductStore} from "@/store/StoreProduct.js";
+import {useToast} from "vue-toastification";
 
 defineProps({
   options: {
@@ -85,7 +92,11 @@ defineProps({
 })
 const emit = defineEmits(['add', 'remove'])
 
-const canSubmit = ref(true)
+const toast = useToast()
+const productStore = useCreationProductStore()
+const shouldGoPrevStep = computed(() => {
+  return !(!!productStore.getProductSlug)
+})
 
 //------------------------
 // Product new instance
@@ -93,7 +104,7 @@ const canSubmit = ref(true)
 const images = ref([
   {
     image: null,
-  }
+  },
 ])
 
 function handleNewImageClick() {
@@ -119,21 +130,46 @@ function handleNextClick(next) {
   nextFn = next
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+const {canSubmit, errors, onSubmit} = useFormSubmit({}, () => {
+  if (!canSubmit.value || !validateCurrentStep()) return
 
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+  const definedImages = []
+  for (let i of images.value) {
+    if (i && i.image?.full_name) {
+      definedImages.push(i.image.full_name)
+    }
+  }
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve()
-      if (nextFn)
-        nextFn()
-    }, 2000)
+  if (!definedImages.length) {
+    toast.error('انتخاب حداقل یک تصویر برای گالری تصاویر، الزامی می‌باشد.')
+    return
+  }
+
+  canSubmit.value = false
+
+  ProductAPI.createGallery(productStore.getProductSlug, {
+    images: definedImages,
+  }, {
+    success() {
+      if (nextFn) nextFn()
+    },
+    finally() {
+      canSubmit.value = true
+    },
   })
 })
+
+onMounted(() => {
+  validateCurrentStep()
+})
+
+function validateCurrentStep() {
+  if (shouldGoPrevStep.value) {
+    toast.error('مراحل قبل به درستی انجام نگرفته‌اند، لطفا دوباره مراحل را طی نمایید.')
+    return false
+  }
+  return true
+}
 </script>
 
 <style scoped>

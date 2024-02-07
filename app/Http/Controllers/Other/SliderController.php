@@ -125,7 +125,7 @@ class SliderController extends Controller
     {
         $this->authorize('delete', $slider);
 
-        $permanent = $request->user()->id === $slider->creator()?->id;
+        $permanent = $request->user()->id === $slider->creator?->id;
         $res = $this->service->deleteById($slider->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

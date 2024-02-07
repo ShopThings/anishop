@@ -8,10 +8,12 @@
         <form @submit.prevent="onSubmit">
           <div class="flex flex-wrap items-end justify-between">
             <div class="p-2">
-              <partial-input-label
-                title="انتخاب تصویر"
+              <partial-input-label title="انتخاب تصویر"/>
+              <base-media-placeholder
+                type="image"
+                v-model:selected="methodImage"
               />
-              <base-media-placeholder type="image"/>
+              <partial-input-error-message :error-message="errors.image"/>
             </div>
 
             <div class="p-2">
@@ -28,9 +30,11 @@
 
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-              <base-input label-title="عنوان روش پرداخت"
-                          placeholder="عنوان را وارد نمایید"
-                          name="title">
+              <base-input
+                label-title="عنوان روش پرداخت"
+                placeholder="عنوان را وارد نمایید"
+                name="title"
+              >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                 </template>
@@ -52,9 +56,7 @@
                       :alt="item.name"
                       class="!w-14 h-auto ml-3"
                     />
-                    <span
-                      :class="{'text-primary': selected}"
-                    >{{ item.name }}</span>
+                    <span :class="{'text-primary': selected}">{{ item.name }}</span>
                   </div>
                 </template>
               </base-select>
@@ -242,11 +244,11 @@
             <base-animated-button
               type="submit"
               class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-              :disabled="isSubmitting"
+              :disabled="!canSubmit"
             >
               <VTransitionFade>
                 <loader-circle
-                  v-if="isSubmitting"
+                  v-if="!canSubmit"
                   main-container-klass="absolute w-full h-full top-0 left-0"
                   big-circle-color="border-transparent"
                 />
@@ -274,7 +276,6 @@ import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
-import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
@@ -283,45 +284,57 @@ import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {PaymentMethodAPI} from "@/service/APIPayment.js";
+import {PAYMENT_METHOD_TYPES} from "@/composables/constants.js";
+import {useRouter} from "vue-router";
 
-const canSubmit = ref(true)
+const router = useRouter()
 
+const methodImage = ref(null)
 const publishStatus = ref(true)
 const paymentTypes = [
   {
-    value: 'behpardakht',
-    name: 'درگاه بانک - به پرداخت',
+    value: PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    name: PAYMENT_METHOD_TYPES.BEHPARDAKHT.text,
     image: '/gateways/beh-pardakht.png',
+    type: PAYMENT_METHOD_TYPES.BEHPARDAKHT.type,
   },
   {
-    value: 'idpay',
-    name: 'درگاه بانک - آیدی پی',
+    value: PAYMENT_METHOD_TYPES.IDPAY.value,
+    name: PAYMENT_METHOD_TYPES.IDPAY.text,
     image: '/gateways/idpay.png',
+    type: PAYMENT_METHOD_TYPES.IDPAY.type,
   },
   {
-    value: 'irankish',
-    name: 'درگاه بانک - ایران کیش',
+    value: PAYMENT_METHOD_TYPES.IRANKISH.value,
+    name: PAYMENT_METHOD_TYPES.IRANKISH.text,
     image: '/gateways/irankish.jpg',
+    type: PAYMENT_METHOD_TYPES.IRANKISH.type,
   },
   {
-    value: 'parsian',
-    name: 'درگاه بانک - تجارت الکترونیک پارسیان',
+    value: PAYMENT_METHOD_TYPES.PARSIAN.value,
+    name: PAYMENT_METHOD_TYPES.PARSIAN.text,
     image: '/gateways/tap.jpg',
+    type: PAYMENT_METHOD_TYPES.PARSIAN.type,
   },
   {
-    value: 'sadad',
-    name: 'درگاه بانک - سداد',
+    value: PAYMENT_METHOD_TYPES.SADAD.value,
+    name: PAYMENT_METHOD_TYPES.SADAD.text,
     image: '/gateways/sadad.jpg',
+    type: PAYMENT_METHOD_TYPES.SADAD.type,
   },
   {
-    value: 'sepehr',
-    name: 'درگاه بانک - پرداخت الکترونیک سپهر',
+    value: PAYMENT_METHOD_TYPES.SEPEHR.value,
+    name: PAYMENT_METHOD_TYPES.SEPEHR.text,
     image: '/gateways/mabna.png',
+    type: PAYMENT_METHOD_TYPES.SEPEHR.type,
   },
   {
-    value: 'zarinpal',
-    name: 'درگاه بانک - زرین پال',
+    value: PAYMENT_METHOD_TYPES.ZARINPAL.value,
+    name: PAYMENT_METHOD_TYPES.ZARINPAL.text,
     image: '/gateways/zarinpal.png',
+    type: PAYMENT_METHOD_TYPES.ZARINPAL.type,
   },
 ]
 const selectedPaymentType = ref(null)
@@ -330,11 +343,141 @@ function paymentTypeChange(selected) {
   selectedPaymentType.value = selected
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    title: yup.string().required('عنوان را وارد نمایید.'),
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (!methodImage.value) {
+    actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
+    return
+  }
+
+  // validate payment method type
+  if (!selectedPaymentType.value || ![
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IDPAY.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+    PAYMENT_METHOD_TYPES.PARSIAN.value,
+    PAYMENT_METHOD_TYPES.ZARINPAL.value,
+  ].includes(selectedPaymentType.value.value)) {
+    actions.setFieldError('type', 'انتخاب نوع روش پرداخت اجباری می‌باشد.')
+    return
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+  ].includes(selectedPaymentType.value.value) && (!values.terminal_id || values.terminal_id.trim() === '')) {
+    actions.setFieldError('terminal_id', 'شماره ترمینال را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.BEHPARDAKHT.value === selectedPaymentType.value.value &&
+    (!values.username || values.username.trim() === '')) {
+    actions.setFieldError('username', 'نام کاربری را وارد نمایید.')
+    return
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.PARSIAN.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+  ].includes(selectedPaymentType.value.value) && (!values.password || values.password.trim() === '')) {
+    actions.setFieldError('password', 'کلمه عبور را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.IDPAY.value === selectedPaymentType.value.value &&
+    (!values.api_key || values.api_key.trim() === '')) {
+    actions.setFieldError('api_key', 'کلید API را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.IRANKISH.value === selectedPaymentType.value.value) {
+    if (!values.acceptor_id || values.acceptor_id.trim() === '') {
+      actions.setFieldError('acceptor_id', 'شناسه پذیرنده را وارد نمایید.')
+      return
+    }
+
+    if (!values.public_key || values.public_key.trim() === '') {
+      actions.setFieldError('public_key', 'کلید عمومی را وارد نمایید.')
+      return
+    }
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.ZARINPAL.value,
+  ].includes(selectedPaymentType.value.value) && (!values.merchant_id || values.merchant_id.trim() === '')) {
+    actions.setFieldError('merchant_id', 'شماره مرچنت را وارد نمایید.')
+    return
+  }
+  //
+
+  // assemble payment options
+  const options = {}
+  switch (selectedPaymentType.value.value) {
+    case PAYMENT_METHOD_TYPES.BEHPARDAKHT.value:
+      options.terminal_id = values.terminal_id
+      options.username = values.username
+      options.password = values.password
+      break;
+    case PAYMENT_METHOD_TYPES.IDPAY.value:
+      options.api_key = values.api_key
+      break;
+    case PAYMENT_METHOD_TYPES.IRANKISH.value:
+      options.terminal_id = values.terminal_id
+      options.password = values.password
+      options.acceptor_id = values.acceptor_id
+      options.public_key = values.public_key
+      break;
+    case PAYMENT_METHOD_TYPES.PARSIAN.value:
+      options.password = values.password
+      break;
+    case PAYMENT_METHOD_TYPES.SADAD.value:
+      options.password = values.password
+      options.terminal_id = values.terminal_id
+      options.merchant_id = values.merchant_id
+      break;
+    case PAYMENT_METHOD_TYPES.SEPEHR.value:
+      options.terminal_id = values.terminal_id
+      break;
+    case PAYMENT_METHOD_TYPES.ZARINPAL.value:
+      options.merchant_id = values.merchant_id
+      break;
+  }
+  //
+
+  canSubmit.value = false
+
+  PaymentMethodAPI.create({
+    title: values.title,
+    image: methodImage.value.full_path,
+    type: selectedPaymentType.value.type,
+    bank_gateway_type: selectedPaymentType.value.value,
+    options,
+    is_published: publishStatus.value,
+  }, {
+    success() {
+      actions.resetForm()
+      methodImage.value = null
+      selectedPaymentType.value = null
+      publishStatus.value = true
+
+      router.push({name: 'admin.payment_methods'})
+    },
+    finally() {
+      canSubmit.value = true
+    }
+  })
 })
 </script>

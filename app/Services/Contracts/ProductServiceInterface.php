@@ -50,6 +50,20 @@ interface ProductServiceInterface extends ServiceInterface
 
     /**
      * @param int $productId
+     * @param array $images
+     * @return bool
+     */
+    public function createGalley(int $productId, array $images): bool;
+
+    /**
+     * @param int $productId
+     * @param array $products
+     * @return bool
+     */
+    public function createRelatedProducts(int $productId, array $products): bool;
+
+    /**
+     * @param int $productId
      * @param array $products
      * @return Model|Collection
      */

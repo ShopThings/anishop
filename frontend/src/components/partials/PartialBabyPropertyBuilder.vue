@@ -22,9 +22,10 @@
         </div>
         <div class="p-2 w-full sm:w-2/3 xl:w-2/3">
           <partial-input-label :title="tagsText"/>
-          <vue3-tags-input
+          <base-tags-input
             :tags="property?.tags"
             placeholder="وارد نمایید"
+            :add-tag-on-keys="[13, 188]"
             @on-tags-changed="(t) => {property.tags = t}"
           />
         </div>
@@ -48,9 +49,9 @@ import {computed} from "vue";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "@/components/base/BaseButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
-import Vue3TagsInput from "vue3-tags-input";
 import PartialInputLabel from "./PartialInputLabel.vue";
 import PartialBuilderRemoveBtn from "./PartialBuilderRemoveBtn.vue";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 
 const props = defineProps({

@@ -23,9 +23,9 @@ export const apiRoutes = {
     },
 
     paymentMethods: {
-      index: 'api/admin/payment-method',
+      index: 'api/admin/payment-methods',
       show: 'api/admin/payment-methods/{payment_method}',
-      store: 'api/admin/payment-methods/{payment_method}',
+      store: 'api/admin/payment-methods',
       update: 'api/admin/payment-methods/{payment_method}',
       destroy: 'api/admin/payment-methods/{payment_method}',
       batchDestroy: 'api/admin/payment-methods/batch',
@@ -106,6 +106,11 @@ export const apiRoutes = {
       update: 'api/admin/products/{product}',
       destroy: 'api/admin/products/{product}',
       batchDestroy: 'api/admin/products/batch',
+      showVariants: 'api/admin/products/{product}/variants',
+      galleyStore: 'api/admin/products/{product}/gallery',
+      galleyShow: 'api/admin/products/{product}/gallery',
+      relatedProductsStore: 'api/admin/products/{product}/related-products',
+      relatedProductsShow: 'api/admin/products/{product}/related-products',
       modifyProducts: 'api/admin/products/{product}/modify',
       batchEditInfo: 'api/admin/products/batch/info',
       batchEditPrice: 'api/admin/products/batch/price',
@@ -477,7 +482,7 @@ export const apiReplaceParams = function (url, params) {
   }
 
   url = url.replace(
-    new RegExp('\{[^\?]*\?\}'),
+    new RegExp('\{[^}]*\?\}'),
     ''
   )
 

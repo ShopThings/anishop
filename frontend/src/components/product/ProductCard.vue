@@ -81,9 +81,9 @@
 
                   <div class="flex flex-col mr-3">
                     <div class="my-1 text-lg">
-                                            <span class="font-iranyekan-bold mx-1">{{
-                                                formatPriceLikeNumber(slide.discounted_price)
-                                              }}</span>
+                      <span class="font-iranyekan-bold mx-1">
+                        {{ formatPriceLikeNumber(slide.discounted_price) }}
+                      </span>
                       <span class="text-xs text-gray-400">تومان</span>
                     </div>
                     <template v-if="slide.discounted_price < slide.price">

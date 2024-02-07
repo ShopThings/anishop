@@ -59,8 +59,9 @@
             <base-input
               label-title="اولویت"
               placeholder="وارد نمایید"
-              type="number"
+              type="text"
               :min="0"
+              :money-mask="true"
               :name="'priority' + element.id"
               :value="element.priority"
               @input="(v) => {element.priority = v}"

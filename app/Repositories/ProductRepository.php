@@ -8,7 +8,9 @@ use App\Enums\Products\ProductOrderTypesEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
 use App\Http\Requests\Filters\HomeProductSideFilter;
 use App\Models\Product;
+use App\Models\ProductGallery;
 use App\Models\ProductProperty;
+use App\Models\RelatedProduct;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
@@ -27,7 +29,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
 
     public function __construct(
         Product                   $model,
-        protected ProductProperty $productPropertyModel
+        protected ProductProperty $productPropertyModel,
+        protected ProductGallery  $productGalleryModel,
+        protected RelatedProduct  $relatedProductModel
     )
     {
         parent::__construct($model);
@@ -211,6 +215,74 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
             'product_attribute_values.attribute_value',
             'product_attribute_values.id as attribute_value_id',
         ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createGallery(int $productId, array $images): bool
+    {
+        DB::beginTransaction();
+
+        // first delete all images that not exists in $images variable from db
+        $res = (bool)$this->productGalleryModel->newQuery()
+            ->where('product_id', $productId)
+            ->whereNotIn('image_id', $images)
+            ->delete();
+        if (!$res) {
+            DB::rollBack();
+            return false;
+        }
+
+        // then update/create provided images
+        foreach ($images as $image) {
+            $model = $this->productGalleryModel::updateOrCreate([
+                'product_id' => $productId,
+                'image_id' => $image,
+            ]);
+
+            if (!$model instanceof Model) {
+                DB::rollBack();
+                return false;
+            }
+        }
+
+        DB::commit();
+        return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createRelatedProducts(int $productId, array $products): bool
+    {
+        DB::beginTransaction();
+
+        // first delete all related products that not exists in $products variable from db
+        $res = (bool)$this->relatedProductModel->newQuery()
+            ->where('product_id', $productId)
+            ->whereNotIn('related_id', $products)
+            ->delete();
+        if (!$res) {
+            DB::rollBack();
+            return false;
+        }
+
+        // then update/create provided related products
+        foreach ($products as $product) {
+            $model = $this->relatedProductModel::updateOrCreate([
+                'product_id' => $productId,
+                'related_id' => $product,
+            ]);
+
+            if (!$model instanceof Model) {
+                DB::rollBack();
+                return false;
+            }
+        }
+
+        DB::commit();
+        return true;
     }
 
     /**

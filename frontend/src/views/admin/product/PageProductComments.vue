@@ -68,10 +68,8 @@ import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 
 const router = useRouter()
 const toast = useToast()
-const productId = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
+const productSlug = computed(() => {
+  return route.params.slug
 })
 
 const product = ref(null)
@@ -187,7 +185,7 @@ const operations = [
         router.push({
           name: 'admin.product.comment.detail',
           params: {
-            id: productId.value,
+            slug: productSlug.value,
             detail: data.id,
           }
         })

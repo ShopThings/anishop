@@ -122,7 +122,7 @@ class WeightPostPriceController extends Controller
     {
         $this->authorize('delete', $weightPostPrice);
 
-        $permanent = $request->user()->id === $weightPostPrice->creator()?->id;
+        $permanent = $request->user()->id === $weightPostPrice->creator?->id;
         $res = $this->service->deleteById($weightPostPrice->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

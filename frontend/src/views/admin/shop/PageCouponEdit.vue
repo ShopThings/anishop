@@ -25,19 +25,27 @@
                 />
               </div>
 
+              <div class="w-full p-2">
+                <base-input
+                  label-title="کد"
+                  placeholder="وارد نمایید"
+                  name="code"
+                  :value="coupon?.code"
+                  :is-editable="false"
+                  :has-edit-mode="false"
+                >
+                  <template #editModeLabel="{value}">
+                    <span class="px-2 py-1 bg-teal-200 rounded text-black text-sm tracking-widest">{{
+                        value || '-'
+                      }}</span>
+                  </template>
+                  <template #icon>
+                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                  </template>
+                </base-input>
+              </div>
+
               <div class="flex flex-wrap">
-                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                  <base-input
-                    label-title="کد"
-                    placeholder="وارد نمایید"
-                    name="code"
-                    :value="coupon?.code"
-                  >
-                    <template #icon>
-                      <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                    </template>
-                  </base-input>
-                </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
                     label-title="عنوان"
@@ -52,12 +60,19 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="number"
-                    label-title="قیمت تخفیف"
+                    type="text"
                     placeholder="وارد نمایید"
                     name="price"
-                    :value="coupon?.price"
+                    :min="0"
+                    :money-mask="true"
+                    :value="coupon?.price.toString()"
                   >
+                    <template #label>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <span>قیمت تخفیف</span>
+                        <span class="text-xs text-pink-600">(بر حسب تومان)</span>
+                      </div>
+                    </template>
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
@@ -70,13 +85,20 @@
               <div class="flex flex-wrap">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="number"
-                    label-title="حداقل قیمت اعمال"
+                    type="text"
                     placeholder="وارد نمایید"
                     name="apply_min_price"
+                    :min="0"
+                    :money-mask="true"
                     :is-optional="true"
-                    :value="coupon?.apply_min_price"
+                    :value="coupon?.apply_min_price?.toString()"
                   >
+                    <template #label>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <span>حداقل قیمت اعمال</span>
+                        <span class="text-xs text-pink-600">(بر حسب تومان)</span>
+                      </div>
+                    </template>
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
@@ -84,13 +106,20 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="number"
-                    label-title="حداکثر قیمت اعمال"
+                    type="text"
                     placeholder="وارد نمایید"
                     name="apply_max_price"
+                    :min="0"
+                    :money-mask="true"
                     :is-optional="true"
-                    :value="coupon?.apply_max_price"
+                    :value="coupon?.apply_max_price?.toString()"
                   >
+                    <template #label>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <span>حداکثر قیمت اعمال</span>
+                        <span class="text-xs text-pink-600">(بر حسب تومان)</span>
+                      </div>
+                    </template>
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
@@ -98,11 +127,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="number"
+                    type="text"
                     label-title="تعداد قابل استفاده"
                     placeholder="وارد نمایید"
                     name="use_count"
-                    :value="coupon?.use_count"
+                    :min="0"
+                    :money-mask="true"
+                    :value="coupon?.use_count.toString()"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -111,13 +142,20 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="number"
-                    label-title="قابل استفاده مجدد پس از(بر حسب روز)"
+                    type="text"
                     placeholder="وارد نمایید"
                     name="reusable_after"
+                    :min="0"
+                    :money-mask="true"
                     :is-optional="true"
-                    :value="coupon?.reusable_after"
+                    :value="coupon?.reusable_after.toString()"
                   >
+                    <template #label>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <span>قابل استفاده مجدد پس از</span>
+                        <span class="text-xs text-pink-600">(بر حسب روز)</span>
+                      </div>
+                    </template>
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
@@ -138,6 +176,7 @@
                     v-model="startDate"
                     placeholder="انتخاب تاریخ شروع"
                   />
+                  <partial-input-error-message :error-message="errors.start_at"/>
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <partial-input-label
@@ -148,6 +187,7 @@
                     v-model="endDate"
                     placeholder="انتخاب تاریخ پایان"
                   />
+                  <partial-input-error-message :error-message="errors.end_at"/>
                 </div>
               </div>
 
@@ -155,11 +195,11 @@
                 <base-animated-button
                   type="submit"
                   class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                  :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
+                      v-if="!canSubmit"
                       main-container-klass="absolute w-full h-full top-0 left-0"
                       big-circle-color="border-transparent"
                     />
@@ -181,9 +221,8 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
-import yup from "@/validation/index.js";
+import {onMounted, ref} from "vue";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
@@ -194,20 +233,16 @@ import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import PartialInputLead from "@/components/partials/PartialInputLead.vue";
-import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {CouponAPI} from "@/service/APIShop.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
-const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
-const loading = ref(false)
-const canSubmit = ref(true)
+const loading = ref(true)
 
 const coupon = ref(null)
 
@@ -215,23 +250,82 @@ const publishStatus = ref(true)
 const startDate = ref(null)
 const endDate = ref(null)
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+    code: yup.string().required('کد کوپن برای استفاده کاربر را وارد نمایید.'),
+    title: yup.string().required('عنوان را وارد نمایید.'),
+    price: yup.string()
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('مبلغ باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000})
+      .required('مبلغ کوپن را وارد نمایید.'),
+    apply_min_price: yup.string()
+      .optional()
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('حداقل قیمت اعمال باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000, optional: true})
+      .lessThanNumber('apply_max_price', 'حداقل قیمت اعمال باید کوچکتر از حداکثر قیمت اعمال باشد.', {equal: true}),
+    apply_max_price: yup.string()
+      .optional()
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('حداکثر مبلغ اعمال باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000, optional: true})
+      .greaterThanNumber('apply_min_price', 'حداکثر قیمت اعمال باید بزرگتر از حداقل قیمت اعمال باشد.', {equal: true}),
+    use_count: yup.string()
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('تعداد استفاده باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
+      .required('تعداد قابل استفاده را وارد نمایید.'),
+    reusable_after: yup.string()
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
+      .required('تعداد روز را وارد نمایید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (startDate.value && endDate.value) {
+    const d1 = new Date(startDate.value)
+    const d2 = new Date(endDate.value)
+    if (d1 > d2) {
+      actions.setFieldError('start_at', 'تاریخ شروع باید از تاریخ پایان کوچکتر باشد.')
+      return
+    }
+  }
+
+  canSubmit.value = false
+
+  CouponAPI.updateById(idParam.value, {
+    title: values.title,
+    price: values.price,
+    apply_min_price: values.apply_min_price,
+    apply_max_price: values.apply_max_price,
+    start_at: startDate.value,
+    end_at: endDate.value,
+    use_count: values.use_count,
+    reusable_after: values.reusable_after,
+    is_published: publishStatus.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.coupons.show, {coupon: idParam.value}), null, {
-  //     success: (response) => {
-  //         festival.value = response.data
-  //         startDate.value = response.data.start_date
-  //         endDate.value = response.data.end_date
-  //
-  //         loading.value = false
-  //     },
-  // })
+  CouponAPI.fetchById(idParam.value, {
+    success(response) {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  coupon.value = item
+  startDate.value = item.normal_start_at
+  endDate.value = item.normal_end_at
+  publishStatus.value = item.is_published
+}
 </script>

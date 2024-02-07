@@ -94,7 +94,7 @@ class OrderController extends Controller
     {
         $this->authorize('delete', $order);
 
-        $permanent = $request->user()->id === $order->creator()?->id;
+        $permanent = $request->user()->id === $order->creator?->id;
         $res = $this->service->deleteById($order->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

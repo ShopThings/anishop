@@ -84,26 +84,26 @@ Route::prefix('admin')
                 /*
                  * color routes
                  */
-                Route::apiResource('colors', ColorController::class)
-                    ->whereNumber('color');
                 Route::delete('colors/batch', [ColorController::class, 'batchDestroy'])
                     ->name('colors.destroy.batch');
+                Route::apiResource('colors', ColorController::class)
+                    ->whereNumber('color');
 
                 /*
                  * brand routes
                  */
-                Route::apiResource('brands', BrandController::class)
-                    ->whereNumber('brand');
                 Route::delete('brands/batch', [BrandController::class, 'batchDestroy'])
                     ->name('brands.destroy.batch');
+                Route::apiResource('brands', BrandController::class)
+                    ->whereNumber('brand');
 
                 /*
                  * category routes
                  */
-                Route::apiResource('categories', CategoryController::class)
-                    ->whereNumber('category');
-                Route::delete('categories/batch', [CategoryController::class, 'batchDestroy'])
+                Route::delete('categories/batch', [CategoryController::class, 'batchDestroyBySlug'])
                     ->name('categories.destroy.batch');
+                Route::apiResource('categories', CategoryController::class)
+                    ->where(['category' => $codeRegex]);
 
                 /*
                  * category image routes
@@ -114,10 +114,10 @@ Route::prefix('admin')
                 /*
                  * festival routes
                  */
-                Route::apiResource('festivals', FestivalController::class)
-                    ->whereNumber('festival');
-                Route::delete('festivals/batch', [FestivalController::class, 'batchDestroy'])
+                Route::delete('festivals/batch', [FestivalController::class, 'batchDestroyBySlug'])
                     ->name('festivals.destroy.batch');
+                Route::apiResource('festivals', FestivalController::class)
+                    ->where(['festival' => $codeRegex]);
                 Route::get('festivals/{festival}/products', [FestivalController::class, 'products'])
                     ->whereNumber('festival')->name('festivals.products.index');
                 Route::post('festivals/{festival}/product', [FestivalController::class, 'storeProduct'])
@@ -132,56 +132,66 @@ Route::prefix('admin')
                 /*
                  * unit routes
                  */
-                Route::apiResource('units', UnitController::class)
-                    ->whereNumber('unit');
                 Route::delete('units/batch', [UnitController::class, 'batchDestroy'])
                     ->name('units.destroy.batch');
+                Route::apiResource('units', UnitController::class)
+                    ->whereNumber('unit');
 
                 /*
                  * coupon routes
                  */
-                Route::apiResource('coupons', CouponController::class)
-                    ->whereNumber('coupon');
                 Route::delete('coupons/batch', [CouponController::class, 'batchDestroy'])
                     ->name('coupons.destroy.batch');
+                Route::apiResource('coupons', CouponController::class)
+                    ->whereNumber('coupon');
 
                 /*
                  * product routes
                  */
-                Route::apiResource('products', ProductController::class)
-                    ->whereNumber('product');
-                Route::post('products/{product}/modify', [ProductController::class, 'modifyProducts'])
-                    ->whereNumber('product')->name('products.modify-products');
                 Route::put('products/batch', [ProductController::class, 'batchUpdateInfo'])
                     ->name('products.update.batch.info');
                 Route::put('products/batch', [ProductController::class, 'batchUpdatePrice'])
                     ->name('products.update.batch.price');
                 Route::delete('products/batch', [ProductController::class, 'batchDestroy'])
                     ->name('products.destroy.batch');
+                Route::post('products/{product}/modify', [ProductController::class, 'modifyProducts'])
+                    ->where(['product' => $codeRegex])->name('products.modify-products');
+                Route::post('products/{product}/variants', [ProductController::class, 'showVariants'])
+                    ->where(['product' => $codeRegex])->name('products.show.variants');
+                Route::post('products/{product}/gallery', [ProductController::class, 'storeGalleryImages'])
+                    ->where(['product' => $codeRegex])->name('products.store.gallery');
+                Route::get('products/{product}/gallery', [ProductController::class, 'showGalleryImages'])
+                    ->where(['product' => $codeRegex])->name('products.show.gallery');
+                Route::post('products/{product}/related-products', [ProductController::class, 'storeRelatedProducts'])
+                    ->where(['product' => $codeRegex])->name('products.store.related-products');
+                Route::get('products/{product}/related-products', [ProductController::class, 'showRelatedProducts'])
+                    ->where(['product' => $codeRegex])->name('products.show.related-products');
+                Route::apiResource('products', ProductController::class)
+                    ->where(['product' => $codeRegex]);
 
                 /*
                  * product attribute routes
                  */
-                Route::apiResource('product-attributes', ProductAttributeController::class)
-                    ->whereNumber('product_attribute');
                 Route::delete('product-attributes/batch', [ProductAttributeController::class, 'batchDestroy'])
                     ->name('product-attributes.destroy.batch');
+                Route::apiResource('product-attributes', ProductAttributeController::class)
+                    ->whereNumber('product_attribute');
 
                 /*
                  * product attribute value routes
                  */
-                Route::apiResource('product-attribute-values', ProductAttributeValueController::class)
-                    ->whereNumber('product_attribute_value');
                 Route::delete('product-attribute-values/batch', [ProductAttributeValueController::class, 'batchDestroy'])
                     ->name('product-attribute-values.destroy.batch');
+                Route::apiResource('product-attribute-values', ProductAttributeValueController::class)
+                    ->whereNumber('product_attribute_value');
 
                 /*
                  * product attribute category routes
                  */
-                Route::apiResource('product-attribute-categories', ProductAttributeCategoryController::class)
-                    ->whereNumber('product_attribute_category');
                 Route::delete('product-attribute-categories/batch', [ProductAttributeCategoryController::class, 'batchDestroy'])
                     ->name('product-attribute-categories.destroy.batch');
+                Route::apiResource('product-attribute-categories', ProductAttributeCategoryController::class)
+                    ->whereNumber('product_attribute_category');
 
                 /*
                  * product attribute product routes
@@ -194,10 +204,10 @@ Route::prefix('admin')
                 /*
                  * comment routes
                  */
-                Route::apiResource('products.comments', CommentController::class)->except(['store'])
-                    ->whereNumber(['product', 'comment']);
                 Route::delete('products/{product}/comments/batch', [CommentController::class, 'batchDestroy'])
                     ->whereNumber('product')->name('products.comments.destroy.batch');
+                Route::apiResource('products.comments', CommentController::class)->except(['store'])
+                    ->whereNumber(['product', 'comment']);
 
                 /*
                  * order routes
@@ -216,10 +226,10 @@ Route::prefix('admin')
                 /*
                  * order badge routes
                  */
-                Route::apiResource('order-badges', OrderBadgeController::class)
-                    ->whereNumber('order_badge');
                 Route::delete('order-badges/batch', [OrderBadgeController::class, 'batchDestroy'])
                     ->name('order-badges.destroy.batch');
+                Route::apiResource('order-badges', OrderBadgeController::class)
+                    ->whereNumber('order_badge');
 
                 /*
                  * return order routes
@@ -250,34 +260,34 @@ Route::prefix('admin')
                 /*
                  * blog comment badge routes
                  */
-                Route::apiResource('blog-badges', BlogCommentBadgeController::class)
-                    ->whereNumber('blog_badge');
                 Route::delete('blog-badges/batch', [BlogCommentBadgeController::class, 'batchDestroy'])
                     ->name('blog-badges.destroy.batch');
+                Route::apiResource('blog-badges', BlogCommentBadgeController::class)
+                    ->whereNumber('blog_badge');
 
                 /*
                  * blog routes
                  */
-                Route::apiResource('blogs', BlogController::class)
-                    ->whereNumber('blog');
                 Route::delete('blogs/batch', [BlogController::class, 'batchDestroy'])
                     ->name('blogs.destroy.batch');
+                Route::apiResource('blogs', BlogController::class)
+                    ->whereNumber('blog');
 
                 /*
                  * blog comment routes
                  */
-                Route::apiResource('blogs.comments', BlogCommentController::class)
-                    ->whereNumber(['blog', 'comment']);
                 Route::delete('blogs/{blog}/comments/batch', [BlogCommentController::class, 'batchDestroy'])
                     ->name('blogs.comments.destroy.batch');
+                Route::apiResource('blogs.comments', BlogCommentController::class)
+                    ->whereNumber(['blog', 'comment']);
 
                 /*
                  * blog category routes
                  */
-                Route::apiResource('blog-categories', BlogCategoryController::class)
-                    ->whereNumber('blog_category');
                 Route::delete('blog-categories/batch', [BlogCategoryController::class, 'batchDestroy'])
                     ->name('blog-categories.destroy.batch');
+                Route::apiResource('blog-categories', BlogCategoryController::class)
+                    ->whereNumber('blog_category');
 
                 /*
                  * sms log routes
@@ -287,50 +297,50 @@ Route::prefix('admin')
                 /*
                  * static page routes
                  */
-                Route::apiResource('static-pages', StaticPageController::class)
-                    ->whereNumber('static_page');
                 Route::delete('static-pages/batch', [StaticPageController::class, 'batchDestroy'])
                     ->name('static-pages.destroy.batch');
+                Route::apiResource('static-pages', StaticPageController::class)
+                    ->whereNumber('static_page');
 
                 /*
                  * contact routes
                  */
-                Route::apiResource('contacts', ContactUsController::class)->except(['store'])
-                    ->whereNumber('contact');
                 Route::delete('contacts/batch', [ContactUsController::class, 'batchDestroy'])
                     ->name('contacts.destroy.batch');
+                Route::apiResource('contacts', ContactUsController::class)->except(['store'])
+                    ->whereNumber('contact');
 
                 /*
                  * complaint routes
                  */
-                Route::apiResource('complaints', ComplaintController::class)->except(['store'])
-                    ->whereNumber('complaint');
                 Route::delete('complaints/batch', [ComplaintController::class, 'batchDestroy'])
                     ->name('complaints.destroy.batch');
+                Route::apiResource('complaints', ComplaintController::class)->except(['store'])
+                    ->whereNumber('complaint');
 
                 /*
                  * faq routes
                  */
-                Route::apiResource('faqs', FaqController::class)
-                    ->whereNumber('faq');
                 Route::delete('faqs/batch', [FaqController::class, 'batchDestroy'])
                     ->name('faqs.destroy.batch');
+                Route::apiResource('faqs', FaqController::class)
+                    ->whereNumber('faq');
 
                 /*
                  * newsletter routes
                  */
-                Route::apiResource('newsletters', NewsletterController::class)->except(['update'])
-                    ->whereNumber('newsletter');
                 Route::delete('newsletters/batch', [NewsletterController::class, 'batchDestroy'])
                     ->name('newsletters.destroy.batch');
+                Route::apiResource('newsletters', NewsletterController::class)->except(['update'])
+                    ->whereNumber('newsletter');
 
                 /*
                  * city post price routes
                  */
-                Route::apiResource('city-post-prices', CityPostPriceController::class)
-                    ->whereNumber('city_post_price');
                 Route::delete('city-post-prices/batch', [CityPostPriceController::class, 'batchDestroy'])
                     ->name('city-post-prices.destroy.batch');
+                Route::apiResource('city-post-prices', CityPostPriceController::class)
+                    ->whereNumber('city_post_price');
 
                 /*
                  * city routes
@@ -347,20 +357,20 @@ Route::prefix('admin')
                 /*
                  * weight post price routes
                  */
-                Route::apiResource('weight-post-prices', WeightPostPriceController::class)
-                    ->whereNumber('weight_post_price');
                 Route::delete('weight-post-prices/batch', [WeightPostPriceController::class, 'batchDestroy'])
                     ->name('weight-post-prices.destroy.batch');
+                Route::apiResource('weight-post-prices', WeightPostPriceController::class)
+                    ->whereNumber('weight_post_price');
 
                 /*
                  * slider routes
                  */
+                Route::delete('sliders/batch', [SliderController::class, 'batchDestroy'])
+                    ->name('sliders.destroy.batch');
                 Route::apiResource('sliders', SliderController::class)
                     ->whereNumber('slider');
                 Route::post('sliders/{slider}/modify', [SliderController::class, 'modifySlides'])
                     ->whereNumber('slider')->name('sliders.modify-slides');
-                Route::delete('sliders/batch', [SliderController::class, 'batchDestroy'])
-                    ->name('sliders.destroy.batch');
 
                 /*
                  * menu routes

@@ -15,7 +15,7 @@
 
     <div class="p-2">
       <partial-input-label title="کلمات کلیدی"/>
-      <vue3-tags-input
+      <base-tags-input
         :tags="tags"
         placeholder="کلمات کلیدی خود را وارد نمایید"
         @on-tags-changed="(t) => {tags = t}"
@@ -65,12 +65,12 @@ import yup from "@/validation/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
-import Vue3TagsInput from "vue3-tags-input";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {SETTING_KEYS} from "@/composables/constants.js";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const props = defineProps({
   setting: {

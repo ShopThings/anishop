@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Category;
 use App\Models\CategoryImage;
 use App\Repositories\Contracts\CategoryImageRepositoryInterface;
 use App\Support\Filter;
@@ -15,7 +16,10 @@ class CategoryImageRepository extends Repository implements CategoryImageReposit
 {
     use RepositoryTrait;
 
-    public function __construct(CategoryImage $model)
+    public function __construct(
+        CategoryImage      $model,
+        protected Category $categoryModel,
+    )
     {
         parent::__construct($model);
     }
@@ -33,17 +37,17 @@ class CategoryImageRepository extends Repository implements CategoryImageReposit
         $page = $filter->getPage();
         $order = $filter->getOrder();
 
-        $query = $this->model->newQuery();
-        $query->when($search, function (Builder $query, string $search) {
-            $query
-                ->withWhereHas('category', function ($q) use ($search) {
-                    $q
-                        ->withWhereHas('parent', function ($q) use ($search) {
-                            $q->orWhereLike('escaped_name', $search);
-                        })
-                        ->orWhereLike('escaped_name', $search);
-                });
-        });
+        $query = $this->categoryModel->newQuery();
+
+        $query
+            ->with(['categoryImage', 'categoryImage.creator', 'categoryImage.updater', 'categoryImage.deleter'])
+            ->when($search, function (Builder $query, string $search) {
+                $query
+                    ->withWhereHas('parent', function ($q) use ($search) {
+                        $q->orWhereLike('escaped_name', $search);
+                    })
+                    ->orWhereLike('escaped_name', $search);
+            });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }

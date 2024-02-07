@@ -11,11 +11,12 @@
       >
         <template #extra>
           <router-link
-            v-if="slider?.options?.show_all_link && slider.options.show_all_link.trim() !== ''"
+            v-if="slider?.options?.show_all_link && slider?.options?.show_all_link.trim() !== ''"
             :to="slider.options?.show_all_link"
-            class="text-sm text-blue-600 hover:opacity-80 transition"
+            class="text-sm text-blue-600 hover:opacity-80 transition border-2 rounded py-1.5 px-2 bg-white flex gap-2 item-center"
           >
-            مشاهده همه
+            <span>مشاهده همه</span>
+            <ArrowLeftIcon class="h-5 w-5"/>
           </router-link>
         </template>
       </partial-general-title>
@@ -49,6 +50,7 @@
 
 <script setup>
 import {ref} from "vue";
+import {ArrowLeftIcon} from "@heroicons/vue/24/outline"
 import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
 import ProductCarousel from "@/components/product/ProductCarousel.vue";
 import {SLIDER_PLACES} from "@/composables/constants.js";

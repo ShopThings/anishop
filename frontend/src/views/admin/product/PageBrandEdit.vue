@@ -3,37 +3,38 @@
     <template #header>
       ویرایش برند -
       <span
-        v-if="brand?.id"
-        class="text-teal-600"
+          v-if="brand?.id"
+          class="text-teal-600"
       >{{ brand?.name }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-          :loading="loading"
-          type="form"
+            :loading="loading"
+            type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap items-end justify-between">
                 <div class="p-2">
                   <partial-input-label
-                    title="انتخاب تصویر"
+                      title="انتخاب تصویر"
                   />
                   <base-media-placeholder
-                    type="image"
-                    :selected="brand?.image"
+                      type="image"
+                      v-model:selected="brandImage"
                   />
+                  <partial-input-error-message :error-message="errors.image"/>
                 </div>
 
                 <div class="p-2">
                   <base-switch
-                    label="عدم نمایش روش برند"
-                    on-label="نمایش برند"
-                    name="is_published"
-                    :enabled="brand?.is_published"
-                    sr-text="نمایش/عدم نمایش برند"
-                    @change="(status) => {publishStatus=status}"
+                      label="عدم نمایش روش برند"
+                      on-label="نمایش برند"
+                      name="is_published"
+                      :enabled="brand?.is_published"
+                      sr-text="نمایش/عدم نمایش برند"
+                      @change="(status) => {publishStatus=status}"
                   />
                 </div>
               </div>
@@ -41,10 +42,10 @@
               <div class="flex flex-wrap items-end">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    label-title="نام فارسی"
-                    placeholder="وارد نمایید"
-                    name="name"
-                    :value="brand?.name"
+                      label-title="نام فارسی"
+                      placeholder="وارد نمایید"
+                      name="name"
+                      :value="brand?.name"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -53,10 +54,10 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    label-title="نام لاتین"
-                    placeholder="وارد نمایید"
-                    name="latin_name"
-                    :value="brand?.latin_name"
+                      label-title="نام لاتین"
+                      placeholder="وارد نمایید"
+                      name="latin_name"
+                      :value="brand?.latin_name"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -65,11 +66,11 @@
                 </div>
                 <div class="p-2">
                   <base-switch
-                    label="نمایش در اسلایدر"
-                    name="show_in_slider"
-                    :enabled="brand?.show_in_slider"
-                    sr-text="نمایش/عدم نمایش برند در اسلایدر"
-                    @change="(status) => {showInSliderStatus=status}"
+                      label="نمایش در اسلایدر"
+                      name="show_in_slider"
+                      :enabled="brand?.show_in_slider"
+                      sr-text="نمایش/عدم نمایش برند در اسلایدر"
+                      @change="(status) => {showInSliderStatus=status}"
                   />
                 </div>
               </div>
@@ -77,23 +78,23 @@
               <div class="p-2">
                 <partial-input-label title="کلمات کلیدی"/>
                 <vue3-tags-input
-                  :tags="tags"
-                  placeholder="کلمات کلیدی خود را وارد نمایید"
-                  @on-tags-changed="handleChangeTag"
+                    :tags="tags"
+                    placeholder="کلمات کلیدی خود را وارد نمایید"
+                    @on-tags-changed="(t) => {tags = t}"
                 />
               </div>
 
               <div class="px-2 py-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                    type="submit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    :disabled="!canSubmit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="!canSubmit"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                        big-circle-color="border-transparent"
                     />
                   </VTransitionFade>
 
@@ -113,8 +114,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
+import {onMounted, ref} from "vue";
 import yup from "@/validation/index.js";
 import Vue3TagsInput from 'vue3-tags-input';
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
@@ -127,46 +127,70 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
-import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {BrandAPI} from "@/service/APIProduct.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
-const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
-const loading = ref(false)
-const canSubmit = ref(true)
+const loading = ref(true)
 
 const brand = ref(null)
+const brandImage = ref(null)
 const publishStatus = ref(true)
 const showInSliderStatus = ref(true)
 const tags = ref([])
 
-function handleChangeTag(tags) {
-  tags.value = tags;
-}
-
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+    name: yup.string().required('نام برند را وارد نمایید.'),
+    latin_name: yup.string().required('نام لاتین را وارد نمایید.'),
+    show_in_slider: yup.boolean().required('وضعیت نمایش در اسلایدر را مشخص کنید.'),
+  }),
+}, (values, actions) => {
   if (!canSubmit.value) return
+
+  if (!brandImage.value) {
+    actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
+    return
+  }
+
+  BrandAPI.updateById(idParam.value, {
+    name: values.name,
+    latin_name: values.latin_name,
+    image: brandImage.value.full_path,
+    keywords: tags.value,
+    show_in_slider: showInSliderStatus.value,
+    is_published: publishStatus.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.brands.show, {brand: idParam.value}), null, {
-  //   success: (response) => {
-  //     brand.value = response.data
-  //     tags.value = response.data.keywords
-  //
-  //     loading.value = false
-  //   },
-  // })
+  BrandAPI.fetchById(idParam.value, {
+    success(response) {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  brand.value = item
+  brandImage.value = item.image
+  publishStatus.value = item.is_published
+  showInSliderStatus.value = item.show_in_slider
+  tags.value = item.keywords
+}
 </script>

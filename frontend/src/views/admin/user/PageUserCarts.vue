@@ -25,7 +25,7 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block"
                     >
                       <base-lazy-image
@@ -37,7 +37,7 @@
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
@@ -71,7 +71,7 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block"
                     >
                       <base-lazy-image
@@ -83,7 +83,7 @@
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
@@ -117,7 +117,7 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block"
                     >
                       <base-lazy-image
@@ -129,7 +129,7 @@
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       ماوس آبکی و مسخره‌ای که خیلی قیمت نداره ولی میتونی هر وقت خراب شد یکیشو
@@ -166,6 +166,7 @@
           </base-accordion>
         </template>
       </partial-card>
+
       <partial-card class="mb-3">
         <template #body>
           <base-accordion>
@@ -177,7 +178,7 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block"
                     >
                       <base-lazy-image
@@ -189,7 +190,7 @@
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
@@ -223,7 +224,7 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block"
                     >
                       <base-lazy-image
@@ -235,7 +236,7 @@
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
@@ -269,7 +270,7 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block"
                     >
                       <base-lazy-image
@@ -281,7 +282,7 @@
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {id: 1}}"
+                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
                       class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       ماوس آبکی و مسخره‌ای که خیلی قیمت نداره ولی میتونی هر وقت خراب شد یکیشو
@@ -324,25 +325,21 @@
 
 <script setup>
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRoute} from "vue-router";
 import {useRequest} from "@/composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import BaseAccordion from "@/components/base/BaseAccordion.vue";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
 const loading = ref(false)
 
 const route = useRoute()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
 const user = ref(null)
-
 const carts = ref({})
 
 onMounted(() => {

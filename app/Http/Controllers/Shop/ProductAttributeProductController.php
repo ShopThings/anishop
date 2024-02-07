@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shop;
 
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductAttributeProductRequest;
 use App\Http\Resources\ProductAttributeProductResource;
 use App\Models\Product;
 use App\Models\User;
@@ -11,6 +12,7 @@ use App\Services\Contracts\ProductAttributeProductServiceInterface;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductAttributeProductController extends Controller
@@ -32,12 +34,15 @@ class ProductAttributeProductController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request, Product $product): JsonResponse
+    public function store(StoreProductAttributeProductRequest $request, Product $product): JsonResponse
     {
         $this->authorize('create', User::class);
 
         $validated = $request->validated();
-        $model = $this->service->create(array_merge($validated, ['product' => $product->id]));
+        $model = $this->service->modifyProductAttributes(
+            productId: $product->id,
+            attributeValues: array_column($validated['values'], 'id')
+        );
 
         if (!is_null($model)) {
             return response()->json([
@@ -57,12 +62,12 @@ class ProductAttributeProductController extends Controller
      * Display the specified resource.
      *
      * @param Product $product
-     * @return ProductAttributeProductResource
+     * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function show(Product $product): ProductAttributeProductResource
+    public function show(Product $product): AnonymousResourceCollection
     {
         $this->authorize('view', $product);
-        return new ProductAttributeProductResource($this->service->getProductAttributes($product->id));
+        return ProductAttributeProductResource::collection($this->service->getProductAttributes($product->id));
     }
 }

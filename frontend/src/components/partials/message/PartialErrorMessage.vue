@@ -3,12 +3,8 @@
        class="text-white pl-10 pr-4 py-4 border-0 rounded relative mb-4 bg-rose-500 text-right"
        :class="hasClose ? 'pl-10' : 'pl-4'">
     <div class="flex">
-            <span class="text-xl inline-block ml-3 align-middle">
-                <XCircleIcon class="w-6 h-6"/>
-            </span>
-      <span class="inline-block align-middle grow text-sm">
-                <slot></slot>
-            </span>
+      <span class="text-xl inline-block ml-3 align-middle"><XCircleIcon class="w-6 h-6"/></span>
+      <span class="inline-block align-middle grow text-sm"><slot></slot></span>
     </div>
     <button v-if="hasClose"
             @click="closeAlert"
@@ -19,8 +15,8 @@
 </template>
 
 <script setup>
-import {XCircleIcon, XMarkIcon} from '@heroicons/vue/24/outline';
 import {ref} from "vue";
+import {XCircleIcon, XMarkIcon} from '@heroicons/vue/24/outline';
 
 defineProps({
   hasClose: {

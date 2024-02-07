@@ -33,37 +33,67 @@
             @do-search="doSearch"
           >
             <template v-slot:code="{value}">
-
+              <span class="rounded-lg py-1 px-2 tracking-widest text-black bg-teal-200">{{ value.code }}</span>
             </template>
+
             <template v-slot:price="{value}">
-
+              <span class="text-black ml-1.5">{{ formatPriceLikeNumber(value.price) }}</span>
+              <span class="text-xs text-gray-400">تومان</span>
             </template>
+
             <template v-slot:start_at="{value}">
-
+              <span v-if="value.start_at" class="text-xs">{{ value.start_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:end_at="{value}">
-
+              <span v-if="value.end_at" class="text-xs">{{ value.end_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:apply_min_price="{value}">
-
+              <template v-if="value.apply_min_price">
+                <span class="text-black ml-1.5">{{ formatPriceLikeNumber(value.apply_min_price) }}</span>
+                <span class="text-xs text-gray-400">تومان</span>
+              </template>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:apply_max_price="{value}">
-
+              <template v-if="value.apply_max_price">
+                <span class="text-black ml-1.5">{{ formatPriceLikeNumber(value.apply_max_price) }}</span>
+                <span class="text-xs text-gray-400">تومان</span>
+              </template>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:use_count="{value}">
-
+              <span class="text-black text-base px-2.5 rounded-lg border-2 border-teal-300 bg-teal-50">{{
+                  value.used_count
+                }}</span>
+              از
+              <span class="text-black text-base px-2.5 rounded-lg border-2 border-teal-300 bg-teal-50">{{
+                  value.use_count
+                }}</span>
+              عدد استفاده شده
             </template>
+
             <template v-slot:reusable_after="{value}">
-              {{ value.reusable_after }}
+              <span class="text-black text-base px-2.5 rounded-lg border-2 border-teal-300 bg-teal-50">{{
+                  value.reusable_after
+                }}</span>
               روز
             </template>
-            <template v-slot:is_published="{value}">
 
+            <template v-slot:is_published="{value}">
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
                 :items="operations"
@@ -84,14 +114,15 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {CouponAPI} from "@/service/APIShop.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import {formatPriceLikeNumber} from "../../../composables/helper.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -112,51 +143,56 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "کد",
       field: "code",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "قیمت",
       field: "price",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ شروع",
       field: "start_at",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ پایان",
       field: "end_at",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "حداقل قیمت اعمال",
       field: "apply_min_price",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "حداکثر قیمت اعمال",
       field: "apply_max_price",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "تعداد استفاده شده استفاده/کل(بر حسب روز)",
       field: "use_count",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "قابل استفاده پس از(بر حسب روز)",
       field: "reusable_after",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "وضعیت نمایش",
@@ -180,51 +216,56 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "کد",
       field: "code",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "قیمت",
       field: "price",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ شروع",
       field: "start_at",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "تاریخ پایان",
       field: "end_at",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "حداقل قیمت اعمال",
       field: "apply_min_price",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "حداکثر قیمت اعمال",
       field: "apply_max_price",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "تعداد استفاده شده استفاده/کل(بر حسب روز)",
       field: "use_count",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "قابل استفاده پس از(بر حسب روز)",
       field: "reusable_after",
-      sortable: true,
       columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "وضعیت نمایش",
@@ -283,10 +324,8 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.coupons.destroy, {coupon: data.id}), {
-            method: 'DELETE',
-          }, {
-            success: () => {
+          CouponAPI.deleteById(data.id, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelectionItem(data)
@@ -325,13 +364,8 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.coupons.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
-            success: () => {
+          CouponAPI.deleteByIds(ids, {
+            success() {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelection()
@@ -348,29 +382,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.coupons.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  CouponAPI.fetchAll({limit, offset, order, sort, text}, {
+    success(response) {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error() {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally() {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

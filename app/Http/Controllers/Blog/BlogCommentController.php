@@ -133,7 +133,7 @@ class BlogCommentController extends Controller
     {
         $this->authorize('delete', $blogComment);
 
-        $permanent = $request->user()->id === $blogComment->creator()?->id;
+        $permanent = $request->user()->id === $blogComment->creator?->id;
         $res = $this->service->deleteById($blogComment->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
