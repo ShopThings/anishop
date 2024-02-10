@@ -11,7 +11,6 @@
 defineProps({
   text: {
     type: String,
-    required: true,
     default: 'نامشخص',
   },
   colorHex: {
