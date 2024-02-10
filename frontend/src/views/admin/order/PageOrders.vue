@@ -202,7 +202,7 @@ const operations = [
         router.push({
           name: 'admin.order.detail',
           params: {
-            id: data.id,
+            id: data.code,
           }
         })
       },

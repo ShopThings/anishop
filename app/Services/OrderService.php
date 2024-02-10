@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enums\DatabaseEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
+use App\Events\OrderStatusChangedEvent;
+use App\Models\User;
 use App\Repositories\Contracts\CityRepositoryInterface;
 use App\Repositories\Contracts\OrderBadgeRepositoryInterface;
 use App\Repositories\Contracts\OrderRepositoryInterface;
@@ -16,6 +18,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderService extends Service implements OrderServiceInterface
 {
@@ -39,7 +42,7 @@ class OrderService extends Service implements OrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateById($id, array $attributes): ?Model
+    public function updateByCode($code, array $attributes, bool $silence = false): ?Model
     {
         $updateAttributes = [];
 
@@ -76,6 +79,9 @@ class OrderService extends Service implements OrderServiceInterface
         if (isset($attributes['send_status'])) {
             $status = $this->badgeRepository->find($attributes['send_status']);
             if ($status instanceof Model) {
+                $updateAttributes['send_status_is_starting_badge'] = $status->is_starting_badge;
+                $updateAttributes['send_status_is_end_badge'] = $status->is_end_badge;
+                $updateAttributes['send_status_can_return_order'] = $status->can_return_order;
                 $updateAttributes['send_status_title'] = $status->title;
                 $updateAttributes['send_status_color_hex'] = $status->color_hex;
                 $updateAttributes['send_status_changed_at'] = now();
@@ -86,11 +92,44 @@ class OrderService extends Service implements OrderServiceInterface
             $updateAttributes['description'] = $attributes['description'];
         }
 
-        $res = $this->repository->update($id, $updateAttributes);
+        $model = null;
 
-        if (!$res) return null;
+        DB::transaction(function () use (&$model, $code, $updateAttributes, $silence) {
+            $where = new WhereBuilder();
+            $where->whereEqual('code', $code);
 
-        return $this->getById($id);
+            $res = $this->repository->updateWhere($updateAttributes, $where->build());
+
+            /**
+             * @var User $model
+             */
+            $model = $this->repository->newWith('user')->findWhere($where->build());
+
+            // send notification to user about send status changed
+            if (!$silence) {
+                OrderStatusChangedEvent::dispatch(
+                    $model->user,
+                    $model->code,
+                    $model->send_status_title
+                );
+            }
+
+            // return order products to stock if needed
+            if (
+                isset($status) &&
+                $status['should_return_order_product'] &&
+                $model->is_product_returned_to_stock
+            ) {
+                $res = $res && $this->repository->returnOrderProductsToStock($model->id);
+            }
+
+            if (!$res) {
+                DB::rollBack();
+                $model = null;
+            }
+        });
+
+        return $model;
     }
 
     /**

@@ -409,8 +409,8 @@
                       </div>
 
                       <div class="relative text-center">
-                                                <span
-                                                  class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
+                        <span
+                          class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
                         <div class="text-slate-500 text-sm">
                           500,000
                           <span class="text-xs text-gray-400">تومان</span>

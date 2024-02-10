@@ -52,6 +52,7 @@ class OrderBadgeService extends Service implements OrderBadgeServiceInterface
             'title' => $attributes['title'],
             'color_hex' => $attributes['color_hex'],
             'should_return_order_product' => to_boolean($attributes['should_return_order_product']),
+            'is_end_badge' => to_boolean($attributes['is_end_badge']),
             'is_published' => to_boolean($attributes['is_published']),
         ];
 
@@ -76,6 +77,9 @@ class OrderBadgeService extends Service implements OrderBadgeServiceInterface
         }
         if (isset($attributes['should_return_order_product'])) {
             $updateAttributes['should_return_order_product'] = to_boolean($attributes['should_return_order_product']);
+        }
+        if (isset($attributes['is_end_badge'])) {
+            $updateAttributes['is_end_badge'] = to_boolean($attributes['is_end_badge']);
         }
         if (isset($attributes['is_title_editable'])) {
             $updateAttributes['is_title_editable'] = to_boolean($attributes['is_title_editable']);

@@ -101,8 +101,14 @@ class OrderBadgeController extends Controller
             'title',
             'color_hex',
             'should_return_order_product',
+            'is_end_badge',
             'is_published',
         ]);
+
+        if (!$orderBadge->is_title_editable) {
+            unset($validated['title']);
+        }
+
         $model = $this->service->updateById($orderBadge->id, $validated);
 
         if (!is_null($model)) {

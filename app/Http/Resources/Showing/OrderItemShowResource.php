@@ -28,6 +28,7 @@ class OrderItemShowResource extends JsonResource
             'discounted_price' => $this->discounted_price,
             'unit_price' => $this->unit_price,
             'quantity' => $this->quantity,
+            'unit_name' => $this->unit_name,
             'is_returned' => $this->is_returned,
             'image' => new ImageShowResource($this->product->image),
         ];

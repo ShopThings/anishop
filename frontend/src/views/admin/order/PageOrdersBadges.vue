@@ -42,27 +42,37 @@
             @do-search="doSearch"
           >
             <template v-slot:title="{value}">
-              <span
-                v-tooltip.top="{message: value.title}"
-                class="inline-block w-5 h-5 rounded-full border ml-2"
-                :style="'background-color: ' + value.color_hex + ';'"
-              ></span>
-              <span>{{ value.title }}</span>
-              <span
-                v-if="value.is_starting_badge"
-                class="rounded mr-2 bg-green-600 text-white"
-              >پیش فرض</span>
+              <div class="flex items-center">
+                <partial-badge-color :title="value.title" :hex="value.color_hex"/>
+
+                <span
+                  v-if="value.is_starting_badge"
+                  class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs"
+                >پیش فرض</span>
+                <span
+                  v-if="value.is_end_badge"
+                  class="rounded mr-2 bg-orange-600 text-white px-2 py-0.5 text-xs"
+                >وضعیت پایانی</span>
+              </div>
             </template>
+
             <template v-slot:should_return_order_product="{value}">
-
+              <partial-badge-publish
+                :publish="value.should_return_order_product"
+                publish-text="بله"
+                unpublish-text="خیر"
+              />
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
                 :items="operations"
@@ -79,11 +89,9 @@
 </template>
 
 <script setup>
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {computed, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
@@ -93,6 +101,9 @@ import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import BaseMessage from "@/components/base/BaseMessage.vue";
+import {OrderBadgeAPI} from "@/service/APIOrder.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -213,9 +224,7 @@ const operations = [
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.orderBadges.destroy, {order_badge: data.id}), {
-            method: 'DELETE',
-          }, {
+          OrderBadgeAPI.deleteByIds(data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -255,12 +264,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.orderBadges.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          OrderBadgeAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -278,31 +282,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
+  OrderBadgeAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
 
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
 
-  // useRequest(apiRoutes.admin.orderBadges.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

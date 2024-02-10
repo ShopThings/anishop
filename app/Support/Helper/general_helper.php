@@ -10,12 +10,12 @@ if (!function_exists('to_boolean')) {
     /**
      * Convert to boolean
      *
-     * @param $booleable
+     * @param $booleanable
      * @return boolean
      */
-    function to_boolean($booleable): bool
+    function to_boolean($booleanable): bool
     {
-        return (bool)filter_var($booleable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+        return (bool)filter_var($booleanable, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
     }
 }
 

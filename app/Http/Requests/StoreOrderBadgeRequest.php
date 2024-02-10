@@ -44,6 +44,10 @@ class StoreOrderBadgeRequest extends FormRequest
                 'required',
                 'boolean',
             ],
+            'is_end_badge' => [
+                'required',
+                'boolean',
+            ],
             'is_published' => [
                 'required',
                 'boolean',
@@ -56,6 +60,7 @@ class StoreOrderBadgeRequest extends FormRequest
         return [
             'color_hex' => 'کد رنگ',
             'should_return_order_product' => 'وضعیت بازگشت محصولات به انبار',
+            'is_end_badge' => 'وضعیت پایانی',
         ];
     }
 }

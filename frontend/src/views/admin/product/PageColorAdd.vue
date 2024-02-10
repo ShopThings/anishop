@@ -87,7 +87,7 @@ import {useRouter} from "vue-router";
 const router = useRouter()
 
 const publishStatus = ref(true)
-const pureColor = ref('#ffffff')
+const pureColor = ref('#000000')
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({

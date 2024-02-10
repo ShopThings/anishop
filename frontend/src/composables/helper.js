@@ -45,7 +45,9 @@ export function getRouteParamByKey(key, defaultValue, isNumeric) {
 }
 
 export function formatPriceLikeNumber(value, separator) {
-  const numRegex = /(?=(?<!\.\d*)(?!^)\d{3}(?:\b|(?:\d{3})+)\b)/g
+  if (!value) return '0';
+
+  const numRegex = new RegExp('(?=(?<!\.\d*)(?!^)\d{3}(?:\b|(?:\d{3})+)\b)', 'g')
 
   if (!separator) separator = ','
   value = value + ''

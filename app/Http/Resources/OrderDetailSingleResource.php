@@ -10,7 +10,7 @@ use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderDetailResource extends JsonResource
+class OrderDetailSingleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,9 +19,16 @@ class OrderDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('user');
+        $this->resource->load('send_status_changer');
+        $this->resource->load('orders');
+        $this->resource->load('orders.payments');
+        $this->resource->load('items');
+        $this->resource->load('return_order');
+
         return [
             'id' => $this->id,
-            'user' => new UserShowResource($this->whenLoaded('user')),
+            'user' => new UserShowResource($this->user),
             'code' => $this->code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -48,7 +55,7 @@ class OrderDetailResource extends JsonResource
             'send_status_changed_at' => $this->send_status_changed_at
                 ? verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'send_status_changed_by' => new UserShowResource($this->whenLoaded('send_status_changer')),
+            'send_status_changed_by' => new UserShowResource($this->send_status_changer),
             'is_needed_factor' => $this->is_needed_factor,
             'is_in_place_delivery' => $this->is_in_place_delivery,
             'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
@@ -73,18 +80,10 @@ class OrderDetailResource extends JsonResource
                         'value' => PaymentStatusesEnum::NOT_PAYED->value,
                     ]
                 ),
-            'orders' => OrderResource::collection($this->whenLoaded('orders')),
-            'order_payments' => $this->when(
-                $this->whenLoaded('orders') &&
-                $this->orders->relationLoaded('payments'),
-                function () {
-                    return isset($this->orders->payments) && !empty($this->orders->payments)
-                        ? GatewayPaymentResource::collection($this->orders->payments)
-                        : null;
-                }
-            ),
-            'items' => OrderItemShowResource::collection($this->whenLoaded('items')),
-            'return_order' => new ReturnOrderShowResource($this->whenLoaded('return_order')),
+            'orders' => OrderResource::collection($this->orders),
+            'order_payments' => GatewayPaymentResource::collection($this->orders->payments),
+            'items' => OrderItemShowResource::collection($this->items),
+            'return_order' => new ReturnOrderShowResource($this->return_order),
         ];
     }
 }

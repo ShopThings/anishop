@@ -95,7 +95,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
      */
     public function canCancelOrder(ReturnOrderRequest $orderRequest): bool
     {
-        return $this->orderRepository->isOrderCancelable($orderRequest);
+        return $this->orderRepository->isReturnOrderCancelable($orderRequest);
     }
 
     /**

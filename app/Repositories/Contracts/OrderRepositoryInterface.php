@@ -47,7 +47,7 @@ interface OrderRepositoryInterface extends RepositoryInterface
      * @param OrderDetail $orderDetail
      * @return bool
      */
-    public function isOrderCancelable(ReturnOrderRequest $orderRequest): bool;
+    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool;
 
     /**
      * @param int $orderId
@@ -55,4 +55,10 @@ interface OrderRepositoryInterface extends RepositoryInterface
      * @return bool|int
      */
     public function updatePayment(int $orderId, array $attributes): bool|int;
+
+    /**
+     * @param int $orderId
+     * @return bool
+     */
+    public function returnOrderProductsToStock(int $orderId): bool;
 }

@@ -1002,6 +1002,27 @@ export const adminRoutes = {
             ],
           },
         },
+        {
+          path: 'badge/:id(\\d+)',
+          name: 'admin.order.badge.edit',
+          component: () => import('@/views/admin/order/PageOrderBadgeEdit.vue'),
+          meta: {
+            title: 'ویرایش برچسب سفارش',
+            breadcrumb: [
+              {
+                name: 'سفارشات',
+                link: 'admin.orders',
+              },
+              {
+                name: 'برچسب سفارشات',
+                link: 'admin.orders.badges',
+              },
+              {
+                name: 'ویرایش برچسب',
+              },
+            ],
+          },
+        },
       ],
     },
     {
@@ -1021,27 +1042,6 @@ export const adminRoutes = {
               },
               {
                 name: 'جزئیات سفارش',
-              },
-            ],
-          },
-        },
-        {
-          path: 'badge',
-          name: 'admin.order.badge.edit',
-          component: () => import('@/views/admin/order/PageOrderBadgeEdit.vue'),
-          meta: {
-            title: 'ویرایش برچسب سفارش',
-            breadcrumb: [
-              {
-                name: 'سفارشات',
-                link: 'admin.orders',
-              },
-              {
-                name: 'برچسب سفارشات',
-                link: 'admin.orders.badges',
-              },
-              {
-                name: 'ویرایش برچسب',
               },
             ],
           },

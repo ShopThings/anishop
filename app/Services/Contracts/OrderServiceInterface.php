@@ -41,6 +41,14 @@ interface OrderServiceInterface extends ServiceInterface
     public function getLatestUserOrders($userId, int $limit): Collection;
 
     /**
+     * @param $code
+     * @param array $attributes
+     * @param bool $silence
+     * @return Model|null
+     */
+    public function updateByCode($code, array $attributes, bool $silence = false): ?Model;
+
+    /**
      * @param int $orderId
      * @param array $attributes
      * @return Model|null

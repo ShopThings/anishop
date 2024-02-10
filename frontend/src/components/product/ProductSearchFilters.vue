@@ -104,9 +104,9 @@
           <div class="flex gap-2 items-center">
             <span>از</span>
             <div>
-                            <span class="font-iranyekan-bold text-sm">{{
-                                formatPriceLikeNumber(selectedMinmaxPrice[0])
-                              }}</span>
+              <span class="font-iranyekan-bold text-sm">{{
+                  formatPriceLikeNumber(selectedMinmaxPrice[0])
+                }}</span>
               <span class="mr-1">تومان</span>
             </div>
           </div>
@@ -114,9 +114,9 @@
           <div class="flex gap-2 items-center">
             <span>تا</span>
             <div>
-                            <span class="font-iranyekan-bold text-sm">{{
-                                formatPriceLikeNumber(selectedMinmaxPrice[1])
-                              }}</span>
+              <span class="font-iranyekan-bold text-sm">{{
+                  formatPriceLikeNumber(selectedMinmaxPrice[1])
+                }}</span>
               <span class="mr-1">تومان</span>
             </div>
           </div>

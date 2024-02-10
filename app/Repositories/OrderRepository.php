@@ -7,23 +7,28 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\OrderItem;
 use App\Models\ReturnOrderRequest;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class OrderRepository extends Repository implements OrderRepositoryInterface
 {
     use RepositoryTrait;
 
     public function __construct(
-        OrderDetail     $model,
-        protected Order $orderModel
+        OrderDetail                 $model,
+        protected Order             $orderModel,
+        protected OrderItem         $orderItemModel,
+        protected ProductRepository $productRepository
     )
     {
         parent::__construct($model);
@@ -124,7 +129,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function isOrderCancelable(ReturnOrderRequest $orderRequest): bool
+    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool
     {
         return $orderRequest->status === ReturnOrderStatusesEnum::CHECKING->value;
     }
@@ -135,5 +140,37 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     public function updatePayment(int $orderId, array $attributes): bool|int
     {
         return $this->orderModel->newQuery()->find($orderId)->update($attributes);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function returnOrderProductsToStock(int $orderId): bool
+    {
+        $productItems = $this->orderItemModel->newQuery()
+            ->where('order_key_id', $orderId)
+            ->get(['product_id', 'quantity']);
+        $productRepo = $this->productRepository;
+
+        $res = true;
+
+        DB::transaction(function () use (&$res, $productItems, $productRepo) {
+            $where = new WhereBuilder();
+            foreach ($productItems as $item) {
+                $where->reset()
+                    ->whereEqual('product_id', $item['product_id']);
+                $res = $res && $productRepo->updateWhere([
+                        'stock_count' => 'stock_count+' . (+$item['quantity']),
+                    ], $where->build());
+
+                if (!$res) break;
+            }
+
+            if (!$res) {
+                DB::rollBack();
+            }
+        });
+
+        return $res;
     }
 }

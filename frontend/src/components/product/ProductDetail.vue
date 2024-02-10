@@ -224,18 +224,18 @@
                 v-for="color in colorFiltered"
                 v-tooltip.top="'' + color.color_name + ''"
                 :class="[
-                                    'relative rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
-                                    color.active === 'yes'
-                                    ? 'border-indigo-500 cursor-pointer shadow-lg'
-                                    : (
-                                        color.active === 'no'
-                                        ? 'cursor-default opacity-80'
-                                        : 'hover:ring-8 cursor-pointer shadow-lg'
-                                    ),
-                                    selectedColor && selectedColor.color_name === color.color_name
-                                    ? '!border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
-                                    : ''
-                                ]"
+                    'relative rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
+                    color.active === 'yes'
+                    ? 'border-indigo-500 cursor-pointer shadow-lg'
+                    : (
+                        color.active === 'no'
+                        ? 'cursor-default opacity-80'
+                        : 'hover:ring-8 cursor-pointer shadow-lg'
+                    ),
+                    selectedColor && selectedColor.color_name === color.color_name
+                    ? '!border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
+                    : ''
+                ]"
                 :style="'background-color:' + color.color_hex"
                 @click="handleColorChange(color)"
               >
@@ -257,18 +257,18 @@
               <li
                 v-for="size in sizeFiltered"
                 :class="[
-                                    'relative rounded-lg py-1 px-3 border-2 transition',
-                                    size.active === 'yes'
-                                    ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
-                                    : (
-                                        size.active === 'no'
-                                        ? 'cursor-default opacity-60'
-                                        : 'hover:bg-gray-100 cursor-pointer'
-                                    ),
-                                    selectedSize && selectedSize.size === size.size
-                                    ? '!border-emerald-500 !bg-emerald-50 cursor-pointer'
-                                    : ''
-                                ]"
+                    'relative rounded-lg py-1 px-3 border-2 transition',
+                    size.active === 'yes'
+                    ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
+                    : (
+                        size.active === 'no'
+                        ? 'cursor-default opacity-60'
+                        : 'hover:bg-gray-100 cursor-pointer'
+                    ),
+                    selectedSize && selectedSize.size === size.size
+                    ? '!border-emerald-500 !bg-emerald-50 cursor-pointer'
+                    : ''
+                ]"
                 @click="handleSizeChange(size)"
               >
                 <div
@@ -283,10 +283,10 @@
 
           <div class="mt-3">
             <h4 class="mb-2">
-              <div class="flex items-center">
+              <span class="flex items-center">
                 <CheckBadgeIcon class="h-7 w-7 text-emerald-400 ml-1.5"/>
                 گارانتی:
-              </div>
+              </span>
               <span v-if="selectedGuarantee" class="text-sm my-1">{{ selectedGuarantee.guarantee }}</span>
             </h4>
 

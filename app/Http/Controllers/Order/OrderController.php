@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderDetailRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderDetailResource;
+use App\Http\Resources\OrderDetailSingleResource;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -48,13 +49,13 @@ class OrderController extends Controller
      * Display the specified resource.
      *
      * @param OrderDetail $order
-     * @return OrderDetailResource
+     * @return OrderDetailSingleResource
      * @throws AuthorizationException
      */
-    public function show(OrderDetail $order): OrderDetailResource
+    public function show(OrderDetail $order): OrderDetailSingleResource
     {
         $this->authorize('view', $order);
-        return new OrderDetailResource($order);
+        return new OrderDetailSingleResource($order);
     }
 
     /**
@@ -70,7 +71,7 @@ class OrderController extends Controller
         $this->authorize('update', $order);
 
         $validated = $request->validated();
-        $model = $this->service->updateById($order->id, $validated);
+        $model = $this->service->updateByCode($order->code, $validated);
 
         if (!is_null($model)) {
             return new OrderDetailResource($model);

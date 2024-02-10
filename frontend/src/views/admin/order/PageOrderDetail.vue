@@ -7,11 +7,13 @@
       <div class="bg-white mb-3 rounded-lg border p-3">
         سفارش دهنده -
         <router-link
-          v-if="order?.user.id"
-          :to="{name: 'admin.user.profile', params: {id: order?.user.id}}"
+          v-if="order?.user?.id"
+          :to="{name: 'admin.user.profile', params: {id: order?.user?.id}}"
           class="text-blue-600 hover:text-opacity-90"
         >{{
-            (order?.user?.first_name || order?.user?.last_name) ? (order?.user?.first_name + ' ' + order?.user?.last_name).trim() : order?.user.username
+            (order?.user?.first_name || order?.user?.last_name)
+              ? (order?.user?.first_name + ' ' + order?.user?.last_name).trim()
+              : order?.user.username
           }}
         </router-link>
       </div>
@@ -30,43 +32,49 @@
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">کد سفارش</span>
-                  <div class="tracking-widest grow">172584328151083</div>
+                  <div class="tracking-widest grow">{{ order?.code }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">نام گیرنده:</span>
-                  <div class="grow truncate">مهران مرادی</div>
+                  <div class="grow truncate">{{ order.receiver_name }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">شماره تماس:</span>
-                  <div class="tracking-widest grow">۰۹۹۳۸۳۰۶۱۹۸</div>
+                  <div class="tracking-widest grow">{{ order.receiver_mobile }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">استان:</span>
-                  <div class="grow">کرمانشاه</div>
+                  <div class="grow">{{ order.province }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">شهر:</span>
-                  <div class="grow">قصر شیرین</div>
+                  <div class="grow">{{ order.city }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">درخواست فاکتور:</span>
-                  <div class="grow">خیر</div>
+                  <div class="grow">
+                    <span v-if="order?.is_needed_factor">بله</span>
+                    <span v-else>خیر</span>
+                  </div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">تحویل حضوری:</span>
-                  <div class="grow">خیر</div>
+                  <div class="grow">
+                    <span v-if="order?.is_in_place_delivery">بله</span>
+                    <span v-else>خیر</span>
+                  </div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-emerald-400 shrink-0">مبلغ قابل پرداخت:</span>
                   <div class="grow text-emerald-600">
-                    <span class="tracking-widest">۶۷۹,۰۰۰</span>
+                    <span class="tracking-widest">{{ formatPriceLikeNumber(order?.final_price) }}</span>
                     <span class="text-xs mr-1">تومان</span>
                   </div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-emerald-400 shrink-0">پرداخت شده تاکنون:</span>
                   <div class="grow text-emerald-600">
-                    <span class="tracking-widest">۶۷۹,۰۰۰</span>
+                    <span class="tracking-widest">{{ formatPriceLikeNumber(paymentUntilNow) }}</span>
                     <span class="text-xs mr-1">تومان</span>
                   </div>
                 </div>
@@ -83,10 +91,10 @@
               </div>
 
               <div class="max-h-72 mt-2 my-custom-scrollbar">
-                <base-loading-panel type="table" :loading="ordersTableSetting.isLoading">
+                <base-loading-panel type="table" :loading="loading">
                   <template #content>
                     <base-semi-datatable
-                      :is-loading="ordersTableSetting.isLoading"
+                      :is-loading="false"
                       :columns="ordersTableSetting.columns"
                       :rows="ordersTableSetting.rows"
                       :total="ordersTableSetting.total"
@@ -96,19 +104,22 @@
                       </template>
 
                       <template #payed_at="{value}">
-                        <span class="text-sm">{{ value.payed_at }}</span>
+                        <span v-if="value.payed_at" class="text-xs">{{ value.payed_at }}</span>
+                        <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #created_at="{value}">
-                        <span class="text-sm">{{ value.created_at }}</span>
+                        <span v-if="value.payed_at" class="text-xs">{{ value.payed_at }}</span>
+                        <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #must_pay_price="{value}">
-                        <span class="text-sm">{{ value.must_pay_price }}</span>
+                        <span class="tracking-widest">{{ formatPriceLikeNumber(value.must_pay_price) }}</span>
+                        <span class="text-xs mr-1">تومان</span>
                       </template>
 
-                      <template #gateway_type="{value}">
-                        <span class="text-sm">{{ value.gateway_type }}</span>
+                      <template #payment_method_type="{value}">
+                        <span class="text-sm">{{ value.payment_method_type.text }}</span>
                       </template>
 
                       <template #payment_status_changed_at="{value}">
@@ -123,7 +134,7 @@
                         <base-select
                           options-text="text"
                           options-key="value"
-                          options="paymentStatuses"
+                          :options="paymentStatuses"
                           :selected="value.payment_status"
                           @change="(selected) => {changePaymentStatus(selected, value)}"
                         />
@@ -154,32 +165,42 @@
 
               <template #body>
                 <base-datatable
+                  :enable-search-box="false"
+                  :enable-multi-operation="false"
                   :is-loading="false"
                   :is-static-mode="true"
                   :is-slot-mode="true"
                   :columns="orderPaymentsTableSetting.columns"
                   :rows="orderPaymentsTableSetting.rows"
+                  :has-checkbox="false"
                 >
                   <template #id="{value, index}">
                     {{ index }}
                   </template>
+
                   <template #status="{value}">
                     {{ value.status }}
                   </template>
+
                   <template #receipt="{value}">
                     {{ value.receipt }}
                   </template>
+
                   <template #message="{value}">
                     {{ value.message }}
                   </template>
+
                   <template #gateway_type="{value}">
                     {{ value.gateway_type }}
                   </template>
+
                   <template #payed_at="{value}">
                     {{ value.payed_at }}
                   </template>
+
                   <template #created_at="{value}">
-                    {{ value.created_at }}
+                    <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
+                    <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                   </template>
                 </base-datatable>
               </template>
@@ -195,6 +216,7 @@
         <template #body>
           <div class="p-3">
             <form-order-change-send-status
+              v-if="sendStatus"
               v-model:selected="sendStatus"
             />
           </div>
@@ -373,7 +395,7 @@
     </template>
     <template #body>
       <div
-        v-if="!itemsLoading"
+        v-if="!loading"
         class="p-3"
       >
         <base-button
@@ -395,37 +417,74 @@
         </base-button>
       </div>
 
-      <base-loading-panel :loading="itemsLoading" type="table">
+      <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
             :enable-search-box="false"
             :enable-multi-operation="false"
             :is-slot-mode="true"
-            :is-loading="table.isLoading"
+            :is-static-mode="true"
+            :is-loading="false"
             :columns="table.columns"
             :rows="table.rows"
             :has-checkbox="false"
-            :total="table.totalRecordCount"
-            @do-search="doSearch"
           >
             <template v-slot:product="{value}">
+              <div class="flex flex-col gap-3">
+                <partial-show-image :item="value.image"/>
+                <span>{{ value.product_title }}</span>
 
+                <ul class="flex flex-col gap-2.5">
+                  <li v-if="value.color_name">
+                    <partial-badge-color :title="value.color_name" :hex="value.color_hex"/>
+                  </li>
+                  <li v-if="value.size">
+                    <partial-badge-size :title="value.size"/>
+                  </li>
+                  <li v-if="value.guarantee">
+                    {{ value.guarantee }}
+                  </li>
+                </ul>
+
+                <span v-if="value.is_returned"
+                      class="bg-orange-400 py-1 px-3 rounded">مرجوع شده</span>
+              </div>
             </template>
+
             <template v-slot:unit_price="{value}">
-
+              <div class="text-lg font-iranyekan-bold">
+                {{ formatPriceLikeNumber(value.unit_price) }}
+                <span class="text-xs text-gray-400">تومان</span>
+              </div>
             </template>
+
             <template v-slot:product_count="{value}">
-
+              <span class="py-1 px-1.5 rounded bg-violet-100">{{ formatPriceLikeNumber(value.quantity) }}</span>
+              <span class="mr-2 text-sm">{{ value.unit_name }}</span>
             </template>
+
             <template v-slot:total_price="{value}">
-
+              <div class="text-lg font-iranyekan-bold">
+                {{ formatPriceLikeNumber(value.price) }}
+                <span class="text-xs text-gray-400">تومان</span>
+              </div>
             </template>
+
             <template v-slot:discount="{value}">
-
+              <div v-if="(+value.price) - (+value.discounted_price) > 0">
+                <div class="text-lg font-iranyekan-bold">
+                  {{ formatPriceLikeNumber((+value.price) - (+value.discounted_price)) }}
+                  <span class="text-xs text-gray-400">تومان</span>
+                </div>
+              </div>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
-            <template v-slot:discounted_price="{value}">
 
+            <template v-slot:discounted_price="{value}">
+              <div class="text-lg font-iranyekan-bold">
+                {{ formatPriceLikeNumber(value.discounted_price) }}
+                <span class="text-xs text-gray-400">تومان</span>
+              </div>
             </template>
           </base-datatable>
         </template>
@@ -438,13 +497,12 @@
 import {computed, onMounted, reactive, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
-import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 import BaseAccordion from "@/components/base/BaseAccordion.vue";
 import FormOrderChangeSendStatus from "./forms/FormOrderChangeSendStatus.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
-import {ArrowDownTrayIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowDownTrayIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
@@ -452,14 +510,14 @@ import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
+import {formatPriceLikeNumber, getRouteParamByKey} from "@/composables/helper.js";
+import {OrderAPI} from "@/service/APIOrder.js";
+import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
+import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
+import PartialBadgeSize from "@/components/partials/PartialBadgeSize.vue";
 
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id', null, false)
 
 const loading = ref(false)
 
@@ -468,24 +526,13 @@ const paymentStatuses = ref(null)
 const paymentStatus = ref(null)
 const sendStatus = ref(null)
 
-onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.orders.paymentStatuses), null, {
-  //     success: (response) => {
-  //         paymentStatuses.value = response.data
-  //
-  //         loading.value = false
-  //     },
-  // })
-  //
-  // useRequest(apiReplaceParams(apiRoutes.admin.orders.show, {order: idParam.value}), null, {
-  //     success: (response) => {
-  //         order.value = response.data
-  //         paymentStatus.value = response.data.payment_status
-  //         sendStatus.value = response.data.send_status
-  //
-  //         loading.value = false
-  //     },
-  // })
+const paymentUntilNow = computed(() => {
+  if (!order.orders) return 0;
+
+  return order.orders.reduce((total, item) => {
+    total += item.must_pay_price || 0
+    return total
+  })
 })
 
 //-----------------------------------
@@ -494,7 +541,6 @@ onMounted(() => {
 const orderPaymentDetailOpen = ref(false)
 
 const ordersTableSetting = reactive({
-  isLoading: false,
   columns: [
     {
       field: 'op_1',
@@ -522,8 +568,8 @@ const ordersTableSetting = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      field: 'gateway_type',
-      label: 'نوع درگاه',
+      field: 'payment_method_type',
+      label: 'شیوه پرداخت',
       columnClasses: 'whitespace-nowrap',
     },
     {
@@ -600,8 +646,6 @@ function showOrderPaymentDetail(item) {
 }
 
 //-----------------------------------
-
-//-----------------------------------
 // Factor downloading
 //-----------------------------------
 const isDownloadFactor = ref(false)
@@ -611,15 +655,9 @@ function factorDownloadHandler() {
 }
 
 //-----------------------------------
-
-//-----------------------------------
 // Items stuffs
 //-----------------------------------
-const datatable = ref(null)
-const tableContainer = ref(null)
-const itemsLoading = ref(false)
 const table = reactive({
-  isLoading: false,
   columns: [
     {
       label: "#",
@@ -659,41 +697,44 @@ const table = reactive({
     },
   ],
   rows: [],
-  totalRecordCount: 0,
   sortable: {
     order: "id",
     sort: "desc",
   },
 })
 
-const doSearch = (offset, limit, order, sort, text) => {
-  table.isLoading = true
-
-  // useRequest(apiRoutes.admin.orders.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  itemsLoading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
-}
-
-doSearch(0, 15, 'id', 'desc')
 //-----------------------------------
+onMounted(() => {
+  OrderAPI.fetchById(idParam.value, {
+    success: (response) => {
+      order.value = response.data
+      paymentStatus.value = response.data.payment_status
+      sendStatus.value = response.data.send_status
+
+      // orders of order details (pay connections)
+      ordersTableSetting.rows = response.data?.orders || []
+      ordersTableSetting.total = response.data?.orders?.length || 0
+
+      // gateway payments
+      orderPaymentsTableSetting.rows = response.data?.order_payments || []
+
+      // order items
+      table.rows = response.data?.items || []
+
+      loading.value = false
+    },
+  })
+
+  OrderAPI.fetchPaymentStatuses({
+    success: (response) => {
+      paymentStatuses.value = []
+      for (let i = 0; i < response.data.length; i++) {
+        paymentStatuses.push({
+          text: response.data[i],
+          value: i,
+        })
+      }
+    },
+  })
+})
 </script>
