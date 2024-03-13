@@ -15,8 +15,13 @@ return new class extends Migration {
             $table->string('code', 25)->unique();
             $table->string('title');
             $table->string('color_hex', 12);
-            $table->boolean('is_starting_badge')->default(false);
+            $table->boolean('is_starting_badge')->default(false)
+                ->comment('سفارشات ابتدا در این مرحله قرار می گیرند');
+            $table->boolean('is_end_badge')->default(false)
+                ->comment('برچسب نهایی برای سفارشات');
             $table->boolean('should_return_order_product')->default(false);
+            $table->boolean('can_return_order')->default(false)
+                ->comment('آیا سفارش در این مرحله قابل مرجوع می باشد یا خیر');
             $table->boolean('is_title_editable')->default(true);
             $table->boolean('is_published')->default(true);
             $table->boolean('is_deletable')->default(true);

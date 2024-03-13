@@ -8,6 +8,7 @@ enum UserNotificationTypesEnum: string
 {
     use EnumTranslateTrait;
 
+    case SIGNUP = 'signup';
     case UPDATE_INFO = 'update_info';
     case COMMENTED = 'commented';
     case RECOVER_PASS = 'recover_pass';
@@ -22,6 +23,7 @@ enum UserNotificationTypesEnum: string
     public static function translationArray(): array
     {
         return [
+            self::SIGNUP->value => 'ثبت نام',
             self::UPDATE_INFO->value => 'بروزرسانی اطلاعات',
             self::COMMENTED->value => 'ثبت نظر',
             self::RECOVER_PASS->value => 'بازگردانی کلمه عبور',

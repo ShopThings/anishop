@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ContactUsRepositoryInterface;
 use App\Services\Contracts\ContactUsServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -23,15 +24,10 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     /**
      * @inheritDoc
      */
-    public function getContacts(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getContacts(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('contact_us');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'title',
                 'name',
@@ -40,9 +36,50 @@ class ContactUsService extends Service implements ContactUsServiceInterface
             ], $search);
         });
 
+        return $this->repository
+            ->newWith(['answeredBy', 'statusChanger', 'creator', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserContacts($userId, Filter $filter): Collection|LengthAwarePaginator
+    {
+        $where = new WhereBuilder('contact_us');
+        $where
+            ->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
+                $query->orWhereLike([
+                    'title',
+                    'name',
+                    'mobile',
+                    'description',
+                ], $search);
+            })
+            ->whereEqual('created_by', $userId);
+
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getContactsCount($userId): int
+    {
+        $where = new WhereBuilder('contact_us');
+        $where->whereEqual('created_by', $userId);
+
+        return $this->repository->count($where->build());
     }
 
     /**
@@ -67,8 +104,13 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     {
         $updateAttributes = [];
 
+        if (isset($attributes['answer'])) {
+            $updateAttributes['answer'] = $attributes['answer'];
+            $updateAttributes['answered_at'] = now();
+            $updateAttributes['answered_by'] = Auth::user()?->id;
+        }
         if (isset($attributes['is_seen'])) {
-            $updateAttributes['is_seen'] = $attributes['is_seen'];
+            $updateAttributes['is_seen'] = to_boolean($attributes['is_seen']);
             $updateAttributes['changed_status_at'] = now();
             $updateAttributes['changed_status_by'] = Auth::user()?->id;
         }
@@ -78,5 +120,13 @@ class ContactUsService extends Service implements ContactUsServiceInterface
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function deleteUserContactById($id): bool
+    {
+        return (bool)$this->repository->delete($id, false);
     }
 }

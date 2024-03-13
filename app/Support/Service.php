@@ -3,7 +3,9 @@
 namespace App\Support;
 
 use App\Contracts\ServiceInterface;
+use App\Enums\DatabaseEnum;
 use App\Support\Traits\ServiceTrait;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Gate;
@@ -11,6 +13,16 @@ use Illuminate\Support\Facades\Gate;
 abstract class Service implements ServiceInterface
 {
     use ServiceTrait;
+
+    /**
+     * @inheritDoc
+     */
+    public function exists($id): bool
+    {
+        $where = new WhereBuilder();
+        $where->whereEqual('id', $id);
+        return $this->repository->exists($where->build());
+    }
 
     /**
      * @inheritDoc
@@ -35,14 +47,41 @@ abstract class Service implements ServiceInterface
     /**
      * @inheritDoc
      */
-    public function batchDeleteByIds(array $ids, bool $permanent = false): bool
+    public function batchDeleteByIds(
+        array $ids,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool
     {
+        if (!count($ids)) return true;
+
         if ($permanent) {
             Gate::authorize('forceDelete', $this->repository->find($ids));
         }
 
-        if (!count($ids)) return true;
-        return (bool)$this->repository->deleteBatch($ids, $permanent);
+        $where = new WhereBuilder();
+        $where
+            ->when($considerDeletable, function ($builder) {
+                $builder->whereEqual('is_deletable', DatabaseEnum::DB_YES);
+            })
+            ->whereIn('id', $ids);
+
+        return (bool)$this->repository->deleteWhere($where->build(), $permanent);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function batchDeleteBySlugs(
+        array $slugs,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool
+    {
+        $where = new WhereBuilder();
+        $where->whereIn('slug', $slugs);
+        $ids = $this->repository->all(columns: ['id'], where: $where->build())->pluck('id');
+        return $this->batchDeleteByIds($ids->toArray(), $permanent, $considerDeletable);
     }
 
     /**

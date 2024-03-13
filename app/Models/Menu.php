@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\Menus\MenuPlacesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Menu extends Model
@@ -22,6 +22,7 @@ class Menu extends Model
     ];
 
     protected $casts = [
+        'place_in' => MenuPlacesEnum::class,
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
     ];
@@ -31,14 +32,6 @@ class Menu extends Model
      */
     public function items(): HasMany
     {
-        return $this->hasMany(MenuItem::class);
-    }
-
-    /**
-     * @return BelongsTo
-     */
-    public function place(): BelongsTo
-    {
-        return $this->belongsTo(SliderPlace::class, 'menu_place_id');
+        return $this->hasMany(MenuItem::class, 'menu_id');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
+use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -11,26 +12,10 @@ interface OrderServiceInterface extends ServiceInterface
 {
     /**
      * @param int|null $userId
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter|null $filter
      * @return Collection|LengthAwarePaginator
      */
-    public function getOrders(
-        ?int    $userId = null,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator;
-
-    /**
-     * @param int $orderId
-     * @param array $attributes
-     * @return Model|null
-     */
-    public function updatePayment(int $orderId, array $attributes): ?Model;
+    public function getOrders(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator;
 
     /**
      * @return array
@@ -41,4 +26,32 @@ interface OrderServiceInterface extends ServiceInterface
      * @return Collection
      */
     public function getSendStatuses(): Collection;
+
+    /**
+     * @param $userId
+     * @return int
+     */
+    public function getUserOrdersCount($userId): int;
+
+    /**
+     * @param $userId
+     * @param int $limit
+     * @return Collection
+     */
+    public function getLatestUserOrders($userId, int $limit): Collection;
+
+    /**
+     * @param $code
+     * @param array $attributes
+     * @param bool $silence
+     * @return Model|null
+     */
+    public function updateByCode($code, array $attributes, bool $silence = false): ?Model;
+
+    /**
+     * @param int $orderId
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function updatePayment(int $orderId, array $attributes): ?Model;
 }

@@ -34,6 +34,7 @@ class UpdateProductAttributeValueRequest extends FormRequest
             'priority' => [
                 'sometimes',
                 'numeric',
+                'min:0',
             ],
         ];
     }

@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\Repositories\Contracts\BlogBadgeRepositoryInterface;
 use App\Services\Contracts\BlogBadgeServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class BlogBadgeService extends Service implements BlogBadgeServiceInterface
 {
@@ -23,20 +23,18 @@ class BlogBadgeService extends Service implements BlogBadgeServiceInterface
     /**
      * @inheritDoc
      */
-    public function getBadges(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getBadges(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('blog_comment_badges');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('title', $search);
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

@@ -22,6 +22,8 @@ class UpdateOrderBadgeRequest extends FormRequest
      */
     public function rules(): array
     {
+        $model = $this->route('order_badge');
+
         return [
             'title' => [
                 'sometimes',
@@ -32,16 +34,18 @@ class UpdateOrderBadgeRequest extends FormRequest
                 'max:12',
                 new ColorRule(),
             ],
-            'is_starting_badge' => [
-                'sometimes',
+            'should_return_order_product' => [
                 'boolean',
             ],
-            'should_return_order_product' => [
-                'sometimes',
+            'is_end_badge' => [
                 'boolean',
+                function ($attribute, $value, $fail) use ($model) {
+                    if (to_boolean($value) && $model->is_starting_badge) {
+                        $fail('برچسب شروع و پایان نمی‌تواند یکی باشد.');
+                    }
+                },
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];
@@ -51,8 +55,8 @@ class UpdateOrderBadgeRequest extends FormRequest
     {
         return [
             'color_hex' => 'کد رنگ',
-            'is_starting_badge' => 'برچسب شروع',
             'should_return_order_product' => 'وضعیت بازگشت محصولات به انبار',
+            'is_end_badge' => 'وضعیت پایانی',
         ];
     }
 }

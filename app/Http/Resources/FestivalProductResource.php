@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Showing\FestivalShowResource;
+use App\Http\Resources\Showing\ProductShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,9 +19,9 @@ class FestivalProductResource extends JsonResource
         return [
             'id' => $this->id,
             'product_id' => $this->product_id,
-            'product' => $this->whenLoaded('product'),
+            'product' => new ProductShowResource($this->whenLoaded('product')),
             'festival_id' => $this->festival_id,
-            'festival' => $this->whenLoaded('festival'),
+            'festival' => new FestivalShowResource($this->whenLoaded('festival')),
         ];
     }
 }

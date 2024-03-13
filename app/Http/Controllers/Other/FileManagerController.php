@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Other;
 
+use App\Enums\Gates\PermissionPlacesEnum;
+use App\Enums\Gates\PermissionsEnum;
+use App\Enums\Gates\RolesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Exceptions\FileDuplicationException;
 use App\Exceptions\InvalidDiskException;
@@ -9,11 +12,15 @@ use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\FileRequest;
+use App\Http\Requests\Filters\FileListFilter;
 use App\Http\Requests\StoreFileRequest;
 use App\Models\FileManager;
+use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Services\FileService;
+use App\Support\Gate\PermissionHelper;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
@@ -34,14 +41,9 @@ class FileManagerController extends Controller
     {
         $this->authorize('viewAny', FileManager::class);
 
-        $list = $this->service->list(
-            $request->input('path', ''),
-            $request->input('disk', ''),
-            $request->input('search'),
-            $request->input('size'),
-            $request->input('extensions', []),
-            [$request->input('column', 'name') => $request->input('sort', 'asc')]
-        );
+        $filter = new FileListFilter($request);
+
+        $list = $this->service->list($filter);
 
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
@@ -61,8 +63,8 @@ class FileManagerController extends Controller
         $this->authorize('viewAny', FileManager::class);
 
         $list = $this->service->treeList(
-            $request->input('path', ''),
-            $request->input('disk', ''),
+            $request->input('path') ?? '',
+            $this->_getCorrectStorage($request, $request->string('disk', '')),
             $request->input('search')
         );
 
@@ -87,7 +89,7 @@ class FileManagerController extends Controller
         $res = $this->service->upload(
             $request->input('path', ''),
             $request->file('file'),
-            $request->input('disk', ''),
+            $this->_getCorrectStorage($request, $request->string('disk', '')),
             (bool)$request->input('overwrite', false)
         );
 
@@ -105,14 +107,38 @@ class FileManagerController extends Controller
     }
 
     /**
-     * @param $file
-     * @param $size
-     * @param FileRequest $request
+     * @param Request $request
      * @return JsonResponse|BinaryFileResponse
      */
-    public function show($file, $size, FileRequest $request): BinaryFileResponse|JsonResponse
+    public function show(Request $request): BinaryFileResponse|JsonResponse
     {
-        $theFile = $this->service->findFile($file, $request->input('disk'), $size);
+        $user = $request->user();
+        $isAuthenticated = !!$user?->can(PermissionHelper::permission(
+            PermissionsEnum::READ,
+            PermissionPlacesEnum::FILE_MANAGER
+        ));
+
+        $file = $request->input('file');
+        $size = $request->input('size');
+
+        if (empty($file)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'فایل وارد شده برای نمایش نامعتبر می‌باشد.',
+            ], ResponseCodes::HTTP_BAD_REQUEST);
+        }
+
+        $theFile = $this->service->findFile(
+            $file,
+            $this->_getCorrectStorage($request, $request->string('disk', '')),
+            $size,
+            $isAuthenticated
+        );
+
+        if (empty($theFile)) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+
         return response()->file($theFile);
     }
 
@@ -130,7 +156,7 @@ class FileManagerController extends Controller
         $res = $this->service->createDirectory(
             $request->input('name', ''),
             $request->input('path', ''),
-            $request->input('disk', '')
+            $this->_getCorrectStorage($request, $request->string('disk', ''))
         );
 
         if (!$res) {
@@ -162,7 +188,7 @@ class FileManagerController extends Controller
             $request->input('path', ''),
             $request->input('old_name', ''),
             $request->input('new_name', ''),
-            $request->input('disk', '')
+            $this->_getCorrectStorage($request, $request->string('disk', '')),
         );
 
         if (!$res) {
@@ -192,7 +218,7 @@ class FileManagerController extends Controller
         $res = $this->service->move(
             $request->input('files', []),
             $request->input('destination', ''),
-            $request->input('disk', '')
+            $this->_getCorrectStorage($request, $request->string('disk', ''))
         );
 
         if (!$res) {
@@ -222,7 +248,7 @@ class FileManagerController extends Controller
         $res = $this->service->copy(
             $request->input('files', []),
             $request->input('destination', ''),
-            $request->input('disk', '')
+            $this->_getCorrectStorage($request, $request->string('disk', ''))
         );
 
         if (!$res) {
@@ -239,7 +265,6 @@ class FileManagerController extends Controller
     }
 
     /**
-     * @param $file
      * @param FileRequest $request
      * @return JsonResponse
      * @throws AuthorizationException
@@ -247,16 +272,36 @@ class FileManagerController extends Controller
      * @throws InvalidFileException
      * @throws InvalidPathException
      */
-    public function destroy($file, FileRequest $request): JsonResponse
+    public function destroy(FileRequest $request): JsonResponse
     {
+        $user = $request->user();
+        $isAuthenticated = !!$user?->can(PermissionHelper::permission(
+            PermissionsEnum::READ,
+            PermissionPlacesEnum::FILE_MANAGER
+        ));
+
         $path = $request->input('path', '');
-        $dbFile = $this->service->find($path . '/' . rtrim($file));
+        $pathInfo = pathinfo($path);
+        $file = $pathInfo['filename'];
 
-        if (!$dbFile) throw new InvalidFileException();
+        if (!empty($pathInfo['extension'])) {
+            /**
+             * @var FileManager $dbFile
+             */
+            $dbFile = $this->service->find($path, $isAuthenticated);
 
-        $this->authorize('delete', $dbFile);
+            if (!$dbFile) throw new InvalidFileException();
 
-        $res = $this->service->delete($dbFile, null, $request->input('disk', ''));
+            $this->authorize('delete', $dbFile);
+
+            $file = $pathInfo['basename'];
+        }
+
+        $res = $this->service->delete(
+            $file,
+            $pathInfo['dirname'] ?: '',
+            $this->_getCorrectStorage($request, $request->string('disk', ''))
+        );
 
         if (!$res) {
             return response()->json([
@@ -283,9 +328,9 @@ class FileManagerController extends Controller
         $this->authorize('batchDelete', FileManager::class);
 
         $res = $this->service->delete(
-            $request->input('files', ''),
+            $request->input('files', []),
             $request->input('path', ''),
-            $request->input('disk', '')
+            $this->_getCorrectStorage($request, $request->string('disk', ''))
         );
 
         if (!$res) {
@@ -314,8 +359,38 @@ class FileManagerController extends Controller
         $this->authorize('download', FileManager::class);
 
         $path = $request->input('path', '');
-        $disk = $request->input('disk', '');
+        $disk = $this->_getCorrectStorage($request, $request->string('disk', ''));
 
         return $this->service->download($file, $path, $disk);
+    }
+
+    /**
+     * @param Request $request
+     * @param string $disk
+     * @return string
+     */
+    public function _getCorrectStorage(Request $request, string $disk): string
+    {
+        $user = $request->user();
+
+        if (
+            !$user ||
+            // only below roles can access other storages than "public"
+            !$user->hasAnyRole(
+                [
+                    RolesEnum::DEVELOPER->value,
+                    RolesEnum::SUPER_ADMIN->value,
+                    RolesEnum::ADMIN->value
+                ]
+            ) ||
+            !in_array(
+                $disk,
+                FileRepositoryInterface::STORAGE_DISKS
+            )
+        ) {
+            $disk = FileRepositoryInterface::STORAGE_DISK_PUBLIC;
+        }
+
+        return $disk;
     }
 }

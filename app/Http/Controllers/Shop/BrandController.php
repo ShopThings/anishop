@@ -10,8 +10,8 @@ use App\Http\Resources\BrandResource;
 use App\Models\Brand;
 use App\Models\User;
 use App\Services\Contracts\BrandServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BrandController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param BrandServiceInterface $service
@@ -30,25 +29,20 @@ class BrandController extends Controller
         protected BrandServiceInterface $service
     )
     {
-
+        $this->considerDeletable = true;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return BrandResource::collection($this->service->getBrands(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return BrandResource::collection($this->service->getBrands($filter));
     }
 
     /**
@@ -58,7 +52,7 @@ class BrandController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreBrandRequest $request)
+    public function store(StoreBrandRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -86,7 +80,7 @@ class BrandController extends Controller
      * @return BrandResource
      * @throws AuthorizationException
      */
-    public function show(Brand $brand)
+    public function show(Brand $brand): BrandResource
     {
         $this->authorize('view', $brand);
         return new BrandResource($brand);
@@ -100,7 +94,7 @@ class BrandController extends Controller
      * @return BrandResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBrandRequest $request, Brand $brand)
+    public function update(UpdateBrandRequest $request, Brand $brand): JsonResponse|BrandResource
     {
         $this->authorize('update', $brand);
 
@@ -128,11 +122,11 @@ class BrandController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Brand $brand)
+    public function destroy(Request $request, Brand $brand): JsonResponse
     {
         $this->authorize('delete', $brand);
 
-        $permanent = $request->user()->id === $brand->creator()?->id;
+        $permanent = $request->user()->id === $brand->creator?->id;
         $res = $this->service->deleteById($brand->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

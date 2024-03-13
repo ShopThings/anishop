@@ -7,6 +7,7 @@ use App\Enums\Gates\PermissionsEnum;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class StoreStaticPageRequest extends FormRequest
 {
@@ -39,13 +40,13 @@ class StoreStaticPageRequest extends FormRequest
             ],
             'url' => [
                 'required',
-                'regex:/[a-z]+[a-z\\\-][a-z]+/i',
+                'regex:/[a-z]+[a-z\/\-][a-z]+/i',
+                Rule::unique('static_pages', 'url'),
             ],
             'keywords' => [
                 'array',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

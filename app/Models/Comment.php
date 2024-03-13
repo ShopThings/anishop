@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\CleanHtmlCast;
 use App\Casts\StringToArray;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
@@ -9,7 +10,6 @@ use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Comment extends Model
 {
@@ -25,6 +25,9 @@ class Comment extends Model
     protected $casts = [
         'pros' => StringToArray::class,
         'cons' => StringToArray::class,
+        'answer' => CleanHtmlCast::class,
+        'answered_at' => 'datetime',
+        'changed_status_at' => 'datetime',
     ];
 
     /**
@@ -38,8 +41,16 @@ class Comment extends Model
     /**
      * @return BelongsTo
      */
-    public function parent(): BelongsTo
+    public function answeredBy(): BelongsTo
     {
-        return $this->belongsTo(Comment::class, 'comment_id');
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function statusChanger(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,17 +25,17 @@ class ComplaintResource extends JsonResource
             'is_seen' => $this->is_seen,
             'changed_status_at' => $this->when(
                 $this->changed_status_at,
-                verta($this->changed_status_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->changed_status_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'changed_status_by' => $this->when($this->changed_status_by, $this->statusChanger()),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'changed_status_by' => new UserShowResource($this->when($this->changed_status_by, $this->status_changer)),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

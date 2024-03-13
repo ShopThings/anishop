@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             SettingSeeder::class,
             BlogCommentBadgeSeeder::class,
-            SliderPlaceSeeder::class,
             MenuAndPlaceSeeder::class,
             BrandSeeder::class,
             CategorySeeder::class,

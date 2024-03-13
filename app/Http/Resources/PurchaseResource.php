@@ -17,7 +17,6 @@ class PurchaseResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
             'code' => $this->code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
@@ -35,13 +34,12 @@ class PurchaseResource extends JsonResource
             'send_status_color_hex' => $this->send_status_color_hex,
             'send_status_changed_at' => $this->when(
                 $this->send_status_changed_at,
-                verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'send_status_changed_by' => $this->when($this->send_status_changed_by, $this->sendStatusChanger()),
             'is_needed_factor' => $this->is_needed_factor,
-            'is_in_place_delivery' => $this->is_in_place_delivery,
             'ordered_at' => $this->ordered_at
-                ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

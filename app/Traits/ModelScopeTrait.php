@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Enums\DatabaseEnum;
 use App\Support\Model\CaseWhen;
 use App\Support\Model\Concat;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @method CaseWhen case()
  * @method Concat concat()
+ * @method Builder published()
  */
 trait ModelScopeTrait
 {
@@ -32,5 +34,16 @@ trait ModelScopeTrait
     public function scopeConcat(Builder $query): Concat
     {
         return new Concat($query);
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePublished(Builder $query): Builder
+    {
+        if (!array_key_exists('is_published', $this->getCasts())) return $query;
+
+        return $query->where('is_published', DatabaseEnum::DB_YES);
     }
 }

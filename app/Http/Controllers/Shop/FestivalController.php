@@ -5,14 +5,17 @@ namespace App\Http\Controllers\Shop;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFestivalProductRequest;
+use App\Http\Requests\StoreFestivalRequest;
+use App\Http\Requests\UpdateFestivalRequest;
+use App\Http\Resources\FestivalProductResource;
 use App\Http\Resources\FestivalResource;
 use App\Models\Category;
 use App\Models\Festival;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\Contracts\FestivalServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,8 +24,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class FestivalController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param FestivalServiceInterface $service
@@ -36,19 +38,14 @@ class FestivalController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return FestivalResource::collection($this->service->getFestivals(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return FestivalResource::collection($this->service->getFestivals($filter));
     }
 
     /**
@@ -58,7 +55,7 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(StoreFestivalRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -86,7 +83,7 @@ class FestivalController extends Controller
      * @return FestivalResource
      * @throws AuthorizationException
      */
-    public function show(Festival $festival)
+    public function show(Festival $festival): FestivalResource
     {
         $this->authorize('view', $festival);
         return new FestivalResource($festival);
@@ -95,14 +92,13 @@ class FestivalController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
+     * @param UpdateFestivalRequest $request
      * @param Festival $festival
      * @return FestivalResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(Request $request, Festival $festival)
+    public function update(UpdateFestivalRequest $request, Festival $festival): FestivalResource|JsonResponse
     {
-
         $this->authorize('update', $festival);
 
         $validated = $request->validated();
@@ -125,7 +121,7 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Festival $festival)
+    public function destroy(Festival $festival): JsonResponse
     {
         $this->authorize('delete', $festival);
 
@@ -140,23 +136,18 @@ class FestivalController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param Filter $filter
      * @param Festival $festival
-     * @return FestivalResource
+     * @return FestivalProductResource
      * @throws AuthorizationException
      */
-    public function products(Request $request, Festival $festival)
+    public function products(Filter $filter, Festival $festival): FestivalProductResource
     {
         $this->authorize('viewAny', User::class);
 
-        $params = $this->getPaginateParameters($request);
-
-        return new FestivalResource($this->service->getFestivalProducts(
+        return new FestivalProductResource($this->service->getFestivalProducts(
             festivalId: $festival->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
+            filter: $filter
         ));
     }
 
@@ -166,7 +157,7 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function storeProduct(StoreFestivalProductRequest $request, Festival $festival)
+    public function storeProduct(StoreFestivalProductRequest $request, Festival $festival): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -195,7 +186,7 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function storeCategoryProducts(StoreFestivalProductRequest $request, Festival $festival)
+    public function storeCategoryProducts(StoreFestivalProductRequest $request, Festival $festival): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -224,11 +215,33 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroyProduct(Festival $festival, Product $product)
+    public function destroyProduct(Festival $festival, Product $product): JsonResponse
     {
         $this->authorize('delete', $festival);
 
         $res = $this->service->removeProductFromFestival($product->id, $festival->id);
+        if ($res)
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        else
+            return response()->json([
+                'type' => ResponseTypesEnum::WARNING->value,
+                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @param Request $request
+     * @param Festival $festival
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function batchDestroyProduct(Request $request, Festival $festival): JsonResponse
+    {
+        $this->authorize('delete', $festival);
+
+        $ids = $request->input('ids', []);
+
+        $res = $this->service->removeProductsFromFestival($festival->id, $ids);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
@@ -244,7 +257,7 @@ class FestivalController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function batchDestroyProduct(Festival $festival, Category $category)
+    public function batchDestroyCategory(Festival $festival, Category $category): JsonResponse
     {
         $this->authorize('delete', $festival);
 

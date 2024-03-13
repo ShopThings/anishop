@@ -6,17 +6,19 @@ use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Repositories\Contracts\PaymentMethodRepositoryInterface;
 use App\Services\Contracts\PaymentMethodServiceInterface;
-use App\Support\Model\CodeGeneratorHelper;
+use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class PaymentMethodService extends Service implements PaymentMethodServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected PaymentMethodRepositoryInterface $repository
     )
@@ -26,15 +28,10 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
     /**
      * @inheritDoc
      */
-    public function getMethods(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getMethods(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('payment_methods');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query
                 ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function (WhereBuilderInterface $q, array $items) {
                     $q->orWhereIn('type', $items);
@@ -45,9 +42,14 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
                 ->orWhereLike('title', $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository
+            ->newWith(['image', 'creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -55,6 +57,8 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'title' => $attributes['title'],
             'image_id' => $attributes['image'],
@@ -78,6 +82,7 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
             $updateAttributes['title'] = $attributes['title'];
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['type'])) {

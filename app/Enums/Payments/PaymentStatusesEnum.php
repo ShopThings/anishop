@@ -9,6 +9,7 @@ enum PaymentStatusesEnum: int
 {
     use EnumTranslateTrait;
 
+    case PARTIAL_SUCCESS = 2;
     case SUCCESS = 1;
     case FAILED = 0;
     case WAIT_VERIFY = -7;
@@ -21,11 +22,24 @@ enum PaymentStatusesEnum: int
     public static function translationArray(): array
     {
         return [
+            self::PARTIAL_SUCCESS->value => 'پرداخت بخشی از مبلغ',
             self::SUCCESS->value => 'پرداخت موفق',
             self::FAILED->value => 'پرداخت ناموفق',
             self::WAIT_VERIFY->value => 'در انتظار تایید',
             self::WAIT->value => 'در انتظار پرداخت',
             self::NOT_PAYED->value => 'پرداخت نشده',
+        ];
+    }
+
+    public static function getStatusColor(): array
+    {
+        return [
+            self::PARTIAL_SUCCESS->value => '#836FFF',
+            self::SUCCESS->value => '#0EA293',
+            self::FAILED->value => '#F72798',
+            self::WAIT_VERIFY->value => '#836FFF',
+            self::WAIT->value => '#280274',
+            self::NOT_PAYED->value => '#D24545',
         ];
     }
 }

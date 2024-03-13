@@ -27,13 +27,8 @@ class ProductAttributeProductService extends Service implements ProductAttribute
     /**
      * @inheritDoc
      */
-    public function create(array $attributes): ?Model
+    public function modifyProductAttributes(int $productId, array $attributeValues): bool
     {
-        $attrs = [
-            'product_attribute_value_id' => $attributes['product_attribute_value'],
-            'product_id' => $attributes['product'],
-        ];
-
-        return $this->repository->create($attrs);
+        return $this->repository->modifyProductAttributes($productId, $attributeValues);
     }
 }

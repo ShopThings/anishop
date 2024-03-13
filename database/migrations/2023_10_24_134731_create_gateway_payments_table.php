@@ -20,7 +20,7 @@ return new class extends Migration {
                 ->comment('payment code to track payment for verify');
             $table->string('receipt')->nullable()
                 ->comment('it is reference_id to track payment');
-            $table->enum('gateway_type', array_map(fn($item) => $item->name, GatewaysEnum::cases()))
+            $table->enum('gateway_type', array_map(fn($item) => $item->value, GatewaysEnum::cases()))
                 ->comment('indicates which gateway is this');
             $table->string('meta')->nullable();
             $table->timestamp('payed_at')->nullable();

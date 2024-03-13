@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\Showing\ProductShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,8 +20,8 @@ class FavoriteProductResource extends JsonResource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'product_id' => $this->product_id,
-            'user' => $this->whenLoaded('user'),
-            'product' => $this->whenLoaded('product'),
+            'user' => new UserShowResource($this->whenLoaded('user')),
+            'product' => new ProductShowResource($this->whenLoaded('product')),
         ];
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 class PersianMobileRule implements ValidationRule
 {
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {

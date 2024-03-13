@@ -20,4 +20,9 @@ class Setting extends Model
     protected $casts = [
         'updated_at' => 'datetime',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'name';
+    }
 }

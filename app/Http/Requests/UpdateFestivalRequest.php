@@ -28,16 +28,15 @@ class UpdateFestivalRequest extends FormRequest
             ],
             'start_at' => [
                 'sometimes',
-                'date-format:YYYY-MM-DD HH:mm',
+                'date-format:Y-m-d H:i',
                 'before:end_at',
             ],
             'end_at' => [
                 'sometimes',
-                'date-format:YYYY-MM-DD HH:mm',
+                'date-format:Y-m-d H:i',
                 'after:start_at',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

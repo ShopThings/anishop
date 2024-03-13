@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\WeightPostPriceRepositoryInterface;
 use App\Services\Contracts\WeightPostPriceServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -22,15 +23,10 @@ class WeightPostPriceService extends Service implements WeightPostPriceServiceIn
     /**
      * @inheritDoc
      */
-    public function getPostPrices(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getPostPrices(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('weight_post_prices');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereEqual([
                 'min_weight',
                 'max_weight',
@@ -39,7 +35,10 @@ class WeightPostPriceService extends Service implements WeightPostPriceServiceIn
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

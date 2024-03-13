@@ -5,24 +5,17 @@ namespace App\Policies;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Enums\Gates\RolesEnum;
-use App\Exceptions\NotDeletableException;
 use App\Models\User;
 use App\Support\Gate\PermissionHelper;
-use Illuminate\Support\Collection;
+use App\Support\Traits\PolicyTrait;
 
 class UserPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::READ,
-                PermissionPlacesEnum::USER)
-        );
-    }
+    use PolicyTrait;
+
+    protected string $modelClass = User::class;
+
+    protected PermissionPlacesEnum $permissionPlace = PermissionPlacesEnum::USER;
 
     /**
      * Determine whether the user can view the model.
@@ -34,18 +27,6 @@ class UserPolicy
         return $user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::READ,
-                PermissionPlacesEnum::USER)
-        );
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::CREATE,
                 PermissionPlacesEnum::USER)
         );
     }
@@ -72,72 +53,6 @@ class UserPolicy
         return $user->hasPermissionTo(
             PermissionHelper::permission(
                 PermissionsEnum::UPDATE,
-                PermissionPlacesEnum::USER)
-        );
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, User $model): bool
-    {
-        if (!$model->is_deletable) {
-            throw new NotDeletableException();
-        }
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::DELETE,
-                PermissionPlacesEnum::USER)
-        );
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, User $model): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::UPDATE,
-                PermissionPlacesEnum::USER)
-        );
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, User|Collection $model): bool
-    {
-        if ($user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::PERMANENT_DELETE,
-                PermissionPlacesEnum::USER)
-        )) {
-            return true;
-        } else {
-            if ($model instanceof User) {
-                if ($user->id === $model->creator()?->id)
-                    return true;
-            } else {
-                $tmp = $model->filter(function ($item) use ($user) {
-                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
-                });
-
-                if (!$tmp->count())
-                    return true;
-            }
-            return false;
-        }
-    }
-
-    /**
-     * Determine whether the user can batch delete.
-     */
-    public function batchDelete(User $user): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::DELETE,
                 PermissionPlacesEnum::USER)
         );
     }

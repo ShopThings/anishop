@@ -10,8 +10,8 @@ use App\Http\Resources\CityPostPriceResource;
 use App\Models\CityPostPrice;
 use App\Models\User;
 use App\Services\Contracts\CityPostPriceServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CityPostPriceController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param CityPostPriceServiceInterface $service
@@ -35,19 +34,14 @@ class CityPostPriceController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return CityPostPriceResource::collection($this->service->getPostPrices(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return CityPostPriceResource::collection($this->service->getPostPrices($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class CityPostPriceController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreCityPostPriceRequest $request)
+    public function store(StoreCityPostPriceRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class CityPostPriceController extends Controller
      * @return CityPostPriceResource
      * @throws AuthorizationException
      */
-    public function show(CityPostPrice $cityPostPrice)
+    public function show(CityPostPrice $cityPostPrice): CityPostPriceResource
     {
         $this->authorize('view', $cityPostPrice);
         return new CityPostPriceResource($cityPostPrice);
@@ -99,7 +93,10 @@ class CityPostPriceController extends Controller
      * @return CityPostPriceResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateCityPostPriceRequest $request, CityPostPrice $cityPostPrice)
+    public function update(
+        UpdateCityPostPriceRequest $request,
+        CityPostPrice              $cityPostPrice
+    ): CityPostPriceResource|JsonResponse
     {
         $this->authorize('update', $cityPostPrice);
 
@@ -124,11 +121,11 @@ class CityPostPriceController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, CityPostPrice $cityPostPrice)
+    public function destroy(Request $request, CityPostPrice $cityPostPrice): JsonResponse
     {
         $this->authorize('delete', $cityPostPrice);
 
-        $permanent = $request->user()->id === $cityPostPrice->creator()?->id;
+        $permanent = $request->user()->id === $cityPostPrice->creator?->id;
         $res = $this->service->deleteById($cityPostPrice->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

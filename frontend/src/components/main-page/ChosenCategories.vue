@@ -1,85 +1,74 @@
 <template>
+  <ul
+      v-if="categoriesLoading || !categories?.length"
+      class="flex flex-wrap items-center justify-center gap-8"
+  >
+    <li
+        v-for="i in 6"
+        :key="i"
+        class="flex flex-col items-center gap-3 animate-pulse"
+    >
+      <div class="rounded-full size-32 bg-slate-200"></div>
+      <div class="h-3 w-full rounded bg-slate-200"></div>
+    </li>
+  </ul>
+  <template v-else>
     <partial-general-title
-        type="side"
+        container-class="mb-5 mt-6 p-2"
         title="دسته‌بندی‌های منتخب"
         title-size="text-xl"
-        container-class="mb-5 mt-6 p-2"
+        type="side"
     />
 
     <ul class="flex flex-wrap items-center justify-center gap-8">
-        <li
-            v-for="category in categories"
-            :key="category.id"
+      <li
+          v-for="category in categories"
+          :key="category.id"
+      >
+        <router-link
+            :to="{name: 'search', query: {category: category.id}}"
+            class="flex flex-col items-center gap-3"
         >
-            <router-link
-                to="#"
-                class="flex flex-col items-center gap-3"
-            >
-                <base-lazy-image
-                    :lazy-src="category.image.path"
-                    alt=""
-                    class="w-32 h-auto"
-                />
+          <base-lazy-image
+              :alt="category.name"
+              :lazy-src="category.image.path"
+              :size="FileSizes.LARGE"
+              class="w-32 h-auto"
+          />
 
-                <h1 class="font-iranyekan-bold text-sm">
-                    {{ category.name }}
-                </h1>
-            </router-link>
-        </li>
+          <h1 class="font-iranyekan-bold text-sm">
+            {{ category.name }}
+          </h1>
+        </router-link>
+      </li>
     </ul>
+  </template>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
-import BaseLazyImage from "../base/BaseLazyImage.vue";
+import {onMounted, ref} from "vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {HomeMainPageAPI} from "@/service/APIHomePages.js";
+import {FileSizes} from "@/composables/file-list.js";
 
-const categories = ref([
-    {
-        id: 1,
-        name: 'موبایل',
-        image: {
-            path: '/src/assets/categories/c1.png',
-        },
+const emit = defineEmits(['loaded'])
+
+const categories = ref(null)
+const categoriesLoading = ref(true)
+
+onMounted(() => {
+  HomeMainPageAPI.fetchSliderChosenCategories({
+    success(response) {
+      categories.value = response.data
     },
-    {
-        id: 2,
-        name: 'کالای دیجیتال',
-        image: {
-            path: '/src/assets/categories/c2.png',
-        },
+    error() {
+      return false
     },
-    {
-        id: 3,
-        name: 'خانه و آشپزخانه',
-        image: {
-            path: '/src/assets/categories/c3.png',
-        },
+    finally() {
+      categoriesLoading.value = false
+      emit('loaded', !!categories.value?.length)
     },
-    {
-        id: 4,
-        name: 'مد و پوشاک',
-        image: {
-            path: '/src/assets/categories/c4.png',
-        },
-    },
-    {
-        id: 5,
-        name: 'اسباب بازی، کودک و نوزاد',
-        image: {
-            path: '/src/assets/categories/c5.png',
-        },
-    },
-    {
-        id: 6,
-        name: 'زیبایی و سلامت',
-        image: {
-            path: '/src/assets/categories/c6.png',
-        },
-    },
-])
+  })
+})
 </script>
-
-<style scoped>
-
-</style>

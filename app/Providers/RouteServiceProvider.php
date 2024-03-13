@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
-use function App\Support\Helper\trans_response_code;
 
 class RouteServiceProvider extends ServiceProvider
 {

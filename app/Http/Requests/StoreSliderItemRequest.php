@@ -4,7 +4,9 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\Slider;
+use App\Models\Blog;
+use App\Models\Product;
+use App\Rules\FileExistsRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -36,21 +38,28 @@ class StoreSliderItemRequest extends FormRequest
                 'array',
                 'min:1',
             ],
-            'slides.*.slider' => [
-                'required',
-                'exists:' . Slider::class . ',id',
+            // instead of using 'slides.*.image.full_path', this way is more reliable
+            'slides.*.image' => [
+                'sometimes',
+                function ($attribute, $value, $fail) {
+                    if (!$value['full_path']) {
+                        $fail('لطفا تصاویر خود را دوباره بررسی نمایید.');
+                        return;
+                    }
+                    (new FileExistsRule())->validate($attribute, $value['full_path'], $fail);
+                },
             ],
-            'slides.*.priority' => [
-                'required',
-                'numeric',
-                'min:0',
+            'slides.*.link' => [
+                'sometimes',
+                'url:http,https',
             ],
-            'slides.*.options' => [
-                'array',
+            'slides.*.product_id' => [
+                'sometimes',
+                'exists:' . Product::class . ',id',
             ],
-            'slides.*.is_published' => [
-                'required',
-                'boolean',
+            'slides.*.blog_id' => [
+                'sometimes',
+                'exists:' . Blog::class . ',id',
             ],
         ];
     }
@@ -59,7 +68,6 @@ class StoreSliderItemRequest extends FormRequest
     {
         return [
             'slides' => 'اسلاید',
-            'slides.*.slider' => 'اسلایدر',
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\ProductAttributeCategory;
 use App\Repositories\Contracts\ProductAttributeCategoryRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -25,25 +26,33 @@ class ProductAttributeCategoryRepository extends Repository implements ProductAt
      * @inheritDoc
      */
     public function getAttributeCategoriesSearchFilterPaginated(
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
-            ->when($search, function (Builder $query, string $search) {
+            ->with(['productAttr', 'category'])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('productAttr', function ($q) use ($search) {
-                        $q->orWhereLike('title', $search);
-                    })
-                    ->withWhereHas('category', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'latin_name',
-                            'escaped_name',
-                        ], $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q
+                            ->orWhereHas('productAttr', function ($q) use ($search) {
+                                $q->whereLike('title', $search);
+                            })
+                            ->orWhereHas('category', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'latin_name',
+                                        'escaped_name',
+                                    ], $search);
+                                });
+                            });
                     });
             });
 

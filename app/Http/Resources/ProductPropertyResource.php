@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\ProductShowResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,9 +18,9 @@ class ProductPropertyResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->idid,
+            'id' => $this->id,
             'product_id' => $this->product_id,
-            'product' => $this->whenLoaded('product'),
+            'product' => new ProductShowResource($this->whenLoaded('product')),
             'code' => $this->code,
             'color_name' => $this->color_name,
             'color_hex' => $this->color_hex,
@@ -27,9 +29,17 @@ class ProductPropertyResource extends JsonResource
             'weight' => $this->weight,
             'price' => $this->price,
             'discounted_price' => $this->discounted_price,
-            'discounted_until' => $this->discounted_until,
-            'discounted_until_formatted' => $this->discounted_until
-                ? verta($this->discounted_until)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+            'normal_discounted_from' => $this->discounted_from
+                ? Carbon::parse($this->discounted_from)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'normal_discounted_until' => $this->discounted_until
+                ? Carbon::parse($this->discounted_until)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'discounted_from' => $this->discounted_from
+                ? vertaTz($this->discounted_from)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
+            'discounted_until' => $this->discounted_until
+                ? vertaTz($this->discounted_until)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'tax_rate' => $this->tax_rate,
             'stock_count' => $this->stock_count,
@@ -39,6 +49,7 @@ class ProductPropertyResource extends JsonResource
             'show_coming_soon' => $this->show_coming_soon,
             'show_call_for_more' => $this->show_call_for_more,
             'is_published' => $this->is_published,
+            'has_separate_shipment' => $this->has_separate_shipment,
         ];
     }
 }

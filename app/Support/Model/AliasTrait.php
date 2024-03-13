@@ -2,6 +2,8 @@
 
 namespace App\Support\Model;
 
+use Illuminate\Support\Facades\DB;
+
 trait AliasTrait
 {
     /**
@@ -11,10 +13,12 @@ trait AliasTrait
 
     /**
      * @param string $alias
+     * @return static
      */
-    public function alias(string $alias): void
+    public function alias(string $alias): static
     {
         $this->alias = trim($alias);
+        return $this;
     }
 
     /**
@@ -23,6 +27,17 @@ trait AliasTrait
      */
     protected function buildAlias($statement): string
     {
-        return '' != $this->alias ? '(' . $statement . ')' . 'AS ' . $this->alias : $statement;
+        if ('' !== trim($this->alias)) {
+            $this->escapeAlias();
+        }
+        return '' !== trim($this->alias) ? '(' . $statement . ')' . ' AS ' . $this->alias : $statement;
+    }
+
+    /**
+     * @return void
+     */
+    protected function escapeAlias(): void
+    {
+        $this->alias = DB::getQueryGrammar()->wrap($this->alias);
     }
 }

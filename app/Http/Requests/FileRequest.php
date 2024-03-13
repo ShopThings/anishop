@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Repositories\FileRepository;
+use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Services\Contracts\FileServiceInterface;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
@@ -17,8 +17,14 @@ class FileRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()
-            ?->can(PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::USER));
+        $user = Auth::user();
+        return $user?->can(PermissionHelper::permission(
+                PermissionsEnum::READ,
+                PermissionPlacesEnum::FILE_MANAGER
+            )) && $user?->can(PermissionHelper::permission(
+                PermissionsEnum::UPDATE,
+                PermissionPlacesEnum::FILE_MANAGER
+            ));
     }
 
     /**
@@ -38,7 +44,7 @@ class FileRequest extends FormRequest
                 'sometimes',
                 'string',
                 function ($attribute, $value, $fail) {
-                    if (!in_array($value, FileRepository::$storageDisks)) {
+                    if (!in_array($value, FileRepositoryInterface::STORAGE_DISKS)) {
                         $fail('محل ذخیره‌سازی انتخاب شده نامعتبر می‌باشد.');
                     }
                 },
@@ -47,7 +53,7 @@ class FileRequest extends FormRequest
                 'sometimes',
                 'string',
                 'nullable',
-                function ($attribute, $value, $fail) use($service) {
+                function ($attribute, $value, $fail) use ($service) {
                     if ($value && !$service->exists($value, $this->input('disk'))) {
                         $fail('مسیر فایل/پوشه نامعتبر می‌باشد.');
                     }
@@ -56,12 +62,21 @@ class FileRequest extends FormRequest
             'destination' => [
                 'sometimes',
                 'string',
-                function ($attribute, $value, $fail) use($service) {
+                function ($attribute, $value, $fail) use ($service) {
                     if ($value && !$service->exists($value, $this->input('disk'))) {
                         $fail('مسیر فایل/پوشه مقصد نامعتبر می‌باشد.');
                     }
                 },
             ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'disk' => 'محل ذخیره‌سازی',
+            'path' => 'مسیر فایل/پوشه',
+            'destination' => 'مسیر فایل/پوشه مقصد',
         ];
     }
 }

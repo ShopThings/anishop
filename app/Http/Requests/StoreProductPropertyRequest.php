@@ -64,10 +64,16 @@ class StoreProductPropertyRequest extends FormRequest
                 'numeric',
                 'lt:products.*.price'
             ],
+            'products.*.discounted_from' => [
+                'required',
+                'nullable',
+                'date-format:Y-m-d H:i',
+                'before:end_at',
+            ],
             'products.*.discounted_until' => [
                 'required',
                 'nullable',
-                'date-format:YYYY-MM-DD HH:mm',
+                'date-format:Y-m-d H:i',
             ],
             'products.*.tax_rate' => [
                 'required',
@@ -87,23 +93,21 @@ class StoreProductPropertyRequest extends FormRequest
                 'lte:products.*.stock_count',
             ],
             'products.*.is_special' => [
-                'required',
                 'boolean',
             ],
             'products.*.is_available' => [
-                'required',
                 'boolean',
             ],
             'products.*.show_coming_soon' => [
-                'required',
                 'boolean',
             ],
             'products.*.show_call_for_more' => [
-                'required',
                 'boolean',
             ],
             'products.*.is_published' => [
-                'required',
+                'boolean',
+            ],
+            'products.*.has_separate_shipment' => [
                 'boolean',
             ],
         ];
@@ -115,6 +119,7 @@ class StoreProductPropertyRequest extends FormRequest
             'products' => 'محصول/محصولات',
             'products.*.weight' => 'وزن با بسته‌بندی',
             'products.*.discounted_price' => 'قیمت با تخفیف',
+            'products.*.discounted_from' => 'تخفیف از تاریخ',
             'products.*.discounted_until' => 'تخفیف تا تاریخ',
             'products.*.tax_rate' => 'مالیات بر ارزش افزوده',
             'products.*.stock_count' => 'تعداد کالا در انبار',
@@ -122,6 +127,7 @@ class StoreProductPropertyRequest extends FormRequest
             'products.*.is_special' => 'ویژه بودن محصول',
             'products.*.show_coming_soon' => 'نمایش بزودی',
             'products.*.show_call_for_more' => 'نمایش تماس برای اطلاعات بیشتر',
+            'products.*.has_separate_shipment' => 'مرسوله مجزا',
         ];
     }
 }

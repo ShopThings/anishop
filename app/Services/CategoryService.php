@@ -2,15 +2,19 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
+use App\Http\Requests\Filters\HomeCategoryFilter;
 use App\Models\Category;
 use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Services\Contracts\CategoryServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
+use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class CategoryService extends Service implements CategoryServiceInterface
 {
@@ -23,19 +27,66 @@ class CategoryService extends Service implements CategoryServiceInterface
     /**
      * @inheritDoc
      */
-    public function getCategories(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getCategories(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCategoriesSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository
+            ->newWith(['parent', 'creator', 'updater', 'deleter'])
+            ->getCategoriesSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHomeCategories(Filter $filter): Collection
+    {
+        $where = new WhereBuilder();
+        $where
+            ->whereEqual('show_in_menu', DatabaseEnum::DB_YES)
+            ->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        $repo = $this->repository;
+        $with = [];
+
+        if ($filter instanceof HomeCategoryFilter) {
+            $where
+                ->when($filter->getParent(), function (WhereBuilderInterface $q, $parent) {
+                    $q->whereEqual('parent_id', $parent);
+                })
+                ->when($filter->getAncestry(), function (WhereBuilderInterface $q, $ancestry) {
+                    $q->group(function (WhereBuilderInterface $q) use ($ancestry) {
+                        $q
+                            ->orWhereEqual('parent_id', $ancestry)
+                            ->orWhereRegexp('ancestry', get_db_ancestry_regex_string($ancestry));
+                    });
+                })
+                ->when(!is_null($filter->getLevel()), function (WhereBuilderInterface $q) use ($filter) {
+                    $q->whereEqual('level', $filter->getLevel());
+                })
+                ->when($filter->getWithChildren(), function () use (&$with) {
+                    $with[] = 'children';
+                });
+        }
+
+        // I needed to add 'children' in the way shown and then add 'parent' relations
+        $with[] = 'parent';
+
+        return $repo
+            ->newWith($with)
+            ->all(
+                where: $where->build(),
+                order: [
+                    'priority' => 'asc',
+                    'id' => 'asc',
+                ]
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSliderCategories(): Collection
+    {
+        return $this->repository->getSliderCategories();
     }
 
     /**
@@ -44,11 +95,11 @@ class CategoryService extends Service implements CategoryServiceInterface
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'parent_id' => $attributes['parent'] ?? null,
+            'parent_id' => ($attributes['parent'] ?? null) ?: null,
             'name' => $attributes['name'],
             'escaped_name' => NumberConverter::toEnglish($attributes['name']),
-            'ancestry' => $this->_getAncestry($attributes['parent'] ?? null),
-            'level' => $attributes['level'],
+            'ancestry' => $this->getAncestry($attributes['parent'] ?? null),
+            'level' => $this->getLevel($attributes['parent'] ?? null),
             'priority' => $attributes['priority'],
             'show_in_menu' => to_boolean($attributes['show_in_menu']),
             'show_in_search_side_menu' => to_boolean($attributes['show_in_search_side_menu']),
@@ -67,15 +118,13 @@ class CategoryService extends Service implements CategoryServiceInterface
         $updateAttributes = [];
 
         if (isset($attributes['parent'])) {
-            $updateAttributes['parent_id'] = $attributes['parent'];
-            $updateAttributes['ancestry'] = $this->_getAncestry($attributes['parent']);
+            $updateAttributes['parent_id'] = $attributes['parent'] ?: null;
+            $updateAttributes['ancestry'] = $this->getAncestry($attributes['parent']);
+            $updateAttributes['level'] = $this->getLevel($updateAttributes['parent_id']);
         }
         if (isset($attributes['name'])) {
             $updateAttributes['name'] = $attributes['name'];
             $updateAttributes['escaped_name'] = NumberConverter::toEnglish($attributes['name']);
-        }
-        if (isset($attributes['level'])) {
-            $updateAttributes['level'] = $attributes['level'];
         }
         if (isset($attributes['priority'])) {
             $updateAttributes['priority'] = $attributes['priority'];
@@ -105,21 +154,42 @@ class CategoryService extends Service implements CategoryServiceInterface
 
     /**
      * @param $parentId
+     * @return int
+     */
+    protected function getLevel($parentId): int
+    {
+        if (is_null($parentId) || !is_numeric($parentId)) return 0;
+
+        /**
+         * @var Category $category
+         */
+        $category = $this->getById($parentId);
+        return ((int)$category->level) + 1;
+    }
+
+    /**
+     * @param $parentId
      * @return string|null
      */
-    protected function _getAncestry($parentId): ?string
+    protected function getAncestry($parentId): ?string
     {
         if (is_null($parentId) || !is_numeric($parentId)) return null;
 
         $ancestry = [];
-        do {
-            /**
-             * @var Category $category
-             */
-            $category = $this->getById($parentId);
-            $ancestry[] = $parentId;
+        /**
+         * @var Category $category
+         */
+        while (
+            !is_null($parentId) &&
+            is_numeric($parentId) &&
+            ($category = $this->getById($parentId)) instanceof Model
+        ) {
             $parentId = $category->id;
-        } while ($category->parent());
+            $ancestry[] = $parentId;
+            $parentId = $category->parent_id;
+        }
+
+        if (!count($ancestry)) return null;
 
         return implode('|', $ancestry);
     }

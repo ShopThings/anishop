@@ -2,25 +2,33 @@
 
 namespace App\Repositories;
 
+use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Models\Order;
 use App\Models\OrderDetail;
+use App\Models\OrderItem;
+use App\Models\ReturnOrderRequest;
 use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class OrderRepository extends Repository implements OrderRepositoryInterface
 {
     use RepositoryTrait;
 
     public function __construct(
-        OrderDetail     $model,
-        protected Order $orderModel
+        OrderDetail                 $model,
+        protected Order             $orderModel,
+        protected OrderItem         $orderItemModel,
+        protected ProductRepository $productRepository
     )
     {
         parent::__construct($model);
@@ -30,38 +38,58 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
      * @inheritDoc
      */
     public function getOrdersSearchFilterPaginated(
-        ?int    $userId = null,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        ?int   $userId = null,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
+            ->with('user')
             ->when($userId, function (Builder $query, $uId) {
-                $query->where('user_id', $uId);
-            })
-            ->when($search, function (Builder $query, string $search) {
                 $query
-                    ->withWhereHas('user', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
-                    })
-                    ->withWhereHas('orders', function ($q) use ($search) {
+                    ->with([
+                        'send_status_changer',
+                        'orders',
+                        'orders.payments',
+                        'items',
+                        'return_order'
+                    ])
+                    ->where('user_id', $uId);
+            })
+            ->when($search, function (Builder $query, string $search) use ($filter) {
+                $query
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
                         $q
-                            ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
-                                $q2->whereIn('payment_method_type', $types);
+                            ->orWhereHas('user', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
                             })
-                            ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function ($q2, $statuses) {
-                                $q2->whereIn('payment_status', $statuses);
-                            })
-                            ->orWhereLike('payment_method_title', $search);
+                            ->orWhereHas('orders', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q
+                                        ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
+                                            $q2->orWhereIn('payment_method_type', $types);
+                                        })
+                                        ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function ($q2, $statuses) {
+                                            $q2->orWhereIn('payment_status', $statuses);
+                                        })
+                                        ->orWhereLike([
+                                            'payment_method_title',
+                                        ], $search);
+                                });
+                            });
                     })
                     ->orWhereLike([
                         'first_name',
@@ -81,6 +109,44 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getPayment(int $orderId): ?Model
+    {
+        return $this->orderModel->newQuery()->find($orderId);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserReturnableOrders(int $userId, array $columns = ['*']): Collection
+    {
+        return $this->model->newQuery()
+            ->withAnyPaidOrder()
+            ->where('user_id', $userId)
+            ->where('ordered_at', '>=', now()->subWeek())
+            ->get($columns);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isOrderReturnable(OrderDetail $orderDetail): bool
+    {
+        return $orderDetail->hasCompletePaid() &&
+            $orderDetail->ordered_at >= now()->subWeek() &&
+            $orderDetail->send_status_can_return_order;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool
+    {
+        return $orderRequest->status === ReturnOrderStatusesEnum::CHECKING->value;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function updatePayment(int $orderId, array $attributes): bool|int
     {
         return $this->orderModel->newQuery()->find($orderId)->update($attributes);
@@ -89,8 +155,32 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getPayment(int $orderId): ?Model
+    public function returnOrderProductsToStock(int $orderId): bool
     {
-        return $this->orderModel->newQuery()->find($orderId);
+        $productItems = $this->orderItemModel->newQuery()
+            ->where('order_key_id', $orderId)
+            ->get(['product_id', 'quantity']);
+        $productRepo = $this->productRepository;
+
+        $res = true;
+
+        DB::transaction(function () use (&$res, $productItems, $productRepo) {
+            $where = new WhereBuilder();
+            foreach ($productItems as $item) {
+                $where->reset()
+                    ->whereEqual('product_id', $item['product_id']);
+                $res = $res && $productRepo->updateWhere([
+                        'stock_count' => 'stock_count+' . (+$item['quantity']),
+                    ], $where->build());
+
+                if (!$res) break;
+            }
+
+            if (!$res) {
+                DB::rollBack();
+            }
+        });
+
+        return $res;
     }
 }

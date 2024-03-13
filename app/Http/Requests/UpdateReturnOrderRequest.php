@@ -34,7 +34,6 @@ class UpdateReturnOrderRequest extends FormRequest
                 new Enum(ReturnOrderStatusesEnum::class),
             ],
             'seen_status' => [
-                'sometimes',
                 'boolean',
             ],
         ];

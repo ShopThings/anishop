@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\NewsletterRepositoryInterface;
 use App\Services\Contracts\NewsletterServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -22,20 +23,20 @@ class NewsletterService extends Service implements NewsletterServiceInterface
     /**
      * @inheritDoc
      */
-    public function getMembers(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getMembers(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('newsletters');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike('mobile', $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

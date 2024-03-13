@@ -3,10 +3,52 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Http\Requests\Filters\FileListFilter;
 use Illuminate\Http\UploadedFile;
 
 interface FileRepositoryInterface extends RepositoryInterface
 {
+    /**
+     * Storage disks constants
+     */
+    public const STORAGE_DISK_PUBLIC = 'public';
+
+    public const STORAGE_DISK_LOCAL = 'local';
+
+    /**
+     * File sizes for images
+     */
+    public const ORIGINAL = 'original';
+
+    public const SMALL = 'small';
+
+    public const MEDIUM = 'medium';
+
+    public const LARGE = 'large';
+
+    /**
+     * @var string[]
+     */
+    public const STORAGE_DISKS = [
+        self::STORAGE_DISK_LOCAL,
+        self::STORAGE_DISK_PUBLIC
+    ];
+
+    /**
+     * @var array|int[]
+     */
+    public const VALID_SIZES = [
+        self::SMALL => [400, 300],
+        self::MEDIUM => [800, 600],
+        self::LARGE => [1000, 800],
+    ];
+
+    /**
+     * File operations
+     */
+    public const OPERATION_MOVE = 'move';
+    public const OPERATION_COPY = 'copy';
+
     /**
      * @param string $path
      * @param UploadedFile $file
@@ -17,22 +59,10 @@ interface FileRepositoryInterface extends RepositoryInterface
     public function upload(string $path, UploadedFile $file, string $disk, bool $overwrite = false): bool;
 
     /**
-     * @param string $path
-     * @param string $disk
-     * @param string|null $search
-     * @param string $fileSize
-     * @param array $extensions
-     * @param array $order
+     * @param FileListFilter $filter
      * @return array
      */
-    public function list(
-        string  $path,
-        string  $disk,
-        ?string $search = null,
-        string  $fileSize = 'original',
-        array   $extensions = [],
-        array   $order = []
-    ): array;
+    public function list(FileListFilter $filter): array;
 
     /**
      * @param string $path
@@ -98,13 +128,17 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @param string $disk
      * @param bool $getFiles
      * @param string|null $fileSize
+     * @param bool $getAllVariants
+     * @param bool $justGetFiles
      * @return bool|array
      */
     public function fileExists(
         string  $filePath,
         string  $disk,
         bool    $getFiles = false,
-        ?string $fileSize = null
+        ?string $fileSize = null,
+        bool    $getAllVariants = false,
+        bool    $justGetFiles = false
     ): bool|array;
 
     /**

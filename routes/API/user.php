@@ -2,16 +2,16 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\User\UserAddressController;
-use App\Http\Controllers\User\UserBlogCommentContrller;
+use App\Http\Controllers\User\UserBlogCommentController;
 use App\Http\Controllers\User\UserCommentController;
 use App\Http\Controllers\User\UserContactUsController;
 use App\Http\Controllers\User\UserFavoriteProductController;
+use App\Http\Controllers\User\UserHomeController;
 use App\Http\Controllers\User\UserNotificationController;
 use App\Http\Controllers\User\UserOrderController;
 use App\Http\Controllers\User\UserReturnOrderRequestController;
 use App\Http\Controllers\User\UserSpecificationController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::prefix('user')
     ->name('api.user.')
@@ -22,9 +22,7 @@ Route::prefix('user')
         Route::post('logout', [AuthController::class, 'logout'])
             ->name('logout');
 
-//        count-of-stuffs
-//        orders/latest
-//        return-orders/latest
+        Route::get('count-of-stuffs', [UserHomeController::class, 'countOfItems'])->name('home.count-of-stuffs');
 
         /*
          * specification routes
@@ -35,18 +33,23 @@ Route::prefix('user')
         /*
          * notification routes
          */
-        Route::apiResource('notifications', UserNotificationController::class)->only(['index', 'update'])
-            ->where(['notification' => $codeRegex]);
+        Route::get('notifications', [UserNotificationController::class, 'index'])->name('notifications.index');
+        Route::put('notifications', [UserNotificationController::class, 'update'])->name('notifications.update');
+        Route::get('notifications/new', [UserNotificationController::class, 'newNotifications'])->name('notifications.new');
 
         /*
          * order routes
          */
-        Route::apiResource('orders', UserOrderController::class)->except(['store'])
+        Route::get('orders/latest', [UserOrderController::class, 'latest'])->name('orders.latest');
+        Route::apiResource('orders', UserOrderController::class)->except(['store', 'destroy'])
             ->where(['order' => $codeRegex]);
 
         /*
          * return order routes
          */
+        Route::get('return-orders/latest', [UserReturnOrderRequestController::class, 'latest'])->name('return-orders.latest');
+        Route::get('return-orders/returnable-orders', [UserReturnOrderRequestController::class, 'returnableOrders'])
+            ->name('return-orders.returnable-orders');
         Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
             ->where(['return_order' => $codeRegex]);
         Route::post('return-orders/{order}', [UserReturnOrderRequestController::class, 'store'])
@@ -69,15 +72,15 @@ Route::prefix('user')
         /*
          * blog comment routes
          */
-        Route::get('blog/comments', [UserBlogCommentContrller::class, 'index'])
+        Route::get('blog/comments', [UserBlogCommentController::class, 'index'])
             ->name('blog.comments.index');
-        Route::get('blog/comments/{comment}', [UserBlogCommentContrller::class, 'show'])
+        Route::get('blog/comments/{comment}', [UserBlogCommentController::class, 'show'])
             ->whereNumber('comment')->name('blog.comments.show');
-        Route::post('blog/{blog}/comments', [UserBlogCommentContrller::class, 'store'])
+        Route::post('blog/{blog}/comments', [UserBlogCommentController::class, 'store'])
             ->whereNumber('blog')->name('blog.comments.store');
-        Route::put('blog/comments/{comment}', [UserBlogCommentContrller::class, 'update'])
+        Route::put('blog/comments/{comment}', [UserBlogCommentController::class, 'update'])
             ->whereNumber('comment')->name('blog.comments.update');
-        Route::delete('blog/comments/{comment}', [UserBlogCommentContrller::class, 'destroy'])
+        Route::delete('blog/comments/{comment}', [UserBlogCommentController::class, 'destroy'])
             ->whereNumber('comment')->name('blog.comments.destroy');
 
         /*
@@ -94,7 +97,7 @@ Route::prefix('user')
          * address routes
          */
         Route::apiResource('addresses', UserAddressController::class)
-            ->where(['address' => $codeRegex]);
+            ->whereNumber('address');
 
         /*
          * contact routes

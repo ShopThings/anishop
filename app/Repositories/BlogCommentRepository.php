@@ -6,6 +6,7 @@ use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Models\BlogComment;
 use App\Repositories\Contracts\BlogCommentRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -25,53 +26,98 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
      * @inheritDoc
      */
     public function getCommentsSearchFilterPaginated(
-        int     $blogId,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        int    $blogId,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
-            ->when($search, function (Builder $query, string $search) {
+            ->with([
+                'blog',
+                'blog.image',
+                'badge',
+            ])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('blog', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'escaped_title',
-                            'keywords',
-                        ], $search);
-                    })
-                    ->withWhereHas('badge', function ($q) use ($search) {
-                        $q->orWhereLike('title', $search);
-                    })
-                    ->withWhereHas('creator', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
-                    })
-                    ->withWhereHas('answerTo', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q
+                            ->orWhereHas('blog', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'escaped_title',
+                                        'keywords',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('badge', function ($q) use ($search) {
+                                $q->whereLike('title', $search);
+                            })
+                            ->orWhereHas('creator', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('answerTo', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
+                            });
                     })
                     ->when(CommentConditionsEnum::getSimilarValuesFromString($search), function (Builder $builder, array $conditions) {
-                        $builder->whereIn('condition', $conditions);
+                        $builder->orWhereIn('condition', $conditions);
                     })
                     ->when(CommentStatusesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $statuses) {
-                        $builder->whereIn('status', $statuses);
+                        $builder->orWhereIn('status', $statuses);
                     })
                     ->orWhereLike('blog_comments.description', $search);
             })
             ->where('blog_comments.blog_id', $blogId);
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserCommentsFilterPaginated(
+        int    $userId,
+        Filter $filter,
+        array  $columns = ['*']
+    ): Collection|LengthAwarePaginator
+    {
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->model->newQuery();
+        $query
+            ->with(['blog', 'blog.image', 'badge'])
+            ->where('created_by', $userId);
+
+        return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function reportComment(): bool
+    {
+        return !!$this->model->increment('flag_count', 1);
     }
 }

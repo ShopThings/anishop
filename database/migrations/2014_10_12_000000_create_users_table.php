@@ -26,9 +26,13 @@ return new class extends Migration {
             $table->string('forget_password_code', 6)->nullable();
             $table->timestamp('forget_password_at')->nullable()
                 ->comment('time that user forgets password and want to recover it');
+            $table->timestamp('forget_password_wait_for_code')->nullable()
+                ->comment('time to wait for forget password code can send again');
             $table->string('verification_code', 6)->nullable();
             $table->timestamp('verified_at')->nullable()
                 ->comment('check if user has been activated or not');
+            $table->timestamp('verify_wait_for_code')->nullable()
+                ->comment('time to wait for verify code can send again');
             $table->boolean('is_deletable')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()

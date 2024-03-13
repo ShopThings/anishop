@@ -1,77 +1,125 @@
 <template>
-    <form>
-        <partial-card class="mb-3 p-3 relative">
-            <template #body>
-                <loader-dot-orbit
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-                    container-bg-color="bg-blue-50 opacity-40"
-                />
+  <form>
+    <partial-card class="mb-3 p-3 relative">
+      <template #body>
+        <loader-dot-orbit
+            v-if="!canSubmit"
+            container-bg-color="bg-blue-50 opacity-40"
+            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+        />
 
-                <div class="p-2">
-                    <partial-input-label title="ویژگی‌ها"/>
-                </div>
-                <base-property-builder v-model:properties="properties"/>
-            </template>
-        </partial-card>
+        <div class="p-2">
+          <partial-input-label title="ویژگی‌ها"/>
+        </div>
 
-        <partial-card>
-            <template #body>
-                <partial-stepy-next-prev-buttons
-                    :current-step="options.currentStep"
-                    :current-step-index="options.currentStepIndex"
-                    :last-step="options.lastStep"
-                    :allow-next-step="!isSubmitting"
-                    :allow-prev-step="false"
-                    :show-prev-step-button="false"
-                    :loading="isSubmitting"
-                    @finish="handleFinishClick"
-                />
-            </template>
-        </partial-card>
-    </form>
+        <base-property-builder v-model:properties="properties"/>
+
+        <div v-if="errors.properties" class="p-2">
+          <partial-input-error-message :error-message="errors.properties"/>
+        </div>
+      </template>
+    </partial-card>
+
+    <partial-card>
+      <template #body>
+        <partial-stepy-next-prev-buttons
+            :allow-next-step="canSubmit"
+            :allow-prev-step="shouldGoPrevStep"
+            :current-step="options.currentStep"
+            :current-step-index="options.currentStepIndex"
+            :last-step="options.lastStep"
+            :loading="!canSubmit"
+            :show-prev-step-button="shouldGoPrevStep"
+            @finish="handleFinishClick"
+            @prev="() => {
+            if(shouldGoPrevStep) {
+              options.prev()
+            }
+          }"
+        />
+      </template>
+    </partial-card>
+  </form>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import PartialCard from "../../../../components/partials/PartialCard.vue";
-import PartialStepyNextPrevButtons from "../../../../components/partials/PartialStepyNextPrevButtons.vue";
-import {useForm} from "vee-validate";
-import yup from "../../../../validation/index.js";
-import PartialInputLabel from "../../../../components/partials/PartialInputLabel.vue";
-import BasePropertyBuilder from "../../../../components/base/BasePropertyBuilder.vue";
-import LoaderDotOrbit from "../../../../components/base/loader/LoaderDotOrbit.vue";
+import {computed, ref} from "vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BasePropertyBuilder from "@/components/base/BasePropertyBuilder.vue";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
+import {useCreationProductStore} from "@/store/StoreProduct.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {ProductAPI} from "@/service/APIProduct.js";
+import {useToast} from "vue-toastification";
+import {useRouter} from "vue-router";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
 defineProps({
-    options: {
-        type: Object,
-        required: true,
-    },
+  options: {
+    type: Object,
+    required: true,
+  },
 })
 
-const canSubmit = ref(true)
+const router = useRouter()
+const toast = useToast()
+const productStore = useCreationProductStore()
+const shouldGoPrevStep = computed(() => {
+  return !(!!productStore.getProductSlug)
+})
 
 const properties = ref([])
 
 function handleFinishClick() {
-    onSubmit()
+  onSubmit()
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
+const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
+  canSubmit.value = false
+
+  ProductAPI.updateById(productStore.getProductSlug, {
+    properties: getDefinedProperties(),
+  }, {
+    success(response) {
+      toast.success('ویژگی‌های محصول ثبت شد.')
+
+      productStore.setProduct(response.data)
+      router.push({name: 'admin.products'})
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
-const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+function getDefinedProperties() {
+  const p = []
 
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve()
-        }, 2000)
-    })
-})
+  for (let i of properties.value) {
+    let children = []
+
+    if (i.title.toString().trim() !== '' && i.children.length) {
+      for (let c of i.children) {
+        if (c.title.toString().trim() !== '' && c.tags.length) {
+          children.push(c)
+        }
+      }
+
+      if (children.length) {
+        p.push({
+          title: i.title,
+          children: children,
+        })
+      }
+    }
+  }
+
+  return p
+}
 </script>
-
-<style scoped>
-
-</style>

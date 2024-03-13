@@ -1,174 +1,179 @@
 <template>
-    <div
-        v-if="showSearch || (order && order.length)"
-        class="pb-3 flex flex-col"
-    >
-        <div v-if="showSearch" class="grow">
-            <base-datatable-search
-                class="!p-0"
-                :show-remove-filter-button-on-input="true"
-                :show-refresh-button="false"
-                @search="searchHandler"
-                @clear-filter="clearSearchHandler"
-                @refresh="refreshSearchHandler"
-            />
-        </div>
-        <div
-            v-if="order && order.length"
-            class="mt-3 w-full sm:mt-0"
-        >
-            <div class="hidden md:flex md:items-center md:gap-2">
-                <div class="font-iranyekan-light text-sm">
-                    مرتب سازی:
-                </div>
-
-                <ul class="flex items-center gap-2.5 grow">
-                    <li
-                        v-for="o in order"
-                        :key="o.id"
-                    >
-                        <button
-                            type="button"
-                            :class="[
-                                o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold' : 'hover:text-opacity-80',
-                            ]"
-                            class="border-b-2 border-transparent py-2 text-sm text-black"
-                            @click="changeOrderHandler(o)"
-                        >
-                            {{ o.text }}
-                        </button>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="w-full sm:w-48 md:hidden mr-auto">
-                <base-select
-                    class="bg-white"
-                    options-text="text"
-                    options-key="id"
-                    :options="order"
-                    :selected="selectedOrder"
-                    @change="changeOrderHandler"
-                />
-            </div>
-        </div>
+  <div
+      v-if="showSearch || (order && order.length)"
+      class="pb-3 flex flex-col"
+  >
+    <div v-if="showSearch" class="grow">
+      <base-datatable-search
+          :show-refresh-button="false"
+          :show-remove-filter-button-on-input="true"
+          class="!p-0"
+          @refresh="refreshSearchHandler"
+          @search="searchHandler"
+          @clear-filter="clearSearchHandler"
+      />
     </div>
-
-    <slot
-        name="BeforeItemsPanel"
-        :total="total"
-        :page="currentPage"
-        :maxPage="maxPage"
-        :perPage="+props.perPage"
-        :offset="offset"
+    <div
+        v-if="order && order.length"
+        class="mt-3 w-full sm:mt-0"
     >
-        <div
-            v-if="showPaginationDetail"
-            class="flex items-center justify-end gap-4 text-slate-400 px-3 pb-3 divide-x-2 divide-x-reverse divide-slate-200"
-        >
-            <div>
-                <span class="ml-1.5 text-sm font-iranyekan-light">نمایش</span>
-                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(offset + 1) }}</span>
-                <span class="mx-1.5 text-sm font-iranyekan-light">تا</span>
-                <span class="font-iranyekan-bold">{{
-                        formatPriceLikeNumber(offset + Math.min(items.length, props.perPage))
-                    }}</span>
-            </div>
-            <div class="pr-3">
-                <span class="ml-1.5 text-sm font-iranyekan-light">صفحه</span>
-                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(currentPage) }}</span>
-                <span class="mx-1.5 text-sm font-iranyekan-light">از</span>
-                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(maxPage) }}</span>
-            </div>
-            <div class="pr-3">
-                <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(total) }}</span>
-                <span class="mr-1 text-sm font-iranyekan-light">مورد</span>
-            </div>
+      <div class="hidden md:flex md:items-center md:gap-2">
+        <div class="font-iranyekan-light text-sm">
+          مرتب سازی:
         </div>
-    </slot>
 
-    <slot v-if="!actualItems.length" name="empty"></slot>
-    <div v-else :class="containerClass">
+        <ul class="flex items-center gap-2.5 grow">
+          <li
+              v-for="o in order"
+              :key="o.id"
+          >
+            <button
+                :class="[
+                    o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
+                ]"
+                class="border-b-2 border-transparent py-2 text-sm text-black"
+                type="button"
+                @click="changeOrderHandler(o)"
+            >
+              {{ o.text }}
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="w-full sm:w-48 md:hidden mr-auto">
+        <base-select
+            :options="order"
+            :selected="selectedOrder"
+            class="bg-white"
+            options-key="id"
+            options-text="text"
+            @change="changeOrderHandler"
+        />
+      </div>
+    </div>
+  </div>
+
+  <slot
+      :maxPage="maxPage"
+      :offset="offset"
+      :page="currentPage"
+      :perPage="+props.perPage"
+      :total="total"
+      name="BeforeItemsPanel"
+  >
+    <partial-paginator-pagniation-info
+        v-if="showPaginationDetail"
+        :offset="offset"
+        :per-page="props.perPage"
+        :current-page="currentPage"
+        :max-page="maxPage"
+        :total="total"
+        :items-length="items?.length || 0"
+    />
+  </slot>
+
+  <div ref="itemsContainerRef">
+    <VTransitionSlideFadeDownY mode="out-in">
+      <div v-if="!actualItems.length && !isLoading && !loading">
+        <slot name="empty"></slot>
+      </div>
+      <div
+          v-else
+          :class="containerClass"
+      >
         <div
-            v-if="!loading"
             v-for="(item, idx) of actualItems"
+            v-if="!loading && !isLoading"
             :key="idx + '_1'"
             :class="itemContainerClass"
         >
-            <slot name="item" :item="item"></slot>
+          <slot :item="item" name="item"></slot>
         </div>
         <div
-            v-else
             v-for="idx in perPage"
+            v-else
             :key="idx + '_2'"
             :class="itemContainerClass"
         >
-            <slot name="loading" :index="idx"></slot>
+          <slot :index="idx" name="loading"></slot>
         </div>
-    </div>
+      </div>
+    </VTransitionSlideFadeDownY>
+  </div>
 
-    <div v-if="showPagination && maxPage > 1" class="mt-3">
-        <base-pagination
-            :theme="paginationTheme"
-            :next-page="nextPage"
-            :move-page="movePage"
-            :prev-page="prevPage"
-            v-model:max-page="maxPage"
-            v-model:paging="paging"
-            v-model:current-page="currentPage"
-        />
-    </div>
+  <div v-if="showPagination && maxPage > 1" class="mt-3">
+    <base-pagination
+        v-model:current-page="currentPage"
+        v-model:max-page="maxPage"
+        v-model:paging="paging"
+        :move-page="movePage"
+        :next-page="nextPage"
+        :prev-page="prevPage"
+        :theme="paginationTheme"
+    />
+  </div>
 </template>
 
 <script setup>
 import {computed, nextTick, onBeforeUnmount, ref, watch} from "vue";
-import {useRequest} from "../../composables/api-request.js";
+import {useRequest} from "@/composables/api-request.js";
 import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
 import BasePagination from "./BasePagination.vue";
-import {formatPriceLikeNumber} from "../../composables/helper.js";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {apiReplaceParams} from "@/router/api-routes.js";
+import isObject from "lodash.isobject";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
 
 const props = defineProps({
-    containerClass: String,
-    itemContainerClass: String,
-    items: Array,
-    path: String,
-    currentPage: {
-        type: Number,
-        default: 1,
-    },
-    perPage: {
-        type: Number,
-        default: 15,
-    },
-    isLocal: {
-        type: Boolean,
-        default: false,
-    },
-    order: {
-        type: Array,
-        default: () => [],
-        validator: (value) => {
-            for (let i of value) {
-                if (!i.id || !i.key || !i.text || !i.sort) return false
-            }
+  containerClass: String,
+  itemContainerClass: String,
+  items: Array,
+  path: String,
+  pathReplacementParams: Object,
+  extraSearchParams: Object,
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
+  perPage: {
+    type: Number,
+    default: 15,
+  },
+  // to control show loader from outside of component(local loading purposes)
+  isLoading: Boolean,
+  order: {
+    type: Array,
+    default: () => [],
+    validator: (value) => {
+      for (let i of value) {
+        if (!i.id || !i.key || !i.text) return false
+      }
 
-            return true
-        },
+      return true
     },
-    searchText: String,
-    localSearchFilterHandler: Function,
-    showSearch: Boolean,
-    showPagination: {
-        type: Boolean,
-        default: true,
-    },
-    showPaginationDetail: Boolean,
-    paginationTheme: String,
+  },
+  searchText: String,
+  localSearchFilterHandler: Function,
+  showSearch: Boolean,
+  showPagination: {
+    type: Boolean,
+    default: true,
+  },
+  showPaginationDetail: Boolean,
+  paginationTheme: String,
+  //
+  scrollMarginTop: {
+    type: Number,
+    default: 0,
+  },
 })
-const emit = defineEmits(['update:items', 'update:searchText'])
+const emit = defineEmits(['update:items', 'update:searchText', 'order-changed'])
 
+const itemsContainerRef = ref(null)
 const loading = ref(true)
 
 const actualItems = ref([])
@@ -176,38 +181,38 @@ const total = ref(props.items?.length || 0)
 
 const currentPage = ref(1)
 const maxPage = computed(() => {
-    if (total.value <= 0) return 0
+  if (total.value <= 0) return 1
 
-    let lastPage = Math.floor(total.value / props.perPage)
-    let mod = total.value % props.perPage
+  let lastPage = Math.floor(total.value / props.perPage)
+  let mod = total.value % props.perPage
 
-    if (mod > 0) lastPage++
-    return lastPage
+  if (mod > 0) lastPage++
+  return lastPage
 })
 const query = computed({
-    get() {
-        return props.searchText
-    },
-    set(value) {
-        emit('update:searchText', value)
-    },
+  get() {
+    return props.searchText
+  },
+  set(value) {
+    emit('update:searchText', value)
+  },
 })
 const paging = computed(() => {
-    let startPage = currentPage.value - 2 <= 0 ? 1 : currentPage.value - 2;
-    if (maxPage.value - currentPage.value <= 2) {
-        startPage = maxPage.value - 4;
+  let startPage = currentPage.value - 2 <= 0 ? 1 : currentPage.value - 2;
+  if (maxPage.value - currentPage.value <= 2) {
+    startPage = maxPage.value - 4;
+  }
+  startPage = startPage <= 0 ? 1 : startPage;
+  let pages = [];
+  for (let i = startPage; i <= maxPage.value; i++) {
+    if (pages.length < 5) {
+      pages.push(i);
     }
-    startPage = startPage <= 0 ? 1 : startPage;
-    let pages = [];
-    for (let i = startPage; i <= maxPage.value; i++) {
-        if (pages.length < 5) {
-            pages.push(i);
-        }
-    }
-    return pages;
+  }
+  return pages;
 })
 const offset = computed(() => {
-    return (currentPage.value - 1) * props.perPage
+  return (currentPage.value - 1) * props.perPage
 })
 
 //-------------------------------
@@ -216,160 +221,197 @@ const offset = computed(() => {
 const selectedOrder = ref(null)
 
 function prepareSelectedOrder() {
-    if (!props.order.length) return
+  if (!props.order.length) return
 
-    for (let i of props.order) {
-        if (i.selected) {
-            selectedOrder.value = i
-            break
-        }
+  for (let i of props.order) {
+    if (i.selected) {
+      selectedOrder.value = i
+      break
     }
+  }
 
-    if (!selectedOrder.value)
-        selectedOrder.value = props.order[0]
+  if (!selectedOrder.value)
+    selectedOrder.value = props.order[0]
 }
 
 prepareSelectedOrder()
 
 watch(() => props.order, () => {
-    prepareSelectedOrder()
+  prepareSelectedOrder()
 })
 
 //-------------------------------
+watch([() => props.extraSearchParams, () => props.path, () => props.items], () => {
+  goToPage(1)
+})
 
 //-------------------------------
 // Search operations
 //-------------------------------
 function searchHandler(searchText) {
-    query.value = searchText
-    nextTick(() => {
-        goToPage(currentPage.value)
-    })
+  query.value = searchText
+  nextTick(() => {
+    goToPage(currentPage.value)
+  })
 }
 
 function clearSearchHandler(payload) {
-    query.value = '';
-    nextTick(() => {
-        payload.resetField(payload.name)
-        if (currentPage.value === 1)
-            goToPage(currentPage.value)
-        else
-            currentPage.value = 1
-    })
+  query.value = '';
+  nextTick(() => {
+    payload.resetField(payload.name)
+    if (currentPage.value === 1)
+      goToPage(currentPage.value)
+    else
+      currentPage.value = 1
+  })
 }
 
 function refreshSearchHandler() {
-    goToPage(currentPage.value)
+  goToPage(currentPage.value)
 }
-
-//-------------------------------
 
 //-------------------------------
 // Order operations
 //-------------------------------
 function changeOrderHandler(selected) {
-    selectedOrder.value = selected
-    goToPage(currentPage.value)
+  if (selected.id === selectedOrder.value.id) return
+
+  emit('order-changed', selected)
+  selectedOrder.value = selected
+  goToPage(currentPage.value)
 }
 
 //-------------------------------
-
-watch([currentPage, () => props.path, () => props.items], () => {
-    goToPage(currentPage.value)
+watch(currentPage, () => {
+  goToPage(currentPage.value)
 })
 
-let localLoadingTimeout
+let localLoadingTimeout = null
 
 function goToPage(page) {
-    let params = {
-        limit: props.perPage,
-        offset: (page - 1) * props.perPage,
-        text: query.value || ''
-    }
+  let params = {
+    limit: props.perPage,
+    offset: (page - 1) * props.perPage,
+    text: query.value || ''
+  }
 
-    if (selectedOrder.value) {
-        params.order = selectedOrder.value.key
-        params.sort = selectedOrder.value.sort
-    }
+  if (selectedOrder.value) {
+    params.order = selectedOrder.value.key
+    params.sort = selectedOrder.value.sort
+  }
 
-    loading.value = true
+  if (isObject(props.extraSearchParams) && Object.keys(props.extraSearchParams).length) {
+    params = Object.assign({}, props.extraSearchParams, params)
+    props.extraSearchParams.order = params.order
+  }
 
-    if (props.items?.length) {
-        clearTimeout(localLoadingTimeout)
+  loading.value = true
 
-        new Promise((resolve) => {
-            let rows = props.items
+  if (props.items?.length) {
+    clearTimeout(localLoadingTimeout)
 
-            if (isFunction(props.localSearchFilterHandler)) {
-                rows = rows.filter((item) => {
-                    return props.localSearchFilterHandler.call(null, item, params.text)
-                });
-            }
+    new Promise((resolve) => {
+      let rows = props.items
 
-            let collator = new Intl.Collator(undefined, {
-                numeric: true,
-                sensitivity: "base",
-            });
+      if (isFunction(props.localSearchFilterHandler)) {
+        rows = rows.filter((item) => {
+          return props.localSearchFilterHandler.call(null, item, params.text)
+        });
+      }
 
-            if (selectedOrder.value) {
-                let sortOrder = params.sort === "desc" ? -1 : 1;
-                rows.sort(function (a, b) {
-                    return collator.compare(a[params.order], b[params.order]) * sortOrder;
-                });
-            }
+      let collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
 
-            actualItems.value = [];
-            for (let index = params.offset; index < (params.limit * page) && index < props.items.length; index++) {
-                if (rows[index])
-                    actualItems.value.push(rows[index]);
-            }
+      if (selectedOrder.value) {
+        let sortOrder = params.sort === "desc" ? -1 : 1;
+        rows.sort(function (a, b) {
+          return collator.compare(a[params.order], b[params.order]) * sortOrder;
+        });
+      }
 
-            localLoadingTimeout = setTimeout(() => {
-                loading.value = false
-                resolve()
-            }, 1000)
-        })
-    } else if (props.path && props.path.trim() !== '') {
-        useRequest(props.path, {params}, {
-            success: (response) => {
-                actualItems.value = response.data || []
-                total.value = response.meta.total || 0
+      actualItems.value = [];
+      for (let index = params.offset; index < (params.limit * page) && index < props.items.length; index++) {
+        if (rows[index])
+          actualItems.value.push(rows[index]);
+      }
 
-                loading.value = false
-            },
-        })
-    } else {
-        actualItems.value = []
+      localLoadingTimeout = setTimeout(() => {
         loading.value = false
+        goToTop()
+
+        resolve()
+      }, 1000)
+    })
+  } else if (props.path && props.path.trim() !== '') {
+    if (isObject(props.pathReplacementParams)) {
+      useRequest(apiReplaceParams(props.path, props.pathReplacementParams), {params}, {
+        success: (response) => {
+          actualItems.value = response.data || []
+          total.value = response.meta.total || 0
+
+          loading.value = false
+          goToTop()
+        },
+      })
+    } else {
+      useRequest(props.path, {params}, {
+        success: (response) => {
+          actualItems.value = response.data || []
+          total.value = response.meta.total || 0
+
+          loading.value = false
+          goToTop()
+        },
+      })
     }
+  } else {
+    actualItems.value = []
+    loading.value = false
+  }
 }
 
 goToPage(currentPage.value)
 
 function prevPage() {
-    if (currentPage.value - 1 > 0)
-        currentPage.value--
+  if (currentPage.value - 1 > 0) {
+    currentPage.value--
+  }
 }
 
 function movePage(page) {
-    if (page > 0 && page <= maxPage.value)
-        currentPage.value = page
+  if (page > 0 && page <= maxPage.value) {
+    currentPage.value = page
+  }
 }
 
 function nextPage() {
-    if (currentPage.value + 1 <= maxPage.value)
-        currentPage.value++
+  if (currentPage.value + 1 <= maxPage.value) {
+    currentPage.value++
+  }
+}
+
+function goToTop() {
+  if (!itemsContainerRef.value) return
+
+  // Calculate the position to scroll to (slightly above the target element)
+  const scrollToY = itemsContainerRef.value.getBoundingClientRect().top + window.scrollY + props.scrollMarginTop;
+
+  // Scroll to the calculated position
+  window.scrollTo({
+    top: scrollToY,
+    behavior: 'smooth'
+  });
 }
 
 onBeforeUnmount(() => {
-    clearTimeout(localLoadingTimeout)
+  clearTimeout(localLoadingTimeout)
+  localLoadingTimeout = null
 })
 
 defineExpose({
-    goToPage,
+  goToPage,
+  goToTop,
 })
 </script>
-
-<style scoped>
-
-</style>

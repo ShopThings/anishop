@@ -275,6 +275,32 @@ class RolesAndPermissionsSeeder extends Seeder
             PermissionPlacesEnum::PAYMENT_METHOD
         ));
 
+        // create payment method permissions
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::CREATE,
+            PermissionPlacesEnum::SEND_METHOD
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::READ,
+            PermissionPlacesEnum::SEND_METHOD
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::UPDATE,
+            PermissionPlacesEnum::SEND_METHOD
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::DELETE,
+            PermissionPlacesEnum::SEND_METHOD
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::PERMANENT_DELETE,
+            PermissionPlacesEnum::SEND_METHOD
+        ));
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::PUBLISH,
+            PermissionPlacesEnum::SEND_METHOD
+        ));
+
         // create brand permissions
         $this->createPermission(PermissionHelper::permission(
             PermissionsEnum::CREATE,
@@ -802,6 +828,11 @@ class RolesAndPermissionsSeeder extends Seeder
             PermissionHelper::permission(PermissionsEnum::DELETE, PermissionPlacesEnum::UNIT),
             PermissionHelper::permission(PermissionsEnum::PERMANENT_DELETE, PermissionPlacesEnum::UNIT),
             PermissionHelper::permission(PermissionsEnum::PUBLISH, PermissionPlacesEnum::UNIT),
+            PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::SEND_METHOD),
+            PermissionHelper::permission(PermissionsEnum::READ, PermissionPlacesEnum::SEND_METHOD),
+            PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::SEND_METHOD),
+            PermissionHelper::permission(PermissionsEnum::DELETE, PermissionPlacesEnum::SEND_METHOD),
+            PermissionHelper::permission(PermissionsEnum::PERMANENT_DELETE, PermissionPlacesEnum::SEND_METHOD),
             PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::COLOR),
             PermissionHelper::permission(PermissionsEnum::READ, PermissionPlacesEnum::COLOR),
             PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::COLOR),

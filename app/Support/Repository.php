@@ -6,13 +6,25 @@ use App\Contracts\RepositoryInterface;
 use App\Support\Model\AuthenticatableExtendedModel;
 use App\Support\Model\ExtendedModel;
 use App\Support\WhereBuilder\GetterExpressionInterface;
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class Repository implements RepositoryInterface
 {
+    /**
+     * @var array
+     */
+    private array $with = [];
+
+    /**
+     * @var array
+     */
+    private array $withWhereHas = [];
+
     /**
      * @var bool $useSoftDeletes
      */
@@ -40,21 +52,110 @@ abstract class Repository implements RepositoryInterface
     /**
      * @inheritDoc
      */
-    public function exists(?GetterExpressionInterface $where = null): bool
+    public function resetWith(): static
     {
-        return $this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        })->exists();
+        $this->with = [];
+        return $this;
     }
 
     /**
      * @inheritDoc
      */
-    public function count(?GetterExpressionInterface $where = null): int
+    public function resetWithWhereHas(): static
     {
-        return $this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        })->count();
+        $this->withWhereHas = [];
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function newWith(array|string $relations, Closure|null|string $callback = null): static
+    {
+        $this->resetWith();
+        return $this->with($relations, $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function with(array|string $relations, Closure|null|string $callback = null): static
+    {
+        if (is_array($relations)) {
+            foreach ($relations as $relation) {
+                $this->with[] = [
+                    'relations' => $relation,
+                    'callback' => $callback,
+                ];
+            }
+        } elseif (trim($relations) !== '') {
+            $this->with[] = compact('relations', 'callback');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function newWithWhereHas(array|string $relations, Closure|null|string $callback = null): static
+    {
+        $this->resetWithWhereHas();
+        return $this->withWhereHas($relations, $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function withWhereHas(array|string $relations, Closure|null|string $callback = null): static
+    {
+        if (is_array($relations)) {
+            foreach ($relations as $relation) {
+                $this->withWhereHas[] = [
+                    'relations' => $relation,
+                    'callback' => $callback,
+                ];
+            }
+        } elseif (trim($relations) !== '') {
+            $this->withWhereHas[] = compact('relations', 'callback');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function exists(?GetterExpressionInterface $where = null): bool
+    {
+        return $this->model->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        )->exists();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(
+        ?GetterExpressionInterface $where = null,
+        bool                       $withTrashed = false
+    ): int
+    {
+        $query = $this->model->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        );
+
+        if ($withTrashed) {
+            $query->withTrashed();
+        }
+
+        return $query->count();
     }
 
     /**
@@ -94,7 +195,7 @@ abstract class Repository implements RepositoryInterface
     public function paginate(
         array                      $columns = ['*'],
         ?GetterExpressionInterface $where = null,
-        int                        $limit = 15,
+        ?int                       $limit = 15,
         int                        $page = 1,
         array                      $order = [],
         bool                       $withTrashed = false,
@@ -102,7 +203,7 @@ abstract class Repository implements RepositoryInterface
     ): LengthAwarePaginator
     {
         $page = max($page, 1);
-        $limit = $limit <= 0 ? null : $limit;
+        $limit = !$limit || $limit <= 0 ? null : $limit;
         $query = $this->prepareGetQuery($where, $order, $withTrashed, $onlyTrashed);
         return $query->paginate(perPage: $limit, columns: $columns, page: $page);
     }
@@ -174,7 +275,15 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
+     */
+    public function updateOrCreate(array $data, array $values = []): Builder|Model
+    {
+        return $this->model->newQuery()->updateOrCreate($data, $values);
+    }
+
+    /**
+     * @inheritDoc
      */
     public function update($id, array $data): int
     {
@@ -182,36 +291,54 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function updateWhere(array $data, GetterExpressionInterface $where): int
     {
-        return (bool)$this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        })->update($data);
+        if (is_null($where) || empty($where->getStatement())) return 0;
+
+        $model = $this->findWhere($where);
+        if (!$model instanceof Model) return 0;
+        return $this->update($model->id, $data);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function delete($id, bool $permanent = false): mixed
     {
         $model = $this->model->newQuery()->findOrFail($id);
 
         if ($permanent) {
-            return $model->forceDelete();
+            if ($model instanceof EloquentCollection) {
+                foreach ($model as $item) {
+                    $item->forceDelete();
+                }
+            } else {
+                $model->forceDelete();
+            }
+
+            return true;
         }
-        return $model->delete();
+
+        if ($model instanceof EloquentCollection) {
+            foreach ($model as $item) {
+                $item->delete();
+            }
+        } else {
+            $model->delete();
+        }
+
+        return true;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function deleteWhere(GetterExpressionInterface $where, bool $permanent = false): mixed
     {
-        $query = $this->model->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        });
+        $query = $this->model->newQuery()
+            ->whereRaw($where->getStatement(), $where->getBindings());
 
         if ($permanent) {
             return $query->forceDelete();
@@ -243,9 +370,13 @@ abstract class Repository implements RepositoryInterface
             }
         }
 
-        $query->when($where, function (Builder $query) use ($where) {
-            $query->whereRaw($where->getStatement(), $where->getBindings());
-        });
+        $this->prepareWith($query);
+        $query->when(
+            !is_null($where) && !empty($where->getStatement()),
+            function (Builder $query) use ($where) {
+                $query->whereRaw($where->getStatement(), $where->getBindings());
+            }
+        );
 
         if (count($order)) {
             foreach ($order as $column => $sort) {
@@ -254,5 +385,36 @@ abstract class Repository implements RepositoryInterface
         }
 
         return $query;
+    }
+
+    /**
+     * @param $query
+     * @return void
+     */
+    protected function prepareWith($query): void
+    {
+        $query
+            ->when(count($this->with), function (Builder $query) {
+                foreach ($this->with as $item) {
+                    if ($item['callback'] !== null) {
+                        $query->with($item['relations'], $item['callback']);
+                    } else {
+                        $query->with($item['relations']);
+                    }
+                }
+            })
+            ->when(count($this->withWhereHas), function (Builder $query) {
+                foreach ($this->withWhereHas as $item) {
+                    if ($item['callback'] !== null) {
+                        $query->withWhereHas($item['relations'], $item['callback']);
+                    } else {
+                        $query->withWhereHas($item['relations']);
+                    }
+                }
+            });
+
+        // reset with array for further operation
+        $this->resetWith();
+        $this->resetWithWhereHas();
     }
 }

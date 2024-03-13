@@ -2,16 +2,17 @@
 
 namespace App\Services;
 
+use App\Enums\Times\TimeFormatsEnum;
 use App\Repositories\Contracts\CouponRepositoryInterface;
 use App\Services\Contracts\CouponServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Hekmatinasser\Verta\Verta;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class CouponService extends Service implements CouponServiceInterface
 {
@@ -24,21 +25,21 @@ class CouponService extends Service implements CouponServiceInterface
     /**
      * @inheritDoc
      */
-    public function getCoupons(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getCoupons(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('coupons');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike(['title', 'code'], $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -52,11 +53,11 @@ class CouponService extends Service implements CouponServiceInterface
             'price' => $attributes['price'],
             'apply_min_price' => $attributes['apply_min_price'] ?? null,
             'apply_max_price' => $attributes['apply_max_price'] ?? null,
-            'start_at' => isset($attributes['start_at'])
-                ? Verta::createFromFormat($attributes['start_at'], 'Y-m-d H:i:s')
+            'start_at' => isset($attributes['start_at']) && !empty($attributes['start_at'])
+                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['start_at'])
                 : null,
-            'end_at' => isset($attributes['end_at'])
-                ? Verta::createFromFormat($attributes['end_at'], 'Y-m-d H:i:s')
+            'end_at' => isset($attributes['end_at']) && !empty($attributes['end_at'])
+                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['end_at'])
                 : null,
             'use_count' => $attributes['use_count'],
             'reusable_after' => $attributes['reusable_after'],
@@ -88,12 +89,31 @@ class CouponService extends Service implements CouponServiceInterface
         if (isset($attributes['apply_max_price'])) {
             $updateAttributes['apply_max_price'] = $attributes['apply_max_price'];
         }
+
         if (isset($attributes['start_at'])) {
-            $updateAttributes['start_at'] = Verta::createFromFormat($attributes['start_at'], 'Y-m-d H:i:s');
+            if (!empty($attributes['start_at'])) {
+                $updateAttributes['start_at'] = Carbon::createFromFormat(
+                    TimeFormatsEnum::NORMAL_DATETIME->value,
+                    $attributes['start_at']
+                );
+            } else {
+                $updateAttributes['start_at'] = null;
+            }
         }
-        if (isset($attributes['end_at'])) {
-            $updateAttributes['end_at'] = Verta::createFromFormat($attributes['end_at'], 'Y-m-d H:i:s');
+
+        if (isset($attributes['end_at']) && !empty($attributes['end_at'])) {
+            if (!empty($attributes['end_at'])) {
+                $updateAttributes['end_at'] = Carbon::createFromFormat(
+                    TimeFormatsEnum::NORMAL_DATETIME->value,
+                    $attributes['end_at']
+                );
+            } else {
+                $updateAttributes['end_at'] = null;
+            }
+        } elseif (empty($attributes['end_at'])) {
+            $updateAttributes['end_at'] = null;
         }
+
         if (isset($attributes['use_count'])) {
             $updateAttributes['use_count'] = $attributes['use_count'];
         }

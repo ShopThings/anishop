@@ -40,7 +40,6 @@ class StoreFaqRequest extends FormRequest
                 'array',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

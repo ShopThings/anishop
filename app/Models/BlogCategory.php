@@ -8,14 +8,15 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasSluggableTrait;
-use App\Traits\HasParentRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Database\Factories\BlogCategoryFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Query\Builder;
 
 /**
- * {@inheritdoc}
- * @method Builder childless()
+ * @inheritDoc
+ * @method Builder withoutChildren()
  */
 class BlogCategory extends Model
 {
@@ -23,8 +24,8 @@ class BlogCategory extends Model
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
         HasDeletedRelationTrait,
-        HasParentRelationTrait,
-        HasSluggableTrait;
+        HasSluggableTrait,
+        HasFactory;
 
     protected $table = 'blog_categories';
 
@@ -34,9 +35,17 @@ class BlogCategory extends Model
 
     protected $casts = [
         'keywords' => StringToArray::class,
+        'is_published' => 'boolean',
+        'show_in_menu' => 'boolean',
+        'show_in_side_menu' => 'boolean',
     ];
 
     protected $sluggableField = 'escaped_name';
+
+    protected static function newFactory()
+    {
+        return BlogCategoryFactory::new();
+    }
 
     /**
      * @return HasMany

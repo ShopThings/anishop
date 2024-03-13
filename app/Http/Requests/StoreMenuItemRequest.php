@@ -53,13 +53,7 @@ class StoreMenuItemRequest extends FormRequest
                 'required',
                 'url:http,https',
             ],
-            'menus.*.priority' => [
-                'required',
-                'numeric',
-                'min:0',
-            ],
             'menus.*.is_published' => [
-                'required',
                 'boolean',
             ],
             'menus.*.children' => [
@@ -75,13 +69,7 @@ class StoreMenuItemRequest extends FormRequest
                 'sometimes',
                 'url:http,https',
             ],
-            'menus.*.children.*.priority' => [
-                'sometimes',
-                'numeric',
-                'min:0',
-            ],
             'menus.*.children.*.is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];
@@ -91,11 +79,11 @@ class StoreMenuItemRequest extends FormRequest
     {
         return [
             'menus' => 'منو',
-            'menus.*.menu' => 'منو',
+            'menus.*.menu' => 'زیر منو',
             'menus.*.parent' => 'منوی والد',
             'menus.*.link' => 'لینک',
-            'menus.*.children.*.menu' => 'منو',
-            'menus.*.children.*.parent' => 'منوی والد',
+            'menus.*.children.*.menu' => 'زیر منو',
+            'menus.*.children.*.parent' => 'زیر منوی والد',
             'menus.*.children.*.link' => 'لینک',
         ];
     }

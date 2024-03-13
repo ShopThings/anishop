@@ -7,78 +7,26 @@ use App\Enums\Gates\PermissionsEnum;
 use App\Models\Product;
 use App\Models\User;
 use App\Support\Gate\PermissionHelper;
-use Illuminate\Database\Eloquent\Collection;
+use App\Support\Traits\PolicyTrait;
+use Illuminate\Support\Facades\Auth;
 
 class ProductPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use PolicyTrait;
+
+    protected string $modelClass = Product::class;
+
+    protected PermissionPlacesEnum $permissionPlace = PermissionPlacesEnum::PRODUCT;
+
+    public function __construct()
     {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::READ,
-                PermissionPlacesEnum::PRODUCT)
-        );
+        $this->checkIsDeletable = false;
     }
 
     /**
-     * Determine whether the user can view the model.
+     * Determine whether the user can batch update.
      */
-    public function view(User $user, Product $model): bool
-    {
-        if ($user->id === $model->creator()?->id) return true;
-
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::READ,
-                PermissionPlacesEnum::PRODUCT)
-        );
-    }
-
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::CREATE,
-                PermissionPlacesEnum::PRODUCT)
-        );
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Product $model): bool
-    {
-        if ($user->id === $model->creator()?->id) return true;
-
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::UPDATE,
-                PermissionPlacesEnum::PRODUCT)
-        );
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Product $model): bool
-    {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::DELETE,
-                PermissionPlacesEnum::PRODUCT)
-        );
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Product $model): bool
+    public function batchUpdate(User $user): bool
     {
         return $user->hasPermissionTo(
             PermissionHelper::permission(
@@ -88,41 +36,22 @@ class ProductPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the model.
+     * @param User $user
+     * @param Product $model
+     * @return bool
      */
-    public function forceDelete(User $user, Product|Collection $model): bool
+    public function reportComment(User $user, Product $model): bool
     {
-        if ($user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::PERMANENT_DELETE,
-                PermissionPlacesEnum::PRODUCT)
-        )) {
-            return true;
-        } else {
-            if ($model instanceof Product) {
-                if ($user->id === $model->creator()?->id)
-                    return true;
-            } else {
-                $tmp = $model->filter(function ($item) use ($user) {
-                    return isset($item->creator()->id) && $user->id !== $item->creator()->id;
-                });
-
-                if (!$tmp->count())
-                    return true;
-            }
-            return false;
-        }
+        return $model->is_published && $model->is_commenting_allowed;
     }
 
     /**
-     * Determine whether the user can batch delete.
+     * @param User $user
+     * @param Product $model
+     * @return bool
      */
-    public function batchDelete(User $user): bool
+    public function voteComment(User $user, Product $model): bool
     {
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::DELETE,
-                PermissionPlacesEnum::PRODUCT)
-        );
+        return Auth::check() && $model->is_commenting_allowed;
     }
 }

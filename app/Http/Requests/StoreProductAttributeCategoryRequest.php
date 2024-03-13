@@ -32,7 +32,7 @@ class StoreProductAttributeCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_attribute' => [
+            'attribute' => [
                 'required',
                 'exists:' . ProductAttribute::class . ',id',
             ],
@@ -40,13 +40,18 @@ class StoreProductAttributeCategoryRequest extends FormRequest
                 'required',
                 'exists:' . Category::class . ',id',
             ],
+            'priority' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
         ];
     }
 
     public function attributes()
     {
         return [
-            'product_attribute' => 'ویژگی محصول',
+            'attribute' => 'ویژگی محصول',
         ];
     }
 }

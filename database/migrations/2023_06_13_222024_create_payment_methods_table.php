@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string('title');
             $table->foreignId('image_id')->nullable()
                 ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
-            $table->enum('type', array_map(fn($item) => $item->name, PaymentTypesEnum::cases()));
-            $table->enum('bank_gateway_type', array_map(fn($item) => $item->name, GatewaysEnum::cases()))
+            $table->enum('type', array_map(fn($item) => $item->value, PaymentTypesEnum::cases()));
+            $table->enum('bank_gateway_type', array_map(fn($item) => $item->value, GatewaysEnum::cases()))
                 ->nullable();
             $table->text('options')->nullable()
                 ->comment('for more options about the selected type for example credentials of bank gateway type');

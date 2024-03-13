@@ -1,88 +1,128 @@
 <template>
-    <form class="relative" @submit.prevent="onSubmit">
-        <loader-dot-orbit
-            v-if="isSubmitting"
-            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-            container-bg-color="bg-blue-50 opacity-40"
-        />
+  <form class="relative" @submit.prevent="onSubmit">
+    <loader-dot-orbit
+        v-if="!canSubmit"
+        container-bg-color="bg-blue-50 opacity-40"
+        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+    />
 
-        <div class="mb-3 mt-12">
-            <base-input
-                name="username"
-                placeholder="شماره موبایل"
-                label-title="شماره موبایل"
-            >
-                <template #icon>
-                    <DevicePhoneMobileIcon class="w-6 h-6 text-gray-400"/>
-                </template>
-            </base-input>
-        </div>
+    <VTransitionSlideFadeDownY>
+      <base-message v-if="err.message && err.type" :type="err.type" @close="closeAlert">
+        {{ err.message }}
+      </base-message>
+    </VTransitionSlideFadeDownY>
 
-        <div class="mb-2">
-            <v-captcha/>
-        </div>
-        <div class="mb-6">
-            <base-input name="captcha" placeholder="کد تصویر" label-title="کد تصویر">
-                <template #icon>
-                    <QrCodeIcon class="w-6 h-6 text-gray-400"/>
-                </template>
-            </base-input>
-        </div>
+    <div class="mb-3 mt-12">
+      <base-input
+          label-title="شماره موبایل"
+          name="username"
+          placeholder="شماره موبایل"
+      >
+        <template #icon>
+          <DevicePhoneMobileIcon class="w-6 h-6 text-gray-400"/>
+        </template>
+      </base-input>
+    </div>
 
-        <div class="mb-3">
-            <base-button
-                type="submit"
-                class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-                :disabled="isSubmitting"
-            >
-                <span class="mx-auto">ارسال کد</span>
-                <ArrowLeftIcon
-                    class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
-            </base-button>
-        </div>
-    </form>
+    <div class="mb-2">
+      <v-captcha ref="captchaCom" v-model="captchaKey"/>
+    </div>
+    <div class="mb-6">
+      <base-input label-title="کد تصویر" name="captcha" placeholder="کد تصویر">
+        <template #icon>
+          <QrCodeIcon class="w-6 h-6 text-gray-400"/>
+        </template>
+      </base-input>
+    </div>
+
+    <div class="mb-3">
+      <base-button
+          :disabled="!canSubmit"
+          class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+          type="submit"
+      >
+        <span class="mx-auto">ارسال کد</span>
+        <ArrowLeftIcon
+            class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+      </base-button>
+    </div>
+  </form>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
+import {reactive, ref} from "vue";
 import {DevicePhoneMobileIcon, QrCodeIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseInput from "../../components/base/BaseInput.vue";
-import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import LoaderDotOrbit from "../../components/base/loader/LoaderDotOrbit.vue";
-import BaseCheckbox from "../../components/base/BaseCheckbox.vue";
-import BaseButton from "../../components/base/BaseButton.vue";
-import VCaptcha from "../../components/base/VCaptcha.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import VCaptcha from "@/components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from "@heroicons/vue/24/solid/index.js";
 import isFunction from "lodash.isfunction";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {HomeRecoverPasswordAPI} from "@/service/APIHomePages.js";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import BaseMessage from "@/components/base/BaseMessage.vue";
 
 const props = defineProps({
-    options: {
-        type: Object,
-        required: true,
+  options: {
+    type: Object,
+    required: true,
+  },
+})
+
+const captchaKey = ref(null)
+const err = reactive({})
+const captchaCom = ref(null)
+
+function closeAlert() {
+  err.message = null
+  err.type = null
+}
+
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    username: yup.string()
+        .transform(transformNumbersToEnglish)
+        .persianMobile('شماره موبایل نامعتبر است.')
+        .required('شماره موبایل خود را وارد نمایید.'),
+    captcha: yup.string().required('کد تصویر را وارد نمایید.'),
+  }),
+}, (values, actions) => {
+  if (!captchaKey.value) {
+    err.message = 'تصویر را دوباره بارگذاری نمایید.'
+    err.type = 'error'
+    return
+  }
+
+  canSubmit.value = false
+
+  HomeRecoverPasswordAPI.checkMobile({
+    username: values.username,
+    key: captchaKey.value,
+  }, {
+    success() {
+      if (isFunction(props.options?.next)) {
+        actions.resetForm();
+        props.options.next()
+      }
     },
-})
+    error(error) {
+      actions.resetField('captcha')
 
-const canSubmit = ref(true)
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
-
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve()
-            if (isFunction(props.options?.next))
-                props.options.next()
-        }, 2000)
-    })
+      err.message = error.message || 'خطا در بررسی شماره موبایل!'
+      err.type = 'error'
+      return false
+    },
+    finally() {
+      if (captchaCom.value) {
+        captchaCom.value.getCaptcha()
+      }
+      canSubmit.value = true
+    },
+  })
 })
 </script>
-
-<style scoped>
-
-</style>

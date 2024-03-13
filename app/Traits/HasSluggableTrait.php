@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use Spatie\Sluggable\HasSlug;
+use Pishran\LaravelPersianSlug\HasPersianSlug;
 use Spatie\Sluggable\SlugOptions;
 
 trait HasSluggableTrait
 {
-    use HasSlug;
+    use HasPersianSlug;
 
     /**
      * @return string

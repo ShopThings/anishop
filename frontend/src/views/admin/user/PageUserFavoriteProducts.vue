@@ -1,121 +1,85 @@
 <template>
-    <base-loading-panel
-        :loading="loading"
-        type="content"
-    >
-        <template #content>
-            <div class="bg-white mb-3 rounded-lg border p-3">
-                نمایش محصولات مورد علاقه کاربر -
-                <span
-                    v-if="user?.id"
-                    class="text-teal-600"
-                >{{
-                        (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
-                    }}</span>
-            </div>
+  <base-loading-panel
+      :loading="loading"
+      type="content"
+  >
+    <template #content>
+      <div class="bg-white mb-3 rounded-lg border p-3">
+        نمایش محصولات مورد علاقه کاربر -
+        <span
+            v-if="user?.id"
+            class="text-slate-400 text-base"
+        ><partial-username-label v-if="user" :user="user"/></span>
+      </div>
 
-            <base-paginator
-                container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
-                :items="favoriteProducts"
-            >
-                <template #item="{item}">
-                    <partial-card class="h-full">
-                        <template #body>
-                            <div class="flex items-center md:flex-col">
-                                <router-link
-                                    :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                    target="_blank"
-                                    class="p-2 shrink-0"
-                                >
-                                    <base-lazy-image
-                                        alt="تصویر محصول"
-                                        :lazy-src="item.image.path"
-                                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
-                                    />
-                                </router-link>
-                                <router-link
-                                    :to="{name: 'admin.product.detail', params: {id: 1}}"
-                                    target="_blank"
-                                    class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
-                                >
-                                    {{ item.title }}
-                                </router-link>
-                            </div>
-                        </template>
-                    </partial-card>
-                </template>
-
-                <template #loading>
-                    <loader-card/>
-                </template>
-            </base-paginator>
+      <base-paginator
+          v-model:items="favoriteProducts"
+          :path="getPath"
+          :path-replacement-params="{user: user?.id}"
+          :per-page="10"
+          container-class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"
+      >
+        <template #item="{item}">
+          <partial-card class="h-full">
+            <template #body>
+              <div class="flex items-center md:flex-col">
+                <router-link
+                    :to="{name: 'admin.product.detail', params: {slug: item.slug}}"
+                    class="p-2 shrink-0"
+                    target="_blank"
+                >
+                  <base-lazy-image
+                      :alt="item.title"
+                      :lazy-src="item.image.path"
+                      class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
+                  />
+                </router-link>
+                <router-link
+                    :to="{name: 'admin.product.detail', params: {slug: item.slug}}"
+                    class="px-3 py-2 text-blue-600 hover:text-opacity-90 md:border-t"
+                    target="_blank"
+                >
+                  {{ item.title }}
+                </router-link>
+              </div>
+            </template>
+          </partial-card>
         </template>
-    </base-loading-panel>
+
+        <template #loading>
+          <loader-card/>
+        </template>
+      </base-paginator>
+    </template>
+  </base-loading-panel>
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useRoute} from "vue-router";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import BaseLazyImage from "../../../components/base/BaseLazyImage.vue";
-import BasePaginator from "../../../components/base/BasePaginator.vue";
-import LoaderCard from "../../../components/base/loader/LoaderCard.vue";
+import {onMounted, ref} from "vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {apiRoutes} from "@/router/api-routes.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BasePaginator from "@/components/base/BasePaginator.vue";
+import LoaderCard from "@/components/base/loader/LoaderCard.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {UserAPI} from "@/service/APIUser.js";
 
-const loading = ref(false)
+const idParam = getRouteParamByKey('id')
 
-const route = useRoute()
-const idParam = computed(() => {
-    const id = parseInt(route.params.id, 10)
-    if (isNaN(id)) return route.params.id
-    return id
-})
-
+const loading = ref(true)
 const user = ref(null)
-const favoriteProducts = ref([
-    {
-        image: {
-            path: '/src/assets/products/p1.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
-    },
-    {
-        image: {
-            path: '/src/assets/products/p2.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
-    },
-    {
-        image: {
-            path: '/src/assets/products/p3.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با گرافیک بسیار زیاد را دارا می‌باشد',
-    },
-    {
-        image: {
-            path: '/src/assets/products/p4.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
-    },
-    {
-        image: {
-            path: '/src/assets/products/p5.jpg',
-        },
-        title: 'لپتاپ خیلی باحال و کاربردی عمو فردوس',
-    },
-])
+
+const getPath = apiRoutes.admin.users.favoriteProducts
+const favoriteProducts = ref([])
 
 onMounted(() => {
-    useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
-        success: (response) => {
-            user.value = response.data
-        },
-    })
+  UserAPI.fetchById(idParam.value, {
+    success: (response) => {
+      user.value = response.data
+      loading.value = false
+    },
+  })
 })
 </script>
-
-<style scoped>
-
-</style>

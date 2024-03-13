@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Sliders\SliderPlacesEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,9 +13,9 @@ return new class extends Migration {
     {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('slider_place_id')
-                ->constrained('slider_places')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('title');
+            $table->enum('place_in', array_map(fn($item) => $item->value, SliderPlacesEnum::cases()))
+                ->comment('is it an enum to place a slider in predefined places');
             $table->unsignedInteger('priority')->default(0);
             $table->jsonb('options')->default('[]');
             $table->boolean('is_published')->default(true);
@@ -29,6 +30,7 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
 
             $table->index('title');
+            $table->index('place_in');
             $table->index('is_published');
             $table->index('deleted_at');
         });

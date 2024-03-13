@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\Products\ProductAttributeTypesEnum;
 use App\Repositories\Contracts\ProductAttributeRepositoryInterface;
 use App\Services\Contracts\ProductAttributeServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
@@ -23,15 +24,10 @@ class ProductAttributeService extends Service implements ProductAttributeService
     /**
      * @inheritDoc
      */
-    public function getAttributes(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getAttributes(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('product_attributes');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query
                 ->when(
                     ProductAttributeTypesEnum::getSimilarValuesFromString($search),
@@ -43,7 +39,10 @@ class ProductAttributeService extends Service implements ProductAttributeService
         });
 
         return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 

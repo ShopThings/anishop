@@ -6,12 +6,13 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProductCommentRequest;
 use App\Http\Resources\ProductCommentResource;
+use App\Http\Resources\ProductCommentSingleResource;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\Contracts\ProductCommentServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +21,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CommentController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ProductCommentServiceInterface $service
@@ -35,23 +35,17 @@ class CommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @param Product $product
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request, Product $product)
+    public function index(Filter $filter, Product $product): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
         return ProductCommentResource::collection($this->service->getComments(
             productId: $product->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
+            filter: $filter
         ));
     }
 
@@ -59,13 +53,13 @@ class CommentController extends Controller
      * Display the specified resource.
      *
      * @param Comment $comment
-     * @return ProductCommentResource
+     * @return ProductCommentSingleResource
      * @throws AuthorizationException
      */
-    public function show(Comment $comment)
+    public function show(Comment $comment): ProductCommentSingleResource
     {
         $this->authorize('view', $comment);
-        return new ProductCommentResource($comment);
+        return new ProductCommentSingleResource($comment);
     }
 
     /**
@@ -76,11 +70,11 @@ class CommentController extends Controller
      * @return ProductCommentResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateProductCommentRequest $request, Comment $comment)
+    public function update(UpdateProductCommentRequest $request, Comment $comment): ProductCommentResource|JsonResponse
     {
         $this->authorize('update', $comment);
 
-        $validated = $request->validated(['condition', 'status']);
+        $validated = $request->validated(['answer', 'condition', 'status']);
         $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {
@@ -101,11 +95,11 @@ class CommentController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, Comment $comment)
+    public function destroy(Request $request, Comment $comment): JsonResponse
     {
         $this->authorize('delete', $comment);
 
-        $permanent = $request->user()->id === $comment->creator()?->id;
+        $permanent = $request->user()->id === $comment->creator?->id;
         $res = $this->service->deleteById($comment->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

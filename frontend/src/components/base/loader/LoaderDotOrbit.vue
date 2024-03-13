@@ -1,160 +1,169 @@
 <template>
-    <div class="flex justify-center items-center"
-         :class="mainContainerKlass">
-        <div :class="[
-            'absolute top-0 left-0 w-full h-full rounded z-[1]',
-            containerBgColor,
-            containerKlass,
-            ]">
-        </div>
-        <div class="chaotic-orbit z-[2]" :class="bgColor"></div>
+  <div :class="mainContainerKlass"
+       class="flex justify-center items-center">
+    <div :class="[
+        'absolute top-0 left-0 w-full h-full rounded z-[1]',
+        containerBgColor,
+        containerKlass,
+    ]">
     </div>
+    <div class="relative z-[2]">
+      <div :class="bgColor" class="chaotic-orbit mx-auto"></div>
+      <div
+          v-if="loadingText"
+          class="text-center mt-5 text-black text-sm animate-pulse"
+      >
+        {{ loadingText }}
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 defineProps({
-    bgColor: {
-        type: String,
-        default: 'after:bg-indigo-600 before:bg-fuchsia-600',
-    },
-    mainContainerKlass: {
-        type: String,
-        default: 'relative h-full w-full',
-    },
-    containerBgColor: {
-        type: String,
-        default: 'bg-blue-50 opacity-70',
-    },
-    containerKlass: String,
+  bgColor: {
+    type: String,
+    default: 'after:bg-indigo-600 before:bg-fuchsia-600',
+  },
+  mainContainerKlass: {
+    type: String,
+    default: 'relative h-full w-full',
+  },
+  containerBgColor: {
+    type: String,
+    default: 'bg-blue-50 opacity-70',
+  },
+  containerKlass: String,
+  loadingText: String,
 })
 </script>
 
 <style scoped>
 .chaotic-orbit {
-    --uib-size: 36px;
-    --uib-speed: 1.5s;
+  --uib-size: 36px;
+  --uib-speed: 1.5s;
 
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--uib-size);
-    width: var(--uib-size);
-    animation: rotate calc(var(--uib-speed) * 1.667) infinite linear;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--uib-size);
+  width: var(--uib-size);
+  animation: rotate calc(var(--uib-speed) * 1.667) infinite linear;
 }
 
 .chaotic-orbit::before,
 .chaotic-orbit::after {
-    content: '';
-    position: absolute;
-    height: 60%;
-    width: 60%;
-    border-radius: 50%;
-    will-change: transform;
-    flex-shrink: 0;
+  content: '';
+  position: absolute;
+  height: 60%;
+  width: 60%;
+  border-radius: 50%;
+  will-change: transform;
+  flex-shrink: 0;
 }
 
 .chaotic-orbit::before {
-    animation: orbit var(--uib-speed) linear infinite;
+  animation: orbit var(--uib-speed) linear infinite;
 }
 
 .chaotic-orbit::after {
-    animation: orbit var(--uib-speed) linear calc(var(--uib-speed) / -2) infinite;
+  animation: orbit var(--uib-speed) linear calc(var(--uib-speed) / -2) infinite;
 }
 
 @keyframes rotate {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes orbit {
-    0% {
-        transform: translate(calc(var(--uib-size) * 0.5)) scale(0.73684);
-        opacity: 0.65;
-    }
-    5% {
-        transform: translate(calc(var(--uib-size) * 0.4)) scale(0.684208);
-        opacity: 0.58;
-    }
-    10% {
-        transform: translate(calc(var(--uib-size) * 0.3)) scale(0.631576);
-        opacity: 0.51;
-    }
-    15% {
-        transform: translate(calc(var(--uib-size) * 0.2)) scale(0.578944);
-        opacity: 0.44;
-    }
-    20% {
-        transform: translate(calc(var(--uib-size) * 0.1)) scale(0.526312);
-        opacity: 0.37;
-    }
-    25% {
-        transform: translate(0%) scale(0.47368);
-        opacity: 0.3;
-    }
-    30% {
-        transform: translate(calc(var(--uib-size) * -0.1)) scale(0.526312);
-        opacity: 0.37;
-    }
-    35% {
-        transform: translate(calc(var(--uib-size) * -0.2)) scale(0.578944);
-        opacity: 0.44;
-    }
-    40% {
-        transform: translate(calc(var(--uib-size) * -0.3)) scale(0.631576);
-        opacity: 0.51;
-    }
-    45% {
-        transform: translate(calc(var(--uib-size) * -0.4)) scale(0.684208);
-        opacity: 0.58;
-    }
-    50% {
-        transform: translate(calc(var(--uib-size) * -0.5)) scale(0.73684);
-        opacity: 0.65;
-    }
-    55% {
-        transform: translate(calc(var(--uib-size) * -0.4)) scale(0.789472);
-        opacity: 0.72;
-    }
-    60% {
-        transform: translate(calc(var(--uib-size) * -0.3)) scale(0.842104);
-        opacity: 0.79;
-    }
-    65% {
-        transform: translate(calc(var(--uib-size) * -0.2)) scale(0.894736);
-        opacity: 0.86;
-    }
-    70% {
-        transform: translate(calc(var(--uib-size) * -0.1)) scale(0.947368);
-        opacity: 0.93;
-    }
-    75% {
-        transform: translate(0%) scale(1);
-        opacity: 1;
-    }
-    80% {
-        transform: translate(calc(var(--uib-size) * 0.1)) scale(0.947368);
-        opacity: 0.93;
-    }
-    85% {
-        transform: translate(calc(var(--uib-size) * 0.2)) scale(0.894736);
-        opacity: 0.86;
-    }
-    90% {
-        transform: translate(calc(var(--uib-size) * 0.3)) scale(0.842104);
-        opacity: 0.79;
-    }
-    95% {
-        transform: translate(calc(var(--uib-size) * 0.4)) scale(0.789472);
-        opacity: 0.72;
-    }
-    100% {
-        transform: translate(calc(var(--uib-size) * 0.5)) scale(0.73684);
-        opacity: 0.65;
-    }
+  0% {
+    transform: translate(calc(var(--uib-size) * 0.5)) scale(0.73684);
+    opacity: 0.65;
+  }
+  5% {
+    transform: translate(calc(var(--uib-size) * 0.4)) scale(0.684208);
+    opacity: 0.58;
+  }
+  10% {
+    transform: translate(calc(var(--uib-size) * 0.3)) scale(0.631576);
+    opacity: 0.51;
+  }
+  15% {
+    transform: translate(calc(var(--uib-size) * 0.2)) scale(0.578944);
+    opacity: 0.44;
+  }
+  20% {
+    transform: translate(calc(var(--uib-size) * 0.1)) scale(0.526312);
+    opacity: 0.37;
+  }
+  25% {
+    transform: translate(0%) scale(0.47368);
+    opacity: 0.3;
+  }
+  30% {
+    transform: translate(calc(var(--uib-size) * -0.1)) scale(0.526312);
+    opacity: 0.37;
+  }
+  35% {
+    transform: translate(calc(var(--uib-size) * -0.2)) scale(0.578944);
+    opacity: 0.44;
+  }
+  40% {
+    transform: translate(calc(var(--uib-size) * -0.3)) scale(0.631576);
+    opacity: 0.51;
+  }
+  45% {
+    transform: translate(calc(var(--uib-size) * -0.4)) scale(0.684208);
+    opacity: 0.58;
+  }
+  50% {
+    transform: translate(calc(var(--uib-size) * -0.5)) scale(0.73684);
+    opacity: 0.65;
+  }
+  55% {
+    transform: translate(calc(var(--uib-size) * -0.4)) scale(0.789472);
+    opacity: 0.72;
+  }
+  60% {
+    transform: translate(calc(var(--uib-size) * -0.3)) scale(0.842104);
+    opacity: 0.79;
+  }
+  65% {
+    transform: translate(calc(var(--uib-size) * -0.2)) scale(0.894736);
+    opacity: 0.86;
+  }
+  70% {
+    transform: translate(calc(var(--uib-size) * -0.1)) scale(0.947368);
+    opacity: 0.93;
+  }
+  75% {
+    transform: translate(0%) scale(1);
+    opacity: 1;
+  }
+  80% {
+    transform: translate(calc(var(--uib-size) * 0.1)) scale(0.947368);
+    opacity: 0.93;
+  }
+  85% {
+    transform: translate(calc(var(--uib-size) * 0.2)) scale(0.894736);
+    opacity: 0.86;
+  }
+  90% {
+    transform: translate(calc(var(--uib-size) * 0.3)) scale(0.842104);
+    opacity: 0.79;
+  }
+  95% {
+    transform: translate(calc(var(--uib-size) * 0.4)) scale(0.789472);
+    opacity: 0.72;
+  }
+  100% {
+    transform: translate(calc(var(--uib-size) * 0.5)) scale(0.73684);
+    opacity: 0.65;
+  }
 }
 </style>

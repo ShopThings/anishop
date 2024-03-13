@@ -13,7 +13,22 @@ trait HasParentRelationTrait
      */
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(get_class($this), 'parent_id');
+        return $this->belongsTo(static::class, 'parent_id');
+    }
+
+    /**
+     * @param int $depth
+     * @return BelongsTo
+     */
+    public function allParents(int $depth = 10): BelongsTo
+    {
+        if ($depth <= 0) {
+            return $this->parent();
+        }
+
+        return $this->parent()->with(['allParents' => function ($query) use ($depth) {
+            $query->allParents($depth - 1);
+        }]);
     }
 
     /**
@@ -21,22 +36,29 @@ trait HasParentRelationTrait
      */
     public function children(): HasMany
     {
-        return $this->hasMany(get_class($this), 'parent_id');
+        return $this->hasMany(static::class, 'parent_id');
     }
 
     /**
+     * @param int $depth
      * @return HasMany
      */
-    public function allChildren(): HasMany
+    public function allChildren(int $depth = 10): HasMany
     {
-        return $this->children()->with('allChildren');
+        if ($depth <= 0) {
+            return $this->children();
+        }
+
+        return $this->children()->with(['allChildren' => function ($query) use ($depth) {
+            $query->allChildren($depth - 1);
+        }]);
     }
 
     /**
      * @param Builder $query
      * @return Builder
      */
-    public function scopeChildless(Builder $query): Builder
+    public function scopeWithoutChildren(Builder $query): Builder
     {
         return $query->has('children', '=', 0);
     }

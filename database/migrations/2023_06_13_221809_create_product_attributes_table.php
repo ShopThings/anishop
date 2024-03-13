@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('product_attributes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('type', array_map(fn($item) => $item->name, ProductAttributeTypesEnum::cases()));
+            $table->enum('type', array_map(fn($item) => $item->value, ProductAttributeTypesEnum::cases()));
             $table->timestamps();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

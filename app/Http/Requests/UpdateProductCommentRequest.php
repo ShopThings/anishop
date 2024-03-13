@@ -25,6 +25,9 @@ class UpdateProductCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'answer' => [
+                'sometimes',
+            ],
             'condition' => [
                 'sometimes',
                 new Enum(CommentConditionsEnum::class),

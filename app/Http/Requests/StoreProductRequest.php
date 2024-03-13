@@ -6,8 +6,8 @@ use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Models\Brand;
 use App\Models\Category;
-use App\Models\FileManager;
 use App\Models\Unit;
+use App\Rules\FileExistsRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +48,7 @@ class StoreProductRequest extends FormRequest
             ],
             'image' => [
                 'required',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
             'quick_properties' => [
                 'required',
@@ -62,15 +62,12 @@ class StoreProductRequest extends FormRequest
                 'array',
             ],
             'is_available' => [
-                'required',
                 'boolean',
             ],
             'is_commenting_allowed' => [
-                'required',
                 'boolean',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

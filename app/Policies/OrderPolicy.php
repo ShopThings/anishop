@@ -3,24 +3,16 @@
 namespace App\Policies;
 
 use App\Enums\Gates\PermissionPlacesEnum;
-use App\Enums\Gates\PermissionsEnum;
 use App\Models\Order;
-use App\Models\User;
-use App\Support\Gate\PermissionHelper;
+use App\Support\Traits\PolicyTrait;
 
 class OrderPolicy
 {
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Order $model): bool
-    {
-        if ($user->id === $model->creator()?->id) return true;
+    use PolicyTrait;
 
-        return $user->hasPermissionTo(
-            PermissionHelper::permission(
-                PermissionsEnum::UPDATE,
-                PermissionPlacesEnum::ORDER)
-        );
-    }
+    protected string $modelClass = Order::class;
+
+    protected PermissionPlacesEnum $permissionPlace = PermissionPlacesEnum::ORDER;
+
+    protected array $only = ['update'];
 }

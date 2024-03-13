@@ -37,20 +37,18 @@ class StoreBlogCategoryRequest extends FormRequest
             'priority' => [
                 'required',
                 'numeric',
+                'min:0',
             ],
             'keywords' => [
                 'array',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
             'show_in_menu' => [
-                'required',
                 'boolean',
             ],
             'show_in_side_menu' => [
-                'required',
                 'boolean',
             ],
         ];

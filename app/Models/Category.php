@@ -10,6 +10,7 @@ use App\Traits\HasSluggableTrait;
 use App\Traits\HasParentRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Category extends Model
 {
@@ -28,7 +29,7 @@ class Category extends Model
 
     protected $casts = [
         'show_in_menu' => 'boolean',
-        'show_in_side_menu' => 'boolean',
+        'show_in_search_side_menu' => 'boolean',
         'show_in_slider' => 'boolean',
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
@@ -50,5 +51,13 @@ class Category extends Model
     public function productAttrs(): HasMany
     {
         return $this->hasMany(ProductAttributeCategory::class, 'category_id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function categoryImage(): HasOne
+    {
+        return $this->hasOne(CategoryImage::class, 'category_id');
     }
 }

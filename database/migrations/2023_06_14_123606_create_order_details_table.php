@@ -28,18 +28,21 @@ return new class extends Migration {
             $table->text('description')
                 ->comment('for additional information that can be update anytime with admin users.');
             $table->string('coupon_code', 25);
-            $table->unsignedBigInteger('coupon_price');
+            $table->unsignedBigInteger('coupon_price')->default(0);
             $table->unsignedBigInteger('shipping_price')->default(0);
             $table->unsignedBigInteger('discount_price');
             $table->unsignedBigInteger('final_price');
             $table->unsignedBigInteger('total_price');
+            $table->string('send_method_title');
+            $table->boolean('send_status_is_starting_badge')->default(false);
+            $table->boolean('send_status_is_end_badge')->default(false);
+            $table->boolean('send_status_can_return_order')->default(false);
             $table->string('send_status_title');
             $table->string('send_status_color_hex', 12);
             $table->timestamp('send_status_changed_at')->nullable();
             $table->foreignId('send_status_changed_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->boolean('is_needed_factor')->default(false);
-            $table->boolean('is_in_place_delivery')->default(false);
             $table->boolean('is_product_returned_to_stock')->default(false);
             $table->timestamp('ordered_at')->useCurrent()->nullable();
 

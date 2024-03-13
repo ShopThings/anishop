@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\SliderPlace;
+use App\Enums\Sliders\SliderPlacesEnum;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateSliderRequest extends FormRequest
 {
@@ -25,7 +26,7 @@ class UpdateSliderRequest extends FormRequest
         return [
             'slider_place' => [
                 'sometimes',
-                'exists:' . SliderPlace::class . ',id',
+                new Enum(SliderPlacesEnum::class),
             ],
             'title' => [
                 'sometimes',
@@ -40,7 +41,6 @@ class UpdateSliderRequest extends FormRequest
                 'array',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

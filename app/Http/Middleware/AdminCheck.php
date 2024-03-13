@@ -21,6 +21,6 @@ class AdminCheck
     {
         if (Auth::user()?->is_admin) return $next($request);
         if ($request->expectsJson()) throw new AuthenticationException();
-        return to_route('login');
+        return to_route('api.admin.login');
     }
 }

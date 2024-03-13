@@ -10,8 +10,8 @@ use App\Http\Resources\OrderBadgeResource;
 use App\Models\OrderBadge;
 use App\Models\User;
 use App\Services\Contracts\OrderBadgeServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class OrderBadgeController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param OrderBadgeServiceInterface $service
@@ -30,24 +29,20 @@ class OrderBadgeController extends Controller
         protected OrderBadgeServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return OrderBadgeResource::collection($this->service->getBadges(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return OrderBadgeResource::collection($this->service->getBadges($filter));
     }
 
     /**
@@ -57,7 +52,7 @@ class OrderBadgeController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreOrderBadgeRequest $request)
+    public function store(StoreOrderBadgeRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +80,7 @@ class OrderBadgeController extends Controller
      * @return OrderBadgeResource
      * @throws AuthorizationException
      */
-    public function show(OrderBadge $orderBadge)
+    public function show(OrderBadge $orderBadge): OrderBadgeResource
     {
         $this->authorize('view', $orderBadge);
         return new OrderBadgeResource($orderBadge);
@@ -99,7 +94,7 @@ class OrderBadgeController extends Controller
      * @return OrderBadgeResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateOrderBadgeRequest $request, OrderBadge $orderBadge)
+    public function update(UpdateOrderBadgeRequest $request, OrderBadge $orderBadge): OrderBadgeResource|JsonResponse
     {
         $this->authorize('update', $orderBadge);
 
@@ -107,8 +102,14 @@ class OrderBadgeController extends Controller
             'title',
             'color_hex',
             'should_return_order_product',
+            'is_end_badge',
             'is_published',
         ]);
+
+        if (!$orderBadge->is_title_editable) {
+            unset($validated['title']);
+        }
+
         $model = $this->service->updateById($orderBadge->id, $validated);
 
         if (!is_null($model)) {
@@ -129,11 +130,11 @@ class OrderBadgeController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, OrderBadge $orderBadge)
+    public function destroy(Request $request, OrderBadge $orderBadge): JsonResponse
     {
         $this->authorize('delete', $orderBadge);
 
-        $permanent = $request->user()->id === $orderBadge->creator()?->id;
+        $permanent = $request->user()->id === $orderBadge->creator?->id;
         $res = $this->service->deleteById($orderBadge->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

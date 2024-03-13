@@ -33,7 +33,6 @@ class UpdateColorRequest extends FormRequest
                 new ColorRule(),
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];
