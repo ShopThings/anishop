@@ -16,12 +16,11 @@ return new class extends Migration {
                 ->constrained('sliders')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unsignedInteger('priority')->default(0);
             $table->jsonb('options')->default('[]');
-            $table->boolean('is_published')->default(true);
             $table->timestamp('created_at')->useCurrent()->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
 
-            $table->index('is_published');
+            $table->index('priority');
         });
     }
 

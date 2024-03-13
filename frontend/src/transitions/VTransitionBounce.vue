@@ -4,9 +4,6 @@
   </Transition>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .bounce-enter-active {
   animation: bounce-in 0.3s;

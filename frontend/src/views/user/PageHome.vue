@@ -4,8 +4,8 @@
       <div class="flex gap-3 items-center justify-between">
         <ShoppingBagIcon class="h-8 w-8 text-indigo-500"/>
         <router-link
-          :to="{name: 'user.orders'}"
-          class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.orders'}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -19,18 +19,19 @@
         <h1 class="text-gray-400 mb-1">
           سفارشات
         </h1>
-        <span class="text-2xl">12</span>
+        <span class="text-2xl">{{ countingStore.getOrderCount }}</span>
         <span class="mr-2 text-sm text-gray-400">مورد</span>
       </div>
 
       <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
     </div>
+
     <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
       <div class="flex gap-3 items-center justify-between">
         <ArchiveBoxXMarkIcon class="h-8 w-8 text-teal-500"/>
         <router-link
-          :to="{name: 'user.return_orders'}"
-          class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.return_orders'}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -42,20 +43,21 @@
       </div>
       <div>
         <h1 class="text-gray-400 mb-1">
-          سفارشات مرجوع شده
+          درخواست مرجوع کالا
         </h1>
-        <span class="text-2xl">0</span>
+        <span class="text-2xl">{{ countingStore.getReturnOrderCount }}</span>
         <span class="mr-2 text-sm text-gray-400">مورد</span>
       </div>
 
       <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
     </div>
+
     <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
       <div class="flex gap-3 items-center justify-between">
         <ChatBubbleLeftRightIcon class="h-8 w-8 text-yellow-400"/>
         <router-link
-          :to="{name: 'user.comments'}"
-          class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.comments'}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -69,18 +71,19 @@
         <h1 class="text-gray-400 mb-1">
           دیدگاه‌ها
         </h1>
-        <span class="text-2xl">0</span>
+        <span class="text-2xl">{{ countingStore.getProductCommentCount + countingStore.getBlogCommentCount }}</span>
         <span class="mr-2 text-sm text-gray-400">مورد</span>
       </div>
 
       <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
     </div>
+
     <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
       <div class="flex gap-3 items-center justify-between">
         <HeartIcon class="h-8 w-8 text-rose-400"/>
         <router-link
-          :to="{name: 'user.favorite_products'}"
-          class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.favorite_products'}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -94,18 +97,19 @@
         <h1 class="text-gray-400 mb-1">
           محصولات مورد علاقه
         </h1>
-        <span class="text-2xl">0</span>
+        <span class="text-2xl">{{ countingStore.getFavoriteProductCount }}</span>
         <span class="mr-2 text-sm text-gray-400">مورد</span>
       </div>
 
       <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
     </div>
+
     <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
       <div class="flex gap-3 items-center justify-between">
         <BookOpenIcon class="h-8 w-8 text-blue-500"/>
         <router-link
-          :to="{name: 'user.addresses'}"
-          class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.addresses'}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -119,18 +123,19 @@
         <h1 class="text-gray-400 mb-1">
           آدرس‌های من
         </h1>
-        <span class="text-2xl">1</span>
+        <span class="text-2xl">{{ countingStore.getAddressCount }}</span>
         <span class="mr-2 text-sm text-gray-400">مورد</span>
       </div>
 
       <div class="w-1/2 h-0.5 rounded-full bg-slate-200 absolute bottom-2 left-1/2 -translate-x-1/2"></div>
     </div>
+
     <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
       <div class="flex gap-3 items-center justify-between">
         <ChatBubbleLeftEllipsisIcon class="h-8 w-8 text-fuchsia-500"/>
         <router-link
-          :to="{name: 'user.contacts'}"
-          class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.contacts'}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
         >
           <div class="flex items-center">
             <span class="ml-2">مشاهده</span>
@@ -144,7 +149,7 @@
         <h1 class="text-gray-400 mb-1">
           تماس‌های من
         </h1>
-        <span class="text-2xl">0</span>
+        <span class="text-2xl">{{ countingStore.getContactCount }}</span>
         <span class="mr-2 text-sm text-gray-400">مورد</span>
       </div>
 
@@ -158,8 +163,8 @@
         <partial-general-title title="آخرین سفارشات">
           <template #extra>
             <router-link
-              :to="{name: 'user.orders'}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+                :to="{name: 'user.orders'}"
+                class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               <div class="flex items-center">
                 <span class="ml-2">مشاهده همه</span>
@@ -170,44 +175,54 @@
         </partial-general-title>
 
         <base-semi-datatable
-          :is-loading="topOrdersTableSetting.isLoading"
-          :columns="topOrdersTableSetting.columns"
-          :rows="topOrdersTableSetting.rows"
-          :total="topOrdersTableSetting.total"
-          @do-search="getLatestOrders"
+            :columns="topOrdersTableSetting.columns"
+            :is-loading="topOrdersTableSetting.isLoading"
+            :rows="topOrdersTableSetting.rows"
+            :total="topOrdersTableSetting.total"
+            @do-search="getLatestOrders"
         >
           <template #emptyTableRows>
             <partial-empty-rows
-              image="/empty-statuses/empty-order.svg"
-              image-class="w-60"
-              message="هیچ سفارشی ثبت نشده است"
+                image="/empty-statuses/empty-order.svg"
+                image-class="w-60"
+                message="هیچ سفارشی ثبت نشده است"
             />
           </template>
 
+          <template #code="{value}">
+            <span class="tracking-widest text-lg">{{ value.code }}</span>
+          </template>
+
           <template #send_status="{value}">
-            <partial-badge-status-send/>
+            <partial-badge-status-send
+                :color-hex="value.send_status_color_hex"
+                :text="value.send_status_title"
+            />
           </template>
 
           <template #payment_status="{value}">
-            <partial-badge-status-payment/>
+            <partial-badge-status-payment
+                :color-hex="value.payment_status.color_hex"
+                :text="value.payment_status.text"
+            />
           </template>
 
           <template #ordered_at="{value}">
-            <span class="text-sm">{{ value.ordered_at }}</span>
+            <span v-if="value.ordered_at" class="text-xs">{{ value.ordered_at }}</span>
+            <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
           </template>
 
           <template #total_price="{value}">
-            <span class="text-sm">{{ value.total_price }}</span>
-          </template>
-
-          <template #payment_method="{value}">
-            <span class="text-sm">{{ value.payment_method }}</span>
+            <div class="text-lg font-iranyekan-bold">
+              {{ formatPriceLikeNumber(value.total_price) }}
+              <span class="text-xs text-gray-400">تومان</span>
+            </div>
           </template>
 
           <template #op="{value}">
             <router-link
-              :to="{name: 'user.order.detail', params: {code: 12345}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+                :to="{name: 'user.order.detail', params: {code: value.code}}"
+                class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               مشاهده جزئیات
             </router-link>
@@ -223,8 +238,8 @@
         <partial-general-title title="آخرین سفارشات مرجوع شده">
           <template #extra>
             <router-link
-              :to="{name: 'user.return_orders'}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+                :to="{name: 'user.return_orders'}"
+                class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               <div class="flex items-center">
                 <span class="ml-2">مشاهده همه</span>
@@ -235,24 +250,42 @@
         </partial-general-title>
 
         <base-semi-datatable
-          :is-loading="topReturnOrdersTableSetting.isLoading"
-          :columns="topReturnOrdersTableSetting.columns"
-          :rows="topReturnOrdersTableSetting.rows"
-          :total="topReturnOrdersTableSetting.total"
-          @do-search="getLatestReturnOrders"
+            :columns="topReturnOrdersTableSetting.columns"
+            :is-loading="topReturnOrdersTableSetting.isLoading"
+            :rows="topReturnOrdersTableSetting.rows"
+            :total="topReturnOrdersTableSetting.total"
+            @do-search="getLatestReturnOrders"
         >
+          <template #code="{value}">
+            <span class="tracking-widest text-lg">{{ value.code }}</span>
+          </template>
+
+          <template #order_code="{value}">
+            <router-link
+                :to="{name: 'user.order.detail', params: {code: value.order_code}}"
+                class="text-blue-600 hover:text-opacity-80 text-sm"
+                target="_blank"
+            >
+              <span class="tracking-widest text-lg">{{ value.order_code }}</span>
+            </router-link>
+          </template>
+
           <template #status="{value}">
-            <partial-badge-status-return-order/>
+            <partial-badge-status-return-order
+                :color-hex="value.status.color_hex"
+                :text="value.status.text"
+            />
           </template>
 
           <template #requested_at="{value}">
-            <span class="text-sm">{{ value.requested_at }}</span>
+            <span v-if="value.requested_at" class="text-xs">{{ value.requested_at }}</span>
+            <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
           </template>
 
           <template #op="{value}">
             <router-link
-              :to="{name: 'user.return_order.detail', params: {code: 12345}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+                :to="{name: 'user.return_order.detail', params: {code: 12345}}"
+                class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               مشاهده جزئیات
             </router-link>
@@ -264,7 +297,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {inject, reactive, ref} from "vue";
 import {
   ShoppingBagIcon,
   ArchiveBoxXMarkIcon,
@@ -273,7 +306,7 @@ import {
   BookOpenIcon,
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/vue/24/solid/index.js";
-import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
+import {ChevronLeftIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
 import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
@@ -281,7 +314,12 @@ import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import {UserPanelDashboardAPI} from "@/service/APIUserPanel.js";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
 
+const countingStore = inject('countingStore')
+
+//-----------------------------------------------
 const ordersTableLoading = ref(true)
 const returnOrdersTableLoading = ref(true)
 
@@ -319,75 +357,60 @@ const topOrdersTableSetting = reactive({
       columnClasses: 'whitespace-nowrap',
     },
   ],
-  rows: [
-    {
-      code: '355902668083326',
-      send_status: '',
-      payment_status: '',
-      ordered_at: '۳۰ مهر ۱۴۰۲',
-      total_price: '۵۰۰,۰۰۰ تومان',
-    },
-    {
-      code: '978418891011307',
-      send_status: '',
-      payment_status: '',
-      ordered_at: '۲۴ شهریور ۱۴۰۲',
-      total_price: '۵۰۰,۰۰۰ تومان',
-    },
-    {
-      code: '652605648895526',
-      send_status: '',
-      payment_status: '',
-      ordered_at: '۱۰ خرداد ۱۴۰۲',
-      total_price: '۵۰۰,۰۰۰ تومان',
-    },
-  ],
-  total: 3,
+  rows: [],
+  total: 0,
+  sortable: {
+    order: "ordered_at",
+    sort: "desc",
+  },
 })
 
-const getLatestOrders = (offset, limit) => {
+const getLatestOrders = () => {
   topOrdersTableSetting.isLoading = true
 
-  // useRequest(apiRoutes., {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         topOrdersTableSetting.rows = response.data
-  //         topOrdersTableSetting.total = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         topOrdersTableSetting.rows = []
-  //         topOrdersTableSetting.total = 0
-  //     },
-  //     finally: () => {
-  ordersTableLoading.value = false
-  topOrdersTableSetting.isLoading = false
-  //     },
-  // })
+  UserPanelDashboardAPI.fetchLatestOrders({
+    success: (response) => {
+      topOrdersTableSetting.rows = response.data
+      topOrdersTableSetting.total = response.data.length
+
+      return false
+    },
+    error: () => {
+      topOrdersTableSetting.rows = []
+      topOrdersTableSetting.total = 0
+    },
+    finally: () => {
+      ordersTableLoading.value = false
+      topOrdersTableSetting.isLoading = false
+    },
+  })
 }
 
-getLatestOrders(0, 15)
+getLatestOrders()
 
+//-----------------------------------------------
 const topReturnOrdersTableSetting = reactive({
   isLoading: true,
   columns: [
     {
       field: 'code',
       label: 'کد درخواست',
+      columnClasses: 'whitespace-nowrap',
     },
     {
       field: 'order_code',
       label: 'کد سفارش',
+      columnClasses: 'whitespace-nowrap',
     },
     {
       field: 'status',
       label: 'وضعیت',
+      columnClasses: 'whitespace-nowrap',
     },
     {
       field: 'requested_at',
       label: 'تاریخ درخواست',
+      columnClasses: 'whitespace-nowrap',
     },
     {
       field: 'op',
@@ -396,30 +419,32 @@ const topReturnOrdersTableSetting = reactive({
   ],
   rows: [],
   total: 0,
+  sortable: {
+    order: "requested_at",
+    sort: "desc",
+  },
 })
 
-const getLatestReturnOrders = (offset, limit) => {
+const getLatestReturnOrders = () => {
   topReturnOrdersTableSetting.isLoading = true
 
-  // useRequest(apiRoutes., {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         topReturnOrdersTableSetting.rows = response.data
-  //         topReturnOrdersTableSetting.total = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         topReturnOrdersTableSetting.rows = []
-  //         topReturnOrdersTableSetting.total = 0
-  //     },
-  //     finally: () => {
-  returnOrdersTableLoading.value = false
-  topReturnOrdersTableSetting.isLoading = false
-  //     },
-  // })
+  UserPanelDashboardAPI.fetchLatestReturnOrders({
+    success: (response) => {
+      topReturnOrdersTableSetting.rows = response.data
+      topReturnOrdersTableSetting.total = response.data.length
+
+      return false
+    },
+    error: () => {
+      topReturnOrdersTableSetting.rows = []
+      topReturnOrdersTableSetting.total = 0
+    },
+    finally: () => {
+      returnOrdersTableLoading.value = false
+      topReturnOrdersTableSetting.isLoading = false
+    },
+  })
 }
 
-getLatestReturnOrders(0, 15)
+getLatestReturnOrders()
 </script>

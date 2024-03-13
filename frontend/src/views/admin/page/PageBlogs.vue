@@ -18,32 +18,61 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
+            <template v-slot:id="{value, index}">
+              {{ index }}
+            </template>
+
             <template v-slot:image="{value}">
-
+              <partial-show-image :item="value.image"/>
             </template>
+
+            <template v-slot:writer="{value}">
+              <router-link
+                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                  class="text-blue-600 hover:text-opacity-80"
+              >
+                <partial-username-label :user="value.created_by"/>
+              </router-link>
+            </template>
+
+            <template v-slot:category="{value}">
+              {{ value.category.name }}
+            </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
+            <template v-slot:keywords="{value}">
+              <partial-table-keywords :keywords="value.keywords"/>
+            </template>
+
             <template v-slot:updated_at="{value}">
               <span v-if="value.updated_at" class="text-xs">{{ value.updated_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
+            <template v-slot:created_at="{value}">
+              <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -53,11 +82,9 @@
 </template>
 
 <script setup>
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {computed, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
@@ -66,6 +93,11 @@ import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
+import {BlogAPI} from "@/service/APIBlog.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
+import PartialTableKeywords from "@/components/partials/PartialTableKeywords.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -90,16 +122,19 @@ const table = reactive({
     {
       label: "موضوع",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نویسنده",
       field: "writer",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -108,8 +143,19 @@ const table = reactive({
       sortable: true,
     },
     {
+      label: "کلمات کلیدی",
+      field: "keywords",
+      sortable: false,
+    },
+    {
       label: "تاریخ ویرایش",
       field: "updated_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "تاریخ ایجاد",
+      field: "created_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -129,16 +175,19 @@ const table = reactive({
     {
       label: "موضوع",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نویسنده",
       field: "writer",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -147,8 +196,19 @@ const table = reactive({
       sortable: true,
     },
     {
+      label: "کلمات کلیدی",
+      field: "keywords",
+      sortable: false,
+    },
+    {
       label: "تاریخ ویرایش",
       field: "updated_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "تاریخ ایجاد",
+      field: "created_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -181,7 +241,7 @@ const operations = [
         router.push({
           name: 'admin.blog.edit',
           params: {
-            id: data.id,
+            slug: data.slug,
           }
         })
       },
@@ -199,9 +259,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.blogs.destroy, {blog: data.id}), {
-            method: 'DELETE',
-          }, {
+          BlogAPI.deleteByIds(data.slug, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -228,8 +286,8 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
-              ids.push(items[item].id)
+            if (items[item].slug)
+              ids.push(items[item].slug)
           }
         }
 
@@ -241,12 +299,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.blogs.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          BlogAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -264,29 +317,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.blogs.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  BlogAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

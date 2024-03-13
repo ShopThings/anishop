@@ -4,10 +4,10 @@ namespace App\Repositories;
 
 use App\Events\ForgetPasswordEvent;
 use App\Events\RegisteredEvent;
+use App\Exceptions\PleaseWaitException;
 use App\Models\User;
 use App\Repositories\Contracts\AuthRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
-use function App\Support\Helper\get_random_verification_code;
 
 class AuthRepository implements AuthRepositoryInterface
 {
@@ -52,11 +52,14 @@ class AuthRepository implements AuthRepositoryInterface
      */
     public function sendActivationVerificationCode(User $user): bool
     {
-        if ($user->shouldSendAVerifyCode()) {
+        if ($user->shouldSendActivationVerifyCode()) {
             $code = get_random_verification_code(config('market:sms.verify_code_length'));
             $user->notifyActivationVerificationCode($code);
             return true;
         }
+
+        $diffTime = vertaTz($user->verify_wait_for_code)->diffSeconds(now());
+        throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
 
         return false;
     }
@@ -66,11 +69,14 @@ class AuthRepository implements AuthRepositoryInterface
      */
     public function sendForgetPasswordVerificationCode(User $user): bool
     {
-        if ($user->shouldSendActivationVerifyCode()) {
+        if ($user->shouldSendForgotPasswordVerifyCode()) {
             $code = get_random_verification_code(config('market:sms.verify_code_length'));
             $user->notifyForgetPasswordVerificationCode($code);
             return true;
         }
+
+        $diffTime = vertaTz($user->forget_password_wait_for_code)->diffSeconds(now());
+        throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
 
         return false;
     }

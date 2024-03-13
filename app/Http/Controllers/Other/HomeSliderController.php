@@ -34,7 +34,7 @@ class HomeSliderController extends Controller
      * @param CategoryServiceInterface $service
      * @return AnonymousResourceCollection
      */
-    public function categories(CategoryServiceInterface $service): AnonymousResourceCollection
+    public function sliderCategories(CategoryServiceInterface $service): AnonymousResourceCollection
     {
         return MainCategorySliderResource::collection($service->getSliderCategories());
     }

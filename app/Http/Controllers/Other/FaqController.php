@@ -29,6 +29,7 @@ class FaqController extends Controller
         protected FaqServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**

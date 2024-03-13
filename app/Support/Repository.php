@@ -52,6 +52,24 @@ abstract class Repository implements RepositoryInterface
     /**
      * @inheritDoc
      */
+    public function resetWith(): static
+    {
+        $this->with = [];
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resetWithWhereHas(): static
+    {
+        $this->withWhereHas = [];
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function newWith(array|string $relations, Closure|null|string $callback = null): static
     {
         $this->resetWith();
@@ -277,12 +295,11 @@ abstract class Repository implements RepositoryInterface
      */
     public function updateWhere(array $data, GetterExpressionInterface $where): int
     {
-        return (bool)$this->model->when(
-            !is_null($where) && !empty($where->getStatement()),
-            function (Builder $query) use ($where) {
-                $query->whereRaw($where->getStatement(), $where->getBindings());
-            }
-        )->update($data);
+        if (is_null($where) || empty($where->getStatement())) return 0;
+
+        $model = $this->findWhere($where);
+        if (!$model instanceof Model) return 0;
+        return $this->update($model->id, $data);
     }
 
     /**
@@ -399,21 +416,5 @@ abstract class Repository implements RepositoryInterface
         // reset with array for further operation
         $this->resetWith();
         $this->resetWithWhereHas();
-    }
-
-    /**
-     * @return void
-     */
-    private function resetWith(): void
-    {
-        $this->with = [];
-    }
-
-    /**
-     * @return void
-     */
-    private function resetWithWhereHas(): void
-    {
-        $this->withWhereHas = [];
     }
 }

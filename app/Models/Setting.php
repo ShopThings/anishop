@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
 use App\Traits\HasUpdatedRelationTrait;
-use App\Traits\SelfHealingRouteTrait;
 
 class Setting extends Model
 {

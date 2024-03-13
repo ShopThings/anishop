@@ -6,18 +6,20 @@
           <div class="h-[64px] py-2 px-6 flex">
             <div class="h-full shrink-0">
               <router-link :to="{name: 'home'}">
-                <img class="h-[30px] sm:h-[36px] mt-[7px]"
-                     src="/logo-with-type.png"
-                     alt="لوگو">
+                <img
+                    alt="لوگو"
+                    class="h-[30px] sm:h-[36px] mt-[7px]"
+                    src="/logo-with-type.png"
+                >
               </router-link>
             </div>
 
             <div class="h-full grow">
               <div class="px-6 max-w-lg xl:max-w-2xl hidden md:block">
                 <base-input
-                  name="search"
-                  placeholder="جستجو..."
-                  klass="bg-slate-100 focus:bg-white !ring-0 focus:!ring-2 rounded-xl"
+                    klass="bg-slate-100 focus:bg-white !ring-0 focus:!ring-2 rounded-xl"
+                    name="search"
+                    placeholder="جستجو..."
                 >
                   <template #icon>
                     <MagnifyingGlassIcon class="w-6 h-6 text-slate-400"/>
@@ -38,41 +40,10 @@
                   <navbar-user-action/>
                 </li>
                 <li class="px-1 sm:px-2 block lg:hidden">
-                  <base-popover-side>
-                    <template #button>
-                      <button type="button"
-                              class="relative w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
-                        <Bars3Icon class="h-6 w-6"/>
-                      </button>
-                    </template>
-                    <template #panel="{close}">
-                      <div class="mb-3 flex items-center">
-                                                <span class="ml-auto text-sm text-gray-400">
-                                                    منو
-                                                </span>
-                        <button @click="close" type="button"
-                                class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
-                          <XMarkIcon class="h-6 w-6"/>
-                        </button>
-                      </div>
-
-                      <div class="flex mb-3 border-y py-3">
-                        <router-link :to="{name: 'login'}"
-                                     class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white transition">
-                          <ArrowLeftOnRectangleIcon class="h-6 w-6 text-sky-400 ml-2"/>
-                          ورود
-                        </router-link>
-                        <router-link :to="{name: 'signup'}"
-                                     class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white mr-2 transition">
-                          <UserPlusIcon class="h-6 w-6 text-sky-400 ml-2"/>
-                          ثبت نام
-                        </router-link>
-                      </div>
-
-                      <partial-navbar-guest
-                        class="justify-center space-y-5 w-full space-x-reverse"/>
-                    </template>
-                  </base-popover-side>
+                  <partial-navbar-guest-mobile
+                      :is-loading="menuLoading"
+                      :menu="localMenu"
+                  />
                 </li>
               </ul>
             </div>
@@ -87,7 +58,9 @@
           </div>
 
           <partial-navbar-guest
-            class="hidden space-x-10 space-x-reverse lg:flex"
+              :is-loading="menuLoading"
+              :menu="localMenu"
+              class="hidden space-x-10 space-x-reverse lg:flex"
           />
 
           <div class="mr-auto flex items-center gap-2 bg-indigo-50 px-3 rounded-full">
@@ -107,13 +80,33 @@
 </template>
 
 <script setup>
-import {XMarkIcon, Bars3Icon} from '@heroicons/vue/24/solid'
-import {ArrowLeftOnRectangleIcon, UserPlusIcon, MagnifyingGlassIcon} from '@heroicons/vue/24/outline'
+import {onMounted, ref} from "vue";
+import {MagnifyingGlassIcon} from '@heroicons/vue/24/outline'
 import NavbarCart from "./NavbarCart.vue"
 import NavbarUserAction from "./NavbarUserAction.vue"
 import PartialNavbarGuest from "./partials/PartialNavbarGuest.vue"
-import BasePopoverSide from "./base/BasePopoverSide.vue"
 import DialogSearch from "./DialogSearch.vue";
 import BaseInput from "./base/BaseInput.vue";
 import NavbarCategories from "./NavbarCategories.vue";
+import PartialNavbarGuestMobile from "@/components/partials/PartialNavbarGuestMobile.vue";
+import {HomeMainPageAPI} from "@/service/APIHomePages.js";
+import {MENU_PLACES} from "@/composables/constants.js";
+
+const menuLoading = ref(true)
+const localMenu = ref(null)
+
+onMounted(() => {
+  HomeMainPageAPI.fetchMenu(MENU_PLACES.TOP_MENU.value, {
+    success(response) {
+      localMenu.value = response.data[0] || {}
+      return false
+    },
+    error() {
+      return false
+    },
+    finally() {
+      menuLoading.value = false
+    },
+  })
+})
 </script>

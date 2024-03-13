@@ -24,6 +24,7 @@ class SignupRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'captcha' => ['required', 'captcha_api:' . $this->input('key')],
             'username' => [
                 'required',
                 'unique:' . User::class . ',username',

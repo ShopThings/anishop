@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateProductCommentRequest;
 use App\Http\Resources\User\UserProductCommentResource;
 use App\Http\Resources\User\UserProductCommentSingleResource;
 use App\Models\Comment;
+use App\Models\Product;
 use App\Services\Contracts\ProductCommentServiceInterface;
 use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
@@ -48,10 +49,10 @@ class UserCommentController extends Controller
      * @param StoreProductCommentRequest $request
      * @return JsonResponse
      */
-    public function store(StoreProductCommentRequest $request): JsonResponse
+    public function store(StoreProductCommentRequest $request, Product $product): JsonResponse
     {
-        $validated = $request->validated(['product', 'pros', 'cons', 'description']);
-        $model = $this->service->create($validated);
+        $validated = $request->validated(['pros', 'cons', 'description']);
+        $model = $this->service->create(['product' => $product->id] + $validated);
 
         if (!is_null($model)) {
             return response()->json([

@@ -1,13 +1,21 @@
 <template>
-  <div class="flex justify-center items-center"
-       :class="mainContainerKlass">
+  <div :class="mainContainerKlass"
+       class="flex justify-center items-center">
     <div :class="[
-            'absolute top-0 left-0 w-full h-full rounded z-[1]',
-            containerBgColor,
-            containerKlass,
-            ]">
+        'absolute top-0 left-0 w-full h-full rounded z-[1]',
+        containerBgColor,
+        containerKlass,
+    ]">
     </div>
-    <div class="chaotic-orbit z-[2]" :class="bgColor"></div>
+    <div class="relative z-[2]">
+      <div :class="bgColor" class="chaotic-orbit mx-auto"></div>
+      <div
+          v-if="loadingText"
+          class="text-center mt-5 text-black text-sm animate-pulse"
+      >
+        {{ loadingText }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -26,6 +34,7 @@ defineProps({
     default: 'bg-blue-50 opacity-70',
   },
   containerKlass: String,
+  loadingText: String,
 })
 </script>
 

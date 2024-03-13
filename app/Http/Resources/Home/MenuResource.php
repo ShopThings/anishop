@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Showing;
+namespace App\Http\Resources\Home;
 
-use App\Enums\Menus\MenuPlacesEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class MenuPlaceShowResource extends JsonResource
+class MenuResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,7 +17,7 @@ class MenuPlaceShowResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'place_in' => $this->place_in,
+            'items' => MenuItemResource::collection($this->items),
         ];
     }
 }

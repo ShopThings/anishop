@@ -2,39 +2,39 @@
   <template v-if="comments.length">
     <div class="mb-3">
       <partial-comment-blog-single
-        container-class="rounded-none"
-        :comment="{}"
+          :comment="{}"
+          container-class="rounded-none"
       />
     </div>
 
     <div class="mb-3">
       <partial-comment-blog-single
-        container-class="rounded-none"
-        :comment="{}"
+          :comment="{}"
+          container-class="rounded-none"
       />
     </div>
     <div class="mb-3">
       <base-feed-list>
         <template #item>
           <partial-comment-blog-single
-            container-class="rounded-none"
-            :comment="{}"
+              :comment="{}"
+              container-class="rounded-none"
           />
         </template>
       </base-feed-list>
       <base-feed-list bullet-class="border-emerald-300 !bg-emerald-200">
         <template #item>
           <partial-comment-blog-single
-            container-class="rounded-none !bg-emerald-50"
-            :comment="{}"
+              :comment="{}"
+              container-class="rounded-none !bg-emerald-50"
           />
         </template>
       </base-feed-list>
       <base-feed-list :is-last="true">
         <template #item>
           <partial-comment-blog-single
-            container-class="rounded-none"
-            :comment="{}"
+              :comment="{}"
+              container-class="rounded-none"
           />
         </template>
       </base-feed-list>
@@ -42,15 +42,15 @@
 
     <div class="mb-3">
       <partial-comment-blog-single
-        container-class="rounded-none"
-        :comment="{}"
+          :comment="{}"
+          container-class="rounded-none"
       />
     </div>
   </template>
 
   <div
-    v-else
-    class="mb-3 flex flex-col items-center justify-center gap-3"
+      v-else
+      class="mb-3 flex flex-col items-center justify-center gap-3"
   >
     <ChatBubbleLeftEllipsisIcon class="w-20 h-20 text-slate-300"/>
     <span class="text-blue-300">هیچ دیدگاهی ثبت نشده است</span>

@@ -8,16 +8,28 @@ use App\Http\Requests\StoreComplaintRequest;
 use App\Http\Requests\StoreContactUsRequest;
 use App\Http\Requests\StoreNewsletterRequest;
 use App\Http\Resources\Home\FaqResource as HomeFaqResource;
+use App\Http\Resources\SettingResource;
 use App\Services\Contracts\ComplaintServiceInterface;
 use App\Services\Contracts\ContactUsServiceInterface;
 use App\Services\Contracts\FaqServiceInterface;
 use App\Services\Contracts\NewsletterServiceInterface;
+use App\Services\Contracts\SettingServiceInterface;
 use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class HomeController extends Controller
 {
+    /**
+     * @param SettingServiceInterface $service
+     * @return AnonymousResourceCollection
+     */
+    public function settings(SettingServiceInterface $service): AnonymousResourceCollection
+    {
+        $settings = $service->getGeneralSettings();
+        return SettingResource::collection($settings);
+    }
+
     /**
      * @param StoreContactUsRequest $request
      * @param ContactUsServiceInterface $service

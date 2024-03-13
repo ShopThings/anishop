@@ -167,9 +167,9 @@ class FileService implements FileServiceInterface
         $file = trim($file, '.');
         $file = str_replace('\\', '/', $file);
 
-        if (explode('/', $file) > 2)
+        if (explode('/', $file) > 2) {
             $file = ltrim($file, '/');
-
+        }
         //
 
         $where = new WhereBuilder('file_manager');

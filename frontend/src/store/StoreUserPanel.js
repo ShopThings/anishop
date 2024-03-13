@@ -1,37 +1,152 @@
-import {ref} from "vue"
+import {computed, onBeforeMount, onBeforeUnmount, reactive, ref} from "vue"
 import {defineStore} from "pinia"
-import {useRequest} from "@/composables/api-request.js";
-import {apiRoutes} from "@/router/api-routes.js";
+import {useCountdown} from "@/composables/countdown-timer.js";
+import {UserPanelDashboardAPI} from "@/service/APIUserPanel.js";
+import {NotificationAPI} from "@/service/APINotification.js";
 
 export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
-  let counts = ref({})
+  let counts = reactive({})
+  const countdown = useCountdown(600)
 
-  function getCount(key) {
-    // fetch count every 10 min
-    // ...
+  fetchCounting()
 
+  function getCountByKey(key) {
     return counts[key] || 0
   }
 
+  const getOrderCount = computed(() => {
+    return getCountByKey('order_count')
+  })
+
+  const getReturnOrderCount = computed(() => {
+    return getCountByKey('return_order_count')
+  })
+
+  const getProductCommentCount = computed(() => {
+    return getCountByKey('product_comment_count')
+  })
+
+  const getBlogCommentCount = computed(() => {
+    return getCountByKey('blog_comment_count')
+  })
+
+  const getFavoriteProductCount = computed(() => {
+    return getCountByKey('favorite_product_count')
+  })
+
+  const getAddressCount = computed(() => {
+    return getCountByKey('address_count')
+  })
+
+  const getContactCount = computed(() => {
+    return getCountByKey('contact_count')
+  })
+
   function fetchCounting() {
-    useRequest(
-      apiRoutes.user.main.countOfStuffs,
-      null,
-      {
-        success(response) {
-          counts = response.data
-        },
-      }
-    )
+    countdown.pause()
+
+    UserPanelDashboardAPI.getCountOfStuffs({
+      success(response) {
+        for (const key in response.data) {
+          counts[key] = response.data[key];
+        }
+
+        return false
+      },
+      error() {
+        return false
+      },
+      finally() {
+        countdown.reset()
+        countdown.resume()
+      },
+    })
   }
 
   function $reset() {
-    counts.value = {}
+    countdown.stop()
+
+    Object.keys(counts).forEach((key) => {
+      delete counts[key];
+    });
+
+    countdown.start(fetchCounting)
   }
+
+  onBeforeMount(() => {
+    if (!countdown.isStarted()) {
+      countdown.start(fetchCounting)
+    }
+  });
+
+  onBeforeUnmount(() => {
+    countdown.stop()
+  });
 
   return {
     counts,
-    getCount,
+    getCountByKey, getOrderCount, getReturnOrderCount,
+    getProductCommentCount, getBlogCommentCount, getAddressCount,
+    getFavoriteProductCount, getContactCount,
+    //
+    $reset,
+  }
+})
+
+export const useNotificationStore = defineStore('userPanelNotifications', () => {
+  let notifications = ref([])
+  const countdown = useCountdown(600)
+
+  checkNewNotifications()
+
+  const hasNewNotification = computed(() => {
+    return !!(notifications.value?.length)
+  })
+
+  const newNotificationsCount = computed(() => {
+    return notifications.value?.length ?? 0
+  })
+
+  function checkNewNotifications() {
+    countdown.pause()
+
+    NotificationAPI.checkNotifications({
+      success(response) {
+        notifications.value = response.data
+
+        return false
+      },
+      error() {
+        return false
+      },
+      finally() {
+        countdown.reset()
+        countdown.resume()
+      },
+    })
+  }
+
+  function $reset() {
+    countdown.stop()
+
+    notifications.value = []
+
+    countdown.start(checkNewNotifications)
+  }
+
+  onBeforeMount(() => {
+    if (!countdown.isStarted()) {
+      countdown.start(checkNewNotifications)
+    }
+  });
+
+  onBeforeUnmount(() => {
+    countdown.stop()
+  });
+
+  return {
+    notifications,
+    hasNewNotification, newNotificationsCount,
     //
     $reset,
   }

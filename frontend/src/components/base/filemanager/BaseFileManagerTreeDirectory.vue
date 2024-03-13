@@ -1,7 +1,7 @@
 <template>
   <partial-dialog
-    v-model:open="isOpen"
-    @close="$emit('close')"
+      v-model:open="isOpen"
+      @close="$emit('close')"
   >
     <template #title>
       <div class="flex items-center">
@@ -11,16 +11,16 @@
       <div class="flex flex-wrap justify-between items-center">
         <div class="text-xs text-gray-400 mt-2 grow">
           <span class="inline-block ml-2">مسیر:</span>
-          <span dir="ltr" class="inline-block">{{ currentPath }}</span>
+          <span class="inline-block" dir="ltr">{{ currentPath }}</span>
         </div>
         <div class="text-left mt-2 shrink-0">
           <base-animated-button
-            v-tooltip.bottom="'بارگذاری مجدد'"
-            class="bg-gray-200 !text-black !p-1"
-            @click="reloadTree"
+              v-tooltip.bottom="'بارگذاری مجدد'"
+              class="bg-gray-200 !text-black !p-1"
+              @click="reloadTree"
           >
             <template #icon="{klass}">
-              <ArrowPathIcon class="h-4 w-4" :class="klass"/>
+              <ArrowPathIcon :class="klass" class="h-4 w-4"/>
             </template>
           </base-animated-button>
         </div>
@@ -30,19 +30,19 @@
     <template #body>
       <div class="relative">
         <loader-circle
-          v-if="isLoading"
-          main-container-klass="absolute h-[calc(100%+1rem)] w-[calc(100%+1rem)] -top-2 -left-2"
+            v-if="isLoading"
+            main-container-klass="absolute h-[calc(100%+1rem)] w-[calc(100%+1rem)] -top-2 -left-2"
         />
 
         <partial-tree-directory-search
-          v-if="items.length"
-          @search="getTree"
-          @clear-filter="clearSearch"
+            v-if="items.length"
+            @search="getTree"
+            @clear-filter="clearSearch"
         />
 
         <div
-          v-if="slots['extra']"
-          class="mb-4 flex flex-row-reverse justify-between"
+            v-if="slots['extra']"
+            class="mb-4 flex flex-row-reverse justify-between"
         >
           <slot name="extra"></slot>
         </div>
@@ -54,18 +54,18 @@
         </div>
 
         <div
-          v-if="items.length"
-          class="-mr-3"
+            v-if="items.length"
+            class="-mr-3"
         >
           <partial-tree-directory
-            :items="items"
-            :disk="disk"
-            @selection-change="changeSelectedDirectory"
+              :disk="disk"
+              :items="items"
+              @selection-change="changeSelectedDirectory"
           />
         </div>
         <div
-          v-else
-          class="text-gray-400"
+            v-else
+            class="text-gray-400"
         >
           هیچ پوشه‌ای وجود ندارد!
         </div>

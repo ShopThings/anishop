@@ -8,8 +8,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\NewPasswordRequest;
 use App\Http\Requests\Auth\SignupRequest;
 use App\Http\Requests\Auth\VerifyCodeRequest;
+use App\Http\Resources\Showing\UserAuthShowResource;
 use App\Models\User;
 use App\Services\Contracts\AuthServiceInterface;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -77,7 +79,7 @@ class SignupController extends Controller
     {
         $this->checkLoginNSession();
 
-        $user = $this->service->getUserByUsername(Session::pull($this->sessionActivation));
+        $user = $this->service->getUserByUsername(Session::pull($this->sessionActivation) ?? '');
         $password = $request->validated(['password']);
 
         if (!$user instanceof User) {
@@ -90,10 +92,24 @@ class SignupController extends Controller
         $status = $this->service->assignPassword($user, $password);
 
         if ($status) {
-            return response()->json([
-                'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'کلمه عبور شما ثبت شد.',
-            ]);
+            $loggedIn = Auth::loginUsingId($user->id);
+            if ($loggedIn) {
+                $tokenName = config('market.token_name.main');
+                $expireAt = Carbon::now()->addDays(30);
+                $token = $user->createToken(name: $tokenName, expiresAt: $expireAt)->plainTextToken;
+                return response()->json([
+                    'type' => ResponseTypesEnum::SUCCESS->value,
+                    'data' => [
+                        'user' => new UserAuthShowResource($user),
+                        'token' => $token,
+                    ],
+                ]);
+            } else {
+                return response()->json([
+                    'type' => ResponseTypesEnum::SUCCESS->value,
+                    'data' => null,
+                ]);
+            }
         } else {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,

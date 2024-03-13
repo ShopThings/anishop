@@ -1,8 +1,8 @@
 <template>
   <base-loading-panel
-    type="dot-orbit"
-    :loading="builderLoading"
-    loading-text="در حال بارگذاری جستجوی پیشرفته"
+      :loading="builderLoading"
+      loading-text="در حال بارگذاری جستجوی پیشرفته"
+      type="dot-orbit"
   >
     <template #content>
       <base-query-builder :columns="columns" :query="query"/>
@@ -10,12 +10,14 @@
       <partial-card class="mt-3">
         <template #body>
           <div class="flex flex-col sm:flex-row justify-end p-3">
-            <base-button @click="filterQB"
-                         class="bg-primary rounded-r-lg rounded-l-lg sm:rounded-l-none border-primary text-sm my-1.5 sm:px-6">
+            <base-button
+                class="bg-primary rounded-r-lg rounded-l-lg sm:rounded-l-none border-primary text-sm my-1.5 sm:px-6"
+                @click="filterQB">
               فیلتر اطلاعات
             </base-button>
-            <base-button @click="clearQBFilter"
-                         class="bg-gray-200 !text-black border border-gray-300 rounded-l-lg rounded-r-lg sm:rounded-r-none text-sm my-1.5 sm:px-6">
+            <base-button
+                class="bg-gray-200 !text-black border border-gray-300 rounded-l-lg rounded-r-lg sm:rounded-r-none text-sm my-1.5 sm:px-6"
+                @click="clearQBFilter">
               حذف فیلتر
             </base-button>
           </div>
@@ -25,8 +27,8 @@
   </base-loading-panel>
 
   <partial-card
-    class="mt-3"
-    ref="tableContainer"
+      ref="tableContainer"
+      class="mt-3"
   >
     <template #header>
       لیست کاربران
@@ -34,20 +36,20 @@
 
     <template #body>
       <div
-        v-if="!loading"
-        class="p-3"
+          v-if="!loading"
+          class="p-3"
       >
         <base-button
-          type="submit"
-          class="bg-green-600 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
-          :disabled="isDownloadExcel"
-          @click="excelDownloadHandler"
+            :disabled="isDownloadExcel"
+            class="bg-green-600 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
+            type="submit"
+            @click="excelDownloadHandler"
         >
           <VTransitionFade>
             <loader-circle
-              v-if="isDownloadExcel"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+                v-if="isDownloadExcel"
+                big-circle-color="border-transparent"
+                main-container-klass="absolute w-full h-full top-0 left-0"
             />
           </VTransitionFade>
 
@@ -59,21 +61,21 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="false"
-            :enable-multi-operation="false"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="false"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="false"
+              :enable-search-box="false"
+              :has-checkbox="false"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:roles="{value}">
-                            <span v-if="value.roles"
-                                  v-for="(role) in value.roles"
+                            <span v-for="(role) in value.roles"
+                                  v-if="value.roles"
                                   class="rounded-md text-white bg-fuchsia-700 text-xs py-1 px-2 inline-block m-1 whitespace-nowrap">
                                 {{ role }}
                             </span>
@@ -87,7 +89,7 @@
             <template v-slot:verified_at="{value}">
                             <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
                                 <span
-                                  class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
+                                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
                                 {{ value.verified_at }}
                             </span>
               <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>

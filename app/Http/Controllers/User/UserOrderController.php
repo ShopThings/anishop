@@ -56,32 +56,34 @@ class UserOrderController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param OrderDetail $orderDetail
+     * @param OrderDetail $order
      * @return UserOrderSingleResource
      */
-    public function show(OrderDetail $orderDetail): UserOrderSingleResource
+    public function show(OrderDetail $order): UserOrderSingleResource
     {
-        return new UserOrderSingleResource($orderDetail);
+        return new UserOrderSingleResource($order);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateUserOrderDetailRequest $request
-     * @param OrderDetail $orderDetail
+     * @param OrderDetail $order
      * @return UserOrderSingleResource|JsonResponse
      */
     public function update(
         UpdateUserOrderDetailRequest $request,
-        OrderDetail                  $orderDetail
+        OrderDetail $order
     ): UserOrderSingleResource|JsonResponse
     {
         $validated = $request->validated([
-            'province', 'city', 'address', 'postal_code',
-            'receiver_name', 'receiver_mobile'
+            'address',
+            'postal_code',
+            'receiver_name',
+            'receiver_mobile'
         ]);
 
-        $model = $this->service->updateById($orderDetail->id, $validated);
+        $model = $this->service->updateById($order->id, $validated);
 
         if (!is_null($model)) {
             return new UserOrderSingleResource($model);

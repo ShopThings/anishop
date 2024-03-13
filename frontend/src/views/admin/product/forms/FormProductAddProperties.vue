@@ -3,9 +3,9 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-          v-if="!canSubmit"
-          main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-          container-bg-color="bg-blue-50 opacity-40"
+            v-if="!canSubmit"
+            container-bg-color="bg-blue-50 opacity-40"
+            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
         />
 
         <div class="p-2">
@@ -23,15 +23,15 @@
     <partial-card>
       <template #body>
         <partial-stepy-next-prev-buttons
-          :current-step="options.currentStep"
-          :current-step-index="options.currentStepIndex"
-          :last-step="options.lastStep"
-          :allow-next-step="canSubmit"
-          :allow-prev-step="shouldGoPrevStep"
-          :show-prev-step-button="shouldGoPrevStep"
-          :loading="!canSubmit"
-          @finish="handleFinishClick"
-          @prev="() => {
+            :allow-next-step="canSubmit"
+            :allow-prev-step="shouldGoPrevStep"
+            :current-step="options.currentStep"
+            :current-step-index="options.currentStepIndex"
+            :last-step="options.lastStep"
+            :loading="!canSubmit"
+            :show-prev-step-button="shouldGoPrevStep"
+            @finish="handleFinishClick"
+            @prev="() => {
             if(shouldGoPrevStep) {
               options.prev()
             }
@@ -77,8 +77,6 @@ function handleFinishClick() {
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
-  if (!canSubmit.value) return
-
   canSubmit.value = false
 
   ProductAPI.updateById(productStore.getProductSlug, {

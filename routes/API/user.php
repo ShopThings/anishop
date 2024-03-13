@@ -35,6 +35,7 @@ Route::prefix('user')
          */
         Route::get('notifications', [UserNotificationController::class, 'index'])->name('notifications.index');
         Route::put('notifications', [UserNotificationController::class, 'update'])->name('notifications.update');
+        Route::get('notifications/new', [UserNotificationController::class, 'newNotifications'])->name('notifications.new');
 
         /*
          * order routes
@@ -47,10 +48,10 @@ Route::prefix('user')
          * return order routes
          */
         Route::get('return-orders/latest', [UserReturnOrderRequestController::class, 'latest'])->name('return-orders.latest');
-        Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
-            ->where(['return_order' => $codeRegex]);
         Route::get('return-orders/returnable-orders', [UserReturnOrderRequestController::class, 'returnableOrders'])
             ->name('return-orders.returnable-orders');
+        Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
+            ->where(['return_order' => $codeRegex]);
         Route::post('return-orders/{order}', [UserReturnOrderRequestController::class, 'store'])
             ->where(['order' => $codeRegex])->name('return-orders.store');
 

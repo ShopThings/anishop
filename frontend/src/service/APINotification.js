@@ -1,5 +1,4 @@
 import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 
 export const NotificationAPI = {
   fetchAll(callbacks) {
@@ -10,13 +9,20 @@ export const NotificationAPI = {
     )
   },
 
-  updateById(id, data, callbacks) {
+  markAllAsRead(callbacks) {
     useRequest(
-      apiReplaceParams(apiRoutes.user.info.notification.update, {notification: id}),
+      apiRoutes.user.info.notification.update,
       {
         method: 'PUT',
-        data,
       },
+      callbacks
+    )
+  },
+
+  checkNotifications(callbacks) {
+    useRequest(
+      apiRoutes.user.info.notification.check,
+      null,
       callbacks
     )
   },

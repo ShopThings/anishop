@@ -1,37 +1,37 @@
 <template>
   <base-loading-panel
-    :loading="loading"
-    type="form"
+      :loading="loading"
+      type="form"
   >
     <template #content>
       <form>
         <partial-card class="mb-3 p-3 relative">
           <template #body>
             <loader-dot-orbit
-              v-if="!canSubmit"
-              main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-              container-bg-color="bg-blue-50 opacity-40"
+                v-if="!canSubmit"
+                container-bg-color="bg-blue-50 opacity-40"
+                main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
             />
 
             <div class="w-full p-2">
               <partial-input-label title="انتخاب محصول مرتبط"/>
               <base-select-searchable
-                placeholder="جستجوی محصول..."
-                :options="products"
-                options-key="id"
-                options-text="title"
-                name="products"
-                :multiple="true"
-                :selected="selectedProducts"
-                :is-loading="productLoading"
-                :is-local-search="false"
-                :has-pagination="true"
-                :current-page="productSelectConfig.currentPage"
-                :last-page="productSelectConfig.lastPage"
-                @change="(selected) => {selectedProducts = selected}"
-                @query="searchProduct"
-                @click-next-page="searchProductNextPage"
-                @click-prev-page="searchProductPrevPage"
+                  :current-page="productSelectConfig.currentPage.value"
+                  :has-pagination="true"
+                  :is-loading="productLoading"
+                  :is-local-search="false"
+                  :last-page="productSelectConfig.lastPage.value"
+                  :multiple="true"
+                  :options="products"
+                  :selected="selectedProducts"
+                  name="products"
+                  options-key="id"
+                  options-text="title"
+                  placeholder="جستجوی محصول..."
+                  @change="(selected) => {selectedProducts = selected}"
+                  @query="searchProduct"
+                  @click-next-page="searchProductNextPage"
+                  @click-prev-page="searchProductPrevPage"
               />
               <partial-input-error-message :error-message="errors.products"/>
             </div>
@@ -39,11 +39,11 @@
             <div v-if="selectedProducts && selectedProducts.length">
               <partial-input-label title="محصولات انتخاب شده"/>
               <div
-                class="mt-3 p-2 py-1 border-2 border-dashed rounded-lg border-indigo-200 mb-3 relative flex flex-wrap"
+                  class="mt-3 p-2 py-1 border-2 border-dashed rounded-lg border-indigo-200 mb-3 relative flex flex-wrap"
               >
                 <div
-                  v-for="(product, idx) in products"
-                  class="rounded bg-blue-100 text-sm text-blue-700 py-1 px-2 flex items-center ml-2 my-1"
+                    v-for="(product, idx) in products"
+                    class="rounded bg-blue-100 text-sm text-blue-700 py-1 px-2 flex items-center ml-2 my-1"
                 >
                   <span class="ml-3">{{ product?.title }}</span>
                   <base-button-close v-tooltip.top="'حذف از لیست'" @click="removeProduct(idx)"/>
@@ -56,14 +56,14 @@
         <partial-card>
           <template #body>
             <partial-stepy-next-prev-buttons
-              :current-step="options.currentStep"
-              :current-step-index="options.currentStepIndex"
-              :last-step="options.lastStep"
-              :allow-next-step="canSubmit"
-              :allow-prev-step="canSubmit"
-              :show-prev-step-button="canSubmit"
-              :loading="!canSubmit"
-              @next="handleNextClick(options.next)"
+                :allow-next-step="canSubmit"
+                :allow-prev-step="canSubmit"
+                :current-step="options.currentStep"
+                :current-step-index="options.currentStepIndex"
+                :last-step="options.lastStep"
+                :loading="!canSubmit"
+                :show-prev-step-button="canSubmit"
+                @next="handleNextClick(options.next)"
             />
           </template>
         </partial-card>
@@ -73,7 +73,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
@@ -86,6 +86,7 @@ import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {ProductAPI} from "@/service/APIProduct.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import {useSelectSearching} from "@/composables/select-searching.js";
 
 defineProps({
   options: {
@@ -107,8 +108,6 @@ function handleNextClick(next) {
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
-  if (!canSubmit.value) return
-
   let productsIds = selectedProducts.value?.map((product) => {
     product.id
   })
@@ -139,51 +138,33 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
 //----------------------
 // Product search
 //----------------------
-const productLoading = ref(true)
 const products = ref([])
 const selectedProducts = ref(null)
-const productSelectConfig = reactive({
-  limit: 15,
-  currentPage: 1,
-  lastPage: null,
-  offset: () => {
-    return (productSelectConfig.currentPage - 1) * productSelectConfig.limit;
+const productSelectConfig = useSelectSearching({
+  searchFn(query) {
+    ProductAPI.fetchAll({
+      limit: productSelectConfig.limit.value,
+      offset: productSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        products.value = response.data
+        if (response.meta) {
+          productSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        productSelectConfig.isLoading.value = false
+      }
+    })
   },
 })
+const searchProduct = productSelectConfig.search
+const productLoading = productSelectConfig.isLoading
+const searchProductNextPage = productSelectConfig.searchNextPage
+const searchProductPrevPage = productSelectConfig.searchPrevPage
 
-function searchProduct(query) {
-  productLoading.value = true
-  ProductAPI.fetchAll({
-    limit: productSelectConfig.limit,
-    offset: productSelectConfig.offset(),
-    text: query
-  }, {
-    success(response) {
-      products.value = response.data
-      if (response.meta) {
-        productSelectConfig.lastPage = response.meta?.last_page
-      }
-    },
-    finally() {
-      productLoading.value = false
-    }
-  })
-}
-
-function searchProductNextPage(query) {
-  if (productSelectConfig.currentPage < productSelectConfig.lastPage) {
-    productSelectConfig.currentPage++
-    searchProduct(query)
-  }
-}
-
-function searchProductPrevPage(query) {
-  if (productSelectConfig.currentPage > 1) {
-    productSelectConfig.currentPage--
-    searchProduct(query)
-  }
-}
-
+//----------------------
 function removeProduct(idx) {
   if (Array.isArray(selectedProducts.value))
     selectedProducts.value.splice(idx, 1)

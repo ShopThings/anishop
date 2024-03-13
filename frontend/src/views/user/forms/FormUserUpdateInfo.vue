@@ -3,15 +3,21 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام کاربری"
-            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
-            name="username"
             :has-edit-mode="false"
             :is-editable="false"
             :value="user?.username"
+            name="username"
+            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
         >
           <template #icon>
             <UserIcon class="h-6 w-6 text-gray-400"/>
+          </template>
+
+          <template #editModeLabel="{value}">
+            <div class="flex flex-wrap gap-3 items-center">
+              <span class="text-sm">نام کاربری</span>
+              <span class="tracking-widest text-slate-500 py-1 px-2.5 border-2 rounded-lg">{{ value }}</span>
+            </div>
           </template>
         </base-input>
       </div>
@@ -22,12 +28,12 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام"
-            placeholder="حروف فارسی"
-            name="first_name"
             :has-edit-mode="false"
             :is-editable="!(!!user?.first_name)"
             :value="user?.first_name"
+            label-title="نام"
+            name="first_name"
+            placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -36,12 +42,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام خانوادگی"
-            placeholder="حروف فارسی"
-            name="last_name"
             :has-edit-mode="false"
             :is-editable="!(!!user?.last_name)"
             :value="user?.last_name"
+            label-title="نام خانوادگی"
+            name="last_name"
+            placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -50,12 +56,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="کد ملی"
-            placeholder="فقط شامل اعداد"
-            name="national_code"
             :has-edit-mode="false"
             :is-editable="!(!!user?.national_code)"
             :value="user?.national_code"
+            label-title="کد ملی"
+            name="national_code"
+            placeholder="فقط شامل اعداد"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -64,12 +70,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="شماره شبا"
-            is-optional
-            placeholder="xxxxxxxxxxxxxxxx"
-            name="shaba_number"
             :has-edit-mode="false"
             :value="user?.shaba_number"
+            is-optional
+            label-title="شماره شبا"
+            name="shaba_number"
+            placeholder="xxxxxxxxxxxxxxxx"
         >
           <template #icon>
             <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -80,15 +86,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
+          :disabled="!canSubmit"
           class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          :disabled="isSubmitting"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="isSubmitting"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+              v-if="!canSubmit"
               big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -108,23 +114,22 @@ import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
-import {ref} from "vue";
-import {useForm} from "vee-validate";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
-import {useRequest} from "@/composables/api-request.js";
-import {apiRoutes} from "@/router/api-routes.js";
-import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {UserPanelInfoAPI} from "@/service/APIUserPanel.js";
 
-// const store = useUserAuthStore()
-const store = useAdminAuthStore()
+const store = useUserAuthStore()
 const user = store.getUser
 
-const canSubmit = ref(true)
-
-const {handleSubmit, isSubmitting, errors} = useForm({
+const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام را وارد نمایید.'),
-    last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی را وارد نمایید.'),
+    first_name: yup.string()
+        .persian('نام باید از حروف فارسی باشد.')
+        .required('نام را وارد نمایید.'),
+    last_name: yup.string()
+        .persian('نام خانوادگی باید از حروف فارسی باشد.')
+        .required('نام خانوادگی را وارد نمایید.'),
     national_code: yup.string()
         .transform(transformNumbersToEnglish)
         .persianNationalCode('کد ملی نامعتبر است.')
@@ -134,21 +139,13 @@ const {handleSubmit, isSubmitting, errors} = useForm({
         .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
-})
-
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
-
+}, (values, actions) => {
   canSubmit.value = false
 
-  useRequest(apiRoutes.user.info.info, {
-    method: 'PUT',
-    data: values,
-  }, {
+  UserPanelInfoAPI.updateInfo(values, {
     success: (response) => {
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
-
-      user.value = response.data
+      store.setUser(response.data)
 
       return false
     },

@@ -29,6 +29,7 @@ class PaymentMethodController extends Controller
         protected readonly PaymentMethodServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**

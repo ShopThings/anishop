@@ -15,13 +15,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use function App\Support\Helper\to_boolean;
 
 class UserService extends Service implements UserServiceInterface
 {
     public function __construct(
         protected UserRepositoryInterface $repository,
-        protected CartRepositoryInterface $cartRepository,
+        protected CartRepositoryInterface $cartRepository
     )
     {
     }
@@ -85,7 +84,7 @@ class UserService extends Service implements UserServiceInterface
         $where = new WhereBuilder('address_user');
         $where->whereEqual('user_id', $userId);
 
-        return $this->repository->count($where->build());
+        return $this->repository->addressCount($where->build());
     }
 
     /**
@@ -96,7 +95,7 @@ class UserService extends Service implements UserServiceInterface
         $where = new WhereBuilder('user_favorite_products');
         $where->whereEqual('user_id', $userId);
 
-        return $this->repository->count($where->build());
+        return $this->repository->favoriteProductsCount($where->build());
     }
 
     /**
@@ -108,6 +107,17 @@ class UserService extends Service implements UserServiceInterface
         return $this->repository->getUserNotifications(
             user: $user,
             filter: $filter,
+            columns: ['data', 'read_at', 'created_at']
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUnreadNotifications(User $user): Collection
+    {
+        return $this->repository->getUnreadNotifications(
+            user: $user,
             columns: ['data', 'read_at', 'created_at']
         );
     }

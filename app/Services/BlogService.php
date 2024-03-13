@@ -22,7 +22,6 @@ use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use function App\Support\Helper\to_boolean;
 
 class BlogService extends Service implements BlogServiceInterface
 {

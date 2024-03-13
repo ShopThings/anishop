@@ -13,7 +13,6 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class BlogCategoryService extends Service implements BlogCategoryServiceInterface
 {
@@ -67,10 +66,10 @@ class BlogCategoryService extends Service implements BlogCategoryServiceInterfac
         $attrs = [
             'name' => $attributes['name'],
             'escaped_name' => NumberConverter::toEnglish($attributes['name']),
-            'level' => $attributes['level'],
             'priority' => $attributes['priority'],
+            'keywords' => $attributes['keywords'] ?? [],
             'show_in_menu' => to_boolean($attributes['show_in_menu']),
-            'show_in_side_menu' => to_boolean($attributes['show_in_search_side_menu']),
+            'show_in_side_menu' => to_boolean($attributes['show_in_side_menu']),
             'is_published' => to_boolean($attributes['is_published']),
         ];
 
@@ -90,6 +89,9 @@ class BlogCategoryService extends Service implements BlogCategoryServiceInterfac
         }
         if (isset($attributes['priority'])) {
             $updateAttributes['priority'] = $attributes['priority'];
+        }
+        if (isset($attributes['keywords'])) {
+            $updateAttributes['keywords'] = $attributes['keywords'];
         }
         if (isset($attributes['show_in_menu'])) {
             $updateAttributes['show_in_menu'] = to_boolean($attributes['show_in_menu']);

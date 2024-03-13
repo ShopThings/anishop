@@ -3,28 +3,28 @@
     <div class="p-2">
       <partial-input-label title="وضعیت ارسال"/>
       <base-select
-        :options="statuses"
-        options-key="id"
-        options-text="title"
-        :is-loading="loading"
-        :selected="selectedStatus"
-        name="send_status"
-        @change="sendStatusChange"
+          :is-loading="loading"
+          :options="statuses"
+          :selected="selectedStatus"
+          name="send_status"
+          options-key="id"
+          options-text="title"
+          @change="sendStatusChange"
       />
       <partial-input-error-message :error-message="errors.send_status"/>
     </div>
 
     <div class="px-2 py-3 text-left">
       <base-button
-        type="submit"
-        class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-        :disabled="!canSubmit"
+          :disabled="!canSubmit"
+          class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="!canSubmit"
-            main-container-klass="absolute w-full h-full top-0 left-0"
-            big-circle-color="border-transparent"
+              v-if="!canSubmit"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -62,12 +62,10 @@ function sendStatusChange(selected) {
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (
-    !selectedStatus.value ||
-    !statuses.value ||
-    statuses.value.findIndex((item) => (+item.id === selectedStatus.value.id)) === -1
+      !selectedStatus.value ||
+      !statuses.value ||
+      statuses.value.findIndex((item) => (+item.id === selectedStatus.value.id)) === -1
   ) {
     actions.setFieldError('send_status', 'وضعیت ارسال انتخاب شده نامعتبر است.')
     return

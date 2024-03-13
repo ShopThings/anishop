@@ -31,6 +31,15 @@ export const apiRoutes = {
       batchDestroy: 'api/admin/payment-methods/batch',
     },
 
+    sendMethods: {
+      index: 'api/admin/send-methods',
+      show: 'api/admin/send-methods/{send_method}',
+      store: 'api/admin/send-methods',
+      update: 'api/admin/send-methods/{send_method}',
+      destroy: 'api/admin/send-methods/{send_method}',
+      batchDestroy: 'api/admin/send-methods/batch',
+    },
+
     colors: {
       index: 'api/admin/colors',
       show: 'api/admin/colors/{color}',
@@ -75,10 +84,11 @@ export const apiRoutes = {
       batchDestroy: 'api/admin/festivals/batch',
       //
       products: 'api/admin/festivals/{festival}/products',
-      storeProduct: 'api/admin/festivals/{festival}/{product}',
-      storeCategoryProducts: 'api/admin/festivals/{festival}/{category}',
+      storeProduct: 'api/admin/festivals/{festival}/product',
+      storeCategoryProducts: 'api/admin/festivals/{festival}/category',
       destroyProduct: 'api/admin/festivals/{festival}/{product}',
-      batchDestroyProduct: 'api/admin/festivals/{festival}/category/{category}',
+      batchDestroyCategory: 'api/admin/festivals/{festival}/category/{category}',
+      batchDestroyProduct: 'api/admin/festivals/{festival}/products',
     },
 
     units: {
@@ -157,7 +167,7 @@ export const apiRoutes = {
     },
 
     orders: {
-      index: 'api/admin/orders/{user?}',
+      index: 'api/admin/orders/all/{user?}',
       show: 'api/admin/orders/{order}',
       update: 'api/admin/orders/{order}',
       destroy: 'api/admin/orders/{order}',
@@ -177,11 +187,12 @@ export const apiRoutes = {
     },
 
     returnOrders: {
-      index: 'api/admin/return-orders/{user?}',
+      index: 'api/admin/return-orders/all/{user?}',
       show: 'api/admin/return-orders/{return_order}',
       update: 'api/admin/return-orders/{return_order}',
       destroy: 'api/admin/return-orders/{return_order}',
       modifyOrderItem: 'api/admin/return-orders/{return_order}/{return_order_item}/modify-item',
+      statuses: 'api/admin/return-orders/statuses',
     },
 
     reports: {
@@ -275,9 +286,6 @@ export const apiRoutes = {
       batchDestroy: 'api/admin/newsletters/batch',
     },
 
-    provinces: 'api/admin/provinces',
-    cities: 'api/admin/cities/{province}',
-
     cityPostPrices: {
       index: 'api/admin/city-post-prices',
       show: 'api/admin/city-post-prices/{city_post_price}',
@@ -303,19 +311,22 @@ export const apiRoutes = {
       update: 'api/admin/sliders/{slider}',
       destroy: 'api/admin/sliders/{slider}',
       batchDestroy: 'api/admin/sliders/batch',
+      sliderItems: 'api/admin/sliders/{slider}/slides',
       modifySliderItem: 'api/admin/sliders/{slider}/modify',
     },
 
     menus: {
       index: 'api/admin/menus',
       show: 'api/admin/menus/{menu}',
+      update: 'api/admin/menus/{menu}',
       batchDestroy: 'api/admin/menus/batch',
+      menuItems: 'api/admin/menus/{menu}/items',
       modifyMenuItem: 'api/admin/menus/{menu}/modify',
     },
 
     settings: {
       index: 'api/admin/settings/{group?}',
-      update: 'api/admin/settings/{setting}',
+      update: 'api/admin/settings',
     },
 
     files: {
@@ -334,7 +345,7 @@ export const apiRoutes = {
 
   // user routes
   user: {
-    login: 'api/user/login',
+    login: 'api/login',
     logout: 'api/user/logout',
 
     main: {
@@ -347,8 +358,9 @@ export const apiRoutes = {
       info: 'api/user/info',
       password: 'api/user/password',
       notification: {
-        index: 'api/user/notification',
-        update: 'api/user/notification/{notification}',
+        index: 'api/user/notifications',
+        update: 'api/user/notifications',
+        check: 'api/user/notifications/new',
       },
     },
 
@@ -408,6 +420,11 @@ export const apiRoutes = {
   captcha: '/captcha/api',
   showFile: '/api/files',
 
+  settings: 'api/settings',
+
+  provinces: 'api/provinces',
+  cities: 'api/cities/{province}',
+
   signup: {
     stepMobile: 'api/signup/mobile',
     stepCode: 'api/signup/code',
@@ -423,6 +440,8 @@ export const apiRoutes = {
   },
 
   main: {
+    menu: 'api/menus/{menu}',
+    categories: 'api/categories/main',
     sliderMain: 'api/sliders/main',
     sliderChosenCategories: 'api/sliders/categories',
     sliderPopularBrands: 'api/sliders/brands',
@@ -436,9 +455,15 @@ export const apiRoutes = {
   products: {
     index: 'api/products',
     show: 'api/products/{product}',
-    colorsAndSizes: 'api/products/colors-and-sizes',
-    priceRange: 'api/products/price-range',
-    dynamicFilters: 'api/products/get-dynamic-filters',
+    minifiedShow: 'api/products/{product}/minified',
+    brandsFilter: 'api/products/filter/brands',
+    colorsAndSizesFilter: 'api/products/filter/colors-and-sizes',
+    priceRangeFilter: 'api/products/filter/price-range',
+    dynamicFilters: 'api/products/filter/get-dynamic-filters',
+  },
+
+  festivals: {
+    index: 'api/festivals',
   },
 
   comments: {
@@ -450,6 +475,7 @@ export const apiRoutes = {
   blogs: {
     index: 'api/blogs',
     show: 'api/blogs/{blog}',
+    minifiedShow: 'api/blogs/{blog}/minified',
     vote: 'api/blogs/{blog}/vote',
     archive: 'api/blogs/archive',
     sliderMain: 'api/blogs/sliders/main',
@@ -463,6 +489,8 @@ export const apiRoutes = {
     report: 'api/blogs/{blog}/comments/{comment}/report',
   },
 
+  pages: 'api/pages/{page}',
+
   contactUs: 'api/contact-us',
   complaints: 'api/complaints',
   newsletters: 'api/newsletters',
@@ -472,7 +500,7 @@ export const apiRoutes = {
 export const apiReplaceParams = function (url, params) {
   if (isObject(params)) {
     for (const param in params) {
-      if (params.hasOwnProperty(param)) {
+      if (params.hasOwnProperty(param) && params[param] !== null) {
         url = url.replace(
           new RegExp('\{' + param + '\??\}', 'g'),
           params[param]

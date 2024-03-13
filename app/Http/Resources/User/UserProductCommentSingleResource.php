@@ -24,12 +24,8 @@ class UserProductCommentSingleResource extends JsonResource
             'id' => $this->id,
             'product' => new ProductShowResource($this->product),
             'condition' => [
-                'text' => CommentConditionsEnum::getTranslations($this->condition),
+                'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
                 'value' => $this->condition,
-            ],
-            'status' => [
-                'text' => CommentStatusesEnum::getTranslations($this->status),
-                'value' => $this->status,
             ],
             'pros' => $this->pros,
             'cons' => $this->cons,
@@ -37,7 +33,7 @@ class UserProductCommentSingleResource extends JsonResource
             'up_vote_count' => $this->up_vote_count,
             'down_vote_count' => $this->down_vote_count,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

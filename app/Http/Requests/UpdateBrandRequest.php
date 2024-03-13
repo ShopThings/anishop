@@ -40,11 +40,9 @@ class UpdateBrandRequest extends FormRequest
                 'array',
             ],
             'show_in_slider' => [
-                'sometimes',
                 'boolean',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

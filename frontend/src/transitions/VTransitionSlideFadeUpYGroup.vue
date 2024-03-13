@@ -4,9 +4,6 @@
   </TransitionGroup>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .slide-fade-up-y-group-enter-active {
   transition: all 0.2s ease-out;

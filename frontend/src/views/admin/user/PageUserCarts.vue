@@ -1,17 +1,15 @@
 <template>
   <base-loading-panel
-    type="content"
-    :loading="loading"
+      :loading="loading"
+      type="content"
   >
     <template #content>
       <div class="bg-white mb-3 rounded-lg border p-3">
         نمایش سبد‌های خرید کاربر -
         <span
-          v-if="user?.id"
-          class="text-teal-600"
-        >{{
-            (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
-          }}</span>
+            v-if="user?.id"
+            class="text-slate-400 text-base"
+        ><partial-username-label v-if="user" :user="user"/></span>
       </div>
 
       <partial-card class="mb-3">
@@ -25,20 +23,20 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p1.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                          alt="تصویر محصول"
+                          class="!w-24 h-auto hover:scale-95 transition"
+                          lazy-src="/src/assets/products/p1.jpg"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
@@ -53,9 +51,9 @@
                       <span class="text-gray-600 ml-2">رنگ:</span>
                       قهوه‌ای تیره
                       <span
-                        v-tooltip.top="'قهوه‌ای تیره'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -71,20 +69,20 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p2.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                          alt="تصویر محصول"
+                          class="!w-24 h-auto hover:scale-95 transition"
+                          lazy-src="/src/assets/products/p2.jpg"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
@@ -99,9 +97,9 @@
                       <span class="text-gray-600 ml-2">رنگ:</span>
                       قهوه‌ای تیره
                       <span
-                        v-tooltip.top="'قهوه‌ای تیره'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -117,20 +115,20 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p3.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                          alt="تصویر محصول"
+                          class="!w-24 h-auto hover:scale-95 transition"
+                          lazy-src="/src/assets/products/p3.jpg"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       ماوس آبکی و مسخره‌ای که خیلی قیمت نداره ولی میتونی هر وقت خراب شد یکیشو
                       بگیری چون ارزونه مثلا
@@ -146,9 +144,9 @@
                       <span class="text-gray-600 ml-2">رنگ:</span>
                       قرمز
                       <span
-                        v-tooltip.top="'قرمز'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #e44444;"
+                          v-tooltip.top="'قرمز'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #e44444;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -178,20 +176,20 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p1.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                          alt="تصویر محصول"
+                          class="!w-24 h-auto hover:scale-95 transition"
+                          lazy-src="/src/assets/products/p1.jpg"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
@@ -206,9 +204,9 @@
                       <span class="text-gray-600 ml-2">رنگ:</span>
                       قهوه‌ای تیره
                       <span
-                        v-tooltip.top="'قهوه‌ای تیره'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -224,20 +222,20 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p2.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                          alt="تصویر محصول"
+                          class="!w-24 h-auto hover:scale-95 transition"
+                          lazy-src="/src/assets/products/p2.jpg"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       لپتاپ خیلی باحال و کاربردی عمو فردوس
                     </router-link>
@@ -252,9 +250,9 @@
                       <span class="text-gray-600 ml-2">رنگ:</span>
                       قهوه‌ای تیره
                       <span
-                        v-tooltip.top="'قهوه‌ای تیره'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #833406;"
+                          v-tooltip.top="'قهوه‌ای تیره'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #833406;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -270,20 +268,20 @@
                 <li class="flex flex-col md:flex-row mb-2 p-3">
                   <div class="shrink-0">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p3.jpg"
-                        class="!w-24 h-auto hover:scale-95 transition"
+                          alt="تصویر محصول"
+                          class="!w-24 h-auto hover:scale-95 transition"
+                          lazy-src="/src/assets/products/p3.jpg"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                        :to="{name: 'admin.product.detail', params: {slug: '1'}}"
+                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       ماوس آبکی و مسخره‌ای که خیلی قیمت نداره ولی میتونی هر وقت خراب شد یکیشو
                       بگیری چون ارزونه مثلا
@@ -299,9 +297,9 @@
                       <span class="text-gray-600 ml-2">رنگ:</span>
                       قرمز
                       <span
-                        v-tooltip.top="'قرمز'"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                        style="background-color: #e44444;"
+                          v-tooltip.top="'قرمز'"
+                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                          style="background-color: #e44444;"
                       ></span>
                     </div>
                     <div class="mb-2">
@@ -333,6 +331,7 @@ import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import BaseAccordion from "@/components/base/BaseAccordion.vue";
 import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const loading = ref(false)
 

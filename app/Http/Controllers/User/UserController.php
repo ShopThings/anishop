@@ -151,7 +151,7 @@ class UserController extends Controller
             return $value != $request->user()?->id;
         });
 
-        $res = $this->service->batchDeleteByIds($ids);
+        $res = $this->service->batchDeleteByIds($ids, considerDeletable: true);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

@@ -18,44 +18,44 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:title="{value}">
-              <span>{{ value.title }}</span>
+              <partial-badge-color :hex="value.color_hex" :title="value.title"/>
+
               <span
-                v-tooltip.top="{message: value.title}"
-                class="inline-block w-5 h-5 rounded-full border mr-2"
-                :style="'background-color: ' + value.color_hex + ';'"
-              ></span>
+                  v-if="value.is_starting_badge"
+                  class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs"
+              >پیش فرض</span>
             </template>
-            <template v-slot:is_starting_badge="{value}">
 
-            </template>
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:updated_at="{value}">
               <span v-if="value.updated_at" class="text-xs">{{ value.updated_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -79,6 +79,9 @@ import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
+import {BlogBadgeAPI} from "@/service/APIBlog.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -99,11 +102,6 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
-      sortable: true,
-    },
-    {
-      label: "وضعیت پیش فرض",
-      field: "is_starting_badge",
       sortable: true,
     },
     {
@@ -195,10 +193,13 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
+        if (!data.is_deletable) {
+          toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
+
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.blogBadges.destroy, {blog_badge: data.id}), {
-            method: 'DELETE',
-          }, {
+          BlogBadgeAPI.deleteById(data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -225,7 +226,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }
@@ -238,12 +239,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.blogBadges.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          BlogBadgeAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -261,29 +257,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.blogBadges.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  BlogBadgeAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

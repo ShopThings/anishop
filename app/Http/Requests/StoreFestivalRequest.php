@@ -45,7 +45,6 @@ class StoreFestivalRequest extends FormRequest
                 'after:start_at',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

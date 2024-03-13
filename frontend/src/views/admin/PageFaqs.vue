@@ -18,30 +18,47 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
+            <template v-slot:is_published="{value}">
+              <base-switch-confirmation
+                  :id="value.id"
+                  v-model="value.is_published"
+                  :api="FaqAPI"
+                  off-label="عدم انتشار"
+                  on-label="انتشار"
+                  update-key="is_published"
+                  @success="() => {datatable?.refresh()}"
+              />
+            </template>
+
+            <template v-slot:keywords="{value}">
+              <partial-table-keywords :keywords="value.keywords"/>
+            </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -63,6 +80,9 @@ import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
+import {FaqAPI} from "@/service/APIPage.js";
+import PartialTableKeywords from "@/components/partials/PartialTableKeywords.vue";
+import BaseSwitchConfirmation from "@/components/base/BaseSwitchConfirmation.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -86,14 +106,13 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "کلمات کلیدی",
-      field: "keywords",
-      sortable: true,
-    },
-    {
       label: "وضعیت نمایش",
       field: "is_published",
       sortable: true,
+    },
+    {
+      label: "کلمات کلیدی",
+      field: "keywords",
     },
     {
       label: "تاریخ ایجاد",
@@ -116,14 +135,13 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "کلمات کلیدی",
-      field: "keywords",
-      sortable: true,
-    },
-    {
       label: "وضعیت نمایش",
       field: "is_published",
       sortable: true,
+    },
+    {
+      label: "کلمات کلیدی",
+      field: "keywords",
     },
     {
       label: "تاریخ ایجاد",
@@ -179,22 +197,22 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
-        // useConfirmToast(() => {
-        //     useRequest(apiReplaceParams(apiRoutes.admin.faqs.destroy, {faq: data.id}), {
-        //         method: 'DELETE',
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelectionItem(data)
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          FaqAPI.deleteById(data.id, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -212,7 +230,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }
@@ -224,22 +242,17 @@ const selectionOperations = [
 
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiRoutes.admin.faqs.batchDestroy, {
-        //         method: 'DELETE',
-        //         data: {
-        //             ids,
-        //         },
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelection()
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          FaqAPI.deleteByIds(ids, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelection()
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -248,29 +261,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.faqs.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  FaqAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

@@ -1,34 +1,34 @@
 <template>
   <div class="border-2 border-slate-300 rounded-lg bg-white p-2 my-2">
     <partial-q-b-buttons
-      :buttons-text="{...labels.buttons, ...labels.conditions}"
-      @add="addRuleHandler"
-      @group="addGroupHandler"
-      @remove="emit('remove-group')"
-      @change-condition="emitChangeCondition"
-      :show-group-button="depth < maxDepth"
+        :buttons-text="{...labels.buttons, ...labels.conditions}"
+        :show-group-button="depth < maxDepth"
+        @add="addRuleHandler"
+        @group="addGroupHandler"
+        @remove="emit('remove-group')"
+        @change-condition="emitChangeCondition"
     />
 
     <div v-for="(q, idx) in query" :key="idx">
       <partial-q-b-group
-        v-if="q.children"
-        :query="q.children"
-        :columns="columns"
-        :labels="labels"
-        :dragging="dragging"
-        :depth="depth + 1"
-        :max-depth="maxDepth"
-        @remove-group="removeHandler(idx)"
-        @change-condition="changeConditionHandler(idx, $event)"
+          v-if="q.children"
+          :columns="columns"
+          :depth="depth + 1"
+          :dragging="dragging"
+          :labels="labels"
+          :max-depth="maxDepth"
+          :query="q.children"
+          @remove-group="removeHandler(idx)"
+          @change-condition="changeConditionHandler(idx, $event)"
       />
       <partial-q-b-rule
-        v-else
-        v-model="q.rule"
-        :operators="labels.operators"
-        :columns="columns"
-        :buttons-text="{...labels.buttons, ...labels.conditions}"
-        :operators-text="{...labels.operators}"
-        @remove="removeHandler(idx)"
+          v-else
+          v-model="q.rule"
+          :buttons-text="{...labels.buttons, ...labels.conditions}"
+          :columns="columns"
+          :operators="labels.operators"
+          :operators-text="{...labels.operators}"
+          @remove="removeHandler(idx)"
       />
     </div>
   </div>

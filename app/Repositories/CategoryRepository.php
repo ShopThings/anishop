@@ -35,10 +35,12 @@ class CategoryRepository extends Repository implements CategoryRepositoryInterfa
         $order = $filter->getOrder();
 
         $query = $this->model->newQuery();
-        $query->when($search, function (Builder $query, string $search) {
+        $query->when($search, function (Builder $query, string $search) use ($filter) {
             $query
-                ->whereHas('parent', function ($q) use ($search) {
-                    $q->orWhereLike('escaped_name', $search);
+                ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                    $q->orWhereHas('parent', function ($q) use ($search) {
+                        $q->whereLike('escaped_name', $search);
+                    });
                 })
                 ->orWhereLike('categories.escaped_name', $search);
         });

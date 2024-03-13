@@ -4,7 +4,6 @@ namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\ProductAttributeValueShowResource;
-use App\Http\Resources\Showing\ProductShowResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -26,7 +25,7 @@ class ProductAttributeProductResource extends JsonResource
             'product_attribute_product' => $this->productAttr->attrValues->productAttrValues,
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

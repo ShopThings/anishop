@@ -4,9 +4,6 @@
   </Transition>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .scale-up-enter-active,
 .scale-up-leave-active {

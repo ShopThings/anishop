@@ -1,21 +1,21 @@
 <template>
   <div
-    v-if="showSearch || (order && order.length)"
-    class="pb-3 flex flex-col"
+      v-if="showSearch || (order && order.length)"
+      class="pb-3 flex flex-col"
   >
     <div v-if="showSearch" class="grow">
       <base-datatable-search
-        class="!p-0"
-        :show-remove-filter-button-on-input="true"
-        :show-refresh-button="false"
-        @search="searchHandler"
-        @clear-filter="clearSearchHandler"
-        @refresh="refreshSearchHandler"
+          :show-refresh-button="false"
+          :show-remove-filter-button-on-input="true"
+          class="!p-0"
+          @refresh="refreshSearchHandler"
+          @search="searchHandler"
+          @clear-filter="clearSearchHandler"
       />
     </div>
     <div
-      v-if="order && order.length"
-      class="mt-3 w-full sm:mt-0"
+        v-if="order && order.length"
+        class="mt-3 w-full sm:mt-0"
     >
       <div class="hidden md:flex md:items-center md:gap-2">
         <div class="font-iranyekan-light text-sm">
@@ -24,16 +24,16 @@
 
         <ul class="flex items-center gap-2.5 grow">
           <li
-            v-for="o in order"
-            :key="o.id"
+              v-for="o in order"
+              :key="o.id"
           >
             <button
-              type="button"
-              :class="[
-                                o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold' : 'hover:text-opacity-80',
-                            ]"
-              class="border-b-2 border-transparent py-2 text-sm text-black"
-              @click="changeOrderHandler(o)"
+                :class="[
+                    o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
+                ]"
+                class="border-b-2 border-transparent py-2 text-sm text-black"
+                type="button"
+                @click="changeOrderHandler(o)"
             >
               {{ o.text }}
             </button>
@@ -43,79 +43,74 @@
 
       <div class="w-full sm:w-48 md:hidden mr-auto">
         <base-select
-          class="bg-white"
-          options-text="text"
-          options-key="id"
-          :options="order"
-          :selected="selectedOrder"
-          @change="changeOrderHandler"
+            :options="order"
+            :selected="selectedOrder"
+            class="bg-white"
+            options-key="id"
+            options-text="text"
+            @change="changeOrderHandler"
         />
       </div>
     </div>
   </div>
 
   <slot
-    name="BeforeItemsPanel"
-    :total="total"
-    :page="currentPage"
-    :maxPage="maxPage"
-    :perPage="+props.perPage"
-    :offset="offset"
+      :maxPage="maxPage"
+      :offset="offset"
+      :page="currentPage"
+      :perPage="+props.perPage"
+      :total="total"
+      name="BeforeItemsPanel"
   >
-    <div
-      v-if="showPaginationDetail"
-      class="flex items-center justify-end gap-4 text-slate-400 px-3 pb-3 divide-x-2 divide-x-reverse divide-slate-200"
-    >
-      <div>
-        <span class="ml-1.5 text-sm font-iranyekan-light">نمایش</span>
-        <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(offset + 1) }}</span>
-        <span class="mx-1.5 text-sm font-iranyekan-light">تا</span>
-        <span class="font-iranyekan-bold">{{
-            formatPriceLikeNumber(offset + Math.min(items.length, props.perPage))
-          }}</span>
-      </div>
-      <div class="pr-3">
-        <span class="ml-1.5 text-sm font-iranyekan-light">صفحه</span>
-        <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(currentPage) }}</span>
-        <span class="mx-1.5 text-sm font-iranyekan-light">از</span>
-        <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(maxPage) }}</span>
-      </div>
-      <div class="pr-3">
-        <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(total) }}</span>
-        <span class="mr-1 text-sm font-iranyekan-light">مورد</span>
-      </div>
-    </div>
+    <partial-paginator-pagniation-info
+        v-if="showPaginationDetail"
+        :offset="offset"
+        :per-page="props.perPage"
+        :current-page="currentPage"
+        :max-page="maxPage"
+        :total="total"
+        :items-length="items?.length || 0"
+    />
   </slot>
 
-  <slot v-if="!actualItems.length" name="empty"></slot>
-  <div v-else :class="containerClass">
-    <div
-      v-if="!loading"
-      v-for="(item, idx) of actualItems"
-      :key="idx + '_1'"
-      :class="itemContainerClass"
-    >
-      <slot name="item" :item="item"></slot>
-    </div>
-    <div
-      v-else
-      v-for="idx in perPage"
-      :key="idx + '_2'"
-      :class="itemContainerClass"
-    >
-      <slot name="loading" :index="idx"></slot>
-    </div>
+  <div ref="itemsContainerRef">
+    <VTransitionSlideFadeDownY mode="out-in">
+      <div v-if="!actualItems.length && !isLoading && !loading">
+        <slot name="empty"></slot>
+      </div>
+      <div
+          v-else
+          :class="containerClass"
+      >
+        <div
+            v-for="(item, idx) of actualItems"
+            v-if="!loading && !isLoading"
+            :key="idx + '_1'"
+            :class="itemContainerClass"
+        >
+          <slot :item="item" name="item"></slot>
+        </div>
+        <div
+            v-for="idx in perPage"
+            v-else
+            :key="idx + '_2'"
+            :class="itemContainerClass"
+        >
+          <slot :index="idx" name="loading"></slot>
+        </div>
+      </div>
+    </VTransitionSlideFadeDownY>
   </div>
 
   <div v-if="showPagination && maxPage > 1" class="mt-3">
     <base-pagination
-      :theme="paginationTheme"
-      :next-page="nextPage"
-      :move-page="movePage"
-      :prev-page="prevPage"
-      v-model:max-page="maxPage"
-      v-model:paging="paging"
-      v-model:current-page="currentPage"
+        v-model:current-page="currentPage"
+        v-model:max-page="maxPage"
+        v-model:paging="paging"
+        :move-page="movePage"
+        :next-page="nextPage"
+        :prev-page="prevPage"
+        :theme="paginationTheme"
     />
   </div>
 </template>
@@ -128,12 +123,18 @@ import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
 import BasePagination from "./BasePagination.vue";
 import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {apiReplaceParams} from "@/router/api-routes.js";
+import isObject from "lodash.isobject";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
 
 const props = defineProps({
   containerClass: String,
   itemContainerClass: String,
   items: Array,
   path: String,
+  pathReplacementParams: Object,
+  extraSearchParams: Object,
   currentPage: {
     type: Number,
     default: 1,
@@ -142,10 +143,8 @@ const props = defineProps({
     type: Number,
     default: 15,
   },
-  isLocal: {
-    type: Boolean,
-    default: false,
-  },
+  // to control show loader from outside of component(local loading purposes)
+  isLoading: Boolean,
   order: {
     type: Array,
     default: () => [],
@@ -166,9 +165,15 @@ const props = defineProps({
   },
   showPaginationDetail: Boolean,
   paginationTheme: String,
+  //
+  scrollMarginTop: {
+    type: Number,
+    default: 0,
+  },
 })
-const emit = defineEmits(['update:items', 'update:searchText'])
+const emit = defineEmits(['update:items', 'update:searchText', 'order-changed'])
 
+const itemsContainerRef = ref(null)
 const loading = ref(true)
 
 const actualItems = ref([])
@@ -176,7 +181,7 @@ const total = ref(props.items?.length || 0)
 
 const currentPage = ref(1)
 const maxPage = computed(() => {
-  if (total.value <= 0) return 0
+  if (total.value <= 0) return 1
 
   let lastPage = Math.floor(total.value / props.perPage)
   let mod = total.value % props.perPage
@@ -236,6 +241,9 @@ watch(() => props.order, () => {
 })
 
 //-------------------------------
+watch([() => props.extraSearchParams, () => props.path, () => props.items], () => {
+  goToPage(1)
+})
 
 //-------------------------------
 // Search operations
@@ -263,22 +271,22 @@ function refreshSearchHandler() {
 }
 
 //-------------------------------
-
-//-------------------------------
 // Order operations
 //-------------------------------
 function changeOrderHandler(selected) {
+  if (selected.id === selectedOrder.value.id) return
+
+  emit('order-changed', selected)
   selectedOrder.value = selected
   goToPage(currentPage.value)
 }
 
 //-------------------------------
-
-watch([currentPage, () => props.path, () => props.items], () => {
+watch(currentPage, () => {
   goToPage(currentPage.value)
 })
 
-let localLoadingTimeout
+let localLoadingTimeout = null
 
 function goToPage(page) {
   let params = {
@@ -290,6 +298,11 @@ function goToPage(page) {
   if (selectedOrder.value) {
     params.order = selectedOrder.value.key
     params.sort = selectedOrder.value.sort
+  }
+
+  if (isObject(props.extraSearchParams) && Object.keys(props.extraSearchParams).length) {
+    params = Object.assign({}, props.extraSearchParams, params)
+    props.extraSearchParams.order = params.order
   }
 
   loading.value = true
@@ -326,18 +339,33 @@ function goToPage(page) {
 
       localLoadingTimeout = setTimeout(() => {
         loading.value = false
+        goToTop()
+
         resolve()
       }, 1000)
     })
   } else if (props.path && props.path.trim() !== '') {
-    useRequest(props.path, {params}, {
-      success: (response) => {
-        actualItems.value = response.data || []
-        total.value = response.meta.total || 0
+    if (isObject(props.pathReplacementParams)) {
+      useRequest(apiReplaceParams(props.path, props.pathReplacementParams), {params}, {
+        success: (response) => {
+          actualItems.value = response.data || []
+          total.value = response.meta.total || 0
 
-        loading.value = false
-      },
-    })
+          loading.value = false
+          goToTop()
+        },
+      })
+    } else {
+      useRequest(props.path, {params}, {
+        success: (response) => {
+          actualItems.value = response.data || []
+          total.value = response.meta.total || 0
+
+          loading.value = false
+          goToTop()
+        },
+      })
+    }
   } else {
     actualItems.value = []
     loading.value = false
@@ -347,25 +375,43 @@ function goToPage(page) {
 goToPage(currentPage.value)
 
 function prevPage() {
-  if (currentPage.value - 1 > 0)
+  if (currentPage.value - 1 > 0) {
     currentPage.value--
+  }
 }
 
 function movePage(page) {
-  if (page > 0 && page <= maxPage.value)
+  if (page > 0 && page <= maxPage.value) {
     currentPage.value = page
+  }
 }
 
 function nextPage() {
-  if (currentPage.value + 1 <= maxPage.value)
+  if (currentPage.value + 1 <= maxPage.value) {
     currentPage.value++
+  }
+}
+
+function goToTop() {
+  if (!itemsContainerRef.value) return
+
+  // Calculate the position to scroll to (slightly above the target element)
+  const scrollToY = itemsContainerRef.value.getBoundingClientRect().top + window.scrollY + props.scrollMarginTop;
+
+  // Scroll to the calculated position
+  window.scrollTo({
+    top: scrollToY,
+    behavior: 'smooth'
+  });
 }
 
 onBeforeUnmount(() => {
   clearTimeout(localLoadingTimeout)
+  localLoadingTimeout = null
 })
 
 defineExpose({
   goToPage,
+  goToTop,
 })
 </script>

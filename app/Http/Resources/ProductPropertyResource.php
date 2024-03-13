@@ -36,10 +36,10 @@ class ProductPropertyResource extends JsonResource
                 ? Carbon::parse($this->discounted_until)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'discounted_from' => $this->discounted_from
-                ? verta($this->discounted_from)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->discounted_from)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'discounted_until' => $this->discounted_until
-                ? verta($this->discounted_until)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->discounted_until)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'tax_rate' => $this->tax_rate,
             'stock_count' => $this->stock_count,

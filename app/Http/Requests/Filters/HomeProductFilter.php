@@ -14,6 +14,11 @@ class HomeProductFilter extends Filter
     protected ?int $brand = null;
 
     /**
+     * @var array
+     */
+    protected array $brands = [];
+
+    /**
      * @var int|null
      */
     protected ?int $category = null;
@@ -22,6 +27,11 @@ class HomeProductFilter extends Filter
      * @var ProductOrderTypesEnum
      */
     protected ProductOrderTypesEnum $productOrder = ProductOrderTypesEnum::NEWEST;
+
+    /**
+     * @var array
+     */
+    protected array $priceRange = [];
 
     /**
      * @var bool
@@ -43,16 +53,38 @@ class HomeProductFilter extends Filter
      */
     protected ?array $dynamicFilters = null;
 
-    public function __construct(Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
     {
-        parent::__construct($request);
+        parent::init($request);
 
         $this->setBrand($request->integer('brand'));
         $this->setCategory($request->integer('category'));
         $this->setProductOrder($request->enum('order', ProductOrderTypesEnum::class));
-        $this->setIsSpecial($request->boolean('is_spacial'));
+        $this->setIsSpecial($request->boolean('is_special'));
         $this->setOnlyAvailable($request->boolean('only_available'));
         $this->setDynamicFilters($request->input('dynamic_filters'));
+
+        // set brands
+        $brands = $request->input('brands', []);
+        if (is_array($brands) || is_numeric($brands)) {
+            $this->setBrands(is_array($brands) ? $brands : [$brands]);
+        }
+
+        // set price range
+        $minPrice = $request->integer('min_price');
+        $maxPrice = $request->integer('max_price');
+        if ($minPrice !== 0 || $maxPrice !== 0 && $minPrice <= $maxPrice) {
+            $this->setPriceRange([$minPrice, $maxPrice]);
+        }
+
+        $priceRange = $request->input('price_range', []);
+        if (isset($priceRange[0], $priceRange[1])) {
+            $this->setPriceRange([$priceRange[0], $priceRange[1]]);
+        }
+        //
     }
 
     /**
@@ -70,6 +102,31 @@ class HomeProductFilter extends Filter
     public function setBrand(?int $brand): static
     {
         $this->brand = $brand && $brand >= 1 ? $brand : null;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getBrands(): array
+    {
+        return $this->brands;
+    }
+
+    /**
+     * @param array $brands
+     * @return static
+     */
+    public function setBrands(array $brands): static
+    {
+        $temp = [];
+        foreach ($brands as $brand) {
+            if (is_numeric($brand) && $brand >= 1) {
+                $temp[] = $brand;
+            }
+        }
+        $this->brands = $temp;
+
         return $this;
     }
 
@@ -107,6 +164,24 @@ class HomeProductFilter extends Filter
     {
         if (null !== $productOrder) $this->productOrder = $productOrder;
         else $this->productOrder = ProductOrderTypesEnum::NEWEST;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPriceRange(): array
+    {
+        return $this->priceRange;
+    }
+
+    /**
+     * @param array $range
+     * @return static
+     */
+    public function setPriceRange(array $range): static
+    {
+        $this->priceRange = $range;
         return $this;
     }
 
@@ -173,12 +248,12 @@ class HomeProductFilter extends Filter
      * It Should give following structure:
      * <pre>
      * [
-     * 'attribute_1' => [ // attribute means 'attribute_id'
-     * 'value-1', // selected value of attribute(actually it is 'attribute_value')
-     * 'value-2', // more than one value is OPTIONAL and is mostly for multiselect attributes
-     * ...
-     * ],
-     * ...
+     *   'attribute_1' => [ // attribute means 'attribute_id'
+     *     'value-1', // selected value of attribute(actually it is 'attribute_value')
+     *     'value-2', // more than one value is OPTIONAL and is mostly for multiselect attributes
+     *     ...
+     *   ],
+     *   ...
      * ]
      * </pre>
      *
@@ -207,7 +282,9 @@ class HomeProductFilter extends Filter
         parent::reset();
 
         $this->brand = null;
+        $this->brands = [];
         $this->category = null;
+        $this->priceRange = [];
         $this->productOrder = ProductOrderTypesEnum::NEWEST;
         $this->isSpecial = false;
         $this->onlyAvailable = false;

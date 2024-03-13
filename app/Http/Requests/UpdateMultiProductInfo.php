@@ -43,15 +43,12 @@ class UpdateMultiProductInfo extends FormRequest
                 'exists:' . Category::class . ',id',
             ],
             'is_available' => [
-                'sometimes',
                 'boolean',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
             'is_commenting_allowed' => [
-                'sometimes',
                 'boolean',
             ],
         ];

@@ -21,7 +21,10 @@ class ReturnOrderSingleResource extends JsonResource
     {
         $this->resource->load('user');
         $this->resource->load('order');
+        $this->resource->load('statusChanger');
+        $this->resource->load('responder');
         $this->resource->load('returnOrderItems');
+        $this->resource->load('returnOrderItems.orderItem');
 
         return [
             'id' => $this->id,
@@ -30,28 +33,38 @@ class ReturnOrderSingleResource extends JsonResource
             'description' => $this->description,
             'not_accepted_description' => $this->not_accepted_description,
             'status' => [
-                'text' => ReturnOrderStatusesEnum::getTranslations($this->status),
+                'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status] ?? '#000000',
             ],
+            'wait_for_user' => in_array($this->status, ReturnOrderStatusesEnum::getUserStatuses()),
             'seen_status' => $this->seen_status,
             'status_changed_at' => $this->status_changed_at
-                ? verta($this->status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'status_changed_by' => new UserShowResource($this->when($this->status_changed_by, $this->resource->statusChanger())),
+            'status_changed_by' => new UserShowResource($this->when(
+                $this->status_changed_by &&
+                $this->whenLoaded('statusChanger'),
+                $this->resource->status_changer
+            )),
             'order_detail' => new OrderDetailShowResource($this->order),
             'items' => ReturnOrderItemShowResource::collection($this->return_order_items),
             'responded_at' => $this->when(
                 $this->responded_at,
-                verta($this->responded_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->responded_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'responded_by' => new UserShowResource($this->when($this->responded_by, $this->resource->responder())),
+            'responded_by' => new UserShowResource($this->when(
+                $this->responded_by &&
+                $this->whenLoaded('responder'),
+                $this->resource->responder
+            )),
             'requested_at' => $this->requested_at
-                ? verta($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

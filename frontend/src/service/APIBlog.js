@@ -17,14 +17,14 @@ export const BlogBadgeAPI = Object.assign(
 )
 
 export const BlogCommentAPI = {
-  fetchById(blogId, commentId, callback) {
+  fetchById(blogId, commentId, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.show, {
         blog: blogId,
         comment: commentId,
       }),
       null,
-      callback
+      callbacks
     )
   },
 
@@ -36,7 +36,18 @@ export const BlogCommentAPI = {
     )
   },
 
-  updateById(blogId, commentId, data, callback) {
+  create(blogId, data, callbacks) {
+    useRequest(
+      apiReplaceParams(apiRoutes.admin.blogComments.store, {blog: blogId}),
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  updateById(blogId, commentId, data, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.update, {
         blog: blogId,
@@ -46,18 +57,18 @@ export const BlogCommentAPI = {
         method: 'PUT',
         data,
       },
-      callback
+      callbacks
     )
   },
 
-  deleteById(blogId, commentId, callback) {
+  deleteById(blogId, commentId, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.destroy, {
         blog: blogId,
         comment: commentId,
       }),
       {method: 'DELETE'},
-      callback
+      callbacks
     )
   },
 

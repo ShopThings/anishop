@@ -1,56 +1,56 @@
 <template>
-  <Popover ref="container" class="relative" v-slot="{close, open}">
-    <PopoverButton ref="button" as="button" :class="btnClass">
-      <slot name="button" :close="close" :open="open"></slot>
+  <Popover ref="container" v-slot="{close, open}" class="relative">
+    <PopoverButton ref="button" :class="btnClass" as="button">
+      <slot :close="close" :open="open" name="button"></slot>
     </PopoverButton>
     <TransitionChild
-      as="template"
-      enter="duration-300 ease-out"
-      enter-from="opacity-0"
-      enter-to="opacity-100"
-      leave="duration-200 ease-in"
-      leave-from="opacity-100"
-      leave-to="opacity-0"
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
     >
       <PopoverOverlay
-        class="fixed z-[19] inset-0 bg-black bg-opacity-25"
-        @click.self="close"
+          class="fixed z-[19] inset-0 bg-black bg-opacity-25"
+          @click.self="close"
       />
     </TransitionChild>
 
     <template v-if="position === 'left'">
       <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0 -translate-x-20"
-        enter-to="opacity-100 translate-x-0"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100 translate-x-0"
-        leave-to="opacity-0 -translate-x-20"
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0 -translate-x-20"
+          enter-to="opacity-100 translate-x-0"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100 translate-x-0"
+          leave-to="opacity-0 -translate-x-20"
       >
         <PopoverPanel
-          class="fixed z-20 bg-white w-4/5 h-screen top-0 left-0 sm:w-80"
-          :class="panelClass"
+            :class="panelClass"
+            class="fixed z-20 bg-white w-4/5 h-screen top-0 left-0 sm:w-80"
         >
-          <slot name="panel" :close="close" :open="open"></slot>
+          <slot :close="close" :open="open" name="panel"></slot>
         </PopoverPanel>
       </TransitionChild>
     </template>
     <template v-else>
       <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0 translate-x-20"
-        enter-to="opacity-100 translate-x-0"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100 translate-x-0"
-        leave-to="opacity-0 translate-x-20"
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0 translate-x-20"
+          enter-to="opacity-100 translate-x-0"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100 translate-x-0"
+          leave-to="opacity-0 translate-x-20"
       >
         <PopoverPanel
-          class="fixed z-20 bg-white w-4/5 h-screen top-0 right-0 sm:w-80"
-          :class="panelClass"
+            :class="panelClass"
+            class="fixed z-20 bg-white w-4/5 h-screen top-0 right-0 sm:w-80"
         >
-          <slot name="panel" :close="close" :open="open"></slot>
+          <slot :close="close" :open="open" name="panel"></slot>
         </PopoverPanel>
       </TransitionChild>
     </template>

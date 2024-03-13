@@ -7,8 +7,9 @@
       <template v-else>
         <div class="px-3 py-6">
           <component :is="component"/>
-          <span v-if="loadingText"
-                class="text-center block mt-3 text-gray-400 text-sm">{{ loadingText }}</span>
+          <div v-if="loadingText"
+               class="text-center mt-5 text-gray-400 text-sm">{{ loadingText }}
+          </div>
         </div>
       </template>
     </div>

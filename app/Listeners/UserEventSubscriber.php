@@ -40,7 +40,13 @@ class UserEventSubscriber extends AbstractListener
 
         if (!$model instanceof Setting) return false;
 
-        $event->user->notify((new UserRegisteredNotification($event->user, $model, SMSTypesEnum::SIGNUP))->afterCommit());
+        $event->user->notify(
+            (new UserRegisteredNotification(
+                $event->user,
+                $model,
+                SMSTypesEnum::SIGNUP)
+            )->afterCommit()
+        );
         return true;
     }
 

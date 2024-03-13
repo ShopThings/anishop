@@ -1,33 +1,34 @@
 <template>
-  <BaseMenu :open="open" @open="() => emit('open')"
-            btnClass="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
+  <BaseMenu :open="open"
+            btnClass="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center"
+            @open="() => emit('open')">
     <template #button>
             <span
-              class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
+                class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">2</span>
 
       <ShoppingBagIconOutline class="h-6 w-6 text-slate-400"/>
       <ChevronDownIcon class="h-3 w-3 mr-1 text-slate-600"/>
     </template>
     <template #items>
       <MenuItems
-        class="absolute z-[10] mt-3 w-full sm:w-[22rem] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-        :class="[
-                    position === 'right' ? 'right-0 origin-top-left' : 'left-0 origin-top-right',
-                ]"
+          :class="[
+              position === 'right' ? 'right-0 origin-top-left' : 'left-0 origin-top-right',
+          ]"
+          class="absolute z-[10] mt-3 w-full sm:w-[22rem] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
       >
         <div v-if="dummy" class="flex flex-col">
           <div class="flex flex-col divide-y divide-gray-100 text-center max-h-72 pl-2 my-custom-scrollbar">
             <div class="flex p-3 pl-10 relative">
-              <router-link to="#"
-                           class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
+              <router-link class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0"
+                           to="#">
                 <base-lazy-image
-                  class="w-full h-full object-contain group-hover:scale-110 transition"
-                  lazy-src="/src/assets/products/p1.jpg"
-                  alt="product 1"
+                    alt="product 1"
+                    class="w-full h-full object-contain group-hover:scale-110 transition"
+                    lazy-src="/src/assets/products/p1.jpg"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
-                <router-link to="#" class="mr-3 mt-2 text-sm hover:opacity-75 transition">
+                <router-link class="mr-3 mt-2 text-sm hover:opacity-75 transition" to="#">
                   کیبورد خیلی خفن گیمینگ
                 </router-link>
                 <ul class="mr-3 mt-4 w-full text-xs flex items-center divide-x divide-x-reverse">
@@ -46,16 +47,16 @@
               <base-button-close class="absolute top-0 left-0 translate-x-1/4 translate-y-3/4"/>
             </div>
             <div class="flex p-3 pl-10 relative">
-              <router-link to="#"
-                           class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
+              <router-link class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0"
+                           to="#">
                 <base-lazy-image
-                  class="w-full h-full object-contain group-hover:scale-110 transition"
-                  lazy-src="/src/assets/products/p2.jpg"
-                  alt="product 2"
+                    alt="product 2"
+                    class="w-full h-full object-contain group-hover:scale-110 transition"
+                    lazy-src="/src/assets/products/p2.jpg"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
-                <router-link to="#" class="mr-3 mt-2 text-sm hover:opacity-75 transition">
+                <router-link class="mr-3 mt-2 text-sm hover:opacity-75 transition" to="#">
                   کیبورد خیلی خفن گیمینگ
                 </router-link>
                 <ul class="mr-3 mt-4 w-full text-xs flex items-center divide-x divide-x-reverse">
@@ -74,16 +75,16 @@
               <base-button-close class="absolute top-0 left-0 translate-x-1/4 translate-y-3/4"/>
             </div>
             <div class="flex p-3 pl-10 relative">
-              <router-link to="#"
-                           class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
+              <router-link class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0"
+                           to="#">
                 <base-lazy-image
-                  class="w-full h-full object-contain group-hover:scale-110 transition"
-                  lazy-src="/src/assets/products/p3.jpg"
-                  alt="product 3"
+                    alt="product 3"
+                    class="w-full h-full object-contain group-hover:scale-110 transition"
+                    lazy-src="/src/assets/products/p3.jpg"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
-                <router-link to="#" class="mr-3 mt-2 text-sm hover:opacity-75 transition">
+                <router-link class="mr-3 mt-2 text-sm hover:opacity-75 transition" to="#">
                   کیبورد خیلی خفن گیمینگ که این متن توی این کادر شاید جاش نشه!
                 </router-link>
                 <ul class="mr-3 mt-4 w-full text-xs flex items-center divide-x divide-x-reverse">
@@ -102,16 +103,16 @@
               <base-button-close class="absolute top-0 left-0 translate-x-1/4 translate-y-3/4"/>
             </div>
             <div class="flex p-3 pl-10 relative">
-              <router-link to="#"
-                           class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
+              <router-link class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0"
+                           to="#">
                 <base-lazy-image
-                  class="w-full h-full object-contain group-hover:scale-110 transition"
-                  lazy-src="/src/assets/products/p4.jpg"
-                  alt="product 4"
+                    alt="product 4"
+                    class="w-full h-full object-contain group-hover:scale-110 transition"
+                    lazy-src="/src/assets/products/p4.jpg"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
-                <router-link to="#" class="mr-3 mt-2 text-sm hover:opacity-75 transition">
+                <router-link class="mr-3 mt-2 text-sm hover:opacity-75 transition" to="#">
                   کیبورد خیلی خفن گیمینگ
                 </router-link>
                 <ul class="mr-3 mt-4 w-full text-xs flex items-center divide-x divide-x-reverse">
@@ -130,16 +131,16 @@
               <base-button-close class="absolute top-0 left-0 translate-x-1/4 translate-y-3/4"/>
             </div>
             <div class="flex p-3 pl-10 relative">
-              <router-link to="#"
-                           class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0">
+              <router-link class="h-24 w-[5rem] rounded-lg overflow-hidden border group shrink-0"
+                           to="#">
                 <base-lazy-image
-                  class="w-full h-full object-contain group-hover:scale-110 transition"
-                  lazy-src="/src/assets/products/p5.jpg"
-                  alt="product 5"
+                    alt="product 5"
+                    class="w-full h-full object-contain group-hover:scale-110 transition"
+                    lazy-src="/src/assets/products/p5.jpg"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
-                <router-link to="#" class="mr-3 mt-2 text-sm hover:opacity-75 transition">
+                <router-link class="mr-3 mt-2 text-sm hover:opacity-75 transition" to="#">
                   کیبورد خیلی خفن گیمینگ
                 </router-link>
                 <ul class="mr-3 mt-4 w-full text-xs flex items-center divide-x divide-x-reverse">
@@ -179,9 +180,9 @@
         </div>
 
         <base-popover-side
-          panel-class="py-3 pl-6 pr-3"
-          btn-class="w-full"
-          position="left"
+            btn-class="w-full"
+            panel-class="py-3 pl-6 pr-3"
+            position="left"
         >
           <template #button>
             <base-button class="bg-slate-100 !text-black rounded-t-none w-full text-sm">
@@ -194,8 +195,10 @@
                             <span class="mr-auto text-sm text-gray-400">
                                 سبد‌های خرید
                             </span>
-              <button @click="close" type="button"
-                      class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all">
+              <button
+                  class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
+                  type="button"
+                  @click="close">
                 <XMarkIcon class="h-6 w-6"/>
               </button>
             </div>

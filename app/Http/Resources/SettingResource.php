@@ -15,11 +15,11 @@ class SettingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'name' => $this->name,
-            'group_name' => $this->group_name,
-            'value' => $this->value,
-            'min_value' => $this->min_value,
-            'max_value' => $this->max_value,
+            'name' => $this['name'],
+            'group_name' => $this['group_name'],
+            'value' => $this['value'],
+            'min_value' => $this['min_value'],
+            'max_value' => $this['max_value'],
         ];
     }
 }

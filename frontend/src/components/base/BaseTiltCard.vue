@@ -1,11 +1,11 @@
 <template>
   <div
-    class="tilt-card transition duration-[50ms]"
-    ref="tiltCard"
-    @mousemove="handleCardMouseMovement"
-    @mouseleave="handleCardMouseLeave"
-    @touchmove="handleCardMouseMovement"
-    @touchend="handleCardMouseLeave"
+      ref="tiltCard"
+      class="tilt-card transition duration-[50ms]"
+      @mouseleave="handleCardMouseLeave"
+      @mousemove="handleCardMouseMovement"
+      @touchend="handleCardMouseLeave"
+      @touchmove="handleCardMouseMovement"
   >
     <slot></slot>
   </div>
@@ -39,7 +39,6 @@ function handleCardMouseMovement(e) {
     pageX = e.changedTouches[0].pageX
     pageY = e.changedTouches[0].pageY
   }
-
 
   const target = tiltCard.value
   const xPos = ((pageX - target.offsetLeft) / target.offsetWidth) - 0.5;

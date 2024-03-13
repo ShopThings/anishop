@@ -14,7 +14,6 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class ColorService extends Service implements ColorServiceInterface
 {

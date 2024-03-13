@@ -18,19 +18,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:image="{value}">
               <partial-show-image :item="value.image"/>
@@ -55,10 +55,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -226,6 +226,11 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
+        if (!data.is_deletable) {
+          toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
+
         useConfirmToast(() => {
           PaymentMethodAPI.deleteById(data.id, {
             success() {
@@ -254,7 +259,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

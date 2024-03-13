@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Enums\SMS\SMSSenderTypesEnum;
 use App\Enums\SMS\SMSTypesEnum;
-use App\Repositories\Contracts\StaticPageRepositoryInterface;
+use App\Repositories\Contracts\SmsLogRepositoryInterface;
 use App\Services\Contracts\SmsLogServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 class SmsLogService extends Service implements SmsLogServiceInterface
 {
     public function __construct(
-        protected StaticPageRepositoryInterface $repository
+        protected SmsLogRepositoryInterface $repository
     )
     {
     }

@@ -50,37 +50,37 @@ class ReturnOrderRequestController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param ReturnOrderRequest $returnOrderRequest
+     * @param ReturnOrderRequest $returnOrder
      * @return ReturnOrderSingleResource
      * @throws AuthorizationException
      */
-    public function show(ReturnOrderRequest $returnOrderRequest): ReturnOrderSingleResource
+    public function show(ReturnOrderRequest $returnOrder): ReturnOrderSingleResource
     {
-        $this->authorize('view', $returnOrderRequest);
-        return new ReturnOrderSingleResource($returnOrderRequest);
+        $this->authorize('view', $returnOrder);
+        return new ReturnOrderSingleResource($returnOrder);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateReturnOrderRequest $request
-     * @param ReturnOrderRequest $returnOrderRequest
+     * @param ReturnOrderRequest $returnOrder
      * @return ReturnOrderSingleResource|JsonResponse
      * @throws AuthorizationException
      */
     public function update(
         UpdateReturnOrderRequest $request,
-        ReturnOrderRequest       $returnOrderRequest
+        ReturnOrderRequest $returnOrder
     ): ReturnOrderSingleResource|JsonResponse
     {
-        $this->authorize('update', $returnOrderRequest);
+        $this->authorize('update', $returnOrder);
 
         $validated = $request->validated([
             'not_accepted_description',
             'status',
             'seen_status',
         ]);
-        $model = $this->service->updateById($returnOrderRequest->id, $validated);
+        $model = $this->service->updateById($returnOrder->id, $validated);
 
         if (!is_null($model)) {
             return new ReturnOrderSingleResource($model);
@@ -95,12 +95,12 @@ class ReturnOrderRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, ReturnOrderRequest $returnOrderRequest): JsonResponse
+    public function destroy(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
     {
-        $this->authorize('delete', $returnOrderRequest);
+        $this->authorize('delete', $returnOrder);
 
-        $permanent = $request->user()->id === $returnOrderRequest->user()?->id;
-        $res = $this->service->deleteById($returnOrderRequest->id, $permanent);
+        $permanent = $request->user()->id === $returnOrder->user()?->id;
+        $res = $this->service->deleteById($returnOrder->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
@@ -112,21 +112,21 @@ class ReturnOrderRequestController extends Controller
 
     /**
      * @param UpdateReturnOrderItemRequest $request
-     * @param ReturnOrderRequest $returnOrderRequest
-     * @param ReturnOrderRequestItem $returnOrderRequestItem
+     * @param ReturnOrderRequest $returnOrder
+     * @param ReturnOrderRequestItem $returnOrderItem
      * @return JsonResponse
      * @throws AuthorizationException
      */
     public function modifyItem(
         UpdateReturnOrderItemRequest $request,
-        ReturnOrderRequest           $returnOrderRequest,
-        ReturnOrderRequestItem       $returnOrderRequestItem
+        ReturnOrderRequest     $returnOrder,
+        ReturnOrderRequestItem $returnOrderItem
     ): JsonResponse
     {
-        $this->authorize('update', $returnOrderRequest);
+        $this->authorize('update', $returnOrder);
 
         $validated = $request->validated('is_accepted');
-        $model = $this->service->modifyItem($returnOrderRequestItem->id, $validated);
+        $model = $this->service->modifyItem($returnOrderItem->id, $validated);
 
         if (!is_null($model)) {
             return response()->json([
@@ -139,5 +139,16 @@ class ReturnOrderRequestController extends Controller
                 'message' => 'خطا در ویرایش محصول مرجوعی',
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function statuses(): JsonResponse
+    {
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getStatuses(),
+        ], ResponseCodes::HTTP_OK);
     }
 }

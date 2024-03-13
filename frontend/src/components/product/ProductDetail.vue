@@ -1,83 +1,86 @@
 <template>
   <div class="flex flex-col lg:flex-row gap-3 sticky-container">
     <Vue3StickySidebar
-      class="w-full lg:w-96 xl:w-[32rem] shrink-0 mx-auto"
-      containerSelector=".sticky-container"
-      innerWrapperSelector='.sidebar__inner'
-      :top-spacing="20"
-      :bottom-spacing="20"
-      :min-width="1024"
+        :bottom-spacing="20"
+        :min-width="1024"
+        :top-spacing="20"
+        class="w-full lg:w-96 xl:w-[32rem] shrink-0 mx-auto"
+        containerSelector=".sticky-container"
+        innerWrapperSelector='.sidebar__inner'
     >
       <div class="flex flex-col">
         <div
-          v-if="showProductExtraOption"
-          class="shrink-0 p-2 bg-white shadow rounded-lg ring-1 ring-primary mb-3"
+            v-if="showProductExtraOption"
+            class="shrink-0 p-2 bg-white shadow rounded-lg ring-1 ring-primary mb-3"
         >
-          <ul class="flex items-center justify-center">
-            <li class="ml-4 flex">
+          <div class="flex items-center justify-center gap-4">
+            <div class="flex">
               <button
-                v-tooltip.bottom="'افزودن به علاقه‌مندی'"
-                class="group"
+                  v-tooltip.left="'افزودن به علاقه‌مندی'"
+                  class="group"
               >
-                <HeartIcon class="w-6 h-6 text-black group-hover:text-rose-500 transition"/>
+                <BookmarkIcon class="w-6 h-6 text-black group-hover:text-rose-500 transition"/>
               </button>
-            </li>
-            <li class="ml-4 flex">
-              <button
-                v-tooltip.bottom="'به اشتراک گذاری'"
-                class="group"
-              >
-                <ShareIcon class="w-6 h-6 text-black group-hover:text-opacity-80 transition"/>
-              </button>
-            </li>
-            <li class="flex">
-              <button
-                v-tooltip.bottom="'مقایسه کالا'"
-                class="group"
-              >
-                <ScaleIcon class="w-6 h-6 text-black group-hover:text-opacity-80 transition"/>
-              </button>
-            </li>
-          </ul>
+            </div>
+            <div class="flex items-center gap-4 mr-auto">
+              <div class="flex">
+                <button
+                    v-tooltip.right="'به اشتراک گذاری'"
+                    class="group"
+                >
+                  <ShareIcon class="w-6 h-6 text-black group-hover:text-opacity-80 transition"/>
+                </button>
+              </div>
+              <div class="flex">
+                <button
+                    v-tooltip.bottom="'مقایسه کالا'"
+                    class="group"
+                >
+                  <ScaleIcon class="w-6 h-6 text-black group-hover:text-opacity-80 transition"/>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div>
-          <div class="relative mb-3">
+          <div class="relative mb-3 mx-auto">
             <button
-              class="absolute shadow-lg top-0 left-0 translate-y-6 translate-x-6 rounded-full border bg-white p-2 w-11 h-11 group z-[2] hover:border-blue-500 hover:bg-blue-50 transition"
-              @click="onLightboxShow"
+                class="absolute shadow-lg top-0 left-0 translate-y-6 translate-x-6 rounded-full border bg-white p-2 w-11 h-11 group z-[2] hover:border-blue-500 hover:bg-blue-50 transition"
+                @click="onLightboxShow"
             >
               <MagnifyingGlassPlusIcon class="w-6 h-6 mx-auto group-hover:scale-110 transition"/>
             </button>
 
             <base-carousel
-              v-model="slides"
-              v-model:current="currentSlide"
-              :class-name="mainGallerySettings.className"
-              :breakpoints="mainGallerySettings.breakpoints"
-              :wrap-around="mainGallerySettings.wrapAround"
-              :has-navigation="mainGallerySettings.hasNavigation"
-              :effect="mainGallerySettings.effect"
-              :use-thumbnail="mainGallerySettings.useThumbnail"
+                v-model="slides"
+                v-model:current="currentSlide"
+                :breakpoints="mainGallerySettings.breakpoints"
+                :class-name="mainGallerySettings.className"
+                :effect="mainGallerySettings.effect"
+                :has-navigation="mainGallerySettings.hasNavigation"
+                :use-thumbnail="mainGallerySettings.useThumbnail"
+                :wrap-around="mainGallerySettings.wrapAround"
+                @slide-change="(index) => {currentSlide = index}"
             >
               <template #default="{slide, index}">
                 <div class="bg-white border rounded-lg lg:h-96 xl:h-[32rem]">
                   <base-lazy-image
-                    :lazy-src="slide.path"
-                    :alt="slide.name"
-                    class="rounded-lg"
+                      :alt="slide.name"
+                      :lazy-src="slide.path"
+                      class="rounded-lg"
                   />
                 </div>
               </template>
 
               <template #thumbSlide="{slide, index}">
                 <div
-                  class="bg-white border rounded-lg cursor-pointer"
+                    class="bg-white border rounded-lg cursor-pointer"
                 >
                   <base-lazy-image
-                    :lazy-src="slide.path"
-                    :alt="slide.name"
-                    class="!w-auto !h-28 rounded-lg"
+                      :alt="slide.name"
+                      :lazy-src="slide.path"
+                      class="!w-auto !h-28 rounded-lg"
                   />
                 </div>
               </template>
@@ -90,8 +93,8 @@
     <div class="grow">
       <div class="bg-white rounded-lg border px-4 py-6 relative">
         <div
-          v-if="selectedProduct && selectedProduct.is_special"
-          class="flex items-center justify-center my-3"
+            v-if="selectedProduct && selectedProduct.is_special"
+            class="flex items-center justify-center my-3"
         >
           <div class="grow h-0.5 bg-red-400 rounded-full"></div>
           <span class="mx-2 text-sm text-red-600 shrink-0">فروش ویژه</span>
@@ -104,26 +107,26 @@
 
         <template v-if="selectedProduct">
           <div
-            v-if="selectedProduct.show_coming_soon"
-            class="bg-cyan-500 py-2 px-4 rounded text-sm text-white text-center mt-3"
+              v-if="selectedProduct.show_coming_soon"
+              class="bg-cyan-500 py-2 px-4 rounded text-sm text-white text-center mt-3"
           >
             این محصول به زودی موجود می‌شود
           </div>
           <div
-            v-else-if="selectedProduct.show_call_for_more"
-            class="bg-amber-500 py-2 px-4 rounded text-sm text-white text-center mt-3"
+              v-else-if="selectedProduct.show_call_for_more"
+              class="bg-amber-500 py-2 px-4 rounded text-sm text-white text-center mt-3"
           >
             برای اطلاعات بیشتر تماس بگیرید
           </div>
           <div
-            v-else-if="!selectedProduct.is_available || selectedProduct.stock_count <= 0"
-            class="bg-rose-500 py-2 px-4 rounded text-sm text-white text-center mt-3"
+              v-else-if="!selectedProduct.is_available || selectedProduct.stock_count <= 0"
+              class="bg-rose-500 py-2 px-4 rounded text-sm text-white text-center mt-3"
           >
             اتمام موجودی
           </div>
           <div
-            v-else
-            class="flex flex-wrap mt-3 items-center"
+              v-else
+              class="flex flex-wrap mt-3 items-center"
           >
             <div class="ml-3 text-xl my-1 font-iranyekan-bold">
               {{ formatPriceLikeNumber(selectedProduct.discounted_price ?? selectedProduct.price) }}
@@ -131,10 +134,10 @@
             </div>
 
             <template
-              v-if="selectedProduct.discounted_price && selectedProduct.discounted_price < selectedProduct.price">
+                v-if="selectedProduct.discounted_price && selectedProduct.discounted_price < selectedProduct.price">
               <div class="relative ml-3 my-1">
-                                <span
-                                  class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
+                <span
+                    class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
                 <div class="text-slate-500">
                   {{ formatPriceLikeNumber(selectedProduct.price) }}
                   <span class="text-xs text-gray-400">تومان</span>
@@ -155,14 +158,14 @@
         </div>
 
         <div
-          v-if="currentMainProduct"
-          class="mt-3 flex flex-wrap items-center bg-blue-50 py-1 px-2"
+            v-if="currentMainProduct"
+            class="mt-3 flex flex-wrap items-center bg-blue-50 py-1 px-2"
         >
           <div class="flex items-center">
             <span class="text-xs ml-2">برند:</span>
             <router-link
-              :to="{name: 'search', query: {brand: currentMainProduct.brand_id}}"
-              class="text-sm text-blue-500 hover:text-opacity-80 transition"
+                :to="{name: 'search', query: {brand: currentMainProduct.brand_id}}"
+                class="text-sm text-blue-500 hover:text-opacity-80 transition"
             >
               {{ currentMainProduct.brand.name }}
             </router-link>
@@ -171,8 +174,8 @@
           <div class="flex items-center">
             <span class="text-xs ml-2">دسته‌بندی:</span>
             <router-link
-              :to="{name: 'search', query: {category: currentMainProduct.category_id}}"
-              class="text-sm text-blue-500 hover:text-opacity-80 transition"
+                :to="{name: 'search', query: {category: currentMainProduct.category_id}}"
+                class="text-sm text-blue-500 hover:text-opacity-80 transition"
             >
               {{ currentMainProduct.category.name }}
             </router-link>
@@ -221,9 +224,9 @@
 
             <ul class="flex flex-wrap gap-2">
               <li
-                v-for="color in colorFiltered"
-                v-tooltip.top="'' + color.color_name + ''"
-                :class="[
+                  v-for="color in colorFiltered"
+                  v-tooltip.top="'' + color.color_name + ''"
+                  :class="[
                     'relative rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
                     color.active === 'yes'
                     ? 'border-indigo-500 cursor-pointer shadow-lg'
@@ -236,12 +239,12 @@
                     ? '!border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
                     : ''
                 ]"
-                :style="'background-color:' + color.color_hex"
-                @click="handleColorChange(color)"
+                  :style="'background-color:' + color.color_hex"
+                  @click="handleColorChange(color)"
               >
                 <div
-                  v-if="color.active === 'no'"
-                  class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                    v-if="color.active === 'no'"
+                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
                 ></div>
               </li>
             </ul>
@@ -255,8 +258,8 @@
 
             <ul class="flex flex-wrap gap-2">
               <li
-                v-for="size in sizeFiltered"
-                :class="[
+                  v-for="size in sizeFiltered"
+                  :class="[
                     'relative rounded-lg py-1 px-3 border-2 transition',
                     size.active === 'yes'
                     ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
@@ -269,11 +272,11 @@
                     ? '!border-emerald-500 !bg-emerald-50 cursor-pointer'
                     : ''
                 ]"
-                @click="handleSizeChange(size)"
+                  @click="handleSizeChange(size)"
               >
                 <div
-                  v-if="size.active === 'no'"
-                  class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                    v-if="size.active === 'no'"
+                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
                 ></div>
 
                 {{ size.size }}
@@ -292,35 +295,35 @@
 
             <div class="w-full md:w-2/3">
               <base-select
-                options-key="id"
-                options-text="guarantee"
-                :options="guaranteeFiltered"
-                :selected="selectedGuarantee"
-                @change="handleGuaranteeChange"
+                  :options="guaranteeFiltered"
+                  :selected="selectedGuarantee"
+                  options-key="id"
+                  options-text="guarantee"
+                  @change="handleGuaranteeChange"
               >
                 <template #item="{item, selected}">
                   <div class="flex items-center cursor-pointer">
                     <CheckCircleIcon
-                      v-if="item.active === 'yes'"
-                      class="w-5 h-5 ml-2 text-emerald-500 shrink-0"
+                        v-if="item.active === 'yes'"
+                        class="w-5 h-5 ml-2 text-emerald-500 shrink-0"
                     />
                     <XCircleIcon
-                      v-else-if="item.active === 'no'"
-                      class="w-5 h-5 ml-2 text-rose-400 shrink-0"
+                        v-else-if="item.active === 'no'"
+                        class="w-5 h-5 ml-2 text-rose-400 shrink-0"
                     />
                     <span
-                      :class="[
-                                                item.active === 'yes'
-                                                ? 'text-emerald-500'
-                                                : (
-                                                    item.active === 'no'
-                                                     ? 'text-rose-400'
-                                                     : 'text-gray-500 grow'
-                                                ),
-                                                selectedGuarantee && selectedGuarantee.guarantee === item.guarantee
-                                                ? 'bg-emerald-50 border border-emerald-500 rounded p-1 grow'
-                                                : ''
-                                            ]"
+                        :class="[
+                            item.active === 'yes'
+                            ? 'text-emerald-500'
+                            : (
+                                item.active === 'no'
+                                 ? 'text-rose-400'
+                                 : 'text-gray-500 grow'
+                            ),
+                            selectedGuarantee && selectedGuarantee.guarantee === item.guarantee
+                            ? 'bg-emerald-50 border border-emerald-500 rounded p-1 grow'
+                            : ''
+                        ]"
                     >{{ item.guarantee }}</span>
                   </div>
                 </template>
@@ -335,24 +338,24 @@
           <div class="flex flex-wrap flex-row-reverse justify-end gap-3">
             <div class="flex grow sm:grow-0">
               <base-button
-                class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0"
+                  class="bg-white !text-gray-500 rounded-l-none hover:border-indigo-500 hover:!text-black shrink-0"
               >
                 <PlusIcon class="h-6 w-6"/>
               </base-button>
               <span
-                class="block py-3 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center"
+                  class="block py-3 px-6 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center"
               >
                                 1
                             </span>
               <base-button
-                class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0"
+                  class="bg-white !text-gray-500 rounded-r-none hover:border-indigo-500 hover:!text-black shrink-0"
               >
                 <MinusIcon class="h-6 w-6"/>
               </base-button>
             </div>
 
             <base-animated-button
-              class="bg-primary text-white px-6 w-full sm:w-auto"
+                class="bg-primary text-white px-6 w-full sm:w-auto"
             >
               <template #icon="{klass}">
                 <ShoppingCartIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
@@ -367,11 +370,11 @@
   </div>
 
   <vue-easy-lightbox
-    :visible="visibleRef"
-    :imgs="itemsRef"
-    :index="currentSlide"
-    :rtl="true"
-    @hide="onLightboxHide"
+      :imgs="itemsRef"
+      :index="currentSlide"
+      :rtl="true"
+      :visible="visibleRef"
+      @hide="onLightboxHide"
   ></vue-easy-lightbox>
 
   <div class="mt-12">
@@ -381,12 +384,12 @@
   </div>
 
   <div
-    v-if="Object.keys(tabs).length"
-    class="mt-12"
+      v-if="Object.keys(tabs).length"
+      class="mt-12"
   >
     <base-tab-panel
-      :tabs="tabs"
-      tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
+        :tabs="tabs"
+        tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
     >
       <template #description>
         <div class="p-3 styled-description">
@@ -408,7 +411,7 @@
             بگوییم در این زمینه به نسبت تمام پرچمداران دیگر عملکرد بسیار بهتری داشته است.
           </p>
 
-          <img src="/src/assets/product/g10.jpg" alt="">
+          <img alt="" src="/src/assets/product/g10.jpg">
 
           <p>
             نمای رو‌به‌رویی این گوشی صفحه‌نمایش بسیار گسترده‌ای را ارائه کرده است که تقریبا حاشیه‌های
@@ -542,12 +545,12 @@
 
       <template #properties>
         <template
-          v-for="(property, idx) in currentMainProduct.properties"
-          :key="idx"
+            v-for="(property, idx) in currentMainProduct.properties"
+            :key="idx"
         >
           <h1
-            class="text-lg text-indigo-600 mb-2 flex items-center"
-            :class="idx !== 0 ? 'mt-5' : ''"
+              :class="idx !== 0 ? 'mt-5' : ''"
+              class="text-lg text-indigo-600 mb-2 flex items-center"
           >
             <StopIcon class="w-4 h-4 ml-1 rotate-45 bg-violet-600 rounded bg-opacity-20"/>
             <span>{{ property.title }}</span>
@@ -555,24 +558,24 @@
 
           <div>
             <div
-              v-for="(child, idx2) in property.children"
-              :key="idx2"
-              class="flex flex-col mb-2 shadow md:shadow-none md:mb-0 md:grid md:grid-cols-3"
+                v-for="(child, idx2) in property.children"
+                :key="idx2"
+                class="flex flex-col mb-2 shadow md:shadow-none md:mb-0 md:grid md:grid-cols-3"
             >
               <div
-                class="p-2 text-center text-sm bg-slate-100 text-slate-500  md:text-right md:rounded-l-none md:col-span-1"
-                :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : 'md:bg-transparent'"
+                  :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : 'md:bg-transparent'"
+                  class="p-2 text-center text-sm bg-slate-100 text-slate-500  md:text-right md:rounded-l-none md:col-span-1"
               >
                 {{ child.title }}
               </div>
               <div
-                class="grow text-center md:text-right md:col-span-2"
-                :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : ''"
+                  :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : ''"
+                  class="grow text-center md:text-right md:col-span-2"
               >
                 <div
-                  v-for="(subProperty, idx3) in child.tags"
-                  :key="idx3"
-                  class="p-2"
+                    v-for="(subProperty, idx3) in child.tags"
+                    :key="idx3"
+                    class="p-2"
                 >
                   {{ subProperty }}
                 </div>
@@ -584,8 +587,8 @@
 
       <template #comments>
         <product-comment
-          :product-id="currentMainProduct.id"
-          :show-add-comment="showAddComment"
+            :product-id="currentMainProduct.id"
+            :show-add-comment="showAddComment"
         />
       </template>
     </base-tab-panel>
@@ -602,7 +605,7 @@ import {
   ShoppingCartIcon,
   PlusIcon,
   MinusIcon,
-  HeartIcon,
+  BookmarkIcon,
   ShareIcon,
   ScaleIcon,
   XCircleIcon,
@@ -638,7 +641,7 @@ defineProps({
 
 const mainGallerySettings = {
   className: 'detail-slider',
-  effect: 'fade',
+  effect: 'slide',
   wrapAround: true,
   hasNavigation: true,
   useThumbnail: true,
@@ -1322,8 +1325,8 @@ if (currentMainProduct.value && currentMainProduct.value?.description.length) {
   }
 }
 if (
-  currentMainProduct.value &&
-  currentMainProduct.value?.properties.length
+    currentMainProduct.value &&
+    currentMainProduct.value?.properties.length
 ) {
   tabs['properties'] = {
     text: 'مشخصات',
@@ -1473,16 +1476,16 @@ function handleColorChange(color) {
       // make active status of other property to "yes" if it is in specific property and current property
       changeActiveInArrayWhere('yes', guaranteeFiltered.value, (item) => {
         return (
-          selectedSize.value.guarantees.indexOf(item.guarantee) !== -1 &&
-          color.guarantees.indexOf(item.guarantee) !== -1
+            selectedSize.value.guarantees.indexOf(item.guarantee) !== -1 &&
+            color.guarantees.indexOf(item.guarantee) !== -1
         )
       })
     } else if (selectedGuarantee.value && !selectedSize.value) {
       changeActiveInArray('no', sizeFiltered.value)
       changeActiveInArrayWhere('yes', sizeFiltered.value, (item) => {
         return (
-          selectedGuarantee.value.sizes.indexOf(item.size) !== -1 &&
-          color.sizes.indexOf(item.size) !== -1
+            selectedGuarantee.value.sizes.indexOf(item.size) !== -1 &&
+            color.sizes.indexOf(item.size) !== -1
         )
       })
     }
@@ -1514,16 +1517,16 @@ function handleSizeChange(size) {
       changeActiveInArray('no', guaranteeFiltered.value)
       changeActiveInArrayWhere('yes', guaranteeFiltered.value, (item) => {
         return (
-          selectedColor.value.guarantees.indexOf(item.guarantee) !== -1 &&
-          size.guarantees.indexOf(item.guarantee) !== -1
+            selectedColor.value.guarantees.indexOf(item.guarantee) !== -1 &&
+            size.guarantees.indexOf(item.guarantee) !== -1
         )
       })
     } else if (selectedGuarantee.value && !selectedColor.value) {
       changeActiveInArray('no', colorFiltered.value)
       changeActiveInArrayWhere('yes', colorFiltered.value, (item) => {
         return (
-          selectedGuarantee.value.colors.indexOf(item.color_name) !== -1 &&
-          size.colors.indexOf(item.color_name) !== -1
+            selectedGuarantee.value.colors.indexOf(item.color_name) !== -1 &&
+            size.colors.indexOf(item.color_name) !== -1
         )
       })
     }
@@ -1556,16 +1559,16 @@ function handleGuaranteeChange(selected) {
       changeActiveInArray('no', sizeFiltered.value)
       changeActiveInArrayWhere('yes', sizeFiltered.value, (item) => {
         return (
-          selectedColor.value.sizes.indexOf(item.size) !== -1 &&
-          selected.sizes.indexOf(item.size) !== -1
+            selectedColor.value.sizes.indexOf(item.size) !== -1 &&
+            selected.sizes.indexOf(item.size) !== -1
         )
       })
     } else if (selectedSize.value && !selectedColor.value) {
       changeActiveInArray('no', colorFiltered.value)
       changeActiveInArrayWhere('yes', colorFiltered.value, (item) => {
         return (
-          selectedSize.value.colors.indexOf(item.color_name) !== -1 &&
-          selected.colors.indexOf(item.color_name) !== -1
+            selectedSize.value.colors.indexOf(item.color_name) !== -1 &&
+            selected.colors.indexOf(item.color_name) !== -1
         )
       })
     }

@@ -3,27 +3,27 @@
     <template #header>
       ویرایش برچسب سفارش -
       <span
-        v-if="badge?.id"
-        class="text-teal-600"
+          v-if="badge?.id"
+          class="text-slate-400 text-base"
       >{{ badge?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-          :loading="loading"
-          type="form"
+            :loading="loading"
+            type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="flex flex-wrap items-end">
                 <div class="p-2 w-full md:w-1/2">
                   <base-input
-                    label-title="عنوان"
-                    placeholder="وارد نمایید"
-                    name="title"
-                    :value="badge?.title"
-                    :has-edit-mode="false"
-                    :is-editable="badge?.is_title_editable"
+                      :has-edit-mode="false"
+                      :is-editable="badge?.is_title_editable"
+                      :value="badge?.title"
+                      label-title="عنوان"
+                      name="title"
+                      placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -35,14 +35,14 @@
                 </div>
                 <div class="p-2 flex md:w-1/2 items-center">
                   <partial-input-label
-                    title="انتخاب رنگ"
-                    class="grow sm:grow-0 mb-0"
+                      class="grow sm:grow-0 mb-0"
+                      title="انتخاب رنگ"
                   />
                   <color-picker
-                    v-model:pureColor="pureColor"
-                    :disable-alpha="true"
-                    format="hex6"
-                    lang="En"
+                      v-model:pureColor="pureColor"
+                      :disable-alpha="true"
+                      format="hex6"
+                      lang="En"
                   />
                   <partial-input-error-message :error-message="errors.color_hex"/>
                 </div>
@@ -51,44 +51,44 @@
               <div class="sm:flex sm:flex-wrap sm:justify-between">
                 <div class="p-2 md:w-1/3">
                   <base-switch
-                    label="نمایش برچسب"
-                    name="is_published"
-                    :enabled="badge?.is_published"
-                    sr-text="نمایش/عدم نمایش برچسب"
-                    @change="(status) => {publishStatus=status}"
+                      :enabled="badge?.is_published"
+                      label="نمایش برچسب"
+                      name="is_published"
+                      sr-text="نمایش/عدم نمایش برچسب"
+                      @change="(status) => {publishStatus=status}"
                   />
                 </div>
                 <div class="p-2 md:w-1/3">
                   <base-switch
-                    label="برچسب، وضعیت نهایی است"
-                    name="is_end_badge"
-                    :enabled="badge?.is_end_badge"
-                    sr-text="برچسب، وضعیت نهایی می‌باشد یا خیر"
-                    @change="(status) => {endBadgeStatus=status}"
+                      :enabled="badge?.is_end_badge"
+                      label="برچسب، وضعیت نهایی است"
+                      name="is_end_badge"
+                      sr-text="برچسب، وضعیت نهایی می‌باشد یا خیر"
+                      @change="(status) => {endBadgeStatus=status}"
                   />
                 </div>
                 <div class="p-2 md:w-1/3">
                   <base-switch
-                    label="بازگشت محصول به انبار"
-                    name="should_return_order_product"
-                    :enabled="badge?.should_return_order_product"
-                    sr-text="بازگشت محصول به انبار/عدم بازگشت محصول به انبار"
-                    @change="(status) => {shouldReturnToStockStatus=status}"
+                      :enabled="badge?.should_return_order_product"
+                      label="بازگشت محصول به انبار"
+                      name="should_return_order_product"
+                      sr-text="بازگشت محصول به انبار/عدم بازگشت محصول به انبار"
+                      @change="(status) => {shouldReturnToStockStatus=status}"
                   />
                 </div>
               </div>
 
               <div class="px-2 py-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="!canSubmit"
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="!canSubmit"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -98,6 +98,20 @@
 
                   <span class="ml-auto">ویرایش برچسب</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </template>
@@ -144,8 +158,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     should_return_order_product: yup.boolean().required('وضعیت بازگشت محصول به انبار را مشخص کنید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (!isValidColorHex(pureColor.value)) {
     actions.setFieldError('color_hex', 'کد رنگی انتخاب شده نامعتبر می‌باشد.')
     return

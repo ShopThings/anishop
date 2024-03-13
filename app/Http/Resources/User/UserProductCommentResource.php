@@ -5,6 +5,7 @@ namespace App\Http\Resources\User;
 use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\ProductShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,27 +20,15 @@ class UserProductCommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product' => $this->whenLoaded('product', function () {
-                return [
-                    'id' => $this->product->id,
-                    'slug' => $this->product->slug,
-                    'image' => [
-                        'path' => $this->product->image->full_path,
-                    ],
-                ];
-            }),
+            'product' => new ProductShowResource($this->whenLoaded('product')),
             'up_vote_count' => $this->up_vote_count,
             'down_vote_count' => $this->down_vote_count,
             'condition' => [
-                'text' => CommentConditionsEnum::getTranslations($this->condition),
+                'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
                 'value' => $this->condition,
             ],
-            'status' => [
-                'text' => CommentStatusesEnum::getTranslations($this->status),
-                'value' => $this->status,
-            ],
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

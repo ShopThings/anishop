@@ -47,22 +47,22 @@ class UserRepository extends Repository implements UserRepositoryInterface
 
         $query = $this->model->newQuery();
         $query
-            ->with(['creator', 'updater'])
+            ->with(['creator', 'updater', 'roles'])
             ->when($search, function (Builder $query, string $search) {
-            $query
-                ->when(RolesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $roles) {
-                    $builder->withWhereHas('roles', function ($q) use ($roles) {
-                        $q->whereIn('name', $roles);
-                    });
-                })
-                ->orWhereLike([
-                    'users.username',
-                    'users.first_name',
-                    'users.last_name',
-                    'users.national_code',
-                    'users.shaba_number'
-                ], $search);
-        });
+                $query
+                    ->when(RolesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $roles) {
+                        $builder->whereHas('roles', function ($q) use ($roles) {
+                            $q->whereIn('name', $roles);
+                        });
+                    })
+                    ->orWhereLike([
+                        'users.username',
+                        'users.first_name',
+                        'users.last_name',
+                        'users.national_code',
+                        'users.shaba_number'
+                    ], $search);
+            });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }
@@ -86,14 +86,11 @@ class UserRepository extends Repository implements UserRepositoryInterface
             ->with(['province', 'city'])
             ->when($search, function (Builder $query, string $search) {
                 $query
-                    ->where(function (Builder $builder) use ($search) {
-                        $builder
-                            ->whereHas('city', function ($q) use ($search) {
-                                $q->where('name', $search);
-                            })
-                            ->whereHas('province', function ($q) use ($search) {
-                                $q->where('name', $search);
-                            });
+                    ->orWhereHas('city', function ($q) use ($search) {
+                        $q->where('name', $search);
+                    })
+                    ->orWhereHas('province', function ($q) use ($search) {
+                        $q->where('name', $search);
                     })
                     ->orWhereLike([
                         'address_user.full_name',
@@ -123,12 +120,12 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $query = $user->favoriteProducts();
         $query
             ->with([
-                'product:id,title,slug',
+                'product',
                 'product.image:full_path'
             ])
             ->when($search, function (Builder $query, string $search) {
-                $query->where(function (Builder $builder) use ($search) {
-                    $builder->whereHas('product', function ($q) use ($search) {
+                $query->orWhereHas('product', function ($q) use ($search) {
+                    $q->where(function ($q) use ($search) {
                         $q->orWhereLike([
                             'title',
                             'escaped_title',
@@ -155,38 +152,43 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $order = $filter->getOrder();
 
         $query = $user->orders();
-        $query->when($search, function (Builder $query, string $search) {
+        $query->when($search, function (Builder $query, string $search) use ($filter) {
             $query
-                ->where(function (Builder $builder) use ($search) {
-                    $builder
-                        ->whereHas('orders', function ($q) use ($search) {
+                ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                    $q->orWhereHas('orders', function ($q) use ($search) {
+                        $q->where(function ($q) use ($search) {
                             $q
                                 ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function (Builder $q2, array $statuses) {
                                     $q2->orWhereIn('payment_status', $statuses);
                                 })
-                                ->whereHas('items', function ($q2) use ($search) {
-                                    $q2->orWhereLike([
-                                        'order_items.product_title',
-                                        'order_items.color_name',
-                                        'order_items.size',
-                                        'order_items.guarantee',
-                                    ], $search);
+                                ->orWhereHas('items', function ($q2) use ($search) {
+                                    $q2->where(function ($q) use ($search) {
+                                        $q->orWhereLike([
+                                            'order_items.product_title',
+                                            'order_items.color_name',
+                                            'order_items.size',
+                                            'order_items.guarantee',
+                                        ], $search);
+                                    });
                                 })
-                                ->orWhereLike('orders.payment_method_title', $search);
-                        })
-                        ->orWhereLike([
-                            'order_details.first_name',
-                            'order_details.last_name',
-                            'order_details.mobile',
-                            'order_details.province',
-                            'order_details.city',
-                            'order_details.address',
-                            'order_details.postal_code',
-                            'order_details.receiver_name',
-                            'order_details.receiver_mobile',
-                            'order_details.send_status_title',
-                        ], $search);
-                });
+                                ->orWhereLike([
+                                    'orders.payment_method_title',
+                                ], $search);
+                        });
+                    });
+                })
+                ->orWhereLike([
+                    'order_details.first_name',
+                    'order_details.last_name',
+                    'order_details.mobile',
+                    'order_details.province',
+                    'order_details.city',
+                    'order_details.address',
+                    'order_details.postal_code',
+                    'order_details.receiver_name',
+                    'order_details.receiver_mobile',
+                    'order_details.send_status_title',
+                ], $search);
         });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
@@ -218,8 +220,40 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $order = $filter->getOrder();
 
         $query = $user->notifications();
+        $query
+            ->orderByRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(data, '$.priority')) AS UNSIGNED) DESC")
+            ->orderByDesc('created_at')
+            ->orderByRaw('read_at IS NULL')
+            ->orderByDesc('read_at');
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUnreadNotifications(User $user, array $columns = ['*']): Collection
+    {
+        $query = $user->unreadNotifications();
+        $query
+            ->orderByRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(data, '$.priority')) AS UNSIGNED) DESC")
+            ->orderByDesc('created_at');
+
+//        $query->dd();
+
+        return $query->get($columns);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function favoriteProductsCount(GetterExpressionInterface $where): int
+    {
+        return $this->userFavoriteProductModel->newQuery()
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
+            ->count();
     }
 
     /**

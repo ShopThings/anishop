@@ -2,6 +2,7 @@ import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
+const codeRouteRegex = '([\\d\\w]+|\\d+)'
 
 export const adminRoutes = {
   path: '/admin',
@@ -235,6 +236,59 @@ export const adminRoutes = {
           },
           {
             name: 'ویرایش روش پرداخت',
+          },
+        ],
+      },
+    },
+
+    {
+      path: 'send-methods',
+      children: [
+        {
+          path: '',
+          name: 'admin.send_methods',
+          component: () => import('@/views/admin/shop/PageSendMethods.vue'),
+          meta: {
+            title: 'روش‌های ارسال',
+            breadcrumb: [
+              {
+                name: 'روش‌های ارسال',
+              },
+            ],
+          },
+        },
+        {
+          path: 'new',
+          name: 'admin.send_method.add',
+          component: () => import('@/views/admin/shop/PageSendMethodAdd.vue'),
+          meta: {
+            title: 'ایجاد روش ارسال',
+            breadcrumb: [
+              {
+                name: 'روش‌های ارسال',
+                link: 'admin.send_methods',
+              },
+              {
+                name: 'ایجاد روش ارسال',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      path: 'send-method/:id(\\d+)',
+      name: 'admin.send_method.edit',
+      component: () => import('@/views/admin/shop/PageSendMethodEdit.vue'),
+      meta: {
+        title: 'ویرایش روش ارسال',
+        breadcrumb: [
+          {
+            name: 'روش‌های ارسال',
+            link: 'admin.send_methods',
+          },
+          {
+            name: 'ویرایش روش ارسال',
           },
         ],
       },
@@ -1026,7 +1080,7 @@ export const adminRoutes = {
       ],
     },
     {
-      path: 'order/:id([\\d\\w]+|\\d+)',
+      path: 'order/:id' + codeRouteRegex,
       children: [
         {
           path: '',
@@ -1063,7 +1117,7 @@ export const adminRoutes = {
       },
     },
     {
-      path: 'return-order/:id([\\d\\w]+|\\d+)',
+      path: 'return-order/:id' + codeRouteRegex,
       name: 'admin.return_order.detail',
       component: () => import('@/views/admin/order/PageReturnOrderDetail.vue'),
       meta: {
@@ -1229,7 +1283,28 @@ export const adminRoutes = {
       ],
     },
     {
-      path: 'blog/:id(\\d+)',
+      path: 'blog/badge/:id(\\d+)',
+      name: 'admin.blog.badge.edit',
+      component: () => import('@/views/admin/page/PageBlogBadgeEdit.vue'),
+      meta: {
+        title: 'ویرایش برچسب دیدگاه بلاگ',
+        breadcrumb: [
+          {
+            name: 'بلاگ‌ها',
+            link: 'admin.blogs',
+          },
+          {
+            name: 'برچسب‌ها',
+            link: 'admin.blogs.badges',
+          },
+          {
+            name: 'ویرایش برچسب',
+          },
+        ],
+      },
+    },
+    {
+      path: 'blog/:slug' + slugRouteRegex,
       children: [
         {
           path: '',
@@ -1244,27 +1319,6 @@ export const adminRoutes = {
               },
               {
                 name: 'ویرایش بلاگ',
-              },
-            ],
-          },
-        },
-        {
-          path: 'badge',
-          name: 'admin.blog.badge.edit',
-          component: () => import('@/views/admin/page/PageBlogBadgeEdit.vue'),
-          meta: {
-            title: 'ویرایش برچسب دیدگاه بلاگ',
-            breadcrumb: [
-              {
-                name: 'بلاگ‌ها',
-                link: 'admin.blogs',
-              },
-              {
-                name: 'برچسب‌ها',
-                link: 'admin.blogs.badges',
-              },
-              {
-                name: 'ویرایش برچسب',
               },
             ],
           },
@@ -1368,7 +1422,7 @@ export const adminRoutes = {
       ],
     },
     {
-      path: 'static-page/:id(\\d+)',
+      path: 'static-page/:url([a-z]+[a-z\/\-][a-z]+)',
       name: 'admin.static_page.edit',
       component: () => import('@/views/admin/page/PageStaticPageEdit.vue'),
       meta: {
@@ -1517,117 +1571,6 @@ export const adminRoutes = {
     },
 
     {
-      path: 'sliders',
-      children: [
-        {
-          path: '',
-          name: 'admin.sliders',
-          component: () => import('@/views/admin/other/PageSliders.vue'),
-          meta: {
-            title: 'مدیریت اسلایدرها',
-            breadcrumb: [
-              {
-                name: 'اسلایدرها',
-              },
-            ],
-          },
-        },
-        {
-          path: 'new',
-          name: 'admin.slider.add',
-          component: () => import('@/views/admin/other/PageSliderAdd.vue'),
-          meta: {
-            title: 'افزودن اسلایدر',
-            breadcrumb: [
-              {
-                name: 'اسلایدرها',
-                link: 'admin.sliders',
-              },
-              {
-                name: 'افزودن اسلایدر',
-              },
-            ],
-          },
-        },
-      ],
-    },
-    {
-      path: 'slider/:id(\\d+)',
-      children: [
-        {
-          path: '',
-          name: 'admin.slider.edit',
-          component: () => import('@/views/admin/other/PageSliderEdit.vue'),
-          meta: {
-            title: 'ویرایش اسلایدر',
-            breadcrumb: [
-              {
-                name: 'اسلایدرها',
-                link: 'admin.sliders',
-              },
-              {
-                name: 'ویرایش اسلایدر',
-              },
-            ],
-          },
-        },
-        {
-          path: 'slides',
-          name: 'admin.slider.slides.edit',
-          component: () => import('@/views/admin/other/PageSliderSlidesEdit.vue'),
-          meta: {
-            title: 'ویرایش اسلایدها',
-            breadcrumb: [
-              {
-                name: 'اسلایدرها',
-                link: 'admin.sliders',
-              },
-              {
-                name: 'ویرایش اسلایدها',
-              },
-            ],
-          },
-        },
-      ],
-    },
-
-    {
-      path: 'menus',
-      children: [
-        {
-          path: '',
-          name: 'admin.menus',
-          component: () => import('@/views/admin/other/PageMenus.vue'),
-          meta: {
-            title: 'مدیریت منوها',
-            breadcrumb: [
-              {
-                name: 'منوها',
-              },
-            ],
-          },
-        },
-      ],
-    },
-    {
-      path: 'menu/:id(\\d+)',
-      name: 'admin.menu.edit',
-      component: () => import('@/views/admin/other/PageMenuEdit.vue'),
-      meta: {
-        title: 'ویرایش منو',
-        breadcrumb: [
-          {
-            name: 'منوها',
-            link: 'admin.menus',
-          },
-          {
-            name: 'ویرایش منو',
-          },
-        ],
-      },
-    },
-
-    {
       path: 'post-prices',
       children: [
         {
@@ -1744,6 +1687,117 @@ export const adminRoutes = {
     },
 
     {
+      path: 'sliders',
+      children: [
+        {
+          path: '',
+          name: 'admin.sliders',
+          component: () => import('@/views/admin/other/PageSliders.vue'),
+          meta: {
+            title: 'مدیریت اسلایدرها',
+            breadcrumb: [
+              {
+                name: 'اسلایدرها',
+              },
+            ],
+          },
+        },
+        {
+          path: 'new',
+          name: 'admin.slider.add',
+          component: () => import('@/views/admin/other/PageSliderAdd.vue'),
+          meta: {
+            title: 'افزودن اسلایدر',
+            breadcrumb: [
+              {
+                name: 'اسلایدرها',
+                link: 'admin.sliders',
+              },
+              {
+                name: 'افزودن اسلایدر',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      path: 'slider/:id(\\d+)',
+      children: [
+        {
+          path: '',
+          name: 'admin.slider.edit',
+          component: () => import('@/views/admin/other/PageSliderEdit.vue'),
+          meta: {
+            title: 'ویرایش اسلایدر',
+            breadcrumb: [
+              {
+                name: 'اسلایدرها',
+                link: 'admin.sliders',
+              },
+              {
+                name: 'ویرایش اسلایدر',
+              },
+            ],
+          },
+        },
+        {
+          path: 'slides',
+          name: 'admin.slider.slides.edit',
+          component: () => import('@/views/admin/other/PageSliderSlidesEdit.vue'),
+          meta: {
+            title: 'ویرایش اسلایدها',
+            breadcrumb: [
+              {
+                name: 'اسلایدرها',
+                link: 'admin.sliders',
+              },
+              {
+                name: 'ویرایش اسلایدها',
+              },
+            ],
+          },
+        },
+      ],
+    },
+
+    {
+      path: 'menus',
+      children: [
+        {
+          path: '',
+          name: 'admin.menus',
+          component: () => import('@/views/admin/other/PageMenus.vue'),
+          meta: {
+            title: 'مدیریت منوها',
+            breadcrumb: [
+              {
+                name: 'منوها',
+              },
+            ],
+          },
+        },
+      ],
+    },
+    {
+      path: 'menu/:id(\\d+)',
+      name: 'admin.menu.edit',
+      component: () => import('@/views/admin/other/PageMenuEdit.vue'),
+      meta: {
+        title: 'ویرایش منو',
+        breadcrumb: [
+          {
+            name: 'منوها',
+            link: 'admin.menus',
+          },
+          {
+            name: 'ویرایش منو',
+          },
+        ],
+      },
+    },
+
+    {
       path: 'file-manager',
       name: 'admin.file_manager',
       component: () => import('@/views/admin/PageFileManager.vue'),
@@ -1780,6 +1834,20 @@ export const adminRoutes = {
         breadcrumb: [
           {
             name: 'تنظیمات',
+          },
+        ],
+      },
+    },
+
+    {
+      path: 'sms-log',
+      name: 'admin.sms_log',
+      component: () => import('@/views/admin/PageSmsLog.vue'),
+      meta: {
+        title: 'لاگ پیامک',
+        breadcrumb: [
+          {
+            name: 'لاگ پیامک',
           },
         ],
       },

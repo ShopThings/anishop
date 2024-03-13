@@ -27,6 +27,11 @@ interface SettingServiceInterface extends ServiceInterface
     public function getSetting(string $settingName): ?Model;
 
     /**
+     * @return Collection
+     */
+    public function getGeneralSettings(): Collection;
+
+    /**
      * @param string $name
      * @param array $attributes
      * @param bool $returnUpdatedModel

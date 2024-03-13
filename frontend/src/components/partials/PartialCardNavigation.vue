@@ -1,11 +1,11 @@
 <template>
   <router-link
-    :to="to"
-    :class="[
+      :class="[
             'flex items-center justify-between py-3 px-6 rounded-lg w-full h-auto shadow min-h-[5rem]',
             'hover:scale-95 transition focus:scale-95',
             bgColor,
         ]"
+      :to="to"
   >
     <slot></slot>
   </router-link>

@@ -6,6 +6,7 @@ use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\BlogBadgeShowResource;
+use App\Http\Resources\Showing\BlogShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,26 +21,14 @@ class UserBlogCommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'blog' => $this->whenLoaded('blog', function () {
-                return [
-                    'id' => $this->blog->id,
-                    'slug' => $this->blog->slug,
-                    'image' => [
-                        'path' => $this->blog->image->full_path,
-                    ],
-                ];
-            }),
+            'blog' => new BlogShowResource($this->whenLoaded('blog')),
             'badge' => new BlogBadgeShowResource($this->badge),
             'condition' => [
-                'text' => CommentConditionsEnum::getTranslations($this->condition),
+                'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
                 'value' => $this->condition,
             ],
-            'status' => [
-                'text' => CommentStatusesEnum::getTranslations($this->status),
-                'value' => $this->status,
-            ],
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

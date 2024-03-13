@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFestivalProductRequest;
 use App\Http\Requests\StoreFestivalRequest;
 use App\Http\Requests\UpdateFestivalRequest;
+use App\Http\Resources\FestivalProductResource;
 use App\Http\Resources\FestivalResource;
 use App\Models\Category;
 use App\Models\Festival;
@@ -135,23 +136,18 @@ class FestivalController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param Filter $filter
      * @param Festival $festival
-     * @return FestivalResource
+     * @return FestivalProductResource
      * @throws AuthorizationException
      */
-    public function products(Request $request, Festival $festival): FestivalResource
+    public function products(Filter $filter, Festival $festival): FestivalProductResource
     {
         $this->authorize('viewAny', User::class);
 
-        $params = $this->getPaginateParameters($request);
-
-        return new FestivalResource($this->service->getFestivalProducts(
+        return new FestivalProductResource($this->service->getFestivalProducts(
             festivalId: $festival->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
+            filter: $filter
         ));
     }
 
@@ -234,12 +230,34 @@ class FestivalController extends Controller
     }
 
     /**
+     * @param Request $request
+     * @param Festival $festival
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function batchDestroyProduct(Request $request, Festival $festival): JsonResponse
+    {
+        $this->authorize('delete', $festival);
+
+        $ids = $request->input('ids', []);
+
+        $res = $this->service->removeProductsFromFestival($festival->id, $ids);
+        if ($res)
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        else
+            return response()->json([
+                'type' => ResponseTypesEnum::WARNING->value,
+                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
      * @param Festival $festival
      * @param Category $category
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function batchDestroyProduct(Festival $festival, Category $category): JsonResponse
+    public function batchDestroyCategory(Festival $festival, Category $category): JsonResponse
     {
         $this->authorize('delete', $festival);
 

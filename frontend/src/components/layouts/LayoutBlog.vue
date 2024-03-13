@@ -13,7 +13,13 @@
 </template>
 
 <script setup>
+import {provide} from "vue";
 import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue"
 import AppNavbarBlog from "@/components/AppNavbarBlog.vue";
 import AppFooterUser from "@/components/user/AppFooterUser.vue";
+import {useHomeSettingsStore} from "@/store/StoreSettings.js";
+
+//--------------------------------------
+const homeSettingStore = useHomeSettingsStore()
+provide('homeSettingStore', homeSettingStore);
 </script>

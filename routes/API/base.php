@@ -6,12 +6,18 @@ use App\Http\Controllers\Auth\RecoverPasswordController;
 use App\Http\Controllers\Auth\SignupController;
 use App\Http\Controllers\Blog\HomeBlogCommentController;
 use App\Http\Controllers\Blog\HomeBlogController;
+use App\Http\Controllers\Other\CityController;
 use App\Http\Controllers\Other\FileManagerController;
 use App\Http\Controllers\Other\HomeController;
+use App\Http\Controllers\Other\HomeMenuController;
+use App\Http\Controllers\Other\HomePageController;
 use App\Http\Controllers\Other\HomeSliderController;
+use App\Http\Controllers\Other\ProvinceController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Shop\HomeBrandController;
+use App\Http\Controllers\Shop\HomeCategoryController;
 use App\Http\Controllers\Shop\HomeCommentController;
+use App\Http\Controllers\Shop\HomeFestivalController;
 use App\Http\Controllers\Shop\HomeProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +38,18 @@ Route::name('api.')
 
             Route::post('login', [AuthController::class, 'login'])
                 ->name('login');
+
+            /*
+             * city routes
+             */
+            Route::get('cities/{province}', [CityController::class, 'index'])
+                ->whereNumber('province')->name('cities.index');
+
+            /*
+             * province routes
+             */
+            Route::get('provinces', [ProvinceController::class, 'index'])
+                ->name('provinces.index');
 
             /*
              * signup routes
@@ -60,8 +78,11 @@ Route::name('api.')
             /*
              * main page routes
              */
+            Route::get('menus/{menu}', [HomeMenuController::class, 'menu'])->name('menu')
+                ->where(['menu' => '[a-zA-Z0-9_-]+']);
+            Route::get('categories/main', [HomeCategoryController::class, 'categories'])->name('categories.main');
             Route::get('sliders/main', [HomeSliderController::class, 'main'])->name('sliders.main');
-            Route::get('sliders/categories', [HomeSliderController::class, 'categories'])->name('sliders.categories');
+            Route::get('sliders/categories', [HomeSliderController::class, 'sliderCategories'])->name('sliders.categories');
             Route::get('sliders/amazing-offers', [HomeSliderController::class, 'amazingOffers'])->name('sliders.amazing-offers');
             Route::get('sliders', [HomeSliderController::class, 'allSliders'])->name('sliders.all');
             Route::get('sliders/brands', [HomeBrandController::class, 'brandSlider'])->name('sliders.brands');
@@ -75,38 +96,50 @@ Route::name('api.')
              * product routes
              */
             Route::get('products', [HomeProductController::class, 'index'])->name('products.index');
+            Route::get('products/filter/brands', [HomeProductController::class, 'brandsFilter'])
+                ->name('products.filter.brands');
+            Route::get('products/filter/colors-and-sizes', [HomeProductController::class, 'colorsAndSizesFilter'])
+                ->name('products.filter.colors-and-sizes');
+            Route::get('products/filter/price-range', [HomeProductController::class, 'priceRangeFilter'])
+                ->name('products.filter.price-range');
+            Route::get('products/filter/get-dynamic-filters', [HomeProductController::class, 'dynamicFilters'])
+                ->name('products.filter.dynamic-filters');
+            Route::get('products/{product}/minified', [HomeProductController::class, 'minifiedShow'])
+                ->name('products.minified-show')->where(['product' => $codeRegex]);
             Route::get('products/{product}', [HomeProductController::class, 'show'])->name('products.show')
-                ->middleware('log_visit');
-            Route::get('products/colors-and-sizes', [HomeProductController::class, 'colorsAndSizes'])
-                ->name('products.colors-and-sizes');
-            Route::get('products/price-range', [HomeProductController::class, 'priceRange'])
-                ->name('products.price-range');
-            Route::get('products/get-dynamic-filters', [HomeProductController::class, 'getDynamicFilters'])
-                ->name('products.dynamic-filters');
+                ->middleware('log_visit')->where(['product' => $codeRegex]);
 
             /*
              * product comment routes
              */
-            Route::get('products/{product}/comments', [HomeCommentController::class, 'index'])->name('products.comments.index')
-                ->where(['product' => $codeRegex]);
-            Route::put('products/{product}/comments/{comment}/report', [HomeCommentController::class, 'report'])->name('products.comments.report')
-                ->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
-            Route::put('products/{product}/comments/{comment}/vote', [HomeCommentController::class, 'vote'])->name('products.comments.vote')
-                ->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+            Route::get('products/{product}/comments', [HomeCommentController::class, 'index'])
+                ->name('products.comments.index')->where(['product' => $codeRegex]);
+            Route::put('products/{product}/comments/{comment}/report', [HomeCommentController::class, 'report'])
+                ->name('products.comments.report')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+            Route::put('products/{product}/comments/{comment}/vote', [HomeCommentController::class, 'vote'])
+                ->name('products.comments.vote')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+
+            /*
+             * festival routes
+             */
+            Route::get('festivals', [HomeFestivalController::class, 'index'])->name('festivals.index');
 
             /*
              * blog routes
              */
             Route::get('blogs', [HomeBlogController::class, 'index'])->name('blogs.index');
-            Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
-                ->middleware('log_visit')->where(['product' => $codeRegex]);
-            Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
-                ->where(['blog' => $codeRegex]);
+            Route::get('blogs/latest', [HomeBlogController::class, 'homeLatestBlogs'])->name('blogs.latest');
             Route::get('blogs/archive', [HomeBlogController::class, 'archive'])->name('blogs.archive');
             Route::get('blogs/sliders/main', [HomeBlogController::class, 'mainSlider'])->name('blogs.sliders.main');
             Route::get('blogs/sliders/side-slides', [HomeBlogController::class, 'mainSideSlides'])->name('blogs.sliders.side-slides');
             Route::get('blogs/popular-categories', [HomeBlogController::class, 'popularCategories'])->name('blogs.popular-categories');
             Route::get('blogs/most-viewed', [HomeBlogController::class, 'mostViewed'])->name('blogs.most-viewed');
+            Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
+                ->middleware('log_visit')->where(['blog' => $codeRegex]);
+            Route::get('blogs/{blog}/minified', [HomeBlogController::class, 'minifiedShow'])
+                ->name('blogs.minified-show')->where(['blog' => $codeRegex]);
+            Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
+                ->where(['blog' => $codeRegex]);
 
             /*
              * blog comment routes
@@ -117,12 +150,19 @@ Route::name('api.')
                 ->where(['blog' => $codeRegex, 'comment' => '[0-9]+']);
 
             /*
+             * static page routes
+             */
+            Route::get('pages/{page}', [HomePageController::class, 'show'])->name('pages.show')
+                ->where(['page' => '[a-zA-Z]+[a-zA-Z\\\-][a-zA-Z]+']);
+
+            /*
              * other pages routes
              */
             Route::post('contact-us', [HomeController::class, 'storeContactUs'])->name('contacts.store');
             Route::post('complaints', [HomeController::class, 'storeComplaint'])->name('complaints.store');
             Route::post('newsletters', [HomeController::class, 'storeNewsletter'])->name('newsletters.store');
             Route::get('faqs', [HomeController::class, 'faqs'])->name('faqs.index');
+            Route::get('settings', [HomeController::class, 'settings'])->name('settings.index');
         });
     });
 

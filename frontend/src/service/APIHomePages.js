@@ -2,7 +2,25 @@ import {useRequest} from "@/composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {GenericAPI} from "./ServiceAPIs.js";
 
+export const HomeSettingAPI = {
+  fetchAll(callbacks) {
+    useRequest(
+      apiRoutes.settings,
+      null,
+      callbacks
+    )
+  },
+}
+
 export const HomeMainPageAPI = {
+  fetchMenu(menu, callbacks) {
+    useRequest(apiReplaceParams(apiRoutes.main.menu, {menu}), null, callbacks)
+  },
+
+  fetchCategoriesMain(params, callbacks) {
+    useRequest(apiRoutes.main.categories, {params}, callbacks)
+  },
+
   fetchSliderMain(callbacks) {
     useRequest(apiRoutes.main.sliderMain, null, callbacks)
   },
@@ -65,6 +83,16 @@ export const HomeMainPageAPI = {
   },
 }
 
+export const HomePageAPI = {
+  fetchById(id, callbacks) {
+    useRequest(
+      apiReplaceParams(apiRoutes.pages, {page: id}),
+      null,
+      callbacks
+    )
+  },
+}
+
 export const HomeBrandAPI = {
   fetchAll(callbacks) {
     useRequest(apiRoutes.brands, null, callbacks)
@@ -76,19 +104,37 @@ export const HomeProductAPI = Object.assign(
     only: ['index', 'show'],
     replacement: 'product',
   }), {
-    fetchColorsAndSizes(callbacks) {
-      useRequest(apiRoutes.products.colorsAndSizes, null, callbacks)
+    fetchByIdMinified(id, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.products.minifiedShow, {product: id}),
+        null,
+        callbacks
+      )
     },
 
-    getPriceRange(callbacks) {
-      useRequest(apiRoutes.products.priceRange, null, callbacks)
+    fetchBrandsFilter(params, callbacks) {
+      useRequest(apiRoutes.products.brandsFilter, {params}, callbacks)
     },
 
-    getDynamicFilters(callbacks) {
-      useRequest(apiRoutes.products.dynamicFilters, null, callbacks)
+    fetchColorsAndSizesFilter(params, callbacks) {
+      useRequest(apiRoutes.products.colorsAndSizesFilter, {params}, callbacks)
+    },
+
+    fetchPriceRangeFilter(params, callbacks) {
+      useRequest(apiRoutes.products.priceRangeFilter, {params}, callbacks)
+    },
+
+    fetchDynamicFilters(params, callbacks) {
+      useRequest(apiRoutes.products.dynamicFilters, {params}, callbacks)
     },
   }
 )
+
+export const HomeFestivalAPI = {
+  fetchAll(callbacks) {
+    useRequest(apiRoutes.festivals.index, null, callbacks)
+  },
+}
 
 export const HomeCommentAPI = {
   fetchAll(productId, params, callbacks) {
@@ -189,6 +235,14 @@ export const HomeBlogAPI = Object.assign(
     only: ['index', 'show'],
     replacement: 'blog',
   }), {
+    fetchByIdMinified(id, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.blogs.minifiedShow, {blog: id}),
+        null,
+        callbacks
+      )
+    },
+
     fetchBlogArchive(callbacks) {
       useRequest(apiRoutes.blogs.archive, null, callbacks)
     },
@@ -207,12 +261,12 @@ export const HomeBlogAPI = Object.assign(
 )
 
 export const HomeSignupAPI = {
-  storeMobile(mobile, callbacks) {
+  storeMobile(data, callbacks) {
     useRequest(
       apiRoutes.signup.stepMobile,
       {
         method: 'POST',
-        data: {username: mobile},
+        data,
       },
       callbacks
     )
@@ -250,12 +304,12 @@ export const HomeSignupAPI = {
 }
 
 export const HomeRecoverPasswordAPI = {
-  checkMobile(mobile, callbacks) {
+  checkMobile(data, callbacks) {
     useRequest(
       apiRoutes.recoverPass.stepMobile,
       {
         method: 'POST',
-        data: {username: mobile},
+        data,
       },
       callbacks
     )

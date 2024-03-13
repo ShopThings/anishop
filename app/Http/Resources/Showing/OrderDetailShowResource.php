@@ -2,11 +2,8 @@
 
 namespace App\Http\Resources\Showing;
 
+use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\Showing\OrderItemShowResource;
-use App\Http\Resources\Showing\ReturnOrderShowResource;
-use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -44,11 +41,28 @@ class OrderDetailShowResource extends JsonResource
             'send_status_title' => $this->send_status_title,
             'send_status_color_hex' => $this->send_status_color_hex,
             'is_needed_factor' => $this->is_needed_factor,
-            'is_in_place_delivery' => $this->is_in_place_delivery,
             'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
             'ordered_at' => $this->ordered_at
-                ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
+            'payment_status' => $this->hasCompletePaid()
+                ? [
+                    'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::SUCCESS, 'نامشخص'),
+                    'value' => PaymentStatusesEnum::SUCCESS->value,
+                ]
+                : (
+                $this->hasAnyPaid()
+                    ?
+                    [
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::PARTIAL_SUCCESS, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::PARTIAL_SUCCESS->value,
+                    ]
+                    :
+                    [
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAYED, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::NOT_PAYED->value,
+                    ]
+                ),
         ];
     }
 }

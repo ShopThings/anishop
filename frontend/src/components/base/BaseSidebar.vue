@@ -1,11 +1,11 @@
 <template>
   <div class="relative h-full">
     <nav
-      class="sticky top-0 hidden lg:block z-[1] transition-all delay-[200ms] duration-[450ms]"
-      :class="[
+        :class="[
                  bg,
                  !mini ? 'w-72' : 'w-20'
-             ]">
+             ]"
+        class="sticky top-0 hidden lg:block z-[1] transition-all delay-[200ms] duration-[450ms]">
       <slot/>
     </nav>
   </div>

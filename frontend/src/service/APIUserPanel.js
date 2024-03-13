@@ -3,6 +3,14 @@ import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {GenericAPI} from "./ServiceAPIs.js";
 
 export const UserPanelDashboardAPI = {
+  getCountOfStuffs(callbacks) {
+    useRequest(
+      apiRoutes.user.main.countOfStuffs,
+      null,
+      callbacks
+    )
+  },
+
   fetchLatestOrders(callbacks) {
     useRequest(
       apiRoutes.user.main.latestOrders,
@@ -46,7 +54,7 @@ export const UserPanelInfoAPI = {
 
 export const UserPanelOrderAPI = Object.assign(
   GenericAPI(apiRoutes.user.orders, {
-    except: ['index', 'show', 'update'],
+    only: ['index', 'show', 'update'],
     replacement: 'order',
   }),
   {
@@ -64,12 +72,11 @@ export const UserPanelReturnOrderAPI = Object.assign(
       useRequest(apiRoutes.user.returnOrders.returnableOrders, null, callbacks);
     },
 
-    create(orderCode, data, callbacks) {
+    create(orderCode, callbacks) {
       useRequest(
         apiReplaceParams(apiRoutes.user.returnOrders.store, {order: orderCode}),
         {
           method: 'POST',
-          data,
         },
         callbacks
       )

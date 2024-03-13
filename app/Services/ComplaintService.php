@@ -36,7 +36,9 @@ class ComplaintService extends Service implements ComplaintServiceInterface
             ], $search);
         });
 
-        return $this->repository->paginate(
+        return $this->repository
+            ->newWith(['statusChanger', 'creator', 'deleter'])
+            ->paginate(
             where: $where->build(),
             limit: $filter->getLimit(),
             page: $filter->getPage(),

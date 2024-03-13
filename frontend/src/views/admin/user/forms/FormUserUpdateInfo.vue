@@ -3,12 +3,12 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام کاربری"
-            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
-            name="username"
             :has-edit-mode="false"
             :is-editable="false"
             :value="user?.username"
+            label-title="نام کاربری"
+            name="username"
+            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
         >
           <template #icon>
             <UserIcon class="h-6 w-6 text-gray-400"/>
@@ -18,13 +18,13 @@
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <partial-input-label title="نقش کاربر"/>
         <base-select-searchable
+            :has-edit-mode="false"
+            :multiple="true"
             :options="roles"
+            :selected="initialRoles"
+            name="roles"
             options-key="value"
             options-text="name"
-            name="roles"
-            :multiple="true"
-            :selected="initialRoles"
-            :has-edit-mode="false"
             @change="roleChange"
         />
         <partial-input-error-message :error-message="errors.roles"/>
@@ -36,11 +36,11 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام"
-            placeholder="حروف فارسی"
-            name="first_name"
             :has-edit-mode="false"
             :value="user?.first_name"
+            label-title="نام"
+            name="first_name"
+            placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -49,11 +49,11 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="نام خانوادگی"
-            placeholder="حروف فارسی"
-            name="last_name"
             :has-edit-mode="false"
             :value="user?.last_name"
+            label-title="نام خانوادگی"
+            name="last_name"
+            placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -62,11 +62,11 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="کد ملی"
-            placeholder="فقط شامل اعداد"
-            name="national_code"
             :has-edit-mode="false"
             :value="user?.national_code"
+            label-title="کد ملی"
+            name="national_code"
+            placeholder="فقط شامل اعداد"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -75,12 +75,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            label-title="شماره شبا"
-            is-optional
-            placeholder="xxxxxxxxxxxxxxxx"
-            name="shaba_number"
             :has-edit-mode="false"
             :value="user?.shaba_number"
+            is-optional
+            label-title="شماره شبا"
+            name="shaba_number"
+            placeholder="xxxxxxxxxxxxxxxx"
         >
           <template #icon>
             <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -91,15 +91,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          type="submit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
           :disabled="!canSubmit"
+          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
               v-if="!canSubmit"
-              main-container-klass="absolute w-full h-full top-0 left-0"
               big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -109,6 +109,20 @@
 
         <span class="ml-auto">ویرایش کاربر</span>
       </base-animated-button>
+
+      <div
+          v-if="Object.keys(errors)?.length"
+          class="text-left"
+      >
+        <div
+            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+        >
+          (
+          <span>{{ Object.keys(errors)?.length }}</span>
+          )
+          خطا، لطفا بررسی کنید
+        </div>
+      </div>
     </div>
   </form>
 </template>
@@ -185,10 +199,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
-}, (values, actions) => {
-  if (!canSubmit.value) return
-
-  // validate extra inputs
+}, (values, actions) => {// validate extra inputs
   if (!selectedRole.value || selectedRole.value.length === 0) {
     actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
     return

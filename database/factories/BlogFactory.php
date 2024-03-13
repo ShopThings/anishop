@@ -7,7 +7,6 @@ use App\Models\BlogCategory;
 use App\Support\Converters\CharacterConverter;
 use App\Support\Converters\NumberConverter;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use function App\Support\Helper\str_slug_persian;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Blog>

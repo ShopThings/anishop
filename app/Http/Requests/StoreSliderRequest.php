@@ -4,10 +4,11 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\SliderPlace;
+use App\Enums\Sliders\SliderPlacesEnum;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreSliderRequest extends FormRequest
 {
@@ -33,7 +34,13 @@ class StoreSliderRequest extends FormRequest
         return [
             'slider_place' => [
                 'required',
-                'exists:' . SliderPlace::class . ',id',
+                new Enum(SliderPlacesEnum::class),
+                function ($attribute, $value, $fail) {
+                    $creatable = array_map(fn($item) => $item->value, SliderPlacesEnum::getCreatablePlaces());
+                    if (!in_array($value, $creatable)) {
+                        $fail('اسلایدر با محل نمایش انتخاب شده، قابل ساخت نمی‌باشد.');
+                    }
+                },
             ],
             'title' => [
                 'required',
@@ -48,7 +55,6 @@ class StoreSliderRequest extends FormRequest
                 'array',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

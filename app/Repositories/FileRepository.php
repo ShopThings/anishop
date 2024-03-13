@@ -284,6 +284,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
 
         $tmpOldExtension = pathinfo($oldName, PATHINFO_EXTENSION) ?? null;
         $tmpNewExtension = pathinfo($newName, PATHINFO_EXTENSION) ?? null;
+
         if (
             (is_null($tmpOldExtension) && !is_null($tmpNewExtension)) ||
             (!is_null($tmpOldExtension) && is_null($tmpNewExtension))
@@ -500,11 +501,11 @@ class FileRepository extends Repository implements FileRepositoryInterface
             'size' => $this->formatBytes($this->getSizeRecursive($diskStorage, $file)),
             'mime_type' => !$isDir ? $diskStorage->mimeType($file) : null,
             'created_at' => isset($createdAt)
-                ? verta(Carbon::createFromTimestamp(intval($createdAt)))
+                ? vertaTz(Carbon::createFromTimestamp(intval($createdAt)))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'last_modified' => isset($modifiedAt)
-                ? verta(Carbon::createFromTimestamp(intval($modifiedAt)))
+                ? vertaTz(Carbon::createFromTimestamp(intval($modifiedAt)))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];

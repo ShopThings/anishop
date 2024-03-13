@@ -11,6 +11,16 @@ use Illuminate\Database\Eloquent\Model;
 interface RepositoryInterface
 {
     /**
+     * @return static
+     */
+    public function resetWith(): static;
+
+    /**
+     * @return static
+     */
+    public function resetWithWhereHas(): static;
+
+    /**
      * Use this to have a fresh with collector
      *
      * @param array|string $relations

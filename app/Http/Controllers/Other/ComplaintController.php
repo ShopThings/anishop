@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Other;
 
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateComplaintRequest;
 use App\Http\Resources\ComplaintResource;
 use App\Models\Complaint;
 use App\Models\User;
@@ -57,8 +58,16 @@ class ComplaintController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param UpdateComplaintRequest $request
+     * @param Complaint $complaint
+     * @return JsonResponse|ComplaintResource
+     * @throws AuthorizationException
      */
-    public function update(ComplaintResource $request, Complaint $complaint): JsonResponse|ComplaintResource
+    public function update(
+        UpdateComplaintRequest $request,
+        Complaint              $complaint
+    ): JsonResponse|ComplaintResource
     {
         $this->authorize('update', $complaint);
 

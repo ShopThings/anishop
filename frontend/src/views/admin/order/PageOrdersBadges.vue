@@ -10,8 +10,8 @@
   </new-creation-guide-top>
 
   <base-message
-    type="info"
-    :has-close="false"
+      :has-close="false"
+      type="info"
   >
     در صورت تغییر وضعیت به وضعیتی که
     <span class="bg-white rounded mx-2 text-black px-2">بازگشت محصول به انبار</span>
@@ -27,40 +27,40 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:title="{value}">
               <div class="flex items-center">
-                <partial-badge-color :title="value.title" :hex="value.color_hex"/>
+                <partial-badge-color :hex="value.color_hex" :title="value.title"/>
 
                 <span
-                  v-if="value.is_starting_badge"
-                  class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs"
+                    v-if="value.is_starting_badge"
+                    class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs"
                 >پیش فرض</span>
                 <span
-                  v-if="value.is_end_badge"
-                  class="rounded mr-2 bg-orange-600 text-white px-2 py-0.5 text-xs"
+                    v-if="value.is_end_badge"
+                    class="rounded mr-2 bg-orange-600 text-white px-2 py-0.5 text-xs"
                 >وضعیت پایانی</span>
               </div>
             </template>
 
             <template v-slot:should_return_order_product="{value}">
               <partial-badge-publish
-                :publish="value.should_return_order_product"
-                publish-text="بله"
-                unpublish-text="خیر"
+                  :publish="value.should_return_order_product"
+                  publish-text="بله"
+                  unpublish-text="خیر"
               />
             </template>
 
@@ -75,10 +75,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -220,8 +220,10 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
           OrderBadgeAPI.deleteByIds(data.id, {
@@ -251,7 +253,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

@@ -72,7 +72,6 @@ class StoreCouponRequest extends FormRequest
                 'min:1',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

@@ -31,6 +31,7 @@ class SliderController extends Controller
         protected SliderServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**
@@ -99,8 +100,13 @@ class SliderController extends Controller
     {
         $this->authorize('update', $slider);
 
-        $validated = $request->validated();
-        unset($validated['is_deletable']);
+        $validated = $request->validated([
+            'slider_place',
+            'title',
+            'priority',
+            'options',
+            'is_published',
+        ]);
         $model = $this->service->updateById($slider->id, $validated);
 
         if (!is_null($model)) {
@@ -137,6 +143,22 @@ class SliderController extends Controller
     }
 
     /**
+     * @param Slider $slider
+     * @return AnonymousResourceCollection
+     * @throws AuthorizationException
+     */
+    public function showSlides(Slider $slider): AnonymousResourceCollection
+    {
+        $this->authorize('view', $slider);
+        return SliderItemResource::collection(
+            $slider->items()
+                ->orderBy('priority')
+                ->orderBy('id')
+                ->get()
+        );
+    }
+
+    /**
      * @param StoreSliderItemRequest $request
      * @param Slider $slider
      * @return AnonymousResourceCollection
@@ -147,7 +169,6 @@ class SliderController extends Controller
         $this->authorize('create', User::class);
 
         $validated = $request->validated();
-
         return SliderItemResource::collection($this->service->modifySliderItems($slider->id, $validated['items']));
     }
 }

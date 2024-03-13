@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Filters;
 
 use App\Enums\Blogs\BlogOrderTypesEnum;
+use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use Carbon\Carbon;
 use Hekmatinasser\Verta\Facades\Verta;
@@ -30,14 +31,22 @@ class HomeBlogFilter extends Filter
      */
     protected BlogOrderTypesEnum $blogOrder = BlogOrderTypesEnum::NEWEST;
 
-    public function __construct(Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
     {
-        parent::__construct($request);
+        parent::init($request);
 
-        $this->setTag($request->input('tag'));
         $this->setCategory($request->integer('category'));
         $this->setArchive($request->string('archive')->toString());
         $this->setBlogOrder($request->enum('order', BlogOrderTypesEnum::class));
+
+        // get tags
+        $tags = $request->input('tag');
+        if (is_string($tags) || is_array($tags)) {
+            $this->setTag($tags);
+        }
     }
 
     /**
@@ -87,7 +96,7 @@ class HomeBlogFilter extends Filter
     {
         if ($raw || null === $this->archive) return $this->archive;
         try {
-            return verta(Verta::parse($this->archive))->toCarbon();
+            return vertaTz(Verta::parse($this->archive))->toCarbon();
         } catch (\Exception) {
             return null;
         }
@@ -99,6 +108,7 @@ class HomeBlogFilter extends Filter
      */
     public function setArchive(?string $archive): static
     {
+        $archive = NumberConverter::toEnglish($archive);
         if (!!preg_match('/^\d{4}-\d{0,2}$/', $archive)) {
             $this->archive = $archive;
         }

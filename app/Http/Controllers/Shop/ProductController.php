@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Filters\ProductFilter;
 use App\Http\Requests\StoreProductGalleryRequest;
 use App\Http\Requests\StoreProductPropertyRequest;
 use App\Http\Requests\StoreProductRelatedProductRequest;
@@ -47,7 +48,7 @@ class ProductController extends Controller
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Filter $filter): AnonymousResourceCollection
+    public function index(ProductFilter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
         return ProductResource::collection($this->service->getProducts($filter));

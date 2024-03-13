@@ -62,15 +62,12 @@ class UpdateProductRequest extends FormRequest
                 'array',
             ],
             'is_available' => [
-                'sometimes',
                 'boolean',
             ],
             'is_commenting_allowed' => [
-                'sometimes',
                 'boolean',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

@@ -1,7 +1,7 @@
 <template>
   <context-menu
-    v-model:show="menuShow"
-    :options="options"
+      v-model:show="menuShow"
+      :options="options"
   >
     <context-menu-item v-if="hasOperation('preview')"
                        @click="menuItemClick('preview')">

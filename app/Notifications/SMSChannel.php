@@ -17,8 +17,6 @@ class SMSChannel
          */
         $smsObject = $notification->toSms($notifiable);
 
-
-
         // Send notification to the $notifiable instance...
         // ...
 

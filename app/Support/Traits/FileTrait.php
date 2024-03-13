@@ -176,8 +176,9 @@ trait FileTrait
             $destinationPathInfo['dirname'] = $this->getNormalizedPath($destinationPathInfo['dirname']);
         }
 
-        if (empty($sourcePathInfo['extension']) && !empty($destinationPathInfo['extension']))
+        if (empty($sourcePathInfo['extension']) && !empty($destinationPathInfo['extension'])) {
             throw new InvalidPathException();
+        }
 
         DB::beginTransaction();
 
@@ -209,7 +210,9 @@ trait FileTrait
                     ->whereEqual('extension', $sourcePathInfo['extension'])
                     ->whereEqual('path', $sourcePathInfo['dirname']);
 
-                $res = $res && $this->updateWhere($attributes, $where->build());
+                if ($this->exists($where->build())) {
+                    $res = $res && $this->updateWhere($attributes, $where->build());
+                }
             } elseif ($operation === FileRepositoryInterface::OPERATION_COPY) {
                 $attributes['name'] = $sourcePathInfo['filename'];
                 $attributes['extension'] = $sourcePathInfo['extension'];
@@ -267,7 +270,9 @@ trait FileTrait
                 'path' => $destinationPath,
             ];
 
-            $res = $res && $this->updateWhere($attributes, $where->build());
+            if ($this->exists($where->build())) {
+                $res = $res && $this->updateWhere($attributes, $where->build());
+            }
 
             if (!$res) {
                 DB::rollBack();

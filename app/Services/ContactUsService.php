@@ -36,12 +36,14 @@ class ContactUsService extends Service implements ContactUsServiceInterface
             ], $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['answeredBy', 'statusChanger', 'creator', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -59,7 +61,7 @@ class ContactUsService extends Service implements ContactUsServiceInterface
                     'description',
                 ], $search);
             })
-            ->whereEqual('user_id', $userId);
+            ->whereEqual('created_by', $userId);
 
         return $this->repository->paginate(
             where: $where->build(),
@@ -75,7 +77,7 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     public function getContactsCount($userId): int
     {
         $where = new WhereBuilder('contact_us');
-        $where->whereEqual('user_id', $userId);
+        $where->whereEqual('created_by', $userId);
 
         return $this->repository->count($where->build());
     }
@@ -102,8 +104,13 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     {
         $updateAttributes = [];
 
+        if (isset($attributes['answer'])) {
+            $updateAttributes['answer'] = $attributes['answer'];
+            $updateAttributes['answered_at'] = now();
+            $updateAttributes['answered_by'] = Auth::user()?->id;
+        }
         if (isset($attributes['is_seen'])) {
-            $updateAttributes['is_seen'] = $attributes['is_seen'];
+            $updateAttributes['is_seen'] = to_boolean($attributes['is_seen']);
             $updateAttributes['changed_status_at'] = now();
             $updateAttributes['changed_status_by'] = Auth::user()?->id;
         }

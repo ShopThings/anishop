@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\OrderItemShowResource;
 use App\Http\Resources\Showing\OrderShowResource;
@@ -22,13 +23,14 @@ class UserOrderSingleResource extends JsonResource
         $this->resource->load('orders');
         $this->resource->load('orders.payments');
         $this->resource->load('items');
+        $this->resource->load('items.product');
 
         return [
-            'id' => $this->id,
             'user' => new UserShowResource($this->user),
             'code' => $this->code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
+            'national_code' => $this->national_code,
             'mobile' => $this->mobile,
             'province' => $this->province,
             'city' => $this->city,
@@ -43,16 +45,41 @@ class UserOrderSingleResource extends JsonResource
             'discount_price' => $this->discount_price,
             'final_price' => $this->final_price,
             'total_price' => $this->total_price,
-            'send_status_title' => $this->send_status_title,
-            'send_status_color_hex' => $this->send_status_color_hex,
+            'send_method_title' => $this->send_method_title,
+            'send_status' => [
+                'title' => $this->send_status_title,
+                'color_hex' => $this->send_status_color_hex,
+                'is_starting_badge' => $this->send_status_is_starting_badge,
+                'is_end_badge' => $this->send_status_is_end_badge,
+            ],
             'send_status_changed_at' => $this->send_status_changed_at
-                ? verta($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'is_needed_factor' => $this->is_needed_factor,
-            'is_in_place_delivery' => $this->is_in_place_delivery,
             'ordered_at' => $this->ordered_at
-                ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
+            'payment_status' => $this->hasCompletePaid()
+                ? [
+                    'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::SUCCESS, 'نامشخص'),
+                    'value' => PaymentStatusesEnum::SUCCESS->value,
+                    'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::SUCCESS->value] ?? '#000000',
+                ]
+                : (
+                $this->hasAnyPaid()
+                    ?
+                    [
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::PARTIAL_SUCCESS, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::PARTIAL_SUCCESS->value,
+                        'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::PARTIAL_SUCCESS->value] ?? '#000000',
+                    ]
+                    :
+                    [
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAYED, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::NOT_PAYED->value,
+                        'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::NOT_PAYED->value] ?? '#000000',
+                    ]
+                ),
             'orders' => OrderShowResource::collection($this->orders),
             'items' => OrderItemShowResource::collection($this->items),
         ];

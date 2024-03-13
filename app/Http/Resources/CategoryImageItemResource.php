@@ -26,7 +26,7 @@ class CategoryImageItemResource extends JsonResource
             'category_image_id' => $this->categoryImage?->id,
             'image' => $this->when(
                 $this->whenLoaded('categoryImage') &&
-                $this->categoryImage->relationLoaded('image'),
+                $this->categoryImage?->relationLoaded('image'),
                 function () {
                     return $this->categoryImage->image?->id
                         ? new ImageShowInfoResource($this->categoryImage->image)
@@ -45,15 +45,15 @@ class CategoryImageItemResource extends JsonResource
                 new UserShowResource($this->categoryImage?->deleter)
             ),
             'created_at' => $this->categoryImage?->created_at
-                ? verta($this->categoryImage?->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->categoryImage?->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->categoryImage?->updated_at,
-                verta($this->categoryImage?->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->categoryImage?->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'deleted_at' => $this->when(
                 $this->categoryImage?->deleted_at,
-                verta($this->categoryImage?->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->categoryImage?->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

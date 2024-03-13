@@ -109,6 +109,8 @@ class AuthService extends Service implements AuthServiceInterface
      */
     public function getUserByUsername(string $username): ?Model
     {
+        if (empty($username)) return null;
+
         $where = new WhereBuilder('users');
         $where->whereEqual('username', $username);
 

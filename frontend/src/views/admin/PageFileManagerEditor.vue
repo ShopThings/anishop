@@ -1,29 +1,30 @@
 <template>
   <div class="relative">
     <base-file-manager
-      :allow-multi-operation="false"
-      :has-create-folder="false"
-      :has-search="true"
-      :has-uploader="false"
-      storages="public"
-      :allow-rename="true"
-      :allow-move="true"
-      :allow-delete="true"
-      :extensions="extensions"
-      @file-selected="changeSelectedFile"
+        :allow-delete="true"
+        :allow-move="true"
+        :allow-multi-operation="false"
+        :allow-rename="true"
+        :extensions="extensions"
+        :has-create-folder="false"
+        :has-search="true"
+        :has-uploader="false"
+        :selectable-files="true"
+        storages="public"
+        @file-selected="changeSelectedFile"
     >
     </base-file-manager>
 
     <div class="sticky bottom-0 left-0 z-[1] border-t w-full p-3 mt-3 text-left bg-white">
       <base-button
-        @click="closeWindowPopup"
-        class="!text-black bg-gray-100 px-6 ml-2 hover:bg-gray-200"
+          class="!text-black bg-gray-100 px-6 ml-2 hover:bg-gray-200"
+          @click="closeWindowPopup"
       >
         بستن
       </base-button>
       <base-button
-        @click="checkFileSelection"
-        class="bg-primary px-5"
+          class="bg-primary px-5"
+          @click="checkFileSelection"
       >
         انتخاب فایل
       </base-button>
@@ -37,6 +38,7 @@ import {ref} from "vue";
 import {useRoute} from "vue-router";
 import BaseButton from "@/components/base/BaseButton.vue";
 import {useToast} from "vue-toastification";
+import {apiRoutes} from "@/router/api-routes.js";
 
 const route = useRoute()
 const toast = useToast()
@@ -65,12 +67,14 @@ function changeSelectedFile(file) {
 }
 
 function checkFileSelection() {
-  if (!selectedFile.value || !selectedFile.value.image) {
+  if (!selectedFile.value || !selectedFile.value.full_path) {
     toast.warning('ابتدا فایل خود را انتخاب نمایید.')
     return
   }
 
-  top.tinymce.activeEditor.windowManager.getParams().onInsert(selectedFile.value?.image)
+  const fileSrc = import.meta.env.VITE_API_BASE_URL + apiRoutes.showFile + '?file=' + selectedFile.value.full_path
+  top.tinymce.activeEditor.windowManager.getParams().onInsert(fileSrc)
+
   closeWindowPopup()
 }
 

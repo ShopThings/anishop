@@ -14,6 +14,14 @@ export function trimChar(str, char) {
   ), "");
 }
 
+export function obfuscateEmail(email) {
+  return email.replace(/./g, '&#46;');
+}
+
+export function obfuscateNumber(phone) {
+  return phone.replace(/\d/g, (match) => `&#${match.charCodeAt(0)};`);
+}
+
 export function concatPath(...paths) {
   const r = new RegExp('[\\\\]*')
   let path = []
@@ -47,15 +55,34 @@ export function getRouteParamByKey(key, defaultValue, isNumeric) {
 export function formatPriceLikeNumber(value, separator) {
   if (!value) return '0';
 
-  const numRegex = new RegExp('(?=(?<!\.\d*)(?!^)\d{3}(?:\b|(?:\d{3})+)\b)', 'g')
-
   if (!separator) separator = ','
-  value = value + ''
-
-  return value
+  value = (value + '')
     .replace(/^0+$/g, '0')
     .replace(/(\.+|,+|\D+)/g, '')
-    .replace(numRegex, separator)
+
+  const numericValue = Number(value);
+  if (isNaN(numericValue)) {
+    console.error('Invalid numeric value:', value);
+    return '0';
+  }
+
+  return numericValue.toLocaleString(undefined, {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+    useGrouping: true,
+    groupingSeparator: separator,
+  })
+}
+
+export const getPercentageOfPortion = (portion, total) => {
+  // Explicit type conversion to handle string inputs
+  portion = +portion;
+  total = +total;
+
+  if (isNaN(portion) || isNaN(total) || portion < 0 || total < 0) return 0
+  if (portion > total) return 100
+
+  return Math.round((total - portion) * 100 / total)
 }
 
 export function escapeMoneyCharacter(input, only) {
@@ -81,17 +108,12 @@ export function escapeMoneyCharacter(input, only) {
     return input
   }
 
+  // '-' character in regex is not a hyphen, it's for negative numbers
   const rawInput = parseFloat(input.replace(/[^\d.-]/g, ''))
   return isNaN(rawInput) ? input : rawInput
 }
 
 export const getTextColor = (backgroundColor) => {
-  function calculateBrightness(color) {
-    // Function to calculate brightness from RGB values
-    const rgb = this.hexToRgb(color);
-    return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
-  }
-
   function hexToRgb(hex) {
     // Convert hex color to RGB
     const bigint = parseInt(hex.slice(1), 16);
@@ -102,11 +124,17 @@ export const getTextColor = (backgroundColor) => {
     };
   }
 
+  function calculateBrightness(color) {
+    // Function to calculate brightness from RGB values
+    const rgb = hexToRgb(color);
+    return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+  }
+
   // Convert the background color to a brightness value
-  const brightness = this.calculateBrightness(backgroundColor);
+  const brightness = calculateBrightness(backgroundColor);
 
   // Use a threshold value to determine whether to use white or black text
-  return brightness > 128 ? 'black' : 'white';
+  return brightness > 155 ? 'black' : 'white';
 }
 
 export const nestedArray = {
@@ -143,5 +171,30 @@ export const nestedArray = {
     if (nestedObj && nestedObj.hasOwnProperty(lastKey)) {
       delete nestedObj[lastKey];
     }
+  }
+}
+
+export const findItemByKey = (arr, key, value, strict = true) => {
+  for (let item of arr) {
+    if (strict ? item[key] === value : item[key] == value) {
+      return item
+    }
+  }
+
+  return {}
+}
+
+export const addQueryParam = (key, values) => {
+  const route = useRoute()
+
+  if (typeof values !== undefined && values !== null) {
+    values = Array.isArray(values) ? values : [values]
+  }
+
+  const currentValues = Array.isArray(route.query[key]) ? [...route.query[key]] : [];
+  const newValues = [...currentValues, ...values];
+
+  return {
+    [key]: newValues,
   }
 }

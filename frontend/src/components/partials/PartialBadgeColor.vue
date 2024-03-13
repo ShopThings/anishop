@@ -1,11 +1,11 @@
 <template>
   <div class="inline-flex items-center gap-2">
     <span
-      v-tooltip.top="{message: title}"
-      class="inline-block w-5 h-5 rounded-full border"
-      :style="'background-color: ' + hex + ';'"
+        v-tooltip.top="{message: title}"
+        :style="'background-color: ' + hex + ';'"
+        class="inline-block w-5 h-5 rounded-full border"
     ></span>
-    <span>{{ value.title }}</span>
+    <span>{{ title }}</span>
   </div>
 </template>
 

@@ -55,7 +55,6 @@ class StorePaymentMethodRequest extends FormRequest
                 'nullable',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

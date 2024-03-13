@@ -10,7 +10,6 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Mews\Purifier\Facades\Purifier;
 
 class SettingService extends Service implements SettingServiceInterface
 {
@@ -63,6 +62,21 @@ class SettingService extends Service implements SettingServiceInterface
     /**
      * @inheritDoc
      */
+    public function getGeneralSettings(): Collection
+    {
+        $where = new WhereBuilder();
+        $where->whereIn('name', array_map(fn($item) => $item->value, SettingsEnum::getGeneralSettings()));
+
+        $settings = $this->repository->all(columns: [
+            'name', 'setting_value', 'group_name',
+            'default_value', 'min_value', 'max_value',
+        ], where: $where->build());
+        return $this->_refineSettings($settings);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $attrs = [
@@ -88,7 +102,6 @@ class SettingService extends Service implements SettingServiceInterface
         if (isset($attributes['name'])) {
             $updateAttributes['name'] = $attributes['name'];
         }
-
         if (isset($updateAttributes['setting_value'], $updateAttributes['name'])) {
             $updateAttributes['setting_value'] = $this->_prepareSettingValueToStore(
                 $updateAttributes['name'],
@@ -148,7 +161,25 @@ class SettingService extends Service implements SettingServiceInterface
      *
      * @inheritDoc
      */
-    public function batchDeleteByIds(array $ids, bool $permanent = false): bool
+    public function batchDeleteByIds(
+        array $ids,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool
+    {
+        return false;
+    }
+
+    /**
+     * <b>DO NOT NEED</b> any delete operation
+     *
+     * @inheritDoc
+     */
+    public function batchDeleteBySlugs(
+        array $slugs,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool
     {
         return false;
     }
@@ -205,10 +236,13 @@ class SettingService extends Service implements SettingServiceInterface
         return match ($name) {
             SettingsEnum::LAT_LNG->value,
             SettingsEnum::KEYWORDS->value,
-            SettingsEnum::PHONES->value => explode(',', $settingValue),
+            SettingsEnum::PHONES->value => array_filter(
+                explode(',', $settingValue),
+                fn($item) => !empty($item)
+            ),
 
             SettingsEnum::SOCIALS->value,
-            SettingsEnum::FOOTER_NAMADS->value => json_decode($settingValue) ?? [],
+            SettingsEnum::FOOTER_NAMADS->value => json_decode($settingValue, true) ?? [],
 
             default => $settingValue,
         };
@@ -232,11 +266,13 @@ class SettingService extends Service implements SettingServiceInterface
             SettingsEnum::SMS_RETURN_ORDER_STATUS->value,
             SettingsEnum::FOOTER_COPYRIGHT->value,
             SettingsEnum::ADDRESS->value,
-            SettingsEnum::FOOTER_DESCRIPTION->value => Purifier::clean($settingValue),
+            SettingsEnum::FOOTER_DESCRIPTION->value => strip_tags($settingValue),
 
             SettingsEnum::LAT_LNG->value,
             SettingsEnum::KEYWORDS->value,
-            SettingsEnum::PHONES->value => is_array($settingValue) ? implode(',', $settingValue) : $settingValue,
+            SettingsEnum::PHONES->value => is_array($settingValue)
+                ? implode(',', array_filter($settingValue, fn($item) => !empty($item)))
+                : '',
 
             SettingsEnum::STORE_PROVINCE->value,
             SettingsEnum::STORE_CITY->value,

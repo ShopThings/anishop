@@ -19,17 +19,17 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
               :has-checkbox="true"
-              :total="table.totalRecordCount"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
             <template v-slot:name="{value}">
@@ -37,8 +37,8 @@
                 <span>{{ value.name }}</span>
                 <span
                     v-tooltip.top="{message: value.name}"
-                    class="inline-block w-5 h-5 rounded-full border mr-2"
                     :style="'background-color: ' + value.hex + ';'"
+                    class="inline-block w-5 h-5 rounded-full border mr-2"
                 ></span>
               </div>
             </template>
@@ -54,9 +54,9 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
                   :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
                   :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
@@ -185,8 +185,10 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
           ColorAPI.deleteById(data.id, {
@@ -216,7 +218,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

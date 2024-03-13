@@ -2,33 +2,34 @@
   <template v-if="editMode">
     <Combobox
         v-model="selectedItems"
-        :name="name"
-        :multiple="multiple"
         :by="optionsKey"
+        :multiple="multiple"
+        :name="name"
     >
       <div class="relative">
         <ComboboxInput
-            class="block w-full rounded-md border-0 py-3 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             :displayValue="setDisplayValue"
             :placeholder="placeholder || 'انتخاب کنید یا جستجو نمایید'"
+            class="block w-full rounded-md border-0 py-3 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             @change="handleChangeValue"
         />
         <ComboboxButton class="absolute inset-y-0 right-0 flex items-center pr-2">
-                <span class="absolute inset-y-0 right-0 flex items-center px-1 bg-indigo-600 rounded-r">
-                    <ChevronUpDownIcon class="h-5 w-5 text-white" aria-hidden="true"/></span>
+          <span class="absolute inset-y-0 right-0 flex items-center px-1 bg-indigo-600 rounded-r">
+              <ChevronUpDownIcon aria-hidden="true" class="h-5 w-5 text-white"/></span>
         </ComboboxButton>
 
         <VTransitionSlideFadeUpY>
           <ComboboxOptions
+              ref="optionsContainerRef"
               :class="optionsClass"
-              class="absolute z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              class="absolute z-[5] h-auto w-full rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           >
             <loader-progress v-if="isLoading"/>
 
             <div class="flex border-b">
               <button
-                  type="button"
                   class="w-full p-2 bg-slate-100 hover:bg-slate-200 transition"
+                  type="button"
                   @click="toggleSelectedItemsShowing"
               >
                 <span>نمایش موارد انتخاب شده</span>
@@ -40,8 +41,8 @@
               </button>
               <button
                   v-tooltip.right="'حذف تمام موارد انتخاب شده'"
-                  type="button"
                   class="bg-rose-50 px-3 shrink-0 border-r  hover:bg-rose-100 transition group"
+                  type="button"
                   @click="removeAllSelectedItems"
               >
                 <BackspaceIcon class="w-6 h-6 text-rose-600 rotate-180 group-hover:scale-105 transition"/>
@@ -60,20 +61,20 @@
                   class="bg-white"
               >
                 <li
-                    v-if="Array.isArray(selectedItems)"
                     v-for="item in selectedItems"
+                    v-if="Array.isArray(selectedItems)"
                     :key="item[optionsKey]"
                     class="flex gap-3 items-center divide-y p-2"
                 >
                   <div class="grow">
-                    <slot name="item" :item="item" :selected="true">
+                    <slot :item="item" :selected="true" name="item">
                       {{ nestedArray.get(item, optionsText) }}
                     </slot>
                   </div>
                   <button
-                      type="button"
                       v-tooltip.right="'حذف از انتخاب‌ها'"
                       class="shrink-0 bg-rose-50 hover:bg-rose-100 transition py-1 px-1.5 rounded-lg"
+                      type="button"
                       @click="() => {removeSelectedItem(item)}"
                   >
                     <BackspaceIcon class="w-6 h-6 rotate-180 text-rose-600"/>
@@ -85,14 +86,14 @@
                     class="flex gap-3 items-center divide-y p-2"
                 >
                   <div class="grow">
-                    <slot name="item" :item="selectedItems" :selected="true">
+                    <slot :item="selectedItems" :selected="true" name="item">
                       {{ nestedArray.get(selectedItems, optionsText) }}
                     </slot>
                   </div>
                   <button
-                      type="button"
                       v-tooltip.right="'حذف از موارد انتخاب شده'"
                       class="shrink-0 bg-rose-50 hover:bg-rose-100 transition py-1 px-1.5 rounded-lg"
+                      type="button"
                       @click="() => {removeSelectedItem(selectedItems)}"
                   >
                     <BackspaceIcon class="w-6 h-6 rotate-180 text-rose-600"/>
@@ -112,10 +113,10 @@
                 class="flex gap-3 items-center px-3 py-2 shadow sticky -top-1 z-[1] bg-white"
             >
               <button
-                  type="button"
                   v-tooltip.top="'صفحه بعد'"
-                  class="shrink-0 p-1 rounded-lg border hover:bg-gray-100 transition"
                   :class="{'hidden': !currentPage || !lastPage || currentPage >= lastPage}"
+                  class="shrink-0 p-1 rounded-lg border hover:bg-gray-100 transition"
+                  type="button"
                   @click="emit('click-next-page', query)"
               >
                 <ChevronRightIcon class="w-6 h-6"/>
@@ -127,10 +128,10 @@
                 <span class="text-base bg-violet-100 py-0.5 px-2 rounded-lg">{{ lastPage }}</span>
               </div>
               <button
-                  type="button"
                   v-tooltip.top="'صفحه قبل'"
-                  class="shrink-0 p-1 rounded-lg border hover:bg-gray-100 transition"
                   :class="{'hidden': !currentPage || currentPage <= 1}"
+                  class="shrink-0 p-1 rounded-lg border hover:bg-gray-100 transition"
+                  type="button"
                   @click="emit('click-prev-page', query)"
               >
                 <ChevronLeftIcon class="w-6 h-6"/>
@@ -138,42 +139,45 @@
             </div>
 
             <div
-                v-if="!isLoading && filteredOptions && Object.keys(filteredOptions).length === 0 && (query !== '' || (!isLocalSearch))"
+                v-if="(!isLoading || query !== '' || !isLocalSearch) && (filteredOptions && Object.keys(filteredOptions).length === 0)"
                 class="relative cursor-default select-none py-2 px-4 text-gray-700"
             >
               هیچ موردی پیدا نشد.
             </div>
 
-            <ComboboxOption
-                v-slot="{ active, selected }"
-                v-for="item in filteredOptions"
-                :key="item[optionsKey]"
-                :value="item"
-                as="template"
-            >
-              <li :class="[
-                active ? 'bg-violet-100 text-primary' : 'text-gray-900',
-                'relative cursor-default select-none py-2 pl-10 pr-4',
-              ]"
+            <div class="max-h-56 my-custom-scrollbar">
+              <ComboboxOption
+                  v-for="item in filteredOptions"
+                  :key="item[optionsKey]"
+                  v-slot="{ active, selected }"
+                  :value="item"
+                  as="template"
               >
+                <div
+                    :class="[
+                      active ? 'bg-violet-100 text-primary' : 'text-gray-900',
+                      'relative cursor-default select-none py-2 pl-10 pr-4',
+                    ]"
+                >
                 <span
                     :class="[
                     selected ? 'font-medium' : 'font-normal',
                     'block truncate',
                   ]"
                 >
-                    <slot name="item" :item="item" :selected="selected">
+                    <slot :item="item" :selected="selected" name="item">
                         {{ nestedArray.get(item, optionsText) }}
                     </slot>
                 </span>
-                <span
-                    v-if="selected"
-                    class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary"
-                >
-                    <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                  <span
+                      v-if="selected"
+                      class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary"
+                  >
+                    <CheckIcon aria-hidden="true" class="h-5 w-5"/>
                 </span>
-              </li>
-            </ComboboxOption>
+                </div>
+              </ComboboxOption>
+            </div>
           </ComboboxOptions>
         </VTransitionSlideFadeUpY>
       </div>
@@ -186,19 +190,19 @@
     <span class="grow text-gray-500 text-sm">{{ fullTextOfSelectedItems || '-' }}</span>
     <button
         v-if="isEditable"
-        type="button"
         class="shrink-0 mr-2"
+        type="button"
     >
       <PencilSquareIcon
-          @click="toggleEditMode"
           class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+          @click="toggleEditMode"
       />
     </button>
   </div>
 </template>
 
 <script setup>
-import {computed, ref, watch} from "vue"
+import {computed, nextTick, ref, watch} from "vue"
 import {Combobox, ComboboxButton, ComboboxInput, ComboboxOption, ComboboxOptions} from "@headlessui/vue"
 import {
   ChevronUpDownIcon,
@@ -213,6 +217,8 @@ import LoaderProgress from "./loader/LoaderProgress.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButtonClose from "@/components/base/BaseButtonClose.vue";
 import {nestedArray} from "@/composables/helper.js";
+import isFunction from "lodash.isfunction";
+import {useDebounceFn, useElementBounding} from "@vueuse/core";
 
 const props = defineProps({
   selected: {
@@ -266,8 +272,10 @@ const props = defineProps({
   hasPagination: Boolean,
   currentPage: Number,
   lastPage: Number,
+  //
+  beforeChangeFn: Function,
 })
-const emit = defineEmits(['change', 'query', 'click-next-page', 'click-prev-page'])
+const emit = defineEmits(['change', 'before-change', 'query', 'click-next-page', 'click-prev-page'])
 
 const editMode = ref(props.hasEditMode)
 
@@ -279,6 +287,7 @@ function toggleEditMode() {
   editMode.value = true
 }
 
+//--------------------------------------
 const filteredOptions = ref(props.options)
 
 watch(() => props.options, () => {
@@ -332,10 +341,41 @@ watch(() => props.selected, () => {
   resetSelectedItems()
 })
 
-watch(selectedItems, () => {
-  emit('change', selectedItems.value)
+const isHandlingChange = ref(false)
+
+watch(selectedItems, async (newValue, oldValue) => {
+  if (!isHandlingChange.value) {
+    isHandlingChange.value = true;
+
+    emit('change', newValue)
+
+    let res = await handleBeforeChange()
+    if (res === false) {
+      selectedItems.value = oldValue
+    }
+
+    nextTick(() => {
+      isHandlingChange.value = false;
+    })
+  }
 })
 
+async function handleBeforeChange() {
+  emit('before-change', selectedItems.value)
+
+  let res = true
+  if (isFunction(props.beforeChangeFn)) {
+    try {
+      res = await props.beforeChangeFn(selectedItems.value)
+    } catch (error) {
+      res = error
+    }
+  }
+
+  return res
+}
+
+//--------------------------------
 function setDisplayValue(item) {
   if (!item) return ''
 
@@ -395,8 +435,10 @@ function removeSelectedItem(item) {
 //--------------------------------
 // Filter items
 //--------------------------------
-
 const query = ref('')
+const callQueryEdit = useDebounceFn(() => {
+  emit('query', query.value)
+}, 300)
 
 function handleChangeValue($event) {
   query.value = $event.target.value.split(',').pop().trim()
@@ -410,7 +452,37 @@ function handleChangeValue($event) {
                 ?.includes(query.value.toLowerCase().replace(/\s+/g, ''))
         )
   }
-  emit('query', query.value)
+
+  callQueryEdit()
 }
 
+//--------------------------------------------
+// Make options container be in page
+//--------------------------------------------
+const optionsContainerRef = ref(null)
+
+watch(() => optionsContainerRef.value?.$el?.classList, () => {
+  if (optionsContainerRef.value.$el) {
+    const {top, right, bottom, left} = useElementBounding(optionsContainerRef.value.$el)
+
+    const isVisible = (
+        top.value >= 0 &&
+        left.value >= 0 &&
+        bottom.value <= window.innerHeight &&
+        right.value <= window.innerWidth
+    );
+
+    if (!isVisible) {
+      optionsContainerRef.value.$el.classList.add('bottom-[calc(100%+0.25rem)]')
+    } else {
+      optionsContainerRef.value.$el.classList.remove('bottom-[calc(100%+0.25rem)]')
+    }
+  }
+})
+
+//--------------------------------
+defineExpose({
+  resetSelectedItems,
+  removeSelectedItems: removeAllSelectedItems,
+})
 </script>

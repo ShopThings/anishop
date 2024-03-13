@@ -36,15 +36,12 @@ class UpdateBlogCategoryRequest extends FormRequest
                 'array',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
             'show_in_menu' => [
-                'sometimes',
                 'boolean',
             ],
             'show_in_side_menu' => [
-                'sometimes',
                 'boolean',
             ],
         ];

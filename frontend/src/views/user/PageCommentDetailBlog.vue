@@ -5,8 +5,8 @@
     </h2>
 
     <base-loading-panel
-      type="list-single"
-      :loading="loading"
+        :loading="loading"
+        type="list-single"
     >
       <template #content>
         <partial-card class="border-0">
@@ -15,9 +15,9 @@
               <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="shrink-0">
                   <base-lazy-image
-                    alt="تصویر محصول"
-                    lazy-src="/src/assets/blogs/b1.jpg"
-                    class="!h-28 sm:!h-20 w-auto"
+                      alt="تصویر محصول"
+                      class="!h-28 sm:!h-20 w-auto rounded"
+                      lazy-src="/src/assets/blogs/b1.jpg"
                   />
                 </div>
                 <div class="grow text-sm">
@@ -25,8 +25,8 @@
                 </div>
                 <div class="text-sm shrink-0">
                   <router-link
-                    :to="{name: 'blog.detail', params: {id: 1}}"
-                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                      :to="{name: 'blog.detail', params: {slug: '1'}}"
+                      class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                   >
                     <span class="mx-auto">مشاهده بلاگ</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -41,8 +41,8 @@
   </div>
 
   <div
-    v-if="1"
-    class="mb-3"
+      v-if="1"
+      class="mb-3"
   >
     <partial-badge-condition-comment class="w-full py-2 !text-sm"/>
   </div>
@@ -53,8 +53,8 @@
     </h2>
 
     <base-loading-panel
-      type="list-single"
-      :loading="loading"
+        :loading="loading"
+        type="list-single"
     >
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -62,9 +62,9 @@
             <template #body>
               <div class="px-3 pt-3">
                 <base-message
-                  type="info"
-                  :has-close="false"
-                  class="rounded-md"
+                    :has-close="false"
+                    class="rounded-md"
+                    type="info"
                 >
                   <div class="leading-relaxed">
                     امکان ویرایش پس از تغییر وضعیت توسط سایت، وجود ندارد.
@@ -76,18 +76,27 @@
                 <div class="mb-3">
                   <partial-input-label title="پاسخ شما به دیدگاه"/>
                   <partial-comment-blog-single
-                    :comment="{}"
-                    :show-answer-button="false"
+                      :comment="{}"
+                      :show-answer-button="false"
                   />
                 </div>
 
                 <div class="mb-3">
+                  <template v-if="0">
+                    <partial-input-label title="توضیحات شما"/>
+                    <partial-comment-blog-single
+                        :comment="{}"
+                        :show-answer-button="false"
+                        container-class="!bg-indigo-50"
+                    />
+                  </template>
                   <base-textarea
-                    name="description"
-                    label-title="توضیحات شما"
-                    placeholder="دیدگاه خود را وارد نمایید..."
-                    :has-edit-mode="true"
-                    :is-editable="true"
+                      v-else
+                      :has-edit-mode="true"
+                      :is-editable="true"
+                      label-title="توضیحات شما"
+                      name="description"
+                      placeholder="دیدگاه خود را وارد نمایید..."
                   />
                 </div>
 
@@ -95,24 +104,26 @@
                   <partial-input-label title="پاسخ به دیدگاه شما"/>
                   <base-feed-list>
                     <template #item>
-                      <partial-comment-blog-single
-                        :comment="{}"
-                      />
+                      <div class="grow">
+                        <partial-comment-blog-single
+                            :comment="{}"
+                        />
+                      </div>
                     </template>
                   </base-feed-list>
-                  <base-feed-list bullet-class="border-emerald-300 !bg-emerald-200">
+                  <base-feed-list bullet-class="w-4 h-4 !border-emerald-300 !bg-emerald-200">
                     <template #item>
                       <partial-comment-blog-single
-                        container-class="!bg-emerald-50"
-                        :comment="{}"
-                        :show-answer-button="false"
+                          :comment="{}"
+                          :show-answer-button="false"
+                          container-class="!bg-emerald-50"
                       />
                     </template>
                   </base-feed-list>
                   <base-feed-list :is-last="true">
                     <template #item>
                       <partial-comment-blog-single
-                        :comment="{}"
+                          :comment="{}"
                       />
                     </template>
                   </base-feed-list>
@@ -121,15 +132,15 @@
 
               <div class="p-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                    :disabled="isSubmitting"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="isSubmitting"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -174,6 +185,6 @@ const {handleSubmit, errors, isSubmitting} = useForm({
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+
 })
 </script>

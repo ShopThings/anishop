@@ -62,15 +62,12 @@ class StoreProductRequest extends FormRequest
                 'array',
             ],
             'is_available' => [
-                'required',
                 'boolean',
             ],
             'is_commenting_allowed' => [
-                'required',
                 'boolean',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

@@ -47,6 +47,21 @@ class BlogComment extends Model
     }
 
     /**
+     * @param int $depth
+     * @return BelongsTo
+     */
+    public function allParents(int $depth = 10): BelongsTo
+    {
+        if ($depth <= 0) {
+            return $this->parent();
+        }
+
+        return $this->parent()->with(['allParents' => function ($query) use ($depth) {
+            $query->allParents($depth - 1);
+        }]);
+    }
+
+    /**
      * @return HasMany
      */
     public function children(): HasMany
@@ -55,11 +70,18 @@ class BlogComment extends Model
     }
 
     /**
+     * @param int $depth
      * @return HasMany
      */
-    public function allChildren(): HasMany
+    public function allChildren(int $depth = 10): HasMany
     {
-        return $this->children()->with('allChildren');
+        if ($depth <= 0) {
+            return $this->children();
+        }
+
+        return $this->children()->with(['allChildren' => function ($query) use ($depth) {
+            $query->allChildren($depth - 1);
+        }]);
     }
 
     /**

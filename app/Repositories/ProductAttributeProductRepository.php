@@ -33,6 +33,11 @@ class ProductAttributeProductRepository extends Repository implements ProductAtt
     {
         $query = $this->productAttributeCategoryModel->newQuery();
         $query
+            ->with([
+                'productAttr',
+                'productAttr.attrValues',
+                'productAttr.attrValues.productAttrValues',
+            ])
             ->whereHas('productAttr.attrValues.productAttrValues.product', function (
                 $query
             ) use ($productId) {
@@ -42,12 +47,7 @@ class ProductAttributeProductRepository extends Repository implements ProductAtt
                         ->where('product_id', $productId)
                         ->first('category_id')?->category_id
                 );
-            })
-            ->with([
-                'productAttr',
-                'productAttr.attrValues',
-                'productAttr.attrValues.productAttrValues',
-            ]);
+            });
 
         return $query->get();
     }

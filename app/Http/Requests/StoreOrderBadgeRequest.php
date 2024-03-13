@@ -41,15 +41,12 @@ class StoreOrderBadgeRequest extends FormRequest
                 new ColorRule(),
             ],
             'should_return_order_product' => [
-                'required',
                 'boolean',
             ],
             'is_end_badge' => [
-                'required',
                 'boolean',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

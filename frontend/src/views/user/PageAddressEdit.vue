@@ -1,69 +1,70 @@
 <template>
   <base-loading-panel
-    type="form"
-    :loading="loading"
+      :loading="loading"
+      type="form"
   >
     <template #content>
       <partial-card class="border-0 p-3">
         <template #body>
           <form @submit.prevent="onSubmit">
             <div class="flex flex-wrap">
-              <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
+              <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
                 <base-input
-                  label-title="نام گیرنده"
-                  placeholder="وارد نمایید"
-                  name="full_name"
-                  :value="address?.full_name"
+                    :value="address?.full_name"
+                    label-title="نام گیرنده"
+                    name="full_name"
+                    placeholder="وارد نمایید"
                 >
                   <template #icon>
                     <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                   </template>
                 </base-input>
               </div>
-              <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
+              <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
                 <base-input
-                  label-title="شماره تماس"
-                  placeholder="وارد نمایید"
-                  name="mobile"
-                  :value="address?.mobile"
+                    :value="address?.mobile"
+                    label-title="شماره تماس"
+                    name="mobile"
+                    placeholder="وارد نمایید"
                 >
                   <template #icon>
                     <DevicePhoneMobileIcon class="h-6 w-6 text-gray-400"/>
                   </template>
                 </base-input>
               </div>
-              <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
+              <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
                 <partial-input-label title="انتخاب استان"/>
-                <base-select
-                  :options="provinces"
-                  options-key="id"
-                  options-text="name"
-                  :is-loading="provinceLoading"
-                  :selected="selectedProvince"
-                  name="province"
-                  @change="(status) => {selectedProvince = status}"
+                <base-select-searchable
+                    :is-loading="provinceLoading"
+                    :options="provinces"
+                    :selected="selectedProvince"
+                    name="province"
+                    options-key="id"
+                    options-text="name"
+                    @change="handleProvinceChange"
                 />
                 <partial-input-error-message :error-message="errors.province"/>
               </div>
-              <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
+              <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
                 <partial-input-label title="انتخاب شهرستان"/>
-                <base-select
-                  :options="cities"
-                  options-key="id"
-                  options-text="name"
-                  :is-loading="cityLoading"
-                  :selected="selectedCity"
-                  name="city"
-                  @change="(status) => {selectedCity = status}"
+                <base-select-searchable
+                    ref="citySelectRef"
+                    :is-loading="cityLoading"
+                    :options="cities"
+                    :selected="selectedCity"
+                    name="city"
+                    options-key="id"
+                    options-text="name"
+                    @change="(status) => {selectedCity = status}"
                 />
                 <partial-input-error-message :error-message="errors.city"/>
               </div>
-              <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
+              <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
                 <base-input
-                  label-title="کدپستی"
-                  placeholder="وارد نمایید"
-                  name="postal_code"
-                  :value="address?.postal_code"
+                    :value="address?.postal_code"
+                    label-title="کدپستی"
+                    name="postal_code"
+                    placeholder="وارد نمایید"
                 >
                   <template #icon>
                     <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -72,10 +73,10 @@
               </div>
               <div class="p-2 w-full">
                 <base-textarea
-                  label-title="آدرس محل سکونت"
-                  placeholder="آدرس داخل شهرستان را وارد نمایید"
-                  name="address"
-                  :value="address?.address"
+                    :value="address?.address"
+                    label-title="آدرس محل سکونت"
+                    name="address"
+                    placeholder="آدرس داخل شهرستان را وارد نمایید"
                 >
                   <template #icon>
                     <ArrowLeftCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -86,15 +87,15 @@
 
             <div class="px-2 py-3">
               <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                :disabled="isSubmitting"
+                  :disabled="isSubmitting"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
               >
                 <VTransitionFade>
                   <loader-circle
-                    v-if="isSubmitting"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
-                    big-circle-color="border-transparent"
+                      v-if="isSubmitting"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                   />
                 </VTransitionFade>
 
@@ -113,9 +114,9 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useForm} from "vee-validate";
-import yup from "@/validation/index.js";
+import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
@@ -128,67 +129,123 @@ import {
 } from "@heroicons/vue/24/outline/index.js";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
-import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
-import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
+import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {ProvinceAPI} from "@/service/APIShop.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {UserPanelAddressAPI} from "@/service/APIUserPanel.js";
 
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
-const loading = ref(false)
+const loading = ref(true)
 const address = ref(null)
 
 const provinces = ref([])
-const cities = ref([])
 const provinceLoading = ref(true)
-const cityLoading = ref(true)
-
 const selectedProvince = ref(null)
+
+//------------------------------------------
+// City operations
+//------------------------------------------
+const cities = ref([])
+const cityLoading = ref(false)
 const selectedCity = ref(null)
+const citySelectRef = ref(null)
 
-const canSubmit = ref(true)
+function loadCities(clearSelection) {
+  if (selectedProvince.value && selectedProvince.value?.id) {
+    if (citySelectRef.value && clearSelection !== false) {
+      citySelectRef.value.removeSelectedItems()
+    }
+    cityLoading.value = true
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+    ProvinceAPI.fetchCities(selectedProvince.value.id, {
+      success: (response) => {
+        cities.value = response.data
+        cityLoading.value = false
+      },
+    })
+  }
+}
 
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+//------------------------------------------
+function handleProvinceChange(selected) {
+  selectedProvince.value = selected
+  loadCities()
+}
+
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    address: yup.string().required('آدرس خود را وارد نمایید.'),
+    postal_code: yup.number().required('کدپستی را وارد نمایید.'),
+    full_name: yup.string()
+        .persian('نام باید از حروف فارسی باشد.')
+        .required('نام را وارد نمایید.'),
+    mobile: yup.string()
+        .transform(transformNumbersToEnglish)
+        .persianMobile('شماره موبایل نامعتبر است.')
+        .required('موبایل را وارد نمایید.'),
+  }),
+}, (values, actions) => {
+  if (!selectedProvince.value || !selectedProvince.value?.id) {
+    actions.setFieldError('province', 'استان را انتخاب نمایید.')
+    return
+  }
+
+  if (!selectedCity.value || !selectedCity.value?.id) {
+    actions.setFieldError('city', 'شهر را انتخاب نمایید.')
+    return
+  }
+
+  canSubmit.value = false
+
+  UserPanelAddressAPI.updateById(idParam.value, {
+    full_name: values.full_name,
+    mobile: values.mobile,
+    address: values.address,
+    postal_code: values.postal_code,
+    province: selectedProvince.value.id,
+    city: selectedCity.value.id,
+  }, {
+    success(response) {
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+      setFormFields(response.data)
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.user.addresses.show, {address: idParam.value}), null, {
-  //     success: (response) => {
-  //         address.value = response.data
-  //         selectedProvince.value = response.data.province
-  //         selectedCity.value = response.data.city
-  //
-  //         loading.value = false
-  //     },
-  // })
-  //
-  // useRequest(apiRoutes.admin.cityPostPrices.provinces, null, {
-  //     success: (response) => {
-  //         provinces.value = response.data
-  //
-  //         provinceLoading.value = false
-  //     },
-  // })
-  //
-  // useRequest(apiRoutes.admin.cityPostPrices.cities, null, {
-  //     success: (response) => {
-  //         cities.value = response.data
-  //
-  //         cityLoading.value = false
-  //     },
-  // })
+  UserPanelAddressAPI.fetchById(idParam.value, {
+    success: (response) => {
+      setFormFields(response.data)
+      loadCities(false)
+      loading.value = false
+    },
+  })
+
+  ProvinceAPI.fetchAll({
+    success: (response) => {
+      provinces.value = response.data
+      provinceLoading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  address.value = item
+  selectedProvince.value = item.province
+  selectedCity.value = item.city
+}
 </script>

@@ -29,6 +29,7 @@ class BlogCommentBadgeController extends Controller
         protected BlogBadgeServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**
@@ -75,34 +76,34 @@ class BlogCommentBadgeController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param BlogCommentBadge $blogCommentBadge
+     * @param BlogCommentBadge $blogBadge
      * @return BlogBadgeResource
      * @throws AuthorizationException
      */
-    public function show(BlogCommentBadge $blogCommentBadge): BlogBadgeResource
+    public function show(BlogCommentBadge $blogBadge): BlogBadgeResource
     {
-        $this->authorize('view', $blogCommentBadge);
-        return new BlogBadgeResource($blogCommentBadge);
+        $this->authorize('view', $blogBadge);
+        return new BlogBadgeResource($blogBadge);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateBlogBadgeRequest $request
-     * @param BlogCommentBadge $blogCommentBadge
+     * @param BlogCommentBadge $blogBadge
      * @return BlogBadgeResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBlogBadgeRequest $request, BlogCommentBadge $blogCommentBadge): JsonResponse|BlogBadgeResource
+    public function update(UpdateBlogBadgeRequest $request, BlogCommentBadge $blogBadge): JsonResponse|BlogBadgeResource
     {
-        $this->authorize('update', $blogCommentBadge);
+        $this->authorize('update', $blogBadge);
 
         $validated = $request->validated([
             'title',
             'color_hex',
             'is_published',
         ]);
-        $model = $this->service->updateById($blogCommentBadge->id, $validated);
+        $model = $this->service->updateById($blogBadge->id, $validated);
 
         if (!is_null($model)) {
             return new BlogBadgeResource($model);
@@ -118,16 +119,16 @@ class BlogCommentBadgeController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param BlogCommentBadge $blogCommentBadge
+     * @param BlogCommentBadge $blogBadge
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, BlogCommentBadge $blogCommentBadge): JsonResponse
+    public function destroy(Request $request, BlogCommentBadge $blogBadge): JsonResponse
     {
-        $this->authorize('delete', $blogCommentBadge);
+        $this->authorize('delete', $blogBadge);
 
-        $permanent = $request->user()->id === $blogCommentBadge->creator?->id;
-        $res = $this->service->deleteById($blogCommentBadge->id, $permanent);
+        $permanent = $request->user()->id === $blogBadge->creator?->id;
+        $res = $this->service->deleteById($blogBadge->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

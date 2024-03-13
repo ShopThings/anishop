@@ -3,37 +3,35 @@
     <template #header>
       نمایش سفارشات کاربر -
       <span
-        v-if="user?.id"
-        class="text-teal-600"
-      >{{
-          (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
-        }}</span>
+          v-if="user?.id"
+          class="text-slate-400 text-base"
+      ><partial-username-label v-if="user" :user="user"/></span>
     </template>
 
     <template #body>
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="false"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="false"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="false"
+              :enable-search-box="true"
+              :has-checkbox="false"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:code="{value}">
 
             </template>
             <template v-slot:receiver_info="{value}">
               <base-button
-                class="text-white bg-black text-sm !py-1"
-                @click="showReceiverDetails(value)"
+                  class="text-white bg-black text-sm !py-1"
+                  @click="showReceiverDetails(value)"
               >
                 مشاهده
               </base-button>
@@ -45,7 +43,7 @@
 
             </template>
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -65,6 +63,7 @@ import {useRequest} from "@/composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const router = useRouter()
 const route = useRoute()
@@ -148,7 +147,7 @@ const operations = [
         router.push({
           name: 'admin.order.detail',
           params: {
-            id: data.id,
+            id: data.code,
           }
         })
       },

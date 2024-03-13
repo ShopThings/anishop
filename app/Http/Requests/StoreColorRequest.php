@@ -41,7 +41,6 @@ class StoreColorRequest extends FormRequest
                 new ColorRule(),
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

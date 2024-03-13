@@ -2,22 +2,22 @@
   <div class="relative">
     <swiper-container
         ref="carousel"
-        init="false"
         :class="className"
+        init="false"
     >
       <swiper-slide v-for="(slide, idx) in slides" :key="idx">
-        <slot :slide="slide" :index="idx"></slot>
+        <slot :index="idx" :slide="slide"></slot>
       </swiper-slide>
     </swiper-container>
 
     <partial-carousel-navigation
         v-if="hasNavigation"
-        :prev-class-name="className + '-prev'"
-        :next-class-name="className + '-next'"
-        :display="navigationDisplay"
-        :position="navigationPosition"
-        :size="navigationSize"
         :dir="dir"
+        :display="navigationDisplay"
+        :next-class-name="className + '-next'"
+        :position="navigationPosition"
+        :prev-class-name="className + '-prev'"
+        :size="navigationSize"
     />
   </div>
 
@@ -27,16 +27,7 @@
   >
     <swiper-container
         ref="thumbsSwiper"
-        :class="className + '-thumbnail'"
         :a11y="a11y"
-        :initial-slide="currentSlide"
-        :watch-slides-progress="true"
-        :free-mode="true"
-        :speed="transition"
-        :space-between="10"
-        :slides-per-view="4"
-        :loop="true"
-        :dir="dir"
         :breakpoints="{
             360: {
             slidesPerView: 3.5,
@@ -51,9 +42,18 @@
             slidesPerView: 3.5,
             },
         }"
+        :class="className + '-thumbnail'"
+        :dir="dir"
+        :free-mode="true"
+        :initial-slide="currentSlide"
+        :loop="true"
+        :slides-per-view="4"
+        :space-between="10"
+        :speed="transition"
+        :watch-slides-progress="true"
     >
       <swiper-slide v-for="(slide, idx) in slides" :key="idx">
-        <slot name="thumbSlide" :slide="slide" :index="idx"></slot>
+        <slot :index="idx" :slide="slide" name="thumbSlide"></slot>
       </swiper-slide>
     </swiper-container>
   </div>
@@ -62,7 +62,7 @@
 <script setup>
 import 'swiper/swiper-bundle.css';
 
-import {computed, ref, watchEffect} from "vue";
+import {computed, onBeforeUnmount, ref, watchEffect} from "vue";
 import {watchImmediate} from "@vueuse/core";
 import {
   A11y,
@@ -283,8 +283,8 @@ watchEffect(() => {
           swiper: () => {
             emit('init')
           },
-          swiperslidechange: () => {
-            emit('slide-change')
+          slideChange: () => {
+            emit('slide-change', carousel.value?.swiper?.realIndex || 0)
           }
         },
       })
@@ -306,6 +306,13 @@ watchEffect(() => {
       carousel.value.spaceBetween = props.spaceBetween
       carousel.value.nested = props.nested
     }
+  }
+})
+
+onBeforeUnmount(() => {
+  // Destroy Swiper instance to prevent memory leaks
+  if (carousel.value?.swiper) {
+    carousel.value.swiper.destroy();
   }
 })
 

@@ -22,8 +22,9 @@ trait ModifierBootTrait
      */
     protected function addCreatedBy($model): void
     {
-        if ($this->hasCreatedBy)
+        if ($this->hasCreatedBy) {
             $model->created_by = Auth::user()?->id;
+        }
     }
 
     /**
@@ -32,34 +33,46 @@ trait ModifierBootTrait
      */
     protected function addUpdatedBy($model): void
     {
-        if ($this->hasUpdatedBy)
+        if ($this->hasUpdatedBy) {
             $model->updated_by = Auth::user()?->id;
-    }
-
-    protected function addCreatedAt($model): void
-    {
-        if (!$this->timestamps) {
-            if (array_key_exists(self::CREATED_AT, $this->getCasts()))
-                $model->{self::CREATED_AT} = now();
         }
     }
 
+    /**
+     * @param $model
+     * @return void
+     */
+    protected function addCreatedAt($model): void
+    {
+        if (!$this->timestamps) {
+            if (array_key_exists(self::CREATED_AT, $this->getCasts())) {
+                $model->{self::CREATED_AT} = now();
+            }
+        }
+    }
+
+    /**
+     * @param $model
+     * @return void
+     */
     protected function addUpdatedAt($model): void
     {
         if (!$this->timestamps) {
-            if (array_key_exists(self::UPDATED_AT, $this->getCasts()))
+            if (array_key_exists(self::UPDATED_AT, $this->getCasts())) {
                 $model->{self::UPDATED_AT} = now();
+            }
         }
     }
 
     public static function boot()
     {
         parent::boot();
+
         static::creating(function ($model) {
             $model->addCreatedAt($model);
             $model->addCreatedBy($model);
-            $model->addUpdatedBy($model);
         });
+
         static::updating(function ($model) {
             $model->addUpdatedAt($model);
             $model->addUpdatedBy($model);

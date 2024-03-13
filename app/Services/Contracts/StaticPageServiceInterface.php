@@ -14,4 +14,16 @@ interface StaticPageServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getPages(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @param array $urls
+     * @param bool $permanent
+     * @param bool $considerDeletable
+     * @return bool
+     */
+    public function batchDeleteByUrls(
+        array $urls,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool;
 }

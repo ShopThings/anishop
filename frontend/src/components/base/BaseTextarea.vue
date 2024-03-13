@@ -1,14 +1,14 @@
 <template>
   <partial-input-label
-    v-if="labelTitle && labelTitle.length"
-    :title="labelTitle"
-    :id="labelId"
-    :is-optional="isOptional"
+      v-if="labelTitle && labelTitle.length"
+      :id="labelId"
+      :is-optional="isOptional"
+      :title="labelTitle"
   />
   <partial-input-label
-    v-else-if="hasLabelSlot"
-    :id="labelId"
-    :is-optional="isOptional"
+      v-else-if="hasLabelSlot"
+      :id="labelId"
+      :is-optional="isOptional"
   >
     <template #label>
       <slot name="label"></slot>
@@ -17,50 +17,65 @@
 
   <template v-if="editMode">
     <div class="flex grow relative">
-      <div v-if="hasIconSlot"
-           class="absolute h-full w-10 flex justify-center items-start select-none pointer-events-none"
+      <div
+          v-if="hasIconSlot"
+          class="absolute h-full w-10 flex justify-center items-start select-none pointer-events-none"
       >
         <slot name="icon"/>
       </div>
       <textarea
-        ref="inp"
-        :id="labelId"
-        :name="name"
-        :placeholder="placeholder"
-        :class="[
-                        'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset',
-                        'ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600',
-                        'sm:text-sm sm:leading-6 min-h-[8rem]',
-                        klass,
-                        hasIconSlot ? 'pr-10' : '',
-                        ]"
-        @change="handleChange($event, false)"
-        @input="checkInput($event)"
-        @blur="checkInput($event)"
-        @keydown="checkInput($event)"
-        @keyup="checkInput($event)"
-      >{{ value }}</textarea>
+          :id="labelId"
+          ref="inp"
+          v-model="value"
+          :class="[
+            'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset',
+            'ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600',
+            'sm:text-sm sm:leading-6 min-h-[8rem]',
+            klass,
+            hasIconSlot ? 'pr-10' : '',
+            hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
+          ]"
+          :name="name"
+          :placeholder="placeholder"
+          @blur="checkInput($event)"
+          @change="handleChange($event, false)"
+          @input="checkInput($event)"
+          @keydown="checkInput($event)"
+          @keyup="checkInput($event)"
+      ></textarea>
+      <button
+          v-if="hasClearButton"
+          v-tooltip.right="'پاک کردن'"
+          :class="{'hidden': (!value || value.toString().trim() === '')}"
+          class="absolute h-12 w-10 flex justify-center items-center rtl:left-0 ltr:right-0 group"
+          type="button"
+          @click="clearInputHandler"
+      >
+        <XMarkIcon class="w-6 h-6 text-gray-400 group-hover:text-rose-500 group-hover:rotate-90 transition"/>
+      </button>
     </div>
   </template>
   <div
-    v-else
-    class="flex items-center"
+      v-else
+      class="flex items-center"
   >
     <input
-      type="hidden"
-      :value="value"
-      :name="name"
-      @change="handleChange($event, false)"
+        :name="name"
+        :value="value"
+        type="hidden"
+        @change="handleChange($event, false)"
     >
-    <span class="grow text-gray-500 text-sm">{{ value || '-' }}</span>
+    <slot :value="value || '-'" name="editModeLabel">
+      <span class="grow text-gray-500 text-sm">{{ value || '-' }}</span>
+    </slot>
     <button
-      v-if="isEditable"
-      type="button"
-      class="shrink-0 mr-2"
+        v-if="isEditable"
+        class="shrink-0 mr-2"
+        type="button"
     >
       <PencilSquareIcon
-        @click="toggleEditMode"
-        class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+          @click="toggleEditMode"
       />
     </button>
   </div>
@@ -73,7 +88,7 @@ import uniqueId from "lodash.uniqueid";
 import {useField} from "vee-validate";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
-import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
+import {PencilSquareIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({
   name: {
@@ -96,10 +111,15 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+
+  hasClearButton: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const emit = defineEmits([
-  'input', 'blur', 'keydown', 'keyup', 'mount',
+  'input', 'blur', 'keydown', 'keyup', 'mount', 'cleared'
 ])
 
 const slots = useSlots()
@@ -130,6 +150,16 @@ function checkInput(event) {
 
 function toggleEditMode() {
   editMode.value = true
+}
+
+function clearInputHandler() {
+  value.value = ''
+
+  if (inp.value) {
+    inp.value.focus()
+  }
+
+  emit('cleared', inp?.value || '')
 }
 
 onMounted(() => {

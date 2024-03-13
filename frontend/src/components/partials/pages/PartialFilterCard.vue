@@ -1,8 +1,10 @@
 <template>
   <base-accordion
-    :open="open"
-    panel-class="border-b border-slate-100 !p-4"
-    btn-class="font-iranyekan-bold text-black hover:bg-opacity-60 hover:bg-slate-50 focus-visible:ring-black/50 py-5 border-b border-slate-100 rounded-none"
+      v-if="isLoading || items?.length || slots['panel']"
+      :open="open"
+      :is-loading="isLoading"
+      btn-class="font-iranyekan-bold text-black hover:bg-opacity-60 hover:bg-slate-50 focus-visible:ring-black/50 py-5 border-b border-slate-100 rounded-none"
+      panel-class="border-b border-slate-100 !p-4"
   >
     <template #button>
       <slot></slot>
@@ -14,18 +16,18 @@
       </template>
       <template v-else>
         <div
-          v-if="showSelectedItems && displayingSelectedItems && displayingSelectedItems.length > 0"
-          class="px-3 pb-2 mt-[-2px] bg-white flex flex-wrap gap-1.5 border-b border-slate-100"
+            v-if="showSelectedItems && displayingSelectedItems && displayingSelectedItems.length > 0"
+            class="px-3 pb-2 mt-[-2px] bg-white flex flex-wrap gap-1.5 border-b border-slate-100"
         >
           <div
-            v-for="(i, key, idx) in (displayingSelectedItems.selectedItems)"
-            :key="idx"
-            class="text-xs text-slate-400"
+              v-for="(i, key, idx) in (displayingSelectedItems.selectedItems)"
+              :key="idx"
+              class="text-xs text-slate-400"
           >
             <span>{{ i[itemTextKey] }}</span>
             <span
-              v-if="idx < (displayingSelectedItems.length - 1)"
-              class="mx-0.5">،</span>
+                v-if="idx < (displayingSelectedItems.length - 1)"
+                class="mx-0.5">،</span>
           </div>
         </div>
       </template>
@@ -37,31 +39,31 @@
       </template>
 
       <ul
-        v-else
-        :class="panelContainerClass"
+          v-else
+          :class="panelContainerClass"
       >
         <li
-          v-for="(item, idx) in items"
-          :key="item?.id || idx"
-          :class="itemContainerClass"
-          class="flex items-center gap-3"
+            v-for="(item, idx) in items"
+            :key="item?.id || idx"
+            :class="itemContainerClass"
+            class="flex items-center gap-3"
         >
           <div
-            v-if="['multi', 'single'].indexOf(type) !== -1"
-            class="shrink-0"
+              v-if="['multi', 'single'].indexOf(type) !== -1"
+              class="shrink-0"
           >
             <base-radio
-              v-if="type === 'single'"
-              :id="`${itemUniqueKeyText}-item${item?.id || idx}`"
-              :value="item[itemKey]"
-              :name="`rd-${itemUniqueKeyText}`"
-              v-model="selectedItems"
+                v-if="type === 'single'"
+                :id="`${itemUniqueKeyText}-item${item?.id || idx}`"
+                v-model="selectedItems"
+                :name="`rd-${itemUniqueKeyText}`"
+                :value="item[itemKey]"
             />
             <base-checkbox
-              v-else-if="type === 'multi'"
-              :id="`${itemUniqueKeyText}-item${item?.id || idx}`"
-              :name="`chk${idx}-${itemUniqueKeyText}`"
-              v-model="selectedItems[item?.id || idx]"
+                v-else-if="type === 'multi'"
+                :id="`${itemUniqueKeyText}-item${item?.id || idx}`"
+                v-model="selectedItems[item?.id || idx]"
+                :name="`chk${idx}-${itemUniqueKeyText}`"
             />
           </div>
           <template v-else>
@@ -69,9 +71,9 @@
           </template>
 
           <label
-            :for="`${itemUniqueKeyText}-item${item?.id || idx}`"
-            class="grow cursor-pointer"
-            :class="[!slots['item'] ? 'py-2 px-3 hover:bg-slate-50 transition rounded-full my-1' : 'p-0 m-0']"
+              :class="[!slots['item'] ? 'py-2 px-3 hover:bg-slate-50 transition rounded-full my-1' : 'p-0 m-0']"
+              :for="`${itemUniqueKeyText}-item${item?.id || idx}`"
+              class="grow cursor-pointer"
           >
             <slot name="item" :item="item">{{ item[itemTextKey] || '' }}</slot>
           </label>
@@ -122,6 +124,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  isLoading: Boolean,
 })
 const emit = defineEmits(['update:items', 'update:selectedItems'])
 const slots = useSlots()

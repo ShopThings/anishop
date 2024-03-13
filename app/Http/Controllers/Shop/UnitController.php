@@ -29,6 +29,7 @@ class UnitController extends Controller
         protected UnitServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**

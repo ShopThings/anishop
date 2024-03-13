@@ -79,5 +79,13 @@ export const ReturnOrderAPI = Object.assign(
         callbacks
       )
     },
+
+    fetchStatuses(callbacks) {
+      useRequest(
+        apiRoutes.admin.returnOrders.statuses,
+        null,
+        callbacks
+      )
+    },
   }
 )

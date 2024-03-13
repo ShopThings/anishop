@@ -2,8 +2,6 @@
 
 namespace App\Http\Resources\Showing;
 
-use App\Enums\Times\TimeFormatsEnum;
-use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

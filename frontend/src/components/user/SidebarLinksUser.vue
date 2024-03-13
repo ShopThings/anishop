@@ -2,8 +2,8 @@
   <ul class="flex flex-col gap-3">
     <li>
       <router-link
-        :to="{name: 'user.home'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.home'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <WindowIcon class="h-6 w-6 text-cyan-700"/>
@@ -15,8 +15,8 @@
     </li>
     <li>
       <router-link
-        :to="{name: 'user.orders'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.orders'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ShoppingBagIcon class="h-6 w-6 text-cyan-700"/>
@@ -25,30 +25,30 @@
           سفارشات
         </div>
         <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
-          12
+          {{ countingStore.getOrderCount }}
         </div>
       </router-link>
     </li>
     <li>
       <router-link
-        :to="{name: 'user.return_orders'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.return_orders'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ArchiveBoxXMarkIcon class="h-6 w-6 text-cyan-700"/>
         </div>
         <div class="grow">
-          سفارشات مرجوع شده
+          درخواست مرجوع کالا
         </div>
         <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
-          0
+          {{ countingStore.getReturnOrderCount }}
         </div>
       </router-link>
     </li>
     <li>
       <router-link
-        :to="{name: 'user.comments'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.comments'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ChatBubbleLeftRightIcon class="h-6 w-6 text-cyan-700"/>
@@ -57,14 +57,14 @@
           دیدگاه‌ها
         </div>
         <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
-          0
+          {{ countingStore.getProductCommentCount + countingStore.getBlogCommentCount }}
         </div>
       </router-link>
     </li>
     <li>
       <router-link
-        :to="{name: 'user.favorite_products'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.favorite_products'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <HeartIcon class="h-6 w-6 text-cyan-700"/>
@@ -73,14 +73,14 @@
           محصولات مورد علاقه
         </div>
         <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
-          0
+          {{ countingStore.getFavoriteProductCount }}
         </div>
       </router-link>
     </li>
     <li>
       <router-link
-        :to="{name: 'user.addresses'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.addresses'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <BookOpenIcon class="h-6 w-6 text-cyan-700"/>
@@ -89,14 +89,14 @@
           آدرس‌های من
         </div>
         <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
-          1
+          {{ countingStore.getAddressCount }}
         </div>
       </router-link>
     </li>
     <li>
       <router-link
-        :to="{name: 'user.contacts'}"
-        class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          :to="{name: 'user.contacts'}"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ChatBubbleLeftEllipsisIcon class="h-6 w-6 text-cyan-700"/>
@@ -105,7 +105,7 @@
           تماس‌های من
         </div>
         <div class="text-xl text-slate-400 border-r-2 border-slate-200 pr-2 min-w-[2rem] text-center">
-          0
+          {{ countingStore.getContactCount }}
         </div>
       </router-link>
     </li>
@@ -122,6 +122,9 @@ import {
   BookOpenIcon,
   ChatBubbleLeftEllipsisIcon,
 } from "@heroicons/vue/24/outline/index.js"
+import {inject} from "vue";
+
+const countingStore = inject('countingStore')
 </script>
 
 <style scoped>

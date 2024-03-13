@@ -80,4 +80,14 @@ interface ReturnOrderServiceInterface extends ServiceInterface
      * @return Model|null
      */
     public function modifyItem(int $itemId, array $attributes): ?Model;
+
+    /**
+     * @return array
+     */
+    public function getStatuses(): array;
+
+    /**
+     * @return array
+     */
+    public function getUserStatuses(): array;
 }

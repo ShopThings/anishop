@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
+use App\Casts\CleanHtmlCast;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Mews\Purifier\Casts\CleanHtml;
 use Parables\NanoId\GeneratesNanoId;
 
 class OrderDetail extends Model
@@ -26,9 +26,8 @@ class OrderDetail extends Model
     ];
 
     protected $casts = [
-        'description' => CleanHtml::class,
+        'description' => CleanHtmlCast::class,
         'is_needed_factor' => 'boolean',
-        'is_in_place_delivery' => 'boolean',
         'is_product_returned_to_stock' => 'boolean',
         'ordered_at' => 'datetime',
     ];

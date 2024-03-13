@@ -14,5 +14,5 @@ class MenuPolicy
 
     protected PermissionPlacesEnum $permissionPlace = PermissionPlacesEnum::MENU;
 
-    protected array $only = ['viewAny', 'view'];
+    protected array $only = ['viewAny', 'view', 'update'];
 }

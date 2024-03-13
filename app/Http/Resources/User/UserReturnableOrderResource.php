@@ -18,7 +18,7 @@ class UserReturnableOrderResource extends JsonResource
         return [
             'code' => $this->code,
             'ordered_at' => $this->ordered_at
-                ? verta($this->ordered_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->ordered_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
         ];
     }

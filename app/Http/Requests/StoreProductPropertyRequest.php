@@ -93,27 +93,21 @@ class StoreProductPropertyRequest extends FormRequest
                 'lte:products.*.stock_count',
             ],
             'products.*.is_special' => [
-                'required',
                 'boolean',
             ],
             'products.*.is_available' => [
-                'required',
                 'boolean',
             ],
             'products.*.show_coming_soon' => [
-                'required',
                 'boolean',
             ],
             'products.*.show_call_for_more' => [
-                'required',
                 'boolean',
             ],
             'products.*.is_published' => [
-                'required',
                 'boolean',
             ],
             'products.*.has_separate_shipment' => [
-                'required',
                 'boolean',
             ],
         ];

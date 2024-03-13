@@ -13,9 +13,11 @@
 </template>
 
 <script setup>
+import {provide} from "vue";
 import {PageTransition, TransitionPresets, defineTransitionProps} from 'vue3-page-transition'
 import AppNavbar from "@/components/AppNavbar.vue"
 import AppFooter from "@/components/AppFooter.vue"
+import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 
 const transitionProps = defineTransitionProps({
   mode: 'out-in',
@@ -27,4 +29,8 @@ const transitionProps = defineTransitionProps({
   transformDistance: '2rem',
   transitionDuration: 300,
 })
+
+//--------------------------------------
+const homeSettingStore = useHomeSettingsStore()
+provide('homeSettingStore', homeSettingStore);
 </script>

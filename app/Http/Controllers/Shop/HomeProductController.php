@@ -6,6 +6,7 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Filters\HomeProductFilter;
 use App\Http\Requests\Filters\HomeProductSideFilter;
+use App\Http\Resources\Home\BrandResource;
 use App\Http\Resources\Home\ColorAndSizeResource;
 use App\Http\Resources\Home\DynamicFilterResource;
 use App\Http\Resources\Home\ProductResource as HomeProductResource;
@@ -37,19 +38,39 @@ class HomeProductController extends Controller
     }
 
     /**
+     * This will use 'log_visit' to log too
+     *
      * @param Product $product
-     * @return AnonymousResourceCollection
+     * @return HomeProductSingleResource
      */
-    public function show(Product $product): AnonymousResourceCollection
+    public function show(Product $product): HomeProductSingleResource
     {
-        return HomeProductSingleResource::collection($this->service->getById($product->id));
+        return new HomeProductSingleResource($product);
+    }
+
+    /**
+     * @param Product $product
+     * @return HomeProductResource
+     */
+    public function minifiedShow(Product $product): HomeProductResource
+    {
+        return new HomeProductResource($product);
     }
 
     /**
      * @param HomeProductSideFilter $filter
      * @return AnonymousResourceCollection
      */
-    public function colorsAndSizes(HomeProductSideFilter $filter): AnonymousResourceCollection
+    public function brandsFilter(HomeProductSideFilter $filter): AnonymousResourceCollection
+    {
+        return BrandResource::collection($this->service->getFilterBrands($filter));
+    }
+
+    /**
+     * @param HomeProductSideFilter $filter
+     * @return AnonymousResourceCollection
+     */
+    public function colorsAndSizesFilter(HomeProductSideFilter $filter): AnonymousResourceCollection
     {
         return ColorAndSizeResource::collection($this->service->getFilterColorsAndSizes($filter));
     }
@@ -58,7 +79,7 @@ class HomeProductController extends Controller
      * @param HomeProductSideFilter $filter
      * @return JsonResponse
      */
-    public function priceRange(HomeProductSideFilter $filter): JsonResponse
+    public function priceRangeFilter(HomeProductSideFilter $filter): JsonResponse
     {
         $priceRange = $this->service->getFilterPriceRange($filter);
 
@@ -72,7 +93,7 @@ class HomeProductController extends Controller
      * @param HomeProductSideFilter $filter
      * @return AnonymousResourceCollection
      */
-    public function getDynamicFilters(HomeProductSideFilter $filter): AnonymousResourceCollection
+    public function dynamicFilters(HomeProductSideFilter $filter): AnonymousResourceCollection
     {
         return DynamicFilterResource::collection($this->service->getDynamicFilters($filter));
     }

@@ -28,7 +28,7 @@ class UserSingleResource extends JsonResource
             'is_banned' => $this->is_banned,
             'ban_desc' => $this->ban_desc,
             'verified_at' => $this->verified_at
-                ? verta($this->verified_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->verified_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'is_deletable' => $this->is_deletable,
             'roles' => $this->whenLoaded(
@@ -39,15 +39,15 @@ class UserSingleResource extends JsonResource
             'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

@@ -2,9 +2,7 @@
 
 namespace App\Http\Resources\Showing;
 
-use App\Enums\Times\TimeFormatsEnum;
-use App\Http\Resources\Showing\MenuPlaceShowResource;
-use App\Http\Resources\Showing\UserShowResource;
+use App\Enums\Menus\MenuPlacesEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +17,10 @@ class MenuShowResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'menu_place' => new MenuPlaceShowResource($this->whenLoaded('place')),
+            'place_in' => [
+                'text' => MenuPlacesEnum::getTranslations($this->place_in, 'نامشخص'),
+                'value' => $this->place_in,
+            ],
             'title' => $this->title,
             'is_published' => $this->is_published,
         ];

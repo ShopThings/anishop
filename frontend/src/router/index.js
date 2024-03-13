@@ -4,7 +4,7 @@ import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {adminRoutes} from "./admin-routes.js";
 import {userRoutes} from "./user-routes.js";
 
-const idRouteRegex = '(.*\\-\\d|\\d+)'
+const slugRouteRegex = '([^\\\/\.]+)'
 
 const routes = [
   {...adminRoutes},
@@ -34,22 +34,22 @@ const routes = [
     path: '/login',
     name: 'login',
     component: () => import('@/views/PageLogin.vue'),
-    meta: {layout: 'layout-empty'},
+    meta: {layout: 'layout-empty-guest'},
   },
   {
     path: '/signup',
     name: 'signup',
     component: () => import('@/views/PageSignup.vue'),
-    meta: {layout: 'layout-empty'},
+    meta: {layout: 'layout-empty-guest'},
   },
   {
     path: '/forget-password',
     name: 'forget_password',
     component: () => import('@/views/PageForgetPassword.vue'),
-    meta: {layout: 'layout-empty'},
+    meta: {layout: 'layout-empty-guest'},
   },
   {
-    path: '/pages/:url([a-z]+[a-z\/\-][a-z]+)',
+    path: '/pages/:url([a-zA-Z]+[a-zA-Z\/\-][a-zA-Z]+)',
     name: 'pages',
     component: () => import('@/views/PagePages.vue'),
     meta: {layout: 'layout-guest'},
@@ -87,10 +87,10 @@ const routes = [
     path: '/blog/search',
     name: 'blog.search',
     component: () => import('@/views/PageSearchBlog.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {layout: 'layout-blog'},
   },
   {
-    path: '/blog/:id' + idRouteRegex,
+    path: '/blog/:slug' + slugRouteRegex,
     name: 'blog.detail',
     component: () => import('@/views/PageBlogDetail.vue'),
     meta: {layout: 'layout-blog'},
@@ -115,7 +115,7 @@ const routes = [
     meta: {layout: 'layout-guest'},
   },
   {
-    path: '/product/:id' + idRouteRegex,
+    path: '/product/:slug' + slugRouteRegex,
     name: 'product.detail',
     component: () => import('@/views/PageProductDetail.vue'),
     meta: {layout: 'layout-guest'},

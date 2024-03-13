@@ -1,20 +1,20 @@
 <template>
   <div :class="containerClass" class="relative">
-    <div class="w-full h-full" id="mapContainer"></div>
+    <div id="mapContainer" class="w-full h-full"></div>
 
-    <div ref="popupDialogElement" v-show="false">
+    <div v-show="false" ref="popupDialogElement">
       <slot name="markerPopup"></slot>
     </div>
 
     <div
-      v-if="allowFindMyLocation"
-      class="absolute right-3 top-3 z-10"
+        v-if="allowFindMyLocation"
+        class="absolute right-3 top-3 z-10"
     >
       <button
-        v-tooltip.bottom-start="'پیدا کردن/رفتن به موقعیت من'"
-        type="button"
-        class="rounded-full p-2 flex items-center justify-center shadow-md bg-white group"
-        @click="handleGeolocation"
+          v-tooltip.bottom-start="'پیدا کردن/رفتن به موقعیت من'"
+          class="rounded-full p-2 flex items-center justify-center shadow-md bg-white group"
+          type="button"
+          @click="handleGeolocation"
       >
         <MapPinIcon class="w-6 h-6 group-hover:text-rose-600 transition"/>
       </button>
@@ -25,7 +25,7 @@
 <script setup>
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import {computed, onBeforeUnmount, onMounted, ref, useSlots} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, useSlots, watch} from "vue";
 import {MapPinIcon} from "@heroicons/vue/24/outline/index.js"
 import {useGeolocation} from "@vueuse/core";
 import {useToast} from "vue-toastification";
@@ -60,6 +60,8 @@ const toast = useToast()
 const popupDialogElement = ref(null)
 
 const map = ref(null)
+let marker;
+
 const center = computed({
   get() {
     return props.center
@@ -77,12 +79,20 @@ const zoom = computed({
   },
 })
 
-let marker;
-const {coords, error, resume, pause} = useGeolocation()
+watch(center, () => {
+  if (map.value && marker) {
+    let newLatLng = new L.LatLng(props.center[0], props.center[1])
+    marker.setLatLng(newLatLng)
+    map.value.panTo(newLatLng)
+  }
+})
+
+
+const {coords, error, resume, pause} = useGeolocation({
+  immediate: false,
+})
 
 function handleGeolocation() {
-  if (!coords.value) resume()
-
   if (error.value || !coords.value) {
     toast.warning('موقعیت قابل دستیابی نمی‌باشد! دوباره تلاش نمایید.')
     console.error(error.value)
@@ -91,12 +101,12 @@ function handleGeolocation() {
 
   const notAllowed = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY]
   if (
-    notAllowed.indexOf(coords.value.latitude) === -1 &&
-    notAllowed.indexOf(coords.value.longitude) === -1
+      notAllowed.indexOf(coords.value.latitude) === -1 &&
+      notAllowed.indexOf(coords.value.longitude) === -1
   ) {
     center.value = [coords.value.latitude, coords.value.longitude]
   } else {
-    toast.info('عدم امکان تشخیص مکان شما!')
+    resume()
   }
 
   if (map.value && marker) {

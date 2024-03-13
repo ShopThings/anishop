@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\CleanHtmlCast;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -29,20 +30,12 @@ class ContactUs extends Model
 
     protected $casts = [
         'message' => CleanHtml::class,
-        'answer' => CleanHtml::class,
+        'answer' => CleanHtmlCast::class,
         'is_seen' => 'boolean',
         'answered_at' => 'datetime',
         'changed_status_at' => 'datetime',
         'created_at' => 'datetime',
     ];
-
-    /**
-     * @return BelongsTo
-     */
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 
     /**
      * @return BelongsTo

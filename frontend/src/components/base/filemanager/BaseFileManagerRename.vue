@@ -1,7 +1,7 @@
 <template>
   <partial-dialog
-    v-model:open="isOpen"
-    @close="$emit('close')"
+      v-model:open="isOpen"
+      @close="$emit('close')"
   >
     <template #title>
       <div class="flex items-center">
@@ -13,10 +13,10 @@
     <template #body>
       <form @submit.prevent="onSubmit">
         <base-input
-          class="grow mb-3"
-          name="newName"
-          :value="item.full_name"
-          placeholder="نام جدید را وارد کنید..."
+            :value="item.full_name"
+            class="grow mb-3"
+            name="newName"
+            placeholder="نام جدید را وارد کنید..."
         >
           <template #icon>
             <PencilIcon class="w-6 h-6 text-gray-400"/>
@@ -24,15 +24,15 @@
         </base-input>
         <div class="text-left">
           <base-button
-            type="submit"
-            class="relative bg-emerald-500 border-emerald-600 grow rounded-lg text-sm px-6"
-            :disabled="!canSubmit"
+              :disabled="!canSubmit"
+              class="relative bg-emerald-500 border-emerald-600 grow rounded-lg text-sm px-6"
+              type="submit"
           >
             <VTransitionFade>
               <loader-circle
-                v-if="!canSubmit"
-                main-container-klass="absolute w-full h-full top-0 left-0"
-                big-circle-color="border-transparent"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
               />
             </VTransitionFade>
 

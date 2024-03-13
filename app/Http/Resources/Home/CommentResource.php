@@ -23,21 +23,21 @@ class CommentResource extends JsonResource
             'pros' => $this->pros,
             'cons' => $this->cons,
             'condition' => [
-                'text' => CommentConditionsEnum::getTranslations($this->condition),
+                'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
                 'value' => $this->condition,
             ],
             'status' => [
-                'text' => CommentStatusesEnum::getTranslations($this->status),
+                'text' => CommentStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
             ],
             'description' => $this->description,
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT->value)
             ),
         ];
     }

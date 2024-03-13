@@ -24,6 +24,7 @@ class StoreComplaintRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'captcha' => ['required', 'captcha_api:' . $this->input('key')],
             'title' => [
                 'required',
                 'max:250',

@@ -21,15 +21,15 @@
 
     <div class="flex flex-wrap justify-start py-3 px-8 bg-slate-50 border-t-2 border-slate-100">
       <button
-          type="button"
           class="ml-3 border-gray-500 text-gray-500 px-6 py-2 hover:border-black hover:text-black bg-white text-sm rounded-md border transition"
+          type="button"
           @click="close"
       >
         <span>خیر</span>
       </button>
       <button
-          type="button"
           class="bg-primary text-white border-primary px-3 py-2 text-sm rounded-md border hover:bg-opacity-90 transition"
+          type="button"
           @click="accept"
       >
         <span>انجام عملیات</span>

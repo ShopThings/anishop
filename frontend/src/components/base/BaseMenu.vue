@@ -1,6 +1,6 @@
 <template>
   <Menu>
-    <MenuButton @click="changeMenuOpenStatus" ref="button" :class="btnClass">
+    <MenuButton ref="button" :class="btnClass" @click="changeMenuOpenStatus">
       <slot name="button"></slot>
     </MenuButton>
     <VTransitionSlideFadeUpY>

@@ -14,9 +14,10 @@ trait EnumTranslateTrait
 
     /**
      * @param BackedEnum|array|string $needed
+     * @param $default
      * @return array|string|null
      */
-    public static function getTranslations(BackedEnum|array|string $needed): array|string|null
+    public static function getTranslations(BackedEnum|array|string $needed, $default = null): array|string|null
     {
         $translates = self::translationArray();
 
@@ -38,7 +39,7 @@ trait EnumTranslateTrait
                 ? array_pop($newArr)
                 : $newArr
             )
-            : null;
+            : ($default ?? null);
     }
 
     /**

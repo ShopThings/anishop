@@ -1,27 +1,27 @@
 <template>
-  <ul class="mr-3 block" v-show="open">
+  <ul v-show="open" class="mr-3 block">
     <li
-      v-for="(item, idx) in items"
-      :key="itemsRef[idx].id"
+        v-for="(item, idx) in items"
+        :key="itemsRef[idx].id"
     >
       <div class="flex gap-1 5 items-center">
         <base-checkbox
-          :name="uniqueId('dir')"
-          :show-label="false"
-          v-model="itemsRef[idx].isChecked"
-          size-class="w-5 h-5"
-          @change="(value) => {dirCheckboxClickHandler(value, item, itemsRef[idx].id)}"
+            v-model="itemsRef[idx].isChecked"
+            :name="uniqueId('dir')"
+            :show-label="false"
+            size-class="w-5 h-5"
+            @change="(value) => {dirCheckboxClickHandler(value, item, itemsRef[idx].id)}"
         />
 
         <div
-          class="w-full flex gap-2 items-center cursor-pointer p-2 rounded-lg relative hover:bg-violet-100 transition"
+            class="w-full flex gap-2 items-center cursor-pointer p-2 rounded-lg relative hover:bg-violet-100 transition"
             @click="clickHandler(idx, item)"
         >
           <VTransitionFade>
             <loader-circle
                 v-if="isTreeLoading(idx)"
-                main-container-klass="absolute w-full h-full top-0 left-0"
                 big-circle-color="border-transparent"
+                main-container-klass="absolute w-full h-full top-0 left-0"
                 spinner-klass="!w-5 !h-5"
             />
           </VTransitionFade>
@@ -29,10 +29,10 @@
           <FolderOpenIcon v-if="isTreeOpen(idx)" class="h-6 w-6 shrink-0 text-indigo-600"/>
           <FolderIcon v-else class="h-6 w-6 shrink-0"/>
 
-          <span class="grow" :class="{'text-indigo-600': isTreeOpen(idx)}">{{ item.name }}</span>
+          <span :class="{'text-indigo-600': isTreeOpen(idx)}" class="grow">{{ item.name }}</span>
 
           <template v-if="hasTreeChildren(idx)">
-            <ChevronLeftIcon class="h-5 w-5 shrink-0 transition" :class="{'-rotate-90': isTreeOpen(idx)}"/>
+            <ChevronLeftIcon :class="{'-rotate-90': isTreeOpen(idx)}" class="h-5 w-5 shrink-0 transition"/>
           </template>
         </div>
       </div>
@@ -40,12 +40,12 @@
       <VTransitionSlideFadeLeftX mode="out-in">
         <div v-if="isTreeOpen(idx)">
           <partial-tree-directory
-            v-if="hasTreeChildren(idx)"
-            :ref="(r) => {itemsRef[idx].childRef = r}"
-            :open="isTreeOpen(idx)"
-            :items="getTreeChildren(idx)"
-            :disk="disk"
-            @selection-change="childDirCheckboxClickHandler"
+              v-if="hasTreeChildren(idx)"
+              :ref="(r) => {itemsRef[idx].childRef = r}"
+              :disk="disk"
+              :items="getTreeChildren(idx)"
+              :open="isTreeOpen(idx)"
+              @selection-change="childDirCheckboxClickHandler"
           />
           <div v-else-if="isTreeFetched(idx)" class="mr-3 my-2 text-sm text-gray-400">
             هیچ پوشه‌ای وجود ندارد

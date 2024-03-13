@@ -15,6 +15,7 @@ use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 
 class ProductCommentService extends Service implements ProductCommentServiceInterface
@@ -107,6 +108,8 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
         }
         if (isset($attributes['condition'])) {
             $updateAttributes['condition'] = $attributes['condition'];
+            $updateAttributes['changed_status_at'] = now();
+            $updateAttributes['changed_status_by'] = Auth::user()?->id;
         }
         if (isset($attributes['status'])) {
             $updateAttributes['status'] = $attributes['status'];
@@ -119,6 +122,11 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
         }
         if (isset($attributes['description'])) {
             $updateAttributes['description'] = $attributes['description'];
+        }
+        if (isset($attributes['answer'])) {
+            $updateAttributes['answer'] = $attributes['answer'];
+            $updateAttributes['answered_at'] = now();
+            $updateAttributes['answered_by'] = Auth::user()?->id;
         }
 
         $res = $this->repository->update($id, $updateAttributes);

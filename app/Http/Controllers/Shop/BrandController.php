@@ -29,7 +29,7 @@ class BrandController extends Controller
         protected BrandServiceInterface $service
     )
     {
-
+        $this->considerDeletable = true;
     }
 
     /**

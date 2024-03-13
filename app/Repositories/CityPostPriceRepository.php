@@ -37,14 +37,20 @@ class CityPostPriceRepository extends Repository implements CityPostPriceReposit
         $order = $filter->getOrder();
 
         $query = $this->model->newQuery();
-        $query->when($search, function (Builder $query, string $search) {
-            $query
-                ->withWhereHas('city', function ($q) use ($search) {
-                    $q
-                        ->where('is_published', DatabaseEnum::DB_YES)
-                        ->whereLike('name', $search);
-                });
-        });
+        $query
+            ->with(['city', 'city.province'])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
+                $query
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q->orWhereHas('city', function ($q) use ($search) {
+                            $q->where(function ($q) use ($search) {
+                                $q
+                                    ->where('is_published', DatabaseEnum::DB_YES)
+                                    ->orWhereLike('name', $search);
+                            });
+                        });
+                    });
+            });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }

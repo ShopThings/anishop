@@ -44,28 +44,28 @@ class UserContactUsController extends Controller
      * Display the specified resource.
      *
      * @param Request $request
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return UserContactUsSingleResource|JsonResponse
      */
-    public function show(Request $request, ContactUs $contactUs): JsonResponse|UserContactUsSingleResource
+    public function show(Request $request, ContactUs $contact): JsonResponse|UserContactUsSingleResource
     {
-        if ($check = $this->_checkAuthorization($request->user(), $contactUs)) return $check;
+        if ($check = $this->_checkAuthorization($request->user(), $contact)) return $check;
 
-        return new UserContactUsSingleResource($contactUs);
+        return new UserContactUsSingleResource($contact);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return JsonResponse
      */
-    public function destroy(Request $request, ContactUs $contactUs): JsonResponse
+    public function destroy(Request $request, ContactUs $contact): JsonResponse
     {
-        if ($check = $this->_checkAuthorization($request->user(), $contactUs)) return $check;
+        if ($check = $this->_checkAuthorization($request->user(), $contact)) return $check;
 
-        $res = $this->service->deleteUserContactById($contactUs->id, false);
+        $res = $this->service->deleteUserContactById($contact->id, false);
 
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
@@ -78,12 +78,12 @@ class UserContactUsController extends Controller
 
     /**
      * @param $user
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return JsonResponse|null
      */
-    private function _checkAuthorization($user, ContactUs $contactUs): ?JsonResponse
+    private function _checkAuthorization($user, ContactUs $contact): ?JsonResponse
     {
-        if ($user->id !== $contactUs->user_id) {
+        if ($user->id !== $contact->user_id) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'دسترسی غیر مجاز به پیام',

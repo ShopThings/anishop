@@ -16,6 +16,12 @@ interface CategoryServiceInterface extends ServiceInterface
     public function getCategories(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @param Filter $filter
+     * @return Collection
+     */
+    public function getHomeCategories(Filter $filter): Collection;
+
+    /**
      * @return Collection
      */
     public function getSliderCategories(): Collection;

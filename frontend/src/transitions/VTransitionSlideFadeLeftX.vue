@@ -4,9 +4,6 @@
   </Transition>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .slide-fade-left-x-enter-active {
   transition: all 0.2s ease-out;

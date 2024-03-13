@@ -53,4 +53,15 @@ class UserNotificationController extends Controller
             'message' => 'خطا در تغییر وضعیت اعلان',
         ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
     }
+
+    /**
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
+    public function newNotifications(Request $request): AnonymousResourceCollection
+    {
+        return UserNotificationResource::collection(
+            $this->service->getUnreadNotifications(user: $request->user())
+        );
+    }
 }

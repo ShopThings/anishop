@@ -10,18 +10,18 @@
             <div class="p-2">
               <partial-input-label title="انتخاب تصویر"/>
               <base-media-placeholder
-                  type="image"
                   v-model:selected="brandImage"
+                  type="image"
               />
               <partial-input-error-message :error-message="errors.image"/>
             </div>
 
             <div class="p-2">
               <base-switch
-                  label="عدم نمایش برند"
-                  on-label="نمایش برند"
-                  name="is_published"
                   :enabled="true"
+                  label="عدم نمایش برند"
+                  name="is_published"
+                  on-label="نمایش برند"
                   sr-text="نمایش/عدم نمایش برند"
                   @change="(status) => {publishStatus=status}"
               />
@@ -32,8 +32,8 @@
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
                   label-title="نام فارسی"
-                  placeholder="وارد نمایید"
                   name="name"
+                  placeholder="وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -43,8 +43,8 @@
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
                   label-title="نام لاتین"
-                  placeholder="وارد نمایید"
                   name="latin_name"
+                  placeholder="وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -53,9 +53,9 @@
             </div>
             <div class="p-2">
               <base-switch
+                  :enabled="true"
                   label="نمایش در اسلایدر"
                   name="show_in_slider"
-                  :enabled="true"
                   sr-text="نمایش/عدم نمایش برند در اسلایدر"
                   @change="(status) => {showInSliderStatus=status}"
               />
@@ -73,15 +73,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                 :disabled="!canSubmit"
+                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                type="submit"
             >
               <VTransitionFade>
                 <loader-circle
                     v-if="!canSubmit"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
                     big-circle-color="border-transparent"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -91,6 +91,20 @@
 
               <span class="ml-auto">افزودن برند</span>
             </base-animated-button>
+
+            <div
+                v-if="Object.keys(errors)?.length"
+                class="text-left"
+            >
+              <div
+                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+              >
+                (
+                <span>{{ Object.keys(errors)?.length }}</span>
+                )
+                خطا، لطفا بررسی کنید
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -131,8 +145,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     show_in_slider: yup.boolean().required('وضعیت نمایش در اسلایدر را مشخص کنید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (!brandImage.value) {
     actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
     return

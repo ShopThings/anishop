@@ -12,6 +12,11 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 trait ControllerBatchDestroyTrait
 {
     /**
+     * @var bool
+     */
+    protected bool $considerDeletable = false;
+
+    /**
      * @param Request $request
      * @return JsonResponse
      * @throws AuthorizationException
@@ -22,7 +27,7 @@ trait ControllerBatchDestroyTrait
 
         $ids = $request->input('ids', []);
 
-        $res = $this->service->batchDeleteByIds($ids);
+        $res = $this->service->batchDeleteByIds($ids, considerDeletable: $this->considerDeletable);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
@@ -43,7 +48,7 @@ trait ControllerBatchDestroyTrait
 
         $slugs = $request->input('ids', []);
 
-        $res = $this->service->batchDeleteBySlugs($slugs);
+        $res = $this->service->batchDeleteBySlugs($slugs, considerDeletable: $this->considerDeletable);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

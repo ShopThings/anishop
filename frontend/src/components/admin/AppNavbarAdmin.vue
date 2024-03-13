@@ -1,5 +1,5 @@
 <template>
-  <div class="h-[64px] relative" ref="navbar">
+  <div ref="navbar" class="h-[64px] relative">
     <nav class="bg-white w-full shadow-md">
       <div class="h-[64px] py-2 px-6 flex">
         <div class="h-full grow flex justify-between">
@@ -7,30 +7,32 @@
             <li class="px-1 xl:hidden">
               <base-popover-side panel-class="">
                 <template #button>
-                  <button type="button"
-                          class="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]">
+                  <button
+                      class="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]"
+                      type="button"
+                  >
                     <Bars3BottomRightIcon class="w-6 h-6"/>
                   </button>
                 </template>
 
                 <template #panel="{close}">
-                  <nav class="h-full" :class="sidebarBgColor" ref="sidebar">
+                  <nav ref="sidebar" :class="sidebarBgColor" class="h-full">
                     <button
-                        type="button"
                         class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
+                        type="button"
                         @click="close"
                     >
                       <XMarkIcon class="w-6 h-6 group-hover:scale-110 transition"/>
                     </button>
 
-                    <OverlayScrollbarsComponent defer :options="scrollOptions">
+                    <OverlayScrollbarsComponent :options="scrollOptions" defer>
                       <div ref="scrollableSection">
                         <div class="flex flex-col pb-4 bg-gradient-to-b from-[#ffffff4f]">
                           <div class="py-4 bg-gradient-to-b from-[#ffffff4f] mb-0 lg:mb-4">
                             <router-link :to="{name: 'home'}" target="_blank">
-                              <img class="h-[28px] mx-auto lg:h-[36px]"
-                                   src="/logo-with-type-light.png"
-                                   alt="لوگو">
+                              <img alt="لوگو"
+                                   class="h-[28px] mx-auto lg:h-[36px]"
+                                   src="/logo-with-type-light.png">
                             </router-link>
                           </div>
 
@@ -41,14 +43,7 @@
                                 <UserIcon class="h-10 w-10 lg:h-12 lg:w-12 mx-auto text-slate-700"/>
                               </div>
                               <span class="text-center mt-3">
-                                  <template v-if="user.first_name || user.last_name">
-                                      {{
-                                      (user.first_name + ' ' + user.last_name).trim()
-                                    }}
-                                  </template>
-                                  <template v-else>
-                                      {{ user.username }}
-                                  </template>
+                                <partial-username-label v-if="user" :user="user"/>
                               </span>
                               <span class="text-center mt-1 text-xs opacity-80">
                                   <template v-if="user.roles">
@@ -66,15 +61,20 @@
                             </div>
 
                             <div class="flex items-center mt-4">
-                              <router-link :to="{name: 'home'}" target="_blank"
-                                           class="flex justify-center px-2 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition">
+                              <router-link
+                                  :to="{name: 'home'}"
+                                  class="flex justify-center px-2 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition"
+                                  target="_blank"
+                              >
                                 <ComputerDesktopIcon class="h-6 w-6 ml-2"/>
                                 <span>نمایش سایت</span>
                               </router-link>
 
                               <div class="mr-3 shrink-0">
-                                <router-link :to="{name: 'admin.settings'}" v-tooltip.left="'تنظیمات'"
-                                             class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block">
+                                <router-link
+                                    v-tooltip.left="'تنظیمات'" :to="{name: 'admin.settings'}"
+                                    class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block"
+                                >
                                   <Cog6ToothIcon class="h-6 w-6"/>
                                 </router-link>
                               </div>
@@ -88,11 +88,13 @@
                       </div>
                     </OverlayScrollbarsComponent>
 
-                    <div class="flex flex-col px-3 py-3 bg-gradient-to-b from-[#ffffff0f]" ref="bottomSection">
+                    <div ref="bottomSection" class="flex flex-col px-3 py-3 bg-gradient-to-b from-[#ffffff0f]">
                       <ul class="flex flex-col">
                         <li>
-                          <router-link :to="{name: 'admin.logout'}"
-                                       class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+                          <router-link
+                              :to="{name: 'admin.logout'}"
+                              class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+                          >
                             <PowerIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span
                                 class="grow">خروج</span>
@@ -135,6 +137,7 @@ import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {Cog6ToothIcon, UserIcon} from "@heroicons/vue/24/solid/index.js";
 import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const props = defineProps({
   sidebarBgColor: {
@@ -176,7 +179,3 @@ defineExpose({
   navbar,
 })
 </script>
-
-<style>
-
-</style>

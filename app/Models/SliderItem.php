@@ -3,10 +3,7 @@
 namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
-use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
-use App\Traits\HasDeletedRelationTrait;
-use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SliderItem extends Model
@@ -22,7 +19,6 @@ class SliderItem extends Model
     ];
 
     protected $casts = [
-        'is_published' => 'boolean',
         'options' => 'array',
         'created_at' => 'datetime',
     ];

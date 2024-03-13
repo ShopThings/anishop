@@ -15,15 +15,15 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="false"
+              :enable-search-box="true"
               :has-checkbox="false"
-              :total="table.totalRecordCount"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
             <template v-slot:image="{value}">
@@ -31,16 +31,16 @@
                 <VTransitionFade>
                   <loader-circle
                       v-if="operationLoading"
-                      main-container-klass="absolute w-[calc(100%+1rem)] h-[calc(100%+1rem)] -top-2 -left-2"
                       big-circle-color="border-transparent"
+                      main-container-klass="absolute w-[calc(100%+1rem)] h-[calc(100%+1rem)] -top-2 -left-2"
                   />
                 </VTransitionFade>
 
                 <base-media-placeholder
-                    type="image"
                     v-model:selected="value.image"
-                    :has-clear-button="true"
                     :clear-check-fn="(selectedFile) => {return handleImageClear(value, selectedFile)}"
+                    :has-clear-button="true"
+                    type="image"
                     @file-changed="(selectedFile) => {handleImageSelection(value, selectedFile)}"
                 />
               </div>

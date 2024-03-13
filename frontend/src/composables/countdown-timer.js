@@ -1,12 +1,17 @@
 import {ref} from "vue";
 import isFunction from "lodash.isfunction";
 
-export function useCountdown(elemRef, refreshSeconds) {
-  const refreshTimeSeconds = refreshSeconds
+export function useCountdown(duration, elemRef = null) {
+  const refreshTimeSeconds = duration
   const refreshTimeElem = elemRef
   const refreshCallbackInterval = ref(null)
   const refreshInterval = ref(null)
   const refreshTimeEnd = ref(null)
+
+  const started = ref(false)
+
+  const minutes = ref('00')
+  const seconds = ref('00')
 
   let userCallback = () => {
   }
@@ -15,12 +20,25 @@ export function useCountdown(elemRef, refreshSeconds) {
     userCallback = callback
 
     reset()
-    unpause()
+    resume()
   }
 
   function stop() {
-    if (refreshInterval) clearInterval(refreshInterval.value)
-    if (refreshCallbackInterval) clearInterval(refreshCallbackInterval.value)
+    pause()
+    reset()
+  }
+
+  function pause() {
+    if (refreshInterval?.value) {
+      clearInterval(refreshInterval.value)
+      refreshInterval.value = null
+    }
+    if (refreshCallbackInterval?.value) {
+      clearInterval(refreshCallbackInterval.value)
+      refreshCallbackInterval.value = null
+    }
+
+    started.value = false
   }
 
   function reset() {
@@ -28,8 +46,8 @@ export function useCountdown(elemRef, refreshSeconds) {
     refreshTimeEnd.value = new Date(now.setSeconds(now.getSeconds() + refreshTimeSeconds));
   }
 
-  function unpause() {
-    stop()
+  function resume() {
+    pause()
 
     refreshInterval.value = setInterval(() => {
       let m, s
@@ -43,19 +61,37 @@ export function useCountdown(elemRef, refreshSeconds) {
         s = 0
       }
 
-      refreshTimeElem.value.textContent = (m + '').padStart(2, '0') + ':' + (s + '').padStart(2, '0')
+      let minStr = (m + '').padStart(2, '0')
+      let secStr = (s + '').padStart(2, '0')
+
+      minutes.value = minStr
+      seconds.value = secStr
+
+      if (refreshTimeElem?.value) {
+        refreshTimeElem.value.textContent = minStr + ':' + secStr
+      }
     }, 1000)
 
     refreshCallbackInterval.value = setInterval(() => {
       if (isFunction(userCallback)) userCallback()
     }, refreshTimeSeconds * 1000);
+
+    started.value = true
+  }
+
+  function isStarted() {
+    return started.value
   }
 
   return {
     start,
     stop,
     reset,
-    pause: stop,
-    unpause,
+    pause,
+    resume,
+    isStarted,
+    //
+    minutes,
+    seconds,
   }
 }

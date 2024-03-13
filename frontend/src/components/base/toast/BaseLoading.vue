@@ -3,10 +3,10 @@
     <span class="text-sm leading-relax">{{ title }}</span>
 
     <loader-progress
-      v-if="isLoading"
-      class="!mb-0"
-      container-bg-color="bg-transparent"
-      bg-color="bg-white"
+        v-if="isLoading"
+        bg-color="bg-white"
+        class="!mb-0"
+        container-bg-color="bg-transparent"
     />
   </div>
 
@@ -14,7 +14,7 @@
   <template v-if="showBackdrop">
     <Teleport to="body">
       <div
-        class="slide-rotate-hor-t-fwd fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
+          class="slide-rotate-hor-t-fwd fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
       ></div>
     </Teleport>
   </template>

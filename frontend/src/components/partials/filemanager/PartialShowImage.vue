@@ -22,10 +22,10 @@
     >
       <base-lazy-image
           :alt="item.name"
-          :title="item.name"
-          :lazy-src="item.full_path"
           :is-local="false"
+          :lazy-src="item.full_path"
           :size="FileSizes.SMALL"
+          :title="item.name"
           class="w-20 h-20 object-contain shrink-0 border rounded-lg cursor-pointer"
           @click="emit('click-image', item)"
       ></base-lazy-image>

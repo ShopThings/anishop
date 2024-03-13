@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
+use App\Enums\Menus\MenuPlacesEnum;
 use App\Repositories\Contracts\MenuRepositoryInterface;
 use App\Services\Contracts\MenuServiceInterface;
 use App\Support\Filter;
@@ -12,7 +14,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
-use function App\Support\Helper\to_boolean;
 
 class MenuService extends Service implements MenuServiceInterface
 {
@@ -32,12 +33,22 @@ class MenuService extends Service implements MenuServiceInterface
             $query->orWhereLike('title', $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHomeMenus(MenuPlacesEnum $placeIn): Collection
+    {
+        return $this->repository->getHomeMenus($placeIn);
     }
 
     /**
@@ -46,11 +57,10 @@ class MenuService extends Service implements MenuServiceInterface
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'menu_place_id' => $attributes['menu_place'],
+            'place_in' => $attributes['menu_place'],
             'title' => $attributes['title'],
-            'priority' => $attributes['priority'] ?? 0,
-            'options' => $attributes['options'] ?? [],
             'is_published' => to_boolean($attributes['is_published']),
+            'is_deletable' => to_boolean($attributes['is_deletable'] ?? true),
         ];
 
         return $this->repository->create($attrs);
@@ -64,16 +74,10 @@ class MenuService extends Service implements MenuServiceInterface
         $updateAttributes = [];
 
         if (isset($attributes['menu_place'])) {
-            $updateAttributes['menu_place_id'] = $attributes['menu_place'];
+            $updateAttributes['place_in'] = $attributes['menu_place'];
         }
         if (isset($attributes['title'])) {
             $updateAttributes['title'] = $attributes['title'];
-        }
-        if (isset($attributes['priority'])) {
-            $updateAttributes['priority'] = $attributes['priority'];
-        }
-        if (isset($attributes['options'])) {
-            $updateAttributes['options'] = $attributes['options'];
         }
         if (isset($attributes['is_published'])) {
             $updateAttributes['is_published'] = to_boolean($attributes['is_published']);
@@ -101,6 +105,7 @@ class MenuService extends Service implements MenuServiceInterface
             $item['menu_id'] = $menuId;
         }
 
+        // don't worry, menu refine will be in repository
         return $this->repository->updateOrCreateItems($menus);
     }
 }

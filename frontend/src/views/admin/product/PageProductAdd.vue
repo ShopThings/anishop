@@ -1,18 +1,18 @@
 <template>
-  <base-message type="warning" :has-close="false">
+  <base-message :has-close="false" type="warning">
     در صورت بارگذاری مجدد صفحه، اطلاعات وارد شده از بین خواهند رفت.
   </base-message>
-  <base-message type="info" :has-close="false">
+  <base-message :has-close="false" type="info">
     ابتدا اطلاعات محصول را وارد کرده و در صورت نیاز برای تغییر، به صفحه ویرایش مراجعه نمایید.
   </base-message>
 
   <base-stepy
-    v-model:current-step="currentStep"
-    :steps="steps"
-    :allow-change-steps-by-click="false"
-    :loading="loading"
-    :manual="true"
-    :simple="true"
+      v-model:current-step="currentStep"
+      :allow-change-steps-by-click="false"
+      :loading="loading"
+      :manual="true"
+      :simple="true"
+      :steps="steps"
   >
     <template #information="options">
       <form-product-add-info :options="options"/>

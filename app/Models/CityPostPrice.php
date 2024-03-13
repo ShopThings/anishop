@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CityPostPrice extends Model
 {
+    protected $table = 'city_post_price';
+
     protected $hasCreatedBy = false;
 
     protected $hasUpdatedBy = false;

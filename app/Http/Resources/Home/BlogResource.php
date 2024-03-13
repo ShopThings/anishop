@@ -5,7 +5,7 @@ namespace App\Http\Resources\Home;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\BlogCategoryShowResource;
 use App\Http\Resources\Showing\ImageShowResource;
-use App\Http\Resources\Showing\UserShowResource;
+use App\Http\Resources\Showing\UserBlogShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,18 +20,17 @@ class BlogResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'category_id' => $this->category_id,
-            'category' => new BlogCategoryShowResource($this->whenLoaded('category')),
+            'category' => new BlogCategoryShowResource($this->category),
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => new ImageShowResource($this->whenLoaded('image')),
-            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'image' => new ImageShowResource($this->image),
+            'created_by' => $this->created_by ? new UserBlogShowResource($this->creator) : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT->value)
             ),
         ];
     }

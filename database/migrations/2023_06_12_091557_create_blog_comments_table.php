@@ -14,9 +14,13 @@ return new class extends Migration {
     {
         Schema::create('blog_comments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('blog_id')->constrained('blogs')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id')->constrained('users')
+                ->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('blog_id')->constrained('blogs')
+                ->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('badge_id')
-                ->constrained('blog_comment_badges')->cascadeOnDelete()->cascadeOnUpdate();
+                ->constrained('blog_comment_badges')
+                ->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('comment_id')->nullable()
                 ->constrained('blog_comments')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('condition', array_map(fn($item) => $item->value, CommentConditionsEnum::cases()))

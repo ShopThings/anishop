@@ -1,37 +1,37 @@
 <template>
   <form @submit.prevent="onSubmit">
     <base-switch
-      v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
-      class="mb-3"
-      label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
-      name="is_deletable"
-      :enabled="!user?.is_deletable"
-      enabled-color="bg-pink-600"
-      disabled-color="bg-pink-300"
-      sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
-      @change="(status) => {deletableStatus=status}"
+        v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
+        :enabled="!user?.is_deletable"
+        class="mb-3"
+        disabled-color="bg-pink-300"
+        enabled-color="bg-pink-600"
+        label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
+        name="is_deletable"
+        sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
+        @change="(status) => {deletableStatus=status}"
     />
 
     <base-switch
-      label="عدم اجازه فعالیت کاربر"
-      on-label="اجازه فعالیت کاربر"
-      name="is_banned"
-      :enabled="!user?.is_banned"
-      sr-text="اجازه یا جلوگیری از فعالیت کاربر"
-      @change="(status) => {banStatus=status}"
+        :enabled="!user?.is_banned"
+        label="عدم اجازه فعالیت کاربر"
+        name="is_banned"
+        on-label="اجازه فعالیت کاربر"
+        sr-text="اجازه یا جلوگیری از فعالیت کاربر"
+        @change="(status) => {banStatus=status}"
     />
 
     <VTransitionSlideFadeDownY>
       <div
-        v-if="!banStatus"
-        class="mt-3"
+          v-if="!banStatus"
+          class="mt-3"
       >
         <base-textarea
-          name="ban_desc"
-          placeholder="توضیحات خود را وارد کنید..."
-          :value="user?.ban_desc"
-          label-title="علت عدم اجازه فعالیت به کاربر"
-          :has-edit-mode="!user?.ban_desc"
+            :has-edit-mode="!user?.ban_desc"
+            :value="user?.ban_desc"
+            label-title="علت عدم اجازه فعالیت به کاربر"
+            name="ban_desc"
+            placeholder="توضیحات خود را وارد کنید..."
         >
           <template #icon>
             <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -42,15 +42,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-        type="submit"
-        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-        :disabled="!canSubmit"
+          :disabled="!canSubmit"
+          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="!canSubmit"
-            main-container-klass="absolute w-full h-full top-0 left-0"
-            big-circle-color="border-transparent"
+              v-if="!canSubmit"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -60,6 +60,20 @@
 
         <span class="ml-auto">ویرایش وضعیت‌ها</span>
       </base-animated-button>
+
+      <div
+          v-if="Object.keys(errors)?.length"
+          class="text-left"
+      >
+        <div
+            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+        >
+          (
+          <span>{{ Object.keys(errors)?.length }}</span>
+          )
+          خطا، لطفا بررسی کنید
+        </div>
+      </div>
     </div>
   </form>
 </template>
@@ -123,8 +137,6 @@ const {canSubmit, onSubmit} = useFormSubmit({
   }),
   keepValuesOnUnmount: true,
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   canSubmit.value = false
 
   if (banStatus.value)

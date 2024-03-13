@@ -3,10 +3,10 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-          label-title="کلمه عبور جدید"
-          type="password"
-          placeholder="شامل حروف و اعداد"
-          name="password"
+            label-title="کلمه عبور جدید"
+            name="password"
+            placeholder="شامل حروف و اعداد"
+            type="password"
         >
           <template #icon>
             <LockClosedIcon class="h-6 w-6 text-gray-400"/>
@@ -15,10 +15,10 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-          label-title="تکرار کلمه عبور جدید"
-          type="password"
-          placeholder="شامل حروف و اعداد"
-          name="password_confirmation"
+            label-title="تکرار کلمه عبور جدید"
+            name="password_confirmation"
+            placeholder="شامل حروف و اعداد"
+            type="password"
         >
           <template #icon>
             <LockClosedIcon class="h-6 w-6 text-gray-400"/>
@@ -29,15 +29,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-        type="submit"
-        class="bg-pink-500 text-white mr-auto px-6 w-full sm:w-auto"
-        :disabled="isSubmitting"
+          :disabled="!canSubmit"
+          class="bg-pink-500 text-white mr-auto px-6 w-full sm:w-auto"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="isSubmitting"
-            main-container-klass="absolute w-full h-full top-0 left-0"
-            big-circle-color="border-transparent"
+              v-if="!canSubmit"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -57,43 +57,32 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import {LockClosedIcon, LockOpenIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
-import {useForm} from "vee-validate";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
-import {useRequest} from "@/composables/api-request.js";
-import {apiRoutes} from "@/router/api-routes.js";
-import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
+import {UserPanelInfoAPI} from "@/service/APIUserPanel.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
 
 const router = useRouter()
 const route = useRoute()
 const toast = useToast()
 
-const canSubmit = ref(true)
-
-const {handleSubmit, isSubmitting} = useForm({
+const {canSubmit, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     password: yup.string()
-      .transform(transformNumbersToEnglish)
-      .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
-      .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
-      .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
-      .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
-      .required('کلمه عبور اجباری می‌باشد.'),
+        .transform(transformNumbersToEnglish)
+        .matches(/(?=.*\d)/g, 'کلمه عبور باید شامل حداقل ۱ عدد باشد.')
+        .matches(/(?=.*[a-z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف کوچک انگلیسی باشد.')
+        .matches(/(?=.*[A-Z])/g, 'کلمه عبور باید شامل حداقل ۱ کاراکتر از حروف بزرگ انگلیسی باشد.')
+        .min(9, 'کلمه عبور باید حداقل دارای ۹ کاراکتر باشد.')
+        .required('کلمه عبور اجباری می‌باشد.'),
     password_confirmation: yup.string()
-      .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
+        .oneOf([yup.ref('password'), null], 'کلمه عبور با تکرار آن مغایرت دارد.'),
   }),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
-
+}, (values, actions) => {
   canSubmit.value = false
 
-  useRequest(apiRoutes.user.info.password, {
-    method: 'PUT',
-    data: values,
-  }, {
+  UserPanelInfoAPI.updatePassword(values, {
     success: () => {
       toast.success('ویرایش کلمه عبور با موفقیت انجام شد.')
       router.push({name: 'user.logout', query: {redirect: route.path}})

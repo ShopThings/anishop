@@ -29,6 +29,7 @@ class OrderBadgeController extends Controller
         protected OrderBadgeServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**

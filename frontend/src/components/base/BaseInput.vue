@@ -1,15 +1,15 @@
 <template>
   <div>
     <partial-input-label
-      v-if="labelTitle && labelTitle.length"
-      :title="labelTitle"
-      :id="id || labelId"
-      :is-optional="isOptional"
+        v-if="labelTitle && labelTitle.length"
+        :id="id || labelId"
+        :is-optional="isOptional"
+        :title="labelTitle"
     />
     <partial-input-label
-      v-else-if="hasLabelSlot"
-      :id="id || labelId"
-      :is-optional="isOptional"
+        v-else-if="hasLabelSlot"
+        :id="id || labelId"
+        :is-optional="isOptional"
     >
       <template #label>
         <slot name="label"></slot>
@@ -20,119 +20,121 @@
       <div :class="isTypePassword ? 'flex' : ''">
         <div class="flex grow relative">
           <div
-            v-if="hasIconSlot"
-            class="absolute h-full w-10 flex justify-center items-center select-none pointer-events-none"
+              v-if="hasIconSlot"
+              class="absolute h-full w-10 flex justify-center items-center select-none pointer-events-none"
           >
             <slot name="icon"/>
           </div>
           <input
-            v-if="canUseLocalMask"
-            ref="inp"
-            :id="id || labelId"
-            :value="value"
-            :name="name"
-            :type="type"
-            :placeholder="placeholder"
-            :class="[
-              'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
-              'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-              klass,
-              isVisiblePassword ? '!ring-amber-500' : '',
-              hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
-              hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
-            ]"
-            :min="min"
-            :max="max"
-            :minlength="minLength"
-            :maxlength="maxLength"
-            v-mask="mask"
-            v-money="localMoneyMask"
-            @change="inputChangeHandler"
-            @input="checkInput($event)"
-            @blur="checkInput($event)"
-            @keydown="checkInput($event)"
-            @keyup="checkInput($event)"
+              v-if="canUseLocalMask"
+              :id="id || labelId"
+              ref="inp"
+              v-model="value"
+              v-mask="mask"
+              v-money="localMoneyMask"
+              :class="[
+                'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
+                'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                klass,
+                isVisiblePassword ? '!ring-amber-500' : '',
+                hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
+                hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
+              ]"
+              :max="max"
+              :maxlength="maxLength"
+              :min="min"
+              :minlength="minLength"
+              :name="name"
+              :placeholder="placeholder"
+              :type="type"
+              @blur="checkInput($event)"
+              @change="inputChangeHandler"
+              @focus="checkInput($event)"
+              @input="checkInput($event)"
+              @keydown="checkInput($event)"
+              @keyup="checkInput($event)"
           />
           <input
-            v-else
-            ref="inp"
-            :id="id || labelId"
-            :value="value"
-            :name="name"
-            :type="type"
-            :placeholder="placeholder"
-            :class="[
-              'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
-              'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
-              klass,
-              isVisiblePassword ? '!ring-amber-500' : '',
-              hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
-              hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
-            ]"
-            :min="min"
-            :max="max"
-            :minlength="minLength"
-            :maxlength="maxLength"
-            v-money="localMoneyMask"
-            @change="inputChangeHandler"
-            @input="checkInput($event)"
-            @blur="checkInput($event)"
-            @keydown="checkInput($event)"
-            @keyup="checkInput($event)"
+              v-else
+              :id="id || labelId"
+              ref="inp"
+              v-model="value"
+              v-money="localMoneyMask"
+              :class="[
+                'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
+                'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                klass,
+                isVisiblePassword ? '!ring-amber-500' : '',
+                hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
+                hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
+              ]"
+              :max="max"
+              :maxlength="maxLength"
+              :min="min"
+              :minlength="minLength"
+              :name="name"
+              :placeholder="placeholder"
+              :type="type"
+              @blur="checkInput($event)"
+              @change="inputChangeHandler"
+              @focus="checkInput($event)"
+              @input="checkInput($event)"
+              @keydown="checkInput($event)"
+              @keyup="checkInput($event)"
           />
           <button
-            v-if="hasClearButton"
-            v-tooltip.right="'پاک کردن'"
-            type="button"
-            class="absolute h-full w-10 flex justify-center items-center rtl:left-0 ltr:right-0 group"
-            :class="{'hidden': (!value || value.toString().trim() === '')}"
-            @click="clearInputHandler"
+              v-if="hasClearButton"
+              v-tooltip.right="'پاک کردن'"
+              :class="{'hidden': (!value || value.toString().trim() === '')}"
+              class="absolute h-full w-10 flex justify-center items-center rtl:left-0 ltr:right-0 group"
+              type="button"
+              @click="clearInputHandler"
           >
             <XMarkIcon class="w-6 h-6 text-gray-400 group-hover:text-rose-500 group-hover:rotate-90 transition"/>
           </button>
         </div>
         <button
-          v-if="isTypePassword"
-          type="button"
-          :class="[
+            v-if="isTypePassword"
+            :class="[
               'mr-2 rounded border-0 ring-1 ring-gray-300 text-rose-600 bg-white',
               'min-w-[48px] group transition-all',
               isVisiblePassword ? '!ring-amber-500' : '',
           ]"
-          @click="togglePasswordVisibility"
+            type="button"
+            @click="togglePasswordVisibility"
         >
           <EyeSlashIcon
-            v-if="isVisiblePassword"
-            class="w-6 h-6 mx-auto group-active:w-5 group-active:h-5 transition-all"
+              v-if="isVisiblePassword"
+              class="w-6 h-6 mx-auto group-active:w-5 group-active:h-5 transition-all"
           />
           <EyeIcon
-            v-if="!isVisiblePassword"
-            class="w-6 h-6 mx-auto group-active:w-5 group-active:h-5 transition-all"
+              v-if="!isVisiblePassword"
+              class="w-6 h-6 mx-auto group-active:w-5 group-active:h-5 transition-all"
           />
         </button>
       </div>
     </template>
     <div
-      v-else
-      class="flex items-center"
+        v-else
+        class="flex items-center"
     >
       <input
-        type="hidden"
-        :value="value"
-        :name="name"
-        @change="inputChangeHandler"
+          :name="name"
+          :value="value"
+          type="hidden"
+          @change="inputChangeHandler"
       >
-      <slot name="editModeLabel" :value="value">
+      <slot :value="value || '-'" name="editModeLabel">
         <span class="grow text-gray-500 text-sm">{{ value || '-' }}</span>
       </slot>
       <button
-        v-if="isEditable"
-        type="button"
-        class="shrink-0 mr-2"
+          v-if="isEditable"
+          class="shrink-0 mr-2"
+          type="button"
       >
         <PencilSquareIcon
-          @click="toggleEditMode"
-          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+            class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+            @click="toggleEditMode"
         />
       </button>
     </div>
@@ -162,7 +164,7 @@ const props = defineProps({
     default: 'text',
   },
   placeholder: String,
-  klass: String,
+  klass: [String, Array],
   labelTitle: String,
   isOptional: {
     type: Boolean,
@@ -212,7 +214,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'input', 'blur', 'keydown', 'keyup', 'mount', 'cleared'
+  'input', 'blur', 'keydown', 'keyup', 'focus', 'mount', 'cleared'
 ])
 
 const slots = useSlots()

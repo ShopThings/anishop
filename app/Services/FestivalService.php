@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Repositories\Contracts\FestivalRepositoryInterface;
 use App\Services\Contracts\FestivalServiceInterface;
@@ -13,7 +14,6 @@ use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class FestivalService extends Service implements FestivalServiceInterface
 {
@@ -28,7 +28,7 @@ class FestivalService extends Service implements FestivalServiceInterface
      */
     public function getFestivals(Filter $filter): Collection|LengthAwarePaginator
     {
-        $where = new WhereBuilder('festivals');
+        $where = new WhereBuilder();
         $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query
                 ->when(Carbon::createFromFormat('Y-m-d', $search), function (WhereBuilderInterface $q, $date) {
@@ -47,6 +47,23 @@ class FestivalService extends Service implements FestivalServiceInterface
                 page: $filter->getPage(),
                 order: $filter->getOrder()
             );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHomeFestivals(): Collection
+    {
+        $where = new WhereBuilder();
+        $where
+            ->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->whereGreaterThanEqual('start_at', now())
+            ->whereLessThanEqual('end_at', now());
+
+        return $this->repository->all([
+            'id', 'title', 'slug',
+            'start_at', 'end_at',
+        ]);
     }
 
     /**
@@ -116,19 +133,13 @@ class FestivalService extends Service implements FestivalServiceInterface
      * @inheritDoc
      */
     public function getFestivalProducts(
-        int     $festivalId,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
+        int    $festivalId,
+        Filter $filter
     ): Collection|LengthAwarePaginator
     {
         return $this->repository->getFestivalProductsSearchFilterPaginated(
             festivalId: $festivalId,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
+            filter: $filter
         );
     }
 
@@ -159,6 +170,17 @@ class FestivalService extends Service implements FestivalServiceInterface
     /**
      * @inheritDoc
      */
+    public function removeProductsFromFestival($festivalId, array $ids): bool
+    {
+        $where = new WhereBuilder('product_festivals');
+        $where->whereIn('product_id', $ids);
+
+        return $this->repository->deleteWhere($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function addCategoryToFestival($categoryId, $festivalId, $discountPercentage): Collection
     {
         $productIds = $this->_getCategoryProductsIds($categoryId);
@@ -180,10 +202,7 @@ class FestivalService extends Service implements FestivalServiceInterface
     public function removeCategoryFromFestival($categoryId, $festivalId): bool
     {
         $productIds = $this->_getCategoryProductsIds($categoryId);
-        $where = new WhereBuilder('product_festivals');
-        $where->whereIn('product_id', $productIds);
-
-        return $this->repository->deleteWhere($where->build());
+        return $this->removeProductsFromFestival($festivalId, $productIds);
     }
 
     /**

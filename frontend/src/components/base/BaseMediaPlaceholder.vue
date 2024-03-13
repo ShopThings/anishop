@@ -39,21 +39,21 @@
       >
         <div
             v-tooltip.left-start="'برای تغییر فایل کلیک کنید/ضربه بزنید'"
-            class="cursor-pointer w-20 h-20 rounded-lg border-2 flex items-center justify-center border-slate-300 group hover:border-slate-400 transition overflow-hidden bg-gray-100"
             :class="{
               'bg-violet-500 !border-violet-500 hover:bg-violet-600': type === 'video',
               'bg-sky-500 !border-sky-500 hover:bg-sky-600': type === 'doc',
               'bg-emerald-500 !border-emerald-500 hover:bg-emerald-600': type === 'audio',
           }"
+            class="cursor-pointer w-20 h-20 rounded-lg border-2 flex items-center justify-center border-slate-300 group hover:border-slate-400 transition overflow-hidden bg-gray-100"
             @click="open"
         >
           <base-lazy-image
               v-if="type === 'image'"
-              :lazy-src="selectedFile?.full_path"
-              :alt="selectedFile?.name"
-              :size="FileSizes.SMALL"
-              :is-local="false"
               :key="selectedFile.full_path"
+              :alt="selectedFile?.name"
+              :is-local="false"
+              :lazy-src="selectedFile?.full_path"
+              :size="FileSizes.SMALL"
           />
           <FilmIcon
               v-else-if="type === 'video'"
@@ -89,29 +89,29 @@
     <template #body="{close}">
       <div class="relative">
         <base-file-manager
+            :allow-delete="true"
+            :allow-move="true"
             :allow-multi-operation="false"
+            :allow-rename="true"
+            :extensions="extensions"
             :has-create-folder="false"
             :has-search="true"
             :has-uploader="false"
-            storages="public"
-            :allow-rename="true"
-            :allow-move="true"
-            :allow-delete="true"
             :selectable-files="true"
-            :extensions="extensions"
+            storages="public"
             @file-selected="changeSelectedFile"
         />
 
         <div class="sticky bottom-0 left-0 z-[1] border-t w-full p-3 mt-3 text-left bg-white/85">
           <base-button
-              @click="close"
               class="!text-black bg-gray-100 px-6 ml-2 hover:bg-gray-200"
+              @click="close"
           >
             بستن
           </base-button>
           <base-button
-              @click="checkFileSelection(close)"
               class="bg-primary px-5"
+              @click="checkFileSelection(close)"
           >
             انتخاب فایل
           </base-button>

@@ -37,7 +37,6 @@ class UpdateFestivalRequest extends FormRequest
                 'after:start_at',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

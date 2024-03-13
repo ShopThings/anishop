@@ -92,7 +92,7 @@ class RecoverPasswordController extends Controller
         if ($status) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'کلمه عبور با موفقیت بازنشانی شد.',
+                'message' => 'کلمه عبور شما با موفقیت بازنشانی شد.',
             ]);
         } else {
             return response()->json([

@@ -20,11 +20,12 @@ class UserReturnOrderResource extends JsonResource
             'code' => $this->code,
             'order_code' => $this->order->code,
             'status' => [
-                'text' => ReturnOrderStatusesEnum::getTranslations($this->status),
+                'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status] ?? '#000000',
             ],
             'requested_at' => $this->requested_at
-                ? verta($this->requested_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->requested_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
         ];
     }

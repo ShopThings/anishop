@@ -11,7 +11,6 @@ use App\Models\StaticPage;
 use App\Models\User;
 use App\Services\Contracts\StaticPageServiceInterface;
 use App\Support\Filter;
-use App\Traits\ControllerBatchDestroyTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +19,6 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class StaticPageController extends Controller
 {
-    use ControllerBatchDestroyTrait;
-
     /**
      * @param StaticPageServiceInterface $service
      */
@@ -93,7 +90,10 @@ class StaticPageController extends Controller
      * @return StaticPageResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateStaticPageRequest $request, StaticPage $staticPage): JsonResponse|StaticPageResource
+    public function update(
+        UpdateStaticPageRequest $request,
+        StaticPage              $staticPage
+    ): JsonResponse|StaticPageResource
     {
         $this->authorize('update', $staticPage);
 
@@ -125,6 +125,27 @@ class StaticPageController extends Controller
 
         $permanent = $request->user()->id === $staticPage->creator?->id;
         $res = $this->service->deleteById($staticPage->id, $permanent);
+        if ($res)
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        else
+            return response()->json([
+                'type' => ResponseTypesEnum::WARNING->value,
+                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function batchDestroyByUrl(Request $request): JsonResponse
+    {
+        $this->authorize('batchDelete', User::class);
+
+        $urls = $request->input('ids', []);
+
+        $res = $this->service->batchDeleteByUrls($urls, considerDeletable: true);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

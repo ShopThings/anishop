@@ -43,15 +43,12 @@ class StoreBlogCategoryRequest extends FormRequest
                 'array',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
             'show_in_menu' => [
-                'required',
                 'boolean',
             ],
             'show_in_side_menu' => [
-                'required',
                 'boolean',
             ],
         ];

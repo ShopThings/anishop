@@ -3,43 +3,43 @@
     <template #header>
       ویرایش اسلایدهای اسلایدر
       <span
-        v-if="slider?.id"
-        class="text-teal-600"
+          v-if="slider?.id"
+          class="text-slate-400 text-base"
       >{{ slider?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-          :loading="loading"
-          type="form"
+            :loading="loading"
+            type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <draggable
-                  v-if="slides && slides.length"
-                  item-key="id"
-                  tag="ul"
-                  :animation="200"
-                  :list="slides"
-                  :group="{ name: 'slides' }"
-                  handle=".handle"
-                  ghost-class="ghost"
+                    v-if="slides && slides.length"
+                    :animation="200"
+                    :group="{ name: 'slides' }"
+                    :list="slides"
+                    ghost-class="ghost"
+                    handle=".handle"
+                    item-key="id"
+                    tag="ul"
                 >
                   <template #item="{ element, index }">
                     <li class="pt-6 px-2 border-2 border-dashed border-slate-300 rounded-lg mb-3">
                       <div class="mt-2 relative mb-4">
                         <base-button
-                          v-if="!isBlogSidePlace"
-                          class="!absolute top-0 left-0 -translate-y-8 -translate-x-1/4 bg-rose-500 !p-1 z-[1]"
-                          @click="removeSlideHandler(index)"
+                            v-if="!isBlogSidePlace"
+                            class="!absolute top-0 left-0 -translate-y-8 -translate-x-1/4 bg-rose-500 !p-1 z-[1]"
+                            @click="removeSlideHandler(index)"
                         >
                           <TrashIcon class="h-5 w-5"/>
                         </base-button>
 
                         <base-button
-                          v-tooltip.left="'برای جابجایی بکشید'"
-                          :class="[
+                            v-tooltip.left="'برای جابجایی بکشید'"
+                            :class="[
                                 'handle cursor-grab active:cursor-grabbing !px-8 sm:!px-10 !rounded-t-none !rounded-br-none',
                                 '!absolute top-0 right-0 -translate-y-8 translate-x-2 bg-gray-100 !py-1 z-[1]',
                                 'border-b-2 border-l-2 !border-t-none !border-r-none',
@@ -53,18 +53,22 @@
                             <div class="p-2 w-full md:w-1/2">
                               <partial-input-label title="انتخاب بلاگ"/>
                               <base-select-searchable
-                                :options="blogs"
-                                options-key="id"
-                                options-text="title"
-                                :name="'blog' + element.id"
-                                :is-loading="searchBlogLoading"
-                                :is-local-search="false"
-                                placeholder="جستجوی بلاگ..."
-                                @change="(selected) => {element.blog = selected}"
-                                @query="searchBlog"
+                                  :current-page="blogSelectConfig.currentPage.value"
+                                  :has-pagination="true"
+                                  :is-loading="blogLoading"
+                                  :is-local-search="false"
+                                  :last-page="blogSelectConfig.lastPage.value"
+                                  :name="'blog' + element.id"
+                                  :options="blogs"
+                                  options-key="id"
+                                  options-text="title"
+                                  placeholder="جستجوی بلاگ..."
+                                  @change="(selected) => {element.blog = selected}"
+                                  @query="searchBlog"
+                                  @click-next-page="searchBlogNextPage"
+                                  @click-prev-page="searchBlogPrevPage"
                               />
-                              <partial-input-error-message
-                                :error-message="errors.blog"/>
+                              <partial-input-error-message :error-message="errors.blog"/>
                             </div>
                           </div>
                         </template>
@@ -73,40 +77,42 @@
                             <div class="p-2 w-full md:w-1/2">
                               <partial-input-label title="انتخاب محصول"/>
                               <base-select-searchable
-                                :options="products"
-                                options-key="id"
-                                options-text="title"
-                                :name="'product' + element.id"
-                                :is-loading="searchProductLoading"
-                                :is-local-search="false"
-                                placeholder="جستجوی محصول..."
-                                @change="(selected) => {element.product = selected}"
-                                @query="searchProduct"
+                                  :current-page="productSelectConfig.currentPage.value"
+                                  :has-pagination="true"
+                                  :is-loading="productLoading"
+                                  :is-local-search="false"
+                                  :last-page="productSelectConfig.lastPage.value"
+                                  :name="'product' + element.id"
+                                  :options="products"
+                                  options-key="id"
+                                  options-text="title"
+                                  placeholder="جستجوی محصول..."
+                                  @change="(selected) => {element.product = selected}"
+                                  @query="searchProduct"
+                                  @click-next-page="searchProductNextPage"
+                                  @click-prev-page="searchProductPrevPage"
                               />
-                              <partial-input-error-message
-                                :error-message="errors.product"/>
+                              <partial-input-error-message :error-message="errors.product"/>
                             </div>
                           </div>
                         </template>
                         <template v-else>
                           <div class="p-2 flex flex-col items-center">
-                            <partial-input-label
-                              title="انتخاب تصویر"
-                            />
+                            <partial-input-label title="انتخاب تصویر"/>
                             <base-media-placeholder
-                              type="image"
-                              :selected="element?.image"
+                                :selected="element?.image"
+                                type="image"
                             />
                           </div>
 
                           <div class="flex flex-wrap">
                             <div class="p-2 w-full md:w-2/3">
                               <base-input
-                                label-title="لینک"
-                                placeholder="وارد نمایید"
-                                :name="'link' + element.id"
-                                :value="element?.link"
-                                @input="(v) => {element.link = v}"
+                                  :name="'link' + element.id"
+                                  :value="element?.link"
+                                  label-title="لینک"
+                                  placeholder="وارد نمایید"
+                                  @input="(v) => {element.link = v}"
                               >
                                 <template #icon>
                                   <CurrencyDollarIcon class="h-6 w-6 text-gray-400"/>
@@ -121,12 +127,12 @@
                 </draggable>
 
                 <div
-                  v-if="!isBlogSidePlace"
-                  class="mt-3 mb-1"
+                    v-if="!isBlogSidePlace"
+                    class="mt-3 mb-1"
                 >
                   <base-button
-                    class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
-                    @click="handleNewSlideClick"
+                      class="!text-orange-600 border-orange-400 w-full sm:w-auto flex items-center hover:bg-orange-50 mr-auto"
+                      @click="handleNewSlideClick"
                   >
                     <span class="mr-auto text-sm">ساخت اسلاید</span>
                     <PlusIcon class="h-6 w-6 mr-auto sm:mr-2"/>
@@ -136,15 +142,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -154,6 +160,20 @@
 
                   <span class="ml-auto">ویرایش اسلایدها</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </template>
@@ -165,8 +185,6 @@
 
 <script setup>
 import {computed, onMounted, reactive, ref} from "vue";
-import {useForm} from "vee-validate";
-import yup from "@/validation/index.js";
 import draggable from "vuedraggable";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -181,36 +199,27 @@ import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {useToast} from "vue-toastification";
-import {useRoute} from "vue-router";
 import uniqueId from "lodash.uniqueid";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
-import {SLIDER_PLACES} from "@/composables/constants.js";
+import {SLIDER_ITEM_OPTIONS, SLIDER_PLACES} from "@/composables/constants.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {ProductAPI} from "@/service/APIProduct.js";
+import {useSelectSearching} from "@/composables/select-searching.js";
+import {BlogAPI} from "@/service/APIBlog.js";
+import {SliderAPI} from "@/service/APIConfig.js";
 
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
-const loading = ref(false)
-const canSubmit = ref(true)
+const loading = ref(true)
 
 const slider = ref(null)
 const slides = reactive([])
-
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
-
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
-})
 
 function removeSlideHandler(idx) {
   if (slides[idx])
@@ -228,74 +237,161 @@ function handleNewSlideClick() {
 }
 
 //-----------------------------
-// Search in blog
-//-----------------------------
 const isBlogPlace = computed(() => {
-  return slider?.slider_place.place_in === SLIDER_PLACES.MAIN_BLOG.value
+  return slider?.place_in?.value === SLIDER_PLACES.MAIN_BLOG.value
 })
 const isBlogSidePlace = computed(() => {
-  return slider?.slider_place.place_in === SLIDER_PLACES.MAIN_BLOG_SIDE.value
+  return slider?.place_in?.value === SLIDER_PLACES.MAIN_BLOG_SIDE.value
 })
-
-const blogs = ref([])
-const searchBlogLoading = ref(true)
-
-function searchBlog(query) {
-  // searchBlogLoading.value = true
-  // useRequest(apiRoutes.admin.blogs.index, {
-  //     data: {
-  //         query,
-  //     },
-  // }, {
-  //     success: (response) => {
-  //         blogs.value = response.data
-  //     },
-  //     finally: () => {
-  //         searchBlogLoading.value = false
-  //     }
-  // })
-}
-
-//-----------------------------
-
-//-----------------------------
-// Search in product
-//-----------------------------
 const isAmazingOfferPlace = computed(() => {
-  return slider?.slider_place.place_in === SLIDER_PLACES.AMAZING_OFFER.value
+  return slider?.place_in?.value === SLIDER_PLACES.AMAZING_OFFER.value
 })
-
-const products = ref([])
-const searchProductLoading = ref(true)
-
-function searchProduct(query) {
-  // searchProductLoading.value = true
-  // useRequest(apiRoutes.admin.products.index, {
-  //     data: {
-  //         query,
-  //     },
-  // }, {
-  //     success: (response) => {
-  //         products.value = response.data
-  //     },
-  //     finally: () => {
-  //         searchProductLoading.value = false
-  //     }
-  // })
-}
 
 //-----------------------------
-
-onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.sliders.show, {slider: idParam.value}), null, {
-  //     success: (response) => {
-  //         slider.value = response.data
-  //         slides.value = response.data.items
-  //
-  //         loading.value = false
-  //     },
-  // })
+// Search in blog
+//-----------------------------
+const blogs = ref([])
+const blogSelectConfig = useSelectSearching({
+  searchFn(query) {
+    BlogAPI.fetchAll({
+      limit: blogSelectConfig.limit.value,
+      offset: blogSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        blogs.value = response.data
+        if (response.meta) {
+          blogSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        blogSelectConfig.isLoading.value = false
+      }
+    })
+  },
 })
+const searchBlog = blogSelectConfig.search
+const blogLoading = blogSelectConfig.isLoading
+const searchBlogNextPage = blogSelectConfig.searchNextPage
+const searchBlogPrevPage = blogSelectConfig.searchPrevPage
+
+//-----------------------------
+// Product search
+//-----------------------------
+const products = ref([])
+const productSelectConfig = useSelectSearching({
+  searchFn(query) {
+    ProductAPI.fetchAll({
+      limit: productSelectConfig.limit.value,
+      offset: productSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        products.value = response.data
+        if (response.meta) {
+          productSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        productSelectConfig.isLoading.value = false
+      }
+    })
+  },
+})
+const searchProduct = productSelectConfig.search
+const productLoading = productSelectConfig.isLoading
+const searchProductNextPage = productSelectConfig.searchNextPage
+const searchProductPrevPage = productSelectConfig.searchPrevPage
+
+//-----------------------------
+const hasItemsBlogSelected = computed(() => {
+  let counter = 0
+  for (let i of slides.value) {
+    if (i.blog?.id) {
+      counter++
+    }
+  }
+
+  return counter === slides.value.length
+})
+const hasItemsProductSelected = computed(() => {
+  let counter = 0
+  for (let i of slides.value) {
+    if (i.product?.id) {
+      counter++
+    }
+  }
+
+  return counter === slides.value.length
+})
+
+const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
+  if (isBlogSidePlace.value && slides.length !== 2) {
+    toast.error('بایستی ۲ اسلاید وارد نمایید!')
+    return
+  }
+
+  if (isBlogPlace.value && !hasItemsBlogSelected.value) {
+    toast.error('بلاگ برای آیتم انتخاب نشده است.')
+    return
+  }
+
+  if (isAmazingOfferPlace.value && !hasItemsProductSelected.value) {
+    toast.error('محصول برای آیتم انتخاب نشده است.')
+    return
+  }
+
+  canSubmit.value = false
+
+  SliderAPI.modifySliderItems(idParam.value, {
+    slides: slides.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
+})
+
+//-----------------------------
+onMounted(() => {
+  SliderAPI.fetchById(idParam.value, {
+    success(response) {
+      slider.value = response.data
+    },
+  })
+
+  SliderAPI.fetchSliderItems(idParam.value, {
+    success: (response) => {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
+
+  searchBlog()
+  searchProduct()
+})
+
+function setFormFields(item) {
+  if (!item?.length) return
+
+  slides.value = []
+
+  for (let i of item) {
+    if (!i?.id) continue
+
+    let options = i.options
+    slides.value.push({
+      id: i.id,
+      link: options[SLIDER_ITEM_OPTIONS.IMAGE.value] ?? '',
+      image: options[SLIDER_ITEM_OPTIONS.LINK.value] ?? null,
+      blog: options[SLIDER_ITEM_OPTIONS.PRODUCT_ID.value] ?? null,
+      product: options[SLIDER_ITEM_OPTIONS.BLOG_ID.value] ?? null,
+    })
+  }
+}
 </script>
 
 <style scoped>

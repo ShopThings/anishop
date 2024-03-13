@@ -4,7 +4,7 @@
       ویرایش واحد محصول -
       <span
           v-if="unit?.id"
-          class="text-teal-600"
+          class="text-slate-400 text-base"
       >{{ unit?.name }}</span>
     </template>
     <template #body>
@@ -18,10 +18,10 @@
               <div class="flex flex-wrap items-end justify-between">
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="عنوان واحد"
-                      placeholder="عنوان واحد را وارد نمایید"
-                      name="name"
                       :value="unit?.name"
+                      label-title="عنوان واحد"
+                      name="name"
+                      placeholder="عنوان واحد را وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -30,10 +30,10 @@
                 </div>
                 <div class="p-2">
                   <base-switch
-                      label="عدم نمایش واحد"
-                      on-label="نمایش واحد"
-                      name="is_published"
                       :enabled="unit?.is_published"
+                      label="عدم نمایش واحد"
+                      name="is_published"
+                      on-label="نمایش واحد"
                       sr-text="نمایش/عدم نمایش واحد"
                       @change="(status) => {publishStatus=status}"
                   />
@@ -42,15 +42,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                     :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
                         v-if="!canSubmit"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
                         big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -60,6 +60,20 @@
 
                   <span class="ml-auto">ویرایش واحد</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </template>
@@ -99,8 +113,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   canSubmit.value = false
 
   UnitAPI.updateById(idParam.value, {

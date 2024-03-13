@@ -4,10 +4,8 @@
       نمایش آدرس‌های کاربر -
       <span
           v-if="user?.id"
-          class="text-teal-600"
-      >{{
-          (user?.first_name || user?.last_name) ? (user?.first_name + ' ' + user?.last_name).trim() : user.username
-        }}</span>
+          class="text-slate-400 text-base"
+      ><partial-username-label v-if="user" :user="user"/></span>
     </template>
 
     <template #body>
@@ -15,16 +13,16 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :enable-search-box="false"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="false"
+              :enable-search-box="false"
               :has-checkbox="false"
-              :total="table.totalRecordCount"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
             <template #city_name="{value}">
@@ -104,6 +102,7 @@ import {useRoute} from "vue-router";
 import {UserAddressAPI, UserAPI} from "@/service/APIUser.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const route = useRoute()
 const idParam = getRouteParamByKey('id')

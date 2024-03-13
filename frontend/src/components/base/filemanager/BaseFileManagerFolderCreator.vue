@@ -1,22 +1,22 @@
 <template>
   <form @submit.prevent="onSubmit">
     <div class="text-left sm:flex sm:items-start">
-      <base-input name="folder" class="grow mb-2" placeholder="نام پوشه را وارد کنید...">
+      <base-input class="grow mb-2" name="folder" placeholder="نام پوشه را وارد کنید...">
         <template #icon>
           <FolderPlusIcon class="h-6 w-6 text-gray-400"/>
         </template>
       </base-input>
 
       <base-button
-        type="submit"
-        class="sm:shrink-0 mb-2 sm:mr-2 bg-emerald-500 text-sm group w-full sm:w-auto flex gap-2 items-center mr-auto"
-        :disabled="!canSubmit"
+          :disabled="!canSubmit"
+          class="sm:shrink-0 mb-2 sm:mr-2 bg-emerald-500 text-sm group w-full sm:w-auto flex gap-2 items-center mr-auto"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="!canSubmit"
-            main-container-klass="absolute w-full h-full top-0 left-0"
-            big-circle-color="border-transparent"
+              v-if="!canSubmit"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -51,8 +51,8 @@ const emit = defineEmits(['created'])
 const {canSubmit, onSubmit, errors} = useFormSubmit({
   validationSchema: yup.object().shape({
     folder: yup.string()
-      .required('لطفا نام پوشه را وارد نمایید')
-      .folderName('نام پوشه دارای مقادیر نامعتبر می‌باشد.')
+        .required('لطفا نام پوشه را وارد نمایید')
+        .folderName('نام پوشه دارای مقادیر نامعتبر می‌باشد.')
   }),
 }, (values, actions) => {
   canSubmit.value = false

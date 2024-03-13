@@ -5,8 +5,8 @@
     </h2>
 
     <base-loading-panel
-      type="list-single"
-      :loading="loading"
+        :loading="loading"
+        type="list-single"
     >
       <template #content>
         <partial-card class="border-0">
@@ -15,9 +15,9 @@
               <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="shrink-0">
                   <base-lazy-image
-                    alt="تصویر محصول"
-                    lazy-src="/src/assets/products/p1.jpg"
-                    class="!h-28 sm:!h-20 w-auto"
+                      alt="تصویر محصول"
+                      class="!h-28 sm:!h-20 w-auto rounded"
+                      lazy-src="/src/assets/products/p1.jpg"
                   />
                 </div>
                 <div class="grow text-sm">
@@ -25,8 +25,8 @@
                 </div>
                 <div class="text-sm shrink-0">
                   <router-link
-                    :to="{name: 'product.detail', params: {id: 1}}"
-                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                      :to="{name: 'product.detail', params: {slug: 1}}"
+                      class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                   >
                     <span class="mx-auto">مشاهده محصول</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -41,8 +41,8 @@
   </div>
 
   <div
-    v-if="1"
-    class="mb-3"
+      v-if="1"
+      class="mb-3"
   >
     <partial-badge-condition-comment class="w-full py-2 !text-sm"/>
   </div>
@@ -53,8 +53,8 @@
     </h2>
 
     <base-loading-panel
-      type="list-single"
-      :loading="loading"
+        :loading="loading"
+        type="list-single"
     >
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -62,9 +62,9 @@
             <template #body>
               <div class="px-3 pt-3">
                 <base-message
-                  type="info"
-                  :has-close="false"
-                  class="rounded-md"
+                    :has-close="false"
+                    class="rounded-md"
+                    type="info"
                 >
                   <div class="leading-relaxed">
                     امکان ویرایش پس از تغییر وضعیت توسط سایت، وجود ندارد.
@@ -73,43 +73,43 @@
               </div>
 
               <div class="px-3 py-2 vue3-tags-pros-container">
-                <partial-input-label title="مزایای محصول" :is-optional="true"/>
+                <partial-input-label :is-optional="true" title="مزایای محصول"/>
                 <base-tags-input
-                  :tags="pros"
-                  placeholder="وارد نمایید"
-                  :read-only="false"
-                  @on-tags-changed="(t) => {pros = t}"
+                    :read-only="false"
+                    :tags="pros"
+                    placeholder="وارد نمایید"
+                    @on-tags-changed="(t) => {pros = t}"
                 />
               </div>
               <div class="px-3 py-2 vue3-tags-cons-container">
-                <partial-input-label title="معایب محصول" :is-optional="true"/>
+                <partial-input-label :is-optional="true" title="معایب محصول"/>
                 <base-tags-input
-                  :tags="cons"
-                  placeholder="وارد نمایید"
-                  @on-tags-changed="(t) => {cons = t}"
+                    :tags="cons"
+                    placeholder="وارد نمایید"
+                    @on-tags-changed="(t) => {cons = t}"
                 />
               </div>
               <div class="px-3 py-2">
                 <base-textarea
-                  name="description"
-                  label-title="توضیحات"
-                  placeholder="دیدگاه خود را وارد نمایید..."
-                  :has-edit-mode="true"
-                  :is-editable="true"
+                    :has-edit-mode="true"
+                    :is-editable="true"
+                    label-title="توضیحات"
+                    name="description"
+                    placeholder="دیدگاه خود را وارد نمایید..."
                 />
               </div>
 
               <div class="p-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="isSubmitting"
+                    :disabled="isSubmitting"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="isSubmitting"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="isSubmitting"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -156,7 +156,7 @@ const {handleSubmit, errors, isSubmitting} = useForm({
 })
 
 const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+
 })
 </script>
 

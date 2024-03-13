@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Rules\ColorRule;
 use Illuminate\Foundation\Http\FormRequest;
-use function App\Support\Helper\to_boolean;
 
 class UpdateOrderBadgeRequest extends FormRequest
 {
@@ -36,11 +35,9 @@ class UpdateOrderBadgeRequest extends FormRequest
                 new ColorRule(),
             ],
             'should_return_order_product' => [
-                'sometimes',
                 'boolean',
             ],
             'is_end_badge' => [
-                'sometimes',
                 'boolean',
                 function ($attribute, $value, $fail) use ($model) {
                     if (to_boolean($value) && $model->is_starting_badge) {
@@ -49,7 +46,6 @@ class UpdateOrderBadgeRequest extends FormRequest
                 },
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

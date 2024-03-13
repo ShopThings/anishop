@@ -29,11 +29,10 @@ class PasswordChangedNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => UserNotificationTypesEnum::RECOVER_PASS,
-            'type_value' => UserNotificationTypesEnum::getTranslations(UserNotificationTypesEnum::RECOVER_PASS->value),
-            'priority' => UserNotificationPrioritiesEnum::HIGH,
+            'type' => UserNotificationTypesEnum::RECOVER_PASS->value,
+            'type_value' => UserNotificationTypesEnum::getTranslations(UserNotificationTypesEnum::RECOVER_PASS->value, 'نامشخص'),
+            'priority' => UserNotificationPrioritiesEnum::HIGH->value,
             'message' => 'کلمه عبور شما بازنشانی شد.',
-            'created_at' => now(),
         ];
     }
 }

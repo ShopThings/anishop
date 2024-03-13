@@ -1,28 +1,28 @@
 <template>
   <VTransitionSlideFadeUpY mode="out-in">
     <div
-      v-if="product && product?.id"
-      :class="containerClass"
-      class="min-h-[400px] w-full h-full p-3 border bg-white"
+        v-if="product && product?.slug"
+        :class="containerClass"
+        class="min-h-[400px] w-full h-full p-3 border bg-white"
     >
       <router-link
-        :to="{name: 'product.detail', params: {id: product.id}}"
-        target="_blank"
-        class="group block"
+          :to="{name: 'product.detail', params: {slug: product.slug}}"
+          class="group block"
+          target="_blank"
       >
         <base-lazy-image
-          :alt="product.title"
-          :lazy-src="product.image.path"
-          class="w-full h-48 bg-white rounded-lg transition group-hover:scale-95"
+            :alt="product.title"
+            :lazy-src="product.image.path"
+            class="w-full h-48 bg-white rounded-lg transition group-hover:scale-95"
         />
       </router-link>
 
       <div class="mt-3 flex flex-col justify-center">
         <router-link
-          :to="{name: 'product.detail', params: {id: product.id}}"
-          target="_blank"
-          class="text-sm leading-loose h-[52px] ellipsis-2 hover:text-indigo-600 transition"
-          :title="product.title"
+            :title="product.title"
+            :to="{name: 'product.detail', params: {slug: product.slug}}"
+            class="text-sm leading-loose h-[52px] ellipsis-2 hover:text-indigo-600 transition"
+            target="_blank"
         >
           <h1>
             {{ product.title }}
@@ -31,19 +31,19 @@
 
         <div class="mt-2">
           <base-carousel
-            v-slot="{slide, index}"
-            v-model="productProperties"
-            v-model:current="currentProductItem"
-            :has-navigation="productItemsCarouselSetting.hasNavigation"
-            :has-pagination="productItemsCarouselSetting.hasPagination"
-            :navigation-display="productItemsCarouselSetting.navigationDisplay"
-            :navigation-size="productItemsCarouselSetting.navigationSize"
-            :breakpoints="productItemsCarouselSetting.breakpoints"
+              v-slot="{slide, index}"
+              v-model="productProperties"
+              v-model:current="currentProductItem"
+              :breakpoints="productItemsCarouselSetting.breakpoints"
+              :has-navigation="productItemsCarouselSetting.hasNavigation"
+              :has-pagination="productItemsCarouselSetting.hasPagination"
+              :navigation-display="productItemsCarouselSetting.navigationDisplay"
+              :navigation-size="productItemsCarouselSetting.navigationSize"
           >
             <div class="w-full h-full flex flex-col justify-evenly">
               <div
-                v-if="slide.is_special"
-                class="flex items-center justify-center my-3"
+                  v-if="slide.is_special"
+                  class="flex items-center justify-center my-3"
               >
                 <div class="grow h-0.5 bg-red-400 rounded-full"></div>
                 <span class="mx-2 text-xs text-red-600 shrink-0">فروش ویژه</span>
@@ -52,30 +52,30 @@
 
               <div class="max-h-[64px] overflow-hidden">
                 <div
-                  v-if="slide.show_coming_soon"
-                  class="bg-cyan-500 py-2 px-4 rounded text-xs text-white text-center"
+                    v-if="slide.show_coming_soon"
+                    class="bg-cyan-500 py-2 px-4 rounded text-xs text-white text-center"
                 >
                   این محصول به زودی موجود می‌شود
                 </div>
                 <div
-                  v-else-if="slide.show_call_for_more"
-                  class="bg-amber-500 py-2 px-4 rounded text-xs text-white text-center"
+                    v-else-if="slide.show_call_for_more"
+                    class="bg-amber-500 py-2 px-4 rounded text-xs text-white text-center"
                 >
                   برای اطلاعات بیشتر تماس بگیرید
                 </div>
                 <div
-                  v-else-if="!slide.is_available || slide.stock_count <= 0"
-                  class="bg-rose-500 py-2 px-4 rounded text-xs text-white text-center"
+                    v-else-if="!slide.is_available || slide.stock_count <= 0"
+                    class="bg-rose-500 py-2 px-4 rounded text-xs text-white text-center"
                 >
                   اتمام موجودی
                 </div>
                 <div v-else class="flex items-center justify-between">
-                  <template v-if="slide.discounted_price < slide.price">
+                  <template
+                      v-if="slide.discounted_price && getPercentageOfPortion(slide.discounted_price, slide.price) > 0"
+                  >
                     <div class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1">
                       <span class="text-xs">%</span>
-                      {{
-                        Math.round(((slide.price - slide.discounted_price) / slide.price) * 100)
-                      }}
+                      {{ getPercentageOfPortion(slide.discounted_price, slide.price) }}
                     </div>
                   </template>
 
@@ -86,10 +86,10 @@
                       </span>
                       <span class="text-xs text-gray-400">تومان</span>
                     </div>
-                    <template v-if="slide.discounted_price < slide.price">
+                    <template v-if="slide.discounted_price">
                       <div class="relative ml-3 my-1 text-sm">
-                                            <span
-                                              class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-400 -rotate-3"></span>
+                        <span
+                            class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-400 -rotate-3"></span>
                         <div class="text-slate-400 text-center">
                           {{ formatPriceLikeNumber(slide.price) }}
                           <span class="text-xs text-gray-400">تومان</span>
@@ -102,27 +102,27 @@
 
               <ul class="flex flex-wrap items-start flex-col gap-2 mt-2 max-h-[85px]">
                 <li
-                  v-if="slide.color_name"
-                  class="flex items-center"
+                    v-if="slide.color_name"
+                    class="flex items-center"
                 >
                   <span class="text-gray-400 ml-2 text-xs">رنگ:</span>
                   <span
-                    v-tooltip.top="'' + slide.color_name + ''"
-                    class="rounded-full border shadow w-5 h-5 cursor-pointer inline-block"
-                    :style="'background-color:' + slide.color_hex"
+                      v-tooltip.top="'' + slide.color_name + ''"
+                      :style="'background-color:' + slide.color_hex"
+                      class="rounded-full border shadow w-5 h-5 cursor-pointer inline-block"
                   ></span>
                   <span class="text-xs mr-1 truncate">{{ slide.color_name }}</span>
                 </li>
                 <li
-                  v-if="slide.size"
-                  class="flex items-center"
+                    v-if="slide.size"
+                    class="flex items-center"
                 >
                   <span class="text-gray-400 ml-2 text-xs">سایز:</span>
                   <span class="rounded-lg px-3 border-2 transition">{{ slide.size }}</span>
                 </li>
                 <li
-                  v-if="slide.guarantee"
-                  class="flex items-center"
+                    v-if="slide.guarantee"
+                    class="flex items-center"
                 >
                   <CheckBadgeIcon class="text-emerald-500 w-5 h-5 ml-1"/>
                   <span class="text-xs truncate">{{ slide.guarantee }}</span>
@@ -141,14 +141,13 @@
 
 <script setup>
 import {ref} from "vue";
-import {
-  CheckBadgeIcon,
-} from "@heroicons/vue/24/outline/index.js"
+import {CheckBadgeIcon} from "@heroicons/vue/24/outline/index.js"
 import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import LoaderCard from "@/components/base/loader/LoaderCard.vue";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import BaseCarousel from "@/components/base/BaseCarousel.vue";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {formatPriceLikeNumber, getPercentageOfPortion} from "@/composables/helper.js";
+import {watchImmediate} from "@vueuse/core";
 
 const props = defineProps({
   containerClass: {
@@ -161,7 +160,7 @@ const props = defineProps({
   },
 })
 
-const productProperties = ref(props.product.products)
+const productProperties = ref([])
 const currentProductItem = ref(0)
 
 const productItemsCarouselSetting = {
@@ -171,4 +170,9 @@ const productItemsCarouselSetting = {
   navigationSize: 'small',
   breakpoints: {},
 }
+
+watchImmediate(() => props.product, () => {
+  if (!props?.product?.items) return
+  productProperties.value = props?.product?.items
+})
 </script>

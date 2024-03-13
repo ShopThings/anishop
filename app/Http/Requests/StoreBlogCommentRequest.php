@@ -37,12 +37,8 @@ class StoreBlogCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'blog' => [
-                'required',
-                'exists:' . Blog::class . ',id',
-            ],
             'badge' => [
-                'required',
+                'sometimes',
                 'exists:' . BlogCommentBadge::class . ',id',
             ],
             'comment' => [
@@ -58,7 +54,6 @@ class StoreBlogCommentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'blog' => 'بلاگ برای ثبت دیدگاه',
             'badge' => 'برچسب دیدگاه',
             'comment' => 'دیدگاه مورد پاسخ',
         ];

@@ -10,8 +10,8 @@
             <div class="w-full p-2 sm:w-1/2">
               <base-input
                   label-title="عنوان"
-                  placeholder="وارد نمایید"
                   name="title"
+                  placeholder="وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -22,9 +22,9 @@
               <partial-input-label title="نوع ویژگی"/>
               <base-select
                   :options="types"
+                  name="type"
                   options-key="value"
                   options-text="name"
-                  name="type"
                   @change="(t) => {selectedType = t}"
               />
               <partial-input-error-message :error-message="errors.type"/>
@@ -33,15 +33,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                type="submit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                 :disabled="!canSubmit"
+                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                type="submit"
             >
               <VTransitionFade>
                 <loader-circle
                     v-if="!canSubmit"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
                     big-circle-color="border-transparent"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -51,6 +51,20 @@
 
               <span class="ml-auto">افزودن ویژگی</span>
             </base-animated-button>
+
+            <div
+                v-if="Object.keys(errors)?.length"
+                class="text-left"
+            >
+              <div
+                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+              >
+                (
+                <span>{{ Object.keys(errors)?.length }}</span>
+                )
+                خطا، لطفا بررسی کنید
+              </div>
+            </div>
           </div>
         </form>
       </div>
@@ -94,8 +108,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     title: yup.string().required('عنوان ویژگی را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (!selectedType.value || !types.includes(selectedType.value)) {
     actions.setFieldError('type', 'نوع ویژگی را انتخاب نمایید.')
     return

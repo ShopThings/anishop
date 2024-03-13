@@ -7,6 +7,7 @@ use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\BlogBadgeShowResource;
 use App\Http\Resources\Showing\BlogCommentShowResource;
+use App\Http\Resources\Showing\UserBlogShowResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -25,21 +26,21 @@ class BlogCommentResource extends JsonResource
             'badge' => new BlogBadgeShowResource($this->whenLoaded('badge')),
             'comment' => new BlogCommentShowResource($this->whenLoaded('parent')),
             'condition' => [
-                'text' => CommentConditionsEnum::getTranslations($this->condition),
+                'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
                 'value' => $this->condition,
             ],
             'status' => [
-                'text' => CommentStatusesEnum::getTranslations($this->status),
+                'text' => CommentStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
             ],
             'description' => $this->description,
-            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'created_by' => $this->created_by ? new UserBlogShowResource($this->creator) : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT->value)
             ),
         ];
     }

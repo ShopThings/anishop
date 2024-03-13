@@ -4,16 +4,16 @@
       <app-sidebar-user/>
     </div>
 
-    <div class="grow flex flex-col overflow-auto" ref="pageContainer">
+    <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-user ref="navbarCom"/>
 
-      <div class="p-3" ref="extra" v-if="title">
+      <div v-if="title" ref="extra" class="p-3">
         <h1 class="flex items-center text-indigo-700">
           {{ title }}
         </h1>
       </div>
 
-      <div class="px-3 pb-3" ref="page">
+      <div ref="page" class="px-3 pb-3">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">
@@ -31,13 +31,15 @@
 </template>
 
 <script setup>
-import {ref, watch, watchEffect} from "vue";
+import {provide, ref, watch, watchEffect} from "vue";
 import {useRoute} from "vue-router";
 import AppFooterUser from "@/components/user/AppFooterUser.vue";
 import {useResizeObserver} from "@vueuse/core";
 import AppNavbarUser from "@/components/user/AppNavbarUser.vue";
 import AppSidebarUser from "@/components/user/AppSidebarUser.vue";
 import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPanel.js";
+import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 
 const transitionProps = defineTransitionProps({
   mode: 'out-in',
@@ -51,6 +53,18 @@ const transitionProps = defineTransitionProps({
 })
 
 const route = useRoute()
+
+//--------------------------------------
+const countingStore = useCountingStuffsStore();
+provide('countingStore', countingStore);
+
+const notificationStore = useNotificationStore();
+provide('notificationStore', notificationStore);
+
+const homeSettingStore = useHomeSettingsStore()
+provide('homeSettingStore', homeSettingStore);
+
+//--------------------------------------
 
 let title = ref(null)
 let breadcrumb = ref(null)

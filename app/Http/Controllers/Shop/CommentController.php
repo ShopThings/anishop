@@ -6,6 +6,7 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProductCommentRequest;
 use App\Http\Resources\ProductCommentResource;
+use App\Http\Resources\ProductCommentSingleResource;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Models\User;
@@ -52,13 +53,13 @@ class CommentController extends Controller
      * Display the specified resource.
      *
      * @param Comment $comment
-     * @return ProductCommentResource
+     * @return ProductCommentSingleResource
      * @throws AuthorizationException
      */
-    public function show(Comment $comment): ProductCommentResource
+    public function show(Comment $comment): ProductCommentSingleResource
     {
         $this->authorize('view', $comment);
-        return new ProductCommentResource($comment);
+        return new ProductCommentSingleResource($comment);
     }
 
     /**
@@ -73,7 +74,7 @@ class CommentController extends Controller
     {
         $this->authorize('update', $comment);
 
-        $validated = $request->validated(['condition', 'status']);
+        $validated = $request->validated(['answer', 'condition', 'status']);
         $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {

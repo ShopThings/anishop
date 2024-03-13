@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center items-center"
-       :class="mainContainerKlass">
+  <div :class="mainContainerKlass"
+       class="flex justify-center items-center">
     <div :class="[
       'absolute top-0 left-0 w-full h-full rounded z-[2]',
       containerBgColor,
@@ -30,7 +30,7 @@ defineProps({
   },
   containerBgColor: {
     type: String,
-    default: 'bg-blue-50 opacity-70',
+    default: 'bg-blue-50/70',
   },
   spinnerKlass: String,
   containerKlass: String,

@@ -2,6 +2,8 @@
 
 namespace App\Enums\Settings;
 
+use BackedEnum;
+
 enum SettingsEnum: string
 {
     case LOGO = 'logo';
@@ -40,4 +42,27 @@ enum SettingsEnum: string
     case DEFAULT_IMAGE_PLACEHOLDER = 'default_image_placeholder';
 
     case DEFAULT_POST_PRICE = 'default_post_price';
+
+    /**
+     * @return array<BackedEnum>
+     */
+    public static function getGeneralSettings(): array
+    {
+        return [
+            self::TITLE,
+            self::DESCRIPTION,
+            self::KEYWORDS,
+            self::ADDRESS,
+            self::PHONES,
+            self::STORE_PROVINCE,
+            self::STORE_CITY,
+            self::LAT_LNG,
+            self::PRODUCT_EACH_PAGE,
+            self::BLOG_EACH_PAGE,
+            self::SOCIALS,
+            self::FOOTER_DESCRIPTION,
+            self::FOOTER_COPYRIGHT,
+            self::FOOTER_NAMADS,
+        ];
+    }
 }

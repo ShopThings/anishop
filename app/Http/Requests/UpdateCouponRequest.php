@@ -60,7 +60,6 @@ class UpdateCouponRequest extends FormRequest
                 'min:1',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

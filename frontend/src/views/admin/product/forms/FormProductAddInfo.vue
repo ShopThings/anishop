@@ -3,16 +3,16 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-          v-if="!canSubmit"
-          main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-          container-bg-color="bg-blue-50 opacity-40"
+            v-if="!canSubmit"
+            container-bg-color="bg-blue-50 opacity-40"
+            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
         />
 
         <div class="p-2 flex flex-col items-center">
           <partial-input-label title="انتخاب تصویر شاخص"/>
           <base-media-placeholder
-            type="image"
-            v-model:selected="productImage"
+              v-model:selected="productImage"
+              type="image"
           />
           <partial-input-error-message :error-message="errors.image"/>
         </div>
@@ -20,9 +20,9 @@
         <div class="flex flex-wrap">
           <div class="w-full p-2 sm:w-1/2 xl:w-5/12">
             <base-input
-              label-title="نام محصول"
-              placeholder="وارد نمایید"
-              name="title"
+                label-title="نام محصول"
+                name="title"
+                placeholder="وارد نمایید"
             >
               <template #icon>
                 <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -33,20 +33,20 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
             <partial-input-label title="واحد محصول"/>
             <base-select-searchable
-              :options="units"
-              options-key="id"
-              options-text="name"
-              name="unit"
-              :is-loading="loadingGetUnits"
-              :is-local-search="false"
-              placeholder="جستجوی واحد محصول..."
-              :has-pagination="true"
-              :current-page="unitSelectConfig.currentPage"
-              :last-page="unitSelectConfig.lastPage"
-              @change="(selected) => {selectedUnit = selected}"
-              @query="searchUnit"
-              @click-next-page="searchUnitNextPage"
-              @click-prev-page="searchUnitPrevPage"
+                :current-page="unitSelectConfig.currentPage.value"
+                :has-pagination="true"
+                :is-loading="loadingGetUnits"
+                :is-local-search="false"
+                :last-page="unitSelectConfig.lastPage.value"
+                :options="units"
+                name="unit"
+                options-key="id"
+                options-text="name"
+                placeholder="جستجوی واحد محصول..."
+                @change="(selected) => {selectedUnit = selected}"
+                @query="searchUnit"
+                @click-next-page="searchUnitNextPage"
+                @click-prev-page="searchUnitPrevPage"
             />
             <partial-input-error-message :error-message="errors.unit"/>
           </div>
@@ -54,20 +54,20 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
             <partial-input-label title="برند"/>
             <base-select-searchable
-              :options="brands"
-              options-key="id"
-              options-text="name"
-              name="brand"
-              :is-loading="loadingGetBrands"
-              :is-local-search="false"
-              placeholder="جستجوی برند..."
-              :has-pagination="true"
-              :current-page="brandSelectConfig.currentPage"
-              :last-page="brandSelectConfig.lastPage"
-              @change="(selected) => {selectedBrand = selected}"
-              @query="searchBrand"
-              @click-next-page="searchBrandNextPage"
-              @click-prev-page="searchBrandPrevPage"
+                :current-page="brandSelectConfig.currentPage.value"
+                :has-pagination="true"
+                :is-loading="loadingGetBrands"
+                :is-local-search="false"
+                :last-page="brandSelectConfig.lastPage.value"
+                :options="brands"
+                name="brand"
+                options-key="id"
+                options-text="name"
+                placeholder="جستجوی برند..."
+                @change="(selected) => {selectedBrand = selected}"
+                @query="searchBrand"
+                @click-next-page="searchBrandNextPage"
+                @click-prev-page="searchBrandPrevPage"
             />
             <partial-input-error-message :error-message="errors.brand"/>
           </div>
@@ -75,20 +75,20 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
             <partial-input-label title="دسته‌بندی"/>
             <base-select-searchable
-              :options="categories"
-              options-key="id"
-              options-text="name"
-              name="category"
-              :is-loading="loadingGetCategories"
-              :is-local-search="false"
-              placeholder="جستجوی دسته‌بندی..."
-              :has-pagination="true"
-              :current-page="categorySelectConfig.currentPage"
-              :last-page="categorySelectConfig.lastPage"
-              @change="(selected) => {selectedCategory = selected}"
-              @query="searchCategory"
-              @click-next-page="searchCategoryNextPage"
-              @click-prev-page="searchCategoryPrevPage"
+                :current-page="categorySelectConfig.currentPage.value"
+                :has-pagination="true"
+                :is-loading="loadingGetCategories"
+                :is-local-search="false"
+                :last-page="categorySelectConfig.lastPage.value"
+                :options="categories"
+                name="category"
+                options-key="id"
+                options-text="name"
+                placeholder="جستجوی دسته‌بندی..."
+                @change="(selected) => {selectedCategory = selected}"
+                @query="searchCategory"
+                @click-next-page="searchCategoryNextPage"
+                @click-prev-page="searchCategoryPrevPage"
             />
             <partial-input-error-message :error-message="errors.category"/>
           </div>
@@ -97,29 +97,29 @@
         <div class="flex flex-wrap">
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-              label="موجود"
-              name="is_available"
-              :enabled="true"
-              sr-text="موجود/ناموجود بودن محصول"
-              @change="(status) => {availableStatus = status}"
+                :enabled="true"
+                label="موجود"
+                name="is_available"
+                sr-text="موجود/ناموجود بودن محصول"
+                @change="(status) => {availableStatus = status}"
             />
           </div>
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-              label="نمایش کلی محصول"
-              name="is_published"
-              :enabled="true"
-              sr-text="نمایش/عدم نمایش تمامی محصولات"
-              @change="(status) => {publishStatus = status}"
+                :enabled="true"
+                label="نمایش کلی محصول"
+                name="is_published"
+                sr-text="نمایش/عدم نمایش تمامی محصولات"
+                @change="(status) => {publishStatus = status}"
             />
           </div>
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-              label="اجازه ارسال دیدگاه"
-              name="is_commenting_allowed"
-              :enabled="true"
-              sr-text="اجازه/عدم اجازه ارسال دیدگاه"
-              @change="(status) => {allowCommentingStatus = status}"
+                :enabled="true"
+                label="اجازه ارسال دیدگاه"
+                name="is_commenting_allowed"
+                sr-text="اجازه/عدم اجازه ارسال دیدگاه"
+                @change="(status) => {allowCommentingStatus = status}"
             />
           </div>
         </div>
@@ -127,19 +127,19 @@
         <div class="p-2">
           <partial-input-label title="کلمات کلیدی"/>
           <base-tags-input
-            :tags="tags"
-            placeholder="کلمات کلیدی خود را وارد نمایید"
-            @on-tags-changed="(t) => {tags = t}"
+              :tags="tags"
+              placeholder="کلمات کلیدی خود را وارد نمایید"
+              @on-tags-changed="(t) => {tags = t}"
           />
         </div>
 
         <div class="p-2">
-          <partial-input-label title="ویژگی‌های سریع" class="mb-2"/>
+          <partial-input-label class="mb-2" title="ویژگی‌های سریع"/>
           <partial-baby-property-builder
-            v-model:properties="babyProps"
-            property-title-text="عنوان ویژگی"
-            tags-text="ویژگی‌ها"
-            new-button-text="ویژگی جدید"
+              v-model:properties="babyProps"
+              new-button-text="ویژگی جدید"
+              property-title-text="عنوان ویژگی"
+              tags-text="ویژگی‌ها"
           />
         </div>
         <partial-input-error-message :error-message="errors.quick_properties"/>
@@ -149,13 +149,13 @@
     <partial-card>
       <template #body>
         <partial-stepy-next-prev-buttons
-          :current-step="options.currentStep"
-          :current-step-index="options.currentStepIndex"
-          :last-step="options.lastStep"
-          :allow-next-step="canSubmit"
-          :allow-prev-step="canSubmit"
-          :loading="!canSubmit"
-          @next="handleNextClick(options.next)"
+            :allow-next-step="canSubmit"
+            :allow-prev-step="canSubmit"
+            :current-step="options.currentStep"
+            :current-step-index="options.currentStepIndex"
+            :last-step="options.lastStep"
+            :loading="!canSubmit"
+            @next="handleNextClick(options.next)"
         />
       </template>
     </partial-card>
@@ -163,7 +163,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
 import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
@@ -181,6 +181,7 @@ import {BrandAPI, CategoryAPI, ProductAPI, UnitAPI} from "@/service/APIProduct.j
 import {useToast} from "vue-toastification";
 import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 import {useCreationProductStore} from "@/store/StoreProduct.js";
+import {useSelectSearching} from "@/composables/select-searching.js";
 
 defineProps({
   options: {
@@ -194,156 +195,91 @@ const toast = useToast()
 //---------------------------------------------------------
 // Unit operation
 //---------------------------------------------------------
-
-const loadingGetUnits = ref(true)
 const units = ref([])
 const selectedUnit = ref(null)
-const unitSelectConfig = reactive({
-  limit: 15,
-  currentPage: 1,
-  lastPage: null,
-  offset: () => {
-    return (unitSelectConfig.currentPage - 1) * unitSelectConfig.limit;
+const unitSelectConfig = useSelectSearching({
+  searchFn(query) {
+    UnitAPI.fetchAll({
+      limit: unitSelectConfig.limit.value,
+      offset: unitSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        units.value = response.data
+        if (response.meta) {
+          unitSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        unitSelectConfig.isLoading.value = false
+      }
+    })
   },
 })
-
-function searchUnit(query) {
-  loadingGetUnits.value = true
-  UnitAPI.fetchAll({
-    limit: unitSelectConfig.limit,
-    offset: unitSelectConfig.offset(),
-    text: query
-  }, {
-    success(response) {
-      units.value = response.data
-      if (response.meta) {
-        unitSelectConfig.lastPage = response.meta?.last_page
-      }
-    },
-    finally() {
-      loadingGetUnits.value = false
-    }
-  })
-}
-
-function searchUnitNextPage(query) {
-  if (unitSelectConfig.currentPage < unitSelectConfig.lastPage) {
-    unitSelectConfig.currentPage++
-    searchUnit(query)
-  }
-}
-
-function searchUnitPrevPage(query) {
-  if (unitSelectConfig.currentPage > 1) {
-    unitSelectConfig.currentPage--
-    searchUnit(query)
-  }
-}
-
-//---------------------------------------------------------
+const searchUnit = unitSelectConfig.search
+const loadingGetUnits = unitSelectConfig.isLoading
+const searchUnitNextPage = unitSelectConfig.searchNextPage
+const searchUnitPrevPage = unitSelectConfig.searchPrevPage
 
 //---------------------------------------------------------
 // Brand operation
 //---------------------------------------------------------
-
-const loadingGetBrands = ref(true)
 const brands = ref([])
 const selectedBrand = ref(null)
-const brandSelectConfig = reactive({
-  limit: 15,
-  currentPage: 1,
-  lastPage: null,
-  offset: () => {
-    return (brandSelectConfig.currentPage - 1) * brandSelectConfig.limit;
+const brandSelectConfig = useSelectSearching({
+  searchFn(query) {
+    BrandAPI.fetchAll({
+      limit: brandSelectConfig.limit.value,
+      offset: brandSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        brands.value = response.data
+        if (response.meta) {
+          brandSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        brandSelectConfig.isLoading.value = false
+      }
+    })
   },
 })
-
-function searchBrand(query) {
-  loadingGetBrands.value = true
-  BrandAPI.fetchAll({
-    limit: brandSelectConfig.limit,
-    offset: brandSelectConfig.offset(),
-    text: query
-  }, {
-    success(response) {
-      brands.value = response.data
-      if (response.meta) {
-        brandSelectConfig.lastPage = response.meta?.last_page
-      }
-    },
-    finally() {
-      loadingGetBrands.value = false
-    }
-  })
-}
-
-function searchBrandNextPage(query) {
-  if (brandSelectConfig.currentPage < brandSelectConfig.lastPage) {
-    brandSelectConfig.currentPage++
-    searchBrand(query)
-  }
-}
-
-function searchBrandPrevPage(query) {
-  if (brandSelectConfig.currentPage > 1) {
-    brandSelectConfig.currentPage--
-    searchBrand(query)
-  }
-}
-
-//---------------------------------------------------------
+const searchBrand = brandSelectConfig.search
+const loadingGetBrands = brandSelectConfig.isLoading
+const searchBrandNextPage = brandSelectConfig.searchNextPage
+const searchBrandPrevPage = brandSelectConfig.searchPrevPage
 
 //---------------------------------------------------------
 // Category operation
 //---------------------------------------------------------
-
-const loadingGetCategories = ref(true)
 const categories = ref([])
 const selectedCategory = ref(null)
-const categorySelectConfig = reactive({
-  limit: 15,
-  currentPage: 1,
-  lastPage: null,
-  offset: () => {
-    return (categorySelectConfig.currentPage - 1) * categorySelectConfig.limit;
+const categorySelectConfig = useSelectSearching({
+  searchFn(query) {
+    CategoryAPI.fetchAll({
+      limit: categorySelectConfig.limit.value,
+      offset: categorySelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        categories.value = response.data
+        if (response.meta) {
+          categorySelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        categorySelectConfig.isLoading.value = false
+      }
+    })
   },
 })
-
-function searchCategory(query) {
-  loadingGetCategories.value = true
-  CategoryAPI.fetchAll({
-    limit: categorySelectConfig.limit,
-    offset: categorySelectConfig.offset(),
-    text: query
-  }, {
-    success(response) {
-      categories.value = response.data
-      if (response.meta) {
-        categorySelectConfig.lastPage = response.meta?.last_page
-      }
-    },
-    finally() {
-      loadingGetCategories.value = false
-    }
-  })
-}
-
-function searchCategoryNextPage(query) {
-  if (categorySelectConfig.currentPage < categorySelectConfig.lastPage) {
-    categorySelectConfig.currentPage++
-    searchCategory(query)
-  }
-}
-
-function searchCategoryPrevPage(query) {
-  if (categorySelectConfig.currentPage > 1) {
-    categorySelectConfig.currentPage--
-    searchCategory(query)
-  }
-}
+const searchCategory = categorySelectConfig.search
+const loadingGetCategories = categorySelectConfig.isLoading
+const searchCategoryNextPage = categorySelectConfig.searchNextPage
+const searchCategoryPrevPage = categorySelectConfig.searchPrevPage
 
 //---------------------------------------------------------
-
 const productStore = useCreationProductStore()
 
 const productImage = ref(null)
@@ -376,8 +312,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     is_commenting_allowed: yup.boolean().required('وضعیت ارسال نظر را مشخص کنید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (!productImage.value) {
     actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
     return

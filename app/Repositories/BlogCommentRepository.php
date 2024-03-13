@@ -38,38 +38,52 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
 
         $query = $this->model->newQuery();
         $query
-            ->when($search, function (Builder $query, string $search) {
+            ->with([
+                'blog',
+                'blog.image',
+                'badge',
+            ])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('blog', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'escaped_title',
-                            'keywords',
-                        ], $search);
-                    })
-                    ->withWhereHas('badge', function ($q) use ($search) {
-                        $q->orWhereLike('title', $search);
-                    })
-                    ->withWhereHas('creator', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
-                    })
-                    ->withWhereHas('answerTo', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q
+                            ->orWhereHas('blog', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'escaped_title',
+                                        'keywords',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('badge', function ($q) use ($search) {
+                                $q->whereLike('title', $search);
+                            })
+                            ->orWhereHas('creator', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('answerTo', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
+                            });
                     })
                     ->when(CommentConditionsEnum::getSimilarValuesFromString($search), function (Builder $builder, array $conditions) {
-                        $builder->whereIn('condition', $conditions);
+                        $builder->orWhereIn('condition', $conditions);
                     })
                     ->when(CommentStatusesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $statuses) {
-                        $builder->whereIn('status', $statuses);
+                        $builder->orWhereIn('status', $statuses);
                     })
                     ->orWhereLike('blog_comments.description', $search);
             })

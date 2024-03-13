@@ -1,10 +1,10 @@
 <template>
   <vue3-tags-input
-    :tags="tags"
-    :placeholder="placeholder"
-    :read-only="readOnly"
-    :add-tag-on-keys="addTagOnKeys"
-    @on-tags-changed="(t) => {emit('on-tags-changed', t)}"
+      :add-tag-on-keys="addTagOnKeys"
+      :placeholder="placeholder"
+      :read-only="readOnly"
+      :tags="tags"
+      @on-tags-changed="(t) => {emit('on-tags-changed', t)}"
   />
 </template>
 

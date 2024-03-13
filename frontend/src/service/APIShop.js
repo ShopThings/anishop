@@ -2,35 +2,42 @@ import {GenericAPI} from "./ServiceAPIs.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {useRequest} from "@/composables/api-request.js";
 
+export const SendMethodAPI = Object.assign(
+  GenericAPI(apiRoutes.admin.sendMethods, {replacement: 'send_method'}),
+  {
+    // extra functionality goes here
+  }
+)
+
 export const FestivalAPI = Object.assign(
   GenericAPI(apiRoutes.admin.festivals, {replacement: 'festival'}),
   {
-    fetchProducts(festivalId, callbacks) {
+    fetchProducts(festivalId, params, callbacks) {
       useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.products, {festival: festivalId}),
-        null,
+        {params},
         callbacks
       )
     },
 
-    addProduct(festivalId, productId, callbacks) {
+    addProduct(festivalId, data, callbacks) {
       useRequest(
-        apiReplaceParams(apiRoutes.admin.festivals.storeProduct, {
-          festival: festivalId,
-          product: productId,
-        }),
-        {method: 'POST'},
+        apiReplaceParams(apiRoutes.admin.festivals.storeProduct, {festival: festivalId}),
+        {
+          method: 'POST',
+          data,
+        },
         callbacks
       )
     },
 
-    addCategory(festivalId, categoryId, callbacks) {
+    addCategory(festivalId, data, callbacks) {
       useRequest(
-        apiReplaceParams(apiRoutes.admin.festivals.storeCategoryProducts, {
-          festival: festivalId,
-          category: categoryId,
-        }),
-        {method: 'POST'},
+        apiReplaceParams(apiRoutes.admin.festivals.storeCategoryProducts, {festival: festivalId}),
+        {
+          method: 'POST',
+          data,
+        },
         callbacks
       )
     },
@@ -46,9 +53,24 @@ export const FestivalAPI = Object.assign(
       )
     },
 
-    removeCategoryProducts(festivalId, categoryId, callbacks) {
+    removeProducts(festivalId, ids, callbacks) {
       useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.batchDestroyProduct, {
+          festival: festivalId,
+        }),
+        {
+          method: 'DELETE',
+          data: {
+            ids,
+          },
+        },
+        callbacks
+      )
+    },
+
+    removeCategoryProducts(festivalId, categoryId, callbacks) {
+      useRequest(
+        apiReplaceParams(apiRoutes.admin.festivals.batchDestroyCategory, {
           festival: festivalId,
           category: categoryId,
         }),
@@ -82,12 +104,12 @@ export const WeightPostPriceAPI = Object.assign(
 
 export const ProvinceAPI = {
   fetchAll(callbacks) {
-    useRequest(apiRoutes.admin.provinces, null, callbacks)
+    useRequest(apiRoutes.provinces, null, callbacks)
   },
 
   fetchCities(provinceId, callbacks) {
     useRequest(
-      apiReplaceParams(apiRoutes.admin.cities, {province: provinceId}),
+      apiReplaceParams(apiRoutes.cities, {province: provinceId}),
       null,
       callbacks
     )

@@ -20,12 +20,12 @@ class ReturnOrderShowResource extends JsonResource
             'user' => new UserShowResource($this->whenLoaded('user')),
             'code' => $this->code,
             'status' => [
-                'text' => ReturnOrderStatusesEnum::getTranslations($this->status),
+                'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
             ],
             'seen_status' => $this->seen_status,
             'requested_at' => $this->requested_at
-                ? verta($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

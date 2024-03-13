@@ -1,20 +1,17 @@
 <template>
   <base-loading-panel
-    :loading="loading"
-    type="content"
+      :loading="loading"
+      type="content"
   >
     <template #content>
       <div class="bg-white mb-3 rounded-lg border p-3">
         سفارش دهنده -
         <router-link
-          v-if="order?.user?.id"
-          :to="{name: 'admin.user.profile', params: {id: order?.user?.id}}"
-          class="text-blue-600 hover:text-opacity-90"
-        >{{
-            (order?.user?.first_name || order?.user?.last_name)
-              ? (order?.user?.first_name + ' ' + order?.user?.last_name).trim()
-              : order?.user.username
-          }}
+            v-if="order?.user?.id"
+            :to="{name: 'admin.user.profile', params: {id: order?.user?.id}}"
+            class="text-blue-600 hover:text-opacity-90"
+        >
+          <partial-username-label v-if="order?.user" :user="order?.user"/>
         </router-link>
       </div>
 
@@ -36,31 +33,28 @@
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">نام گیرنده:</span>
-                  <div class="grow truncate">{{ order.receiver_name }}</div>
+                  <div class="grow truncate">{{ order?.receiver_name }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">شماره تماس:</span>
-                  <div class="tracking-widest grow">{{ order.receiver_mobile }}</div>
+                  <div class="tracking-widest grow">{{ order?.receiver_mobile }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">استان:</span>
-                  <div class="grow">{{ order.province }}</div>
+                  <div class="grow">{{ order?.province }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">شهر:</span>
-                  <div class="grow">{{ order.city }}</div>
+                  <div class="grow">{{ order?.city }}</div>
+                </div>
+                <div class="flex gap-2 items-center py-1">
+                  <span class="text-xs text-gray-400 shrink-0">روش ارسال:</span>
+                  <div class="grow">{{ order?.send_method_title }}</div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">درخواست فاکتور:</span>
                   <div class="grow">
                     <span v-if="order?.is_needed_factor">بله</span>
-                    <span v-else>خیر</span>
-                  </div>
-                </div>
-                <div class="flex gap-2 items-center py-1">
-                  <span class="text-xs text-gray-400 shrink-0">تحویل حضوری:</span>
-                  <div class="grow">
-                    <span v-if="order?.is_in_place_delivery">بله</span>
                     <span v-else>خیر</span>
                   </div>
                 </div>
@@ -91,16 +85,19 @@
               </div>
 
               <div class="max-h-72 mt-2 my-custom-scrollbar">
-                <base-loading-panel type="table" :loading="loading">
+                <base-loading-panel :loading="loading" type="table">
                   <template #content>
                     <base-semi-datatable
-                      :is-loading="false"
-                      :columns="ordersTableSetting.columns"
-                      :rows="ordersTableSetting.rows"
-                      :total="ordersTableSetting.total"
+                        :columns="ordersTableSetting.columns"
+                        :is-loading="false"
+                        :rows="ordersTableSetting.rows"
+                        :total="ordersTableSetting.total"
                     >
                       <template #payment_status="{value}">
-                        <partial-badge-status-payment/>
+                        <partial-badge-status-payment
+                            :color-hex="value.payment_status.color_hex"
+                            :text="value.payment_status.text"
+                        />
                       </template>
 
                       <template #payed_at="{value}">
@@ -123,28 +120,34 @@
                       </template>
 
                       <template #payment_status_changed_at="{value}">
-                        <span class="text-sm">{{ value.payment_status_changed_at }}</span>
+                        <span v-if="value.payment_status_changed_at"
+                              class="text-xs">{{ value.payment_status_changed_at }}</span>
+                        <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #payment_status_changed_by="{value}">
-                        <span class="text-sm">{{ value.payment_status_changed_by }}</span>
+                        <partial-username-label
+                            v-if="value.payment_status_changed_by"
+                            :user="value.payment_status_changed_by"
+                        />
+                        <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #op_1="{value}">
                         <base-select
-                          options-text="text"
-                          options-key="value"
-                          :options="paymentStatuses"
-                          :selected="value.payment_status"
-                          @change="(selected) => {changePaymentStatus(selected, value)}"
+                            :options="paymentStatuses"
+                            :selected="value.payment_status"
+                            options-key="value"
+                            options-text="text"
+                            @change="(selected) => {changePaymentStatus(selected, value)}"
                         />
                       </template>
 
                       <template #op_2="{value}">
                         <a
-                          href="javascript:void(0)"
-                          class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
-                          @click="() => {showOrderPaymentDetail(value)}"
+                            class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
+                            href="javascript:void(0)"
+                            @click="() => {showOrderPaymentDetail(value)}"
                         >
                           مشاهده جزئیات پرداخت
                         </a>
@@ -156,8 +159,8 @@
             </div>
 
             <partial-dialog
-              v-model:open="orderPaymentDetailOpen"
-              container-klass="overflow-auto"
+                v-model:open="orderPaymentDetailOpen"
+                container-klass="overflow-auto"
             >
               <template #title>
                 جزئیات پرداخت
@@ -165,37 +168,38 @@
 
               <template #body>
                 <base-datatable
-                  :enable-search-box="false"
-                  :enable-multi-operation="false"
-                  :is-loading="false"
-                  :is-static-mode="true"
-                  :is-slot-mode="true"
-                  :columns="orderPaymentsTableSetting.columns"
-                  :rows="orderPaymentsTableSetting.rows"
-                  :has-checkbox="false"
+                    :columns="orderPaymentsTableSetting.columns"
+                    :enable-multi-operation="false"
+                    :enable-search-box="false"
+                    :has-checkbox="false"
+                    :is-loading="false"
+                    :is-slot-mode="true"
+                    :is-static-mode="true"
+                    :rows="orderPaymentsTableSetting.rows"
                 >
                   <template #id="{value, index}">
                     {{ index }}
                   </template>
 
                   <template #status="{value}">
-                    {{ value.status }}
+                    <partial-badge-publish
+                        :publish="value.status"
+                        publish-text="پرداخت شده"
+                        unpublish-text="پرداخت نشده"
+                    />
                   </template>
 
                   <template #receipt="{value}">
-                    {{ value.receipt }}
-                  </template>
-
-                  <template #message="{value}">
-                    {{ value.message }}
+                    <span class="text-black tracking-widest">{{ value.receipt }}</span>
                   </template>
 
                   <template #gateway_type="{value}">
-                    {{ value.gateway_type }}
+                    {{ value.gateway_type.text }}
                   </template>
 
                   <template #payed_at="{value}">
-                    {{ value.payed_at }}
+                    <span v-if="value.payed_at" class="text-xs">{{ value.payed_at }}</span>
+                    <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                   </template>
 
                   <template #created_at="{value}">
@@ -216,8 +220,8 @@
         <template #body>
           <div class="p-3">
             <form-order-change-send-status
-              v-if="sendStatus"
-              v-model:selected="sendStatus"
+                v-if="sendStatus"
+                v-model:selected="sendStatus"
             />
           </div>
         </template>
@@ -234,7 +238,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">نام:</span>
-                    <div class="text-black">مهران مرادی</div>
+                    <div class="text-black">{{ order?.receiver_name }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -242,7 +246,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">کد ملی:</span>
-                    <div class="text-black tracking-widest">۳۳۶۰۳۶۵۸۸۷</div>
+                    <div class="text-black tracking-widest">{{ order?.national_code }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -250,7 +254,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">شماره تماس:</span>
-                    <span class="text-black tracking-widest">۰۹۹۳۸۳۰۶۱۹۸</span>
+                    <div class="text-black tracking-widest">{{ order?.receiver_mobile }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -258,7 +262,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">استان:</span>
-                    <div class="text-black">کرمانشاه</div>
+                    <div class="text-black">{{ order?.province }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -266,7 +270,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">شهر:</span>
-                    <div class="text-black">قصر شیرین</div>
+                    <div class="text-black">{{ order?.city }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -274,7 +278,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
-                    <div class="text-black tracking-widest">۶۷۷۴۱۱۶۱۹۵</div>
+                    <div class="text-black tracking-widest">{{ order?.postal_code }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -283,7 +287,7 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">آدرس:</span>
                     <div class="text-black">
-                      کرمانشاه قصرشیرین قصرجدید فاز 1
+                      {{ order?.address }}
                     </div>
                   </div>
                 </template>
@@ -304,7 +308,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">کد سفارش:</span>
-                    <div class="text-black tracking-widest">172584328151083</div>
+                    <div class="text-black tracking-widest">{{ order?.code }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -313,7 +317,7 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">مبلغ قابل پرداخت:</span>
                     <div class="text-black">
-                      <span class="tracking-widest">۶۷۹,۰۰۰</span>
+                      <span class="tracking-widest">{{ formatPriceLikeNumber(order?.final_price) }}</span>
                       <span class="text-xs mr-1">تومان</span>
                     </div>
                   </div>
@@ -324,7 +328,7 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">تاریخ ثبت سفارش:</span>
                     <div class="text-black">
-                      ۱۷ شهریور ۱۴۰۲ در ساعت ۱۹ و ۳۴ دقیقه
+                      {{ order?.ordered_at }}
                     </div>
                   </div>
                 </template>
@@ -334,8 +338,19 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">وضعیت سفارش:</span>
                     <div class="text-black">
-                      <partial-badge-status-send/>
+                      <partial-badge-status-send
+                          :color-hex="order?.send_status.color_hex"
+                          :text="order?.send_status.title"
+                      />
                     </div>
+                  </div>
+                </template>
+              </partial-card>
+              <partial-card class="p-3">
+                <template #body>
+                  <div class="flex flex-col">
+                    <span class="text-xs text-gray-400 mb-1">روش ارسال:</span>
+                    <div class="text-black">{{ order?.send_method_title }}</div>
                   </div>
                 </template>
               </partial-card>
@@ -344,7 +359,7 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">هزینه ارسال:</span>
                     <div class="text-black">
-                      <span class="tracking-widest">۴۴,۰۰۰</span>
+                      <span class="tracking-widest">{{ formatPriceLikeNumber(order?.shipping_price) }}</span>
                       <span class="text-xs mr-1">تومان</span>
                     </div>
                   </div>
@@ -354,15 +369,10 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">درخواست فاکتور:</span>
-                    <div class="text-black">خیر</div>
-                  </div>
-                </template>
-              </partial-card>
-              <partial-card class="p-3">
-                <template #body>
-                  <div class="flex flex-col">
-                    <span class="text-xs text-gray-400 mb-1">تحویل حضوری:</span>
-                    <div class="text-black">خیر</div>
+                    <div class="text-black">
+                      <span v-if="order?.is_needed_factor">بله</span>
+                      <span v-else>خیر</span>
+                    </div>
                   </div>
                 </template>
               </partial-card>
@@ -370,7 +380,11 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">کد کوپن:</span>
-                    <div class="text-black">-</div>
+                    <div class="text-black">
+                      <span v-if="order?.coupon_code"
+                            class="rounded border-2 py-1 px-2 bg-slate-50">{{ order?.coupon_code }}</span>
+                      <span v-else>-</span>
+                    </div>
                   </div>
                 </template>
               </partial-card>
@@ -378,7 +392,13 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">مبلغ کوپن:</span>
-                    <div class="text-black">-</div>
+                    <div class="text-black">
+                      <div v-if="order?.coupon_price">
+                        <span class="tracking-widest">{{ formatPriceLikeNumber(order?.coupon_price) }}</span>
+                        <span class="text-xs mr-1">تومان</span>
+                      </div>
+                      <span v-else>-</span>
+                    </div>
                   </div>
                 </template>
               </partial-card>
@@ -395,20 +415,20 @@
     </template>
     <template #body>
       <div
-        v-if="!loading"
-        class="p-3"
+          v-if="!loading"
+          class="p-3"
       >
         <base-button
-          type="submit"
-          class="bg-orange-500 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
-          :disabled="isDownloadFactor"
-          @click="factorDownloadHandler"
+            :disabled="isDownloadFactor"
+            class="bg-orange-500 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
+            type="submit"
+            @click="factorDownloadHandler"
         >
           <VTransitionFade>
             <loader-circle
-              v-if="isDownloadFactor"
-              main-container-klass="absolute w-full h-full top-0 left-0"
-              big-circle-color="border-transparent"
+                v-if="isDownloadFactor"
+                big-circle-color="border-transparent"
+                main-container-klass="absolute w-full h-full top-0 left-0"
             />
           </VTransitionFade>
 
@@ -420,14 +440,14 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            :enable-search-box="false"
-            :enable-multi-operation="false"
-            :is-slot-mode="true"
-            :is-static-mode="true"
-            :is-loading="false"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="false"
+              :columns="table.columns"
+              :enable-multi-operation="false"
+              :enable-search-box="false"
+              :has-checkbox="false"
+              :is-loading="false"
+              :is-slot-mode="true"
+              :is-static-mode="true"
+              :rows="table.rows"
           >
             <template v-slot:product="{value}">
               <div class="flex flex-col gap-3">
@@ -436,7 +456,7 @@
 
                 <ul class="flex flex-col gap-2.5">
                   <li v-if="value.color_name">
-                    <partial-badge-color :title="value.color_name" :hex="value.color_hex"/>
+                    <partial-badge-color :hex="value.color_hex" :title="value.color_name"/>
                   </li>
                   <li v-if="value.size">
                     <partial-badge-size :title="value.size"/>
@@ -515,11 +535,14 @@ import {OrderAPI} from "@/service/APIOrder.js";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 import PartialBadgeSize from "@/components/partials/PartialBadgeSize.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import {useConfirmToast} from "@/composables/toast-helper.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
 
-const loading = ref(false)
+const loading = ref(true)
 
 const order = ref(null)
 const paymentStatuses = ref(null)
@@ -590,6 +613,10 @@ const ordersTableSetting = reactive({
   ],
   rows: [],
   total: 0,
+  sortable: {
+    order: "created_at",
+    sort: "desc",
+  },
 })
 
 const orderPaymentsTableSetting = reactive({
@@ -636,12 +663,19 @@ const orderPaymentsTableSetting = reactive({
 })
 
 function changePaymentStatus(selected, item) {
-  // change payment status
-  // ...
+  useConfirmToast(() => {
+    OrderAPI.updateOrderPayment(item.id, {
+      payment_status: selected.value.value
+    }, {
+      success() {
+        toast.success('تغییر وضعیت پرداخت انجام شد.')
+      },
+    })
+  }, 'تغییر وضعیت پرداخت')
 }
 
 function showOrderPaymentDetail(item) {
-  orderPaymentsTableSetting.rows = item.payments
+  orderPaymentsTableSetting.rows = item.payments || []
   orderPaymentDetailOpen.value = true
 }
 
@@ -714,9 +748,6 @@ onMounted(() => {
       // orders of order details (pay connections)
       ordersTableSetting.rows = response.data?.orders || []
       ordersTableSetting.total = response.data?.orders?.length || 0
-
-      // gateway payments
-      orderPaymentsTableSetting.rows = response.data?.order_payments || []
 
       // order items
       table.rows = response.data?.items || []

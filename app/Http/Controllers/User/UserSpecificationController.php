@@ -6,6 +6,7 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserInfoRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
+use App\Http\Resources\UserResource;
 use App\Services\Contracts\UserServiceInterface;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
@@ -31,13 +32,13 @@ class UserSpecificationController extends Controller
 
         $user = $request->user();
 
-        if (trim($user->first_name ?? '')) {
+        if (trim($user->first_name ?? '') !== '') {
             unset($validated['first_name']);
         }
-        if (trim($user->last_name ?? '')) {
+        if (trim($user->last_name ?? '') !== '') {
             unset($validated['last_name']);
         }
-        if (trim($user->national_code ?? '')) {
+        if (trim($user->national_code ?? '') !== '') {
             unset($validated['national_code']);
         }
 
@@ -53,7 +54,7 @@ class UserSpecificationController extends Controller
         if (!is_null($model)) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'اطلاعات با موفقیت ویرایش شد.',
+                'data' => new UserResource($model),
             ]);
         }
         return response()->json([

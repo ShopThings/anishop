@@ -1,19 +1,19 @@
 <template>
   <div
-    v-if="comments && comments.length"
-    class="comment-sticky-container flex flex-col lg:flex-row gap-6"
+      v-if="comments && comments.length"
+      class="comment-sticky-container flex flex-col lg:flex-row gap-6"
   >
     <template v-if="showAddComment">
       <Vue3StickySidebar
-        class="w-full lg:w-72 shrink-0"
-        containerSelector=".comment-sticky-container"
-        innerWrapperSelector='.sidebar__inner'
-        :top-spacing="114"
-        :bottom-spacing="20"
-        :min-width="1024"
+          :bottom-spacing="20"
+          :min-width="1024"
+          :top-spacing="114"
+          class="w-full lg:w-72 shrink-0"
+          containerSelector=".comment-sticky-container"
+          innerWrapperSelector='.sidebar__inner'
       >
         <div
-          class="flex justify-start flex-col sm:justify-between sm:flex-row lg:justify-start lg:flex-col gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
+            class="flex justify-start flex-col sm:justify-between sm:flex-row lg:justify-start lg:flex-col gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
           <div class="flex items-center">
             <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
             <div class="text-sm leading-relaxed grow">
@@ -23,9 +23,9 @@
 
           <div class="flex flex-col gap-3">
             <base-button
-              type="link"
-              to="#"
-              class="!text-primary border-primary border-2"
+                class="!text-primary border-primary border-2"
+                to="#"
+                type="link"
             >
               ثبت دیدگاه
             </base-button>
@@ -47,30 +47,30 @@
 
       <ul class="divide-y divide-orange-300">
         <li
-          v-for="comment in comments"
-          class="divide-y divide-gray-100 space-y-3 pt-3"
+            v-for="comment in comments"
+            class="divide-y divide-gray-100 space-y-3 pt-3"
         >
           <div class="py-2 text-sm flex flex-wrap items-center gap-3 pl-10 relative">
             <div class="absolute left-0 top-0">
               <base-floating-drop-down
-                placement="right-start"
-                :shift="false"
-                :items="[{
-                                    text: 'گزارش دیدگاه',
-                                }]"
+                  :items="[{
+                      text: 'گزارش دیدگاه',
+                  }]"
+                  :shift="false"
+                  placement="right-start"
               >
                 <template #button>
-                  <button type="button"
-                          class="text-gray-500 p-1 transition hover:text-black">
+                  <button class="text-gray-500 p-1 transition hover:text-black"
+                          type="button">
                     <EllipsisVerticalIcon class="h-6 w-6"/>
                   </button>
                 </template>
 
                 <template #item="{item, hide}">
                   <a
-                    href="javascript:void(0)"
-                    class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
-                    @click="hide()"
+                      class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+                      href="javascript:void(0)"
+                      @click="hide()"
                   >
                     <FlagIcon class="w-5 h-5 text-rose-500 ml-2"/>
                     <span class="text-sm">{{ item.text }}</span>
@@ -95,16 +95,16 @@
             <p>{{ comment.description }}</p>
 
             <div
-              v-if="comment?.pros && comment.pros.length"
-              class="text-sm mt-3"
+                v-if="comment?.pros && comment.pros.length"
+                class="text-sm mt-3"
             >
               <h2 class="mb-2 text-emerald-600">
                 نکات مثبت
               </h2>
               <ul>
                 <li
-                  v-for="advantage in comment.pros"
-                  class="flex items-end space-y-1"
+                    v-for="advantage in comment.pros"
+                    class="flex items-end space-y-1"
                 >
                   <PlusIcon class="w-5 h-5 text-emerald-500 ml-1"/>
                   <span>{{ advantage }}</span>
@@ -113,16 +113,16 @@
             </div>
 
             <div
-              v-if="comment?.cons && comment.cons.length"
-              class="text-sm mt-3"
+                v-if="comment?.cons && comment.cons.length"
+                class="text-sm mt-3"
             >
               <h2 class="mb-2 text-rose-600">
                 نکات منفی
               </h2>
               <ul>
                 <li
-                  v-for="disadvantage in comment.cons"
-                  class="flex items-end space-y-1"
+                    v-for="disadvantage in comment.cons"
+                    class="flex items-end space-y-1"
                 >
                   <MinusIcon class="w-5 h-5 text-rose-500 ml-1"/>
                   <span>{{ disadvantage }}</span>
@@ -138,12 +138,12 @@
             <div class="flex text-gray-500">
               <span>{{ comment.up_vote_count }}</span>
               <HandThumbUpIcon
-                class="w-6 h-6 mr-2 cursor-pointer hover:text-black transition"/>
+                  class="w-6 h-6 mr-2 cursor-pointer hover:text-black transition"/>
             </div>
             <div class="flex text-gray-500">
               <span>{{ comment.down_vote_count }}</span>
               <HandThumbDownIcon
-                class="w-6 h-6 mr-2 cursor-pointer hover:text-black transition"/>
+                  class="w-6 h-6 mr-2 cursor-pointer hover:text-black transition"/>
             </div>
           </div>
         </li>
@@ -152,7 +152,7 @@
   </div>
 
   <div
-    v-else
+      v-else
   >
     <div class="mb-3">
       <div class="text-lg text-gray-500 mb-3">دیدگاه برای محصول</div>
@@ -160,7 +160,7 @@
     </div>
 
     <div
-      class="flex justify-start flex-col sm:justify-between sm:flex-row gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
+        class="flex justify-start flex-col sm:justify-between sm:flex-row gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
       <div class="flex items-center">
         <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
         <div class="text-sm leading-relaxed grow">
@@ -170,9 +170,9 @@
 
       <div class="flex flex-col gap-3">
         <base-button
-          type="link"
-          to="#"
-          class="!text-primary border-primary border-2"
+            :to="{name: 'user.comment.add', params: {slug: 1}}"
+            class="!text-primary border-primary border-2"
+            type="link"
         >
           ثبت دیدگاه
         </base-button>

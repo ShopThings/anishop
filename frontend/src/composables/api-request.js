@@ -160,6 +160,8 @@ export const useRequest = (url, config, resultConfig) => {
       if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
         if (type && type === responseTypes.info)
           toast.info(msg)
+        if (type && type === responseTypes.warning)
+          toast.warning(msg)
         else
           toast.success(msg)
       }

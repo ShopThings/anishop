@@ -18,23 +18,23 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:roles="{value}">
-                            <span v-if="value.roles"
-                                  v-for="(role) in value.roles"
+                            <span v-for="(role) in value.roles"
+                                  v-if="value.roles"
                                   class="rounded-md text-white bg-fuchsia-700 text-xs py-1 px-2 inline-block m-1 whitespace-nowrap">
                                 {{ role }}
                             </span>
@@ -48,17 +48,17 @@
             <template v-slot:verified_at="{value}">
                             <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
                                 <span
-                                  class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
+                                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
                                 {{ value.verified_at }}
                             </span>
               <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -219,8 +219,10 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
           UserAPI.deleteById(data.id, {
@@ -250,7 +252,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

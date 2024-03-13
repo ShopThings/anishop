@@ -70,6 +70,12 @@ interface UserServiceInterface extends ServiceInterface
     public function getUserNotifications(User $user, Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @param User $user
+     * @return Collection
+     */
+    public function getUnreadNotifications(User $user): Collection;
+
+    /**
      * @param $userId
      * @param $productId
      * @return bool

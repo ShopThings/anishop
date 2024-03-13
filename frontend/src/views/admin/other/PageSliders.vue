@@ -18,33 +18,35 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
-            <template v-slot:place="{value}">
-
+            <template v-slot:place_in="{value}">
+              {{ value.place_in.text }}
             </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                v-if="getMenuRemovals(value).length !== 2"
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="getMenuRemovals(value)"
+                  v-if="getMenuRemovals(value).length !== 2"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="getMenuRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -55,11 +57,9 @@
 </template>
 
 <script setup>
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {computed, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {PlusIcon} from "@heroicons/vue/24/outline/index.js";
@@ -69,6 +69,8 @@ import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {SLIDER_PLACES} from "@/composables/constants.js";
+import {SliderAPI} from "@/service/APIConfig.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -93,7 +95,7 @@ const table = reactive({
     },
     {
       label: "محل قرارگیری",
-      field: "place",
+      field: "place_in",
     },
     {
       label: "وضعیت نمایش",
@@ -121,7 +123,7 @@ const table = reactive({
     },
     {
       label: "محل قرارگیری",
-      field: "place",
+      field: "place_in",
     },
     {
       label: "وضعیت نمایش",
@@ -151,7 +153,7 @@ const getMenuRemovals = computed((value) => {
   let removals = []
 
   if (!value.is_deletable) removals.push('delete')
-  if (value.slider_place.place_in === SLIDER_PLACES.MAIN_SLIDERS.value) removals.push('edit_slides')
+  if (value.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value) removals.push('edit_slides')
 
   return removals
 })
@@ -207,13 +209,13 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.sliders.destroy, {slider: data.id}), {
-            method: 'DELETE',
-          }, {
+          SliderAPI.deleteById(data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -240,7 +242,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
+            if (items[item].id && !items[item].is_deletable)
               ids.push(items[item].id)
           }
         }
@@ -253,12 +255,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.sliders.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          SliderAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -276,29 +273,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.sliders.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  SliderAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

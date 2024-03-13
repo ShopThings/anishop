@@ -24,7 +24,6 @@ class UpdateReturnOrderItemRequest extends FormRequest
     {
         return [
             'is_accepted' => [
-                'sometimes',
                 'boolean',
             ],
         ];

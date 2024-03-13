@@ -1,9 +1,9 @@
 <template>
   <div class="mb-12 px-3 max-w-4xl mx-auto">
-    <app-navigation-header title="نتیجه پرداخت" container-class="text-center"/>
+    <app-navigation-header container-class="text-center" title="نتیجه پرداخت"/>
 
     <partial-card
-      :class="[
+        :class="[
                 'border-2 p-6',
                 isSuccessful ? 'border-emerald-400' : 'border-rose-400'
             ]"
@@ -24,7 +24,7 @@
                 <div class="flex gap-2 items-center">
                   <span class="text-sm text-slate-400">کد پیگیری</span>
                   <div
-                    class="tracking-widest font-iranyekan-bold border-2 rounded-lg border-emerald-400 py-1 px-3">
+                      class="tracking-widest font-iranyekan-bold border-2 rounded-lg border-emerald-400 py-1 px-3">
                     00000013155698
                   </div>
                 </div>
@@ -37,16 +37,16 @@
 
               <div class="mt-6 text-center sm:text-right">
                 <base-button
-                  type="link"
-                  :to="{name: 'user.order.detail', params: {code: 12345}}"
-                  class="bg-cyan-500 px-6 m-1.5 w-full sm:w-auto"
+                    :to="{name: 'user.order.detail', params: {code: 12345}}"
+                    class="bg-cyan-500 px-6 m-1.5 w-full sm:w-auto"
+                    type="link"
                 >
                   مشاهده جزئیات سفارش
                 </base-button>
                 <base-button
-                  type="link"
-                  :to="{name: 'home'}"
-                  class="!text-black border-2 px-6 m-1.5 w-full sm:w-auto"
+                    :to="{name: 'home'}"
+                    class="!text-black border-2 px-6 m-1.5 w-full sm:w-auto"
+                    type="link"
                 >
                   بازگشت به سایت
                 </base-button>
@@ -66,7 +66,7 @@
                 <div class="flex gap-2 items-center">
                   <span class="text-sm text-slate-400">کد پیگیری</span>
                   <div
-                    class="tracking-widest font-iranyekan-bold border-2 rounded-lg border-rose-400 py-1 px-3">
+                      class="tracking-widest font-iranyekan-bold border-2 rounded-lg border-rose-400 py-1 px-3">
                     00000013155698
                   </div>
                 </div>
@@ -79,9 +79,9 @@
 
               <div class="mt-6 flex">
                 <base-button
-                  type="link"
-                  :to="{name: 'home'}"
-                  class="!text-black border-2 px-6 m-1.5 w-full sm:w-auto group flex items-center justify-center gap-3"
+                    :to="{name: 'home'}"
+                    class="!text-black border-2 px-6 m-1.5 w-full sm:w-auto group flex items-center justify-center gap-3"
+                    type="link"
                 >
                   <span>بازگشت به سایت</span>
                   <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1 transition"/>
@@ -91,16 +91,16 @@
           </div>
           <template v-if="isSuccessful">
             <img
-              src="/public/images/purchase.svg"
-              alt="تصویر نتیجه پرداخت"
-              class="object-contain w-56 mx-auto"
+                alt="تصویر نتیجه پرداخت"
+                class="object-contain w-56 mx-auto"
+                src="/public/images/purchase.svg"
             >
           </template>
           <template v-else>
             <img
-              src="/public/images/purchase-failed.svg"
-              alt="تصویر نتیجه پرداخت"
-              class="object-contain w-60 mx-auto"
+                alt="تصویر نتیجه پرداخت"
+                class="object-contain w-60 mx-auto"
+                src="/public/images/purchase-failed.svg"
             >
           </template>
         </div>

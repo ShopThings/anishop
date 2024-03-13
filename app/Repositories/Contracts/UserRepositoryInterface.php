@@ -77,6 +77,19 @@ interface UserRepositoryInterface extends RepositoryInterface
     ): Collection|LengthAwarePaginator;
 
     /**
+     * @param User $user
+     * @param array $columns
+     * @return Collection
+     */
+    public function getUnreadNotifications(User $user, array $columns = ['*']): Collection;
+
+    /**
+     * @param GetterExpressionInterface $where
+     * @return int
+     */
+    public function favoriteProductsCount(GetterExpressionInterface $where): int;
+
+    /**
      * @param $userId
      * @param $productId
      * @return bool

@@ -20,10 +20,10 @@ class FestivalShowResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'start_at' => $this->start_at
-                ? verta($this->start_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->start_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'end_at' => $this->end_at
-                ? verta($this->end_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->end_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

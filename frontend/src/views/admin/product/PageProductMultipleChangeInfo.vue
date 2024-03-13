@@ -1,176 +1,65 @@
 <template>
   <base-loading-panel
-    :loading="loading"
-    type="content"
+      :loading="loading"
+      loading-text="در حال بارگذاری محصولات"
+      type="circle"
   >
     <template #content>
       <base-accordion
-        btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
-        panel-class="max-h-96 overflow-auto"
+          btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
+          panel-class="max-h-96 overflow-auto"
       >
         <template #button>
           محصولات انتخاب شده
         </template>
 
         <template #panel>
-          <div class="grid grid-cols-1 gap-3">
-            <partial-card>
+          <div
+              v-if="products && products.length"
+              class="grid grid-cols-1 gap-3"
+          >
+            <partial-card
+                v-for="(product, idx) in products"
+                :key="product.id"
+            >
               <template #body>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="p-2 shrink-0"
+                        :to="{name: 'admin.product.detail', params: {slug: product.slug}}"
+                        class="p-2 shrink-0"
+                        target="_blank"
                     >
                       <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p1.jpg"
-                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                          :alt="product.title"
+                          :lazy-src="product.image.path"
+                          :size="FileSizes.SMALL"
+                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="px-3 py-2 text-primary hover:text-opacity-90"
+                        :to="{name: 'admin.product.detail', params: {slug: product.slug}}"
+                        class="px-3 py-2 text-primary hover:text-opacity-90"
+                        target="_blank"
                     >
-                      لپتاپ خیلی باحال و کاربردی عمو فردوس
+                      {{ product.title }}
                     </router-link>
                   </div>
                   <base-button-close
-                    v-tooltip.right="'حذف از لیست'"
-                    class="mx-3"
-                    @click="removeFromListHandler(0)"
+                      v-tooltip.right="'حذف از لیست'"
+                      class="mx-3"
+                      @click="removeFromListHandler(idx)"
                   />
                 </div>
               </template>
             </partial-card>
-            <partial-card>
-              <template #body>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="p-2 shrink-0"
-                    >
-                      <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p2.jpg"
-                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
-                      />
-                    </router-link>
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="px-3 py-2 text-primary hover:text-opacity-90"
-                    >
-                      لپتاپ خیلی باحال و کاربردی عمو فردوس
-                    </router-link>
-                  </div>
-                  <base-button-close
-                    v-tooltip.right="'حذف از لیست'"
-                    class="mx-3"
-                    @click="removeFromListHandler(1)"
-                  />
-                </div>
-              </template>
-            </partial-card>
-            <partial-card>
-              <template #body>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="p-2 shrink-0"
-                    >
-                      <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p3.jpg"
-                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
-                      />
-                    </router-link>
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="px-3 py-2 text-primary hover:text-opacity-90"
-                    >
-                      لپتاپ خیلی باحال و کاربردی عمو فردوس که قابلیت بهره‌گیری در بازی‌ها با
-                      گرافیک
-                      بسیار زیاد را دارا می‌باشد.
-                    </router-link>
-                  </div>
-                  <base-button-close
-                    v-tooltip.right="'حذف از لیست'"
-                    class="mx-3"
-                    @click="removeFromListHandler(2)"
-                  />
-                </div>
-              </template>
-            </partial-card>
-            <partial-card>
-              <template #body>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="p-2 shrink-0"
-                    >
-                      <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p4.jpg"
-                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
-                      />
-                    </router-link>
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="px-3 py-2 text-primary hover:text-opacity-90"
-                    >
-                      لپتاپ خیلی باحال و کاربردی عمو فردوس
-                    </router-link>
-                  </div>
-                  <base-button-close
-                    v-tooltip.right="'حذف از لیست'"
-                    class="mx-3"
-                    @click="removeFromListHandler(3)"
-                  />
-                </div>
-              </template>
-            </partial-card>
-            <partial-card>
-              <template #body>
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="p-2 shrink-0"
-                    >
-                      <base-lazy-image
-                        alt="تصویر محصول"
-                        lazy-src="/src/assets/products/p5.jpg"
-                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
-                      />
-                    </router-link>
-                    <router-link
-                      :to="{name: 'admin.product.detail', params: {slug: '1'}}"
-                      target="_blank"
-                      class="px-3 py-2 text-primary hover:text-opacity-90"
-                    >
-                      لپتاپ خیلی باحال و کاربردی عمو فردوس
-                    </router-link>
-                  </div>
-                  <base-button-close
-                    v-tooltip.right="'حذف از لیست'"
-                    class="mx-3"
-                    @click="removeFromListHandler(4)"
-                  />
-                </div>
-              </template>
-            </partial-card>
+          </div>
+
+          <div
+              v-else
+              class="text-slate-400 text-center"
+          >
+            هیچ محصولی انتخاب نشده!
           </div>
         </template>
       </base-accordion>
@@ -190,18 +79,29 @@
               <div class="flex">
                 <div class="grow">
                   <base-select-searchable
-                    :options="units"
-                    options-key="value"
-                    options-text="name"
-                    name="unit"
-                    :is-loading="loadingGetUnits"
-                    @change="(selected) => {selectedUnit = selected}"
+                      ref="unitRef"
+                      :current-page="unitSelectConfig.currentPage.value"
+                      :has-pagination="true"
+                      :is-loading="loadingGetUnits"
+                      :is-local-search="false"
+                      :last-page="unitSelectConfig.lastPage.value"
+                      :options="units"
+                      :selected="selectedUnit"
+                      name="unit"
+                      options-key="id"
+                      options-text="name"
+                      placeholder="جستجوی واحد محصول..."
+                      @change="(selected) => {selectedUnit = selected}"
+                      @query="searchUnit"
+                      @click-next-page="searchUnitNextPage"
+                      @click-prev-page="searchUnitPrevPage"
                   />
+                  <partial-input-error-message :error-message="errors.unit"/>
                 </div>
                 <base-button-close
-                  v-tooltip.right="'حذف انتخاب'"
-                  class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
-                  @click="selectedUnit = null"
+                    v-tooltip.right="'حذف انتخاب'"
+                    class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
+                    @click="() => {if(unitRef) unitRef.removeSelectedItems()}"
                 />
               </div>
               <partial-input-error-message :error-message="errors.unit"/>
@@ -211,18 +111,29 @@
               <div class="flex">
                 <div class="grow">
                   <base-select-searchable
-                    :options="brands"
-                    options-key="value"
-                    options-text="name"
-                    name="brand"
-                    :is-loading="loadingGetBrands"
-                    @change="(selected) => {selectedBrand = selected}"
+                      ref="brandRef"
+                      :current-page="brandSelectConfig.currentPage.value"
+                      :has-pagination="true"
+                      :is-loading="loadingGetBrands"
+                      :is-local-search="false"
+                      :last-page="brandSelectConfig.lastPage.value"
+                      :options="brands"
+                      :selected="selectedBrand"
+                      name="brand"
+                      options-key="id"
+                      options-text="name"
+                      placeholder="جستجوی برند..."
+                      @change="(selected) => {selectedBrand = selected}"
+                      @query="searchBrand"
+                      @click-next-page="searchBrandNextPage"
+                      @click-prev-page="searchBrandPrevPage"
                   />
+                  <partial-input-error-message :error-message="errors.brand"/>
                 </div>
                 <base-button-close
-                  v-tooltip.right="'حذف انتخاب'"
-                  class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
-                  @click="selectedBrand = null"
+                    v-tooltip.right="'حذف انتخاب'"
+                    class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
+                    @click="() => {if(brandRef) brandRef.removeSelectedItems()}"
                 />
               </div>
               <partial-input-error-message :error-message="errors.brand"/>
@@ -232,18 +143,29 @@
               <div class="flex">
                 <div class="grow">
                   <base-select-searchable
-                    :options="categories"
-                    options-key="value"
-                    options-text="name"
-                    name="category"
-                    :is-loading="loadingGetCategories"
-                    @change="(selected) => {selectedCategory = selected}"
+                      ref="categoryRef"
+                      :current-page="categorySelectConfig.currentPage.value"
+                      :has-pagination="true"
+                      :is-loading="loadingGetCategories"
+                      :is-local-search="false"
+                      :last-page="categorySelectConfig.lastPage.value"
+                      :options="categories"
+                      :selected="selectedCategory"
+                      name="category"
+                      options-key="id"
+                      options-text="name"
+                      placeholder="جستجوی دسته‌بندی..."
+                      @change="(selected) => {selectedCategory = selected}"
+                      @query="searchCategory"
+                      @click-next-page="searchCategoryNextPage"
+                      @click-prev-page="searchCategoryPrevPage"
                   />
+                  <partial-input-error-message :error-message="errors.category"/>
                 </div>
                 <base-button-close
-                  v-tooltip.right="'حذف انتخاب'"
-                  class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
-                  @click="selectedCategory = null"
+                    v-tooltip.right="'حذف انتخاب'"
+                    class="shrink-0 mr-2 bg-orange-50 rounded px-2 border border-orange-200"
+                    @click="() => {if(categoryRef) categoryRef.removeSelectedItems()}"
                 />
               </div>
               <partial-input-error-message :error-message="errors.category"/>
@@ -256,24 +178,24 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-3">
       <partial-card>
         <template #body>
-          <div class="bg-gray-50 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
-            <label for="dismissAvailability" class="ml-2 cursor-pointer grow">
+          <div class="bg-indigo-300 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
+            <label class="ml-2 cursor-pointer grow" for="dismissAvailability">
               عدم در نظر گرفتن موجود بودن
             </label>
             <base-checkbox
-              id="dismissAvailability"
-              name="dismiss_availability"
-              v-model="dismissAvailableStatus"
+                id="dismissAvailability"
+                v-model="dismissAvailableStatus"
+                name="dismiss_availability"
             />
           </div>
 
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-              label="وضعیت موجود بودن"
-              name="is_available"
-              :enabled="true"
-              sr-text="موجود/ناموجود بودن محصول"
-              @change="(status) => {availableStatus = status}"
+                :enabled="true"
+                label="وضعیت موجود بودن"
+                name="is_available"
+                sr-text="موجود/ناموجود بودن محصول"
+                @change="(status) => {availableStatus = status}"
             />
           </div>
         </template>
@@ -281,24 +203,24 @@
 
       <partial-card>
         <template #body>
-          <div class="bg-gray-50 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
-            <label for="dismissPublish" class="ml-2 cursor-pointer grow">
+          <div class="bg-indigo-300 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
+            <label class="ml-2 cursor-pointer grow" for="dismissPublish">
               عدم در نظر گرفتن وضعیت نمایش
             </label>
             <base-checkbox
-              id="dismissPublish"
-              name="dismiss_publish"
-              v-model="dismissPublishStatus"
+                id="dismissPublish"
+                v-model="dismissPublishStatus"
+                name="dismiss_publish"
             />
           </div>
 
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-              label="نمایش محصول در سایت"
-              name="is_published"
-              :enabled="true"
-              sr-text="نمایش/عدم نمایش تمامی محصولات"
-              @change="(status) => {publishStatus = status}"
+                :enabled="true"
+                label="نمایش محصول در سایت"
+                name="is_published"
+                sr-text="نمایش/عدم نمایش تمامی محصولات"
+                @change="(status) => {publishStatus = status}"
             />
           </div>
         </template>
@@ -306,24 +228,24 @@
 
       <partial-card>
         <template #body>
-          <div class="bg-gray-50 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
-            <label for="dismissCommenting" class="ml-2 cursor-pointer grow">
+          <div class="bg-indigo-300 py-2 px-4 rounded-t-lg border-b text-sm flex items-center justify-between">
+            <label class="ml-2 cursor-pointer grow" for="dismissCommenting">
               عدم در نظر گرفتن اجازه ارسال دیدگاه
             </label>
             <base-checkbox
-              id="dismissCommenting"
-              name="dismiss_commenting"
-              v-model="dismissAllowCommentingStatus"
+                id="dismissCommenting"
+                v-model="dismissAllowCommentingStatus"
+                name="dismiss_commenting"
             />
           </div>
 
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-              label="اجازه ارسال دیدگاه"
-              name="is_commenting_allowed"
-              :enabled="true"
-              sr-text="اجازه/عدم اجازه ارسال دیدگاه"
-              @change="(status) => {allowCommentingStatus = status}"
+                :enabled="true"
+                label="اجازه ارسال دیدگاه"
+                name="is_commenting_allowed"
+                sr-text="اجازه/عدم اجازه ارسال دیدگاه"
+                @change="(status) => {allowCommentingStatus = status}"
             />
           </div>
         </template>
@@ -334,15 +256,15 @@
       <template #body>
         <div class="px-2 py-3">
           <base-animated-button
-            type="submit"
-            class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-            :disabled="isSubmitting"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
           >
             <VTransitionFade>
               <loader-circle
-                v-if="isSubmitting"
-                main-container-klass="absolute w-full h-full top-0 left-0"
-                big-circle-color="border-transparent"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
               />
             </VTransitionFade>
 
@@ -352,6 +274,20 @@
 
             <span class="ml-auto">ثبت مشخصات</span>
           </base-animated-button>
+
+          <div
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
+          >
+            <div
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+            >
+              (
+              <span>{{ Object.keys(errors)?.length }}</span>
+              )
+              خطا، لطفا بررسی کنید
+            </div>
+          </div>
         </div>
       </template>
     </partial-card>
@@ -360,8 +296,6 @@
 
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import yup from "@/validation/index.js";
-import {useForm} from "vee-validate";
 import {useRoute} from "vue-router";
 import {CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -377,29 +311,114 @@ import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMes
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import BaseCheckbox from "@/components/base/BaseCheckbox.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {BrandAPI, CategoryAPI, ProductAPI, UnitAPI} from "@/service/APIProduct.js";
+import {useSelectSearching} from "@/composables/select-searching.js";
+import {FileSizes} from "@/composables/file-list.js";
+import {useToast} from "vue-toastification";
 
+const toast = useToast()
 const route = useRoute()
 const idsParam = computed(() => {
   return route.params.ids.split('\/')
 })
 
-const loading = ref(false)
-const canSubmit = ref(true)
+const loading = ref(true)
 
 const products = ref([])
 
-const loadingGetUnits = ref(true)
+const unitRef = ref(null)
+const brandRef = ref(null)
+const categoryRef = ref(null)
+
+//---------------------------------------------------------
+// Unit operation
+//---------------------------------------------------------
 const units = ref([])
 const selectedUnit = ref(null)
+const unitSelectConfig = useSelectSearching({
+  searchFn(query) {
+    UnitAPI.fetchAll({
+      limit: unitSelectConfig.limit.value,
+      offset: unitSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        units.value = response.data
+        if (response.meta) {
+          unitSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        unitSelectConfig.isLoading.value = false
+      }
+    })
+  },
+})
+const searchUnit = unitSelectConfig.search
+const loadingGetUnits = unitSelectConfig.isLoading
+const searchUnitNextPage = unitSelectConfig.searchNextPage
+const searchUnitPrevPage = unitSelectConfig.searchPrevPage
 
-const loadingGetBrands = ref(true)
+//---------------------------------------------------------
+// Brand operation
+//---------------------------------------------------------
 const brands = ref([])
 const selectedBrand = ref(null)
+const brandSelectConfig = useSelectSearching({
+  searchFn(query) {
+    BrandAPI.fetchAll({
+      limit: brandSelectConfig.limit.value,
+      offset: brandSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        brands.value = response.data
+        if (response.meta) {
+          brandSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        brandSelectConfig.isLoading.value = false
+      }
+    })
+  },
+})
+const searchBrand = brandSelectConfig.search
+const loadingGetBrands = brandSelectConfig.isLoading
+const searchBrandNextPage = brandSelectConfig.searchNextPage
+const searchBrandPrevPage = brandSelectConfig.searchPrevPage
 
-const loadingGetCategories = ref(true)
+//---------------------------------------------------------
+// Category operation
+//---------------------------------------------------------
 const categories = ref([])
 const selectedCategory = ref(null)
+const categorySelectConfig = useSelectSearching({
+  searchFn(query) {
+    CategoryAPI.fetchAll({
+      limit: categorySelectConfig.limit.value,
+      offset: categorySelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        categories.value = response.data
+        if (response.meta) {
+          categorySelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        categorySelectConfig.isLoading.value = false
+      }
+    })
+  },
+})
+const searchCategory = categorySelectConfig.search
+const loadingGetCategories = categorySelectConfig.isLoading
+const searchCategoryNextPage = categorySelectConfig.searchNextPage
+const searchCategoryPrevPage = categorySelectConfig.searchPrevPage
 
+//---------------------------------------------------------
 const availableStatus = ref(true)
 const publishStatus = ref(true)
 const allowCommentingStatus = ref(true)
@@ -412,46 +431,75 @@ function removeFromListHandler(idx) {
   products.value.splice(idx, 1)
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
+  if (!products.value || !products.value?.length) {
+    toast.warning('محصولات انتخاب شده خود را مجدد بررسی کنید و سپس درخواست خود را ارسال نمایید.')
+    return
+  }
 
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+  let updateObj = {
+    ids: idsParam.value,
+  }
+
+  if (selectedUnit.value?.id) {
+    updateObj.unit = selectedUnit.value.id
+  }
+  if (selectedBrand.value?.id) {
+    updateObj.brand = selectedBrand.value.id
+  }
+  if (selectedCategory.value?.id) {
+    updateObj.category = selectedCategory.value.id
+  }
+
+  if (!dismissAvailableStatus.value) {
+    updateObj.is_available = availableStatus.value
+  }
+  if (!dismissPublishStatus.value) {
+    updateObj.is_published = publishStatus.value
+  }
+  if (!dismissAllowCommentingStatus.value) {
+    updateObj.is_commenting_allowed = allowCommentingStatus.value
+  }
+
+  canSubmit.value = false
+
+  ProductAPI.modifyBatchInfo(updateObj, {
+    success() {
+      actions.resetForm()
+
+      selectedUnit.value = null
+      selectedBrand.value = null
+      selectedCategory.value = null
+
+      dismissAvailableStatus.value = false
+      availableStatus.value = true
+      dismissPublishStatus.value = false
+      publishStatus.value = true
+      dismissAllowCommentingStatus.value = false
+      allowCommentingStatus.value = true
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiRoutes.admin.products.index, {
-  //     data: {
-  //         ids: idsParam.value,
-  //     }
-  // }, {
-  //     success: (response) => {
-  //         products.value = response.data
-  //
-  //         loading.value = false
-  //     },
-  // })
-  //
-  // useRequest(apiRoutes.admin.units.index, null, {
-  //     success: (response) => {
-  //         units.value = response.data
-  //         loadingGetUnits.value = false
-  //     },
-  // })
-  //
-  // useRequest(apiRoutes.admin.brands.index, null, {
-  //     success: (response) => {
-  //         brands.value = response.data
-  //         loadingGetBrands.value = false
-  //     },
-  // })
-  //
-  // useRequest(apiRoutes.admin.categories.index, null, {
-  //     success: (response) => {
-  //         categories.value = response.data
-  //         loadingGetCategories.value = false
-  //     },
-  // })
+  ProductAPI.fetchAll({
+    ids: idsParam.value,
+  }, {
+    success: (response) => {
+      products.value = response.data
+      loading.value = false
+    },
+  })
+
+  searchUnit()
+  searchBrand()
+  searchCategory()
 })
 </script>

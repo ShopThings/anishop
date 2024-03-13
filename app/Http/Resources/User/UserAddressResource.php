@@ -16,9 +16,6 @@ class UserAddressResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        // MUST eager load these relations
-        // NOTE: Because we don't have too much addresses per user,
-        //       I think it won't cause any performance problem(hope so)
         $this->resource->load('city');
         $this->resource->load('province');
 

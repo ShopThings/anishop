@@ -21,13 +21,13 @@ class SmsLogResource extends JsonResource
             'id' => $this->id,
             'receiver_number' => $this->receiver_number,
             'panel_number' => $this->panel_number,
-            'pane_name' => $this->pane_name,
+            'panel_name' => $this->panel_name,
             'body' => $this->body,
-            'type' => SMSSenderTypesEnum::getTranslations($this->type),
-            'sender' => SMSSenderTypesEnum::getTranslations($this->sender),
+            'type' => SMSSenderTypesEnum::getTranslations($this->type, 'نامشخص'),
+            'sender' => SMSSenderTypesEnum::getTranslations($this->sender, 'نامشخص'),
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

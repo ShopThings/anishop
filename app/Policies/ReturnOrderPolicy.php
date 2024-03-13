@@ -27,7 +27,7 @@ class ReturnOrderPolicy
     public function delete(User $user, ReturnOrderRequest $model): bool
     {
         if (!in_array($model->status, ReturnOrderStatusesEnum::getDeletableStatuses())) {
-            throw new NotDeletableException('با توجه به وضعیت مرجوعی محصولات، امکان حذف وجود ندارد.');
+            throw new NotDeletableException('امکان حذف در این وضعیت مرجوعی، وجود ندارد.');
         }
         return $user->hasPermissionTo(
             PermissionHelper::permission(

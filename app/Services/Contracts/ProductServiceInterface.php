@@ -34,6 +34,12 @@ interface ProductServiceInterface extends ServiceInterface
      * @param HomeProductSideFilter $filter
      * @return Collection
      */
+    public function getFilterBrands(HomeProductSideFilter $filter): Collection;
+
+    /**
+     * @param HomeProductSideFilter $filter
+     * @return Collection
+     */
     public function getFilterColorsAndSizes(HomeProductSideFilter $filter): Collection;
 
     /**

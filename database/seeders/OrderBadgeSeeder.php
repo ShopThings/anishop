@@ -3,11 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\OrderBadge;
-use App\Support\Model\CodeGeneratorHelper;
 use Illuminate\Database\Seeder;
-use Snortlin\NanoId\NanoId;
-use Snortlin\NanoId\NanoIdInterface;
-use function App\Support\Helper\get_nanoid;
 
 class OrderBadgeSeeder extends Seeder
 {

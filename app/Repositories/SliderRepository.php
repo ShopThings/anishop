@@ -28,8 +28,11 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
         $modified = collect();
 
         foreach ($items as $item) {
-            if (isset($item['id'])) {
-                $isUpdated = $this->sliderItemModel->findOrFail($item['id'])->update($item);
+            if (
+                isset($item['id']) &&
+                (($founded = $this->sliderItemModel->findOrFail($item['id'])) instanceof Model)
+            ) {
+                $isUpdated = $founded->update($item);
 
                 if ($isUpdated)
                     $modified->add($this->sliderItemModel::first($item['id']));
@@ -58,7 +61,7 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
             ->whereIn('place_in', $place)
             ->whereHas('items', function ($query) use ($withUnpublished) {
                 if (!$withUnpublished) {
-                    $query::published()->orderBy('priority');
+                    $query->published()->orderBy('priority');
                 }
             })
             ->orderBy('priority')

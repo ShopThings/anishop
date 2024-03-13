@@ -18,36 +18,58 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:writer="{value}">
-
+              <router-link
+                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                  class="text-blue-600 hover:text-opacity-80"
+              >
+                <partial-username-label :user="value.created_by"/>
+              </router-link>
             </template>
+
+            <template v-slot:url="{value}">
+              <div class="text-sm" dir="ltr">
+                <label
+                    class="mr-[1px] text-gray-500"
+                    dir="ltr"
+                >{{ host }}</label>
+                <span>{{ value.url }}</span>
+              </div>
+            </template>
+
             <template v-slot:is_published="{value}">
-
+              <partial-badge-publish :publish="value.is_published"/>
             </template>
+
+            <template v-slot:keywords="{value}">
+              <partial-table-keywords :keywords="value.keywords"/>
+            </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
-                :removals="!value.is_deletable ? ['delete'] : []"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
+                  :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
           </base-datatable>
@@ -63,17 +85,21 @@ import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import PartialTableKeywords from "@/components/partials/PartialTableKeywords.vue";
+import {StaticPageAPI} from "@/service/APIPage.js";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const router = useRouter()
 const toast = useToast()
+
+const host = window.location.host + '/pages/'
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -91,11 +117,13 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نویسنده",
       field: "writer",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -109,6 +137,11 @@ const table = reactive({
       field: "is_published",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
+    },
+    {
+      label: "کلمات کلیدی",
+      field: "keywords",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "تاریخ ایجاد",
@@ -128,11 +161,13 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "نویسنده",
       field: "writer",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -146,6 +181,11 @@ const table = reactive({
       field: "is_published",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
+    },
+    {
+      label: "کلمات کلیدی",
+      field: "keywords",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "تاریخ ایجاد",
@@ -183,7 +223,7 @@ const operations = [
         router.push({
           name: 'admin.static_page.edit',
           params: {
-            id: data.id,
+            url: data.url,
           }
         })
       },
@@ -201,13 +241,13 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.staticPages.destroy, {static_page: data.id}), {
-            method: 'DELETE',
-          }, {
+          StaticPageAPI.deleteByIds(data.url, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -234,8 +274,8 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id)
-              ids.push(items[item].id)
+            if (items[item].url)
+              ids.push(items[item].url)
           }
         }
 
@@ -247,12 +287,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.staticPages.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          StaticPageAPI.deleteByIds(ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -270,29 +305,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.staticPages.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  StaticPageAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

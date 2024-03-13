@@ -31,28 +31,28 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
               :has-checkbox="true"
-              :total="table.totalRecordCount"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
             <template v-slot:name="{value}">
               <span>{{ value.name }}</span>
               <div class="mr-2 rounded-lg py-1 px-2 text-sm bg-blue-100 inline-block">
                 <span class="text-slate-500 ml-2 text-xs">سطح</span>
-                {{ value.level }}
+                <span class="iranyekan-bold">{{ value.level }}</span>
               </div>
             </template>
 
-            <template v-slot:parent_name="{value}">
+            <template v-slot:parent_id="{value}">
               <span v-if="!value.parent">-</span>
               <span v-else>{{ value.parent.name }}</span>
             </template>
@@ -87,9 +87,9 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
                   :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
                   :removals="!value.is_deletable ? ['delete'] : []"
               />
             </template>
@@ -140,7 +140,7 @@ const table = reactive({
     },
     {
       label: "نام والد",
-      field: "parent_name",
+      field: "parent_id",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -181,7 +181,7 @@ const table = reactive({
     },
     {
       label: "نام والد",
-      field: "parent_name",
+      field: "parent_id",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -253,8 +253,10 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
           CategoryAPI.deleteById(data.slug, {

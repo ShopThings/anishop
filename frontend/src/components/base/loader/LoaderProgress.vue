@@ -1,6 +1,6 @@
 <template>
-  <div class="progress" :class="containerBgColor">
-    <div class="indeterminate" :class="bgColor"></div>
+  <div :class="containerBgColor" class="progress">
+    <div :class="bgColor" class="indeterminate"></div>
   </div>
 </template>
 

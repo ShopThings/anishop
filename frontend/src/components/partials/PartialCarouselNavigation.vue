@@ -1,31 +1,31 @@
 <template>
   <div
-    class="flex"
-    :class="determineClass"
+      :class="determineClass"
+      class="flex"
   >
     <button
-      ref="nextButton"
-      class="my-next-navigation-button border rounded-full shadow-lg bg-white group p-1"
-      :class="[
+        ref="nextButton"
+        :class="[
                 size === 'small' ? 'w-9 h-9' : 'w-12 h-12',
                 dir === 'rtl' ? prevClassName : nextClassName,
                 display === 'floating-sides'
                  ? 'absolute right-2 top-1/2 -translate-y-1/2'
                  : '',
             ]"
+        class="my-next-navigation-button border rounded-full shadow-lg bg-white group p-1"
     >
       <ChevronRightIcon class="w-6 h-6 text-gray-500 group-hover:text-black transition mx-auto"/>
     </button>
     <button
-      ref="prevButton"
-      class="my-prev-navigation-button border rounded-full shadow-lg bg-white group p-1"
-      :class="[
+        ref="prevButton"
+        :class="[
                 size === 'small' ? 'w-9 h-9' : 'w-12 h-12',
                 dir === 'rtl' ? nextClassName : prevClassName,
                 display === 'floating-sides'
                  ? 'absolute left-2 top-1/2 -translate-y-1/2'
                  : 'mr-2',
             ]"
+        class="my-prev-navigation-button border rounded-full shadow-lg bg-white group p-1"
     >
       <ChevronLeftIcon class="w-6 h-6 text-gray-500 group-hover:text-black transition mx-auto"/>
     </button>

@@ -1,15 +1,15 @@
 <template>
   <img
-    v-if="!actualSrc"
-    :src="loadingSrc"
-    :alt="alt"
-    class="app-image"
+      v-if="!actualSrc"
+      :alt="alt"
+      :src="loadingSrc"
+      class="app-image"
   >
   <img
-    v-else
-    v-lazy="{ src: actualSrc, loading: loadingSrc }"
-    :alt="alt"
-    class="app-image"
+      v-else
+      v-lazy="{ src: actualSrc, loading: loadingSrc }"
+      :alt="alt"
+      class="app-image"
   >
 </template>
 

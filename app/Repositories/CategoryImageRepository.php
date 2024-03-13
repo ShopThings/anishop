@@ -41,10 +41,12 @@ class CategoryImageRepository extends Repository implements CategoryImageReposit
 
         $query
             ->with(['categoryImage', 'categoryImage.creator', 'categoryImage.updater', 'categoryImage.deleter'])
-            ->when($search, function (Builder $query, string $search) {
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('parent', function ($q) use ($search) {
-                        $q->orWhereLike('escaped_name', $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q->orWhereHas('parent', function ($q) use ($search) {
+                            $q->orWhereLike('escaped_name', $search);
+                        });
                     })
                     ->orWhereLike('escaped_name', $search);
             });

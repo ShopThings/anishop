@@ -135,7 +135,7 @@ class SettingSeeder extends Seeder
         Setting::create([
             'name' => SettingsEnum::SOCIALS->value,
             // json object => [[type => 'instagram', link => '#'], ...]
-            'setting_value' => '',
+            'setting_value' => json_encode([]),
             'group_name' => SettingGroupsEnum::SOCIAL->value,
         ]);
 
@@ -166,7 +166,7 @@ class SettingSeeder extends Seeder
         ]);
         Setting::create([
             'name' => SettingsEnum::FOOTER_NAMADS->value,
-            'setting_value' => '',
+            'setting_value' => json_encode([]),
             'group_name' => SettingGroupsEnum::FOOTER->value,
         ]);
     }

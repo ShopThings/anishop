@@ -53,10 +53,6 @@ import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 const router = useRouter()
 const adminStore = useAdminAuthStore()
 const homeRoute = computed(() => {
-  if (adminStore.getUser) {
-    return {name: 'admin.home'}
-  } else {
-    return {name: 'home'}
-  }
+  return adminStore.getUser ? {name: 'admin.home'} : {name: 'home'}
 })
 </script>

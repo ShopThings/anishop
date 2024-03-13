@@ -32,16 +32,16 @@ class UserBlogCommentSingleResource extends JsonResource
             'parent' => new UserBlogCommentSingleResource($this->parent),
             'children' => UserBlogCommentSingleResource::collection($this->whenCounted('children')),
             'condition' => [
-                'text' => CommentConditionsEnum::getTranslations($this->condition),
+                'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
                 'value' => $this->condition,
             ],
             'status' => [
-                'text' => CommentStatusesEnum::getTranslations($this->status),
+                'text' => CommentStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
             ],
             'description' => $this->description,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

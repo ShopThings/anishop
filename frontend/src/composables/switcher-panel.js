@@ -4,7 +4,7 @@ import isFunction from "lodash.isfunction";
 
 export function useSwitcherPanel(payload) {
   const panels = reactive(payload.panels ?? {})
-  const activePanel = ref(payload.activePanel)
+  const activePanel = ref(payload.activePanel ?? null)
   const activeBackText = ref(payload.activeBackText ?? '')
   const panelsBackHistory = ref(payload.panelsBackHistory ?? [])
 

@@ -1,7 +1,7 @@
 <template>
   <label
-    class="mb-1 text-right text-black flex justify-between items-center gap-1.5"
-    :for="id"
+      :for="id"
+      class="mb-1 text-right text-black flex justify-between items-center gap-1.5"
   >
     <span class="text-sm">
         <slot name="label">{{ title }}</slot>

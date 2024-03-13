@@ -18,20 +18,29 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
+            <template v-slot:image="{value}">
+              <base-lazy-image
+                  :alt="value.title"
+                  :lazy-src="value.image.path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
+              />
+            </template>
+
             <template v-slot:brand="{value}">
               {{ value.brand.name }}
             </template>
@@ -51,9 +60,9 @@
 
             <template v-slot:is_available="{value}">
               <partial-badge-publish
-                :publish="value.is_available"
-                publish-text="موجود"
-                unpublish-text="ناموجود"
+                  :publish="value.is_available"
+                  publish-text="موجود"
+                  unpublish-text="ناموجود"
               />
             </template>
 
@@ -68,7 +77,7 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -91,6 +100,8 @@ import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 import {ProductAPI} from "@/service/APIProduct.js";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -107,6 +118,11 @@ const table = reactive({
       columnStyles: "width: 3%;",
       sortable: true,
       isKey: true,
+    },
+    {
+      label: "تصویر",
+      field: "image",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "عنوان",
@@ -159,6 +175,11 @@ const table = reactive({
       columnStyles: "width: 3%;",
       sortable: true,
       isKey: true,
+    },
+    {
+      label: "تصویر",
+      field: "image",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "عنوان",

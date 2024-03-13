@@ -29,6 +29,7 @@ class BlogCategoryController extends Controller
         protected BlogCategoryServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**
@@ -93,7 +94,10 @@ class BlogCategoryController extends Controller
      * @return BlogCategoryResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBlogCategoryRequest $request, BlogCategory $blogCategory): JsonResponse|BlogCategoryResource
+    public function update(
+        UpdateBlogCategoryRequest $request,
+        BlogCategory              $blogCategory
+    ): JsonResponse|BlogCategoryResource
     {
         $this->authorize('update', $blogCategory);
 

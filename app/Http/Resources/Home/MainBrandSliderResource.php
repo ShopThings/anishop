@@ -17,9 +17,10 @@ class MainBrandSliderResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'name' => $this->name,
             'latin_name' => $this->latin_name,
             'slug' => $this->slug,
-            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'image' => new ImageShowResource($this->image),
         ];
     }
 }

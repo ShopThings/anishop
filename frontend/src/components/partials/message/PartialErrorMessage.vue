@@ -1,14 +1,14 @@
 <template>
   <div v-if="isOpen"
-       class="text-white pl-10 pr-4 py-4 border-0 rounded relative mb-4 bg-rose-500 text-right"
-       :class="hasClose ? 'pl-10' : 'pl-4'">
+       :class="hasClose ? 'pl-10' : 'pl-4'"
+       class="text-white pl-10 pr-4 py-4 border-0 rounded relative mb-4 bg-rose-500 text-right">
     <div class="flex">
       <span class="text-xl inline-block ml-3 align-middle"><XCircleIcon class="w-6 h-6"/></span>
       <span class="inline-block align-middle grow text-sm"><slot></slot></span>
     </div>
     <button v-if="hasClose"
-            @click="closeAlert"
-            class="absolute bg-transparent text-2xl font-semibold leading-none left-0 top-0 mt-4 ml-3 outline-none focus:outline-none group">
+            class="absolute bg-transparent text-2xl font-semibold leading-none left-0 top-0 mt-4 ml-3 outline-none focus:outline-none group"
+            @click="closeAlert">
       <XMarkIcon class="w-5 h-5 group-hover:rotate-90 transition"/>
     </button>
   </div>

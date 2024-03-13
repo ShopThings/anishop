@@ -30,4 +30,16 @@ enum PaymentStatusesEnum: int
             self::NOT_PAYED->value => 'پرداخت نشده',
         ];
     }
+
+    public static function getStatusColor(): array
+    {
+        return [
+            self::PARTIAL_SUCCESS->value => '#836FFF',
+            self::SUCCESS->value => '#0EA293',
+            self::FAILED->value => '#F72798',
+            self::WAIT_VERIFY->value => '#836FFF',
+            self::WAIT->value => '#280274',
+            self::NOT_PAYED->value => '#D24545',
+        ];
+    }
 }

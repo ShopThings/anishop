@@ -11,10 +11,6 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Snortlin\NanoId\NanoId;
-use Snortlin\NanoId\NanoIdInterface;
-use function App\Support\Helper\get_nanoid;
-use function App\Support\Helper\to_boolean;
 
 class OrderBadgeService extends Service implements OrderBadgeServiceInterface
 {

@@ -17,9 +17,12 @@ class HomeProductSideFilter extends Filter
      */
     protected ?int $festival = null;
 
-    public function __construct(Request $request)
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
     {
-        parent::__construct($request);
+        parent::init($request);
 
         $this->setCategory($request->integer('category'));
         $this->setFestival($request->integer('festival'));

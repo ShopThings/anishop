@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white rounded-lg border" ref="card">
+  <div ref="card" class="bg-white rounded-lg border">
     <h1 v-if="slots['header']"
-        class="border-b border-b-amber-400 p-2 text-lg">
+        class="border-b-2 border-b-indigo-200 py-2 px-3 text-lg text-indigo-500">
       <slot name="header"></slot>
     </h1>
     <slot name="body"></slot>

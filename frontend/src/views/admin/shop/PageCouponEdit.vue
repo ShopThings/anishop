@@ -3,36 +3,36 @@
     <template #header>
       ویرایش کوپن -
       <span
-        v-if="coupon?.id"
-        class="text-teal-600"
+          v-if="coupon?.id"
+          class="text-slate-400 text-base"
       >{{ coupon?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-          :loading="loading"
-          type="form"
+            :loading="loading"
+            type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <base-switch
-                  label="قابل استفاده نمودن کوپن"
-                  name="is_published"
-                  :enabled="coupon?.is_published"
-                  sr-text="قابل استفاده نمودن کوپن"
-                  @change="(status) => {publishStatus=status}"
+                    :enabled="coupon?.is_published"
+                    label="قابل استفاده نمودن کوپن"
+                    name="is_published"
+                    sr-text="قابل استفاده نمودن کوپن"
+                    @change="(status) => {publishStatus=status}"
                 />
               </div>
 
               <div class="w-full p-2">
                 <base-input
-                  label-title="کد"
-                  placeholder="وارد نمایید"
-                  name="code"
-                  :value="coupon?.code"
-                  :is-editable="false"
-                  :has-edit-mode="false"
+                    :has-edit-mode="false"
+                    :is-editable="false"
+                    :value="coupon?.code"
+                    label-title="کد"
+                    name="code"
+                    placeholder="وارد نمایید"
                 >
                   <template #editModeLabel="{value}">
                     <span class="px-2 py-1 bg-teal-200 rounded text-black text-sm tracking-widest">{{
@@ -48,10 +48,10 @@
               <div class="flex flex-wrap">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    label-title="عنوان"
-                    placeholder="وارد نمایید"
-                    name="title"
-                    :value="coupon?.title"
+                      :value="coupon?.title"
+                      label-title="عنوان"
+                      name="title"
+                      placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -60,12 +60,12 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="text"
-                    placeholder="وارد نمایید"
-                    name="price"
-                    :min="0"
-                    :money-mask="true"
-                    :value="coupon?.price.toString()"
+                      :min="0"
+                      :money-mask="true"
+                      :value="coupon?.price?.toString()"
+                      name="price"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -85,13 +85,13 @@
               <div class="flex flex-wrap">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="text"
-                    placeholder="وارد نمایید"
-                    name="apply_min_price"
-                    :min="0"
-                    :money-mask="true"
-                    :is-optional="true"
-                    :value="coupon?.apply_min_price?.toString()"
+                      :is-optional="true"
+                      :min="0"
+                      :money-mask="true"
+                      :value="coupon?.apply_min_price?.toString()"
+                      name="apply_min_price"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -106,13 +106,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="text"
-                    placeholder="وارد نمایید"
-                    name="apply_max_price"
-                    :min="0"
-                    :money-mask="true"
-                    :is-optional="true"
-                    :value="coupon?.apply_max_price?.toString()"
+                      :is-optional="true"
+                      :min="0"
+                      :money-mask="true"
+                      :value="coupon?.apply_max_price?.toString()"
+                      name="apply_max_price"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -127,13 +127,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="text"
-                    label-title="تعداد قابل استفاده"
-                    placeholder="وارد نمایید"
-                    name="use_count"
-                    :min="0"
-                    :money-mask="true"
-                    :value="coupon?.use_count.toString()"
+                      :min="0"
+                      :money-mask="true"
+                      :value="coupon?.use_count?.toString()"
+                      label-title="تعداد قابل استفاده"
+                      name="use_count"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -142,13 +142,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                    type="text"
-                    placeholder="وارد نمایید"
-                    name="reusable_after"
-                    :min="0"
-                    :money-mask="true"
-                    :is-optional="true"
-                    :value="coupon?.reusable_after.toString()"
+                      :is-optional="true"
+                      :min="0"
+                      :money-mask="true"
+                      :value="coupon?.reusable_after?.toString()"
+                      name="reusable_after"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -169,23 +169,23 @@
               <div class="flex flex-wrap">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <partial-input-label
-                    title="تاریخ شروع"
-                    :is-optional="true"
+                      :is-optional="true"
+                      title="تاریخ شروع"
                   />
                   <date-picker
-                    v-model="startDate"
-                    placeholder="انتخاب تاریخ شروع"
+                      v-model="startDate"
+                      placeholder="انتخاب تاریخ شروع"
                   />
                   <partial-input-error-message :error-message="errors.start_at"/>
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <partial-input-label
-                    title="تاریخ پایان"
-                    :is-optional="true"
+                      :is-optional="true"
+                      title="تاریخ پایان"
                   />
                   <date-picker
-                    v-model="endDate"
-                    placeholder="انتخاب تاریخ پایان"
+                      v-model="endDate"
+                      placeholder="انتخاب تاریخ پایان"
                   />
                   <partial-input-error-message :error-message="errors.end_at"/>
                 </div>
@@ -193,15 +193,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                  type="submit"
-                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                  :disabled="!canSubmit"
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                      v-if="!canSubmit"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
-                      big-circle-color="border-transparent"
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -211,6 +211,20 @@
 
                   <span class="ml-auto">ویرایش کوپن</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </template>
@@ -256,31 +270,29 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     code: yup.string().required('کد کوپن برای استفاده کاربر را وارد نمایید.'),
     title: yup.string().required('عنوان را وارد نمایید.'),
     price: yup.string()
-      .transform(transformNumbersToEnglish)
-      .positiveNumber('مبلغ باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000})
-      .required('مبلغ کوپن را وارد نمایید.'),
+        .transform(transformNumbersToEnglish)
+        .positiveNumber('مبلغ باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000})
+        .required('مبلغ کوپن را وارد نمایید.'),
     apply_min_price: yup.string()
-      .optional()
-      .transform(transformNumbersToEnglish)
-      .positiveNumber('حداقل قیمت اعمال باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000, optional: true})
-      .lessThanNumber('apply_max_price', 'حداقل قیمت اعمال باید کوچکتر از حداکثر قیمت اعمال باشد.', {equal: true}),
+        .optional()
+        .transform(transformNumbersToEnglish)
+        .positiveNumber('حداقل قیمت اعمال باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000, optional: true})
+        .lessThanNumber('apply_max_price', 'حداقل قیمت اعمال باید کوچکتر از حداکثر قیمت اعمال باشد.', {equal: true}),
     apply_max_price: yup.string()
-      .optional()
-      .transform(transformNumbersToEnglish)
-      .positiveNumber('حداکثر مبلغ اعمال باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000, optional: true})
-      .greaterThanNumber('apply_min_price', 'حداکثر قیمت اعمال باید بزرگتر از حداقل قیمت اعمال باشد.', {equal: true}),
+        .optional()
+        .transform(transformNumbersToEnglish)
+        .positiveNumber('حداکثر مبلغ اعمال باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000, optional: true})
+        .greaterThanNumber('apply_min_price', 'حداکثر قیمت اعمال باید بزرگتر از حداقل قیمت اعمال باشد.', {equal: true}),
     use_count: yup.string()
-      .transform(transformNumbersToEnglish)
-      .positiveNumber('تعداد استفاده باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
-      .required('تعداد قابل استفاده را وارد نمایید.'),
+        .transform(transformNumbersToEnglish)
+        .positiveNumber('تعداد استفاده باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
+        .required('تعداد قابل استفاده را وارد نمایید.'),
     reusable_after: yup.string()
-      .transform(transformNumbersToEnglish)
-      .positiveNumber('باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
-      .required('تعداد روز را وارد نمایید.'),
+        .transform(transformNumbersToEnglish)
+        .positiveNumber('باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
+        .required('تعداد روز را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (startDate.value && endDate.value) {
     const d1 = new Date(startDate.value)
     const d2 = new Date(endDate.value)

@@ -13,7 +13,6 @@ use App\Services\Contracts\SettingServiceInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use function App\Support\Helper\replace_sms_variables;
 
 class UserRegisteredNotification extends Notification implements ShouldQueue
 {
@@ -68,11 +67,10 @@ class UserRegisteredNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => UserNotificationTypesEnum::SIGNUP,
-            'type_value' => UserNotificationTypesEnum::getTranslations(UserNotificationTypesEnum::SIGNUP->value),
-            'priority' => UserNotificationPrioritiesEnum::LOW,
+            'type' => UserNotificationTypesEnum::SIGNUP->value,
+            'type_value' => UserNotificationTypesEnum::getTranslations(UserNotificationTypesEnum::SIGNUP->value, 'نامشخص'),
+            'priority' => UserNotificationPrioritiesEnum::LOW->value,
             'message' => 'خوش آمدید، ثبت نام شما تکمیل شد. از خرید خود لذت ببرید😊',
-            'created_at' => now(),
         ];
     }
 }

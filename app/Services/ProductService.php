@@ -20,7 +20,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
-use function App\Support\Helper\to_boolean;
 
 class ProductService extends Service implements ProductServiceInterface
 {
@@ -43,7 +42,9 @@ class ProductService extends Service implements ProductServiceInterface
         GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator
     {
-        return $this->repository->getProductsSearchFilterPaginated(filter: $filter, where: $where);
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->getProductsSearchFilterPaginated(filter: $filter, where: $where);
     }
 
     /**
@@ -57,6 +58,14 @@ class ProductService extends Service implements ProductServiceInterface
         $filter->setLimit($limit);
 
         return $this->getProducts($filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFilterBrands(HomeProductSideFilter $filter): Collection
+    {
+        return $this->repository->getFilterBrands($filter);
     }
 
     /**
@@ -267,6 +276,7 @@ class ProductService extends Service implements ProductServiceInterface
             $updateAttributes['is_commenting_allowed'] = to_boolean($attributes['is_commenting_allowed']);
         }
 
+        if (!count($updateAttributes)) return true;
         return !!$this->repository->update($ids, $updateAttributes);
     }
 

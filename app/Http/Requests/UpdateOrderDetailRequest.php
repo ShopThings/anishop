@@ -37,7 +37,7 @@ class UpdateOrderDetailRequest extends FormRequest
             ],
             'address' => [
                 'sometimes',
-                'max:250',
+                'max:300',
             ],
             'postal_code' => [
                 'sometimes',

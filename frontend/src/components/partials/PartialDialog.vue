@@ -1,30 +1,30 @@
 <template>
-  <TransitionRoot appear :show="isOpen" as="template">
-    <Dialog as="div" @close="closeModal" class="relative z-20">
+  <TransitionRoot :show="isOpen" appear as="template">
+    <Dialog as="div" class="relative z-20" @close="closeModal">
       <TransitionChild
-        as="template"
-        enter="duration-300 ease-out"
-        enter-from="opacity-0"
-        enter-to="opacity-100"
-        leave="duration-200 ease-in"
-        leave-from="opacity-100"
-        leave-to="opacity-0"
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
       >
-        <div @click.self="closeModal" class="fixed z-20 inset-0 bg-black bg-opacity-25"/>
+        <div class="fixed z-20 inset-0 bg-black bg-opacity-25" @click.self="closeModal"/>
       </TransitionChild>
 
       <div class="fixed z-20 inset-0 overflow-y-auto">
         <div
-          class="flex min-h-full items-center justify-center p-4 text-center"
+            class="flex min-h-full items-center justify-center p-4 text-center"
         >
           <TransitionChild
-            as="template"
-            enter="duration-300 ease-out"
-            enter-from="opacity-0 scale-90"
-            enter-to="opacity-100 scale-100"
-            leave="duration-200 ease-in"
-            leave-from="opacity-100 scale-100"
-            leave-to="opacity-0 scale-90"
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-90"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-90"
           >
             <DialogPanel :class="[
                             'relative w-full rounded-2xl bg-white text-right align-middle shadow-xl transition-all',
@@ -32,16 +32,16 @@
                              containerKlass,
                         ]">
               <div class="sticky top-0 bg-white z-[1]">
-                <slot name="closeButton" :close="closeModal">
-                  <base-button-close @click="closeModal"
-                                     class="absolute top-0 left-0 translate-x-2/4 translate-y-2/4"/>
+                <slot :close="closeModal" name="closeButton">
+                  <base-button-close class="absolute top-0 left-0 translate-x-2/4 translate-y-2/4"
+                                     @click="closeModal"/>
                 </slot>
 
                 <div v-if="slots['title']"
                      class="p-6 border-b">
                   <DialogTitle
-                    as="h3"
-                    class="text-lg font-medium leading-6 text-gray-900"
+                      as="h3"
+                      class="text-lg font-medium leading-6 text-gray-900"
                   >
                     <slot name="title"></slot>
                   </DialogTitle>
@@ -49,7 +49,7 @@
               </div>
 
               <div class="p-6">
-                <slot name="body" :close="closeModal"></slot>
+                <slot :close="closeModal" name="body"></slot>
               </div>
             </DialogPanel>
           </TransitionChild>

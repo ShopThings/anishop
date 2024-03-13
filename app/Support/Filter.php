@@ -30,14 +30,28 @@ class Filter
     protected array $order = ['id' => 'desc'];
 
     /**
+     * @var bool
+     */
+    protected bool $relationSearch = true;
+
+    /**
      * @var string|null
      */
     protected ?string $searchText = null;
 
     public function __construct(?Request $request = null)
     {
-        if (is_null($request)) $request = request();
+        if (!is_null($request)) {
+            $this->init($request);
+        }
+    }
 
+    /**
+     * @param Request $request
+     * @return void
+     */
+    protected function init(Request $request): void
+    {
         $offset = $request->integer('offset');
         $page = $request->integer('page');
         $orderColumn = $request->string('order', 'id')->toString();
@@ -48,7 +62,7 @@ class Filter
         $this->setLimit($request->integer('limit'));
 
         if ($page) {
-            $this->setOffset($page);
+            $this->setPage($page);
         } elseif ($offset) {
             $this->setOffset($offset);
         }
@@ -58,6 +72,7 @@ class Filter
         }
 
         $this->setSearchText($request->string('text')->toString());
+        $this->setRelationSearch($request->boolean('relation_search', true));
     }
 
     /**
@@ -95,7 +110,12 @@ class Filter
     {
         if ($offset >= 0) {
             $this->offset = $offset;
-            $this->page = floor($offset / $this->limit) + 1;
+
+            if (is_null($this->limit) || $this->limit === 0) {
+                $this->page = 1;
+            } else {
+                $this->page = floor($offset / $this->limit) + 1;
+            }
         }
         return $this;
     }
@@ -131,20 +151,24 @@ class Filter
 
     /**
      * It should be like:
+     * <code>
      *  [
      *    column => sort,
      *    ...
      *  ]
+     * </code>
      *
      * @param array $order
      * @return static
      *
      * @example As an example:
+     * <code>
      *  [
      *    'id' => 'desc',
      *    'name' => 'asc',
      *    ...
      *  ]
+     * </code>
      */
     public function setOrder(array $order): static
     {
@@ -172,6 +196,24 @@ class Filter
     }
 
     /**
+     * @return bool
+     */
+    public function getRelationSearch(): bool
+    {
+        return $this->relationSearch;
+    }
+
+    /**
+     * @param bool $relationsSearch
+     * @return static
+     */
+    public function setRelationSearch(bool $relationsSearch): static
+    {
+        $this->relationSearch = $relationsSearch;
+        return $this;
+    }
+
+    /**
      * @return static
      */
     public function reset(): static
@@ -181,6 +223,7 @@ class Filter
         $this->page = 1;
         $this->order = ['id' => 'desc'];
         $this->searchText = null;
+        $this->relationSearch = true;
 
         return $this;
     }

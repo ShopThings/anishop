@@ -22,7 +22,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
-use function App\Support\Helper\to_boolean;
 
 class SliderService extends Service implements SliderServiceInterface
 {
@@ -42,12 +41,14 @@ class SliderService extends Service implements SliderServiceInterface
             $query->orWhereLike('title', $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -131,56 +132,68 @@ class SliderService extends Service implements SliderServiceInterface
          */
         $fileService = app()->get(FileServiceInterface::class);
 
-        return $sliders->map(function ($item) use ($productService, $fileService) {
-            if ($item->place->place_in === SliderPlacesEnum::MAIN_SLIDER_IMAGES) {
-                $slides = $item->items->map(function ($slide) use ($fileService) {
-                    $file = $fileService->find($slide[SliderItemOptionsEnum::IMAGE->value]);
+        return $sliders
+            ->sortBy('priority', SORT_ASC)
+            ->map(function ($item) use ($productService, $fileService) {
+                if ($item->place_in === SliderPlacesEnum::MAIN_SLIDER_IMAGES->value) {
+                    $slides = $item->items
+                        ->sortBy('priority', SORT_ASC)
+                        ->map(function ($slide) use ($fileService) {
+                            // second parameter will search on id of an image too
+                            $file = $fileService->find($slide[SliderItemOptionsEnum::IMAGE->value], true);
 
-                    return [
-                        'image' => $file->full_path ?? null,
-                        'link' => $slide[SliderItemOptionsEnum::LINK->value],
-                    ];
-                });
-            } else {
-                $options = $this->_validateSliderOptions($item->options);
+                            return [
+                                'id' => $slide->id,
+                                'image' => $file?->full_path,
+                                'link' => $slide[SliderItemOptionsEnum::LINK->value],
+                            ];
+                        });
+                } else {
+                    $options = $this->_validateSliderOptions($item->options);
 
-                $filter = new HomeProductFilter(request());
-                $filter->reset();
+                    $filter = new HomeProductFilter();
+                    $filter->reset();
 
-                $filter->setBrand($options['brand']);
-                $filter->setCategory($options['category']);
-                $filter->setProductOrder(
-                    $options['sort'] == 'asc'
-                        ? ProductOrderTypesEnum::OLDEST
-                        : ProductOrderTypesEnum::NEWEST
-                );
-                $filter->setIsSpecial($options['is_special']);
-                $filter->setLimit($options['count']);
-                $filter->setIsAvailable(true);
+                    $filter->setBrand($options['brand']);
+                    $filter->setCategory($options['category']);
+                    $filter->setProductOrder(
+                        $options['sort'] == 'asc'
+                            ? ProductOrderTypesEnum::OLDEST
+                            : ProductOrderTypesEnum::NEWEST
+                    );
+                    $filter->setIsSpecial($options['is_special']);
+                    $filter->setLimit($options['count']);
+                    $filter->setIsAvailable(true);
 
-                $where = new WhereBuilder('products');
-                $where->whereEqual('is_published', DatabaseEnum::DB_YES)
-                    ->whereEqual('is_available', DatabaseEnum::DB_YES);
+                    $where = new WhereBuilder('products');
+                    $where->whereEqual('is_published', DatabaseEnum::DB_YES)
+                        ->whereEqual('is_available', DatabaseEnum::DB_YES);
 
-                $slides = collect(
-                    $productService->getProducts(
-                        filter: $filter,
-                        where: $where->build()
-                    )->items()
-                );
-            }
+                    $slides = collect(
+                        $productService->getProducts(
+                            filter: $filter,
+                            where: $where->build()
+                        )->items()
+                    );
+                }
 
-            return [
-                'id' => $item['id'],
-                'title' => $item['title'],
-                'place' => $item->place,
-                'items' => $slides,
-                'options' => [
-                    SliderOptionsEnum::BESIDE_IMAGES->value => $item->options[SliderOptionsEnum::BESIDE_IMAGES->value] ?? 1,
-                    SliderOptionsEnum::SHOW_ALL_LINK->value => $item->options[SliderOptionsEnum::SHOW_ALL_LINK->value] ?? null,
-                ],
-            ];
-        });
+                // make options
+                $options = [];
+                if (isset($item->options[SliderOptionsEnum::SHOW_ALL_LINK->value])) {
+                    $options[SliderOptionsEnum::SHOW_ALL_LINK->value] = $item->options[SliderOptionsEnum::SHOW_ALL_LINK->value] ?? null;
+                }
+                if ($item->place_in === SliderPlacesEnum::MAIN_SLIDER_IMAGES->value) {
+                    $options[SliderOptionsEnum::BESIDE_IMAGES->value] = $item->options[SliderOptionsEnum::BESIDE_IMAGES->value] ?? 1;
+                }
+
+                return [
+                    'id' => $item['id'],
+                    'title' => $item['title'],
+                    'place' => $item->place_in,
+                    'items' => $slides,
+                    'options' => $options,
+                ];
+            });
     }
 
     /**
@@ -189,7 +202,7 @@ class SliderService extends Service implements SliderServiceInterface
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'slider_place_id' => $attributes['slider_place'],
+            'place_in' => $attributes['slider_place'],
             'title' => $attributes['title'],
             'priority' => $attributes['priority'] ?? 0,
             'options' => $attributes['options'] ?? [],
@@ -207,7 +220,7 @@ class SliderService extends Service implements SliderServiceInterface
         $updateAttributes = [];
 
         if (isset($attributes['slider_place'])) {
-            $updateAttributes['slider_place_id'] = $attributes['slider_place'];
+            $updateAttributes['place_in'] = $attributes['slider_place'];
         }
         if (isset($attributes['title'])) {
             $updateAttributes['title'] = $attributes['title'];
@@ -240,11 +253,30 @@ class SliderService extends Service implements SliderServiceInterface
         if (!count($slides))
             throw new InvalidArgumentException('وارد نمودن حداقل یک اسلاید اجباری می‌باشد.');
 
-        foreach ($slides as &$item) {
-            $item['slider_id'] = $sliderId;
-        }
+        $newSlides = [];
+        $collectedSlides = collect($slides);
 
-        return $this->repository->updateOrCreateItems($slides);
+        $counter = 0;
+        $collectedSlides
+            ->sortBy('id')
+            ->each(function ($item) use (&$newSlides, $sliderId, &$counter) {
+                $newItem = $item;
+                unset($newItem['id']);
+
+                // store id of an image to prevent any error on move of that file
+                if (isset($newItem[SliderItemOptionsEnum::IMAGE->value]['id'])) {
+                    $newItem[SliderItemOptionsEnum::IMAGE->value] = $newItem[SliderItemOptionsEnum::IMAGE->value]['id'];
+                }
+
+                $newSlides[] = [
+                    'id' => $item['id'],
+                    'slider_id' => $sliderId,
+                    'priority' => $counter++,
+                    'options' => $newItem,
+                ];
+            });
+
+        return $this->repository->updateOrCreateItems($newSlides);
     }
 
     /**

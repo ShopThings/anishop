@@ -47,7 +47,7 @@ export const NewsletterAPI = Object.assign(
 )
 
 export const SmsLogAPI = {
-  fetchAll(callbacks) {
-    useRequest(apiRoutes.admin.smsLogs, null, callbacks)
+  fetchAll(params, callbacks) {
+    useRequest(apiRoutes.admin.smsLogs.index, {params}, callbacks)
   },
 }

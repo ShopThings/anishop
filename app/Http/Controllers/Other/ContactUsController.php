@@ -46,30 +46,33 @@ class ContactUsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return ContactUsResource
      * @throws AuthorizationException
      */
-    public function show(ContactUs $contactUs): ContactUsResource
+    public function show(ContactUs $contact): ContactUsResource
     {
-        $this->authorize('view', $contactUs);
-        return new ContactUsResource($contactUs);
+        $this->authorize('view', $contact);
+        return new ContactUsResource($contact);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateContactUsRequest $request
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return ContactUsResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateContactUsRequest $request, ContactUs $contactUs): JsonResponse|ContactUsResource
+    public function update(UpdateContactUsRequest $request, ContactUs $contact): JsonResponse|ContactUsResource
     {
-        $this->authorize('update', $contactUs);
+        $this->authorize('update', $contact);
 
-        $validated = $request->validated(['is_seen']);
-        $model = $this->service->updateById($contactUs->id, $validated);
+        $validated = $request->validated([
+            'answer',
+            'is_seen',
+        ]);
+        $model = $this->service->updateById($contact->id, $validated);
 
         if (!is_null($model)) {
             return new ContactUsResource($model);
@@ -85,16 +88,16 @@ class ContactUsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, ContactUs $contactUs): JsonResponse
+    public function destroy(Request $request, ContactUs $contact): JsonResponse
     {
-        $this->authorize('delete', $contactUs);
+        $this->authorize('delete', $contact);
 
-        $permanent = $request->user()->id === $contactUs->creator?->id;
-        $res = $this->service->deleteById($contactUs->id, $permanent);
+        $permanent = $request->user()->id === $contact->creator?->id;
+        $res = $this->service->deleteById($contact->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else

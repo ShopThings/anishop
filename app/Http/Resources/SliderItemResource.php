@@ -17,15 +17,18 @@ class SliderItemResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('slider');
+        $this->resource->load('creator');
+
         return [
             'id' => $this->id,
-            'slider' => new SliderShowResource($this->whenLoaded('slider')),
+            'slider' => new SliderShowResource($this->slider),
             'priority' => $this->priority,
             'options' => $this->options,
             'is_published' => $this->is_published,
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

@@ -4,10 +4,10 @@
       <app-sidebar-admin/>
     </div>
 
-    <div class="grow flex flex-col overflow-auto" ref="pageContainer">
+    <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-admin ref="navbarCom"/>
 
-      <div class="p-3" ref="extra" v-if="title">
+      <div v-if="title" ref="extra" class="p-3">
         <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
           <h1 class="flex items-center">
             <ArrowLeftCircleIcon class="h-5 w-5 ml-2 text-emerald-500"/>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="px-3 pb-3" ref="page">
+      <div ref="page" class="px-3 pb-3">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">

@@ -31,10 +31,10 @@ class CouponResource extends JsonResource
                 ? Carbon::parse($this->end_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'start_at' => $this->start_at
-                ? verta($this->start_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->start_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'end_at' => $this->end_at
-                ? verta($this->end_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->end_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'used_count' => $this->getUsedCount(),
             'use_count' => $this->use_count,
@@ -44,15 +44,15 @@ class CouponResource extends JsonResource
             'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

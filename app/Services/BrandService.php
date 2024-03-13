@@ -14,7 +14,6 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class BrandService extends Service implements BrandServiceInterface
 {
@@ -53,15 +52,22 @@ class BrandService extends Service implements BrandServiceInterface
     /**
      * @inheritDoc
      */
-    public function getPublishedBrands(): Collection
+    public function getPublishedBrands(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('brands');
-        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+        $where
+            ->whereEqual('is_deletable', DatabaseEnum::DB_YES)
+            ->whereEqual('is_published', DatabaseEnum::DB_YES);
 
-        return $this->repository->all(
-            columns: ['id', 'name', 'slug'],
-            where: $where->build()
-        );
+        return $this->repository
+            ->newWith('image')
+            ->paginate(
+                columns: ['id', 'name', 'latin_name', 'slug'],
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**
@@ -73,9 +79,11 @@ class BrandService extends Service implements BrandServiceInterface
         $where->whereEqual('is_published', DatabaseEnum::DB_YES)
             ->whereEqual('show_in_slider', DatabaseEnum::DB_YES);
 
-        return $this->repository->all(
-            columns: ['id', 'name', 'latin_name', 'slug'],
-            where: $where->build());
+        return $this->repository
+            ->newWith('image')
+            ->all(
+                columns: ['id', 'name', 'latin_name', 'slug'],
+                where: $where->build());
     }
 
     /**

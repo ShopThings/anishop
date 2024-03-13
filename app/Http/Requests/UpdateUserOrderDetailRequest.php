@@ -26,17 +26,9 @@ class UpdateUserOrderDetailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'province' => [
-                'sometimes',
-                'exists:' . Province::class . ',id',
-            ],
-            'city' => [
-                'required_with:province',
-                new CityInProvinceRule(),
-            ],
             'address' => [
                 'sometimes',
-                'max:250',
+                'max:300',
             ],
             'postal_code' => [
                 'sometimes',

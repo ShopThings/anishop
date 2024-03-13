@@ -15,16 +15,16 @@
                 <div class="w-full p-2 sm:w-1/2 lg:w-5/12 xl:w-5/12">
                   <partial-input-label title="انتخاب ویژگی"/>
                   <base-select-searchable
-                      :options="attributes"
-                      options-key="id"
-                      options-text="title"
-                      name="attribute"
-                      placeholder="جستجوی ویژگی جستجو..."
+                      :current-page="attributeSelectConfig.currentPage.value"
+                      :has-pagination="true"
                       :is-loading="searchAttributeLoading"
                       :is-local-search="false"
-                      :has-pagination="true"
-                      :current-page="attributeSelectConfig.currentPage"
-                      :last-page="attributeSelectConfig.lastPage"
+                      :last-page="attributeSelectConfig.lastPage.value"
+                      :options="attributes"
+                      name="attribute"
+                      options-key="id"
+                      options-text="title"
+                      placeholder="جستجوی ویژگی جستجو..."
                       @change="(selected) => {selectedAttribute = selected}"
                       @query="searchAttribute"
                       @click-next-page="searchAttributeNextPage"
@@ -35,16 +35,16 @@
                 <div class="w-full p-2 sm:w-1/2 lg:w-4/12 xl:w-5/12">
                   <partial-input-label title="انتخاب دسته‌بندی"/>
                   <base-select-searchable
-                      :options="categories"
-                      options-key="id"
-                      options-text="name"
-                      name="category"
-                      placeholder="جستجوی دسته‌بندی..."
+                      :current-page="categorySelectConfig.currentPage.value"
+                      :has-pagination="true"
                       :is-loading="searchCategoryLoading"
                       :is-local-search="false"
-                      :has-pagination="true"
-                      :current-page="categorySelectConfig.currentPage"
-                      :last-page="categorySelectConfig.lastPage"
+                      :last-page="categorySelectConfig.lastPage.value"
+                      :options="categories"
+                      name="category"
+                      options-key="id"
+                      options-text="name"
+                      placeholder="جستجوی دسته‌بندی..."
                       @change="(selected) => {selectedCategory = selected}"
                       @query="searchCategory"
                       @click-next-page="searchCategoryNextPage"
@@ -54,13 +54,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 lg:w-3/12 xl:w-2/12">
                   <base-input
-                      type="text"
                       :min="0"
                       :money-mask="true"
-                      label-title="اولویت"
-                      placeholder="وارد نمایید"
-                      name="priority"
                       :value="categoryAttribute?.priority?.toString()"
+                      label-title="اولویت"
+                      name="priority"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -71,15 +71,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                     :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
                         v-if="!canSubmit"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
                         big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -89,6 +89,20 @@
 
                   <span class="ml-auto">ویرایش تخصیص ویژگی</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </template>
@@ -100,7 +114,6 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -115,7 +128,8 @@ import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
-import {ProductAttributeAPI, ProductAttributeCategoryAPI} from "@/service/APIProduct.js";
+import {CategoryAPI, ProductAttributeAPI, ProductAttributeCategoryAPI} from "@/service/APIProduct.js";
+import {useSelectSearching} from "@/composables/select-searching.js";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
@@ -125,98 +139,60 @@ const loading = ref(true)
 //---------------------------------------------------------
 // Attribute operation
 //---------------------------------------------------------
-const searchAttributeLoading = ref(true)
 const attributes = ref([])
 const selectedAttribute = ref(null)
-const attributeSelectConfig = reactive({
-  limit: 15,
-  currentPage: 1,
-  lastPage: null,
-  offset: () => {
-    return (attributeSelectConfig.currentPage - 1) * attributeSelectConfig.limit;
+const attributeSelectConfig = useSelectSearching({
+  searchFn(query) {
+    ProductAttributeAPI.fetchAll({
+      limit: attributeSelectConfig.limit.value,
+      offset: attributeSelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        attributes.value = response.data
+        if (response.meta) {
+          attributeSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        attributeSelectConfig.isLoading.value = false
+      }
+    })
   },
 })
-
-function searchAttribute(query) {
-  searchAttributeLoading.value = true
-  ProductAttributeAPI.fetchAll({
-    limit: attributeSelectConfig.limit,
-    offset: attributeSelectConfig.offset(),
-    text: query
-  }, {
-    success(response) {
-      attributes.value = response.data
-      if (response.meta) {
-        attributeSelectConfig.lastPage = response.meta?.last_page
-      }
-    },
-    finally() {
-      searchAttributeLoading.value = false
-    }
-  })
-}
-
-function searchAttributeNextPage(query) {
-  if (attributeSelectConfig.currentPage < attributeSelectConfig.lastPage) {
-    attributeSelectConfig.currentPage++
-    searchAttribute(query)
-  }
-}
-
-function searchAttributePrevPage(query) {
-  if (attributeSelectConfig.currentPage > 1) {
-    attributeSelectConfig.currentPage--
-    searchAttribute(query)
-  }
-}
+const searchAttribute = attributeSelectConfig.search
+const searchAttributeLoading = attributeSelectConfig.isLoading
+const searchAttributeNextPage = attributeSelectConfig.searchNextPage
+const searchAttributePrevPage = attributeSelectConfig.searchPrevPage
 
 //---------------------------------------------------------
 // Category operation
 //---------------------------------------------------------
-const searchCategoryLoading = ref(true)
 const categories = ref([])
 const selectedCategory = ref(null)
-const categorySelectConfig = reactive({
-  limit: 15,
-  currentPage: 1,
-  lastPage: null,
-  offset: () => {
-    return (categorySelectConfig.currentPage - 1) * categorySelectConfig.limit;
+const categorySelectConfig = useSelectSearching({
+  searchFn(query) {
+    CategoryAPI.fetchAll({
+      limit: categorySelectConfig.limit.value,
+      offset: categorySelectConfig.offset(),
+      text: query
+    }, {
+      success(response) {
+        categories.value = response.data
+        if (response.meta) {
+          categorySelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally() {
+        categorySelectConfig.isLoading.value = false
+      }
+    })
   },
 })
-
-function searchCategory(query) {
-  searchCategoryLoading.value = true
-  CategoryAPI.fetchAll({
-    limit: categorySelectConfig.limit,
-    offset: categorySelectConfig.offset(),
-    text: query
-  }, {
-    success(response) {
-      categories.value = response.data
-      if (response.meta) {
-        categorySelectConfig.lastPage = response.meta?.last_page
-      }
-    },
-    finally() {
-      searchCategoryLoading.value = false
-    }
-  })
-}
-
-function searchCategoryNextPage(query) {
-  if (categorySelectConfig.currentPage < categorySelectConfig.lastPage) {
-    categorySelectConfig.currentPage++
-    searchCategory(query)
-  }
-}
-
-function searchCategoryPrevPage(query) {
-  if (categorySelectConfig.currentPage > 1) {
-    categorySelectConfig.currentPage--
-    searchCategory(query)
-  }
-}
+const searchCategory = categorySelectConfig.search
+const searchCategoryLoading = categorySelectConfig.isLoading
+const searchCategoryNextPage = categorySelectConfig.searchNextPage
+const searchCategoryPrevPage = categorySelectConfig.searchPrevPage
 
 //------------------------------------------------
 const categoryAttribute = ref(null)
@@ -228,8 +204,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .required('اولویت را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   if (!selectedAttribute.value || !selectedAttribute.value?.id) {
     actions.setFieldError('attribute', 'ویژگی را وارد نمایید.')
     return

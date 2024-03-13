@@ -3,25 +3,25 @@
     <div class="h-full w-full max-w-5xl grid grid-cols-2">
       <div class="h-full col-span-2 lg:col-span-1 z-[2]">
         <div
-          class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:items-start mx-auto lg:rounded-r-lg">
+            class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:items-start mx-auto lg:rounded-r-lg">
           <router-link :to="{name: 'home'}">
             <img
-              src="/logo-with-type-light.png"
-              alt="آیریا کالا"
-              class="h-12 my-4 lg:hidden"
+                :alt="homeSettingStore.getTitle"
+                class="h-12 my-4 lg:hidden"
+                src="/logo-with-type-light.png"
             />
           </router-link>
 
           <div
-            class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
+              class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
           >
             <base-stepy
-              v-model:current-step="currentStep"
-              :steps="steps"
-              :allow-change-steps-by-click="false"
-              :loading="loading"
-              :manual="true"
-              :simple="true"
+                v-model:current-step="currentStep"
+                :allow-change-steps-by-click="false"
+                :loading="loading"
+                :manual="true"
+                :simple="true"
+                :steps="steps"
             >
               <template #mobileEntering="options">
                 <form-signup-enter-mobile :options="options"/>
@@ -47,20 +47,23 @@
       </div>
 
       <div
-        class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-l-lg">
+          class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-l-lg">
         <div class="py-10 flex-col justify-center items-center h-full mx-auto relative z-[2] hidden lg:flex">
           <router-link
-            :to="{name: 'home'}"
-            class="mb-6"
+              :to="{name: 'home'}"
+              class="mb-6"
           >
             <img
-              src="/logo-light.png"
-              alt="آیریا کالا"
-              class="h-16"
+                :alt="homeSettingStore.getTitle"
+                class="h-16"
+                src="/logo-light.png"
             />
           </router-link>
 
-          <h1 class="text-2xl py-2 bg-white bg-opacity-30 rounded-full px-4 mb-16">ثبت نام در آیریا کالا</h1>
+          <h1 class="text-2xl py-2 bg-white bg-opacity-30 rounded-full px-4 mb-16">
+            ثبت نام در
+            {{ homeSettingStore.getTitle }}
+          </h1>
 
 
           <hr class="w-48 h-1 mx-auto bg-slate-200 bg-opacity-60 border-0 rounded my-3">
@@ -78,11 +81,13 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {inject, reactive, ref} from "vue";
 import BaseStepy from "@/components/base/BaseStepy.vue";
 import FormSignupEnterMobile from "./forms/FormSignupEnterMobile.vue";
 import FormSignupEnterCode from "./forms/FormSignupEnterCode.vue";
 import FormSignupEnterPassword from "./forms/FormSignupEnterPassword.vue";
+
+const homeSettingStore = inject('homeSettingStore')
 
 const currentStep = ref('mobileEntering')
 const loading = ref(false)

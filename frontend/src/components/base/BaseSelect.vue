@@ -2,24 +2,25 @@
   <template v-if="editMode">
     <Listbox
         v-model="selectedItems"
-        :name="name"
-        :multiple="multiple"
         :by="optionsKey"
+        :multiple="multiple"
+        :name="name"
     >
       <div class="relative">
-        <ListboxButton class="relative" :class="btnClass">
+        <ListboxButton :class="btnClass" class="relative">
           <slot name="button">
             <span class="block truncate text-right pr-6">{{ selectText || 'انتخاب کنید' }}</span>
 
             <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                    <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true"/></span>
+                    <ChevronUpDownIcon aria-hidden="true" class="h-5 w-5 text-gray-400"/></span>
           </slot>
         </ListboxButton>
 
         <VTransitionSlideFadeUpY>
           <ListboxOptions
+              ref="optionsContainerRef"
               :class="optionsClass"
-              class="absolute min-w-[12rem] z-[5] max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+              class="absolute min-w-[12rem] z-[5] max-h-60 w-full my-custom-scrollbar rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           >
             <loader-progress v-if="isLoading"/>
 
@@ -31,9 +32,9 @@
             </div>
 
             <ListboxOption
-                v-slot="{ active, selected }"
                 v-for="item in options"
                 :key="item[optionsKey]"
+                v-slot="{ active, selected }"
                 :value="item"
                 as="template"
             >
@@ -48,14 +49,14 @@
                     'block truncate',
                   ]"
                 >
-                    <slot name="item" :item="item" :selected="selected">
+                    <slot :item="item" :selected="selected" name="item">
                         {{ nestedArray.get(item, optionsText) }}
                     </slot>
                 </span>
                 <span
                     v-if="selected"
                     class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
-                    <CheckIcon class="h-5 w-5" aria-hidden="true"/>
+                    <CheckIcon aria-hidden="true" class="h-5 w-5"/>
                 </span>
               </li>
             </ListboxOption>
@@ -71,26 +72,28 @@
     <span class="grow text-gray-500 text-sm">{{ fullTextOfSelectedItems || '-' }}</span>
     <button
         v-if="isEditable"
-        type="button"
         class="shrink-0 mr-2"
+        type="button"
     >
       <PencilSquareIcon
-          @click="toggleEditMode"
           class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+          @click="toggleEditMode"
       />
     </button>
   </div>
 </template>
 
 <script setup>
-import {computed, ref, watch} from "vue"
+import {computed, nextTick, ref, watch} from "vue"
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue"
 import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import isObject from "lodash.isobject";
 import LoaderProgress from "./loader/LoaderProgress.vue";
-import {nestedArray} from "../../composables/helper.js";
+import {nestedArray} from "@/composables/helper.js";
+import isFunction from "lodash.isfunction";
+import {useElementBounding} from "@vueuse/core";
 
 const props = defineProps({
   selected: {
@@ -122,7 +125,7 @@ const props = defineProps({
   },
   btnClass: {
     type: String,
-    default: 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+    default: 'block w-full rounded-md bg-white border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
   },
   hasEditMode: {
     type: Boolean,
@@ -136,8 +139,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  beforeChangeFn: Function,
 })
-const emit = defineEmits(['change'])
+const emit = defineEmits(['change', 'before-change'])
 
 const editMode = ref(props.hasEditMode)
 
@@ -218,8 +222,63 @@ const fullTextOfSelectedItems = computed(() => {
   }
 })
 
-watch(selectedItems, () => {
-  setSelectedItemsText()
-  emit('change', selectedItems.value)
+const isHandlingChange = ref(false)
+
+watch(selectedItems, async (newValue, oldValue) => {
+  if (!isHandlingChange.value) {
+    isHandlingChange.value = true;
+
+    emit('change', newValue)
+
+    let res = await handleBeforeChange()
+    if (res === false) {
+      selectedItems.value = oldValue
+    }
+
+    setSelectedItemsText()
+
+    nextTick(() => {
+      isHandlingChange.value = false;
+    })
+  }
+})
+
+async function handleBeforeChange() {
+  emit('before-change', selectedItems.value)
+
+  let res = true
+  if (isFunction(props.beforeChangeFn)) {
+    try {
+      res = await props.beforeChangeFn(selectedItems.value)
+    } catch (error) {
+      res = error
+    }
+  }
+
+  return res
+}
+
+//--------------------------------------------
+// Make options container be in page
+//--------------------------------------------
+const optionsContainerRef = ref(null)
+
+watch(() => optionsContainerRef.value?.$el?.classList, () => {
+  if (optionsContainerRef.value.$el) {
+    const {top, right, bottom, left} = useElementBounding(optionsContainerRef.value.$el)
+
+    const isVisible = (
+        top.value >= 0 &&
+        left.value >= 0 &&
+        bottom.value <= window.innerHeight &&
+        right.value <= window.innerWidth
+    );
+
+    if (!isVisible) {
+      optionsContainerRef.value.$el.classList.add('bottom-[calc(100%+0.25rem)]')
+    } else {
+      optionsContainerRef.value.$el.classList.remove('bottom-[calc(100%+0.25rem)]')
+    }
+  }
 })
 </script>

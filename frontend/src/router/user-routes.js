@@ -1,6 +1,8 @@
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
+const slugRouteRegex = '([^\\\/\.]+)'
+
 export const userRoutes = {
   path: '/user',
   children: [
@@ -137,6 +139,11 @@ export const userRoutes = {
           },
         },
       ],
+    },
+    {
+      path: 'comment/:slug' + slugRouteRegex + '/add',
+      name: 'user.comment.add',
+      component: () => import('@/views/user/PageCommentAdd.vue'),
     },
 
     {
@@ -275,7 +282,7 @@ export const userRoutes = {
     },
   ],
   meta: {
-    requiresAuth: false,
+    requiresAuth: true,
     layout: 'layout-user',
   },
 }

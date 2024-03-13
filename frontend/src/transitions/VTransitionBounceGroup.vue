@@ -4,9 +4,6 @@
   </TransitionGroup>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .bounce-group-enter-active {
   animation: bounce-in 0.3s;

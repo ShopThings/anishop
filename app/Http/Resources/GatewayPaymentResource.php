@@ -21,12 +21,12 @@ class GatewayPaymentResource extends JsonResource
             'status' => $this->status,
             'message' => $this->message,
             'receipt' => $this->receipt,
-            'gateway_type' => GatewaysEnum::getTranslations($this->gateway_type),
+            'gateway_type' => GatewaysEnum::getTranslations($this->gateway_type, 'نامشخص'),
             'payed_at' => $this->payed_at
-                ? verta($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

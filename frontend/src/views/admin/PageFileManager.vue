@@ -1,14 +1,14 @@
 <template>
   <base-file-manager
-    :has-create-folder="true"
-    :has-uploader="true"
-    :has-search="true"
-    :allow-multi-operation="true"
-    :allow-move="true"
-    :allow-copy="true"
-    :allow-rename="true"
-    :allow-delete="true"
-    :allow-download="true"
+      :allow-copy="true"
+      :allow-delete="true"
+      :allow-download="true"
+      :allow-move="true"
+      :allow-multi-operation="true"
+      :allow-rename="true"
+      :has-create-folder="true"
+      :has-search="true"
+      :has-uploader="true"
   >
   </base-file-manager>
 </template>

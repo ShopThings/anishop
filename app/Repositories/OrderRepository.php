@@ -62,25 +62,34 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                     ])
                     ->where('user_id', $uId);
             })
-            ->when($search, function (Builder $query, string $search) {
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->whereHas('user', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
-                    })
-                    ->whereHas('orders', function ($q) use ($search) {
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
                         $q
-                            ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
-                                $q2->whereIn('payment_method_type', $types);
+                            ->orWhereHas('user', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
                             })
-                            ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function ($q2, $statuses) {
-                                $q2->whereIn('payment_status', $statuses);
-                            })
-                            ->orWhereLike('payment_method_title', $search);
+                            ->orWhereHas('orders', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q
+                                        ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
+                                            $q2->orWhereIn('payment_method_type', $types);
+                                        })
+                                        ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function ($q2, $statuses) {
+                                            $q2->orWhereIn('payment_status', $statuses);
+                                        })
+                                        ->orWhereLike([
+                                            'payment_method_title',
+                                        ], $search);
+                                });
+                            });
                     })
                     ->orWhereLike([
                         'first_name',
@@ -112,6 +121,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     {
         return $this->model->newQuery()
             ->withAnyPaidOrder()
+            ->where('user_id', $userId)
             ->where('ordered_at', '>=', now()->subWeek())
             ->get($columns);
     }

@@ -4,7 +4,7 @@
       ویرایش ویژگی جستجوی
       <span
           v-if="product?.id"
-          class="text-teal-600"
+          class="text-slate-400 text-base"
       >{{ product?.title }}</span>
     </template>
     <template #body>
@@ -29,11 +29,11 @@
                 >
                   <partial-input-label :title="attr.title"/>
                   <base-select
+                      :name="'attr' + attr.id"
                       :options="attr.attr_values"
+                      :selected="attr.product_attr_value[attr.id]"
                       options-key="id"
                       options-text="product_attribute_value.attribute_value"
-                      :selected="attr.product_attr_value[attr.id]"
-                      :name="'attr' + attr.id"
                       @change="(t) => {attr.product_attr_value[attr.id] = t}"
                   />
                 </div>
@@ -41,15 +41,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                     :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
                         v-if="!canSubmit"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
                         big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -59,6 +59,20 @@
 
                   <span class="ml-auto">ویرایش ویژگی‌های محصول</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </template>
@@ -99,8 +113,6 @@ const selectedAttrValues = ref([])
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({}),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   canSubmit.value = false
 
   ProductAttributeProductAPI.create({

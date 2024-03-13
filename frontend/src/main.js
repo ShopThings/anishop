@@ -30,6 +30,7 @@ import LayoutUser from './components/layouts/LayoutUser.vue';
 import LayoutAdmin from './components/layouts/LayoutAdmin.vue';
 import LayoutEmpty from "./components/layouts/LayoutEmpty.vue";
 import LayoutBlog from "./components/layouts/LayoutBlog.vue";
+import LayoutEmptyGuest from "@/components/layouts/LayoutEmptyGuest.vue";
 
 const head = createHead()
 const pinia = createPinia()
@@ -146,4 +147,5 @@ createApp(App)
   .component('layout-user', LayoutUser)
   .component('layout-admin', LayoutAdmin)
   .component('layout-empty', LayoutEmpty)
+  .component('layout-empty-guest', LayoutEmptyGuest)
   .mount('#app')

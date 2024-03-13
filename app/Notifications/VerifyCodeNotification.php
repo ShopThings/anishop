@@ -11,7 +11,6 @@ use App\Services\Contracts\SettingServiceInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use function App\Support\Helper\replace_sms_variables;
 
 class VerifyCodeNotification extends Notification implements ShouldQueue
 {

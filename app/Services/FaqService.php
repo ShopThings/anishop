@@ -12,7 +12,6 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class FaqService extends Service implements FaqServiceInterface
 {
@@ -65,7 +64,7 @@ class FaqService extends Service implements FaqServiceInterface
         $attrs = [
             'question' => $attributes['question'],
             'answer' => $attributes['answer'],
-            'keywords' => $attributes['keywords'],
+            'keywords' => $attributes['keywords'] ?? [],
             'is_published' => to_boolean($attributes['is_published']),
         ];
 

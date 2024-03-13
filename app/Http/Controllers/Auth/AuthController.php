@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Showing\UserAuthShowResource;
 use App\Services\Contracts\AuthServiceInterface;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -31,7 +31,7 @@ class AuthController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
             'data' => [
-                'user' => new UserResource($user),
+                'user' => new UserAuthShowResource($user),
                 'token' => $token,
             ],
         ]);

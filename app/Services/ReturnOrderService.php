@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use function App\Support\Helper\get_nanoid;
-use function App\Support\Helper\to_boolean;
 
 class ReturnOrderService extends Service implements ReturnOrderServiceInterface
 {
@@ -37,7 +35,9 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
-        return $this->repository->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
+        return $this->repository
+            ->newWith(['user', 'statusChangedBy'])
+            ->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
     }
 
     /**
@@ -236,6 +236,34 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         $where = new WhereBuilder();
         $where->whereEqual('id', $itemId);
         return $this->repository->getItemWhere(where: $where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatuses(): array
+    {
+        $statuses = ReturnOrderStatusesEnum::translationArray();
+        $userStatuses = $this->getUserStatuses();
+
+        return array_filter($statuses, function ($item, $key) use ($userStatuses) {
+            return !in_array($key, array_keys($userStatuses));
+        }, ARRAY_FILTER_USE_BOTH);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserStatuses(): array
+    {
+        $statuses = ReturnOrderStatusesEnum::getUserStatuses();
+
+        $arrStatuses = [];
+        foreach ($statuses as $status) {
+            $arrStatuses[$status] = ReturnOrderStatusesEnum::getSimilarValuesFromString($status);
+        }
+
+        return $arrStatuses;
     }
 
     /**

@@ -1,9 +1,9 @@
 <template>
   <form @submit.prevent="onSubmit">
     <base-input
-      class="grow mb-3"
-      name="searchDir"
-      placeholder="نام پوشه را وارد کنید..."
+        class="grow mb-3"
+        name="searchDir"
+        placeholder="نام پوشه را وارد کنید..."
     >
       <template #icon>
         <MagnifyingGlassCircleIcon class="w-6 h-6 text-gray-400"/>
@@ -11,14 +11,14 @@
     </base-input>
     <div class="text-left">
       <base-button
-        type="submit"
-        class="bg-primary grow rounded-lg border-primary text-sm mb-3 ml-2 !py-1"
+          class="bg-primary grow rounded-lg border-primary text-sm mb-3 ml-2 !py-1"
+          type="submit"
       >
         انجام جستجو
       </base-button>
       <base-button
-        @click="clearFilter"
-        class="bg-gray-200 !text-black grow border border-gray-300 rounded-lg text-sm mb-3 !py-1"
+          class="bg-gray-200 !text-black grow border border-gray-300 rounded-lg text-sm mb-3 !py-1"
+          @click="clearFilter"
       >
         حذف فیلتر
       </base-button>

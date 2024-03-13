@@ -26,7 +26,6 @@ class UpdatePaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-
             'title' => [
                 'sometimes',
                 'max:250',
@@ -49,7 +48,6 @@ class UpdatePaymentMethodRequest extends FormRequest
                 'nullable',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

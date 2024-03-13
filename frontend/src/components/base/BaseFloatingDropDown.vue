@@ -1,16 +1,16 @@
 <template>
-  <VDropdown :distance="6"
+  <VDropdown :container="container"
+             :disabled="itemsLength <= 0"
+             :distance="6"
              :placement="placement"
              :shift="shift"
-             :container="container"
-             :disabled="itemsLength <= 0"
   >
     <slot name="button"></slot>
 
     <template v-if="itemsLength > 0" #popper="{hide}">
       <ul class="p-2 min-w-[9rem] text-gray-700">
         <li v-for="(item, idx) in items" :key="idx">
-          <slot name="item" :item="item" :index="idx" :hide="hide"></slot>
+          <slot :hide="hide" :index="idx" :item="item" name="item"></slot>
         </li>
       </ul>
     </template>

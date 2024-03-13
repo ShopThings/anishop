@@ -101,31 +101,31 @@ class UserReturnOrderRequestController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param ReturnOrderRequest $returnOrderRequest
+     * @param ReturnOrderRequest $returnOrder
      * @return UserReturnOrderSingleResource
      */
-    public function show(ReturnOrderRequest $returnOrderRequest): UserReturnOrderSingleResource
+    public function show(ReturnOrderRequest $returnOrder): UserReturnOrderSingleResource
     {
-        return new UserReturnOrderSingleResource($returnOrderRequest);
+        return new UserReturnOrderSingleResource($returnOrder);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateUserReturnOrderRequest $request
-     * @param ReturnOrderRequest $returnOrderRequest
+     * @param ReturnOrderRequest $returnOrder
      * @return UserReturnOrderSingleResource|JsonResponse
      */
     public function update(
         UpdateUserReturnOrderRequest $request,
-        ReturnOrderRequest           $returnOrderRequest
+        ReturnOrderRequest $returnOrder
     ): UserReturnOrderSingleResource|JsonResponse
     {
         $validated = $request->validated(['description', 'items']);
 
         $model = $this->service->updateUserRequestByModel(
             userId: $request->user()->id,
-            model: $returnOrderRequest,
+            model: $returnOrder,
             attributes: [
                 'description' => $validated['description'],
                 'items' => $validated['items'],
@@ -150,12 +150,12 @@ class UserReturnOrderRequestController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param ReturnOrderRequest $returnOrderRequest
+     * @param ReturnOrderRequest $returnOrder
      * @return JsonResponse
      */
-    public function destroy(Request $request, ReturnOrderRequest $returnOrderRequest): JsonResponse
+    public function destroy(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
     {
-        if (!$this->service->canCancelOrder($returnOrderRequest)) {
+        if (!$this->service->canCancelOrder($returnOrder)) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'امکان لغو درخواست مرجوع وجود ندارد.',
@@ -164,7 +164,7 @@ class UserReturnOrderRequestController extends Controller
 
         $res = $this->service->cancelUserRequestById(
             userId: $request->user()->id,
-            requestId: $returnOrderRequest->id,
+            requestId: $returnOrder->id,
             permanent: true
         );
 

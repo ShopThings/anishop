@@ -41,8 +41,8 @@ class UserHomeController extends Controller
         $returnOrderCount = $returnOrderService->getUserOrdersCount($user->id);
         $productCommentCount = $productCommentService->getUserCommentsCount($user->id);
         $blogCommentCount = $blogCommentService->getUserCommentsCount($user->id);
-        $addressCount = $userService->getUserAddressesCount($user->id);
         $favoriteProductCount = $userService->getUserFavoriteProductsCount($user->id);
+        $addressCount = $userService->getUserAddressesCount($user->id);
         $contactCount = $contactUsService->getContactsCount($user->id);
 
         return response()->json([
@@ -52,8 +52,8 @@ class UserHomeController extends Controller
                 'return_order_count' => $returnOrderCount,
                 'product_comment_count' => $productCommentCount,
                 'blog_comment_count' => $blogCommentCount,
-                'address_count' => $addressCount,
                 'favorite_product_count' => $favoriteProductCount,
+                'address_count' => $addressCount,
                 'contact_count' => $contactCount,
             ],
         ]);

@@ -18,6 +18,8 @@ class OrderItemShowResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'product' => new ProductShowResource($this->whenLoaded('product')),
+            'product_code' => $this->product_code,
             'product_title' => $this->product_title,
             'color_name' => $this->color_name,
             'color_hex' => $this->color_hex,

@@ -7,12 +7,14 @@ use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Products\ProductOrderTypesEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
 use App\Http\Requests\Filters\HomeProductSideFilter;
+use App\Http\Requests\Filters\ProductFilter;
 use App\Models\Product;
 use App\Models\ProductGallery;
 use App\Models\ProductProperty;
 use App\Models\RelatedProduct;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Support\Filter;
+use App\Support\Model\CaseWhen;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
@@ -21,7 +23,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use function App\Support\Helper\get_db_ancestry_regex_string;
 
 class ProductRepository extends Repository implements ProductRepositoryInterface
 {
@@ -53,33 +54,43 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
 
         $query = $this->model->newQuery();
         $query
-            ->when($search, function (Builder $query, string $search) {
+            ->with(['brand', 'category', 'image'])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('brand', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'latin_name',
-                            'escaped_name',
-                            'keywords',
-                        ], $search);
-                    })
-                    ->withWhereHas('category', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'latin_name',
-                            'escaped_name',
-                        ], $search);
-                    })
-                    ->withWhereHas('items', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'color_name',
-                            'size',
-                            'guarantee',
-                        ], $search);
-                    })
-                    ->whereHas('productAttrValues.attrValues', function ($q) use ($search) {
-                        $q->orWhereLike('attribute_value', $search);
-                    })
-                    ->whereHas('productAttrValues.attrValues.productAttr', function ($q) use ($search) {
-                        $q->orWhereLike('title', $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q
+                            ->orWhereHas('brand', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'latin_name',
+                                        'escaped_name',
+                                        'keywords',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('category', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'latin_name',
+                                        'escaped_name',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('items', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'color_name',
+                                        'size',
+                                        'guarantee',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('productAttrValues.attrValues', function ($q) use ($search) {
+                                $q->whereLike('attribute_value', $search);
+                            })
+                            ->orWhereHas('productAttrValues.attrValues.productAttr', function ($q) use ($search) {
+                                $q->whereLike('title', $search);
+                            });
                     })
                     ->orWhereLike([
                         'escaped_title',
@@ -90,22 +101,36 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 $q->whereRaw($where->getStatement(), $where->getBindings());
             });
 
+        // add extra filter product filter instance
+        if ($filter instanceof ProductFilter) {
+            $ids = $filter->getIds();
+            if (!is_null($ids) && count($ids)) {
+                $query->whereIn('id', $ids);
+            }
+        }
+
+        // add extra filter for home product filter
         if ($filter instanceof HomeProductFilter) {
             // need published stuffs
             $query = $query->published();
-            $query = $this->_getBlogOrderEquivalent($query, $filter->getProductOrder());
+            $query = $this->_getProductOrderEquivalent($query, $filter->getProductOrder());
 
             $brand = $filter->getBrand();
+            $brands = $filter->getBrands();
             $category = $filter->getCategory();
             $isSpecial = $filter->getIsSpecial();
             $isAvailable = $filter->getIsAvailable();
+            $priceRange = $filter->getPriceRange();
 
             $query
                 ->when($brand, function (Builder $query, int $brand) {
-                    $query->where('products.brand_id', $brand);
+                    $query->where('brand_id', $brand);
+                })
+                ->when(count($brands), function (Builder $query) use ($brands) {
+                    $query->whereIn('brand_id', $brands);
                 })
                 ->when($category, function (Builder $query, int $category) {
-                    $query->where('products.category_id', $category);
+                    $query->where('category_id', $category);
                 })
                 ->when($isSpecial, function (Builder $query) {
                     $query->whereHas('items', function ($q) {
@@ -115,6 +140,33 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 ->when($isAvailable, function (Builder $query) {
                     $query->whereHas('items', function ($q) {
                         $q->where('is_available', DatabaseEnum::DB_YES);
+                    });
+                })
+                ->when(count($priceRange) == 2, function (Builder $query) use ($priceRange) {
+                    $query->whereHas('items', function ($q) use ($priceRange) {
+                        $q
+                            ->where(function ($q2) use ($priceRange) {
+                                return (new CaseWhen($q2))
+                                    // Check if discounted price is within the range
+                                    ->when(
+                                        '(discounted_from IS NULL AND discounted_until IS NOT NULL AND discounted_until >= ?) OR' .
+                                        '(discounted_from IS NOT NULL AND discounted_until IS NULL AND discounted_from <= ?) OR' .
+                                        '(discounted_from IS NOT NULL AND discounted_until IS NOT NULL AND discounted_from <= ? AND discounted_until >= ?)'
+                                        , 'discounted_price >= ?', [now(), now(), now(), now(), $priceRange[0]])
+                                    // If discounted conditions are not met, check the regular price
+                                    ->else('price >= ?', [$priceRange[0]], 'where');
+                            })
+                            ->where(function ($q2) use ($priceRange) {
+                                return (new CaseWhen($q2))
+                                    // Check if discounted price is within the range
+                                    ->when(
+                                        '(discounted_from IS NULL AND IS NOT NULL discounted_until AND discounted_until >= ?) OR' .
+                                        '(discounted_from IS NOT NULL AND discounted_until IS NULL AND discounted_from <= ?) OR' .
+                                        '(discounted_from IS NOT NULL AND discounted_until IS NOT NULL AND discounted_from <= ? AND discounted_until >= ?)'
+                                        , 'discounted_price <= ?', [now(), now(), now(), now(), $priceRange[1]])
+                                    // If discounted conditions are not met, check the regular price
+                                    ->else('price <= ?', [$priceRange[1]], 'where');
+                            });
                     });
                 });
 
@@ -126,12 +178,16 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 // and 'attribute_value' from attribute_values tables
                 foreach ($dynamicFilters as $attribute => $values) {
                     $query->orWhereHas('productAttrValues.attrValues', function ($q) use ($attribute, $values) {
-                        $q->orWhereHas('productAttrValues.attrValues.productAttr', function ($q) use ($attribute, $values) {
-                            $q->where('id', $attribute);
-
-                            foreach ($values as $value) {
-                                $q->orWhereLike('attribute_value', $value);
-                            }
+                        $q->where(function () use ($q, $attribute, $values) {
+                            $q->orWhereHas(
+                                'productAttrValues.attrValues.productAttr',
+                                function ($q2) use ($q, $attribute, $values) {
+                                    $q2->where(function () use ($q, $q2, $attribute, $values) {
+                                        $q->where('id', $attribute);
+                                        $q2->orWhereIn('attribute_value', $values);
+                                    });
+                                }
+                            );
                         });
                     });
                 }
@@ -144,13 +200,22 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getFilterBrands(HomeProductSideFilter $filter): Collection
+    {
+        $query = $this->productPropertyModel::published();
+        $query = $this->_considerProductSideFilter($query, $filter);
+        $query->with('product.brand');
+
+        return $query->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getFilterColorsAndSizes(HomeProductSideFilter $filter): Collection
     {
-        $query = $this->model::published();
+        $query = $this->productPropertyModel::published();
         $query = $this->_considerProductSideFilter($query, $filter);
-        $query->withWhereHas('items', function ($q) {
-            $q->published();
-        });
 
         return $query->get(['color_name as name', 'color_hex as hex', 'size']);
     }
@@ -160,12 +225,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
      */
     public function getFilterPriceRange(HomeProductSideFilter $filter): array
     {
-        $query = $this->model::published();
+        $query = $this->productPropertyModel::published();
         $query = $this->_considerProductSideFilter($query, $filter);
         $query
-            ->withWhereHas('items', function ($q) {
-                $q->published();
-            })
             ->selectRaw('MAX(product_properties.price) as max_price')
             ->selectRaw('MIN(product_properties.price) as min_price');
 
@@ -200,21 +262,14 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                     ->whereHas('productAttr.productAttrs', function ($q) use ($category) {
                         $q->where('category_id', $category);
                     })
-                    ->where('id', $category);
+                    ->orderBy('priority');
             })
             // -productAttrValues is "product_attribute_products" table relation
             // -attrValues is "product_attribute_values" table relation
             // -productAttr is "product_attributes" table relation
-            ->with('productAttrValues.attrValues.productAttr')
-            ->orderBy('product_attribute_values.priority');
+            ->with('productAttrValues.attrValues.productAttr');
 
-        return $query->get([
-            'product_attributes.id',
-            'product_attributes.title',
-            'product_attributes.type',
-            'product_attribute_values.attribute_value',
-            'product_attribute_values.id as attribute_value_id',
-        ]);
+        return $query->get();
     }
 
     /**
@@ -342,26 +397,17 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
      * @param ProductOrderTypesEnum|null $order
      * @return Builder
      */
-    private function _getBlogOrderEquivalent(Builder $query, ?ProductOrderTypesEnum $order): Builder
+    private function _getProductOrderEquivalent(Builder $query, ?ProductOrderTypesEnum $order): Builder
     {
         if (null === $order) return $query->orderBy('id', 'desc');
 
-        $visitableTable = config('visitor.table_name');
-
         return match ($order) {
-            ProductOrderTypesEnum::NEWEST => $query->orderBy('id', 'desc'),
-            ProductOrderTypesEnum::OLDEST => $query->orderBy('id', 'asc'),
-            ProductOrderTypesEnum::MOST_VIEWED => $query->select(['products.*'])
-                ->selectRaw('COUNT(DISTINCT(' . $visitableTable . '.ip)) AS unique_visit_count')
-                ->leftJoin(
-                    $visitableTable,
-                    function ($join) use ($visitableTable) {
-                        $join->on('products.id', $visitableTable . '.visitable_id')
-                            ->where('visitable_type', Product::class);
-                    }
-                )
-                ->orderBy('unique_visit_count', 'desc')
-                ->groupBy('products.id'),
+            ProductOrderTypesEnum::OLDEST => $query->oldest('id'),
+            ProductOrderTypesEnum::MOST_VIEWED => $this->_orderByMostViewed($query, config('visitor.table_name')),
+            ProductOrderTypesEnum::MOST_DISCOUNT => $this->_orderByDiscount($query),
+            ProductOrderTypesEnum::LEAST_EXPENSIVE => $this->_orderByPrice($query, 'asc'),
+            ProductOrderTypesEnum::MOST_EXPENSIVE => $this->_orderByPrice($query, 'desc'),
+            default => $query->latest('id'),
         };
     }
 
@@ -376,19 +422,129 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         $festival = $filter->getFestival();
 
         return $query
+            ->whereHas('product', function ($q) {
+                $q->published();
+            })
             ->when($category, function (Builder $query, $category) {
-                $query->withWhereHas('category', function ($q) use ($category) {
+                $query->whereHas('product.category', function ($q) use ($category) {
                     $q
                         ->where('id', $category)
                         ->whereRegex('ancestry', get_db_ancestry_regex_string($category));
                 });
             })
             ->when($festival, function (Builder $query, $festival) {
-                $query->whereHas('festivals', function ($q) use ($festival) {
+                $query->whereHas('product.festivals', function ($q) use ($festival) {
                     $q
                         ->where('id', $festival)
                         ->published();
                 });
             });
+    }
+
+    //-------------------------------------------------------------------
+    // Product ordering criteria
+    //-------------------------------------------------------------------
+
+    /**
+     * @param Builder $query
+     * @param string $visitableTable
+     * @return Builder
+     */
+    private function _orderByMostViewed(Builder $query, string $visitableTable): Builder
+    {
+        return $query->select(['products.*', 'subquery.unique_visit_count'])
+            ->joinSub(
+                $this->_getVisitCountSubquery($visitableTable),
+                'subquery',
+                'products.id',
+                '=',
+                'subquery.id'
+            )
+            ->orderBy('unique_visit_count', 'desc');
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    private function _orderByDiscount(Builder $query): Builder
+    {
+        return $query->orderBy('is_available', 'asc')
+            ->whereHas('items', function ($q) {
+                $q
+                    ->orderBy('is_available', 'asc')
+                    ->orderByRaw($this->_getDiscountOrderClause() . ' desc')
+                    ->orderByRaw($this->_getDiscountOrderReverseClause() . ' asc');
+            });
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $orderDirection
+     * @return Builder
+     */
+    private function _orderByPrice(Builder $query, string $orderDirection): Builder
+    {
+        return $query->whereHas('items', function ($q) use ($orderDirection) {
+            $q
+                ->orderBy('is_available', 'asc')
+                ->orderByRaw($this->_getPriceOrderClause() . ' ' . $orderDirection);
+        });
+    }
+
+    /**
+     * @param string $visitableTable
+     * @return \Illuminate\Database\Query\Builder
+     */
+    private function _getVisitCountSubquery(string $visitableTable): \Illuminate\Database\Query\Builder
+    {
+        return DB::table('products')
+            ->select('products.id')
+            ->selectRaw('COUNT(DISTINCT ' . $visitableTable . '.ip) AS unique_visit_count')
+            ->leftJoin(
+                $visitableTable,
+                function ($join) use ($visitableTable) {
+                    $join->on('products.id', $visitableTable . '.visitable_id')
+                        ->where('visitable_type', Product::class);
+                }
+            )
+            ->groupBy('products.id');
+    }
+
+    /**
+     * @return string
+     */
+    private function _getDiscountOrderClause(): string
+    {
+        return (new CaseWhen())
+            ->when('((discounted_from IS NULL AND discounted_until IS NOT NULL AND discounted_until >= UNIX_TIMESTAMP()) OR ' .
+                '(discounted_from IS NOT NULL AND discounted_until IS NULL  AND discounted_from <= UNIX_TIMESTAMP()) OR ' .
+                '(discounted_from IS NOT NULL AND discounted_until IS NOT NULL AND discounted_from <= UNIX_TIMESTAMP() AND discounted_until >= UNIX_TIMESTAMP())' .
+                ') AND (stock_count > 0 AND discounted_price IS NOT NULL)', '((price - discounted_price) / price * 100)')
+            ->build(null)['statement'];
+    }
+
+    /**
+     * @return string
+     */
+    private function _getDiscountOrderReverseClause(): string
+    {
+        return (new CaseWhen())
+            ->when('discounted_from IS NULL AND discounted_until IS NULL ' .
+                'AND discounted_price IS NOT NULL AND stock_count > 0', 'discounted_price')
+            ->else('price', [], null)['statement'];
+    }
+
+    /**
+     * @return string
+     */
+    private function _getPriceOrderClause(): string
+    {
+        return (new CaseWhen())
+            ->when('((discounted_from IS NULL AND discounted_until IS NOT NULL AND discounted_until >= UNIX_TIMESTAMP()) OR ' .
+                '(discounted_from IS NOT NULL AND discounted_until IS NULL AND discounted_from <= UNIX_TIMESTAMP()) OR ' .
+                '(discounted_from IS NOT NULL AND discounted_until IS NOT NULL AND discounted_from <= UNIX_TIMESTAMP() AND discounted_until >= UNIX_TIMESTAMP())' .
+                ') AND (stock_count > 0 AND discounted_price IS NOT NULL)', 'discounted_price')
+            ->else('price', [], null)['statement'];
     }
 }

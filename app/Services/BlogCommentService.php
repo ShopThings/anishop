@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Models\BlogComment;
 use App\Repositories\BlogCommentRepository;
+use App\Repositories\Contracts\BlogBadgeRepositoryInterface;
 use App\Repositories\Contracts\BlogCommentRepositoryInterface;
 use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Support\Filter;
@@ -18,7 +20,8 @@ use Illuminate\Support\Facades\DB;
 class BlogCommentService extends Service implements BlogCommentServiceInterface
 {
     public function __construct(
-        protected BlogCommentRepositoryInterface $repository
+        protected BlogCommentRepositoryInterface $repository,
+        protected BlogBadgeRepositoryInterface   $blogBadgeRepository
     )
     {
     }
@@ -69,6 +72,12 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
      */
     public function create(array $attributes): ?Model
     {
+        if (!isset($attributes['badge'])) {
+            $where = new WhereBuilder();
+            $where->whereEqual('is_stating_badge', DatabaseEnum::DB_YES);
+            $attributes['badge'] = $this->blogBadgeRepository->findWhere($where->build(), ['id'])?->id;
+        }
+
         $attrs = [
             'blog_id' => $attributes['blog'],
             'badge_id' => $attributes['badge'],

@@ -1,10 +1,10 @@
 <template>
   <base-stepy
-    v-model:current-step="currentStep"
-    :steps="steps"
-    :loading="loading"
-    :manual="true"
-    :simple="true"
+      v-model:current-step="currentStep"
+      :loading="loading"
+      :manual="true"
+      :simple="true"
+      :steps="steps"
   >
     <template #information="options">
       <form-product-edit-info :options="options"/>

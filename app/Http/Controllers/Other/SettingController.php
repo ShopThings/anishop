@@ -32,12 +32,11 @@ class SettingController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
      * @param string|null $group
      * @return JsonResponse|AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request, ?string $group = null): JsonResponse|AnonymousResourceCollection
+    public function index(?string $group = null): JsonResponse|AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
 
@@ -94,7 +93,8 @@ class SettingController extends Controller
                      SettingsEnum::FOOTER_NAMADS,
                      SettingsEnum::DEFAULT_POST_PRICE
                  ] as $name) {
-            if ($this->_updateSetting($name, $validated)) $updatesCount++;
+            $isUpdated = $this->_updateSetting($name, $validated);
+            if (false !== $isUpdated) $updatesCount++;
             else $failedCount++;
         }
 
@@ -107,7 +107,6 @@ class SettingController extends Controller
         }
 
         // check result and return appropriate response
-
         if ($updatesCount === 0) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
@@ -131,15 +130,15 @@ class SettingController extends Controller
     /**
      * @param SettingsEnum $settingName
      * @param mixed $values
-     * @return bool
+     * @return bool|null
      */
-    private function _updateSetting(SettingsEnum $settingName, mixed $values): bool
+    private function _updateSetting(SettingsEnum $settingName, mixed $values): ?bool
     {
         if (isset($values[$settingName->value])) {
             return $this->service->updateByName($settingName->value, [
                 'setting_value' => $values[$settingName->value],
             ]);
         }
-        return false;
+        return null;
     }
 }

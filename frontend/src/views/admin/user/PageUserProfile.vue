@@ -2,8 +2,8 @@
   <div class="flex flex-wrap gap-3">
     <div class="grow">
       <partial-card-navigation
-        :to="{name: 'admin.user.addresses', params: {id: idParam}}"
-        bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
+          :to="{name: 'admin.user.addresses', params: {id: idParam}}"
+          bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
       >
         <span class="text-white text-lg grow">آدرس‌ها</span>
         <BookOpenIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -11,8 +11,8 @@
     </div>
     <div class="grow">
       <partial-card-navigation
-        :to="{name: 'admin.user.purchases', params: {id: idParam}}"
-        bg-color="bg-gradient-to-r from-purple-500 to-cyan-500"
+          :to="{name: 'admin.user.purchases', params: {id: idParam}}"
+          bg-color="bg-gradient-to-r from-purple-500 to-cyan-500"
       >
         <span class="text-white text-lg grow">سفارشات</span>
         <ShoppingBagIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -20,8 +20,8 @@
     </div>
     <div class="grow">
       <partial-card-navigation
-        :to="{name: 'admin.user.carts', params: {id: idParam}}"
-        bg-color="bg-gradient-to-r from-pink-500 to-purple-500"
+          :to="{name: 'admin.user.carts', params: {id: idParam}}"
+          bg-color="bg-gradient-to-r from-pink-500 to-purple-500"
       >
         <span class="text-white text-lg grow">سبد خرید</span>
         <ShoppingCartIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -29,8 +29,8 @@
     </div>
     <div class="grow">
       <partial-card-navigation
-        :to="{name: 'admin.user.favorite_products', params: {id: idParam}}"
-        bg-color="bg-gradient-to-r from-fuchsia-500 to-pink-500"
+          :to="{name: 'admin.user.favorite_products', params: {id: idParam}}"
+          bg-color="bg-gradient-to-r from-fuchsia-500 to-pink-500"
       >
         <span class="text-white text-lg grow">محصولات مورد علاقه</span>
         <BookmarkSquareIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -46,8 +46,8 @@
             <base-tab-panel :tabs="tabs">
               <template #info>
                 <form-user-update-info
-                  v-model:user="user"
-                  v-model:initialRoles="initialRoles"
+                    v-model:initialRoles="initialRoles"
+                    v-model:user="user"
                 />
               </template>
 
@@ -58,9 +58,9 @@
               <template #status>
                 <div class="px-2 py-3">
                   <base-animated-button
-                    type="submit"
-                    class="bg-red-500 text-white mr-auto w-full sm:w-auto !py-1 px-3"
-                    @click="deleteUser"
+                      class="bg-red-500 text-white mr-auto w-full sm:w-auto !py-1 px-3"
+                      type="submit"
+                      @click="deleteUser"
                   >
                     <template #icon="{klass}">
                       <TrashIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
@@ -71,8 +71,8 @@
                 </div>
 
                 <form-user-update-status
-                  v-if="currentUser.id !== idParam.value"
-                  v-model:user="user"
+                    v-if="currentUser.id !== idParam.value"
+                    v-model:user="user"
                 />
               </template>
             </base-tab-panel>
@@ -138,17 +138,17 @@ if (currentUser.id !== idParam.value) {
 
 function deleteUser() {
   useConfirmToast(
-    () => {
-      UserAPI.deleteById(idParam.value, {
-        success: () => {
-          toast.success('عملیات با موفقیت انجام شد.')
-          router.push({name: 'admin.users'})
-          return false
-        }
-      })
-    },
-    'انتقال کاربر به سطل زباله؟'
-    , 'در صورت حذف، کاربر به سطل زباله انتقال پیدا می‌کند و می‌توانید آن را در صورت نیاز بازگردانی نمایید.'
+      () => {
+        UserAPI.deleteById(idParam.value, {
+          success: () => {
+            toast.success('عملیات با موفقیت انجام شد.')
+            router.push({name: 'admin.users'})
+            return false
+          }
+        })
+      },
+      'انتقال کاربر به سطل زباله؟'
+      , 'در صورت حذف، کاربر به سطل زباله انتقال پیدا می‌کند و می‌توانید آن را در صورت نیاز بازگردانی نمایید.'
   )
 }
 

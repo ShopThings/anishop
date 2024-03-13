@@ -4,9 +4,6 @@
   </TransitionGroup>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .scale-up-group-enter-active,
 .scale-up-group-leave-active {

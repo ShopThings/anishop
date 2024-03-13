@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Support\Helper;
-
 use App\Enums\SMS\SMSTypesEnum;
+use Hekmatinasser\Verta\Verta;
 use Snortlin\NanoId\NanoId;
 use Snortlin\NanoId\NanoIdInterface;
 
@@ -52,6 +51,18 @@ if (!function_exists('get_db_ancestry_regex_string')) {
     function get_db_ancestry_regex_string($needle): string
     {
         return '([^0-9]|^)' . preg_quote($needle) . '([^0-9]|$)';
+    }
+}
+
+if (!function_exists('vertaTz')) {
+    /**
+     * @param $datetime
+     * @param string $timezone
+     * @return Verta
+     */
+    function vertaTz($datetime = null, string $timezone = 'Asia/Tehran'): Verta
+    {
+        return verta($datetime)->timezone($timezone);
     }
 }
 

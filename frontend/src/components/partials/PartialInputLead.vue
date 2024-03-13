@@ -1,8 +1,8 @@
 <template>
   <div>
     <label
-      class="text-xs py-1 px-2.5 mt-1 inline-block rounded-sm"
-      :class="klass"
+        :class="klass"
+        class="text-xs py-1 px-2.5 mt-1 inline-block rounded-sm"
     >
       <slot v-if="slot['text']" name="text"></slot>
       <template v-else>{{ text }}</template>

@@ -17,19 +17,18 @@ interface FestivalServiceInterface extends ServiceInterface
     public function getFestivals(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return Collection
+     */
+    public function getHomeFestivals(): Collection;
+
+    /**
      * @param int $festivalId
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getFestivalProducts(
-        int     $festivalId,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
+        int    $festivalId,
+        Filter $filter
     ): Collection|LengthAwarePaginator;
 
     /**
@@ -46,6 +45,13 @@ interface FestivalServiceInterface extends ServiceInterface
      * @return bool
      */
     public function removeProductFromFestival($productId, $festivalId): bool;
+
+    /**
+     * @param $festivalId
+     * @param array $ids
+     * @return bool
+     */
+    public function removeProductsFromFestival($festivalId, array $ids): bool;
 
     /**
      * @param $categoryId

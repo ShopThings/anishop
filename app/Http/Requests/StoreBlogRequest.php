@@ -9,6 +9,7 @@ use App\Rules\FileExistsRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class StoreBlogRequest extends FormRequest
 {
@@ -39,6 +40,7 @@ class StoreBlogRequest extends FormRequest
             'title' => [
                 'required',
                 'max:250',
+                Rule::unique('blogs', 'title'),
             ],
             'image' => [
                 'required',
@@ -51,11 +53,9 @@ class StoreBlogRequest extends FormRequest
                 'array',
             ],
             'is_commenting_allowed' => [
-                'required',
                 'boolean',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

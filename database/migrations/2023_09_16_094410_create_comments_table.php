@@ -22,6 +22,13 @@ return new class extends Migration {
             $table->text('pros')->comment('positive sides');
             $table->text('cons')->comment('negative sides');
             $table->text('description');
+            $table->text('answer')->nullable();
+            $table->timestamp('answered_at')->nullable();
+            $table->foreignId('answered_by')->nullable()
+                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->timestamp('changed_status_at')->nullable();
+            $table->foreignId('changed_status_by')->nullable()
+                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('flag_count')->default(0);
             $table->unsignedBigInteger('up_vote_count')->default(0);
             $table->unsignedBigInteger('down_vote_count')->default(0);

@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Showing;
 
 use App\Enums\Products\ProductAttributeTypesEnum;
-use App\Enums\Times\TimeFormatsEnum;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,7 +19,7 @@ class ProductAttributeShowResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'type' => [
-                'text' => ProductAttributeTypesEnum::getTranslations($this->type),
+                'text' => ProductAttributeTypesEnum::getTranslations($this->type, 'نامشخص'),
                 'value' => $this->type,
             ],
         ];

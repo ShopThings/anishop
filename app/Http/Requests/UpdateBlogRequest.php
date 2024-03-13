@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Models\BlogCategory;
 use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateBlogRequest extends FormRequest
 {
@@ -23,6 +24,9 @@ class UpdateBlogRequest extends FormRequest
      */
     public function rules(): array
     {
+        $model = $this->route('blog');
+        $blogId = $model->id;
+
         return [
             'category' => [
                 'sometimes',
@@ -31,6 +35,7 @@ class UpdateBlogRequest extends FormRequest
             'title' => [
                 'sometimes',
                 'max:250',
+                Rule::unique('blogs', 'title')->ignore($blogId),
             ],
             'image' => [
                 'sometimes',
@@ -44,11 +49,9 @@ class UpdateBlogRequest extends FormRequest
                 'array',
             ],
             'is_commenting_allowed' => [
-                'sometimes',
                 'boolean',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

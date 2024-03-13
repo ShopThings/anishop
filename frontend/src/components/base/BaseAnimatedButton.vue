@@ -1,10 +1,10 @@
 <template>
   <base-button
-    @click="checkButton"
-    :type="type"
-    class="group flex justify-center items-center"
+      :type="type"
+      class="group flex justify-center items-center"
+      @click="checkButton"
   >
-    <slot name="icon" klass="group-hover:scale-110 group-hover:scale-110 transition-all"></slot>
+    <slot klass="group-hover:scale-110 group-hover:scale-110 transition-all" name="icon"></slot>
     <slot></slot>
   </base-button>
 </template>

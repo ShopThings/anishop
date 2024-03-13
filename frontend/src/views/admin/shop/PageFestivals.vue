@@ -19,17 +19,17 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
               :has-checkbox="true"
-              :total="table.totalRecordCount"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
             <template v-slot:start_at="{value}">
@@ -53,9 +53,9 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
                   :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
               />
             </template>
           </base-datatable>

@@ -40,11 +40,9 @@ class StoreBrandRequest extends FormRequest
                 'array',
             ],
             'show_in_slider' => [
-                'required',
                 'boolean',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

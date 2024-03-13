@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Home\BrandResource;
 use App\Http\Resources\Home\MainBrandSliderResource;
 use App\Services\Contracts\BrandServiceInterface;
+use App\Support\Filter;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class HomeBrandController extends Controller
@@ -30,8 +31,8 @@ class HomeBrandController extends Controller
     /**
      * @return AnonymousResourceCollection
      */
-    public function brands(): AnonymousResourceCollection
+    public function brands(Filter $filter): AnonymousResourceCollection
     {
-        return BrandResource::collection($this->service->getPublishedBrands());
+        return BrandResource::collection($this->service->getPublishedBrands($filter));
     }
 }

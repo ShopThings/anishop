@@ -4,8 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Brand;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
-use function App\Support\Helper\str_slug_persian;
 
 class BrandSeeder extends Seeder
 {

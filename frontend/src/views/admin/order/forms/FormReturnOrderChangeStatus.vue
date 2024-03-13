@@ -3,37 +3,37 @@
     <div class="p-2">
       <partial-input-label title="وضعیت ارجاع"/>
       <base-select
-        :options="statuses"
-        options-key="value"
-        options-text="name"
-        :is-loading="loading"
-        :selected="selectedStatus"
-        name="return_status"
-        @change="paymentStatusChange"
+          :is-loading="loading"
+          :options="statuses"
+          :selected="selectedStatus"
+          name="return_status"
+          options-key="value"
+          options-text="text"
+          @change="paymentStatusChange"
       />
-      <partial-input-error-message :error-message="errors.type"/>
+      <partial-input-error-message :error-message="errors.status"/>
     </div>
     <div class="p-2">
       <base-textarea
-        name="description"
-        label-title="علت تغییر وضعیت جهت نمایش به کاربر"
-        placeholder="توضیحات خود را وارد نمایید"
-        :value="yourDescription"
-        :has-edit-mode="!(!!yourDescription)"
+          :has-edit-mode="!(!!yourDescription)"
+          :value="yourDescription"
+          label-title="علت تغییر وضعیت جهت نمایش به کاربر"
+          name="description"
+          placeholder="توضیحات خود را وارد نمایید"
       />
     </div>
 
     <div class="px-2 py-3 text-left">
       <base-button
-        type="submit"
-        class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-        :disabled="isSubmitting"
+          :disabled="!canSubmit"
+          class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+          type="submit"
       >
         <VTransitionFade>
           <loader-circle
-            v-if="isSubmitting"
-            main-container-klass="absolute w-full h-full top-0 left-0"
-            big-circle-color="border-transparent"
+              v-if="!canSubmit"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -44,8 +44,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
+import {computed, onMounted, ref, watch} from "vue";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
@@ -54,53 +53,85 @@ import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {ReturnOrderAPI} from "@/service/APIOrder.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {useToast} from "vue-toastification";
 
 const props = defineProps({
   selected: Object,
   description: String,
 })
-const emit = defineEmits(['update:selected', 'update:description'])
+const emit = defineEmits(['updated'])
 
+const toast = useToast()
+const idParam = getRouteParamByKey('id', null, false)
 const loading = ref(true)
-const canSubmit = ref(true)
 
 const statuses = ref([])
-const selectedStatus = computed({
-  get() {
-    return props.selected
-  },
-  set(value) {
-    emit('update:selected', value)
-  },
+const selectedStatus = ref(props.selected)
+const yourDescription = computed(() => {
+  return props.not_accepted_description
 })
-const yourDescription = computed({
-  get() {
-    return props.description
-  },
-  set(value) {
-    emit('update:description', value)
-  },
+
+watch(() => props.selected, () => {
+  selectedStatus.value = props.selected
 })
 
 function paymentStatusChange(selected) {
   selectedStatus.value = selected
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    description: yup.string().optional(),
+  }),
+}, (values, actions) => {
+  if (!selectedStatus.value || !selectedStatus.value.value) {
+    actions.setFieldError('status', 'وضعیت مرجوع را انتخاب کنید.')
+    return
+  }
 
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+  canSubmit.value = false
+
+  ReturnOrderAPI.updateById(idParam.value, {
+    not_accepted_description: values.description,
+    status: selectedStatus.value.value,
+  }, {
+    success() {
+      toast.success('وضعیت با موفقیت تغییر یافت.')
+      emit('updated', selectedStatus.value, values.description)
+    },
+    error(error) {
+      if (error?.description) {
+        actions.setFieldError('description', error.description)
+      }
+      if (error?.status) {
+        actions.setFieldError('status', error.status)
+      }
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.orders.paymentStatuses), null, {
-  //     success: (response) => {
-  //         statuses.value = response.data
-  //
-  //         loading.value = false
-  //     },
-  // })
+  ReturnOrderAPI.fetchStatuses({
+    success: (response) => {
+      statuses.value = []
+      let res = response.data
+      for (let i in res) {
+        if (res.hasOwnProperty(i)) {
+          statuses.value.push({
+            text: res[i],
+            value: i,
+          })
+        }
+      }
+
+      loading.value = false
+    },
+  })
 })
 </script>

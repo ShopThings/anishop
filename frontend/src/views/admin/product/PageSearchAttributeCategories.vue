@@ -19,19 +19,19 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :grouping-key="table.groupingKey"
-              :has-group-toggle="table.hasGroupToggle"
-              :enable-search-box="true"
-              :enable-multi-operation="true"
-              :selection-operations="selectionOperations"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
-              :selection-columns="table.selectionColumns"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :grouping-key="table.groupingKey"
               :has-checkbox="true"
-              :total="table.totalRecordCount"
+              :has-group-toggle="table.hasGroupToggle"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
             <template #attribute="{value}">
@@ -48,7 +48,7 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -176,8 +176,10 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
           ProductAttributeCategoryAPI.deleteById(data.id, {

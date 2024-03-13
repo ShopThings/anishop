@@ -29,6 +29,7 @@ class ColorController extends Controller
         protected ColorServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**

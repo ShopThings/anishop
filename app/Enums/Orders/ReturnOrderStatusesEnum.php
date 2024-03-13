@@ -21,7 +21,7 @@ enum ReturnOrderStatusesEnum: string
     /**
      * @return string[]
      */
-    private static function translationArray(): array
+    public static function translationArray(): array
     {
         return [
             self::CHECKING->value => 'در حال بررسی',
@@ -33,6 +33,21 @@ enum ReturnOrderStatusesEnum: string
             self::RETURN_TO_USER->value => 'بازگشت مرسولات توسط پذیرنده',
             self::RECEIVED_BY_USER->value => 'دریافت مرسولات ارسال شده توسط کاربر',
             self::MONEY_RETURNED->value => 'بازگشت وجه پرداخت شده به کاربر',
+        ];
+    }
+
+    public static function getStatusColor(): array
+    {
+        return [
+            self::CHECKING->value => '#836FFF',
+            self::DENIED_BY_USER->value => '#F72798',
+            self::ACCEPT->value => '#0EA293',
+            self::DENIED->value => '#D24545',
+            self::SENDING->value => '#280274',
+            self::RECEIVED->value => '#910A67',
+            self::RETURN_TO_USER->value => '#FE7A36',
+            self::RECEIVED_BY_USER->value => '#7FC7D9',
+            self::MONEY_RETURNED->value => '#836FFF',
         ];
     }
 

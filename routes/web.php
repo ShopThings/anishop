@@ -6,9 +6,49 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
+    // case when testing
+//    $q = \App\Models\User::case()
+//        ->alias('custom_column')
+//        ->when('id < ?', 'id', [15])
+//        ->else('username')
+//        ->build()
+//        ->where(function ($q) {
+//            return (new \App\Support\Model\CaseWhen($q))
+//                ->when('is_admin = ?', '1', [1])
+//                ->else('0')
+//                ->build('where');
+//        })
+//        ->take(10);
+//    dd($q->toSql());
+//    dd($q->get()->pluck('custom_column'));
+
+    // concat testing
+//    $q = \App\Models\User::concat()
+//        ->alias('full_name')
+//        ->columns('first_name', ' ', 'last_name')
+//        ->take(10);
+//    dd($q->toSql());
+//    dd($q->get());
+
+//    $t = \App\Models\SendMethod::query()->orderBy('id', 'desc')->first();
+//
+//    /**
+//     * @var Carbon $d
+//     */
+//    $d = $t->created_at;
+//
+//
+//    var_dump(\verta($d)->timezone('UTC')->format(\App\Enums\Times\TimeFormatsEnum::DEFAULT_WITH_TIME->value));
+//    echo '<br>';
+//    var_dump(\verta($d)->format(\App\Enums\Times\TimeFormatsEnum::DEFAULT_WITH_TIME->value));
+
+//    var_dump(now()->toString());
+//    var_dump(\verta());
+//    var_dump(\verta()->formatJalaliDatetime());
+
 //    var_dump(!!preg_match('/^\d{4}-\d{0,2}$/', '1401-10'));
 //    var_dump(\verta(Verta::parse('1401-09'))->toCarbon()->toString());
-//    var_dump(\verta(Verta::parse('1401-09'))->toCarbon()->addMonth()->toString());
+//    var_dump(\verta(Verta::parse('1401-09'))->toCarbon()->addMonth()->subDay()->toString());
 
 //    Storage::disk('public')->put('example.txt', 'Contents');
 //    var_dump(Storage::disk('public')->exists('example.txt'));

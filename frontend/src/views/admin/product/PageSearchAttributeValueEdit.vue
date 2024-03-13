@@ -9,7 +9,7 @@
           ویرایش تخصیص مقدار به ویژگی با عنوان
           <span
               v-if="attribute?.id"
-              class="text-teal-600"
+              class="text-slate-400 text-base"
           >{{ attribute?.title }}</span>
         </template>
         <template #body>
@@ -18,10 +18,10 @@
               <div class="flex flex-wrap items-end justify-between">
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="عنوان"
-                      placeholder="وارد نمایید"
-                      name="title"
                       :value="attributeValue?.attribute_value"
+                      label-title="عنوان"
+                      name="title"
+                      placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -30,13 +30,13 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      type="text"
                       :min="0"
                       :money-mask="true"
-                      label-title="اولویت"
-                      placeholder="وارد نمایید"
-                      name="priority"
                       :value="attributeValue?.priority?.toString()"
+                      label-title="اولویت"
+                      name="priority"
+                      placeholder="وارد نمایید"
+                      type="text"
                   >
                     <template #icon>
                       <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -47,15 +47,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    type="submit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                     :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
                         v-if="!canSubmit"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
                         big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -65,6 +65,20 @@
 
                   <span class="ml-auto">ویرایش مقدار</span>
                 </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
               </div>
             </form>
           </div>
@@ -106,8 +120,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .required('اولویت را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!canSubmit.value) return
-
   canSubmit.value = false
 
   ProductAttributeValueAPI.updateById(valParam.value, {

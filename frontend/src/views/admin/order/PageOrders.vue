@@ -9,26 +9,29 @@
         <template #content>
           <base-datatable
               ref="datatable"
-              :enable-search-box="true"
-              :enable-multi-operation="false"
-              :is-slot-mode="true"
-              :is-loading="table.isLoading"
               :columns="table.columns"
-              :rows="table.rows"
+              :enable-multi-operation="false"
+              :enable-search-box="true"
               :has-checkbox="false"
-              :total="table.totalRecordCount"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
               :sortable="table.sortable"
+              :total="table.totalRecordCount"
               @do-search="doSearch"
           >
+            <template #code="{value}">
+              <span class="tracking-widest text-lg">{{ value.code }}</span>
+            </template>
+
             <template v-slot:user="{value}">
-              <template v-if="value.user.first_name || value.user.last_name">
-                {{
-                  (value.user.first_name + ' ' + value.user.last_name).trim()
-                }}
-              </template>
-              <template v-else>
-                {{ value.user.username }}
-              </template>
+              <router-link
+                  :to="{name: 'admin.user.profile', params: {id: value.user.id}}"
+                  class="text-blue-600 hover:text-opacity-80"
+              >
+                <partial-username-label :user="value.user"/>
+              </router-link>
+
             </template>
 
             <template v-slot:receiver_info="{value}">
@@ -40,23 +43,30 @@
               </base-button>
             </template>
 
-            <template v-slot:send_status="{value}">
+            <template #payment_status="{value}">
               <partial-badge-status-payment
-                  :text="value.send_status_title"
-                  :color-hex="value.send_status_color_hex"
+                  :color-hex="value.payment_status.color_hex"
+                  :text="value.payment_status.text"
               />
             </template>
 
-            <template v-slot:created_at="{value}">
-              <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
+            <template v-slot:send_status="{value}">
+              <partial-badge-status-send
+                  :color-hex="value.send_status_color_hex"
+                  :text="value.send_status_title"
+              />
+            </template>
+
+            <template v-slot:ordered_at="{value}">
+              <span v-if="value.ordered_at" class="text-xs">{{ value.ordered_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :items="operations"
-                  :data="value"
                   :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
                   :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
               />
             </template>
@@ -123,6 +133,8 @@ import BaseButton from "@/components/base/BaseButton.vue";
 import {OrderAPI} from "@/service/APIOrder.js";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -168,7 +180,7 @@ const table = reactive({
     },
     {
       label: "تاریخ سفارش",
-      field: "created_at",
+      field: "ordered_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -220,8 +232,10 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable)
+        if (!data.is_deletable) {
           toast.warning('این آیتم قابل حذف نمی‌باشد.')
+          return
+        }
 
         useConfirmToast(() => {
           OrderAPI.deleteById(data.id, {

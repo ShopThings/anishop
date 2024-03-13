@@ -62,7 +62,22 @@ class ProductProperty extends Model implements Buyable
         $price = $this->price;
 
         // check if product have discount
-        if ($this->discounted_until && $this->discounted_until > now()) {
+        if (
+            (
+                !isset($this->discounted_from) &&
+                isset($this->discounted_until) &&
+                $this->discounted_until >= now()
+            ) ||
+            (
+                isset($this->discounted_from) &&
+                !isset($this->discounted_until) &&
+                $this->discounted_from <= now()
+            ) ||
+            (
+                isset($this->discounted_from, $this->discounted_until) &&
+                $this->discounted_from <= now() && $this->discounted_until >= now()
+            )
+        ) {
             $price = $this->discounted_price;
         }
 

@@ -20,8 +20,12 @@ class UserContactUsSingleResource extends JsonResource
             'title' => $this->title,
             'message' => $this->message,
             'answer' => $this->answer,
+            'is_seen' => $this->is_seen,
             'answered_at' => $this->answered_at
-                ? verta($this->answered_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->answered_at)->format(TimeFormatsEnum::DEFAULT->value)
+                : null,
+            'created_at' => $this->created_at
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
         ];
     }

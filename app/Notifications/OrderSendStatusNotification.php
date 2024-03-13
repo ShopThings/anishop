@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Enums\Notification\UserNotificationPrioritiesEnum;
+use App\Enums\Notification\UserNotificationTypesEnum;
 use App\Enums\Settings\SettingsEnum;
 use App\Enums\SMS\SMSTypesEnum;
 use App\Models\Setting;
@@ -11,7 +13,6 @@ use App\Services\Contracts\SettingServiceInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use function App\Support\Helper\replace_sms_variables;
 
 class OrderSendStatusNotification extends Notification implements ShouldQueue
 {
@@ -38,7 +39,7 @@ class OrderSendStatusNotification extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return [SMSChannel::class];
+        return ['database', SMSChannel::class];
     }
 
     public function toSms(object $notifiable): SMSMessage
@@ -64,5 +65,24 @@ class OrderSendStatusNotification extends Notification implements ShouldQueue
             $mobile,
             replace_sms_variables($msg, $this->smsType, $replacements)
         );
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            'type' => UserNotificationTypesEnum::ORDER_STATUS->value,
+            'type_value' => UserNotificationTypesEnum::getTranslations(UserNotificationTypesEnum::ORDER_STATUS->value, 'نامشخص'),
+            'priority' => UserNotificationPrioritiesEnum::HIGH->value,
+            'message' => 'سفارش با کد' .
+                ' <span>' . $this->orderCode . '</span> ' .
+                'به وضعیت' .
+                ' <strong>' . $this->sendStatus . '</strong> ' .
+                'تغییر یافت.',
+        ];
     }
 }

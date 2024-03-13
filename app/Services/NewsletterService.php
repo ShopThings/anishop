@@ -30,7 +30,9 @@ class NewsletterService extends Service implements NewsletterServiceInterface
             $query->orWhereLike('mobile', $search);
         });
 
-        return $this->repository->paginate(
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
             where: $where->build(),
             limit: $filter->getLimit(),
             page: $filter->getPage(),

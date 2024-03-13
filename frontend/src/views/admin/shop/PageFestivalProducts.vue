@@ -1,53 +1,81 @@
 <template>
-  <div class="mb-3">
-    <form-festival-add-product/>
-  </div>
+  <base-accordion
+      :open="false"
+      btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
+      open-btn-class="!bg-teal-500 !text-white"
+      open-btn-icon-class="!text-white"
+      panel-class="bg-white rounded-lg border mb-3"
+  >
+    <template #button>
+      <span class="iranyekan-bold">افزودن محصول به جشنواره</span>
+    </template>
 
-  <div class="mb-3">
-    <form-festival-add-category-products/>
-  </div>
+    <template #panel>
+      <form-festival-add-product/>
+    </template>
+  </base-accordion>
+
+  <base-accordion
+      :open="false"
+      btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
+      open-btn-class="!bg-teal-500 !text-white"
+      open-btn-icon-class="!text-white"
+      panel-class="bg-white rounded-lg border mb-3"
+  >
+    <template #button>
+      <span class="iranyekan-bold">افزودن محصولات دسته‌بندی به جشنواره</span>
+    </template>
+
+    <template #panel>
+      <form-festival-add-category-products/>
+    </template>
+  </base-accordion>
 
   <partial-card ref="tableContainer">
     <template #header>
-      لیست محصولات جشنواره
+      لیست محصولات جشنواره -
+      <span
+          v-if="festival?.id"
+          class="text-slate-400 text-base"
+      >{{ festival?.title }}</span>
     </template>
 
     <template #body>
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
-            <template v-slot:start_at="{value}">
+            <template #product="{value}">
+              <base-lazy-image
+                  :alt="value.product.title"
+                  :lazy-src="value.product.image.path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
+              />
+            </template>
 
+            <template #discount_percentage="{value}">
+              <span class="iranyekan-bold rounded py-0.5 px-1.5 bg-violet-200">{{ value.discount_percentage }}%</span>
             </template>
-            <template v-slot:end_at="{value}">
 
-            </template>
-            <template v-slot:is_published="{value}">
-
-            </template>
-            <template v-slot:created_at="{value}">
-              <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
-              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
-            </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                :items="operations"
-                :data="value"
-                :container="getMenuContainer"
+                  :container="getMenuContainer"
+                  :data="value"
+                  :items="operations"
               />
             </template>
           </base-datatable>
@@ -58,28 +86,26 @@
 </template>
 
 <script setup>
+import {computed, onMounted, reactive, ref} from "vue";
 import FormFestivalAddProduct from "./forms/FormFestivalAddProduct.vue";
 import FormFestivalAddCategoryProducts from "./forms/FormFestivalAddCategoryProducts.vue";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
-import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
-import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {FestivalAPI} from "@/service/APIShop.js";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseAccordion from "@/components/base/BaseAccordion.vue";
 
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const slugParam = getRouteParamByKey('slug', null, false)
+
+const festival = ref(null)
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -95,28 +121,16 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "عنوان",
+      label: "تصویر محصول",
+      field: "product",
+    },
+    {
+      label: "عنوان محصول",
       field: "title",
-      sortable: true,
     },
     {
-      label: "تاریخ شروع",
-      field: "start_at",
-      sortable: true,
-    },
-    {
-      label: "تاریخ پایان",
-      field: "end_at",
-      sortable: true,
-    },
-    {
-      label: "وضعیت نمایش",
-      field: "is_published",
-    },
-    {
-      label: "تاریخ ایجاد",
-      field: "created_at",
-      columnClasses: 'whitespace-nowrap',
+      label: "درصد تخفیف",
+      field: "discount_percentage",
       sortable: true,
     },
   ],
@@ -129,28 +143,16 @@ const table = reactive({
       isKey: true,
     },
     {
-      label: "عنوان",
+      label: "تصویر محصول",
+      field: "product",
+    },
+    {
+      label: "عنوان محصول",
       field: "title",
-      sortable: true,
     },
     {
-      label: "تاریخ شروع",
-      field: "start_at",
-      sortable: true,
-    },
-    {
-      label: "تاریخ پایان",
-      field: "end_at",
-      sortable: true,
-    },
-    {
-      label: "وضعیت نمایش",
-      field: "is_published",
-    },
-    {
-      label: "تاریخ ایجاد",
-      field: "created_at",
-      columnClasses: 'whitespace-nowrap',
+      label: "درصد تخفیف",
+      field: "discount_percentage",
       sortable: true,
     },
     {
@@ -184,12 +186,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.festivals.destroyProduct, {
-            festival: idParam.value,
-            product: data.product_id,
-          }), {
-            method: 'DELETE',
-          }, {
+          FestivalAPI.removeProduct(slugParam.value, data.product_id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -229,12 +226,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.festivals.batchDestroy, {festival: idParam.value}), {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          FestivalAPI.removeProducts(slugParam.value, ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -252,30 +244,36 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiReplaceParams(apiRoutes.admin.festivals.products, {festival: idParam.value}), {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  FestivalAPI.fetchProducts(slugParam.value, {limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')
+
+onMounted(() => {
+  FestivalAPI.fetchById(slugParam.value, {
+    success(response) {
+      festival.value = response.data
+    },
+  })
+})
 </script>

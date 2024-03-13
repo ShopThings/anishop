@@ -8,29 +8,67 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
-            <template v-slot:is_seen="{value}">
-
+            <template v-slot:name="{value}">
+              <template v-if="value?.created_by">
+                <router-link
+                    :to="{name: 'admin.user.profile', params: {id: value?.created_by.id}}"
+                    class="text-blue-600 hover:text-opacity-80"
+                >
+                  <partial-username-label :user="value?.created_by"/>
+                </router-link>
+                -
+                ({{ value.name }})
+              </template>
+              <template v-else>
+                {{ value.name }}
+              </template>
             </template>
+
+            <template v-slot:is_seen="{value}">
+              <partial-badge-publish
+                  :publish="value.is_seen"
+                  publish-text="خوانده شده"
+                  unpublish-text="خوانده نشده"
+              />
+            </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
+            <template v-slot:answered_by="{value}">
+              <router-link
+                  v-if="value.answered_by"
+                  :to="{name: 'admin.user.profile', params: {id: value.answered_by.id}}"
+                  class="text-blue-600 hover:text-opacity-80"
+              >
+                <partial-username-label :user="value.answered_by"/>
+              </router-link>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+
+            <template v-slot:answered_at="{value}">
+              <span v-if="value.answered_at" class="text-xs">{{ value.answered_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -49,6 +87,10 @@ import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {ContactAPI} from "@/service/APIPage.js";
+import {useConfirmToast} from "@/composables/toast-helper.js";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -69,6 +111,7 @@ const table = reactive({
     {
       label: "نام فرستنده",
       field: "name",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -87,6 +130,18 @@ const table = reactive({
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
+    {
+      label: "پاسخ توسط",
+      field: "answered_by",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "پاسخ در تاریخ",
+      field: "answered_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
   ],
   columns: [
     {
@@ -99,6 +154,7 @@ const table = reactive({
     {
       label: "نام فرستنده",
       field: "name",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -114,6 +170,18 @@ const table = reactive({
     {
       label: "تاریخ ایجاد",
       field: "created_at",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "پاسخ توسط",
+      field: "answered_by",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "پاسخ در تاریخ",
+      field: "answered_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -163,19 +231,17 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiReplaceParams(apiRoutes.admin.contacts.destroy, {contact: data.id}), {
-        //         method: 'DELETE',
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelectionItem(data)
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          ContactAPI.deleteById(data.id, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -205,22 +271,17 @@ const selectionOperations = [
 
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiRoutes.admin.contacts.batchDestroy, {
-        //         method: 'DELETE',
-        //         data: {
-        //             ids,
-        //         },
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelection()
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          ContactAPI.deleteByIds(ids, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelection()
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -229,29 +290,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.contacts.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  ContactAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

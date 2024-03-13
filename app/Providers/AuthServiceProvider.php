@@ -32,6 +32,7 @@ use App\Models\ProductAttributeProduct;
 use App\Models\ProductAttributeValue;
 use App\Models\Province;
 use App\Models\ReturnOrderRequest;
+use App\Models\SendMethod;
 use App\Models\Setting;
 use App\Models\Slider;
 use App\Models\SmsLog;
@@ -69,6 +70,7 @@ use App\Policies\ProductPolicy;
 use App\Policies\ProvincePolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\ReturnOrderPolicy;
+use App\Policies\SendMethodPolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\SliderPolicy;
 use App\Policies\SmsLogPolicy;
@@ -89,6 +91,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         User::class => UserPolicy::class,
         PaymentMethod::class => PaymentMethodPolicy::class,
+        SendMethod::class => SendMethodPolicy::class,
         Color::class => ColorPolicy::class,
         Brand::class => BrandPolicy::class,
         Category::class => CategoryPolicy::class,

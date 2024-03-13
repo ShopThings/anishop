@@ -13,6 +13,7 @@ use App\Http\Resources\Home\BlogResource as HomeBLogResource;
 use App\Models\Blog;
 use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Services\Contracts\BlogServiceInterface;
+use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
@@ -38,11 +39,34 @@ class HomeBlogController extends Controller
         return HomeBlogResource::collection($this->service->getFilteredBlogs($filter));
     }
 
+    public function homeLatestBlogs()
+    {
+        $filter = new Filter();
+        $filter
+            ->setLimit(3)
+            ->setOrder([
+                'created_at' => 'desc',
+                'id' => 'desc',
+            ]);
+        return HomeBLogResource::collection($this->service->getBlogs($filter));
+    }
+
     /**
+     * This will use 'log_visit' to log too
+     *
      * @param Blog $blog
      * @return HomeBlogResource
      */
     public function show(Blog $blog): HomeBlogResource
+    {
+        return new HomeBlogResource($blog);
+    }
+
+    /**
+     * @param Blog $blog
+     * @return HomeBLogResource
+     */
+    public function minifiedShow(Blog $blog): HomeBlogResource
     {
         return new HomeBlogResource($blog);
     }

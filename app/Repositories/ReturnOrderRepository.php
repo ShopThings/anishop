@@ -47,27 +47,34 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
             ->when($userId, function (Builder $query, $uId) {
                 $query->where('user_id', $uId);
             })
-            ->when($search, function (Builder $query, string $search) {
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->whereHas('user', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
-                    })
-                    ->whereHas('order', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'first_name',
-                            'last_name',
-                            'mobile',
-                            'province',
-                            'city',
-                            'receiver_name',
-                            'receiver_mobile',
-                            'send_status_title',
-                        ], $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q
+                            ->orWhereHas('user', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('order', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'first_name',
+                                        'last_name',
+                                        'mobile',
+                                        'province',
+                                        'city',
+                                        'receiver_name',
+                                        'receiver_mobile',
+                                        'send_status_title',
+                                    ], $search);
+                                });
+                            });
                     })
                     ->when(ReturnOrderStatusesEnum::getSimilarValuesFromString($search), function ($q, $statuses) {
                         $q->whereIn('status', $statuses);

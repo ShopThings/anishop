@@ -1,14 +1,14 @@
 <template>
   <form class="relative text-right" @submit.prevent="onSubmit">
     <loader-dot-orbit
-      v-if="isSubmitting"
-      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
-      container-bg-color="bg-blue-50 opacity-40"
+        v-if="!canSubmit"
+        container-bg-color="bg-blue-50 opacity-40"
+        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <base-button
-      class="mt-10 text-sm group flex gap-2 items-center border-2 !text-black !py-1"
-      @click="options.prev"
+        class="mt-10 text-sm group flex gap-2 items-center border-2 !text-black !py-1"
+        @click="options.prev"
     >
       <ArrowLongRightIcon class="w-6 h-6 group-hover:translate-x-1 transition"/>
       <span class="mx-auto">بازگشت</span>
@@ -19,34 +19,52 @@
       <div class="flex gap-2 flex-row-reverse">
         <template v-for="index in 6" :key="index">
           <base-input
-            :name="'number' + index"
-            :id="'codeInput' + index"
-            type="number"
-            klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
-            @input="goToNextInput"
-            @keydown="handleNumberDelete"
+              :ref="(el) => (codeInputs[index] = el)"
+              :id="'codeInput' + index"
+              :has-clear-button="false"
+              :name="'number' + index"
+              klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
+              mask="#"
+              type="text"
+              @focus="handleNumberInputFocus"
+              @keydown="handleInputNumberKeyDown"
+              @keyup="handleInputNumberKeyUp"
           />
         </template>
       </div>
 
-      <a
-        href="javascript:void(0)"
-        class="text-orange-500 hover:text-opacity-80 transition inline-block mt-2 text-sm"
-        @click="sendAnotherCodeToUser"
-      >
-        ارسال مجدد کد
-      </a>
+      <div v-if="errors?.code">
+        <partial-input-error-message :error-message="errors?.code"/>
+      </div>
+
+      <div class="flex flex-wrap gap-2 items-center justify-start mt-2">
+        <a
+            href="javascript:void(0)"
+            class="text-orange-500 transition text-sm relative py-0.5"
+            :class="[
+              canSendCode ? 'hover:text-opacity-80' : 'cursor-not-allowed opacity-50',
+            ]"
+            @click="sendAnotherCodeToUser"
+        >
+          ارسال مجدد کد
+        </a>
+        <div
+            v-if="!canSendCode"
+            ref="sendCodeTimerRef"
+            class="text-black min-w-16 bg-slate-100 rounded text-center"
+        ></div>
+      </div>
     </div>
 
     <div class="mb-3">
       <base-button
-        type="submit"
-        class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-        :disabled="isSubmitting"
+          :disabled="!canSubmit"
+          class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+          type="submit"
       >
         <span class="mx-auto">تایید کد وارد شده</span>
         <ArrowLeftIcon
-          class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+            class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
       </base-button>
     </div>
   </form>
@@ -56,12 +74,14 @@
 import {ref} from "vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
-import {useForm} from "vee-validate";
-import yup from "@/validation/index.js";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import {ArrowLeftIcon, ArrowLongRightIcon} from "@heroicons/vue/24/solid/index.js";
 import isFunction from "lodash.isfunction";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {HomeRecoverPasswordAPI} from "@/service/APIHomePages.js";
+import {useCountdown} from "@/composables/countdown-timer.js";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
 const props = defineProps({
   options: {
@@ -70,63 +90,152 @@ const props = defineProps({
   },
 })
 
-function goToNextInput(text, event) {
-  const numberRegex = /[^0-9]/gi
+//----------------------------------------------
+// Handle dynamic input validation and focusing
+//----------------------------------------------
+const codeInputs = ref([])
+
+function handleInputNumberKeyDown(text, event) {
   let target = event.target
-  target.value = text.replace(numberRegex, "")
 
-  if (target.value.length > 1)
-    target.value = target.value.at(0)
-
-  if (!(event.inputType === 'deleteContentBackward')) {
+  if (event.keyCode === 8 || event.key === 'Backspace') {
     const id = target.getAttribute('id')
     const idStr = id.replace(/[0-9]/gi, "")
     const idNum = parseInt(id.replace(/[^0-9]/gi, ""), 10)
 
-    if (!isNaN(idNum) && (idNum + 1) <= 6) {
+    if (!isNaN(idNum) && idNum > 1 && text.length === 0) {
+      document.getElementById(idStr + (idNum - 1))?.focus()
+    }
+  } else {
+    const numberRegex = /\D/gi
+
+    if (target.value.length >= 1) {
+      target.value = target.value.at(0)
+    }
+
+    if (numberRegex.test(target.value)) {
+      target.value = text.replace(numberRegex, "")
+
+      event.preventDefault()
+      return false
+    }
+  }
+}
+
+function handleInputNumberKeyUp(text, event) {
+  const numberRegex = /\D/gi
+  let target = event.target
+  target.value = text.replace(numberRegex, "")
+
+  if (target.value.length > 1) {
+    target.value = target.value.at(0)
+  }
+
+  if (!(event.inputType === 'deleteContentBackward')) {
+    if (target.value.trim() === '') {
+      event.preventDefault()
+      return false
+    }
+
+    const id = target.getAttribute('id')
+    const idStr = id.replace(/\d/gi, "")
+    const idNum = parseInt(id.replace(/\D/gi, ""), 10)
+
+    if (!isNaN(idNum) && idNum < 6) {
       document.getElementById(idStr + (idNum + 1))?.focus()
     }
   }
 }
 
-function handleNumberDelete(text, event) {
-  if (event.keyCode === 8 || event.key === 'Backspace') {
-    let target = event.target
-    const id = target.getAttribute('id')
-    const idStr = id.replace(/[0-9]/gi, "")
-    const idNum = parseInt(id.replace(/[^0-9]/gi, ""), 10)
-
-    if (!isNaN(idNum) && (idNum - 1) >= 1 && text.length === 0) {
-      document.getElementById(idStr + (idNum - 1))?.focus()
-    }
-  }
+function handleNumberInputFocus(text, event) {
+  event.target.select()
 }
 
+//----------------------------------------------
+const sendCodeTimerRef = ref(null)
+const sendCodeTimer = useCountdown(60, sendCodeTimerRef)
 const canSendCode = ref(true)
+
+function checkSendCodeTime() {
+  canSendCode.value = true
+  sendCodeTimer.stop()
+}
+
 
 function sendAnotherCodeToUser() {
   if (!canSendCode.value) return
   canSendCode.value = false
 
-  // send code to mobile
-  // ...
+  sendCodeTimer.start(checkSendCodeTime)
+
+  HomeRecoverPasswordAPI.resendVerifyCode({
+    success() {
+      sendCodeTimer.start(checkSendCodeTime)
+    },
+    error(error) {
+      actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
+      return false
+    },
+  })
 }
 
-const canSubmit = ref(true)
+const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
+  let code = getCodeFromInputs()
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+  if (!/^\d{6}$/.test(code)) {
+    let msg
+    if (!code?.length) {
+      msg = 'کد تایید را وارد نمایید.'
+    } else {
+      msg = 'کد وارد شده نامعتبر می‌باشد!'
+    }
+    actions.setFieldError('code', msg)
+    return
+  }
 
-const onSubmit = handleSubmit((values, actions) => {
-  if (!canSubmit.value) return
+  actions.resetField('code')
 
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve()
-      if (isFunction(props.options?.next))
+  canSubmit.value = false
+
+  HomeRecoverPasswordAPI.verifyCode(code, {
+    success() {
+      actions.resetForm()
+      resetFormInputs()
+
+      if (isFunction(props.options?.next)) {
         props.options.next()
-    }, 2000)
+      }
+    },
+    error(error) {
+      actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
+      return false
+    },
+    finally() {
+      canSubmit.value = true
+    },
   })
 })
+
+function getCodeFromInputs() {
+  if (!codeInputs.value) return ''
+
+  let code = ''
+  for (let inp of codeInputs.value) {
+    if (inp?.input) {
+      code += inp.input.value.at(0)
+    }
+  }
+
+  return code
+}
+
+function resetFormInputs() {
+  if (!codeInputs.value) return
+
+  for (let inp of codeInputs.value) {
+    if (inp?.input) {
+      inp.input.value = ''
+    }
+  }
+}
 </script>

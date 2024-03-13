@@ -286,6 +286,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'coupon_code' => 'کد کوپن',
                 'send_status_title' => 'وضعیت سفارش',
                 'payment_method_title' => 'عنوان روش پرداخت',
+                'send_method_title' => 'عنوان روش ارسال',
                 'product_title' => 'عنوان محصول',
                 'color_name' => 'رنگ محصول',
                 'size' => 'سایز محصول',
@@ -361,7 +362,6 @@ class ReportRepository implements ReportRepositoryInterface
         foreach (
             [
                 'is_needed_factor' => 'درخواست فاکتور',
-                'is_in_place_delivery' => 'دریافت حضوری',
                 'is_returned' => 'محصول بازگشتی',
             ] as $value => $text) {
             $info[] = [
@@ -397,7 +397,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'textKey' => 'text',
                 'key' => 'value',
                 'options' => array_map(fn($item) => [
-                    'text' => PaymentTypesEnum::getTranslations($item),
+                    'text' => PaymentTypesEnum::getTranslations($item, 'نامشخص'),
                     'value' => $item->value,
                 ], [PaymentTypesEnum::BANK_GATEWAY]),
             ],
@@ -413,7 +413,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'textKey' => 'text',
                 'key' => 'value',
                 'options' => array_map(fn($item) => [
-                    'text' => PaymentStatusesEnum::getTranslations($item),
+                    'text' => PaymentStatusesEnum::getTranslations($item, 'نامشخص'),
                     'value' => $item->value,
                 ], PaymentTypesEnum::cases()),
             ],

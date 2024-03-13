@@ -16,7 +16,7 @@ export const UserAddressAPI = {
       null,
       callbacks
     )
-  }
+  },
 }
 
 export const UserFavoriteProductAPI = {
@@ -26,7 +26,7 @@ export const UserFavoriteProductAPI = {
       {params},
       callbacks
     )
-  }
+  },
 }
 
 export const UserPurchaseAPI = {
@@ -36,7 +36,7 @@ export const UserPurchaseAPI = {
       {params},
       callbacks
     )
-  }
+  },
 }
 
 export const UserCartAPI = {
@@ -46,5 +46,5 @@ export const UserCartAPI = {
       null,
       callbacks
     )
-  }
+  },
 }

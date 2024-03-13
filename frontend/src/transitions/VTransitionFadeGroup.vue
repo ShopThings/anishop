@@ -4,9 +4,6 @@
   </TransitionGroup>
 </template>
 
-<script setup>
-</script>
-
 <style scoped>
 .fade-group-enter-active,
 .fade-group-leave-active {

@@ -1,55 +1,123 @@
 <template>
   <base-paginator
-    container-class="flex flex-col gap-3"
-    pagination-theme="modern"
-    v-model:items="notifications"
-    :per-page="10"
-    :path="getPath"
+      v-model:items="notifications"
+      :path="getPath"
+      :per-page="10"
+      container-class="flex flex-col gap-3"
+      pagination-theme="modern"
   >
     <template #empty>
       <partial-empty-rows
-        image="/empty-statuses/empty-notification.svg"
-        image-class="w-60"
-        message="هیچ اعلانی برای شما وجود ندارد"
+          image="/empty-statuses/empty-notification.svg"
+          image-class="w-60"
+          message="هیچ اعلانی برای شما وجود ندارد"
       />
     </template>
 
-    <template #item>
+    <template #item="{item}">
       <partial-card class="border-0 p-3 text-sm">
         <template #body>
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2.5 relative pr-2.5">
+            <div
+                :class="[
+                !item.priority || +item.priority === 0
+                  ? priorityColors.normal
+                  : (
+                    item.priority < 0
+                      ? priorityColors.low
+                      : (
+                        item.priority > 0 && item.priority < 5
+                         ? priorityColors.high
+                         : priorityColors.high
+                      )
+                  )
+              ]"
+                class="absolute rounded-full w-1 h-3/4 top-1/2 -translate-y-1/2 -right-1 bg-rose-500"
+            ></div>
+
             <h1 class="text-black font-iranyekan-bold">
-              پیگیری سفارش
+              {{ item.type_value }}
             </h1>
-            <p class="text-slate-700 text-sm">
-              سفارش با کد
-              <span class="tracking-widest mx-2">861247269716759</span>
-              به وضعیت
-              <span class="bg-yellow-300 text-sm mx-2 rounded px-2 font-iranyekan-bold">تحویل به پست</span>
-              تغییر یافت.
+            <p class="text-slate-700 text-sm styling-paragraph leading-relaxed">
+              {{ item.message }}
             </p>
+            <span class="text-xs text-slate-400 mr-auto">{{ item.created_at }}</span>
           </div>
         </template>
       </partial-card>
     </template>
 
     <template #loading>
-      <loader-list-single/>
+      <div
+          class="bg-white py-6 px-6 md:py-4 space-y-4 border border-slate-200 divide-y divide-slate-200 rounded-lg shadow animate-pulse dark:divide-slate-700 dark:border-slate-700"
+          role="status"
+      >
+        <div class="flex items-center justify-between gap-2.5">
+          <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24"></div>
+          <div class="w-32 h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
+        </div>
+        <span class="sr-only">در حال بارگذاری...</span>
+      </div>
     </template>
   </base-paginator>
 </template>
 
 <script setup>
+import {onMounted, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
-import {computed, ref} from "vue";
 import BasePaginator from "@/components/base/BasePaginator.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
-import LoaderListSingle from "@/components/base/loader/LoaderListSingle.vue";
+import {apiRoutes} from "@/router/api-routes.js";
+import {NotificationAPI} from "@/service/APINotification.js";
 
-const loading = ref(false)
-const getPath = computed(() => {
-  // return apiRoutes.user.info.notification.index
-  return ''
-})
+const getPath = apiRoutes.user.info.notification.index
 const notifications = ref([])
+
+const priorityColors = {
+  very_high: '#ef4444',
+  high: '#f59e0b',
+  normal: '#06b6d4',
+  low: '#22c55e',
+}
+
+onMounted(() => {
+  NotificationAPI.markAllAsRead({
+    success() {
+      return false
+    },
+    error() {
+      return false
+    },
+  })
+})
 </script>
+
+<style scoped>
+.styling-paragraph span,
+.styling-paragraph strong {
+  margin-left: 0.5rem /* 8px */;
+  margin-right: 0.5rem /* 8px */;
+}
+
+.styling-paragraph span {
+  letter-spacing: 0.1em;
+}
+
+.styling-paragraph strong {
+  white-space: nowrap;
+
+  padding-left: 0.5rem /* 8px */;
+  padding-right: 0.5rem /* 8px */;
+
+  border-radius: 0.25rem /* 4px */;
+
+  font-size: 0.875rem /* 14px */;
+  line-height: 1.25rem /* 20px */;
+
+  font-family: 'IRANYekanWeb Bold', Arial, sans-serif !important;
+
+  --tw-bg-opacity: 1;
+  border: 2px solid rgb(129 140 248 / var(--tw-bg-opacity));
+  background-color: rgb(129 140 248 / 0.1);
+}
+</style>

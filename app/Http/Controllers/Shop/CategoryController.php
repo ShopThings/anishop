@@ -29,6 +29,7 @@ class CategoryController extends Controller
         protected CategoryServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**

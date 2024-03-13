@@ -1,28 +1,27 @@
 <template>
   <div
-    :class="containerClass"
-    class="text-sm flex items-center gap-2"
+      :class="containerClass"
+      class="text-sm flex items-center gap-2"
   >
     <label
-      v-if="labelTitle && showLabel"
-      :for="id ? id : labelId"
-      :class="labelClass"
-      class="cursor-pointer grow sm:grow-0"
+        v-if="labelTitle && showLabel"
+        :class="labelClass"
+        :for="id ? id : labelId"
+        class="cursor-pointer grow sm:grow-0"
     >
       {{ labelTitle }}
     </label>
     <input
-      :id="id ? id : labelId"
-      type="checkbox"
-      :name="name"
-      v-model="value"
-      class="checkInput"
-      :disabled="disabled"
-      @change="emit('change', value)"
+        :id="id ? id : labelId"
+        v-model="value"
+        :disabled="disabled"
+        :name="name"
+        class="checkInput"
+        type="checkbox"
+        @change="emit('change', value)"
     >
     <div
-      class="rounded border-2 cursor-pointer transition flex items-center justify-center shadow"
-      :class="[
+        :class="[
           sizeClass,
           disabled
           ? disabledClass + ' ' + disabledHoverClass
@@ -32,7 +31,8 @@
               : uncheckedClass + ' ' + uncheckedHoverClass
           ),
       ]"
-      @click="() => {
+        class="rounded border-2 cursor-pointer transition flex items-center justify-center shadow"
+        @click="() => {
           if(!disabled) {
               value = !value
               nextTick(() => {
@@ -42,8 +42,8 @@
       }"
     >
       <CheckIcon
-        v-if="value"
-        :class="[
+          v-if="value"
+          :class="[
             sizeClass,
             disabled ? disabledIconClass : iconClass,
         ]"

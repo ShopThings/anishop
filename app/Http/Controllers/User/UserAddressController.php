@@ -62,9 +62,7 @@ class UserAddressController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $model = $this->service->createAddress([
-                'user_id' => $user->id,
-            ] + $validated);
+        $model = $this->service->createAddress(['user_id' => $user->id] + $validated);
 
         if (!is_null($model)) {
             return response()->json([

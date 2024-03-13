@@ -18,37 +18,48 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :grouping-key="table.groupingKey"
-            :has-group-toggle="table.hasGroupToggle"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :grouping-key="table.groupingKey"
+              :has-checkbox="true"
+              :has-group-toggle="table.hasGroupToggle"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:province="{value}">
-
+              {{ valu.city.province.name }}
             </template>
+
             <template v-slot:city="{value}">
-
+              {{ valu.city.name }}
             </template>
+
             <template v-slot:post_price="{value}">
-
+              <div
+                  v-if="value.post_price > 0"
+                  class="font-iranyekan-bold"
+              >
+                {{ formatPriceLikeNumber(value.post_price) }}
+                <span class="text-xs text-gray-400">تومان</span>
+              </div>
+              <MinusIcon v-else class="w-5 h-5 text-rose-500"/>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -69,6 +80,8 @@ import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
+import {CityPostPriceAPI} from "@/service/APIShop.js";
+import {formatPriceLikeNumber} from "@/composables/helper.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -185,19 +198,17 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiReplaceParams(apiRoutes.admin.cityPostPrices.destroy, {city_post_price: data.id}), {
-        //         method: 'DELETE',
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelectionItem(data)
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          CityPostPriceAPI.deleteById(data.id, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -227,22 +238,17 @@ const selectionOperations = [
 
         toast.clear()
 
-        // useConfirmToast(() => {
-        //     useRequest(apiRoutes.admin.cityPostPrices.batchDestroy, {
-        //         method: 'DELETE',
-        //         data: {
-        //             ids,
-        //         },
-        //     }, {
-        //         success: () => {
-        //             toast.success('عملیات با موفقیت انجام شد.')
-        //             datatable.value?.refresh()
-        //             datatable.value?.resetSelection()
-        //
-        //             return false
-        //         },
-        //     })
-        // })
+        useConfirmToast(() => {
+          CityPostPriceAPI.deleteByIds(ids, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelection()
+
+              return false
+            },
+          })
+        })
       },
     },
   },
@@ -251,29 +257,27 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.cityPostPrices.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  CityPostPriceAPI.fetchAll({limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')

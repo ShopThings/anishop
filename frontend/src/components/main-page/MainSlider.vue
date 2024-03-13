@@ -1,35 +1,49 @@
 <template>
-  <div class="w-full rounded-lg">
-    <base-carousel
-      v-slot="{slide}"
+  <div
+      v-if="slidesLoading || !slides?.length"
+      class="w-full h-full rounded-lg animate-pulse"
+  >
+    <div
+        class="w-full h-60 md:h-72 lg:h-80 xl:h-96 rounded-lg flex items-center justify-center bg-slate-200"
+    >
+      <PhotoIcon class="size-12 md:size-16 text-slate-400"/>
+    </div>
+  </div>
+  <base-carousel
+      v-else
+      v-slot="{slide, index}"
       v-model="slides"
       v-model:current="currentSlide"
+      :autoplay="carouselSettings.autoplay"
+      :breakpoints="carouselSettings.breakpoints"
       :class-name="carouselSettings.className"
       :effect="carouselSettings.effect"
       :has-navigation="carouselSettings.hasNavigation"
-      :navigation-display="carouselSettings.navigationDisplay"
       :has-pagination="carouselSettings.hasPagination"
-      :breakpoints="carouselSettings.breakpoints"
-      :autoplay="carouselSettings.autoplay"
+      :navigation-display="carouselSettings.navigationDisplay"
       :wrap-around="carouselSettings.wrapAround"
-    >
-      <router-link
+  >
+    <router-link
         :to="slide.link"
         class="w-full h-full rounded-lg"
-      >
-        <img
+        target="_blank"
+    >
+      <img
+          :alt="'اسلاید ' + index"
           :src="slide.image.path"
-          alt=""
           class="w-full h-60 md:h-72 lg:h-80 xl:h-96 object-cover rounded-lg"
-        >
-      </router-link>
-    </base-carousel>
-  </div>
+      >
+    </router-link>
+  </base-carousel>
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
+import {PhotoIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseCarousel from "@/components/base/BaseCarousel.vue";
+import {HomeMainPageAPI} from "@/service/APIHomePages.js";
+
+const emit = defineEmits(['loaded'])
 
 const carouselSettings = {
   className: 'main-slider',
@@ -43,42 +57,21 @@ const carouselSettings = {
 }
 
 const currentSlide = ref(0)
-const slides = ref([
-  {
-    image: {
-      path: '/src/assets/banners/b1.jpg',
+const slides = ref(null)
+const slidesLoading = ref(true)
+
+onMounted(() => {
+  HomeMainPageAPI.fetchSliderMain({
+    success(response) {
+      slides.value = response.data
     },
-    link: '#',
-  },
-  {
-    image: {
-      path: '/src/assets/banners/b2.jpg',
+    error() {
+      return false
     },
-    link: '#',
-  },
-  {
-    image: {
-      path: '/src/assets/banners/b3.jpg',
+    finally() {
+      slidesLoading.value = false
+      emit('loaded', !!slides.value?.length)
     },
-    link: '#',
-  },
-  {
-    image: {
-      path: '/src/assets/banners/b4.jpg',
-    },
-    link: '#',
-  },
-  {
-    image: {
-      path: '/src/assets/banners/b5.jpg',
-    },
-    link: '#',
-  },
-  {
-    image: {
-      path: '/src/assets/banners/b6.jpg',
-    },
-    link: '#',
-  },
-])
+  })
+})
 </script>

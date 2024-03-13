@@ -22,8 +22,10 @@ class UpdateContactUsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'is_seen' => [
+            'answer' => [
                 'sometimes',
+            ],
+            'is_seen' => [
                 'boolean',
             ],
         ];
@@ -32,6 +34,7 @@ class UpdateContactUsRequest extends FormRequest
     public function attributes()
     {
         return [
+            'answer' => 'پاسخ به پیام کاربر',
             'is_seen' => 'وضعیت بازدید',
         ];
     }

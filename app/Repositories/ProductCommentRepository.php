@@ -40,21 +40,34 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
 
         $query = $this->model->newQuery();
         $query
-            ->when($search, function (Builder $query, string $search) {
+            ->with([
+                'product',
+                'product.image',
+                'answeredBy',
+                'statusChanger',
+                'creator',
+                'updater',
+                'deleter',
+            ])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('creator', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q->orWhereHas('creator', function ($q) use ($search) {
+                            $q->where(function ($q) use ($search) {
+                                $q->orWhereLike([
+                                    'username',
+                                    'first_name',
+                                    'last_name',
+                                    'national_code',
+                                ], $search);
+                            });
+                        });
                     })
                     ->when(CommentConditionsEnum::getSimilarValuesFromString($search), function (Builder $builder, array $conditions) {
-                        $builder->whereIn('condition', $conditions);
+                        $builder->orWhereIn('condition', $conditions);
                     })
                     ->when(CommentStatusesEnum::getSimilarValuesFromString($search), function (Builder $builder, array $statuses) {
-                        $builder->whereIn('status', $statuses);
+                        $builder->orWhereIn('status', $statuses);
                     })
                     ->orWhereLike([
                         'comments.pros',

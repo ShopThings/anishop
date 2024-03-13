@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Blog;
 
+use App\Enums\Comments\CommentConditionsEnum;
+use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBlogCommentRequest;
 use App\Http\Requests\UpdateBlogCommentRequest;
 use App\Http\Resources\BlogCommentResource;
+use App\Http\Resources\BlogCommentSingleResource;
 use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\User;
@@ -63,6 +66,8 @@ class BlogCommentController extends Controller
             'comment',
             'description',
         ]);
+        $validated['condition'] = CommentConditionsEnum::ACCEPTED->value;
+        $validated['status'] = CommentStatusesEnum::READ->value;
         $model = $this->service->create($validated);
 
         if (!is_null($model)) {
@@ -83,13 +88,13 @@ class BlogCommentController extends Controller
      * Display the specified resource.
      *
      * @param BlogComment $blogComment
-     * @return BlogCommentResource
+     * @return BlogCommentSingleResource
      * @throws AuthorizationException
      */
-    public function show(BlogComment $blogComment): BlogCommentResource
+    public function show(BlogComment $blogComment): BlogCommentSingleResource
     {
         $this->authorize('view', $blogComment);
-        return new BlogCommentResource($blogComment);
+        return new BlogCommentSingleResource($blogComment);
     }
 
     /**

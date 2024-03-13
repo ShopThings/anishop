@@ -1,49 +1,114 @@
 <template>
+  <base-loading-panel
+      :loading="productLoading"
+      type="list-single"
+  >
+    <template #content>
+      <partial-card class="border-0 mb-3">
+        <template #header>
+          دیدگاه کاربر درباره محصول
+          <span
+              v-if="product?.slug"
+              class="text-slate-400 text-base"
+          >{{ product?.title }}</span>
+        </template>
+        <template #body>
+          <div class="py-3 px-4">
+            <div class="flex flex-col sm:flex-row gap-3 items-center">
+              <div class="shrink-0">
+                <base-lazy-image
+                    :alt="product?.title"
+                    :lazy-src="product?.image.path"
+                    :size="FileSizes.SMALL"
+                    class="!h-28 sm:!h-20 w-auto rounded"
+                />
+              </div>
+              <div class="grow text-sm">
+                {{ product?.title }}
+              </div>
+              <div class="text-sm shrink-0">
+                <router-link
+                    :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
+                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                >
+                  <span class="mx-auto">مشاهده محصول</span>
+                  <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </template>
+      </partial-card>
+    </template>
+  </base-loading-panel>
+
   <partial-card ref="tableContainer">
     <template #header>
-      لیست دیدگاه‌ها محصول -
-      <span
-        v-if="product?.id"
-        class="text-teal-600"
-      >{{ product?.title }}</span>
+      لیست دیدگاه‌های محصول
     </template>
 
     <template #body>
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-            ref="datatable"
-            :enable-search-box="true"
-            :enable-multi-operation="true"
-            :selection-operations="selectionOperations"
-            :is-slot-mode="true"
-            :is-loading="table.isLoading"
-            :selection-columns="table.selectionColumns"
-            :columns="table.columns"
-            :rows="table.rows"
-            :has-checkbox="true"
-            :total="table.totalRecordCount"
-            :sortable="table.sortable"
-            @do-search="doSearch"
+              ref="datatable"
+              :columns="table.columns"
+              :enable-multi-operation="true"
+              :enable-search-box="true"
+              :has-checkbox="true"
+              :is-loading="table.isLoading"
+              :is-slot-mode="true"
+              :rows="table.rows"
+              :selection-columns="table.selectionColumns"
+              :selection-operations="selectionOperations"
+              :sortable="table.sortable"
+              :total="table.totalRecordCount"
+              @do-search="doSearch"
           >
             <template v-slot:sender="{value}">
-
+              <router-link
+                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                  class="text-blue-600 hover:text-opacity-90"
+              >
+                <partial-username-label :user="value.created_by"/>
+              </router-link>
             </template>
+
             <template v-slot:status="{value}">
-
+              <partial-badge-seen-status-comment :status="value.status"/>
             </template>
+
             <template v-slot:condition="{value}">
-
+              <partial-badge-condition-comment :condition="value.condition"/>
             </template>
-            <template v-slot:is_published="{value}">
 
+            <template v-slot:flag_count="{value}">
+              <span class="rounded py-1 px-2 bg-rose-200">{{ value.flag_count }}</span>
             </template>
+
             <template v-slot:created_at="{value}">
               <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
+
+            <template v-slot:answered_by="{value}">
+              <router-link
+                  v-if="value.answered_by"
+                  :to="{name: 'admin.user.profile', params: {id: value.answered_by.id}}"
+                  class="text-blue-600 hover:text-opacity-80"
+              >
+                <partial-username-label :user="value.answered_by"/>
+              </router-link>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+
+            <template v-slot:answered_at="{value}">
+              <span v-if="value.answered_at" class="text-xs">{{ value.answered_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+
             <template v-slot:op="{value}">
-              <base-datatable-menu :items="operations" :data="value" :container="getMenuContainer"/>
+              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
             </template>
           </base-datatable>
         </template>
@@ -53,26 +118,30 @@
 </template>
 
 <script setup>
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
+import {computed, onMounted, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, onMounted, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
-import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongLeftIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {CommentAPI, ProductAPI} from "@/service/APIProduct.js";
+import PartialBadgeConditionComment from "@/components/partials/PartialBadgeConditionComment.vue";
+import PartialBadgeSeenStatusComment from "@/components/partials/PartialBadgeSeenStatusComment.vue";
+import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const router = useRouter()
 const toast = useToast()
-const productSlug = computed(() => {
-  return route.params.slug
-})
+const productSlug = getRouteParamByKey('slug', null, false)
 
 const product = ref(null)
+const productLoading = ref(true)
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -107,13 +176,20 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "وضعیت نمایش",
-      field: "is_published",
+      label: "تاریخ ارسال",
+      field: "created_at",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
-      label: "تاریخ ارسال",
-      field: "created_at",
+      label: "پاسخ توسط",
+      field: "answered_by",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "پاسخ در تاریخ",
+      field: "answered_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -146,13 +222,20 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "وضعیت نمایش",
-      field: "is_published",
+      label: "تاریخ ارسال",
+      field: "created_at",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
-      label: "تاریخ ارسال",
-      field: "created_at",
+      label: "پاسخ توسط",
+      field: "answered_by",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
+      label: "پاسخ در تاریخ",
+      field: "answered_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -204,9 +287,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiReplaceParams(apiRoutes.admin.comments.destroy, {comment: data.id}), {
-            method: 'DELETE',
-          }, {
+          CommentAPI.deleteById(productSlug.value, data.id, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -246,12 +327,7 @@ const selectionOperations = [
         toast.clear()
 
         useConfirmToast(() => {
-          useRequest(apiRoutes.admin.comments.batchDestroy, {
-            method: 'DELETE',
-            data: {
-              ids,
-            },
-          }, {
+          CommentAPI.deleteByIds(productSlug.value, ids, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
@@ -269,38 +345,40 @@ const selectionOperations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiRoutes.admin.comments.index, {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //     table.sortable.order = order
-  //     table.sortable.sort = sort
-  //
-  //     if (tableContainer.value && tableContainer.value.card)
-  //         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  // },
-  // })
+  CommentAPI.fetchAll(productSlug.value, {limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')
 
 onMounted(() => {
-  // useRequest(apiReplaceParams(apiRoutes.admin.products.show, {product: productId.value}), null, {
-  //     success: (response) => {
-  //         product.value = response.data
-  //     },
-  // })
+  ProductAPI.fetchById(productSlug.value, {
+    success: (response) => {
+      product.value = response.data
+      productLoading.value = false
+    },
+    error() {
+      return false
+    },
+  })
 })
 </script>

@@ -3,8 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
-use App\Http\Resources\Showing\BlogCategoryShowResource;
-use App\Http\Resources\Showing\ImageShowResource;
+use App\Http\Resources\Showing\BlogCategoryInfoShowResource;
+use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -18,13 +18,16 @@ class BlogResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('category');
+        $this->resource->load('image');
+
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'category' => new BlogCategoryShowResource($this->whenLoaded('category')),
+            'category' => new BlogCategoryInfoShowResource($this->whenLoaded('category')),
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => new ImageShowResource($this->whenLoaded('image')),
+            'image' => new ImageShowInfoResource($this->whenLoaded('image')),
             'description' => $this->description,
             'archive_tag' => $this->archive_tag,
             'keywords' => $this->keywords,
@@ -37,15 +40,15 @@ class BlogResource extends JsonResource
             'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }
