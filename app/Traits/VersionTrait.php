@@ -10,7 +10,7 @@ trait VersionTrait
     protected static string $version = 'v0.1.0';
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public static function version(): string
     {
@@ -18,7 +18,7 @@ trait VersionTrait
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritDoc
      */
     public function getVersion(): string
     {

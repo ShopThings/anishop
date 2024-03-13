@@ -4,13 +4,17 @@ namespace App\Services;
 
 use App\Repositories\Contracts\CategoryImageRepositoryInterface;
 use App\Services\Contracts\CategoryImageServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class CategoryImageService extends Service implements CategoryImageServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected CategoryImageRepositoryInterface $repository
     )
@@ -20,19 +24,11 @@ class CategoryImageService extends Service implements CategoryImageServiceInterf
     /**
      * @inheritDoc
      */
-    public function getCategoryImages(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getCategoryImages(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCategoryImagesSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository
+            ->newWith('categoryImage.image')
+            ->getCategoryImagesSearchFilterPaginated(filter: $filter);
     }
 
     /**
@@ -40,6 +36,8 @@ class CategoryImageService extends Service implements CategoryImageServiceInterf
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'category_id' => $attributes['category'],
             'image_id' => $attributes['image'],
@@ -59,6 +57,7 @@ class CategoryImageService extends Service implements CategoryImageServiceInterf
             $updateAttributes['category_id'] = $attributes['category'];
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
 

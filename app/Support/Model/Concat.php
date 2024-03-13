@@ -2,10 +2,10 @@
 
 namespace App\Support\Model;
 
-use App\Contracts\BuildExpressionInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
-class Concat implements BuildExpressionInterface
+class Concat
 {
     use AliasTrait;
 
@@ -22,11 +22,6 @@ class Concat implements BuildExpressionInterface
     /**
      * @var string
      */
-    private string $statement = '';
-
-    /**
-     * @var string
-     */
     private string $separator = ', ';
 
     /**
@@ -36,30 +31,19 @@ class Concat implements BuildExpressionInterface
     {
         $this->query = $query;
 
-        $this->statement .= 'CONCAT ';
+        $this->builder = [];
     }
 
     /**
      * @param string ...$columns
-     * @return static
+     * @return Builder
      */
-    public function columns(string ...$columns): static
+    public function columns(string ...$columns): Builder
     {
+        $columns = $this->escapeColumns($columns);
         $this->builder = $columns;
-        return $this;
-    }
 
-    /**
-     * @param string $separator
-     * @param string ...$columns
-     * @return static
-     */
-    public function columnsWithSeparator(string $separator, string ...$columns): static
-    {
-        $this->separator = $separator;
-        $this->columns(...$columns);
-
-        return $this;
+        return $this->build();
     }
 
     /**
@@ -67,24 +51,28 @@ class Concat implements BuildExpressionInterface
      *
      * @return Builder
      */
-    public function build(): Builder
+    protected function build(): Builder
     {
-        $this->normalizeSeparator();
+        $statement = 'CONCAT';
+        $statement .= '(' . implode($this->separator, $this->builder) . ')';
+        $statement = $this->buildAlias($statement);
 
-        $this->statement .= '(' . implode($this->separator, $this->builder) . ')';
-        $this->statement .= $this->buildAlias($this->statement);
-        $this->query->raw($this->statement);
+        $this->query->selectRaw($statement);
 
         return $this->query;
     }
 
     /**
-     * @return void
+     * @param array $columns
+     * @return array<string>
      */
-    private function normalizeSeparator(): void
+    protected function escapeColumns(array $columns): array
     {
-        if ('' == trim($this->separator)) {
-            $this->separator = ', ';
-        }
+        return array_map(function ($column) {
+            if (preg_match('#[\d\w\-_]+#i', $column)) {
+                return DB::getQueryGrammar()->wrap($column);
+            }
+            return DB::escape($column);
+        }, $columns);
     }
 }

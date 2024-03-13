@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('must_pay_price')
                 ->comment('amount of money that a user should pay in this bill');
             $table->string('payment_method_title');
-            $table->enum('payment_method_type', array_map(fn($item) => $item->name, PaymentTypesEnum::cases()));
-            $table->enum('payment_status', array_map(fn($item) => $item->name, PaymentStatusesEnum::cases()));
+            $table->enum('payment_method_type', array_map(fn($item) => $item->value, PaymentTypesEnum::cases()));
+            $table->enum('payment_status', array_map(fn($item) => $item->value, PaymentStatusesEnum::cases()));
             $table->timestamp('payment_status_changed_at')->nullable();
             $table->foreignId('payment_status_changed_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

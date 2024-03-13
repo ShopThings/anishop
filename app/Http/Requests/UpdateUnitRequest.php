@@ -27,7 +27,6 @@ class UpdateUnitRequest extends FormRequest
                 'max:250',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

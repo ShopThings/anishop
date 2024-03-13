@@ -5,6 +5,8 @@ namespace App\Http\Resources;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\PaymentShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,28 +21,28 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'key_id' => $this->key_id,
-            'order_detail' => $this->whenLoaded('detail'),
-            'payments' => $this->whenLoaded('payments'),
+            'payments' => PaymentShowResource::collection($this->whenLoaded('payments')),
             'must_pay_price' => $this->must_pay_price,
             'payment_method_title' => $this->payment_method_title,
             'payment_method_type' => [
-                'text' => $this->payment_method_type,
-                'value' => PaymentTypesEnum::getTranslations($this->payment_method_type),
+                'text' => PaymentTypesEnum::getTranslations($this->payment_method_type, 'نامشخص'),
+                'value' => $this->payment_method_type,
             ],
             'payment_status' => [
-                'text' => $this->payment_status,
-                'value' => PaymentStatusesEnum::getTranslations($this->payment_status),
+                'text' => PaymentStatusesEnum::getTranslations($this->payment_status, 'نامشخص'),
+                'value' => $this->payment_status,
+                'color_hex' => PaymentStatusesEnum::getStatusColor()[$this->payment_status] ?? '#000000',
             ],
-            'payment_status_changed_at' => $this->payment_status_changed_at,
-            'payment_status_changed_by' => $this->whenLoaded('paymentStatusChanger'),
+            'payment_status_changed_at' => $this->payment_status_changed_at
+                ? vertaTz($this->payment_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
+            'payment_status_changed_by' => new UserShowResource($this->whenLoaded('paymentStatusChanger')),
             'payed_at' => $this->payed_at
-                ? verta($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'created_by' => $this->created_by ? $this->whenLoaded('creator') : null,
         ];
     }
 }

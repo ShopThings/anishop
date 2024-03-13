@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFavoriteProductRequest extends FormRequest
@@ -22,7 +23,17 @@ class StoreFavoriteProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product' => [
+                'required',
+                'exists:' . Product::class . ',id',
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'product' => 'محصول جهت افزودن به لیست علاقه‌مندی‌ها',
         ];
     }
 }

@@ -6,8 +6,10 @@ use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
 use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -29,40 +31,50 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
      * @inheritDoc
      */
     public function getOrdersSearchFilterPaginated(
-        ?int    $userId = null,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        ?int   $userId = null,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
         $query = $this->model->newQuery();
         $query
+            ->with('order')
             ->when($userId, function (Builder $query, $uId) {
                 $query->where('user_id', $uId);
             })
-            ->when($search, function (Builder $query, string $search) {
+            ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
-                    ->withWhereHas('user', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'username',
-                            'first_name',
-                            'last_name',
-                            'national_code',
-                        ], $search);
-                    })
-                    ->withWhereHas('order', function ($q) use ($search) {
-                        $q->orWhereLike([
-                            'first_name',
-                            'last_name',
-                            'mobile',
-                            'province',
-                            'city',
-                            'receiver_name',
-                            'receiver_mobile',
-                            'send_status_title',
-                        ], $search);
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q
+                            ->orWhereHas('user', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'username',
+                                        'first_name',
+                                        'last_name',
+                                        'national_code',
+                                    ], $search);
+                                });
+                            })
+                            ->orWhereHas('order', function ($q) use ($search) {
+                                $q->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
+                                        'first_name',
+                                        'last_name',
+                                        'mobile',
+                                        'province',
+                                        'city',
+                                        'receiver_name',
+                                        'receiver_mobile',
+                                        'send_status_title',
+                                    ], $search);
+                                });
+                            });
                     })
                     ->when(ReturnOrderStatusesEnum::getSimilarValuesFromString($search), function ($q, $statuses) {
                         $q->whereIn('status', $statuses);
@@ -75,18 +87,23 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
     /**
      * @inheritDoc
      */
-    public function updateOrCreateItems(array $items): Collection
+    public function updateOrCreateItems(string $returnCode, array $items): Collection
     {
         $modified = collect();
 
         foreach ($items as $item) {
             if (isset($item['id'])) {
-                $isUpdated = $this->returnOrderRequestItemModel->findOrFail($item['id'])->update($item);
+                $model = $this->returnOrderRequestItemModel->findOrFail($item['id']);
+                $isUpdated = false;
+
+                if ($model->return_code === $returnCode) {
+                    $model->update($item);
+                }
 
                 if ($isUpdated)
                     $modified->add($this->returnOrderRequestItemModel::first($item['id']));
             } else {
-                $created = $this->returnOrderRequestItemModel::create($item);
+                $created = $this->returnOrderRequestItemModel::create($item + ['return_code' => $returnCode]);
 
                 if ($created instanceof Model)
                     $modified->add($created);
@@ -107,8 +124,10 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
     /**
      * @inheritDoc
      */
-    public function getItem(int $itemId): ?Model
+    public function getItemWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model
     {
-        return $this->returnOrderRequestItemModel->newQuery()->find($itemId);
+        return $this->returnOrderRequestItemModel->newQuery()
+            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->first($columns);
     }
 }

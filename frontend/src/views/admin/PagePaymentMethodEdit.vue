@@ -1,420 +1,573 @@
 <template>
-    <partial-card>
-        <template #header>
-            ویرایش روش پرداخت -
-            <span
-                v-if="paymentMethod?.id"
-                class="text-teal-600"
-            >{{ paymentMethod?.title }}</span>
-        </template>
-        <template #body>
-            <div class="p-3">
-                <base-loading-panel
-                    :loading="loading"
-                    type="form"
-                >
-                    <template #content>
-                        <form @submit.prevent="onSubmit">
-                            <div class="flex flex-wrap items-end justify-between">
-                                <div class="p-2">
-                                    <partial-input-label
-                                        title="انتخاب تصویر"
-                                    />
-                                    <base-media-placeholder
-                                        type="image"
-                                        :selected="paymentMethod?.image"
-                                    />
-                                </div>
+  <partial-card>
+    <template #header>
+      ویرایش روش پرداخت -
+      <span
+          v-if="paymentMethod?.id"
+          class="text-slate-400 text-base"
+      >{{ paymentMethod?.title }}</span>
+    </template>
+    <template #body>
+      <div class="p-3">
+        <base-loading-panel
+            :loading="loading"
+            type="form"
+        >
+          <template #content>
+            <form @submit.prevent="onSubmit">
+              <div class="flex flex-wrap items-end justify-between">
+                <div class="p-2">
+                  <partial-input-label
+                      title="انتخاب تصویر"
+                  />
+                  <base-media-placeholder
+                      :selected="methodImage"
+                      type="image"
+                  />
+                  <partial-input-error-message :error-message="errors.image"/>
+                </div>
 
-                                <div class="p-2">
-                                    <base-switch
-                                        label="عدم نمایش روش پرداخت"
-                                        on-label="نمایش روش پرداخت"
-                                        name="is_published"
-                                        :enabled="paymentMethod?.is_published"
-                                        sr-text="نمایش/عدم نمایش روش پرداخت"
-                                        @change="(status) => {publishStatus=status}"
-                                    />
-                                </div>
-                            </div>
+                <div class="p-2">
+                  <base-switch
+                      :enabled="paymentMethod?.is_published"
+                      label="عدم نمایش روش پرداخت"
+                      name="is_published"
+                      on-label="نمایش روش پرداخت"
+                      sr-text="نمایش/عدم نمایش روش پرداخت"
+                      @change="(status) => {publishStatus=status}"
+                  />
+                </div>
+              </div>
 
-                            <div class="flex flex-wrap">
-                                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                    <base-input
-                                        label-title="عنوان روش پرداخت"
-                                        placeholder="عنوان را وارد نمایید"
-                                        name="title"
-                                        :value="paymentMethod?.title"
-                                    >
-                                        <template #icon>
-                                            <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                        </template>
-                                    </base-input>
-                                </div>
-                                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                    <partial-input-label title="نوع روش پرداخت"/>
-                                    <base-select
-                                        :options="paymentTypes"
-                                        options-key="value"
-                                        options-text="name"
-                                        name="type"
-                                        :selected="selectedPaymentType"
-                                        @change="paymentTypeChange"
-                                    >
-                                        <template #item="{item, selected}">
-                                            <div class="flex items-center">
-                                                <base-lazy-image
-                                                    :lazy-src="item.image"
-                                                    :alt="item.name"
-                                                    class="!w-14 h-auto ml-3"
-                                                />
-                                                <span
-                                                    :class="{'text-primary': selected}"
-                                                >{{ item.name }}</span>
-                                            </div>
-                                        </template>
-                                    </base-select>
-                                    <partial-input-error-message :error-message="errors.type"/>
-                                </div>
-                            </div>
-
-                            <template
-                                v-if="selectedPaymentType"
-                            >
-                                <hr class="my-3">
-
-                                <VTransitionSlideFadeDownY mode="out-in">
-                                    <div
-                                        v-if="selectedPaymentType.value === 'behpardakht'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input
-                                                label-title="شماره ترمینال"
-                                                placeholder="وارد نمایید"
-                                                name="terminal_id"
-                                                :value="paymentMethod?.options?.terminal_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input
-                                                label-title="نام کاربری"
-                                                placeholder="وارد نمایید"
-                                                name="username"
-                                                :value="paymentMethod?.options?.username"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input label-title="کلمه عبور"
-                                                        placeholder="وارد نمایید"
-                                                        name="password"
-                                                        type="password">
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                    </div>
-                                    <div
-                                        v-else-if="selectedPaymentType.value === 'idpay'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2">
-                                            <base-input
-                                                label-title="کلید API"
-                                                placeholder="وارد نمایید"
-                                                name="api_key"
-                                                :value="paymentMethod?.options?.api_key"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                    </div>
-                                    <div
-                                        v-else-if="selectedPaymentType.value === 'irankish'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input
-                                                label-title="شماره ترمینال"
-                                                placeholder="وارد نمایید"
-                                                name="terminal_id"
-                                                :value="paymentMethod?.options?.terminal_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input label-title="کلمه عبور"
-                                                        placeholder="وارد نمایید"
-                                                        name="password"
-                                                        type="password">
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input
-                                                label-title="شناسه پذیرنده"
-                                                placeholder="وارد نمایید"
-                                                name="acceptor_id"
-                                                :value="paymentMethod?.options?.acceptor_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2">
-                                            <base-textarea
-                                                name="public_key"
-                                                placeholder="وارد نمایید"
-                                                label-title="کلید عمومی"
-                                                :value="paymentMethod?.options?.public_key"
-                                            >
-                                                <template #icon>
-                                                    <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
-                                                </template>
-                                            </base-textarea>
-                                        </div>
-                                    </div>
-                                    <div
-                                        v-else-if="selectedPaymentType.value === 'parsian'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2">
-                                            <base-input label-title="رمز پذیرنده"
-                                                        placeholder="وارد نمایید"
-                                                        name="password"
-                                                        type="password">
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                    </div>
-                                    <div
-                                        v-else-if="selectedPaymentType.value === 'sadad'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input label-title="کلید"
-                                                        placeholder="وارد نمایید"
-                                                        name="password"
-                                                        type="password">
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input
-                                                label-title="شماره ترمینال"
-                                                placeholder="وارد نمایید"
-                                                name="terminal_id"
-                                                :value="paymentMethod?.options?.terminal_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                        <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                                            <base-input
-                                                label-title="شماره مرچنت"
-                                                placeholder="وارد نمایید"
-                                                name="merchant_id"
-                                                :value="paymentMethod?.options?.merchant_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                    </div>
-                                    <div
-                                        v-else-if="selectedPaymentType.value === 'sepehr'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2">
-                                            <base-input
-                                                label-title="شماره ترمینال"
-                                                placeholder="وارد نمایید"
-                                                name="terminal_id"
-                                                :value="paymentMethod?.options?.terminal_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                    </div>
-                                    <div
-                                        v-else-if="selectedPaymentType.value === 'zarinpal'"
-                                        class="flex flex-wrap"
-                                    >
-                                        <div class="w-full p-2 sm:w-1/2">
-                                            <base-input
-                                                label-title="شماره مرچنت"
-                                                placeholder="وارد نمایید"
-                                                name="merchant_id"
-                                                :value="paymentMethod?.options?.merchant_id"
-                                            >
-                                                <template #icon>
-                                                    <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-                                                </template>
-                                            </base-input>
-                                        </div>
-                                    </div>
-                                </VTransitionSlideFadeDownY>
-                            </template>
-
-                            <div class="px-2 py-3">
-                                <base-animated-button
-                                    type="submit"
-                                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                                    :disabled="isSubmitting"
-                                >
-                                    <VTransitionFade>
-                                        <loader-circle
-                                            v-if="isSubmitting"
-                                            main-container-klass="absolute w-full h-full top-0 left-0"
-                                            big-circle-color="border-transparent"
-                                        />
-                                    </VTransitionFade>
-
-                                    <template #icon="{klass}">
-                                        <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
-                                    </template>
-
-                                    <span class="ml-auto">ویرایش روش پرداخت</span>
-                                </base-animated-button>
-                            </div>
-                        </form>
+              <div class="flex flex-wrap">
+                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                  <base-input
+                      :value="paymentMethod?.title"
+                      label-title="عنوان روش پرداخت"
+                      name="title"
+                      placeholder="عنوان را وارد نمایید"
+                  >
+                    <template #icon>
+                      <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
-                </base-loading-panel>
-            </div>
-        </template>
-    </partial-card>
+                  </base-input>
+                </div>
+                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                  <partial-input-label title="نوع روش پرداخت"/>
+                  <base-select
+                      :options="paymentTypes"
+                      :selected="selectedPaymentType"
+                      name="type"
+                      options-key="value"
+                      options-text="name"
+                      @change="paymentTypeChange"
+                  >
+                    <template #item="{item, selected}">
+                      <div class="flex items-center">
+                        <base-lazy-image
+                            :alt="item.name"
+                            :lazy-src="item.image"
+                            class="!w-14 h-auto ml-3"
+                        />
+                        <span
+                            :class="{'text-primary': selected}"
+                        >{{ item.name }}</span>
+                      </div>
+                    </template>
+                  </base-select>
+                  <partial-input-error-message :error-message="errors.type"/>
+                </div>
+              </div>
+
+              <template
+                  v-if="selectedPaymentType"
+              >
+                <hr class="my-3">
+
+                <VTransitionSlideFadeDownY mode="out-in">
+                  <div
+                      v-if="selectedPaymentType.value === 'behpardakht'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          :value="paymentMethod?.options?.terminal_id"
+                          label-title="شماره ترمینال"
+                          name="terminal_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          :value="paymentMethod?.options?.username"
+                          label-title="نام کاربری"
+                          name="username"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          label-title="کلمه عبور"
+                          name="password"
+                          placeholder="وارد نمایید"
+                          type="password"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                  </div>
+                  <div
+                      v-else-if="selectedPaymentType.value === 'idpay'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2">
+                      <base-input
+                          :value="paymentMethod?.options?.api_key"
+                          label-title="کلید API"
+                          name="api_key"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                  </div>
+                  <div
+                      v-else-if="selectedPaymentType.value === 'irankish'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          :value="paymentMethod?.options?.terminal_id"
+                          label-title="شماره ترمینال"
+                          name="terminal_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          label-title="کلمه عبور"
+                          name="password"
+                          placeholder="وارد نمایید"
+                          type="password"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          :value="paymentMethod?.options?.acceptor_id"
+                          label-title="شناسه پذیرنده"
+                          name="acceptor_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2">
+                      <base-textarea
+                          :value="paymentMethod?.options?.public_key"
+                          label-title="کلید عمومی"
+                          name="public_key"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
+                        </template>
+                      </base-textarea>
+                    </div>
+                  </div>
+                  <div
+                      v-else-if="selectedPaymentType.value === 'parsian'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2">
+                      <base-input
+                          label-title="رمز پذیرنده"
+                          name="password"
+                          placeholder="وارد نمایید"
+                          type="password"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                  </div>
+                  <div
+                      v-else-if="selectedPaymentType.value === 'sadad'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          label-title="کلید"
+                          name="password"
+                          placeholder="وارد نمایید"
+                          type="password"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          :value="paymentMethod?.options?.terminal_id"
+                          label-title="شماره ترمینال"
+                          name="terminal_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                    <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                      <base-input
+                          :value="paymentMethod?.options?.merchant_id"
+                          label-title="شماره مرچنت"
+                          name="merchant_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                  </div>
+                  <div
+                      v-else-if="selectedPaymentType.value === 'sepehr'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2">
+                      <base-input
+                          :value="paymentMethod?.options?.terminal_id"
+                          label-title="شماره ترمینال"
+                          name="terminal_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                  </div>
+                  <div
+                      v-else-if="selectedPaymentType.value === 'zarinpal'"
+                      class="flex flex-wrap"
+                  >
+                    <div class="w-full p-2 sm:w-1/2">
+                      <base-input
+                          :value="paymentMethod?.options?.merchant_id"
+                          label-title="شماره مرچنت"
+                          name="merchant_id"
+                          placeholder="وارد نمایید"
+                      >
+                        <template #icon>
+                          <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+                        </template>
+                      </base-input>
+                    </div>
+                  </div>
+                </VTransitionSlideFadeDownY>
+              </template>
+
+              <div class="px-2 py-3">
+                <base-animated-button
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
+                >
+                  <VTransitionFade>
+                    <loader-circle
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                    />
+                  </VTransitionFade>
+
+                  <template #icon="{klass}">
+                    <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
+                  </template>
+
+                  <span class="ml-auto">ویرایش روش پرداخت</span>
+                </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
+              </div>
+            </form>
+          </template>
+        </base-loading-panel>
+      </div>
+    </template>
+  </partial-card>
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import VTransitionFade from "../../transitions/VTransitionFade.vue";
+import {onMounted, ref} from "vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialInputLabel from "../../components/partials/PartialInputLabel.vue";
-import BaseLazyImage from "../../components/base/BaseLazyImage.vue";
-import PartialCard from "../../components/partials/PartialCard.vue";
-import BaseSelect from "../../components/base/BaseSelect.vue";
-import PartialInputErrorMessage from "../../components/partials/PartialInputErrorMessage.vue";
-import LoaderCircle from "../../components/base/loader/LoaderCircle.vue";
-import BaseMediaPlaceholder from "../../components/base/BaseMediaPlaceholder.vue";
-import BaseSwitch from "../../components/base/BaseSwitch.vue";
-import BaseInput from "../../components/base/BaseInput.vue";
-import BaseAnimatedButton from "../../components/base/BaseAnimatedButton.vue";
-import BaseLoadingPanel from "../../components/base/BaseLoadingPanel.vue";
-import VTransitionSlideFadeDownY from "../../transitions/VTransitionSlideFadeDownY.vue";
-import BaseTextarea from "../../components/base/BaseTextarea.vue";
-import {useForm} from "vee-validate";
-import yup from "../../validation/index.js";
-import {apiReplaceParams, apiRoutes} from "../../router/api-routes.js";
-import {useRequest} from "../../composables/api-request.js";
-import {useRoute, useRouter} from "vue-router";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseSelect from "@/components/base/BaseSelect.vue";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
+import BaseTextarea from "@/components/base/BaseTextarea.vue";
+import yup from "@/validation/index.js";
 import {useToast} from "vue-toastification";
+import {PAYMENT_METHOD_TYPES} from "@/composables/constants.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {PaymentMethodAPI} from "@/service/APIPayment.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
-const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-    const id = parseInt(route.params.id, 10)
-    if (isNaN(id)) return route.params.id
-    return id
-})
+const idParam = getRouteParamByKey('id')
+
+const loading = ref(true)
 
 const paymentMethod = ref(null)
-
-const loading = ref(false)
-const canSubmit = ref(true)
-
+const methodImage = ref(null)
 const publishStatus = ref(true)
 const paymentTypes = [
-    {
-        value: 'behpardakht',
-        name: 'درگاه بانک - به پرداخت',
-        image: '/gateways/beh-pardakht.png',
-    },
-    {
-        value: 'idpay',
-        name: 'درگاه بانک - آیدی پی',
-        image: '/gateways/idpay.png',
-    },
-    {
-        value: 'irankish',
-        name: 'درگاه بانک - ایران کیش',
-        image: '/gateways/irankish.jpg',
-    },
-    {
-        value: 'parsian',
-        name: 'درگاه بانک - تجارت الکترونیک پارسیان',
-        image: '/gateways/tap.jpg',
-    },
-    {
-        value: 'sadad',
-        name: 'درگاه بانک - سداد',
-        image: '/gateways/sadad.jpg',
-    },
-    {
-        value: 'sepehr',
-        name: 'درگاه بانک - پرداخت الکترونیک سپهر',
-        image: '/gateways/mabna.png',
-    },
-    {
-        value: 'zarinpal',
-        name: 'درگاه بانک - زرین پال',
-        image: '/gateways/zarinpal.png',
-    },
+  {
+    value: PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    name: PAYMENT_METHOD_TYPES.BEHPARDAKHT.text,
+    image: '/gateways/beh-pardakht.png',
+    type: PAYMENT_METHOD_TYPES.BEHPARDAKHT.type,
+  },
+  {
+    value: PAYMENT_METHOD_TYPES.IDPAY.value,
+    name: PAYMENT_METHOD_TYPES.IDPAY.text,
+    image: '/gateways/idpay.png',
+    type: PAYMENT_METHOD_TYPES.IDPAY.type,
+  },
+  {
+    value: PAYMENT_METHOD_TYPES.IRANKISH.value,
+    name: PAYMENT_METHOD_TYPES.IRANKISH.text,
+    image: '/gateways/irankish.jpg',
+    type: PAYMENT_METHOD_TYPES.IRANKISH.type,
+  },
+  {
+    value: PAYMENT_METHOD_TYPES.PARSIAN.value,
+    name: PAYMENT_METHOD_TYPES.PARSIAN.text,
+    image: '/gateways/tap.jpg',
+    type: PAYMENT_METHOD_TYPES.PARSIAN.type,
+  },
+  {
+    value: PAYMENT_METHOD_TYPES.SADAD.value,
+    name: PAYMENT_METHOD_TYPES.SADAD.text,
+    image: '/gateways/sadad.jpg',
+    type: PAYMENT_METHOD_TYPES.SADAD.type,
+  },
+  {
+    value: PAYMENT_METHOD_TYPES.SEPEHR.value,
+    name: PAYMENT_METHOD_TYPES.SEPEHR.text,
+    image: '/gateways/mabna.png',
+    type: PAYMENT_METHOD_TYPES.SEPEHR.type,
+  },
+  {
+    value: PAYMENT_METHOD_TYPES.ZARINPAL.value,
+    name: PAYMENT_METHOD_TYPES.ZARINPAL.text,
+    image: '/gateways/zarinpal.png',
+    type: PAYMENT_METHOD_TYPES.ZARINPAL.type,
+  },
 ]
 const selectedPaymentType = ref(null)
 
 function paymentTypeChange(selected) {
-    selectedPaymentType.value = selected
+  selectedPaymentType.value = selected
 }
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
-})
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    title: yup.string().required('عنوان را وارد نمایید.'),
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+  }),
+}, (values, actions) => {
+  if (!methodImage.value) {
+    actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
+    return
+  }
 
-const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+  // validate payment method type
+  if (!selectedPaymentType.value || ![
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IDPAY.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+    PAYMENT_METHOD_TYPES.PARSIAN.value,
+    PAYMENT_METHOD_TYPES.ZARINPAL.value,
+  ].includes(selectedPaymentType.value.value)) {
+    actions.setFieldError('type', 'انتخاب نوع روش پرداخت اجباری می‌باشد.')
+    return
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+  ].includes(selectedPaymentType.value.value) && (!values.terminal_id || values.terminal_id.trim() === '')) {
+    actions.setFieldError('terminal_id', 'شماره ترمینال را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.BEHPARDAKHT.value === selectedPaymentType.value.value &&
+      (!values.username || values.username.trim() === '')) {
+    actions.setFieldError('username', 'نام کاربری را وارد نمایید.')
+    return
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
+    PAYMENT_METHOD_TYPES.IRANKISH.value,
+    PAYMENT_METHOD_TYPES.PARSIAN.value,
+    PAYMENT_METHOD_TYPES.SEPEHR.value,
+  ].includes(selectedPaymentType.value.value) && (!values.password || values.password.trim() === '')) {
+    actions.setFieldError('password', 'کلمه عبور را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.IDPAY.value === selectedPaymentType.value.value &&
+      (!values.api_key || values.api_key.trim() === '')) {
+    actions.setFieldError('api_key', 'کلید API را وارد نمایید.')
+    return
+  }
+
+  if (PAYMENT_METHOD_TYPES.IRANKISH.value === selectedPaymentType.value.value) {
+    if (!values.acceptor_id || values.acceptor_id.trim() === '') {
+      actions.setFieldError('acceptor_id', 'شناسه پذیرنده را وارد نمایید.')
+      return
+    }
+
+    if (!values.public_key || values.public_key.trim() === '') {
+      actions.setFieldError('public_key', 'کلید عمومی را وارد نمایید.')
+      return
+    }
+  }
+
+  if ([
+    PAYMENT_METHOD_TYPES.SADAD.value,
+    PAYMENT_METHOD_TYPES.ZARINPAL.value,
+  ].includes(selectedPaymentType.value.value) && (!values.merchant_id || values.merchant_id.trim() === '')) {
+    actions.setFieldError('merchant_id', 'شماره مرچنت را وارد نمایید.')
+    return
+  }
+  //
+
+  // assemble payment options
+  const options = {}
+  switch (selectedPaymentType.value.value) {
+    case PAYMENT_METHOD_TYPES.BEHPARDAKHT.value:
+      options.terminal_id = values.terminal_id
+      options.username = values.username
+      options.password = values.password
+      break;
+    case PAYMENT_METHOD_TYPES.IDPAY.value:
+      options.api_key = values.api_key
+      break;
+    case PAYMENT_METHOD_TYPES.IRANKISH.value:
+      options.terminal_id = values.terminal_id
+      options.password = values.password
+      options.acceptor_id = values.acceptor_id
+      options.public_key = values.public_key
+      break;
+    case PAYMENT_METHOD_TYPES.PARSIAN.value:
+      options.password = values.password
+      break;
+    case PAYMENT_METHOD_TYPES.SADAD.value:
+      options.password = values.password
+      options.terminal_id = values.terminal_id
+      options.merchant_id = values.merchant_id
+      break;
+    case PAYMENT_METHOD_TYPES.SEPEHR.value:
+      options.terminal_id = values.terminal_id
+      break;
+    case PAYMENT_METHOD_TYPES.ZARINPAL.value:
+      options.merchant_id = values.merchant_id
+      break;
+  }
+  //
+
+  canSubmit.value = false
+
+  PaymentMethodAPI.updateById(idParam.value, {
+    title: values.title,
+    image: methodImage.value.full_path,
+    type: selectedPaymentType.value.type,
+    bank_gateway_type: selectedPaymentType.value.value,
+    options,
+    is_published: publishStatus.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+    },
+    error(error) {
+      if (error.errors && Object.keys(error.errors).length >= 1)
+        actions.setErrors(error.errors)
+    },
+    finally() {
+      canSubmit.value = true
+    }
+  })
 })
 
 onMounted(() => {
-    // useRequest(apiReplaceParams(apiRoutes.admin.paymentMethods.show, {payment_method: idParam.value}), null, {
-    //     success: (response) => {
-    //         for (let i of paymentTypes) {
-    //             if (response.bank_gateway_type === i.value)
-    //                 selectedPaymentType.value = i
-    //         }
-    //
-    //         loading.value = false
-    //     },
-    // })
+  PaymentMethodAPI.fetchById(idParam.value, {
+    success(response) {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
+
+function setFormFields(item) {
+  paymentMethod.value = item
+  methodImage.value = item.image
+
+  for (let i of paymentTypes) {
+    if (item.bank_gateway_type.value === i.value)
+      selectedPaymentType.value = i
+  }
+}
 </script>
-
-<style scoped>
-
-</style>

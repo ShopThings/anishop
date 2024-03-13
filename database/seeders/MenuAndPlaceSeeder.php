@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Enums\Menus\MenuPlacesEnum;
 use App\Models\Menu;
 use App\Models\MenuItem;
-use App\Models\MenuPlace;
 use Illuminate\Database\Seeder;
 
 class MenuAndPlaceSeeder extends Seeder
@@ -15,48 +14,25 @@ class MenuAndPlaceSeeder extends Seeder
      */
     public function run(): void
     {
-        // create menu places
-        $main = MenuPlace::create([
-            'title' => 'اصلی',
-            'place_in' => MenuPlacesEnum::MAIN,
-        ]);
-        $top = MenuPlace::create([
-            'title' => 'بالای صفحه',
-            'place_in' => MenuPlacesEnum::TOP_MENU,
-        ]);
-        $footer = MenuPlace::create([
-            'title' => 'فوتر(پانوشت)',
-            'place_in' => MenuPlacesEnum::FOOTER,
-        ]);
-        $blog = MenuPlace::create([
-            'title' => 'بلاگ',
-            'place_in' => MenuPlacesEnum::BLOG,
-        ]);
-
         // create menus
-        $mainMenu = Menu::create([
-            'menu_place_id' => $main->id,
-            'title' => 'منوی اصلی',
+        $topMenu = Menu::create([
+            'title' => 'منوی بالای صفحه',
+            'place_in' => MenuPlacesEnum::TOP_MENU->value,
             'is_deletable' => false,
         ]);
-        $topMenu = Menu::create([
-            'menu_place_id' => $top->id,
-            'title' => 'منوی بالای صفحه',
+        $topMenuBlog = Menu::create([
+            'title' => 'منوی بالای صفحه بلاگ',
+            'place_in' => MenuPlacesEnum::TOP_MENU_BLOG->value,
             'is_deletable' => false,
         ]);
         $footerMenu1 = Menu::create([
-            'menu_place_id' => $footer->id,
             'title' => 'دسترسی سریع',
+            'place_in' => MenuPlacesEnum::FOOTER->value,
             'is_deletable' => false,
         ]);
         $footerMenu2 = Menu::create([
-            'menu_place_id' => $footer->id,
             'title' => 'لینک‌های مفید',
-            'is_deletable' => false,
-        ]);
-        $blogMenu = Menu::create([
-            'menu_place_id' => $blog->id,
-            'title' => 'منوی بلاگ',
+            'place_in' => MenuPlacesEnum::FOOTER->value,
             'is_deletable' => false,
         ]);
 
@@ -76,6 +52,19 @@ class MenuAndPlaceSeeder extends Seeder
         MenuItem::create([
             'menu_id' => $topMenu->id,
             'title' => 'درباره ما',
+            'link' => '#',
+        ]);
+
+        // -create top menu blog items
+        MenuItem::create([
+            'menu_id' => $topMenuBlog->id,
+            'title' => 'بلاگ',
+            'link' => '#',
+            'can_have_children' => false,
+        ]);
+        MenuItem::create([
+            'menu_id' => $topMenuBlog->id,
+            'title' => 'اخبار',
             'link' => '#',
         ]);
 

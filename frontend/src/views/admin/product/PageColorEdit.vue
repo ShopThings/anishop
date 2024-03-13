@@ -1,138 +1,165 @@
 <template>
-    <partial-card>
-        <template #header>
-            ویرایش رنگ -
-            <span
-                v-if="color?.id"
-                class="text-teal-600"
-            >{{ color?.name }}</span>
-        </template>
-        <template #body>
-            <div class="p-3">
-                <base-loading-panel
-                    :loading="loading"
-                    type="form"
-                >
-                    <template #content>
-                        <form @submit.prevent="onSubmit">
-                            <div class="flex flex-wrap items-end justify-between">
-                                <div class="w-full p-2 sm:w-1/2">
-                                    <base-input
-                                        label-title="نام رنگ"
-                                        placeholder="نام رنگ را وارد نمایید"
-                                        name="name"
-                                        :value="color?.name"
-                                    >
-                                        <template #icon>
-                                            <EyeDropperIcon class="h-6 w-6 text-gray-400"/>
-                                        </template>
-                                    </base-input>
-                                </div>
-                                <div class="p-2">
-                                    <base-switch
-                                        label="عدم نمایش رنگ"
-                                        on-label="نمایش رنگ"
-                                        name="is_published"
-                                        :enabled="color?.is_published"
-                                        sr-text="نمایش/عدم نمایش رنگ"
-                                        @change="(status) => {publishStatus=status}"
-                                    />
-                                </div>
-                            </div>
-
-                            <div class="p-2 flex">
-                                <partial-input-label title="انتخاب رنگ"/>
-                                <color-picker
-                                    v-model:pureColor="pureColor"
-                                    :disable-alpha="true"
-                                    format="hex6"
-                                    lang="En"
-                                />
-                            </div>
-
-                            <div class="px-2 py-3">
-                                <base-animated-button
-                                    type="submit"
-                                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                                    :disabled="isSubmitting"
-                                >
-                                    <VTransitionFade>
-                                        <loader-circle
-                                            v-if="isSubmitting"
-                                            main-container-klass="absolute w-full h-full top-0 left-0"
-                                            big-circle-color="border-transparent"
-                                        />
-                                    </VTransitionFade>
-
-                                    <template #icon="{klass}">
-                                        <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
-                                    </template>
-
-                                    <span class="ml-auto">افزودن رنگ</span>
-                                </base-animated-button>
-                            </div>
-                        </form>
+  <partial-card>
+    <template #header>
+      ویرایش رنگ -
+      <span
+          v-if="color?.id"
+          class="text-slate-400 text-base"
+      >{{ color?.name }}</span>
+    </template>
+    <template #body>
+      <div class="p-3">
+        <base-loading-panel
+            :loading="loading"
+            type="form"
+        >
+          <template #content>
+            <form @submit.prevent="onSubmit">
+              <div class="flex flex-wrap items-end justify-between">
+                <div class="w-full p-2 sm:w-1/2">
+                  <base-input
+                      :value="color?.name"
+                      label-title="نام رنگ"
+                      name="name"
+                      placeholder="نام رنگ را وارد نمایید"
+                  >
+                    <template #icon>
+                      <EyeDropperIcon class="h-6 w-6 text-gray-400"/>
                     </template>
-                </base-loading-panel>
-            </div>
-        </template>
-    </partial-card>
+                  </base-input>
+                </div>
+                <div class="p-2">
+                  <base-switch
+                      :enabled="color?.is_published"
+                      label="عدم نمایش رنگ"
+                      name="is_published"
+                      on-label="نمایش رنگ"
+                      sr-text="نمایش/عدم نمایش رنگ"
+                      @change="(status) => {publishStatus=status}"
+                  />
+                </div>
+              </div>
+
+              <div class="p-2 flex">
+                <partial-input-label title="انتخاب رنگ"/>
+                <color-picker
+                    v-model:pureColor="pureColor"
+                    :disable-alpha="true"
+                    format="hex6"
+                    lang="En"
+                />
+                <partial-input-error-message :error-message="errors.color_hex"/>
+              </div>
+
+              <div class="px-2 py-3">
+                <base-animated-button
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
+                >
+                  <VTransitionFade>
+                    <loader-circle
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
+                    />
+                  </VTransitionFade>
+
+                  <template #icon="{klass}">
+                    <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
+                  </template>
+
+                  <span class="ml-auto">ویرایش رنگ</span>
+                </base-animated-button>
+
+                <div
+                    v-if="Object.keys(errors)?.length"
+                    class="text-left"
+                >
+                  <div
+                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                  >
+                    (
+                    <span>{{ Object.keys(errors)?.length }}</span>
+                    )
+                    خطا، لطفا بررسی کنید
+                  </div>
+                </div>
+              </div>
+            </form>
+          </template>
+        </base-loading-panel>
+      </div>
+    </template>
+  </partial-card>
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useForm} from "vee-validate";
-import yup from "../../../validation/index.js";
-import LoaderCircle from "../../../components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "../../../transitions/VTransitionFade.vue";
+import {onMounted, ref} from "vue";
+import yup, {isValidColorHex} from "@/validation/index.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {EyeDropperIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
-import BaseAnimatedButton from "../../../components/base/BaseAnimatedButton.vue";
-import PartialInputLabel from "../../../components/partials/PartialInputLabel.vue";
-import BaseLoadingPanel from "../../../components/base/BaseLoadingPanel.vue";
-import PartialCard from "../../../components/partials/PartialCard.vue";
-import BaseInput from "../../../components/base/BaseInput.vue";
-import BaseSwitch from "../../../components/base/BaseSwitch.vue";
-import {apiReplaceParams, apiRoutes} from "../../../router/api-routes.js";
-import {useRequest} from "../../../composables/api-request.js";
+import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import PartialCard from "@/components/partials/PartialCard.vue";
+import BaseInput from "@/components/base/BaseInput.vue";
+import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import {useToast} from "vue-toastification";
-import {useRoute, useRouter} from "vue-router";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {ColorAPI} from "@/service/APIProduct.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 
-const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-    const id = parseInt(route.params.id, 10)
-    if (isNaN(id)) return route.params.id
-    return id
-})
+const idParam = getRouteParamByKey('id')
 
-const loading = ref(false)
-const canSubmit = ref(true)
+const loading = ref(true)
 
 const color = ref(null)
 const publishStatus = ref(true)
-const pureColor = ref('')
+const pureColor = ref('#000000')
 
-const {handleSubmit, errors, isSubmitting} = useForm({
-    validationSchema: yup.object().shape({}),
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    name: yup.string().required('نام رنگ را وارد نمایید.'),
+    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
+  }),
+}, (values, actions) => {
+  if (!isValidColorHex(pureColor.value)) {
+    actions.setFieldError('color_hex', 'کد رنگی انتخاب شده نامعتبر می‌باشد.')
+    return
+  }
+
+  canSubmit.value = false
+
+  ColorAPI.updateById(idParam.value, {
+    name: values.name,
+    hex: pureColor.value,
+    is_published: publishStatus.value,
+  }, {
+    success(response) {
+      setFormFields(response.data)
+      toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 
-const onSubmit = handleSubmit((values, actions) => {
-    if (!canSubmit.value) return
+onMounted(() => {
+  ColorAPI.fetchById(idParam.value, {
+    success(response) {
+      setFormFields(response.data)
+      loading.value = false
+    },
+  })
 })
 
-// onMounted(() => {
-//     useRequest(apiReplaceParams(apiRoutes.admin.colors.show, {color: idParam.value}), null, {
-//         success: (response) => {
-//             color.value = response.data
-//             pureColor.value = response.data.hex
-//
-//             loading.value = false
-//         },
-//     })
-// })
+function setFormFields(item) {
+  color.value = item
+  pureColor.value = item.hex
+}
 </script>
-
-<style scoped>
-
-</style>

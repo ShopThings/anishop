@@ -17,9 +17,9 @@ return new class extends Migration {
             $table->string('full_name', 100);
             $table->string('mobile', 11);
             $table->text('address');
-            $table->foreignId('city_id')->constrained('provinces')
+            $table->foreignId('city_id')->constrained('cities')
                 ->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('province_id')->constrained('cities')
+            $table->foreignId('province_id')->constrained('provinces')
                 ->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('postal_code', 15);
             $table->timestamps();

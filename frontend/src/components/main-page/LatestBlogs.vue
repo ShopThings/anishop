@@ -1,76 +1,60 @@
 <template>
+  <div
+      v-if="latestBlogsLoading || !latestBlogs?.length"
+      class="flex flex-wrap"
+  >
+    <div
+        v-for="i in 3"
+        :key="i"
+        class="w-full lg:w-1/3 p-3 rounded-lg"
+    >
+      <loader-card-blog/>
+    </div>
+  </div>
+  <template v-else>
     <partial-general-title
-        type="side"
+        container-class="mb-5 mt-6 p-2"
         title="آخرین نوشته‌ها"
         title-size="text-xl"
-        container-class="mb-5 mt-6 p-2"
+        type="side"
     />
 
     <div class="flex flex-wrap">
-        <div
-            v-for="(blog, idx) in latestBlogs"
-            :key="idx"
-            class="w-full lg:w-1/3 p-3 rounded-lg"
-        >
-            <blog-card-main :blog="blog"/>
-        </div>
+      <div
+          v-for="blog in latestBlogs"
+          :key="blog.id"
+          class="w-full lg:w-1/3 p-3 rounded-lg"
+      >
+        <blog-card-main :blog="blog"/>
+      </div>
     </div>
+  </template>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import BlogCardMain from "../blog/BlogCardMain.vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
+import {onMounted, ref} from "vue";
+import BlogCardMain from "@/components/blog/BlogCardMain.vue";
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import {HomeMainPageAPI} from "@/service/APIHomePages.js";
+import LoaderCardBlog from "@/components/base/loader/LoaderCardBlog.vue";
 
-const latestBlogs = ref([
-    {
-        id: 9,
-        title: 'بررسی ماوس لاجیتک G502 Hero؛ اسطوره‌ی قدیمی',
-        image: {
-            path: '/src/assets/blogs/b9.jpg'
-        },
-        category: {
-            name: 'تعمیر و نگهداری',
-        },
-        created_at: '۲۵ مهر ۱۴۰۲',
-        creator: {
-            first_name: 'محمد مهدی',
-            last_name: 'دهقان منشادی',
-        },
+const emit = defineEmits(['loaded'])
+
+const latestBlogs = ref(null)
+const latestBlogsLoading = ref(true)
+
+onMounted(() => {
+  HomeMainPageAPI.fetchLatestBlogs({
+    success(response) {
+      latestBlogs.value = response.data
     },
-    {
-        id: 8,
-        title: 'بررسی اسپیکر جوی روم JR-ML03؛ یک اسپیکر آرامش‌بخش',
-        image: {
-            path: '/src/assets/blogs/b8.jpg'
-        },
-        category: {
-            name: 'تلنت (Talent)',
-        },
-        created_at: '۲۱ مهر ۱۴۰۲',
-        creator: {
-            first_name: 'سعید',
-            last_name: 'گرامی فر',
-        },
+    error() {
+      return false
     },
-    {
-        id: 7,
-        title: 'راهنمای خرید بهترین هدست اونیکوما؛ ۱۵ محصول جذاب با قیمت عالی',
-        image: {
-            path: '/src/assets/blogs/b7.jpg'
-        },
-        category: {
-            name: 'اسپیکر و هدفون',
-        },
-        created_at: '۱۵ شهریور ۱۴۰۲',
-        creator: {
-            first_name: 'اصغر',
-            last_name: 'فرهادی',
-        },
+    finally() {
+      latestBlogsLoading.value = false
+      emit('loaded', !!latestBlogs.value?.length)
     },
-])
+  })
+})
 </script>
-
-<style scoped>
-
-</style>

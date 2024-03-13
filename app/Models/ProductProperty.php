@@ -23,11 +23,14 @@ class ProductProperty extends Model implements Buyable
     ];
 
     protected $casts = [
+        'discounted_from' => 'datetime',
+        'discounted_until' => 'datetime',
         'is_special' => 'boolean',
         'is_available' => 'boolean',
         'show_coming_soon' => 'boolean',
         'show_call_for_more' => 'boolean',
         'is_published' => 'boolean',
+        'has_separate_shipment' => 'boolean',
     ];
 
     public function nanoIdColumn()
@@ -59,7 +62,22 @@ class ProductProperty extends Model implements Buyable
         $price = $this->price;
 
         // check if product have discount
-        if ($this->discounted_until && $this->discounted_until > now()) {
+        if (
+            (
+                !isset($this->discounted_from) &&
+                isset($this->discounted_until) &&
+                $this->discounted_until >= now()
+            ) ||
+            (
+                isset($this->discounted_from) &&
+                !isset($this->discounted_until) &&
+                $this->discounted_from <= now()
+            ) ||
+            (
+                isset($this->discounted_from, $this->discounted_until) &&
+                $this->discounted_from <= now() && $this->discounted_until >= now()
+            )
+        ) {
             $price = $this->discounted_price;
         }
 

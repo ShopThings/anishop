@@ -29,21 +29,19 @@ class UpdateBlogCategoryRequest extends FormRequest
             'priority' => [
                 'sometimes',
                 'numeric',
+                'min:0',
             ],
             'keywords' => [
                 'sometimes',
                 'array',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
             'show_in_menu' => [
-                'sometimes',
                 'boolean',
             ],
             'show_in_side_menu' => [
-                'sometimes',
                 'boolean',
             ],
         ];

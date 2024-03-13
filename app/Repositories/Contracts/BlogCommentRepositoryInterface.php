@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Models\BlogComment;
+use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -11,18 +13,29 @@ interface BlogCommentRepositoryInterface extends RepositoryInterface
     /**
      * @param int $blogId
      * @param array $columns
-     * @param string|null $search
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter|null $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getCommentsSearchFilterPaginated(
-        int     $blogId,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        int    $blogId,
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param int $userId
+     * @param Filter $filter
+     * @param array $columns
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getUserCommentsFilterPaginated(
+        int    $userId,
+        Filter $filter,
+        array  $columns = ['*']
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @return bool
+     */
+    public function reportComment(): bool;
 }

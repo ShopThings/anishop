@@ -22,6 +22,8 @@ class GatewayPayment extends Model
         'status' => 'boolean',
         'gateway_type' => GatewaysEnum::class,
         'meta' => 'array',
+        'payed_at' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     /**

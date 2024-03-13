@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Casts\CleanHtmlCast;
 use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use App\Traits\HasDeletedRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Mews\Purifier\Casts\CleanHtml;
 use Parables\NanoId\GeneratesNanoId;
 
 class ReturnOrderRequest extends Model
@@ -29,7 +30,7 @@ class ReturnOrderRequest extends Model
     ];
 
     protected $casts = [
-        'not_accepted_description' => CleanHtml::class,
+        'not_accepted_description' => CleanHtmlCast::class,
         'status' => ReturnOrderStatusesEnum::class,
         'seen_status' => 'boolean',
         'status_changed_at' => 'datetime',
@@ -69,6 +70,27 @@ class ReturnOrderRequest extends Model
     public function returnOrderItems(): HasMany
     {
         return $this->hasMany(ReturnOrderRequestItem::class, 'return_code', 'code');
+    }
+
+    /**
+     * @param GetterExpressionInterface $where
+     * @return bool
+     */
+    public function hasReturnOrderItemWhere(GetterExpressionInterface $where): bool
+    {
+        return $this->returnOrderItems()
+            ->when(!empty($where->getStatement()), function ($q) use ($where) {
+                $q->whereRaw($where->getStatement(), $where->getBindings());
+            })
+            ->count();
+    }
+
+    /**
+     * @return BelongsTo
+     */
+    public function statusChanger(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'status_changed_by');
     }
 
     /**

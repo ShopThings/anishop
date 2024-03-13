@@ -16,6 +16,7 @@ return new class extends Migration {
                 ->constrained('product_attributes')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('category_id')
                 ->constrained('categories')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unsignedInteger('priority')->default(0);
             $table->timestamps();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

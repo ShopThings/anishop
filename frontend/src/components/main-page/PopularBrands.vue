@@ -1,132 +1,106 @@
 <template>
+  <div
+      v-if="brandsLoading || !brands?.length"
+      class="flex items-center overflow-hidden divide-x divide-x-reverse divide-slate-100"
+  >
+    <div
+        v-for="i in 8"
+        :key="i"
+        class="min-w-48 h-36 p-3 flex items-center justify-center bg-white animate-pulse"
+    >
+      <PhotoIcon class="size-10 text-orange-200"/>
+    </div>
+  </div>
+  <template v-else>
     <partial-general-title
-        type="side"
+        container-class="mb-5 mt-6 p-2"
         title="محبوب‌ترین برندها"
         title-size="text-xl"
-        container-class="mb-5 mt-6 p-2"
+        type="side"
     />
 
     <base-carousel
-        v-slot="{slide, index}"
+        v-slot="slide"
         v-model="brands"
         v-model:current="currentSlide"
+        :breakpoints="carouselSettings.breakpoints"
         :class-name="carouselSettings.className"
+        :free-mode="carouselSettings.freeMode"
+        :has-navigation="carouselSettings.hasNavigation"
+        :has-pagination="carouselSettings.hasPagination"
+        :navigation-display="carouselSettings.navigationDisplay"
         :space-between="carouselSettings.spaceBetween"
         :wrap-around="carouselSettings.wrapAround"
-        :has-navigation="carouselSettings.hasNavigation"
-        :navigation-display="carouselSettings.navigationDisplay"
-        :has-pagination="carouselSettings.hasPagination"
-        :free-mode="carouselSettings.freeMode"
-        :breakpoints="carouselSettings.breakpoints"
     >
-        <div class="p-3 h-36 flex items-center justify-center bg-white">
-            <router-link to="">
-                <base-lazy-image
-                    :lazy-src="slide.image.path"
-                    :alt="slide?.title"
-                />
-            </router-link>
-        </div>
+      <div class="p-3 h-36 flex items-center justify-center bg-white">
+        <router-link :to="{name: 'search', query: {brand: slide.id}}">
+          <base-lazy-image
+              :alt="slide?.name"
+              :lazy-src="slide.image.path"
+          />
+        </router-link>
+      </div>
     </base-carousel>
+  </template>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import PartialGeneralTitle from "../partials/PartialGeneralTitle.vue";
-import BaseCarousel from "../base/BaseCarousel.vue";
-import BaseLazyImage from "../base/BaseLazyImage.vue";
+import {onMounted, ref} from "vue";
+import {PhotoIcon} from "@heroicons/vue/24/outline/index.js"
+import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 
-const brands = ref([
-    {
-        image: {
-            path: '/src/assets/brands/b1.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b2.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b3.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b4.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b5.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b6.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b7.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b8.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b9.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b10.png',
-        },
-    },
-    {
-        image: {
-            path: '/src/assets/brands/b11.png',
-        },
-    },
-])
+const emit = defineEmits(['loaded'])
+
+const brands = ref(null)
+const brandsLoading = ref(true)
 
 const currentSlide = ref(0)
 
 const carouselSettings = {
-    className: 'brands-main',
-    spaceBetween: 0,
-    wrapAround: false,
-    hasNavigation: true,
-    navigationDisplay: 'floating-sides',
-    hasPagination: false,
-    freeMode: true,
-    breakpoints: {
-        0: {
-            slidesPerView: 1.25,
-        },
-        400: {
-            slidesPerView: 2,
-        },
-        576: {
-            slidesPerView: 3,
-        },
-        768: {
-            slidesPerView: 4.85,
-        },
-        991: {
-            slidesPerView: 5.35,
-        },
-        1280: {
-            slidesPerView: 6,
-        },
+  className: 'brands-main',
+  spaceBetween: 0,
+  wrapAround: false,
+  hasNavigation: true,
+  navigationDisplay: 'floating-sides',
+  hasPagination: false,
+  freeMode: true,
+  breakpoints: {
+    0: {
+      slidesPerView: 1.25,
     },
+    400: {
+      slidesPerView: 2,
+    },
+    576: {
+      slidesPerView: 3,
+    },
+    768: {
+      slidesPerView: 4.85,
+    },
+    991: {
+      slidesPerView: 5.35,
+    },
+    1280: {
+      slidesPerView: 6,
+    },
+  },
 }
+
+onMounted(() => {
+  HomeMainPageAPI.fetchSliderPopularBrands({
+    success(response) {
+      brands.value = response.data
+    },
+    error() {
+      return false
+    },
+    finally() {
+      brandsLoading.value = false
+      emit('loaded', !!brands.value?.length)
+    },
+  })
+})
 </script>
-
-<style scoped>
-
-</style>

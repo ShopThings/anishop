@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Models\FileManager;
+use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateBrandRequest extends FormRequest
@@ -33,18 +33,16 @@ class UpdateBrandRequest extends FormRequest
             ],
             'image' => [
                 'sometimes',
-                'exists:' . FileManager::class . ',id',
+                new FileExistsRule(),
             ],
             'keywords' => [
                 'sometimes',
                 'array',
             ],
             'show_in_slider' => [
-                'sometimes',
                 'boolean',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

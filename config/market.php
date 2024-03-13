@@ -96,25 +96,29 @@ return [
     'sms' => [
 
         /**
-         * Times to show resend activation code button to user in UI
+         * Length of verification code
          */
-        'activation_time' => TimesEnum::MINUTES_3,
+        'verify_code_length' => 6,
 
         /**
          * These variables are for customizing sms contents,
          * to show user specific information.
+         *
+         * Note: DO NOT CHANGE KEYS, PLEASE
          */
         'replacements' => [
 
-            'mobile' => '@mobile@',
+            'username' => '{{username}}',
 
-            'code' => '@code@',
+            'first_name' => '{{first_name}}',
 
-            'order_code' => '@orderCode@',
+            'code' => '{{code}}',
 
-            'status' => '@status@',
+            'order_code' => '{{orderCode}}',
 
-            'shop' => '@shop@',
+            'status' => '{{status}}',
+
+            'shop' => '{{shop}}',
 
         ],
 
@@ -152,7 +156,7 @@ return [
         /**
          * Number of cart that user can store in his carts place
          */
-        'max_cart_count' => 3,
+        'max_cart_count' => 2,
 
     ],
 

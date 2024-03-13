@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use BackedEnum;
 use Illuminate\Support\Str;
 
 trait EnumTranslateTrait
@@ -12,20 +13,33 @@ trait EnumTranslateTrait
     abstract public static function translationArray(): array;
 
     /**
-     * @param array|string $needed
+     * @param BackedEnum|array|string $needed
+     * @param $default
      * @return array|string|null
      */
-    public static function getTranslations(array|string $needed): array|string|null
+    public static function getTranslations(BackedEnum|array|string $needed, $default = null): array|string|null
     {
         $translates = self::translationArray();
-        if (is_array($needed)) {
-            $newArr = [];
-            foreach ($needed as $item) {
+
+        $isOriginalParameterArray = is_array($needed);
+
+        $needed = is_array($needed) ? $needed : [$needed];
+        $newArr = [];
+        foreach ($needed as $item) {
+            if ($item instanceof BackedEnum) {
+                $newArr[$item->value] = $translates[$item->value] ?? $item->value;
+            } else {
                 $newArr[$item] = $translates[$item] ?? $item;
             }
-            return count($newArr) ? $newArr : null;
         }
-        return $translates[$needed] ?? $needed;
+
+        return count($newArr)
+            ? (
+            !$isOriginalParameterArray
+                ? array_pop($newArr)
+                : $newArr
+            )
+            : ($default ?? null);
     }
 
     /**

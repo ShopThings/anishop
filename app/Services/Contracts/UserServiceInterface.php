@@ -4,76 +4,121 @@ namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
 use App\Models\User;
+use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 interface UserServiceInterface extends ServiceInterface
 {
     /**
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
-    public function getUsers(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator;
+    public function getUsers(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
      * @param User $user
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
-    public function getUserAddresses(
-        User    $user,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator;
+    public function getUserAddresses(User $user, Filter $filter): Collection|LengthAwarePaginator;
 
     /**
      * @param User $user
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
-    public function getUserFavoriteProduct(
-        User    $user,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator;
+    public function getUserFavoriteProduct(User $user, Filter $filter): Collection|LengthAwarePaginator;
 
     /**
      * @param User $user
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
-    public function getUserPurchases(
-        User    $user,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['id' => 'desc']
-    ): Collection|LengthAwarePaginator;
+    public function getUserPurchases(User $user, Filter $filter): Collection|LengthAwarePaginator;
 
     /**
      * @param User $user
      * @return Collection
      */
     public function getUserCarts(User $user);
+
+    /**
+     * @param $id
+     * @return Model|null
+     */
+    public function getUserAddressById($id): ?Model;
+
+    /**
+     * @param $userId
+     * @return int
+     */
+    public function getUserAddressesCount($userId): int;
+
+    /**
+     * @param $userId
+     * @return int
+     */
+    public function getUserFavoriteProductsCount($userId): int;
+
+    /**
+     * @param User $user
+     * @param Filter $filter
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getUserNotifications(User $user, Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @param User $user
+     * @return Collection
+     */
+    public function getUnreadNotifications(User $user): Collection;
+
+    /**
+     * @param $userId
+     * @param $productId
+     * @return bool
+     */
+    public function addFavoriteProduct($userId, $productId): bool;
+
+    /**
+     * @param $userId
+     * @return bool
+     */
+    public function canCreateAddress($userId): bool;
+
+    /**
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function createAddress(array $attributes): ?Model;
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function makeAllNotificationAsRead(User $user): bool;
+
+    /**
+     * @param $userId
+     * @param $id
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function updateUserAddressByUserIdAndId($userId, $id, array $attributes): ?Model;
+
+    /**
+     * @param $userId
+     * @param $id
+     * @return bool
+     */
+    public function deleteAddressByUserIdAndId($userId, $id): bool;
+
+    /**
+     * @param $userId
+     * @param $productId
+     * @return bool
+     */
+    public function deleteUserFavoriteProductById($userId, $productId): bool;
 }

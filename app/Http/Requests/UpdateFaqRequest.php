@@ -33,7 +33,6 @@ class UpdateFaqRequest extends FormRequest
                 'array',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

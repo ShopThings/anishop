@@ -4,13 +4,13 @@ namespace App\Services;
 
 use App\Repositories\Contracts\StaticPageRepositoryInterface;
 use App\Services\Contracts\StaticPageServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class StaticPageService extends Service implements StaticPageServiceInterface
 {
@@ -23,15 +23,10 @@ class StaticPageService extends Service implements StaticPageServiceInterface
     /**
      * @inheritDoc
      */
-    public function getPages(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getPages(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('static_pages');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'title',
                 'keywords',
@@ -39,7 +34,10 @@ class StaticPageService extends Service implements StaticPageServiceInterface
         });
 
         return $this->repository->paginate(
-            where: $where->build(), limit: $limit, page: $page, order: $this->convertOrdersColumnToArray($order)
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
         );
     }
 
@@ -90,5 +88,20 @@ class StaticPageService extends Service implements StaticPageServiceInterface
         if (!$res) return null;
 
         return $this->getById($id);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function batchDeleteByUrls(
+        array $urls,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool
+    {
+        $where = new WhereBuilder();
+        $where->whereIn('url', $urls);
+        $ids = $this->repository->all(columns: ['id'], where: $where->build())->pluck('id');
+        return $this->batchDeleteByIds($ids->toArray(), $permanent, $considerDeletable);
     }
 }

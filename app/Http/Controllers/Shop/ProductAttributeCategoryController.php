@@ -10,8 +10,8 @@ use App\Http\Resources\ProductAttributeCategoryResource;
 use App\Models\ProductAttributeCategory;
 use App\Models\User;
 use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductAttributeCategoryController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ProductAttributeCategoryServiceInterface $service
@@ -35,19 +34,14 @@ class ProductAttributeCategoryController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ProductAttributeCategoryResource::collection($this->service->getAttributeCategories(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return ProductAttributeCategoryResource::collection($this->service->getAttributeCategories($filter));
     }
 
     /**
@@ -57,7 +51,7 @@ class ProductAttributeCategoryController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreProductAttributeCategoryRequest $request)
+    public function store(StoreProductAttributeCategoryRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +79,7 @@ class ProductAttributeCategoryController extends Controller
      * @return ProductAttributeCategoryResource
      * @throws AuthorizationException
      */
-    public function show(ProductAttributeCategory $productAttributeCategory)
+    public function show(ProductAttributeCategory $productAttributeCategory): ProductAttributeCategoryResource
     {
         $this->authorize('view', $productAttributeCategory);
         return new ProductAttributeCategoryResource($productAttributeCategory);
@@ -99,7 +93,10 @@ class ProductAttributeCategoryController extends Controller
      * @return ProductAttributeCategoryResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateProductAttributeCategoryRequest $request, ProductAttributeCategory $productAttributeCategory)
+    public function update(
+        UpdateProductAttributeCategoryRequest $request,
+        ProductAttributeCategory $productAttributeCategory
+    ): ProductAttributeCategoryResource|JsonResponse
     {
         $this->authorize('update', $productAttributeCategory);
 
@@ -124,11 +121,11 @@ class ProductAttributeCategoryController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, ProductAttributeCategory $productAttributeCategory)
+    public function destroy(Request $request, ProductAttributeCategory $productAttributeCategory): JsonResponse
     {
         $this->authorize('delete', $productAttributeCategory);
 
-        $permanent = $request->user()->id === $productAttributeCategory->creator()?->id;
+        $permanent = $request->user()->id === $productAttributeCategory->creator?->id;
         $res = $this->service->deleteById($productAttributeCategory->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

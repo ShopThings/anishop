@@ -71,7 +71,7 @@ class Handler extends ExceptionHandler
             if ($request->is('api/*')) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
-                    'message' => 'API درخواست شده پیدا نشد!',
+                    'message' => 'آیتم/API درخواست شده پیدا نشد!',
                 ], ResponseCodes::HTTP_NOT_FOUND);
             }
         });

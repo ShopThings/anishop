@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->string('panel_number', 50);
             $table->string('panel_name', 250);
             $table->text('body');
-            $table->enum('type', array_map(fn($item) => $item->name, SMSTypesEnum::cases()));
-            $table->enum('sender', array_map(fn($item) => $item->name, SMSSenderTypesEnum::cases()));
+            $table->enum('type', array_map(fn($item) => $item->value, SMSTypesEnum::cases()));
+            $table->enum('sender', array_map(fn($item) => $item->value, SMSSenderTypesEnum::cases()));
             $table->timestamp('created_at')->nullable();
             $table->foreignId('created_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

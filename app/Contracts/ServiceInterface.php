@@ -9,6 +9,12 @@ interface ServiceInterface extends VersionInterface
 {
     /**
      * @param $id
+     * @return bool
+     */
+    public function exists($id): bool;
+
+    /**
+     * @param $id
      * @return Collection|Model|null
      */
     public function getById($id): Collection|Model|null;
@@ -23,9 +29,26 @@ interface ServiceInterface extends VersionInterface
     /**
      * @param array $ids
      * @param bool $permanent
+     * @param bool $considerDeletable
      * @return bool
      */
-    public function batchDeleteByIds(array $ids, bool $permanent = false): bool;
+    public function batchDeleteByIds(
+        array $ids,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool;
+
+    /**
+     * @param array $slugs
+     * @param bool $permanent
+     * @param bool $considerDeletable
+     * @return bool
+     */
+    public function batchDeleteBySlugs(
+        array $slugs,
+        bool  $permanent = false,
+        bool  $considerDeletable = false
+    ): bool;
 
     /**
      * @param array $attributes

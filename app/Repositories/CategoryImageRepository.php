@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Models\Category;
 use App\Models\CategoryImage;
 use App\Repositories\Contracts\CategoryImageRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -14,7 +16,10 @@ class CategoryImageRepository extends Repository implements CategoryImageReposit
 {
     use RepositoryTrait;
 
-    public function __construct(CategoryImage $model)
+    public function __construct(
+        CategoryImage      $model,
+        protected Category $categoryModel,
+    )
     {
         parent::__construct($model);
     }
@@ -23,24 +28,28 @@ class CategoryImageRepository extends Repository implements CategoryImageReposit
      * @inheritDoc
      */
     public function getCategoryImagesSearchFilterPaginated(
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        array  $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator
     {
-        $query = $this->model->newQuery();
-        $query->when($search, function (Builder $query, string $search) {
-            $query
-                ->withWhereHas('category', function ($q) use ($search) {
-                    $q
-                        ->withWhereHas('parent', function ($q) use ($search) {
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->categoryModel->newQuery();
+
+        $query
+            ->with(['categoryImage', 'categoryImage.creator', 'categoryImage.updater', 'categoryImage.deleter'])
+            ->when($search, function (Builder $query, string $search) use ($filter) {
+                $query
+                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                        $q->orWhereHas('parent', function ($q) use ($search) {
                             $q->orWhereLike('escaped_name', $search);
-                        })
-                        ->orWhereLike('escaped_name', $search);
-                });
-        });
+                        });
+                    })
+                    ->orWhereLike('escaped_name', $search);
+            });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }

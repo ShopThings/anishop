@@ -2,7 +2,6 @@
 
 namespace App\Exceptions;
 
-use App\Enums\Responses\ResponseTypesEnum;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -11,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class NotDeletableException extends Exception
 {
+    use ExceptionTrait;
+
     /**
      * Report the exception.
      */

@@ -10,8 +10,8 @@ use App\Http\Resources\BlogCategoryResource;
 use App\Models\BlogCategory;
 use App\Models\User;
 use App\Services\Contracts\BlogCategoryServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,8 +20,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogCategoryController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param BlogCategoryServiceInterface $service
@@ -30,24 +29,20 @@ class BlogCategoryController extends Controller
         protected BlogCategoryServiceInterface $service
     )
     {
+        $this->considerDeletable = true;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return BlogCategoryResource::collection($this->service->getCategories(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return BlogCategoryResource::collection($this->service->getCategories($filter));
     }
 
     /**
@@ -57,7 +52,7 @@ class BlogCategoryController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreBlogCategoryRequest $request)
+    public function store(StoreBlogCategoryRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -85,7 +80,7 @@ class BlogCategoryController extends Controller
      * @return BlogCategoryResource
      * @throws AuthorizationException
      */
-    public function show(BlogCategory $blogCategory)
+    public function show(BlogCategory $blogCategory): BlogCategoryResource
     {
         $this->authorize('view', $blogCategory);
         return new BlogCategoryResource($blogCategory);
@@ -99,7 +94,10 @@ class BlogCategoryController extends Controller
      * @return BlogCategoryResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBlogCategoryRequest $request, BlogCategory $blogCategory)
+    public function update(
+        UpdateBlogCategoryRequest $request,
+        BlogCategory              $blogCategory
+    ): JsonResponse|BlogCategoryResource
     {
         $this->authorize('update', $blogCategory);
 
@@ -125,11 +123,11 @@ class BlogCategoryController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, BlogCategory $blogCategory)
+    public function destroy(Request $request, BlogCategory $blogCategory): JsonResponse
     {
         $this->authorize('delete', $blogCategory);
 
-        $permanent = $request->user()->id === $blogCategory->creator()?->id;
+        $permanent = $request->user()->id === $blogCategory->creator?->id;
         $res = $this->service->deleteById($blogCategory->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

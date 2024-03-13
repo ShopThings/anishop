@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\Sliders\SliderPlacesEnum;
 use App\Models\Slider;
 use App\Models\SliderItem;
 use App\Repositories\Contracts\SliderRepositoryInterface;
@@ -27,8 +28,11 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
         $modified = collect();
 
         foreach ($items as $item) {
-            if (isset($item['id'])) {
-                $isUpdated = $this->sliderItemModel->findOrFail($item['id'])->update($item);
+            if (
+                isset($item['id']) &&
+                (($founded = $this->sliderItemModel->findOrFail($item['id'])) instanceof Model)
+            ) {
+                $isUpdated = $founded->update($item);
 
                 if ($isUpdated)
                     $modified->add($this->sliderItemModel::first($item['id']));
@@ -41,5 +45,26 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
         }
 
         return $modified;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSlider(SliderPlacesEnum|array $place, bool $withUnpublished = false): Collection
+    {
+        if (!is_array($place)) $place = [$place];
+
+        // if there is no placement specified, empty collection is enough though
+        if (!count($place)) return collect();
+
+        return $this->model::published()
+            ->whereIn('place_in', $place)
+            ->whereHas('items', function ($query) use ($withUnpublished) {
+                if (!$withUnpublished) {
+                    $query->published()->orderBy('priority');
+                }
+            })
+            ->orderBy('priority')
+            ->get();
     }
 }

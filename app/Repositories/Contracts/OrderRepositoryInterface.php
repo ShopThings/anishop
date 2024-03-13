@@ -3,6 +3,9 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Models\OrderDetail;
+use App\Models\ReturnOrderRequest;
+use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -12,20 +15,39 @@ interface OrderRepositoryInterface extends RepositoryInterface
     /**
      * @param int|null $userId
      * @param array $columns
-     * @param string|null $search
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter|null $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getOrdersSearchFilterPaginated(
-        ?int     $userId = null,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        ?int  $userId = null,
+        array $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param int $orderId
+     * @return Model|null
+     */
+    public function getPayment(int $orderId): ?Model;
+
+    /**
+     * @param int $userId
+     * @param array $columns
+     * @return Collection
+     */
+    public function getUserReturnableOrders(int $userId, array $columns = ['*']): Collection;
+
+    /**
+     * @param OrderDetail $orderDetail
+     * @return bool
+     */
+    public function isOrderReturnable(OrderDetail $orderDetail): bool;
+
+    /**
+     * @param OrderDetail $orderDetail
+     * @return bool
+     */
+    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool;
 
     /**
      * @param int $orderId
@@ -36,7 +58,7 @@ interface OrderRepositoryInterface extends RepositoryInterface
 
     /**
      * @param int $orderId
-     * @return Model|null
+     * @return bool
      */
-    public function getPayment(int $orderId): ?Model;
+    public function returnOrderProductsToStock(int $orderId): bool;
 }

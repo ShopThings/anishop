@@ -3,22 +3,20 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
+use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 interface BlogCategoryServiceInterface extends ServiceInterface
 {
     /**
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
-    public function getCategories(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator;
+    public function getCategories(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return Collection
+     */
+    public function getSideCategories(): Collection;
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateStaticPageRequest extends FormRequest
 {
@@ -21,6 +22,9 @@ class UpdateStaticPageRequest extends FormRequest
      */
     public function rules(): array
     {
+        $model = $this->route('static_page');
+        $pageId = $model->id;
+
         return [
             'title' => [
                 'sometimes',
@@ -32,13 +36,13 @@ class UpdateStaticPageRequest extends FormRequest
             'url' => [
                 'sometimes',
                 'regex:/[a-z]+[a-z\\\-][a-z]+/i',
+                Rule::unique('static_pages', 'url')->ignore($pageId),
             ],
             'keywords' => [
                 'sometimes',
                 'array',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

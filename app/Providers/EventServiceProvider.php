@@ -2,10 +2,15 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
+use App\Events\ComplaintAddedEvent;
+use App\Events\ContactAddedEvent;
+use App\Events\SettingUpdatedEvent;
+use App\Listeners\ComplaintReceivedNotificationListener;
+use App\Listeners\ContactReceivedNotificationListener;
+use App\Listeners\OrderEventSubscriber;
+use App\Listeners\SettingChangedNotificationListener;
+use App\Listeners\UserEventSubscriber;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -15,9 +20,28 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-
+        SettingUpdatedEvent::class => [
+            SettingChangedNotificationListener::class,
         ],
+        ContactAddedEvent::class => [
+            ContactReceivedNotificationListener::class,
+        ],
+        ComplaintAddedEvent::class => [
+            ComplaintReceivedNotificationListener::class,
+        ],
+//        Registered::class => [
+//
+//        ],
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        UserEventSubscriber::class,
+        OrderEventSubscriber::class,
     ];
 
     /**

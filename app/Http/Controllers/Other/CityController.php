@@ -28,9 +28,8 @@ class CityController extends Controller
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Province $province)
+    public function index(Province $province): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
         return CityResource::collection($this->service->getCities($province->id));
     }
 }

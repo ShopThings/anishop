@@ -4,17 +4,21 @@ namespace App\Services;
 
 use App\Enums\DatabaseEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
+use App\Events\OrderStatusChangedEvent;
+use App\Models\User;
 use App\Repositories\Contracts\CityRepositoryInterface;
 use App\Repositories\Contracts\OrderBadgeRepositoryInterface;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ProvinceRepositoryInterface;
 use App\Services\Contracts\OrderServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderService extends Service implements OrderServiceInterface
 {
@@ -30,27 +34,15 @@ class OrderService extends Service implements OrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function getOrders(
-        ?int    $userId = null,
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getOrders(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator
     {
-        return $this->repository->getOrdersSearchFilterPaginated(
-            userId: $userId,
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
     }
 
     /**
      * @inheritDoc
      */
-    public function updateById($id, array $attributes): ?Model
+    public function updateByCode($code, array $attributes, bool $silence = false): ?Model
     {
         $updateAttributes = [];
 
@@ -87,6 +79,9 @@ class OrderService extends Service implements OrderServiceInterface
         if (isset($attributes['send_status'])) {
             $status = $this->badgeRepository->find($attributes['send_status']);
             if ($status instanceof Model) {
+                $updateAttributes['send_status_is_starting_badge'] = $status->is_starting_badge;
+                $updateAttributes['send_status_is_end_badge'] = $status->is_end_badge;
+                $updateAttributes['send_status_can_return_order'] = $status->can_return_order;
                 $updateAttributes['send_status_title'] = $status->title;
                 $updateAttributes['send_status_color_hex'] = $status->color_hex;
                 $updateAttributes['send_status_changed_at'] = now();
@@ -97,31 +92,44 @@ class OrderService extends Service implements OrderServiceInterface
             $updateAttributes['description'] = $attributes['description'];
         }
 
-        $res = $this->repository->update($id, $updateAttributes);
+        $model = null;
 
-        if (!$res) return null;
+        DB::transaction(function () use (&$model, $code, $updateAttributes, $silence) {
+            $where = new WhereBuilder();
+            $where->whereEqual('code', $code);
 
-        return $this->getById($id);
-    }
+            $res = $this->repository->updateWhere($updateAttributes, $where->build());
 
-    /**
-     * @inheritDoc
-     */
-    public function updatePayment(int $orderId, array $attributes): ?Model
-    {
-        $updateAttributes = [];
+            /**
+             * @var User $model
+             */
+            $model = $this->repository->newWith('user')->findWhere($where->build());
 
-        if (isset($attributes['payment_status'])) {
-            $updateAttributes['payment_status'] = $attributes['payment_status'];
-            $updateAttributes['payment_status_changed_at'] = now();
-            $updateAttributes['payment_status_changed_by'] = Auth::user()?->id;
-        }
+            // send notification to user about send status changed
+            if (!$silence) {
+                OrderStatusChangedEvent::dispatch(
+                    $model->user,
+                    $model->code,
+                    $model->send_status_title
+                );
+            }
 
-        $res = $this->repository->updatePayment($orderId, $updateAttributes);
+            // return order products to stock if needed
+            if (
+                isset($status) &&
+                $status['should_return_order_product'] &&
+                $model->is_product_returned_to_stock
+            ) {
+                $res = $res && $this->repository->returnOrderProductsToStock($model->id);
+            }
 
-        if (!$res) return null;
+            if (!$res) {
+                DB::rollBack();
+                $model = null;
+            }
+        });
 
-        return $this->repository->getPayment($orderId);
+        return $model;
     }
 
     /**
@@ -143,5 +151,56 @@ class OrderService extends Service implements OrderServiceInterface
         return $this->badgeRepository->all(
             where: $where->build(), order: ['id' => 'asc']
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserOrdersCount($userId): int
+    {
+        $where = new WhereBuilder('order_details');
+        $where->whereEqual('user_id', $userId);
+
+        return $this->repository->count($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getLatestUserOrders($userId, int $limit): Collection
+    {
+        $filter = new Filter();
+        $filter->reset()
+            ->setLimit($limit)
+            ->setOrder([
+                'ordered_at' => 'desc',
+                'id' => 'desc',
+            ]);
+
+        return collect($this->repository->getOrdersSearchFilterPaginated(
+            userId: $userId,
+            columns: ['code', 'send_status_title', 'send_status_color_hex', 'final_price', 'ordered_at'],
+            filter: $filter
+        )->items());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function updatePayment(int $orderId, array $attributes): ?Model
+    {
+        $updateAttributes = [];
+
+        if (isset($attributes['payment_status'])) {
+            $updateAttributes['payment_status'] = $attributes['payment_status'];
+            $updateAttributes['payment_status_changed_at'] = now();
+            $updateAttributes['payment_status_changed_by'] = Auth::user()?->id;
+        }
+
+        $res = $this->repository->updatePayment($orderId, $updateAttributes);
+
+        if (!$res) return null;
+
+        return $this->repository->getPayment($orderId);
     }
 }

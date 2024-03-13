@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\OrderDetailShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,34 +19,30 @@ class ReturnOrderResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'user' => $this->whenLoaded('user'),
-            'order_detail_id' => $this->order_detail_id,
+            'user' => new UserShowResource($this->whenLoaded('user')),
+            'order' => new OrderDetailShowResource($this->whenLoaded('order')),
             'code' => $this->code,
-            'description' => $this->description,
-            'not_accepted_description' => $this->not_accepted_description,
             'status' => [
-                'text' => ReturnOrderStatusesEnum::getTranslations($this->status),
+                'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status] ?? '#000000',
             ],
             'seen_status' => $this->seen_status,
-            'status_changed_at' => $this->status_changed_at,
-            'status_changed_by' => $this->status_changed_by,
-            'order_detail' => $this->whenLoaded('order'),
-            'items' => $this->whenLoaded('returnOrderItems'),
-            'responded_at' => $this->when(
-                $this->responded_at,
-                verta($this->responded_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
-            ),
-            'responded_by' => $this->when($this->responded_by, $this->responder()),
-            'requested_at' => $this->requested_at
-                ? verta($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+            'status_changed_at' => $this->status_changed_at
+                ? vertaTz($this->status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'status_changed_by' => new UserShowResource($this->when(
+                $this->status_changed_by &&
+                $this->whenLoaded('statusChanger'),
+                $this->resource->status_changer
+            )),
+            'requested_at' => $this->requested_at
+                ? vertaTz($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

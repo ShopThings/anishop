@@ -35,7 +35,6 @@ class StoreUnitRequest extends FormRequest
                 'max:250',
             ],
             'is_published' => [
-                'required',
                 'boolean',
             ],
         ];

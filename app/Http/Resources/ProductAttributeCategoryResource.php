@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\CategoryShowResource;
+use App\Http\Resources\Showing\ProductAttributeShowResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,18 +20,16 @@ class ProductAttributeCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product_attribute_id' => $this->product_attribute_id,
-            'product_attribute' => $this->whenLoaded('productAttr'),
-            'category_id' => $this->category_id,
-            'category' => $this->whenLoaded('category'),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
+            'product_attribute' => new ProductAttributeShowResource($this->whenLoaded('productAttr')),
+            'category' => new CategoryShowResource($this->whenLoaded('category')),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

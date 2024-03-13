@@ -7,10 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateReturnOrderItemRequest;
 use App\Http\Requests\UpdateReturnOrderRequest;
 use App\Http\Resources\ReturnOrderResource;
+use App\Http\Resources\ReturnOrderSingleResource;
 use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
 use App\Models\User;
 use App\Services\Contracts\ReturnOrderServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
@@ -34,60 +36,54 @@ class ReturnOrderRequestController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @param User|null $user
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request, ?User $user = null)
+    public function index(Filter $filter, ?User $user = null): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ReturnOrderResource::collection($this->service->getOrders(
-            userId: $user?->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
-        ));
+        return ReturnOrderResource::collection($this->service->getRequests(userId: $user?->id, filter: $filter));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param ReturnOrderRequest $returnOrderRequest
-     * @return ReturnOrderResource
+     * @param ReturnOrderRequest $returnOrder
+     * @return ReturnOrderSingleResource
      * @throws AuthorizationException
      */
-    public function show(ReturnOrderRequest $returnOrderRequest)
+    public function show(ReturnOrderRequest $returnOrder): ReturnOrderSingleResource
     {
-        $this->authorize('view', $returnOrderRequest);
-        return new ReturnOrderResource($returnOrderRequest);
+        $this->authorize('view', $returnOrder);
+        return new ReturnOrderSingleResource($returnOrder);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateReturnOrderRequest $request
-     * @param ReturnOrderRequest $returnOrderRequest
-     * @return ReturnOrderResource|JsonResponse
+     * @param ReturnOrderRequest $returnOrder
+     * @return ReturnOrderSingleResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateReturnOrderRequest $request, ReturnOrderRequest $returnOrderRequest)
+    public function update(
+        UpdateReturnOrderRequest $request,
+        ReturnOrderRequest $returnOrder
+    ): ReturnOrderSingleResource|JsonResponse
     {
-        $this->authorize('update', $returnOrderRequest);
+        $this->authorize('update', $returnOrder);
 
         $validated = $request->validated([
             'not_accepted_description',
             'status',
             'seen_status',
         ]);
-        $model = $this->service->updateById($returnOrderRequest->id, $validated);
+        $model = $this->service->updateById($returnOrder->id, $validated);
 
         if (!is_null($model)) {
-            return new ReturnOrderResource($model);
+            return new ReturnOrderSingleResource($model);
         } else {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
@@ -99,12 +95,12 @@ class ReturnOrderRequestController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, ReturnOrderRequest $returnOrderRequest)
+    public function destroy(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
     {
-        $this->authorize('delete', $returnOrderRequest);
+        $this->authorize('delete', $returnOrder);
 
-        $permanent = $request->user()->id === $returnOrderRequest->user()?->id;
-        $res = $this->service->deleteById($returnOrderRequest->id, $permanent);
+        $permanent = $request->user()->id === $returnOrder->user()?->id;
+        $res = $this->service->deleteById($returnOrder->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
@@ -116,21 +112,21 @@ class ReturnOrderRequestController extends Controller
 
     /**
      * @param UpdateReturnOrderItemRequest $request
-     * @param ReturnOrderRequest $returnOrderRequest
-     * @param ReturnOrderRequestItem $returnOrderRequestItem
+     * @param ReturnOrderRequest $returnOrder
+     * @param ReturnOrderRequestItem $returnOrderItem
      * @return JsonResponse
      * @throws AuthorizationException
      */
     public function modifyItem(
         UpdateReturnOrderItemRequest $request,
-        ReturnOrderRequest           $returnOrderRequest,
-        ReturnOrderRequestItem       $returnOrderRequestItem
-    )
+        ReturnOrderRequest     $returnOrder,
+        ReturnOrderRequestItem $returnOrderItem
+    ): JsonResponse
     {
-        $this->authorize('update', $returnOrderRequest);
+        $this->authorize('update', $returnOrder);
 
         $validated = $request->validated('is_accepted');
-        $model = $this->service->modifyItem($returnOrderRequestItem->id, $validated);
+        $model = $this->service->modifyItem($returnOrderItem->id, $validated);
 
         if (!is_null($model)) {
             return response()->json([
@@ -143,5 +139,16 @@ class ReturnOrderRequestController extends Controller
                 'message' => 'خطا در ویرایش محصول مرجوعی',
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function statuses(): JsonResponse
+    {
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getStatuses(),
+        ], ResponseCodes::HTTP_OK);
     }
 }

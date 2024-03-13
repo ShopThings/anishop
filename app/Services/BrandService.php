@@ -2,19 +2,23 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Repositories\Contracts\BrandRepositoryInterface;
 use App\Services\Contracts\BrandServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use function App\Support\Helper\to_boolean;
 
 class BrandService extends Service implements BrandServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
         protected BrandRepositoryInterface $repository
     )
@@ -24,15 +28,10 @@ class BrandService extends Service implements BrandServiceInterface
     /**
      * @inheritDoc
      */
-    public function getBrands(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getBrands(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('brands');
-        $where->when($searchText, function (WhereBuilderInterface $query, $search) {
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query->orWhereLike([
                 'latin_name',
                 'escaped_name',
@@ -40,9 +39,51 @@ class BrandService extends Service implements BrandServiceInterface
             ], $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(), page: $page, limit: $limit, order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository
+            ->newWith(['image', 'creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPublishedBrands(Filter $filter): Collection|LengthAwarePaginator
+    {
+        $where = new WhereBuilder('brands');
+        $where
+            ->whereEqual('is_deletable', DatabaseEnum::DB_YES)
+            ->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository
+            ->newWith('image')
+            ->paginate(
+                columns: ['id', 'name', 'latin_name', 'slug'],
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSliderBrands(): Collection
+    {
+        $where = new WhereBuilder('brands');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->whereEqual('show_in_slider', DatabaseEnum::DB_YES);
+
+        return $this->repository
+            ->newWith('image')
+            ->all(
+                columns: ['id', 'name', 'latin_name', 'slug'],
+                where: $where->build());
     }
 
     /**
@@ -50,6 +91,8 @@ class BrandService extends Service implements BrandServiceInterface
      */
     public function create(array $attributes): ?Model
     {
+        $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
+
         $attrs = [
             'name' => $attributes['name'],
             'latin_name' => $attributes['latin_name'],
@@ -80,6 +123,7 @@ class BrandService extends Service implements BrandServiceInterface
             $updateAttributes['escaped_name'] = $attributes['escaped_name'];
         }
         if (isset($attributes['image'])) {
+            $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
             $updateAttributes['image_id'] = $attributes['image'];
         }
         if (isset($attributes['keywords'])) {

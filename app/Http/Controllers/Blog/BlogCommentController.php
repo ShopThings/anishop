@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\Blog;
 
+use App\Enums\Comments\CommentConditionsEnum;
+use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreBlogCommentRequest;
 use App\Http\Requests\UpdateBlogCommentRequest;
 use App\Http\Resources\BlogCommentResource;
+use App\Http\Resources\BlogCommentSingleResource;
 use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\User;
 use App\Services\Contracts\BlogCommentServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -21,8 +24,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogCommentController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param BlogCommentServiceInterface $service
@@ -36,24 +38,15 @@ class BlogCommentController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @param Blog $blog
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request, Blog $blog)
+    public function index(Filter $filter, Blog $blog): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return BlogCommentResource::collection($this->service->getComments(
-            blogId: $blog->id,
-            searchText: $params['text'],
-            limit: $params['limit'],
-            page: $params['page'],
-            order: $params['order']
-        ));
+        return BlogCommentResource::collection($this->service->getComments(blogId: $blog->id, filter: $filter));
     }
 
     /**
@@ -63,7 +56,7 @@ class BlogCommentController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function store(StoreBlogCommentRequest $request)
+    public function store(StoreBlogCommentRequest $request): JsonResponse
     {
         $this->authorize('create', User::class);
 
@@ -71,9 +64,10 @@ class BlogCommentController extends Controller
             'blog',
             'badge',
             'comment',
-            'answer_to',
             'description',
         ]);
+        $validated['condition'] = CommentConditionsEnum::ACCEPTED->value;
+        $validated['status'] = CommentStatusesEnum::READ->value;
         $model = $this->service->create($validated);
 
         if (!is_null($model)) {
@@ -94,13 +88,13 @@ class BlogCommentController extends Controller
      * Display the specified resource.
      *
      * @param BlogComment $blogComment
-     * @return BlogCommentResource
+     * @return BlogCommentSingleResource
      * @throws AuthorizationException
      */
-    public function show(BlogComment $blogComment)
+    public function show(BlogComment $blogComment): BlogCommentSingleResource
     {
         $this->authorize('view', $blogComment);
-        return new BlogCommentResource($blogComment);
+        return new BlogCommentSingleResource($blogComment);
     }
 
     /**
@@ -111,7 +105,7 @@ class BlogCommentController extends Controller
      * @return BlogCommentResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateBlogCommentRequest $request, BlogComment $blogComment)
+    public function update(UpdateBlogCommentRequest $request, BlogComment $blogComment): BlogCommentResource|JsonResponse
     {
         $this->authorize('update', $blogComment);
 
@@ -140,11 +134,11 @@ class BlogCommentController extends Controller
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, BlogComment $blogComment)
+    public function destroy(Request $request, BlogComment $blogComment): JsonResponse
     {
         $this->authorize('delete', $blogComment);
 
-        $permanent = $request->user()->id === $blogComment->creator()?->id;
+        $permanent = $request->user()->id === $blogComment->creator?->id;
         $res = $this->service->deleteById($blogComment->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

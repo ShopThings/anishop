@@ -42,7 +42,7 @@ trait SelfHealingRouteTrait
         }
 
         throw new HttpResponseException(
-            redirect()->route($this->getHealingRoute() ?? '/', $model)
+            redirect()->route($this->getHealingRoute() ?: '/', $model)
         );
     }
 }

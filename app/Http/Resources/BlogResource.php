@@ -3,6 +3,9 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\BlogCategoryInfoShowResource;
+use App\Http\Resources\Showing\ImageShowInfoResource;
+use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,35 +18,37 @@ class BlogResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('category');
+        $this->resource->load('image');
+
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'category' => $this->whenLoaded('category'),
+            'category' => new BlogCategoryInfoShowResource($this->whenLoaded('category')),
             'title' => $this->title,
-            'escaped_title' => $this->escaped_title,
             'slug' => $this->slug,
-            'image_id' => $this->image_id,
-            'image' => $this->whenLoaded('image'),
+            'image' => new ImageShowInfoResource($this->whenLoaded('image')),
             'description' => $this->description,
             'archive_tag' => $this->archive_tag,
             'keywords' => $this->keywords,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'is_published' => $this->is_published,
-            'view_counts' => $this->whenCounted('views'),
-            'vote_counts' => $this->whenCounted('votes'),
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'view_counts' => $this->resource->uniqueIPViews(),
+            'up_vote_counts' => $this->resource->upVoteCount(),
+            'down_vote_counts' => $this->resource->downVoteCount(),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

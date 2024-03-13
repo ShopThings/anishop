@@ -23,7 +23,6 @@ class UpdateComplaintRequest extends FormRequest
     {
         return [
             'is_seen' => [
-                'sometimes',
                 'boolean',
             ],
         ];

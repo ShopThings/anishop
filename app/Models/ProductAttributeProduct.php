@@ -25,7 +25,7 @@ class ProductAttributeProduct extends Model
     /**
      * @return BelongsTo
      */
-    public function products(): BelongsTo
+    public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
@@ -33,7 +33,7 @@ class ProductAttributeProduct extends Model
     /**
      * @return BelongsTo
      */
-    public function attrValues(): BelongsTo
+    public function attrValue(): BelongsTo
     {
         return $this->belongsTo(ProductAttributeValue::class);
     }

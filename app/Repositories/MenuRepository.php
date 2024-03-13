@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Enums\DatabaseEnum;
+use App\Enums\Menus\MenuPlacesEnum;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Repositories\Contracts\MenuRepositoryInterface;
@@ -17,6 +19,27 @@ class MenuRepository extends Repository implements MenuRepositoryInterface
     )
     {
         parent::__construct($model);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHomeMenus(MenuPlacesEnum $placeIn): Collection
+    {
+        return $this->model->newQuery()
+            ->with([
+                'items' => function ($query) {
+                    $query
+                        ->whereNull('parent_id')
+                        ->where('is_published', DatabaseEnum::DB_YES)
+                        ->orderBy('priority')
+                        ->orderBy('id');
+                },
+                'items.children',
+            ])
+            ->where('is_published', DatabaseEnum::DB_YES)
+            ->where('place_in', $placeIn->value)
+            ->get();
     }
 
     /**
@@ -85,6 +108,8 @@ class MenuRepository extends Repository implements MenuRepositoryInterface
      */
     private function _refineItems(array $items): array
     {
+        if (!count($items)) return [];
+
         $refined = [];
         foreach ($items as $key => $item) {
             $tmp = $item;
@@ -94,13 +119,8 @@ class MenuRepository extends Repository implements MenuRepositoryInterface
 
             if (isset($tmp['children']) && is_array($tmp['children'])) {
                 $tmpRefined = $this->_refineItems($tmp['children']);
-                foreach ($tmpRefined as $k => $i) {
-                    $tmp2 = $i;
-                    unset($tmp2['tmp_id']);
-                    unset($tmp2['can_have_children']);
-                    $tmp2['priority'] = $k;
-
-                    $refined[] = $tmp2;
+                foreach ($tmpRefined as $i) {
+                    $refined[] = $i;
                 }
             }
 

@@ -28,6 +28,9 @@ return new class extends Migration {
             $table->unsignedBigInteger('discounted_price');
             $table->unsignedBigInteger('unit_price');
             $table->unsignedMediumInteger('quantity');
+            $table->string('unit_name');
+            $table->boolean('has_separate_shipment')->default(false)
+                ->comment('this make send price for this product consider as another separate payment');
             $table->boolean('is_returned')->default(false);
 
             $table->index('product_title');

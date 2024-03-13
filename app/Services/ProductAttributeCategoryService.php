@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ProductAttributeCategoryRepositoryInterface;
 use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -20,19 +21,9 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     /**
      * @inheritDoc
      */
-    public function getAttributeCategories(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getAttributeCategories(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getAttributeCategoriesSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getAttributeCategoriesSearchFilterPaginated(filter: $filter);
     }
 
     /**
@@ -41,8 +32,9 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     public function create(array $attributes): ?Model
     {
         $attrs = [
-            'product_attribute_id' => $attributes['product_attribute'],
+            'product_attribute_id' => $attributes['attribute'],
             'category_id' => $attributes['category'],
+            'priority' => $attributes['priority'] ?? 0,
         ];
 
         return $this->repository->create($attrs);
@@ -55,11 +47,14 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     {
         $updateAttributes = [];
 
-        if (isset($attributes['product_attribute'])) {
-            $updateAttributes['product_attribute_id'] = $attributes['product_attribute'];
+        if (isset($attributes['attribute'])) {
+            $updateAttributes['product_attribute_id'] = $attributes['attribute'];
         }
         if (isset($attributes['category'])) {
             $updateAttributes['category_id'] = $attributes['category'];
+        }
+        if (isset($attributes['priority'])) {
+            $updateAttributes['priority'] = $attributes['priority'];
         }
 
         $res = $this->repository->update($id, $updateAttributes);

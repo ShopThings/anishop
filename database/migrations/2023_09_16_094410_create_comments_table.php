@@ -15,13 +15,20 @@ return new class extends Migration {
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('condition', array_map(fn($item) => $item->name, CommentConditionsEnum::cases()))
+            $table->enum('condition', array_map(fn($item) => $item->value, CommentConditionsEnum::cases()))
                 ->comment('show comment condition like if it is accepted or not');
-            $table->enum('status', array_map(fn($item) => $item->name, CommentStatusesEnum::cases()))
+            $table->enum('status', array_map(fn($item) => $item->value, CommentStatusesEnum::cases()))
                 ->comment('show comment status like if it is read or not');
             $table->text('pros')->comment('positive sides');
             $table->text('cons')->comment('negative sides');
             $table->text('description');
+            $table->text('answer')->nullable();
+            $table->timestamp('answered_at')->nullable();
+            $table->foreignId('answered_by')->nullable()
+                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->timestamp('changed_status_at')->nullable();
+            $table->foreignId('changed_status_by')->nullable()
+                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('flag_count')->default(0);
             $table->unsignedBigInteger('up_vote_count')->default(0);
             $table->unsignedBigInteger('down_vote_count')->default(0);

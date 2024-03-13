@@ -1,62 +1,52 @@
 <template>
-    <slot name="button" :open="openModal"></slot>
+  <slot :open="openModal" name="button"></slot>
 
-    <partial-dialog
-        @open="openModal"
-        @close="closeModal"
-        v-model:open="isOpen"
-        :container-klass="containerKlass"
-    >
-        <template v-if="slots['closeButton']" #closeButton="{close}">
-            <slot name="closeButton" :close="close"></slot>
-        </template>
+  <partial-dialog
+      v-model:open="isOpen"
+      :container-klass="containerKlass"
+      @close="closeModal"
+      @open="openModal"
+  >
+    <template v-if="slots['closeButton']" #closeButton="{close}">
+      <slot :close="close" name="closeButton"></slot>
+    </template>
 
-        <template v-if="slots['title']" #title>
-            <slot name="title"></slot>
-        </template>
+    <template v-if="slots['title']" #title>
+      <slot name="title"></slot>
+    </template>
 
-        <template v-if="slots['body']" #body="{close}">
-            <slot name="body" :close="closeModal"></slot>
-        </template>
-    </partial-dialog>
+    <template v-if="slots['body']" #body="{close}">
+      <slot :close="closeModal" name="body"></slot>
+    </template>
+  </partial-dialog>
 </template>
 
 <script setup>
-import PartialDialog from "../partials/PartialDialog.vue";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
 import {ref, useSlots, watch} from "vue";
 
 const props = defineProps({
-    open: Boolean,
-    containerKlass: String,
+  open: Boolean,
+  containerKlass: String,
 })
 
-const emit = defineEmits(['open', 'close', 'update:open'])
+const emit = defineEmits(['open', 'close'])
 const slots = useSlots()
 
 const isOpen = ref(props.open)
 
-watch(() => props.open, function () {
-    if (props.open)
-        openModal()
-    else
-        closeModal()
+// sorry but it should be with watching open property otherwise it doesn't work!
+watch(() => props.open, () => {
+  isOpen.value = props.open
 })
 
 function closeModal() {
-    isOpen.value = false
-    emit('update:open', isOpen.value)
-
-    emit('close')
+  isOpen.value = false
+  emit('close')
 }
 
 function openModal() {
-    isOpen.value = true
-    emit('update:open', isOpen.value)
-
-    emit('open')
+  isOpen.value = true
+  emit('open')
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -1,94 +1,112 @@
 <template>
-    <partial-dialog
-        v-model:open="isOpen"
-        @close="$emit('close')"
-    >
-        <template #title>
-            <div class="flex items-center">
-                <PencilSquareIcon class="h-6 w-6 ml-2"/>
-                تغییر نام
-            </div>
-        </template>
+  <partial-dialog
+      v-model:open="isOpen"
+      @close="$emit('close')"
+  >
+    <template #title>
+      <div class="flex items-center">
+        <PencilSquareIcon class="h-6 w-6 ml-2"/>
+        تغییر نام
+      </div>
+    </template>
 
-        <template #body>
-            <form @submit.prevent="onSubmit">
-                <base-input class="grow mb-3" name="newName"
-                            :value="name"
-                            placeholder="نام جدید را وارد کنید...">
-                    <template #icon>
-                        <PencilIcon class="w-6 h-6 text-gray-400"/>
-                    </template>
-                </base-input>
-                <div class="text-left">
-                    <base-button type="submit"
-                                 class="bg-emerald-500 border-emerald-600 grow rounded-lg text-sm px-5">
-                        تغییر نام
-                    </base-button>
-                </div>
-            </form>
-        </template>
-    </partial-dialog>
+    <template #body>
+      <form @submit.prevent="onSubmit">
+        <base-input
+            :value="item.full_name"
+            class="grow mb-3"
+            name="newName"
+            placeholder="نام جدید را وارد کنید..."
+        >
+          <template #icon>
+            <PencilIcon class="w-6 h-6 text-gray-400"/>
+          </template>
+        </base-input>
+        <div class="text-left">
+          <base-button
+              :disabled="!canSubmit"
+              class="relative bg-emerald-500 border-emerald-600 grow rounded-lg text-sm px-6"
+              type="submit"
+          >
+            <VTransitionFade>
+              <loader-circle
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+              />
+            </VTransitionFade>
+
+            تغییر نام
+          </base-button>
+        </div>
+      </form>
+    </template>
+  </partial-dialog>
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {useForm} from "vee-validate";
+import {computed} from "vue";
 import {PencilSquareIcon, PencilIcon} from "@heroicons/vue/24/outline/index.js";
-import yup from "../../../validation/index.js";
-import PartialDialog from "../../partials/PartialDialog.vue";
-import {useRequest} from "../../../composables/api-request.js";
-import {apiRoutes} from "../../../router/api-routes.js";
+import yup from "@/validation/index.js";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
 import BaseInput from "../BaseInput.vue";
 import BaseButton from "../BaseButton.vue";
+import {FilemanagerAPI} from "@/service/APIFilemanager.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 const props = defineProps({
-    name: {
-        type: String,
-        required: true,
-    },
-    open: Boolean,
-    path: {
-        type: String,
-        required: true,
-    },
-    disk: String,
+  open: Boolean,
+  item: {
+    type: Object,
+    required: true,
+  },
+  path: {
+    type: String,
+    required: true,
+  },
+  disk: String,
 })
 
-const emit = defineEmits(['success'])
+const emit = defineEmits(['update:open', 'success', 'close'])
 
-const isOpen = ref(props.open)
-
-const {handleSubmit} = useForm({
-    validationSchema: yup.object().shape({
-        newName: yup.string().required('نام جدید فایل/پوشه را وارد نمایید.')
-    })
+const isOpen = computed({
+  get() {
+    return props.open
+  },
+  set(value) {
+    emit('update:open', value)
+  },
 })
 
-const onSubmit = handleSubmit((values, actions) => {
-    if(values.newName === props.name) {
-        actions.setFieldError('newName', 'نام جدید با نام پیشین یکسان می‌باشد!')
-        return
-    }
+const {canSubmit, onSubmit, errors} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    newName: yup.string().required('نام جدید فایل/پوشه را وارد نمایید.')
+  })
+}, (values, actions) => {
+  if (values.newName === props.item.full_name) {
+    actions.setFieldError('newName', 'نام جدید با نام پیشین یکسان می‌باشد!')
+    return
+  }
 
-    useRequest(apiRoutes.admin.files.rename, {
-        method: 'POST',
-        data: {
-            old_name: props.name,
-            new_name: values.newName,
-            path: props.path,
-            disk: props.disk,
-        },
-    }, {
-        success: () => {
-            emit('success', values.newName, props.name)
+  canSubmit.value = false
 
-            actions.resetForm()
-            isOpen.value = false
-        },
-    })
+  FilemanagerAPI.rename({
+    old_name: props.item.full_name,
+    new_name: values.newName,
+    path: props.path,
+    disk: props.disk,
+  }, {
+    success() {
+      emit('success', values.newName, props.item.full_name)
+
+      actions.resetForm()
+      isOpen.value = false
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 </script>
-
-<style scoped>
-
-</style>

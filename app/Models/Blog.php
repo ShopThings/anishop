@@ -2,19 +2,22 @@
 
 namespace App\Models;
 
+use App\Casts\CleanHtmlCast;
 use App\Casts\StringToArray;
+use App\Enums\DatabaseEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasSluggableTrait;
 use App\Traits\HasUpdatedRelationTrait;
-use App\Traits\SelfHealingRouteTrait;
+use App\Traits\VisitorViewTrait;
+use Database\Factories\BlogFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Mews\Purifier\Casts\CleanHtml;
 use Shetabit\Visitor\Traits\Visitable;
 
 /**
@@ -28,8 +31,9 @@ class Blog extends Model
         HasUpdatedRelationTrait,
         HasDeletedRelationTrait,
         HasSluggableTrait,
-        SelfHealingRouteTrait,
-        Visitable;
+        Visitable,
+        VisitorViewTrait,
+        HasFactory;
 
     protected $guarded = [
         'id',
@@ -37,14 +41,16 @@ class Blog extends Model
 
     protected $casts = [
         'keywords' => StringToArray::class,
-        'description' => CleanHtml::class,
+        'description' => CleanHtmlCast::class,
         'is_commenting_allowed' => 'boolean',
         'is_published' => 'boolean',
     ];
 
-    public function getHealingRoute(): string
+    protected $sluggableField = 'escaped_title';
+
+    protected static function newFactory()
     {
-        return 'blog.show';
+        return BlogFactory::new();
     }
 
     public function scopeArchivedInYear(Builder $query, $year)
@@ -81,5 +87,21 @@ class Blog extends Model
     public function votes(): HasMany
     {
         return $this->hasMany(BlogVote::class, 'blog_id');
+    }
+
+    /**
+     * @return int
+     */
+    public function upVoteCount(): int
+    {
+        return $this->votes()->where('is_voted', DatabaseEnum::DB_YES)->count();
+    }
+
+    /**
+     * @return int
+     */
+    public function downVoteCount(): int
+    {
+        return $this->votes()->where('is_voted', DatabaseEnum::DB_NO)->count();
     }
 }

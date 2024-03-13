@@ -37,21 +37,13 @@ class StoreBlogCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'blog' => [
-                'required',
-                'exists:' . Blog::class . ',id',
-            ],
             'badge' => [
-                'required',
+                'sometimes',
                 'exists:' . BlogCommentBadge::class . ',id',
             ],
             'comment' => [
                 'required',
                 'exists:' . BlogComment::class . ',id',
-            ],
-            'answer_to' => [
-                'required',
-                'exists:' . User::class . ',id',
             ],
             'description' => [
                 'required',
@@ -62,10 +54,8 @@ class StoreBlogCommentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'blog' => 'بلاگ برای ثبت دیدگاه',
             'badge' => 'برچسب دیدگاه',
             'comment' => 'دیدگاه مورد پاسخ',
-            'answer_to' => 'پاسخ گیرنده',
         ];
     }
 }

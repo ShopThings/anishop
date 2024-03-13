@@ -6,6 +6,8 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\Contracts\ReportServiceInterface;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 
 class ReportController extends Controller
 {
@@ -39,7 +41,11 @@ class ReportController extends Controller
 
     }
 
-    public function usersQB()
+    /**
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function usersQB(): JsonResponse
     {
         $this->authorize('canReport', User::class);
 
@@ -49,17 +55,31 @@ class ReportController extends Controller
         ]);
     }
 
-    public function productsQB()
+    /**
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function productsQB(): JsonResponse
     {
         $this->authorize('canReport', User::class);
 
-
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getProductsQueryBuilderInfo(),
+        ]);
     }
 
-    public function ordersQB()
+    /**
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function ordersQB(): JsonResponse
     {
         $this->authorize('canReport', User::class);
 
-
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getOrdersQueryBuilderInfo(),
+        ]);
     }
 }

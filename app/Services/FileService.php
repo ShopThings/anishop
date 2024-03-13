@@ -6,10 +6,11 @@ use App\Exceptions\FileDuplicationException;
 use App\Exceptions\InvalidDiskException;
 use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
-use App\Models\FileManager;
+use App\Http\Requests\Filters\FileListFilter;
+use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Repositories\FileRepository;
 use App\Services\Contracts\FileServiceInterface;
-use App\Support\Service;
+use App\Support\Converters\NumberConverter;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Traits\VersionTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -34,6 +35,7 @@ class FileService implements FileServiceInterface
     public function upload(string $path, $file, string $disk, bool $overwrite = false): bool
     {
         if (!($file instanceof UploadedFile)) return false;
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->upload($path, $file, $disk, $overwrite);
     }
 
@@ -42,26 +44,9 @@ class FileService implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
-    public function list(
-        string  $path,
-        string  $disk,
-        ?string $search = null,
-        ?string $fileSize = null,
-        array   $extensions = [],
-        array   $order = ['name' => 'asc']
-    ): array
+    public function list(FileListFilter $filter): array
     {
-        if (is_null($fileSize) || !$this->isValidThumbSize($fileSize))
-            $fileSize = $this->repository::ORIGINAL;
-
-        return $this->repository->list(
-            $path,
-            $disk,
-            $search,
-            $fileSize,
-            $extensions,
-            $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->list($filter);
     }
 
     /**
@@ -71,6 +56,7 @@ class FileService implements FileServiceInterface
      */
     public function treeList(string $path, string $disk, ?string $search = null): array
     {
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->treeList($path, $disk, $search);
     }
 
@@ -81,6 +67,8 @@ class FileService implements FileServiceInterface
      */
     public function createDirectory(string $name, string $path, string $disk): bool
     {
+        $name = NumberConverter::toEnglish($name);
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->createDirectory($name, $path, $disk);
     }
 
@@ -93,6 +81,10 @@ class FileService implements FileServiceInterface
     public function rename(string $path, string $oldName, string $newName, string $disk): bool
     {
         if (trim($oldName) == '' || trim($newName) == '') return false;
+
+        $path = NumberConverter::toEnglish($path);
+        $oldName = NumberConverter::toEnglish($oldName);
+        $newName = NumberConverter::toEnglish($newName);
         return $this->repository->rename($path, $oldName, $newName, $disk);
     }
 
@@ -103,6 +95,8 @@ class FileService implements FileServiceInterface
      */
     public function move(array $paths, string $destination, string $disk): bool
     {
+        $paths = NumberConverter::toEnglish($paths);
+        $destination = NumberConverter::toEnglish($destination);
         return $this->repository->move($paths, $destination, $disk);
     }
 
@@ -113,6 +107,8 @@ class FileService implements FileServiceInterface
      */
     public function copy(array $paths, string $destination, string $disk): bool
     {
+        $paths = NumberConverter::toEnglish($paths);
+        $destination = NumberConverter::toEnglish($destination);
         return $this->repository->copy($paths, $destination, $disk);
     }
 
@@ -121,13 +117,10 @@ class FileService implements FileServiceInterface
      * @throws InvalidDiskException
      * @throws InvalidPathException
      */
-    public function delete(array|FileManager $files, ?string $path, string $disk): bool
+    public function delete(string|array $files, ?string $path, string $disk): bool
     {
-        if ($files instanceof FileManager) {
-            $path = $files->path;
-            $files = $files->name . '.' . $files->extension;
-        }
-
+        $files = NumberConverter::toEnglish($files);
+        $path = NumberConverter::toEnglish($path);
         return $this->repository->remove($files, $path, $disk);
     }
 
@@ -139,6 +132,9 @@ class FileService implements FileServiceInterface
      */
     public function download($file, string $path, string $disk): mixed
     {
+        $file = NumberConverter::toEnglish($file);
+        $path = NumberConverter::toEnglish($path);
+
         $file = rtrim($path, '\\/') . '/' . ltrim($file, '/');
         return $this->repository->download($file, $disk);
     }
@@ -152,44 +148,68 @@ class FileService implements FileServiceInterface
 
         if (!$hasDisk) return false;
 
-        return $this->repository->checkPathExists($path, false);
+        $path = NumberConverter::toEnglish($path);
+        $pathInfo = pathinfo($path);
+
+        return !empty($pathInfo['extension'])
+            ? $this->repository->fileExists($path, $disk)
+            : $this->repository->checkPathExists($path, $disk);
     }
 
     /**
      * @inheritDoc
      */
-    public function find($file): Model|null
+    public function find($file, bool $isAuthenticated = false): Model|null
     {
+        $file = NumberConverter::toEnglish($file);
+
+        // basic normalization
+        $file = trim($file, '.');
+        $file = str_replace('\\', '/', $file);
+
+        if (explode('/', $file) > 2) {
+            $file = ltrim($file, '/');
+        }
+        //
+
         $where = new WhereBuilder('file_manager');
-        $where->orWhereEqual('id', $file)
-            ->orWhereEqual('CONCAT(file_manager.path, \'/\', file_manager.name)', $file);
+        $where->orWhereEqual('full_path', $file);
+
+        if ($isAuthenticated) {
+            $where->orWhereEqual('id', $file);
+        }
+
         return $this->repository->findWhere($where->build());
     }
 
     /**
      * @inheritDoc
      */
-    public function findFile($file, ?string $disk = null, ?string $size = null): ?string
+    public function findFile(
+        $file,
+        ?string $disk = null,
+        ?string $size = null,
+        bool $isAuthenticated = false
+    ): ?string
     {
-        $dbFile = $this->find($file);
-
-        if (!$dbFile) return null;
-
-        $size = $this->isValidThumbSize($size) ? $size : $this->repository::ORIGINAL;
+        $file = NumberConverter::toEnglish($file);
+        $size = $this->isValidThumbSize($size ?: '') ? $size : $this->repository::ORIGINAL;
 
         if (
             is_null($disk) ||
-            !in_array($disk, $this->repository::$storageDisks)
+            !in_array($disk, $this->repository::STORAGE_DISKS)
         ) {
-            $files = $this->repository->fileExists($dbFile->path, $disk, true);
+            $files = $this->repository->fileExists($file, $disk, true, $size);
         } else {
             $disk = $this->repository::STORAGE_DISK_PUBLIC;
-            $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);
-            if (!count($files)) {
+            $files = $this->repository->fileExists($file, $disk, true, $size);
+            if (!count($files) && $isAuthenticated) {
                 $disk = $this->repository::STORAGE_DISK_LOCAL;
-                $files = $this->repository->fileExists($dbFile->path, $disk, true, $size);
+                $files = $this->repository->fileExists($file, $disk, true, $size);
             }
         }
+
+        if (!count($files)) return null;
 
         return Storage::disk($disk)->path($files[0]);
     }
@@ -201,10 +221,10 @@ class FileService implements FileServiceInterface
     public function isValidThumbSize(string $size): bool
     {
         return in_array($size, [
-            $this->repository::ORIGINAL,
-            $this->repository::SMALL,
-            $this->repository::MEDIUM,
-            $this->repository::LARGE,
+            FileRepositoryInterface::ORIGINAL,
+            FileRepositoryInterface::SMALL,
+            FileRepositoryInterface::MEDIUM,
+            FileRepositoryInterface::LARGE,
         ]);
     }
 }

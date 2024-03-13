@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Support\Filter;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -12,26 +14,21 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
     /**
      * @param int|null $userId
      * @param array $columns
-     * @param string|null $search
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter|null $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getOrdersSearchFilterPaginated(
-        ?int     $userId = null,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        ?int  $userId = null,
+        array $columns = ['*'],
+        Filter $filter = null
     ): Collection|LengthAwarePaginator;
 
     /**
+     * @param string $returnCode
      * @param array $items
-     * @return Model|Collection
+     * @return Collection
      */
-    public function updateOrCreateItems(array $items): Collection;
+    public function updateOrCreateItems(string $returnCode, array $items): Collection;
 
     /**
      * @param int $itemId
@@ -41,8 +38,9 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
     public function modifyItem(int $itemId, array $attributes): bool|int;
 
     /**
-     * @param int $itemId
+     * @param GetterExpressionInterface $where
+     * @param array $columns
      * @return Model|null
      */
-    public function getItem(int $itemId): ?Model;
+    public function getItemWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model;
 }

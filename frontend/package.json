@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --port=3000",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build-css": "postcss src/styles.css -o dist/styles.css"
   },
   "dependencies": {
     "@headlessui/vue": "^1.7.14",
@@ -22,7 +23,6 @@
     "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
-    "lodash.isarray": "^4.0.0",
     "lodash.isfunction": "^3.0.9",
     "lodash.isobject": "^3.0.2",
     "lodash.uniqueid": "^4.0.1",
@@ -32,10 +32,12 @@
     "pinia": "^2.1.4",
     "swiper": "^11.0.4",
     "uuid": "^9.0.0",
+    "v-money": "^0.8.1",
     "vee-validate": "^4.10.7",
     "vue": "^3.2.47",
     "vue-easy-lightbox": "^1.16.0",
     "vue-router": "^4.2.2",
+    "vue-the-mask": "^0.11.1",
     "vue-toastification": "^2.0.0-rc.5",
     "vue3-colorpicker": "^2.2.2",
     "vue3-lazyload": "^0.3.6",

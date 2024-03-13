@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Repositories\Contracts\CityPostPriceRepositoryInterface;
 use App\Services\Contracts\CityPostPriceServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -20,19 +21,9 @@ class CityPostPriceService extends Service implements CityPostPriceServiceInterf
     /**
      * @inheritDoc
      */
-    public function getPostPrices(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
-    ): Collection|LengthAwarePaginator
+    public function getPostPrices(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getPostPricesSearchFilterPaginated(
-            search: $searchText,
-            limit: $limit,
-            page: $page,
-            order: $this->convertOrdersColumnToArray($order)
-        );
+        return $this->repository->getPostPricesSearchFilterPaginated(filter: $filter);
     }
 
     /**

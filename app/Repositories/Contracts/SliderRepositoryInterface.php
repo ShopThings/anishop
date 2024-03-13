@@ -3,8 +3,8 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Enums\Sliders\SliderPlacesEnum;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 interface SliderRepositoryInterface extends RepositoryInterface
 {
@@ -13,4 +13,11 @@ interface SliderRepositoryInterface extends RepositoryInterface
      * @return Collection
      */
     public function updateOrCreateItems(array $items): Collection;
+
+    /**
+     * @param SliderPlacesEnum|array $place
+     * @param bool $withUnpublished
+     * @return Collection
+     */
+    public function getSlider(SliderPlacesEnum|array $place, bool $withUnpublished = false): Collection;
 }

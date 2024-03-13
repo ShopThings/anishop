@@ -2,12 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Gates\PermissionPlacesEnum;
-use App\Enums\Gates\PermissionsEnum;
 use App\Rules\PersianMobileRule;
-use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class StoreNewsletterRequest extends FormRequest
 {
@@ -16,11 +12,7 @@ class StoreNewsletterRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::user()
-            ?->can(PermissionHelper::permission(
-                PermissionsEnum::CREATE,
-                PermissionPlacesEnum::NEWSLETTER
-            ));
+        return true;
     }
 
     /**
@@ -41,7 +33,7 @@ class StoreNewsletterRequest extends FormRequest
     public function attributes()
     {
         return [
-            'mobile' => 'شماره همراه',
+            'mobile' => 'شماره موبایل',
         ];
     }
 }

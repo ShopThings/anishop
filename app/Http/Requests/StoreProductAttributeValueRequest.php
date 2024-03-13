@@ -42,6 +42,7 @@ class StoreProductAttributeValueRequest extends FormRequest
             'priority' => [
                 'required',
                 'numeric',
+                'min:0',
             ],
         ];
     }

@@ -82,7 +82,6 @@ class UpdateUserRequest extends FormRequest
                 'max:30'
             ],
             'is_banned' => [
-                'sometimes',
                 'boolean',
             ],
             'ban_desc' => [
@@ -90,7 +89,6 @@ class UpdateUserRequest extends FormRequest
                 'nullable',
             ],
             'is_deletable' => [
-                'sometimes',
                 'boolean',
             ],
         ];

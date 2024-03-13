@@ -21,11 +21,11 @@ class WeightPostPriceResource extends JsonResource
             'max_weight' => $this->max_weight,
             'post_price' => $this->post_price,
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

@@ -3,6 +3,11 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
+use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
+use App\Http\Requests\Filters\HomeProductFilter;
+use App\Http\Requests\Filters\HomeProductSideFilter;
+use App\Support\Filter;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -10,18 +15,58 @@ use Illuminate\Database\Eloquent\Model;
 interface ProductServiceInterface extends ServiceInterface
 {
     /**
-     * @param string|null $searchText
-     * @param int $limit
-     * @param int $page
-     * @param array $order
+     * @param Filter $filter
+     * @param GetterExpressionInterface|null $where
      * @return Collection|LengthAwarePaginator
      */
     public function getProducts(
-        ?string $searchText = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = ['column' => 'id', 'sort' => 'desc']
+        Filter                    $filter,
+        GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param HomeProductFilter $filter
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getFilteredProducts(HomeProductFilter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @param HomeProductSideFilter $filter
+     * @return Collection
+     */
+    public function getFilterBrands(HomeProductSideFilter $filter): Collection;
+
+    /**
+     * @param HomeProductSideFilter $filter
+     * @return Collection
+     */
+    public function getFilterColorsAndSizes(HomeProductSideFilter $filter): Collection;
+
+    /**
+     * @param HomeProductSideFilter $filter
+     * @return array
+     */
+    public function getFilterPriceRange(HomeProductSideFilter $filter): array;
+
+    /**
+     * @param HomeProductSideFilter $filter
+     * @return Collection
+     */
+    public function getDynamicFilters(HomeProductSideFilter $filter): Collection;
+
+    /**
+     * @param int $productId
+     * @param array $images
+     * @return bool
+     */
+    public function createGalley(int $productId, array $images): bool;
+
+    /**
+     * @param int $productId
+     * @param array $products
+     * @return bool
+     */
+    public function createRelatedProducts(int $productId, array $products): bool;
 
     /**
      * @param int $productId
@@ -29,4 +74,23 @@ interface ProductServiceInterface extends ServiceInterface
      * @return Model|Collection
      */
     public function modifyProducts(int $productId, array $products): Model|Collection;
+
+    /**
+     * @param array $ids
+     * @param array $attributes
+     * @return bool
+     */
+    public function updateBatchInfo(array $ids, array $attributes): bool;
+
+    /**
+     * @param array $ids
+     * @param int $percentage
+     * @param ChangeMultipleProductPriceTypesEnum $changeType
+     * @return bool
+     */
+    public function updateBatchPrice(
+        array                               $ids,
+        int                                 $percentage,
+        ChangeMultipleProductPriceTypesEnum $changeType
+    ): bool;
 }

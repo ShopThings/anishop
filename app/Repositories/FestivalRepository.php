@@ -3,7 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Festival;
+use App\Models\ProductFestival;
 use App\Repositories\Contracts\FestivalRepositoryInterface;
+use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -14,7 +16,10 @@ class FestivalRepository extends Repository implements FestivalRepositoryInterfa
 {
     use RepositoryTrait;
 
-    public function __construct(Festival $model)
+    public function __construct(
+        Festival                  $model,
+        protected ProductFestival $productFestivalModel
+    )
     {
         parent::__construct($model);
     }
@@ -23,41 +28,47 @@ class FestivalRepository extends Repository implements FestivalRepositoryInterfa
      * @inheritDoc
      */
     public function getFestivalProductsSearchFilterPaginated(
-        int     $festivalId,
-        array   $columns = ['*'],
-        ?string $search = null,
-        int     $limit = 15,
-        int     $page = 1,
-        array   $order = []
+        int    $festivalId,
+        array  $columns = ['*'],
+        Filter $filter = null,
     ): Collection|LengthAwarePaginator
     {
-        $query = $this->model->newQuery();
+        $search = $filter->getSearchText();
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->productFestivalModel->newQuery();
         $query
+            ->with(['festival', 'product'])
             ->where('festival_id', $festivalId)
-            ->when($search, function (Builder $query, string $search) {
-                $query
-                    ->withWhereHas('items', function ($q) use ($search) {
+            ->when($search, function (Builder $query, string $search) use ($filter) {
+                $query->when($filter->getRelationSearch(), function ($q) use ($search) {
+                    $q->orWhereHas('product', function ($q) use ($search) {
                         $q
-                            ->withWhereHas('brand', function ($q2) use ($search) {
-                                $q2
-                                    ->orWhereLike([
+                            ->orWhereHas('brand', function ($q2) use ($search) {
+                                $q2->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
                                         'latin_name',
                                         'escaped_name',
                                         'keywords',
                                     ], $search);
+                                });
                             })
-                            ->withWhereHas('category', function ($q2) use ($search) {
-                                $q2
-                                    ->orWhereLike([
+                            ->orWhereHas('category', function ($q2) use ($search) {
+                                $q2->where(function ($q) use ($search) {
+                                    $q->orWhereLike([
                                         'latin_name',
                                         'escaped_name',
                                     ], $search);
+                                });
                             })
                             ->orWhereLike([
                                 'escaped_title',
                                 'keywords',
                             ], $search);
                     });
+                });
             });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);

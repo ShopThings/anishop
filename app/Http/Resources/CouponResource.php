@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
+use App\Http\Resources\Showing\UserShowResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,24 +24,35 @@ class CouponResource extends JsonResource
             'price' => $this->price,
             'apply_min_price' => $this->apply_min_price,
             'apply_max_price' => $this->apply_max_price,
-            'start_at' => $this->start_at,
-            'end_at' => $this->end_at,
+            'normal_start_at' => $this->start_at
+                ? Carbon::parse($this->start_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'normal_end_at' => $this->end_at
+                ? Carbon::parse($this->end_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'start_at' => $this->start_at
+                ? vertaTz($this->start_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
+            'end_at' => $this->end_at
+                ? vertaTz($this->end_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                : null,
+            'used_count' => $this->getUsedCount(),
             'use_count' => $this->use_count,
             'reusable_after' => $this->reusable_after,
             'is_published' => $this->is_published,
-            'created_by' => $this->when($this->created_by, $this->creator()),
-            'updated_by' => $this->when($this->updated_by, $this->updater()),
-            'deleted_by' => $this->when($this->deleted_by, $this->deleter()),
+            'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
+            'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
+            'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
-                ? verta($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'updated_at' => $this->when(
                 $this->updated_at,
-                verta($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'deleted_at' => $this->when(
                 $this->deleted_at,
-                verta($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+                vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
     }

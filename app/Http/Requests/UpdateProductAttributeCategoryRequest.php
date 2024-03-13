@@ -24,7 +24,7 @@ class UpdateProductAttributeCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_attribute' => [
+            'attribute' => [
                 'sometimes',
                 'exists:' . ProductAttribute::class . ',id',
             ],
@@ -32,13 +32,18 @@ class UpdateProductAttributeCategoryRequest extends FormRequest
                 'sometimes',
                 'exists:' . Category::class . ',id',
             ],
+            'priority' => [
+                'sometimes',
+                'numeric',
+                'min:0',
+            ],
         ];
     }
 
     public function attributes()
     {
         return [
-            'product_attribute' => 'ویژگی محصول',
+            'attribute' => 'ویژگی محصول',
         ];
     }
 }

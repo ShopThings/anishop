@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->text('answer');
             $table->text('keywords');
             $table->boolean('is_published')->default(true);
+            $table->boolean('is_deletable')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

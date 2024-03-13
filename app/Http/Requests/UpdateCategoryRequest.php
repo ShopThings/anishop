@@ -25,34 +25,28 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'parent' => [
                 'sometimes',
+                'nullable',
                 'exists:' . Category::class . ',id',
             ],
             'name' => [
                 'sometimes',
                 'max:250',
             ],
-            'level' => [
-                'sometimes',
-                'numeric',
-            ],
             'priority' => [
                 'sometimes',
                 'numeric',
+                'min:0',
             ],
             'show_in_menu' => [
-                'sometimes',
                 'boolean',
             ],
             'show_in_search_side_menu' => [
-                'sometimes',
                 'boolean',
             ],
             'show_in_slider' => [
-                'sometimes',
                 'boolean',
             ],
             'is_published' => [
-                'sometimes',
                 'boolean',
             ],
         ];

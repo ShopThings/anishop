@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Models\City;
+use App\Models\Province;
+use App\Rules\CityInProvinceRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -31,9 +33,13 @@ class StoreCityPostPriceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'city' => [
+            'province' => [
                 'required',
-                'exists:' . City::class . ',id',
+                'exists:' . Province::class . ',id',
+            ],
+            'city' => [
+                'required_with:province',
+                new CityInProvinceRule(),
             ],
             'post_price' => [
                 'required',

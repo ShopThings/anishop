@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\OrderBadge;
-use App\Support\Model\CodeGeneratorHelper;
 use Illuminate\Database\Seeder;
 
 class OrderBadgeSeeder extends Seeder
@@ -14,6 +13,7 @@ class OrderBadgeSeeder extends Seeder
     public function run(): void
     {
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'در صف بررسی',
             'color_hex' => '#4F86FF',
             'is_starting_badge' => true,
@@ -21,36 +21,46 @@ class OrderBadgeSeeder extends Seeder
             'is_deletable' => false,
         ]);
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'تایید نشده',
             'color_hex' => '#222428',
+            'is_end_badge' => true,
             'should_return_order_product' => true,
             'is_title_editable' => false,
             'is_deletable' => false,
         ]);
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'لغو شده',
             'color_hex' => '#E44444',
+            'is_end_badge' => true,
             'should_return_order_product' => true,
             'is_title_editable' => false,
             'is_deletable' => false,
         ]);
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'مرجوع شده',
             'color_hex' => '#FF9635',
+            'is_end_badge' => true,
             'should_return_order_product' => true,
             'is_title_editable' => false,
             'is_deletable' => false,
         ]);
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'تحویل به مشتری',
+            'can_return_order' => true,
             'color_hex' => '#35FF9D',
             'is_deletable' => false,
         ]);
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'آماده‌سازی سفارش',
             'color_hex' => '#8C35FF',
         ]);
         OrderBadge::create([
+            'code' => get_nanoid(),
             'title' => 'خروج از انبار',
             'color_hex' => '#B3E02C',
         ]);

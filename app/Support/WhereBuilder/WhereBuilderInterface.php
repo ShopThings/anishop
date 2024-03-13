@@ -52,16 +52,18 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $value
+     * @param string $operand
      * @return static
      */
-    public function whereLike($column, $value): static;
+    public function whereLike($column, $value, string $operand = '%{value}%'): static;
 
     /**
      * @param $column
      * @param $value
+     * @param string $operand
      * @return static
      */
-    public function whereNotLike($column, $value): static;
+    public function whereNotLike($column, $value, string $operand = '%{value}%'): static;
 
     /**
      * @param $column
@@ -111,6 +113,13 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @return static
      */
     public function whereRegexp($column, $pattern): static;
+
+    /**
+     * @param string $expression
+     * @param array $bindings
+     * @return $this
+     */
+    public function whereRaw(string $expression, array $bindings): static;
 
     /**
      * Send NULL if you don't need any prefix in group
@@ -166,16 +175,18 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $value
-     * @return static
+     * @param string $operand
+     * @return $this
      */
-    public function orWhereLike($column, $value): static;
+    public function orWhereLike($column, $value, string $operand = '%{value}%'): static;
 
     /**
      * @param $column
      * @param $value
+     * @param string $operand
      * @return static
      */
-    public function orWhereNotLike($column, $value): static;
+    public function orWhereNotLike($column, $value, string $operand = '%{value}%'): static;
 
     /**
      * @param $column
@@ -227,6 +238,13 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     public function orWhereRegexp($column, $pattern): static;
 
     /**
+     * @param string $expression
+     * @param array $bindings
+     * @return $this
+     */
+    public function orWhereRaw(string $expression, array $bindings): static;
+
+    /**
      * Send NULL if you don't need any prefix in group
      *
      * @param Closure $callback
@@ -234,7 +252,6 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @return static
      */
     public function orGroup(Closure $callback, ?string $prefix = ''): static;
-
 
     /**
      * @param $first
@@ -395,4 +412,9 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @return mixed
      */
     public function unless($value = null, callable $callback = null, callable $default = null);
+
+    /**
+     * @return static
+     */
+    public function reset(): static;
 }

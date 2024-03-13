@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Notifications\Messages\SMSMessage;
 use Illuminate\Notifications\Notification;
 
 class SMSChannel
@@ -11,9 +12,15 @@ class SMSChannel
      */
     public function send(object $notifiable, Notification $notification): void
     {
-        $message = $notification->toSms($notifiable);
+        /**
+         * @var SMSMessage $smsObject
+         */
+        $smsObject = $notification->toSms($notifiable);
 
         // Send notification to the $notifiable instance...
+        // ...
+
+        // log sms in sms_logs table too
         // ...
     }
 }

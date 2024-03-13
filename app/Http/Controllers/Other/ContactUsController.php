@@ -9,8 +9,8 @@ use App\Http\Resources\ContactUsResource;
 use App\Models\ContactUs;
 use App\Models\User;
 use App\Services\Contracts\ContactUsServiceInterface;
+use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use App\Traits\ControllerPaginateTrait;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -19,8 +19,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ContactUsController extends Controller
 {
-    use ControllerPaginateTrait,
-        ControllerBatchDestroyTrait;
+    use ControllerBatchDestroyTrait;
 
     /**
      * @param ContactUsServiceInterface $service
@@ -34,48 +33,46 @@ class ContactUsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Request $request
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      * @throws AuthorizationException
      */
-    public function index(Request $request)
+    public function index(Filter $filter): AnonymousResourceCollection
     {
         $this->authorize('viewAny', User::class);
-
-        $params = $this->getPaginateParameters($request);
-
-        return ContactUsResource::collection($this->service->getContacts(
-            searchText: $params['text'], limit: $params['limit'], page: $params['page'], order: $params['order']
-        ));
+        return ContactUsResource::collection($this->service->getContacts($filter));
     }
 
     /**
      * Display the specified resource.
      *
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return ContactUsResource
      * @throws AuthorizationException
      */
-    public function show(ContactUs $contactUs)
+    public function show(ContactUs $contact): ContactUsResource
     {
-        $this->authorize('view', $contactUs);
-        return new ContactUsResource($contactUs);
+        $this->authorize('view', $contact);
+        return new ContactUsResource($contact);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateContactUsRequest $request
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return ContactUsResource|JsonResponse
      * @throws AuthorizationException
      */
-    public function update(UpdateContactUsRequest $request, ContactUs $contactUs)
+    public function update(UpdateContactUsRequest $request, ContactUs $contact): JsonResponse|ContactUsResource
     {
-        $this->authorize('update', $contactUs);
+        $this->authorize('update', $contact);
 
-        $validated = $request->validated(['is_seen']);
-        $model = $this->service->updateById($contactUs->id, $validated);
+        $validated = $request->validated([
+            'answer',
+            'is_seen',
+        ]);
+        $model = $this->service->updateById($contact->id, $validated);
 
         if (!is_null($model)) {
             return new ContactUsResource($model);
@@ -91,16 +88,16 @@ class ContactUsController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param ContactUs $contactUs
+     * @param ContactUs $contact
      * @return JsonResponse
      * @throws AuthorizationException
      */
-    public function destroy(Request $request, ContactUs $contactUs)
+    public function destroy(Request $request, ContactUs $contact): JsonResponse
     {
-        $this->authorize('delete', $contactUs);
+        $this->authorize('delete', $contact);
 
-        $permanent = $request->user()->id === $contactUs->creator()?->id;
-        $res = $this->service->deleteById($contactUs->id, $permanent);
+        $permanent = $request->user()->id === $contact->creator?->id;
+        $res = $this->service->deleteById($contact->id, $permanent);
         if ($res)
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         else
