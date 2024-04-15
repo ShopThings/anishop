@@ -3,7 +3,6 @@
 namespace App\Http\Resources\User;
 
 use App\Enums\Comments\CommentConditionsEnum;
-use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\ProductShowResource;
 use Illuminate\Http\Request;

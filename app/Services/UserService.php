@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Enums\Gates\RolesEnum;
+use App\Enums\Notification\UserNotificationTypesEnum;
+use App\Enums\Results\FavoriteProductResultEnum;
 use App\Models\User;
 use App\Repositories\Contracts\CartRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
@@ -11,10 +13,11 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserService extends Service implements UserServiceInterface
 {
@@ -31,6 +34,19 @@ class UserService extends Service implements UserServiceInterface
     public function getUsers(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getUsersSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserByUsername(string $username): ?Model
+    {
+        if (empty($username)) return null;
+
+        $where = new WhereBuilder('users');
+        $where->whereEqual('username', $username);
+
+        return $this->repository->findWhere($where->build());
     }
 
     /**
@@ -55,14 +71,6 @@ class UserService extends Service implements UserServiceInterface
     public function getUserPurchases(User $user, Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getUserPurchasesSearchFilterPaginated(user: $user, filter: $filter);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getUserCarts(User $user)
-    {
-        return $this->cartRepository->getUserCarts($user);
     }
 
     /**
@@ -101,12 +109,39 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
+    public function getAdminUserNotifications(User $user, Filter $filter): Collection|LengthAwarePaginator
+    {
+        $filter->setOrder(['created_at' => 'desc']);
+        return $this->repository->getUserNotifications(
+            user: $user,
+            filter: $filter,
+            notificationTypes: [UserNotificationTypesEnum::getAdminTypes()],
+            columns: ['data', 'read_at', 'created_at']
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAdminUnreadNotifications(User $user): Collection
+    {
+        return $this->repository->getUnreadNotifications(
+            user: $user,
+            notificationTypes: [UserNotificationTypesEnum::getAdminTypes()],
+            columns: ['data', 'read_at', 'created_at']
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUserNotifications(User $user, Filter $filter): Collection|LengthAwarePaginator
     {
         $filter->setOrder(['created_at' => 'desc']);
         return $this->repository->getUserNotifications(
             user: $user,
             filter: $filter,
+            notificationTypes: [UserNotificationTypesEnum::getUserTypes()],
             columns: ['data', 'read_at', 'created_at']
         );
     }
@@ -118,6 +153,7 @@ class UserService extends Service implements UserServiceInterface
     {
         return $this->repository->getUnreadNotifications(
             user: $user,
+            notificationTypes: [UserNotificationTypesEnum::getUserTypes()],
             columns: ['data', 'read_at', 'created_at']
         );
     }
@@ -125,9 +161,9 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function addFavoriteProduct($userId, $productId): bool
+    public function toggleFavoriteProduct($userId, $productId): FavoriteProductResultEnum
     {
-        return $this->repository->addFavoriteProduct($userId, $productId);
+        return $this->repository->toggleFavoriteProduct($userId, $productId);
     }
 
     /**
@@ -145,18 +181,59 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
+    public function createTemporaryUser(string $username, ?string $password = null): ?Model
+    {
+        if (empty($password)) {
+            $password = Str::random(12);
+        }
+
+        $attrs = [
+            'username' => $username,
+            'password' => Hash::make($password),
+        ];
+        $role = [RolesEnum::USER->value];
+
+        DB::beginTransaction();
+
+        $user = $this->repository->create($attrs);
+        $user->syncRoles($role);
+
+        if ($user instanceof Model) {
+            DB::commit();
+            return $user;
+        }
+        DB::rollBack();
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
-        $roles = array_map(function ($value) {
-            return $value['value'];
-        }, $attributes['roles']);
-
         $isAdmin = false;
-        foreach ($roles as $role) {
-            if (RolesEnum::isAdminRole($role)) {
-                $isAdmin = true;
-                break;
+
+        if (isset($attributes['roles']) && is_array($attributes['roles'])) {
+            $roles = array_map(function ($value) {
+                if (isset($value['value'])) {
+                    return $value['value'];
+                } elseif ($value instanceof RolesEnum) {
+                    return $value->value;
+                }
+                return null;
+            }, $attributes['roles']);
+
+            $roles = array_filter($roles, fn($item) => !is_null($item));
+            $roles = array_unique($roles);
+
+            foreach ($roles as $role) {
+                if (RolesEnum::isAdminRole($role)) {
+                    $isAdmin = true;
+                    break;
+                }
             }
+        } else {
+            $roles = [RolesEnum::USER->value];
         }
 
         $attrs = [
@@ -164,7 +241,7 @@ class UserService extends Service implements UserServiceInterface
             'first_name' => $attributes['first_name'],
             'last_name' => $attributes['last_name'],
             'national_code' => $attributes['national_code'],
-            'shaba_number' => $attributes['shaba_number'] ?? null,
+            'sheba_number' => $attributes['sheba_number'] ?? null,
             'password' => Hash::make($attributes['password']),
             'is_admin' => $isAdmin,
             'verified_at' => now(),
@@ -179,10 +256,9 @@ class UserService extends Service implements UserServiceInterface
         if ($user instanceof Model) {
             DB::commit();
             return $user;
-        } else {
-            DB::rollBack();
-            return null;
         }
+        DB::rollBack();
+        return null;
     }
 
     /**
@@ -206,9 +282,23 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
+    public function makeAllAdminNotificationAsRead(User $user): bool
+    {
+        return $this->repository->makeAllNotificationAsRead(
+            $user,
+            UserNotificationTypesEnum::getAdminTypes()
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function makeAllNotificationAsRead(User $user): bool
     {
-        return (bool)$this->repository->makeAllNotificationAsRead($user);
+        return $this->repository->makeAllNotificationAsRead(
+            $user,
+            UserNotificationTypesEnum::getUserTypes()
+        );
     }
 
     /**
@@ -230,8 +320,8 @@ class UserService extends Service implements UserServiceInterface
         if (isset($attributes['national_code'])) {
             $updateAttributes['national_code'] = $attributes['national_code'];
         }
-        if (isset($attributes['shaba_number'])) {
-            $updateAttributes['shaba_number'] = $attributes['shaba_number'];
+        if (isset($attributes['sheba_number'])) {
+            $updateAttributes['sheba_number'] = $attributes['sheba_number'];
         }
         if (isset($attributes['password'])) {
             $updateAttributes['password'] = Hash::make($attributes['password']);
@@ -332,7 +422,8 @@ class UserService extends Service implements UserServiceInterface
     public function deleteUserFavoriteProductById($userId, $productId): bool
     {
         $where = new WhereBuilder('user_favorite_products');
-        $where->whereEqual('user_id', $userId)
+        $where
+            ->whereEqual('user_id', $userId)
             ->whereEqual('product_id', $productId);
 
         return (bool)$this->repository->deleteFavoriteProductWhere($where->build());

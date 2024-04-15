@@ -98,7 +98,7 @@
               </div>
 
               <div class="sm:flex sm:flex-wrap">
-                <div class="p-2 md:w-1/2">
+                <div class="p-2 md:w-1/2 xl:w-1/3">
                   <base-switch
                       :enabled="sendMethod?.determine_price_by_shop_location"
                       label="در نظرگیری مکان فروشگاه برای قیمت ارسال"
@@ -107,13 +107,22 @@
                       @change="(status) => {priceDetermineByLocStatus=status}"
                   />
                 </div>
-                <div class="p-2 md:w-1/2">
+                <div class="p-2 md:w-1/2 xl:w-1/3">
                   <base-switch
                       :enabled="sendMethod?.only_for_shop_location"
                       label="اعمال فقط برای محدوده مکان فروشگاه"
                       name="only_for_shop_location"
                       sr-text="اعمال/عدم اعمال نوع روش برای محدوده مکان فروشگاه"
                       @change="(status) => {onlyForShopLocStatus=status}"
+                  />
+                </div>
+                <div class="p-2 md:w-1/2 xl:w-1/3">
+                  <base-switch
+                    :enabled="sendMethod?.apply_number_of_shipments_on_price"
+                    label="اعمال هزینه ارسال به ازای هر مرسوله"
+                    name="apply_number_of_shipments_on_price"
+                    sr-text="اعمال/عدم اعمال هزینه ارسال به ازای هر مرسوله"
+                    @change="(status) => {applyPriceForEachShipmentStatus=status}"
                   />
                 </div>
               </div>
@@ -164,11 +173,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {
-  ArrowLeftCircleIcon,
-  CheckIcon,
-  CurrencyDollarIcon, HashtagIcon,
-} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, CheckIcon, CurrencyDollarIcon, HashtagIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
@@ -193,6 +198,7 @@ const sendMethod = ref(null)
 const methodImage = ref(null)
 const priceDetermineByLocStatus = ref(true)
 const onlyForShopLocStatus = ref(false)
+const applyPriceForEachShipmentStatus = ref(true)
 const publishStatus = ref(true)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
@@ -208,6 +214,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .required('اولویت را وارد نمایید.'),
     determine_price_by_shop_location: yup.boolean().required('وضعیت در نظرگیری مکان فروشگاه برای قیمت ارسال را مشخص کنید.'),
     only_for_shop_location: yup.boolean().required('وضعیت اعمال فقط برای محدوده مکان فروشگاه را مشخص کنید.'),
+    apply_number_of_shipments_on_price: yup.boolean().required('وضعیت اعمال هزینه ارسال به ازای هر مرسوله را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (!methodImage.value) {
@@ -225,6 +232,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     priority: values.priority,
     determine_price_by_shop_location: priceDetermineByLocStatus.value,
     only_for_shop_location: onlyForShopLocStatus.value,
+    apply_number_of_shipments_on_price: applyPriceForEachShipmentStatus.value,
     is_published: publishStatus.value,
   }, {
     success(response) {
@@ -255,6 +263,7 @@ function setFormFields(item) {
   methodImage.value = item.image
   priceDetermineByLocStatus.value = item.determine_price_by_shop_location
   onlyForShopLocStatus.value = item.only_for_shop_location
+  applyPriceForEachShipmentStatus.value = item.apply_number_of_shipments_on_price
   publishStatus.value = item.is_published
 }
 </script>

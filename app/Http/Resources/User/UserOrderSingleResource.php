@@ -6,7 +6,10 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\OrderItemShowResource;
 use App\Http\Resources\Showing\OrderShowResource;
+use App\Http\Resources\Showing\PaymentShowResource;
 use App\Http\Resources\Showing\UserShowResource;
+use App\Models\OrderDetail;
+use App\Support\Helper\OrderHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,6 +27,9 @@ class UserOrderSingleResource extends JsonResource
         $this->resource->load('orders.payments');
         $this->resource->load('items');
         $this->resource->load('items.product');
+
+        $completePayment = $this->hasCompletePaid();
+        $partialPayment = $this->hasAnyPaid();
 
         return [
             'user' => new UserShowResource($this->user),
@@ -59,14 +65,14 @@ class UserOrderSingleResource extends JsonResource
             'ordered_at' => $this->ordered_at
                 ? vertaTz($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'payment_status' => $this->hasCompletePaid()
+            'payment_status' => $completePayment
                 ? [
                     'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::SUCCESS, 'نامشخص'),
                     'value' => PaymentStatusesEnum::SUCCESS->value,
                     'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::SUCCESS->value] ?? '#000000',
                 ]
                 : (
-                $this->hasAnyPaid()
+                $partialPayment
                     ?
                     [
                         'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::PARTIAL_SUCCESS, 'نامشخص'),
@@ -75,13 +81,15 @@ class UserOrderSingleResource extends JsonResource
                     ]
                     :
                     [
-                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAYED, 'نامشخص'),
-                        'value' => PaymentStatusesEnum::NOT_PAYED->value,
-                        'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::NOT_PAYED->value] ?? '#000000',
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAID, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::NOT_PAID->value,
+                        'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::NOT_PAID->value] ?? '#000000',
                     ]
                 ),
             'orders' => OrderShowResource::collection($this->orders),
+            'payments' => PaymentShowResource::collection($this->orders->payments),
             'items' => OrderItemShowResource::collection($this->items),
+            'remained_pay_time' => OrderHelper::calculateRemainedPayTime($this->resource),
         ];
     }
 }

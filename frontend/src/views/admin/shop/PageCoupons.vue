@@ -1,43 +1,46 @@
 <template>
   <new-creation-guide-top route-name="admin.coupon.add">
     <template #text>
-      با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش کوپن نمایید
+      با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش کوپن تخفیف نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.COUPON, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
-      افزودن کوپن جدید
+      افزودن کوپن تخفیف جدید
     </template>
   </new-creation-guide-top>
 
   <partial-card ref="tableContainer">
     <template #header>
-      لیست کوپن‌ها
+      لیست کوپن‌های تخفیف
     </template>
 
     <template #body>
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:code="{value}">
               <span class="rounded-lg py-1 px-2 tracking-widest text-black bg-teal-200">{{ value.code }}</span>
             </template>
 
             <template v-slot:price="{value}">
-              <span class="text-black ml-1.5">{{ formatPriceLikeNumber(value.price) }}</span>
+              <span class="text-black ml-1.5">{{ numberFormat(value.price) }}</span>
               <span class="text-xs text-gray-400">تومان</span>
             </template>
 
@@ -53,7 +56,7 @@
 
             <template v-slot:apply_min_price="{value}">
               <template v-if="value.apply_min_price">
-                <span class="text-black ml-1.5">{{ formatPriceLikeNumber(value.apply_min_price) }}</span>
+                <span class="text-black ml-1.5">{{ numberFormat(value.apply_min_price) }}</span>
                 <span class="text-xs text-gray-400">تومان</span>
               </template>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
@@ -61,7 +64,7 @@
 
             <template v-slot:apply_max_price="{value}">
               <template v-if="value.apply_max_price">
-                <span class="text-black ml-1.5">{{ formatPriceLikeNumber(value.apply_max_price) }}</span>
+                <span class="text-black ml-1.5">{{ numberFormat(value.apply_max_price) }}</span>
                 <span class="text-xs text-gray-400">تومان</span>
               </template>
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
@@ -96,9 +99,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -110,7 +114,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue"
-import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
+import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
@@ -122,10 +126,13 @@ import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {CouponAPI} from "@/service/APIShop.js";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
-import {formatPriceLikeNumber} from "../../../composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -183,7 +190,7 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "تعداد استفاده شده استفاده/کل(بر حسب روز)",
+      label: "تعداد استفاده شده/کل(بر حسب روز)",
       field: "use_count",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
@@ -256,7 +263,7 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "تعداد استفاده شده استفاده/کل(بر حسب روز)",
+      label: "تعداد استفاده شده/کل(بر حسب روز)",
       field: "use_count",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
@@ -281,6 +288,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.COUPON, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -291,12 +299,26 @@ const table = reactive({
   },
 })
 
+function calcRemovals(row) {
+  let removals = []
+
+  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.COUPON, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.COUPON, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+
+  return removals
+}
+
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -313,6 +335,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

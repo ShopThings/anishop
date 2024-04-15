@@ -5,6 +5,7 @@ namespace App\Services\Contracts;
 use App\Contracts\ServiceInterface;
 use App\Models\OrderDetail;
 use App\Models\ReturnOrderRequest;
+use App\Models\User;
 use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -18,6 +19,11 @@ interface ReturnOrderServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getRequests(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getNotSeenRequestsCount(): int;
 
     /**
      * @param $userId
@@ -51,11 +57,11 @@ interface ReturnOrderServiceInterface extends ServiceInterface
     public function canCancelOrder(ReturnOrderRequest $orderRequest): bool;
 
     /**
-     * @param int $userId
+     * @param User $user
      * @param int $orderDetailId
      * @return Model|null
      */
-    public function createUserRequest(int $userId, int $orderDetailId): ?Model;
+    public function createUserRequest(User $user, int $orderDetailId): ?Model;
 
     /**
      * @return Model|null
@@ -73,6 +79,14 @@ interface ReturnOrderServiceInterface extends ServiceInterface
      * @return bool
      */
     public function cancelUserRequestById(int $userId, int $requestId, bool $permanent = false): bool;
+
+    /**
+     * @param $code
+     * @param array $attributes
+     * @param bool $silence
+     * @return Model|null
+     */
+    public function updateByCode($code, array $attributes, bool $silence = false): ?Model;
 
     /**
      * @param int $itemId

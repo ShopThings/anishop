@@ -1,9 +1,5 @@
 <template>
   <div class="mb-3">
-    <h2 class="text-slate-400 mb-1">
-      دیدگاه شما درباره محصول
-    </h2>
-
     <base-loading-panel
         :loading="loading"
         type="list-single"

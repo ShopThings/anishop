@@ -18,6 +18,7 @@ class RoleController extends Controller
     {
         $roles = $service->getRoles();
         $status = ResponseCodes::HTTP_OK;
+
         if (count($roles)) {
             $res = [
                 'type' => ResponseTypesEnum::SUCCESS->value,
@@ -30,6 +31,7 @@ class RoleController extends Controller
             ];
             $status = ResponseCodes::HTTP_UNPROCESSABLE_ENTITY;
         }
+
         return response()->json($res, $status);
     }
 }

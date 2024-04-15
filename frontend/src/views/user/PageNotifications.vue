@@ -19,20 +19,8 @@
         <template #body>
           <div class="flex flex-wrap items-center gap-2.5 relative pr-2.5">
             <div
-                :class="[
-                !item.priority || +item.priority === 0
-                  ? priorityColors.normal
-                  : (
-                    item.priority < 0
-                      ? priorityColors.low
-                      : (
-                        item.priority > 0 && item.priority < 5
-                         ? priorityColors.high
-                         : priorityColors.high
-                      )
-                  )
-              ]"
-                class="absolute rounded-full w-1 h-3/4 top-1/2 -translate-y-1/2 -right-1 bg-rose-500"
+              :style="'background-color:' + getPriorityColor(item) + ';'"
+              class="absolute rounded-full w-1 h-3/4 top-1/2 -translate-y-1/2 -right-1"
             ></div>
 
             <h1 class="text-black font-iranyekan-bold">
@@ -68,7 +56,7 @@ import PartialCard from "@/components/partials/PartialCard.vue";
 import BasePaginator from "@/components/base/BasePaginator.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {apiRoutes} from "@/router/api-routes.js";
-import {NotificationAPI} from "@/service/APINotification.js";
+import {UserNotificationAPI} from "@/service/APINotification.js";
 
 const getPath = apiRoutes.user.info.notification.index
 const notifications = ref([])
@@ -80,8 +68,22 @@ const priorityColors = {
   low: '#22c55e',
 }
 
+function getPriorityColor(item) {
+  return !item.priority || +item.priority === 0
+    ? priorityColors.normal
+    : (
+      item.priority < 0
+        ? priorityColors.low
+        : (
+          item.priority > 0 && item.priority < 5
+            ? priorityColors.high
+            : priorityColors.high
+        )
+    )
+}
+
 onMounted(() => {
-  NotificationAPI.markAllAsRead({
+  UserNotificationAPI.markAllAsRead({
     success() {
       return false
     },

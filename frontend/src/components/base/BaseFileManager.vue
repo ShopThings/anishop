@@ -24,8 +24,11 @@
             placement="bottom-start"
         >
           <template #button>
-            <button v-tooltip.top="'فضای ذخیره سازی'" class="text-black flex items-center cursor-pointer"
-                    type="button">
+            <button
+              v-tooltip.top="'فضای ذخیره سازی'"
+              class="text-black flex items-center cursor-pointer"
+              type="button"
+            >
               <ServerStackIcon class="h-5 w-5 inline-block ml-2"/>
               <span class="inline-block">{{ currentStorage.text }}</span>
               <ChevronDownIcon class="h-4 w-4 inline-block mr-2 text-emerald-700"/>
@@ -33,13 +36,14 @@
           </template>
 
           <template #item="{item, hide}">
-            <div
-                class="text-black p-1 rounded-md hover:bg-blue-700 hover:text-white transition cursor-pointer"
+            <button
+              class="text-black p-1 rounded-md hover:bg-blue-700 hover:text-white transition"
+              type="button"
                 @click="storageChange(item, hide)"
             >
               <ServerIcon class="h-5 w-5 inline-block ml-2"/>
               {{ item }}
-            </div>
+            </button>
           </template>
         </base-floating-drop-down>
       </li>
@@ -93,9 +97,9 @@
                   :item="value"
                   @click-dir="() => {changeHash(value.full_path)}"
                   @click-image="() => {
-                  currentPreviewSlide = previewingItemsIndex.findIndex(item => value.full_path === item)
-                  onLightboxShow()
-                }"
+                    currentPreviewSlide = previewingItemsIndex.findIndex(item => value.full_path === item)
+                    onLightboxShow()
+                  }"
               />
             </template>
 
@@ -913,7 +917,6 @@ function changeHash(to) {
 }
 
 // -----------------------------------
-
 doSearch(0, -1, 'id', 'desc')
 
 function handleFileSelection(file, row) {

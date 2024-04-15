@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Enums\Notification\UserNotificationTypesEnum;
+use App\Enums\Results\FavoriteProductResultEnum;
 use App\Models\User;
 use App\Support\Filter;
 use App\Support\WhereBuilder\GetterExpressionInterface;
@@ -20,6 +22,16 @@ interface UserRepositoryInterface extends RepositoryInterface
     public function getUsersSearchFilterPaginated(
         array  $columns = ['*'],
         Filter $filter = null
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param Filter|null $filter
+     * @param array|null $reportQuery
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getUsersFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
     ): Collection|LengthAwarePaginator;
 
     /**
@@ -67,21 +79,28 @@ interface UserRepositoryInterface extends RepositoryInterface
     /**
      * @param User $user
      * @param Filter $filter
+     * @param UserNotificationTypesEnum[] $notificationTypes
      * @param array $columns
      * @return Collection|LengthAwarePaginator
      */
     public function getUserNotifications(
-        User $user,
+        User  $user,
         Filter $filter,
+        array $notificationTypes = [],
         array $columns = ['*']
     ): Collection|LengthAwarePaginator;
 
     /**
      * @param User $user
+     * @param UserNotificationTypesEnum[] $notificationTypes
      * @param array $columns
      * @return Collection
      */
-    public function getUnreadNotifications(User $user, array $columns = ['*']): Collection;
+    public function getUnreadNotifications(
+        User  $user,
+        array $notificationTypes = [],
+        array $columns = ['*']
+    ): Collection;
 
     /**
      * @param GetterExpressionInterface $where
@@ -90,11 +109,13 @@ interface UserRepositoryInterface extends RepositoryInterface
     public function favoriteProductsCount(GetterExpressionInterface $where): int;
 
     /**
+     * Toggle a product to user's favorite product
+     *
      * @param $userId
      * @param $productId
-     * @return bool
+     * @return FavoriteProductResultEnum
      */
-    public function addFavoriteProduct($userId, $productId): bool;
+    public function toggleFavoriteProduct($userId, $productId): FavoriteProductResultEnum;
 
     /**
      * @param GetterExpressionInterface $where
@@ -110,9 +131,10 @@ interface UserRepositoryInterface extends RepositoryInterface
 
     /**
      * @param User $user
-     * @return int
+     * @param UserNotificationTypesEnum[] $notificationTypes
+     * @return bool
      */
-    public function makeAllNotificationAsRead(User $user): int;
+    public function makeAllNotificationAsRead(User $user, array $notificationTypes = []): bool;
 
     /**
      * @param array $data

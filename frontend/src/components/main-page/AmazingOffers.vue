@@ -6,7 +6,7 @@
     <loader-card
         v-for="i in 5"
         :key="i"
-        class="!w-72 rounded-lg shadow-lg !border-[3px] !border-rose-400"
+        class="!w-80 rounded-lg shadow-lg !border-[3px] !border-rose-400"
     />
   </div>
   <template v-else>

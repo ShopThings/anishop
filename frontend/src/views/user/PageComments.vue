@@ -47,14 +47,14 @@
 
             <template #up_vote="{value}">
               <span class="border-2 border-emerald-500 text-sm rounded-lg px-2.5">{{
-                  formatPriceLikeNumber(value.up_vote_count)
+                  numberFormat(value.up_vote_count)
                 }}</span>
               <span class="text-sm mr-2 text-gray-400">مفید</span>
             </template>
 
             <template #down_vote="{value}">
               <span class="border-2 border-rose-500 text-sm rounded-lg px-2.5">{{
-                  formatPriceLikeNumber(value.down_vote_count)
+                  numberFormat(value.down_vote_count)
                 }}</span>
               <span class="text-sm mr-2 text-gray-400">نامرتبط</span>
             </template>
@@ -162,7 +162,7 @@ import PartialBadgeStatusBlogComment from "@/components/partials/PartialBadgeSta
 import {UserPanelBlogCommentAPI, UserPanelCommentAPI} from "@/service/APIUserPanel.js";
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import {FileSizes} from "@/composables/file-list.js";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
 
 const tabs = ref({
   productComments: {

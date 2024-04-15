@@ -3,15 +3,15 @@
     <div class="flex gap-1.5 items-center">
       <span class="text-sm font-iranyekan-light">نمایش</span>
       <span class="font-iranyekan-bold text-black bg-violet-200 rounded-md py-0.5 px-2">{{
-          formatPriceLikeNumber(offset + 1)
+          numberFormat(offset + 1)
         }}</span>
       <span class="text-sm font-iranyekan-light">تا</span>
       <div class="font-iranyekan-bold text-black bg-violet-200 rounded-md py-0.5 px-2">
         <template v-if="!itemsLength">
-          {{ formatPriceLikeNumber(offset + perPage) }}
+          {{ numberFormat(offset + perPage) }}
         </template>
         <template v-else>
-          {{ formatPriceLikeNumber(offset + Math.min(itemsLength, perPage)) }}
+          {{ numberFormat(offset + Math.min(itemsLength, perPage)) }}
         </template>
       </div>
     </div>
@@ -19,22 +19,22 @@
       <span class="ml-1 font-iranyekan-bold">-</span>
       <span class="text-sm font-iranyekan-light">صفحه</span>
       <span class="font-iranyekan-bold text-black bg-violet-200 rounded-md py-0.5 px-2">{{
-          formatPriceLikeNumber(currentPage)
+          numberFormat(currentPage)
         }}</span>
       <span class="text-sm font-iranyekan-light">از</span>
       <div class="font-iranyekan-bold text-black bg-violet-200 rounded-md py-0.5 px-2">
-        {{ formatPriceLikeNumber(maxPage) }}
+        {{ numberFormat(maxPage) }}
       </div>
     </div>
     <div class="rounded-md text-black bg-indigo-100 border-2 border-indigo-500 py-0.5 px-3">
-      <span class="font-iranyekan-bold">{{ formatPriceLikeNumber(total) }}</span>
+      <span class="font-iranyekan-bold">{{ numberFormat(total) }}</span>
       <span class="mr-1 text-sm font-iranyekan-light">مورد</span>
     </div>
   </div>
 </template>
 
 <script setup>
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
 
 defineProps({
   offset: [Number, String],

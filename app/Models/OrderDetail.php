@@ -11,6 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Parables\NanoId\GeneratesNanoId;
 
+/**
+ * @method withCompletePaidOrder(): Builder
+ * @method withAnyPaidOrder(): Builder
+ * @method withWaitingOrder(): Builder
+ */
 class OrderDetail extends Model
 {
     use GeneratesNanoId;
@@ -67,6 +72,14 @@ class OrderDetail extends Model
     }
 
     /**
+     * @return HasMany
+     */
+    public function reservedOrders(): HasMany
+    {
+        return $this->hasMany(OrderReserve::class, 'order_key_id');
+    }
+
+    /**
      * Determine if current order has paid any(even partially).
      *
      * @return bool
@@ -97,6 +110,20 @@ class OrderDetail extends Model
      * @param Builder $query
      * @return mixed
      */
+    public function scopeWithCompletePaidOrder(Builder $query): mixed
+    {
+        return $query->whereHas('orders', function ($query) {
+            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
+        }, '=', function ($query) {
+            // The count of all related payments
+            $query->count();
+        });
+    }
+
+    /**
+     * @param Builder $query
+     * @return mixed
+     */
     public function scopeWithAnyPaidOrder(Builder $query): mixed
     {
         return $query->whereHas('orders', function ($query) {
@@ -108,13 +135,10 @@ class OrderDetail extends Model
      * @param Builder $query
      * @return mixed
      */
-    public function scopeWithCompletePaidOrder(Builder $query): mixed
+    public function scopeWithWaitingOrder(Builder $query): mixed
     {
         return $query->whereHas('orders', function ($query) {
-            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
-        }, '=', function ($query) {
-            // The count of all related payments
-            $query->count();
+            $query->where('payment_status', PaymentStatusesEnum::WAIT);
         });
     }
 

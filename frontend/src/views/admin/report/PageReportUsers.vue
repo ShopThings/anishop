@@ -11,14 +11,35 @@
         <template #body>
           <div class="flex flex-col sm:flex-row justify-end p-3">
             <base-button
+              :disabled="filterApplyLoading"
                 class="bg-primary rounded-r-lg rounded-l-lg sm:rounded-l-none border-primary text-sm my-1.5 sm:px-6"
-                @click="filterQB">
-              فیلتر اطلاعات
+              @click="filterQB"
+            >
+              <VTransitionFade>
+                <loader-circle
+                  v-if="filterApplyLoading"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                />
+              </VTransitionFade>
+
+              <span>فیلتر اطلاعات</span>
             </base-button>
+
             <base-button
+              :disabled="filterApplyLoading"
                 class="bg-gray-200 !text-black border border-gray-300 rounded-l-lg rounded-r-lg sm:rounded-r-none text-sm my-1.5 sm:px-6"
-                @click="clearQBFilter">
-              حذف فیلتر
+              @click="clearQBFilter"
+            >
+              <VTransitionFade>
+                <loader-circle
+                  v-if="filterApplyLoading"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                />
+              </VTransitionFade>
+
+              <span>حذف فیلتر</span>
             </base-button>
           </div>
         </template>
@@ -74,11 +95,11 @@
               @do-search="doSearch"
           >
             <template v-slot:roles="{value}">
-                            <span v-for="(role) in value.roles"
-                                  v-if="value.roles"
-                                  class="rounded-md text-white bg-fuchsia-700 text-xs py-1 px-2 inline-block m-1 whitespace-nowrap">
-                                {{ role }}
-                            </span>
+              <span v-for="(role) in value.roles"
+                    v-if="value.roles"
+                    class="rounded-md text-white bg-fuchsia-700 text-xs py-1 px-2 inline-block m-1 whitespace-nowrap">
+                  {{ role }}
+              </span>
               <span v-else
                     class="rounded-md text-white bg-black text-xs py-1 px-2 inline-block whitespace-nowrap">فاقد نقش</span>
             </template>
@@ -87,11 +108,11 @@
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
             <template v-slot:verified_at="{value}">
-                            <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
-                                <span
-                                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
-                                {{ value.verified_at }}
-                            </span>
+              <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
+                  <span
+                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
+                  {{ value.verified_at }}
+              </span>
               <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>
             </template>
           </base-datatable>
@@ -106,41 +127,21 @@ import {onMounted, reactive, ref} from "vue";
 import BaseQueryBuilder from "@/components/base/BaseQueryBuilder.vue";
 import {MinusIcon, TableCellsIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
-import {apiRoutes} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {useToast} from "vue-toastification";
 import BaseButton from "@/components/base/BaseButton.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {ReportAPI} from "@/service/APIReport.js";
 
-//-----------------------------------
-// Query-Builder stuffs
-//-----------------------------------
-const builderLoading = ref(false)
+const toast = useToast()
 
-const query = reactive([])
+const builderLoading = ref(true)
+const filterApplyLoading = ref(false)
+
+const query = ref([])
 const columns = ref([])
-
-function filterQB() {
-  // make a request to get filtered items
-}
-
-function clearQBFilter() {
-  query.length = 0
-}
-
-onMounted(() => {
-  // useRequest(apiRoutes.admin.reports.usersQueryBuilder, null, {
-  //     success: (response) => {
-  //         columns.value = response.data
-  //
-  //         builderLoading.value = false
-  //     },
-  // })
-})
-//-----------------------------------
 
 //-----------------------------------
 // Export excel from query
@@ -149,15 +150,18 @@ const isDownloadExcel = ref(false)
 
 function excelDownloadHandler() {
   if (!isDownloadExcel.value) return
-}
 
-//-----------------------------------
+  isDownloadExcel.value = true;
+  ReportAPI.exportUsers({}, {
+    finally() {
+      isDownloadExcel.value = false
+    },
+  })
+}
 
 //-----------------------------------
 // Table stuffs
 //-----------------------------------
-const toast = useToast()
-
 const datatable = ref(null)
 const tableContainer = ref(null)
 const loading = ref(true)
@@ -215,8 +219,8 @@ const table = reactive({
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  useRequest(apiRoutes.admin.users.index, {
-    params: {limit, offset, order, sort, text},
+  ReportAPI.fetchUsers({
+    limit, offset, order, sort, text, query: query.value
   }, {
     success: (response) => {
       table.rows = response.data
@@ -236,10 +240,46 @@ const doSearch = (offset, limit, order, sort, text) => {
 
       if (tableContainer.value && tableContainer.value.card)
         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+
+      filterApplyLoading.value = false
     },
   })
 }
 
 doSearch(0, 15, 'id', 'desc')
+
 //-----------------------------------
+// Query-Builder stuffs
+//-----------------------------------
+function filterQB() {
+  if (filterApplyLoading.value) return
+
+  filterApplyLoading.value = true
+
+  if (datatable.value?.reload) {
+    datatable.value.reload()
+  } else {
+    doSearch(0, 15, 'id', 'desc')
+  }
+}
+
+function clearQBFilter() {
+  if (filterApplyLoading.value) return
+
+  query.value = null
+
+  // this time send empty query to apply no filters on records
+  filterQB()
+}
+
+onMounted(() => {
+  ReportAPI.getUsersQB({
+    success(response) {
+      columns.value = response.data
+    },
+    finally() {
+      builderLoading.value = false
+    },
+  })
+})
 </script>

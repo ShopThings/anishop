@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش جشنواره نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن جشنواره جدید
     </template>
@@ -18,19 +21,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:start_at="{value}">
               <span v-if="value.start_at" class="text-xs">{{ value.start_at }}</span>
@@ -53,9 +56,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -67,7 +71,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue"
-import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
+import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
@@ -79,9 +83,12 @@ import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 import {FestivalAPI} from "@/service/APIShop.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -207,6 +214,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, [PERMISSIONS.CREATE, PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -217,12 +225,29 @@ const table = reactive({
   },
 })
 
+function calcRemovals(row) {
+  let removals = []
+
+  if (!userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.CREATE)) {
+    removals.push(['editProducts'])
+  }
+
+  return removals
+}
+
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
   {
+    id: 'editProducts',
     link: {
       text: 'ویرایش محصولات جشنواره',
       icon: 'PencilSquareIcon',
@@ -239,6 +264,7 @@ const operations = [
     },
   },
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -255,6 +281,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

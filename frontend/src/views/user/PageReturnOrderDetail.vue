@@ -84,7 +84,7 @@
                 </div>
                 <div class="mb-3">
                   <base-textarea
-                      :has-edit-mode="!returnOrder?.description || returnOrder?.description?.trim() === ''"
+                    :in-edit-mode="!returnOrder?.description || returnOrder?.description?.trim() === ''"
                       :is-editable="!returnOrder?.has_status_changed"
                       :value="returnOrder?.description"
                       label-title="علت مرجوع نمودن محصول"
@@ -197,10 +197,10 @@
                       <div class="flex flex-wrap items-center gap-3">
                         <div class="text-xl">
                           <template v-if="product.discounted_price">
-                            {{ formatPriceLikeNumber(product.discounted_price) }}
+                            {{ numberFormat(product.discounted_price) }}
                           </template>
                           <template v-else>
-                            {{ formatPriceLikeNumber(product.price) }}
+                            {{ numberFormat(product.price) }}
                           </template>
                           <span class="text-xs text-gray-400">تومان</span>
                         </div>
@@ -212,7 +212,7 @@
                         <span
                             class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
                           <div class="text-slate-500 text-sm">
-                            {{ formatPriceLikeNumber(product.price) }}
+                            {{ numberFormat(product.price) }}
                             <span class="text-xs text-gray-400">تومان</span>
                           </div>
                         </div>
@@ -330,7 +330,7 @@ import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseSpinner from "@/components/base/BaseSpinner.vue";
 import {useFormSubmit} from "@/composables/form-submit.js";
-import {formatPriceLikeNumber, getPercentageOfPortion, getRouteParamByKey} from "@/composables/helper.js";
+import {numberFormat, getPercentageOfPortion, getRouteParamByKey} from "@/composables/helper.js";
 import {UserPanelReturnOrderAPI} from "@/service/APIUserPanel.js";
 import {useToast} from "vue-toastification";
 import {useConfirmToast} from "@/composables/toast-helper.js";

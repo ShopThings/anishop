@@ -18,7 +18,7 @@
               <div class="flex flex-wrap items-end">
                 <div class="p-2 w-full md:w-1/2">
                   <base-input
-                      :has-edit-mode="false"
+                    :in-edit-mode="false"
                       :is-editable="badge?.is_title_editable"
                       :value="badge?.title"
                       label-title="عنوان"

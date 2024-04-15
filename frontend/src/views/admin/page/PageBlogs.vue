@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش بلاگ نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.BLOG, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن بلاگ جدید
     </template>
@@ -18,19 +21,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:id="{value, index}">
               {{ index }}
@@ -42,8 +45,8 @@
 
             <template v-slot:writer="{value}">
               <router-link
-                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
-                  class="text-blue-600 hover:text-opacity-80"
+                :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                class="text-blue-600 hover:text-opacity-80"
               >
                 <partial-username-label :user="value.created_by"/>
               </router-link>
@@ -72,7 +75,12 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
+              <base-datatable-menu
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
+              />
             </template>
           </base-datatable>
         </template>
@@ -98,9 +106,12 @@ import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialTableKeywords from "@/components/partials/PartialTableKeywords.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -216,6 +227,10 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: (
+        userStore.hasPermission(PERMISSION_PLACES.BLOG, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE]) ||
+        userStore.hasPermission(PERMISSION_PLACES.BLOG_COMMENT, PERMISSIONS.READ)
+      )
     },
   ],
   rows: [],
@@ -226,12 +241,29 @@ const table = reactive({
   },
 })
 
+function calcRemovals(row) {
+  let removals = []
+
+  if (!userStore.hasPermission(PERMISSION_PLACES.BLOG, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.BLOG, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.BLOG_COMMENT, PERMISSIONS.READ)) {
+    removals.push(['showComments'])
+  }
+
+  return removals
+}
+
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -248,6 +280,24 @@ const operations = [
     },
   },
   {
+    id: 'showComments',
+    link: {
+      text: 'مشاهده دیدگاه‌ها',
+      icon: 'ChatBubbleLeftRightIcon',
+    },
+    event: {
+      click: (data) => {
+        router.push({
+          name: 'admin.blog.comments',
+          params: {
+            slug: data.slug,
+          }
+        })
+      },
+    },
+  },
+  {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

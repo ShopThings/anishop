@@ -34,11 +34,11 @@ if (!function_exists('get_nanoid')) {
     /**
      * @return string
      */
-    function get_nanoid(): string
+    function get_nanoid($alphabet = NanoIdInterface::ALPHABET_ALPHA_NUMERIC_READABLE): string
     {
         return NanoId::nanoId(
             NanoIdInterface::SIZE_DEFAULT,
-            NanoIdInterface::ALPHABET_ALPHA_NUMERIC_READABLE
+            $alphabet
         );
     }
 }

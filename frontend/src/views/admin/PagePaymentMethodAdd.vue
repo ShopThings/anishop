@@ -86,9 +86,11 @@
                   </base-input>
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                  <base-input label-title="نام کاربری"
-                              name="username"
-                              placeholder="وارد نمایید">
+                  <base-input
+                    label-title="نام کاربری"
+                    name="username"
+                    placeholder="وارد نمایید"
+                  >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>

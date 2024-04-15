@@ -53,6 +53,7 @@ use App\Repositories\Contracts\SendMethodRepositoryInterface;
 use App\Repositories\Contracts\SettingRepositoryInterface;
 use App\Repositories\Contracts\SliderRepositoryInterface;
 use App\Repositories\Contracts\SmsLogRepositoryInterface;
+use App\Repositories\Contracts\SpecificNotificationRepositoryInterface;
 use App\Repositories\Contracts\StaticPageRepositoryInterface;
 use App\Repositories\Contracts\UnitRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
@@ -80,6 +81,7 @@ use App\Repositories\SendMethodRepository;
 use App\Repositories\SettingRepository;
 use App\Repositories\SliderRepository;
 use App\Repositories\SmsLogRepository;
+use App\Repositories\SpecificNotificationRepository;
 use App\Repositories\StaticPageRepository;
 use App\Repositories\UnitRepository;
 use App\Repositories\UserRepository;
@@ -90,6 +92,7 @@ use App\Services\BlogCategoryService;
 use App\Services\BlogCommentService;
 use App\Services\BlogService;
 use App\Services\BrandService;
+use App\Services\CartService;
 use App\Services\CategoryImageService;
 use App\Services\CategoryService;
 use App\Services\CityPostPriceService;
@@ -103,6 +106,7 @@ use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Services\Contracts\BlogServiceInterface;
 use App\Services\Contracts\BrandServiceInterface;
+use App\Services\Contracts\CartServiceInterface;
 use App\Services\Contracts\CategoryImageServiceInterface;
 use App\Services\Contracts\CategoryServiceInterface;
 use App\Services\Contracts\CityPostPriceServiceInterface;
@@ -134,6 +138,7 @@ use App\Services\Contracts\SendMethodServiceInterface;
 use App\Services\Contracts\SettingServiceInterface;
 use App\Services\Contracts\SliderServiceInterface;
 use App\Services\Contracts\SmsLogServiceInterface;
+use App\Services\Contracts\SpecificNotificationServiceInterface;
 use App\Services\Contracts\StaticPageServiceInterface;
 use App\Services\Contracts\UnitServiceInterface;
 use App\Services\Contracts\UserServiceInterface;
@@ -162,6 +167,7 @@ use App\Services\SendMethodService;
 use App\Services\SettingService;
 use App\Services\SliderService;
 use App\Services\SmsLogService;
+use App\Services\SpecificNotificationService;
 use App\Services\StaticPageService;
 use App\Services\UnitService;
 use App\Services\UserService;
@@ -233,6 +239,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
         $this->app->bind(FileRepositoryInterface::class, FileRepository::class);
         $this->app->bind(CartRepositoryInterface::class, CartRepository::class);
+        $this->app->bind(SpecificNotificationRepositoryInterface::class, SpecificNotificationRepository::class);
     }
 
     /**
@@ -281,5 +288,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(MenuServiceInterface::class, MenuService::class);
         $this->app->bind(SettingServiceInterface::class, SettingService::class);
         $this->app->bind(FileServiceInterface::class, FileService::class);
+        $this->app->bind(CartServiceInterface::class, CartService::class);
+        $this->app->bind(SpecificNotificationServiceInterface::class, SpecificNotificationService::class);
     }
 }

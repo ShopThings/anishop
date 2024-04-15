@@ -286,7 +286,7 @@
               @click="copyHandler"
               v-text="`{{first_name}}`"
           ></button>
-          برای قرار دادن نام کاربر و از
+          برای قرار دادن نام کاربر، از
           <button
               v-tooltip.top="'کپی کردن'"
               class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
@@ -294,7 +294,15 @@
               @click="copyHandler"
               v-text="`{{order_code}}`"
           ></button>
-          برای قرار دادن کد سفارش استفاده نمایید.
+          برای قرار دادن کد سفارش و از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{return_code}}`"
+          ></button>
+          برای قرار دادن کد مرجوع استفاده نمایید.
         </template>
       </partial-input-lead>
     </div>
@@ -345,7 +353,15 @@
               @click="copyHandler"
               v-text="`{{order_code}}`"
           ></button>
-          برای قرار دادن کد سفارش مرجوعی و از
+          برای قرار دادن کد سفارش، از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{return_code}}`"
+          ></button>
+          برای قرار دادن کد مرجوع و از
           <button
               v-tooltip.top="'کپی کردن'"
               class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"

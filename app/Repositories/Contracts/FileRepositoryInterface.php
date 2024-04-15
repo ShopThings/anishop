@@ -109,6 +109,8 @@ interface FileRepositoryInterface extends RepositoryInterface
 
     /**
      * @param array|string $files
+     * @param string $path
+     * @param string $disk
      * @return bool
      */
     public function remove(array|string $files, string $path, string $disk): bool;
@@ -118,7 +120,7 @@ interface FileRepositoryInterface extends RepositoryInterface
      * @param string $disk
      * @return mixed
      */
-    public function download(string $path, string $disk);
+    public function download(string $path, string $disk): mixed;
 
     /**
      * If $getFiles is true, founded files will return,

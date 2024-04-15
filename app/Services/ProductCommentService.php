@@ -13,8 +13,8 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -40,6 +40,14 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
     /**
      * @inheritDoc
      */
+    public function getAllComments(Filter $filter): Collection|LengthAwarePaginator
+    {
+        return $this->repository->getCommentsSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUserComments($userId, Filter $filter): Collection|LengthAwarePaginator
     {
         $filter->setOrder(['id' => 'desc']);
@@ -48,6 +56,17 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
             filter: $filter,
             columns: ['id', 'condition', 'status', 'up_vote_count', 'down_vote_count', 'created_at']
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNotSeenCommentsCount(): int
+    {
+        $where = new WhereBuilder('comments');
+        $where->whereEqual('status', CommentStatusesEnum::UNREAD->value);
+
+        return $this->repository->count($where->build());
     }
 
     /**
@@ -108,8 +127,8 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
         }
         if (isset($attributes['condition'])) {
             $updateAttributes['condition'] = $attributes['condition'];
-            $updateAttributes['changed_status_at'] = now();
-            $updateAttributes['changed_status_by'] = Auth::user()?->id;
+            $updateAttributes['changed_condition_at'] = now();
+            $updateAttributes['changed_condition_by'] = Auth::user()?->id;
         }
         if (isset($attributes['status'])) {
             $updateAttributes['status'] = $attributes['status'];

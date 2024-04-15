@@ -1,7 +1,7 @@
 <template>
   <div class="h-[94px]">
     <div class="flex flex-col fixed bg-white w-full shadow-md z-10">
-      <div class="h-[64px]">
+      <div class="h-[64px] max-w-7xl mx-auto w-full">
         <nav>
           <div class="h-[64px] py-2 px-6 flex">
             <div class="h-full shrink-0">
@@ -51,7 +51,7 @@
         </nav>
       </div>
 
-      <div class="h-[30px]">
+      <div class="h-[30px] max-w-7xl mx-auto w-full">
         <div class="flex gap-3 px-6 relative h-[24px]">
           <div class="ml-6">
             <navbar-categories/>
@@ -66,7 +66,7 @@
           <div class="mr-auto flex items-center gap-2 bg-indigo-50 px-3 rounded-full">
             <div class="flex items-center gap-2">
               <span class="text-slate-400 text-xs hidden sm:inline-block">قیمت</span>
-              <span class="iranyekan-bold text-sm">دلار</span>
+              <span class="font-iranyekan-bold text-sm">دلار</span>
             </div>
             <div class="flex items-center gap-2">
               <span class="text-sm font-iranyekan-bold">52,000</span>

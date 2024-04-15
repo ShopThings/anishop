@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\DatabaseEnum;
 use App\Models\BlogComment;
 use App\Repositories\BlogCommentRepository;
@@ -11,11 +12,9 @@ use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
-use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Collection;
 
 class BlogCommentService extends Service implements BlogCommentServiceInterface
 {
@@ -37,6 +36,14 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
     /**
      * @inheritDoc
      */
+    public function getAllComments(Filter $filter): Collection|LengthAwarePaginator
+    {
+        return $this->repository->getCommentsSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUserComments($userId, Filter $filter): Collection|LengthAwarePaginator
     {
         $filter->setOrder(['id' => 'desc']);
@@ -45,6 +52,17 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
             filter: $filter,
             columns: ['id', 'condition', 'status', 'created_at']
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNotSeenCommentsCount(): int
+    {
+        $where = new WhereBuilder('blog_comments');
+        $where->whereEqual('status', CommentStatusesEnum::UNREAD->value);
+
+        return $this->repository->count($where->build());
     }
 
     /**

@@ -8,14 +8,13 @@ use App\Http\Requests\StoreProductAttributeRequest;
 use App\Http\Requests\UpdateProductAttributeRequest;
 use App\Http\Resources\ProductAttributeResource;
 use App\Models\ProductAttribute;
-use App\Models\User;
 use App\Services\Contracts\ProductAttributeServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductAttributeController extends Controller
@@ -29,6 +28,7 @@ class ProductAttributeController extends Controller
         protected ProductAttributeServiceInterface $service
     )
     {
+        $this->policyModel = ProductAttribute::class;
     }
 
     /**
@@ -36,11 +36,10 @@ class ProductAttributeController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', ProductAttribute::class);
         return ProductAttributeResource::collection($this->service->getAttributes($filter));
     }
 
@@ -49,11 +48,10 @@ class ProductAttributeController extends Controller
      *
      * @param StoreProductAttributeRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreProductAttributeRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', ProductAttribute::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -64,12 +62,11 @@ class ProductAttributeController extends Controller
                 'message' => 'ایجاد ویژگی با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد ویژگی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد ویژگی',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -77,11 +74,10 @@ class ProductAttributeController extends Controller
      *
      * @param ProductAttribute $productAttribute
      * @return ProductAttributeResource
-     * @throws AuthorizationException
      */
     public function show(ProductAttribute $productAttribute): ProductAttributeResource
     {
-        $this->authorize('view', $productAttribute);
+        Gate::authorize('view', $productAttribute);
         return new ProductAttributeResource($productAttribute);
     }
 
@@ -91,26 +87,24 @@ class ProductAttributeController extends Controller
      * @param UpdateProductAttributeRequest $request
      * @param ProductAttribute $productAttribute
      * @return ProductAttributeResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(
         UpdateProductAttributeRequest $request,
         ProductAttribute              $productAttribute
     ): ProductAttributeResource|JsonResponse
     {
-        $this->authorize('update', $productAttribute);
+        Gate::authorize('update', $productAttribute);
 
         $validated = $request->validated();
         $model = $this->service->updateById($productAttribute->id, $validated);
 
         if (!is_null($model)) {
             return new ProductAttributeResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش ویژگی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش ویژگی',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -119,20 +113,19 @@ class ProductAttributeController extends Controller
      * @param Request $request
      * @param ProductAttribute $productAttribute
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, ProductAttribute $productAttribute): JsonResponse
     {
-        $this->authorize('delete', $productAttribute);
+        Gate::authorize('delete', $productAttribute);
 
         $permanent = $request->user()->id === $productAttribute->creator?->id;
         $res = $this->service->deleteById($productAttribute->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

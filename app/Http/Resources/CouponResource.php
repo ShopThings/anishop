@@ -24,10 +24,10 @@ class CouponResource extends JsonResource
             'price' => $this->price,
             'apply_min_price' => $this->apply_min_price,
             'apply_max_price' => $this->apply_max_price,
-            'normal_start_at' => $this->start_at
+            'actual_start_at' => $this->start_at
                 ? Carbon::parse($this->start_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
-            'normal_end_at' => $this->end_at
+            'actual_end_at' => $this->end_at
                 ? Carbon::parse($this->end_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'start_at' => $this->start_at

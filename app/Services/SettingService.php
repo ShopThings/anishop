@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Enums\Settings\SettingGroupsEnum;
 use App\Enums\Settings\SettingsEnum;
+use App\Events\SettingUpdatedEvent;
 use App\Repositories\Contracts\SettingRepositoryInterface;
 use App\Services\Contracts\SettingServiceInterface;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class SettingService extends Service implements SettingServiceInterface
 {
@@ -28,6 +30,25 @@ class SettingService extends Service implements SettingServiceInterface
             'name', 'setting_value', 'group_name',
             'default_value', 'min_value', 'max_value',
         ]);
+        return $this->_refineSettings($settings);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSpecificSettings(array $settingNames): Collection
+    {
+        $settingNames = array_filter($settingNames, fn($item) => $item instanceof SettingsEnum);
+
+        if (!count($settingNames)) return collect();
+
+        $where = new WhereBuilder('settings');
+        $where->whereIn('name', array_map(fn($item) => $item->value, $settingNames));
+
+        $settings = $this->repository->all([
+            'name', 'setting_value', 'group_name',
+            'default_value', 'min_value', 'max_value',
+        ], $where->build());
         return $this->_refineSettings($settings);
     }
 
@@ -91,7 +112,7 @@ class SettingService extends Service implements SettingServiceInterface
     }
 
     /**
-     * This <b>MUST</b> be used by high privileged users(because of correct setting_value type!)
+     * This <strong>MUST</strong> be used by high privileged users(because of correct setting_value type!)
      *
      * @inheritDoc
      */
@@ -117,11 +138,16 @@ class SettingService extends Service implements SettingServiceInterface
     }
 
     /**
-     * Regularly it is the one <b>SHOULD</b> use for updating a setting
+     * Regularly it is the one <strong>SHOULD</strong> use for updating a setting
      *
      * @inheritDoc
      */
-    public function updateByName(string $name, array $attributes, bool $returnUpdatedModel = false): Model|bool|null
+    public function updateByName(
+        string $name,
+        array  $attributes,
+        bool   $returnUpdatedModel = false,
+        bool   $silence = false,
+    ): Model|bool|null
     {
         $updateAttributes = $this->_getUpdateAttributes($attributes);
 
@@ -140,6 +166,10 @@ class SettingService extends Service implements SettingServiceInterface
             where: $where->build()
         );
 
+        if (!$silence && $res) {
+            SettingUpdatedEvent::dispatch(Auth::user(), SettingsEnum::getTranslations($name, 'نامشخص'));
+        }
+
         if (!$returnUpdatedModel) return !!$res;
         if (!$res) return null;
 
@@ -147,7 +177,7 @@ class SettingService extends Service implements SettingServiceInterface
     }
 
     /**
-     * <b>DO NOT NEED</b> any delete operation
+     * <strong>DO NOT NEED</strong> any delete operation
      *
      * @inheritDoc
      */
@@ -157,7 +187,7 @@ class SettingService extends Service implements SettingServiceInterface
     }
 
     /**
-     * <b>DO NOT NEED</b> any delete operation
+     * <strong>DO NOT NEED</strong> any delete operation
      *
      * @inheritDoc
      */
@@ -171,7 +201,7 @@ class SettingService extends Service implements SettingServiceInterface
     }
 
     /**
-     * <b>DO NOT NEED</b> any delete operation
+     * <strong>DO NOT NEED</strong> any delete operation
      *
      * @inheritDoc
      */
@@ -209,21 +239,33 @@ class SettingService extends Service implements SettingServiceInterface
     }
 
     /**
-     * @param Collection $settings
-     * @return Collection
+     * @param Collection|Model $settings
+     * @return Collection|array
      */
-    private function _refineSettings(Collection $settings): Collection
+    private function _refineSettings(Collection|Model $settings): Collection|array
     {
+        if ($settings instanceof Model) {
+            return $this->_refineSingleSetting($settings);
+        }
         return $settings->map(function ($item) {
-            $value = $item['setting_value'] ?: $item['default_value'];
-            return [
-                'name' => $item['name'],
-                'group_name' => $item['group_name'],
-                'value' => $this->_castSettingAccordingToName($item['name'], $value),
-                'min_value' => $item['min_value'],
-                'max_value' => $item['max_value'],
-            ];
+            return $this->_refineSingleSetting($item);
         });
+    }
+
+    /**
+     * @param $setting
+     * @return array
+     */
+    private function _refineSingleSetting($setting): array
+    {
+        $value = $setting['setting_value'] ?: $setting['default_value'];
+        return [
+            'name' => $setting['name'],
+            'group_name' => $setting['group_name'],
+            'value' => $this->_castSettingAccordingToName($setting['name'], $value),
+            'min_value' => $setting['min_value'],
+            'max_value' => $setting['max_value'],
+        ];
     }
 
     /**
@@ -281,6 +323,7 @@ class SettingService extends Service implements SettingServiceInterface
             SettingsEnum::PRODUCT_EACH_PAGE->value,
             SettingsEnum::BLOG_EACH_PAGE->value => intval($settingValue) ?? 15,
 
+            SettingsEnum::DIVIDE_PAYMENT_PRICE->value,
             SettingsEnum::MIN_FREE_POST_PRICE->value => intval($settingValue) ?? '',
 
             SettingsEnum::SOCIALS->value,

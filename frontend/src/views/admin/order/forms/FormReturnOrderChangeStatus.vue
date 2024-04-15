@@ -15,7 +15,7 @@
     </div>
     <div class="p-2">
       <base-textarea
-          :has-edit-mode="!(!!yourDescription)"
+        :in-edit-mode="!(!!yourDescription)"
           :value="yourDescription"
           label-title="علت تغییر وضعیت جهت نمایش به کاربر"
           name="description"

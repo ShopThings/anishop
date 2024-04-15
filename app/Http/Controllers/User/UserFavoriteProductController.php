@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Enums\Responses\ResponseTypesEnum;
+use App\Enums\Results\FavoriteProductResultEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFavoriteProductRequest;
 use App\Http\Resources\User\UserFavoriteProductResource;
@@ -50,18 +51,27 @@ class UserFavoriteProductController extends Controller
     {
         $validated = $request->validated('product');
 
-        $res = $this->service->addFavoriteProduct($request->user()->id, $validated);
+        $res = $this->service->toggleFavoriteProduct($request->user()->id, $validated);
 
-        if ($res)
+        if ($res !== FavoriteProductResultEnum::ERROR) {
+            $msg = 'محصول به لیست علاقه‌مندی‌های شما اضافه گردید.';
+            $opType = 1;
+
+            if ($res === FavoriteProductResultEnum::REMOVED) {
+                $msg = 'محصول از لیست علاقه‌مندی‌های شما حذف گردید.';
+                $opType = 2;
+            }
+
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'محصول به لیست علاقه‌مندی‌های شما اضافه گردید.',
+                'operation' => $opType,
+                'message' => $msg,
             ], ResponseCodes::HTTP_OK);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در افزودن به لیست علاقه‌مندی‌ها',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در افزودن به لیست علاقه‌مندی‌ها',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -75,12 +85,12 @@ class UserFavoriteProductController extends Controller
     {
         $res = $this->service->deleteUserFavoriteProductById($request->user()->id, $product->id);
 
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

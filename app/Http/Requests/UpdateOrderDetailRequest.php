@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DatabaseEnum;
 use App\Models\OrderBadge;
 use App\Models\Province;
 use App\Rules\CityInProvinceRule;
 use App\Rules\PersianMobileRule;
 use App\Rules\PersianNameRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateOrderDetailRequest extends FormRequest
 {
@@ -29,7 +31,9 @@ class UpdateOrderDetailRequest extends FormRequest
         return [
             'province' => [
                 'sometimes',
-                'exists:' . Province::class . ',id',
+                Rule::exists(Province::class, 'id')->where(function ($query) {
+                    $query->where('is_published', DatabaseEnum::DB_YES);
+                }),
             ],
             'city' => [
                 'required_with:province',

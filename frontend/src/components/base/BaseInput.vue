@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="containerClass">
     <partial-input-label
         v-if="labelTitle && labelTitle.length"
         :id="id || labelId"
@@ -34,7 +34,7 @@
               v-money="localMoneyMask"
               :class="[
                 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
-                'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6',
                 klass,
                 isVisiblePassword ? '!ring-amber-500' : '',
                 hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
@@ -62,7 +62,7 @@
               v-money="localMoneyMask"
               :class="[
                 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
-                'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+                'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6',
                 klass,
                 isVisiblePassword ? '!ring-amber-500' : '',
                 hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
@@ -164,13 +164,14 @@ const props = defineProps({
     default: 'text',
   },
   placeholder: String,
+  containerClass: String,
   klass: [String, Array],
   labelTitle: String,
   isOptional: {
     type: Boolean,
     default: false,
   },
-  hasEditMode: {
+  inEditMode: {
     type: Boolean,
     default: true,
   },
@@ -242,10 +243,10 @@ const isVisiblePassword = ref(false)
 const inp = ref()
 const labelId = ref(null)
 
-const editMode = ref(props.hasEditMode)
+const editMode = ref(props.inEditMode)
 
-watch(() => props.hasEditMode, () => {
-  editMode.value = props.hasEditMode
+watch(() => props.inEditMode, () => {
+  editMode.value = props.inEditMode
 })
 
 const {value, errorMessage, handleChange} = useField(() => props.name)

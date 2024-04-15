@@ -87,6 +87,7 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
     countdown.pause()
 
     HomeSettingAPI.fetchAll({
+      silent: true,
       success(response) {
         settings.value = response.data
         return false
@@ -110,7 +111,7 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted()) {
+    if (!countdown.isStarted) {
       countdown.start(fetchSettings)
     }
   });

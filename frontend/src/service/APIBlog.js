@@ -36,6 +36,14 @@ export const BlogCommentAPI = {
     )
   },
 
+  fetchAllComments(params, callbacks) {
+    useRequest(
+      apiRoutes.admin.blogComments.all,
+      {params},
+      callbacks
+    )
+  },
+
   create(blogId, data, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.store, {blog: blogId}),

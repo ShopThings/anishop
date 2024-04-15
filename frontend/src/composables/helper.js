@@ -52,7 +52,7 @@ export function getRouteParamByKey(key, defaultValue, isNumeric) {
   })
 }
 
-export function formatPriceLikeNumber(value, separator) {
+export function numberFormat(value, separator) {
   if (!value) return '0';
 
   if (!separator) separator = ','
@@ -79,10 +79,10 @@ export const getPercentageOfPortion = (portion, total) => {
   portion = +portion;
   total = +total;
 
-  if (isNaN(portion) || isNaN(total) || portion < 0 || total < 0) return 0
+  if (isNaN(portion) || isNaN(total) || portion < 0 || total <= 0) return 0
   if (portion > total) return 100
 
-  return Math.round((total - portion) * 100 / total)
+  return parseFloat((total - portion) * 100 / total).toFixed(2)
 }
 
 export function escapeMoneyCharacter(input, only) {
@@ -197,4 +197,35 @@ export const addQueryParam = (key, values) => {
   return {
     [key]: newValues,
   }
+}
+
+export const estimateReadTime = (content) => {
+  let readTimeMinutes
+
+  // Count the number of words in the content
+  const words = content.split(/\s+/);
+
+  // Count the number of words in the content
+  const wordCount = words.length;
+
+  // Set the average reading speed in words per minute (wpm)
+  const readingSpeed = 200; // Adjust this value as needed
+
+  if (wordCount <= 15000) {
+    // Calculate the total weight based on word length
+    const totalWeight = words.reduce((total, word) => {
+      // Increase weight for longer words
+      const wordWeight = Math.max(1, Math.ceil(word.length / 5)); // Adjust the divisor as needed
+      return total + wordWeight;
+    }, 0);
+
+    // Calculate the estimated read time in minutes
+    readTimeMinutes = totalWeight / readingSpeed;
+  } else {
+    // Calculate the estimated read time in minutes
+    readTimeMinutes = wordCount / readingSpeed
+  }
+
+  // Round the read time to the nearest whole number
+  return Math.ceil(readTimeMinutes);
 }

@@ -84,7 +84,7 @@ class UserReturnOrderRequestController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $model = $this->service->createUserRequest($request->user()->id, $order->id);
+        $model = $this->service->createUserRequest($request->user(), $order->id);
 
         if (!is_null($model)) {
             return response()->json([
@@ -95,7 +95,7 @@ class UserReturnOrderRequestController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ثبت درخواست مرجوع سفارش! لطفا دوباره تلاش نمایید.',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -143,7 +143,7 @@ class UserReturnOrderRequestController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ثبت اطلاعات مرجوع',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -177,6 +177,6 @@ class UserReturnOrderRequestController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در لغو درخواست! لطفا دوباره تلاش نمایید.',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

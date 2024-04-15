@@ -1,6 +1,8 @@
 <template>
-  <div :class="mainContainerKlass"
-       class="flex justify-center items-center">
+  <div
+    :class="mainContainerKlass"
+    class="flex justify-center items-center"
+  >
     <div :class="[
       'absolute top-0 left-0 w-full h-full rounded z-[2]',
       containerBgColor,

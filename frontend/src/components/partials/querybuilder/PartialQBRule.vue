@@ -41,6 +41,7 @@
             class="p-2 w-full sm:w-1/3 lg:w-4/12"
         >
           <base-select-searchable
+            ref="operatorsRef"
               :options="getOperators"
               options-key="value"
               options-text="name"
@@ -122,16 +123,25 @@
               />
               <base-select-searchable
                   v-else-if="INPUTS.SELECT === getInput?.type || INPUTS.MULTISELECT === getInput?.type"
-                  :is-loading="!!getInput?.loading"
-                  :is-local-search="!!getInput?.remoteUrl"
+                  :current-page="inputSelectConfig.currentPage.value"
                   :multiple="INPUTS.MULTISELECT === getInput?.type"
                   :options="getInput?.options"
                   :options-key="getInput?.key"
                   :options-text="getInput?.textKey"
                   :placeholder="getInput?.placeholder"
-                  :selected="rule.value"
-                  @change="(selected) => {rule.value=selected}"
-                  @query="searchIn"
+                  :has-pagination="!!getInput?.remoteUrl"
+                  :is-loading="searchInputLoading"
+                  :is-local-search="!!getInput?.remoteUrl"
+                  :last-page="inputSelectConfig.lastPage.value"
+                  :selected="rule.tmpValue"
+                  placeholder="متن جستجو را وارد نمایید"
+                  @change="(selected) => {
+                    rule.tmpValue=selected;
+                    rule.value=getSelectedItemValue(selected);
+                  }"
+                  @query="searchInput"
+                  @click-next-page="searchInputNextPage"
+                  @click-prev-page="searchInputPrevPage"
               />
             </div>
 
@@ -210,16 +220,25 @@
                 />
                 <base-select-searchable
                     v-else-if="INPUTS.SELECT === getInput?.type || INPUTS.MULTISELECT === getInput?.type"
-                    :is-loading="!!getInput?.loading"
-                    :is-local-search="!!getInput?.remoteUrl"
+                    :current-page="inputSelectConfig.currentPage.value"
                     :multiple="INPUTS.MULTISELECT === getInput?.type"
                     :options="getInput?.options"
                     :options-key="getInput?.key"
                     :options-text="getInput?.textKey"
                     :placeholder="getInput?.placeholder"
-                    :selected="rule.value2"
-                    @change="(selected) => {rule.value2=selected}"
-                    @query="searchIn"
+                    :has-pagination="!!getInput?.remoteUrl"
+                    :is-loading="searchInputLoading"
+                    :is-local-search="!!getInput?.remoteUrl"
+                    :last-page="inputSelectConfig.lastPage.value"
+                    :selected="rule.tmpValue2"
+                    placeholder="متن جستجو را وارد نمایید"
+                    @change="(selected) => {
+                      rule.tmpValue2=selected;
+                      rule.value2=getSelectedItemValue(selected);
+                    }"
+                    @query="searchInput"
+                    @click-next-page="searchInputNextPage"
+                    @click-prev-page="searchInputPrevPage"
                 />
               </div>
             </template>
@@ -235,22 +254,19 @@ import {computed, ref} from "vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
 import {
-  INPUTS,
-  hasTwoValues,
   hasMultipleValues,
+  hasTwoValues,
+  INPUTS,
   noNeededInputOperators,
   operatorsMap,
 } from "@/composables/query-builder.js";
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseTextarea from "@/components/base/BaseTextarea.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
-import {
-  InformationCircleIcon,
-  ArrowLeftCircleIcon,
-  HashtagIcon,
-} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, HashtagIcon, InformationCircleIcon,} from "@heroicons/vue/24/outline/index.js";
 import BaseRangeSlider from "@/components/base/BaseRangeSlider.vue";
 import {useRequest} from "@/composables/api-request.js";
+import {useSelectSearching} from "@/composables/select-searching.js";
 
 const props = defineProps({
   modelValue: {
@@ -289,6 +305,8 @@ const selectedOperator = ref(null)
 const selectedType = computed(() => {
   return selectedColumn.value?.type
 })
+
+const operatorsRef = ref(null)
 
 const getOperators = computed(() => {
   let ops = []
@@ -338,29 +356,70 @@ const getInput = computed(() => {
   return selectedColumn.value.input
 })
 
-function searchIn(query) {
-  let inp = getInput.value
+//---------------------------------------------------------------
+// Input select remote search operation
+//---------------------------------------------------------------
+const inputSelectConfig = useSelectSearching({
+  searchFn(query) {
+    let inp = getInput.value
 
-  if (!inp || !inp.remoteUrl) return
+    if (!inp || !inp.remoteUrl) return
 
-  inp.loading = true
-  useRequest(inp.remoteUrl, {
-    data: {
-      query,
-    },
-  }, {
-    success: (response) => {
-      inp.options = response.data
-    },
-    finally: () => {
-      inp.loading = false
+    useRequest(inp.remoteUrl, {
+      params: {
+        limit: inputSelectConfig.limit.value,
+        offset: inputSelectConfig.offset(),
+        text: query,
+      },
+    }, {
+      success: (response) => {
+        inp.options = response.data
+        if (response.meta) {
+          inputSelectConfig.lastPage.value = response.meta?.last_page
+        }
+      },
+      finally: () => {
+        inputSelectConfig.isLoading.value = false
+      }
+    })
+  },
+})
+const searchInput = inputSelectConfig.search
+const searchInputLoading = inputSelectConfig.isLoading
+const searchInputNextPage = inputSelectConfig.searchNextPage
+const searchInputPrevPage = inputSelectConfig.searchPrevPage
+
+//---------------------------------------------------------------
+function getSelectedItemValue(selected) {
+  let selectedItems = null
+
+  if (INPUTS.MULTISELECT === getInput.value?.type) {
+    if (selected && selected?.length) {
+      selectedItems = []
+      selected.forEach(item => {
+        if (item[getInput.value?.key]) {
+          selectedItems.push(item[getInput.value?.key])
+        }
+      })
     }
-  })
+  } else {
+    selectedItems = selected[getInput.value?.key] || null
+  }
+
+  return selectedItems
 }
 
 function handleColumnChange(selected) {
   selectedColumn.value = selected
   rule.value.column = selected
+
+  rule.value.operator = null
+  if (operatorsRef.value?.removeSelectedItems) {
+    operatorsRef.value.removeSelectedItems()
+  }
+
+  delete rule.value.value
+  delete rule.value.value2
 }
 
 function handleOperatorChange(selected) {

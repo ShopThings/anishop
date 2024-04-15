@@ -1,7 +1,7 @@
 <template>
   <partial-card>
     <template #header>
-      ویرایش کوپن -
+      ویرایش کد تخفیف -
       <span
           v-if="coupon?.id"
           class="text-slate-400 text-base"
@@ -18,16 +18,16 @@
               <div class="p-2">
                 <base-switch
                     :enabled="coupon?.is_published"
-                    label="قابل استفاده نمودن کوپن"
+                    label="قابل استفاده نمودن کد تخفیف"
                     name="is_published"
-                    sr-text="قابل استفاده نمودن کوپن"
+                    sr-text="قابل استفاده نمودن کد تخفیف"
                     @change="(status) => {publishStatus=status}"
                 />
               </div>
 
               <div class="w-full p-2">
                 <base-input
-                    :has-edit-mode="false"
+                  :in-edit-mode="false"
                     :is-editable="false"
                     :value="coupon?.code"
                     label-title="کد"
@@ -209,7 +209,7 @@
                     <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
                   </template>
 
-                  <span class="ml-auto">ویرایش کوپن</span>
+                  <span class="ml-auto">ویرایش کوپن تخفیف</span>
                 </base-animated-button>
 
                 <div
@@ -242,7 +242,7 @@ import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
@@ -267,12 +267,15 @@ const endDate = ref(null)
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
-    code: yup.string().required('کد کوپن برای استفاده کاربر را وارد نمایید.'),
+    code: yup.string()
+      .transform(transformNumbersToEnglish)
+      .matches(/[a-zA-Z\-_]+/g, 'تنها از حروف و اعداد انگلیسی استفاده نمایید.')
+      .required('کد تخفیف برای استفاده کاربر را وارد نمایید.'),
     title: yup.string().required('عنوان را وارد نمایید.'),
     price: yup.string()
         .transform(transformNumbersToEnglish)
         .positiveNumber('مبلغ باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000})
-        .required('مبلغ کوپن را وارد نمایید.'),
+      .required('مبلغ کوپن تخفیف را وارد نمایید.'),
     apply_min_price: yup.string()
         .optional()
         .transform(transformNumbersToEnglish)
@@ -336,8 +339,8 @@ onMounted(() => {
 
 function setFormFields(item) {
   coupon.value = item
-  startDate.value = item.normal_start_at
-  endDate.value = item.normal_end_at
+  startDate.value = item.actual_start_at
+  endDate.value = item.actual_end_at
   publishStatus.value = item.is_published
 }
 </script>

@@ -8,14 +8,13 @@ use App\Http\Requests\StoreBlogBadgeRequest;
 use App\Http\Requests\UpdateBlogBadgeRequest;
 use App\Http\Resources\BlogBadgeResource;
 use App\Models\BlogCommentBadge;
-use App\Models\User;
 use App\Services\Contracts\BlogBadgeServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogCommentBadgeController extends Controller
@@ -30,6 +29,7 @@ class BlogCommentBadgeController extends Controller
     )
     {
         $this->considerDeletable = true;
+        $this->policyModel = BlogCommentBadge::class;
     }
 
     /**
@@ -37,11 +37,10 @@ class BlogCommentBadgeController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', BlogCommentBadge::class);
         return BlogBadgeResource::collection($this->service->getBadges($filter));
     }
 
@@ -50,11 +49,10 @@ class BlogCommentBadgeController extends Controller
      *
      * @param StoreBlogBadgeRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreBlogBadgeRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', BlogCommentBadge::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -65,12 +63,11 @@ class BlogCommentBadgeController extends Controller
                 'message' => 'ایجاد برچسب با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد برچسب',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد برچسب',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -78,11 +75,10 @@ class BlogCommentBadgeController extends Controller
      *
      * @param BlogCommentBadge $blogBadge
      * @return BlogBadgeResource
-     * @throws AuthorizationException
      */
     public function show(BlogCommentBadge $blogBadge): BlogBadgeResource
     {
-        $this->authorize('view', $blogBadge);
+        Gate::authorize('view', $blogBadge);
         return new BlogBadgeResource($blogBadge);
     }
 
@@ -92,11 +88,10 @@ class BlogCommentBadgeController extends Controller
      * @param UpdateBlogBadgeRequest $request
      * @param BlogCommentBadge $blogBadge
      * @return BlogBadgeResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateBlogBadgeRequest $request, BlogCommentBadge $blogBadge): JsonResponse|BlogBadgeResource
     {
-        $this->authorize('update', $blogBadge);
+        Gate::authorize('update', $blogBadge);
 
         $validated = $request->validated([
             'title',
@@ -107,12 +102,11 @@ class BlogCommentBadgeController extends Controller
 
         if (!is_null($model)) {
             return new BlogBadgeResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش برچسب',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش برچسب',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -121,20 +115,19 @@ class BlogCommentBadgeController extends Controller
      * @param Request $request
      * @param BlogCommentBadge $blogBadge
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, BlogCommentBadge $blogBadge): JsonResponse
     {
-        $this->authorize('delete', $blogBadge);
+        Gate::authorize('delete', $blogBadge);
 
         $permanent = $request->user()->id === $blogBadge->creator?->id;
         $res = $this->service->deleteById($blogBadge->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

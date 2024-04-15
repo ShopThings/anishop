@@ -27,7 +27,7 @@ class Comment extends Model
         'cons' => StringToArray::class,
         'answer' => CleanHtmlCast::class,
         'answered_at' => 'datetime',
-        'changed_status_at' => 'datetime',
+        'changed_condition_at' => 'datetime',
     ];
 
     /**
@@ -49,7 +49,7 @@ class Comment extends Model
     /**
      * @return BelongsTo
      */
-    public function statusChanger(): BelongsTo
+    public function conditionChanger(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

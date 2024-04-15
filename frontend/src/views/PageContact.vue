@@ -409,6 +409,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   let data = {
     title: selectedContactType.value.text,
     description: values.description,
+    captcha: values.captcha,
     key: captchaKey.value,
   }
 

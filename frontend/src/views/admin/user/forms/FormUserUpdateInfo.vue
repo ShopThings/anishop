@@ -3,8 +3,8 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :is-editable="false"
+          :in-edit-mode="false"
+          :is-editable="userStore.hasRole(ROLES.DEVELOPER)"
             :value="user?.username"
             label-title="نام کاربری"
             name="username"
@@ -18,7 +18,8 @@
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <partial-input-label title="نقش کاربر"/>
         <base-select-searchable
-            :has-edit-mode="false"
+          :in-edit-mode="false"
+          :is-editable="hasEditPermission"
             :multiple="true"
             :options="roles"
             :selected="initialRoles"
@@ -36,7 +37,8 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
+          :is-editable="hasEditPermission"
             :value="user?.first_name"
             label-title="نام"
             name="first_name"
@@ -49,7 +51,8 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
+          :is-editable="hasEditPermission"
             :value="user?.last_name"
             label-title="نام خانوادگی"
             name="last_name"
@@ -62,7 +65,8 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
+          :is-editable="hasEditPermission"
             :value="user?.national_code"
             label-title="کد ملی"
             name="national_code"
@@ -75,11 +79,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :value="user?.shaba_number"
+          :in-edit-mode="false"
+          :is-editable="hasEditPermission"
+          :value="user?.sheba_number"
             is-optional
             label-title="شماره شبا"
-            name="shaba_number"
+          name="sheba_number"
             placeholder="xxxxxxxxxxxxxxxx"
         >
           <template #icon>
@@ -89,7 +94,10 @@
       </div>
     </div>
 
-    <div class="px-2 py-3">
+    <div
+      v-if="hasEditPermission"
+      class="px-2 py-3"
+    >
       <base-animated-button
           :disabled="!canSubmit"
           class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
@@ -144,6 +152,7 @@ import {RoleAPI} from "@/service/APIRole.js";
 import {UserAPI} from "@/service/APIUser.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
+import {PERMISSION_PLACES, PERMISSIONS, ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const props = defineProps({
   user: {
@@ -179,6 +188,12 @@ const route = useRoute()
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
 
+const userStore = useAdminAuthStore()
+const hasEditPermission = computed(() => {
+  return +userStore.getUser.id === +idParam ||
+    userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.UPDATE)
+})
+
 const selectedRole = ref(null)
 const roles = ref({})
 
@@ -194,12 +209,18 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .transform(transformNumbersToEnglish)
         .persianNationalCode('کد ملی نامعتبر است.')
         .required('کد ملی را وارد نمایید.'),
-    shaba_number: yup.string()
+    sheba_number: yup.string()
         .transform(transformNumbersToEnglish)
         .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
-}, (values, actions) => {// validate extra inputs
+}, (values, actions) => {
+  if (!userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.UPDATE)) {
+    toast.error('امکان ویرایش وجود ندارد.')
+    return
+  }
+
+  // validate extra inputs
   if (!selectedRole.value || selectedRole.value.length === 0) {
     actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
     return

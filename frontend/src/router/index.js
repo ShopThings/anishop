@@ -3,6 +3,7 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {adminRoutes} from "./admin-routes.js";
 import {userRoutes} from "./user-routes.js";
+import {HomeBlogAPI, HomeProductAPI} from "@/service/APIHomePages.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 
@@ -49,7 +50,7 @@ const routes = [
     meta: {layout: 'layout-empty-guest'},
   },
   {
-    path: '/pages/:url([a-zA-Z]+[a-zA-Z\/\-][a-zA-Z]+)',
+    path: '/pages/:url([a-zA-Z]+[a-zA-Z\/\-]*[a-zA-Z]+)',
     name: 'pages',
     component: () => import('@/views/PagePages.vue'),
     meta: {layout: 'layout-guest'},
@@ -58,6 +59,39 @@ const routes = [
   {
     path: '/blog/',
     name: 'blogs',
+    beforeEnter: async (to, from, next) => {
+      const id = to.query?.id
+      let route = null
+
+      if (id) {
+        await new Promise((resolve, reject) => {
+          HomeBlogAPI.fetchByIdMinified(id, {
+            success(response) {
+              resolve(response.data)
+            },
+            error() {
+              reject(false)
+              return false
+            },
+          })
+        }).then((item) => {
+          route = {
+            name: 'blog.detail',
+            params: {
+              slug: item.slug
+            }
+          }
+        }).catch(() => {
+          // do nothing
+        })
+      }
+
+      if (route) {
+        next(route)
+      } else {
+        next()
+      }
+    },
     component: () => import('@/views/PageBlogs.vue'),
     meta: {layout: 'layout-blog'},
   },
@@ -96,6 +130,42 @@ const routes = [
     meta: {layout: 'layout-blog'},
   },
 
+  {
+    path: '/product',
+    name: 'product',
+    beforeEnter: async (to, from, next) => {
+      const id = to.query?.id
+
+      if (id) {
+        let route
+
+        await new Promise((resolve, reject) => {
+          HomeProductAPI.fetchByIdMinified(id, {
+            success(response) {
+              resolve(response.data)
+            },
+            error() {
+              reject(false)
+              return false
+            },
+          })
+        }).then((item) => {
+          route = {
+            name: 'product.detail',
+            params: {
+              slug: item.slug
+            }
+          }
+        }).catch(() => {
+          route = {name: 'not-found'}
+        })
+
+        next(route)
+      } else {
+        next({name: 'not-found'})
+      }
+    },
+  },
   {
     // /search/screens -> /search?q=screens
     path: '/search/:searchText',
@@ -164,12 +234,12 @@ const routes = [
     name: 'checkout',
     component: () => import('@/views/PageCheckout.vue'),
     meta: {
-      // requiresAuth: true,
+      requiresAuth: true,
       layout: 'layout-guest',
     },
   },
   {
-    path: '/result',
+    path: '/purchase-result',
     name: 'result',
     component: () => import('@/views/PageResult.vue'),
     meta: {layout: 'layout-guest'},
@@ -212,12 +282,12 @@ index.beforeEach((to, from, next) => {
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
     to.name !== 'login' && to.name !== 'admin.login' &&
-    to.name !== 'logout' && to.name !== 'admin.logout'
+    to.name !== 'user.logout' && to.name !== 'admin.logout'
   ) {
     const store = useUserAuthStore()
     const adminStore = useAdminAuthStore()
 
-    // this route requires auth, check if logged in
+    // this route requires auth, check if is logged in,
     // if not, redirect to login page.
     if (to.matched.some(record => record.meta.isAdminRoute)) {
       if (!adminStore.getToken) {

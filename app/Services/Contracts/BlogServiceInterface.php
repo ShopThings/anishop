@@ -6,16 +6,26 @@ use App\Contracts\ServiceInterface;
 use App\Enums\Blogs\BlogVotingTypesEnum;
 use App\Http\Requests\Filters\HomeBlogFilter;
 use App\Support\Filter;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 interface BlogServiceInterface extends ServiceInterface
 {
     /**
+     * If filter is instance of HomeBlogFilter, it'll automatically fetch published ones
+     *
      * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getBlogs(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @param GetterExpressionInterface $where
+     * @return Model|null
+     */
+    public function getSingleBlog(GetterExpressionInterface $where): ?Model;
 
     /**
      * @param HomeBlogFilter $filter

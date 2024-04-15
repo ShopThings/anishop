@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدامات لازم برای محصول را مشاهده نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.PRODUCT, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن محصول جدید
     </template>
@@ -18,26 +21,26 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:image="{value}">
               <base-lazy-image
-                  :alt="value.title"
-                  :lazy-src="value.image.path"
-                  :size="FileSizes.SMALL"
-                  class="!h-28 sm:!h-20 w-auto rounded"
+                :alt="value.title"
+                :lazy-src="value.image.path"
+                :size="FileSizes.SMALL"
+                class="!h-28 sm:!h-20 w-auto rounded"
               />
             </template>
 
@@ -60,9 +63,9 @@
 
             <template v-slot:is_available="{value}">
               <partial-badge-publish
-                  :publish="value.is_available"
-                  publish-text="موجود"
-                  unpublish-text="ناموجود"
+                :publish="value.is_available"
+                publish-text="موجود"
+                unpublish-text="ناموجود"
               />
             </template>
 
@@ -77,7 +80,11 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
+              <base-datatable-menu
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+              />
             </template>
           </base-datatable>
         </template>
@@ -102,9 +109,12 @@ import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 import {ProductAPI} from "@/service/APIProduct.js";
 import {FileSizes} from "@/composables/file-list.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -238,12 +248,32 @@ const table = reactive({
   },
 })
 
+function calcRemovals(row) {
+  let removals = []
+
+  if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.READ)) {
+    removals.push(['attributes'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_COMMENT, PERMISSIONS.READ)) {
+    removals.push(['showComments'])
+  }
+
+  return removals
+}
+
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
   {
+    id: 'show',
     link: {
       text: 'مشاهده جزئیات',
       icon: 'EyeIcon',
@@ -260,6 +290,7 @@ const operations = [
     },
   },
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -276,6 +307,7 @@ const operations = [
     },
   },
   {
+    id: 'attributes',
     link: {
       text: 'ویژگی‌های جستجو',
       icon: 'VariableIcon',
@@ -292,6 +324,7 @@ const operations = [
     },
   },
   {
+    id: 'showComments',
     link: {
       text: 'مشاهده دیدگاه‌ها',
       icon: 'ChatBubbleLeftRightIcon',
@@ -308,6 +341,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

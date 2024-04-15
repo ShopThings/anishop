@@ -59,9 +59,9 @@
 
     <div
         :class="{
-          '__fixed-first-column': isFixedFirstColumn,
-          '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
-        }"
+        '__fixed-first-column': isFixedFirstColumn,
+        '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
+      }"
         class="flex flex-col relative"
     >
       <div v-show="isLoading"
@@ -87,8 +87,11 @@
             >
               <thead class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
               <tr>
-                <th v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5"
-                    scope="col">
+                <th
+                  v-if="hasCheckbox"
+                  class="w-[1%] min-w-[38px] px-5 py-2.5"
+                  scope="col"
+                >
                   <div class="flex items-center">
                     <input
                         v-model="setting.isCheckAll"
@@ -98,37 +101,42 @@
                     >
                   </div>
                 </th>
-                <th v-for="(col, index) in columns" :key="index"
+                <template
+                  v-for="(col, index) in columns"
+                  :key="index"
+                >
+                  <th
+                    v-if="col?.show !== false"
                     :class="[col.sortable ? 'cursor-pointer' : '', col.columnClasses]"
                     :style="[col.width ? 'width: ' + col.width : 'width: auto', col.columnStyles]"
                     class="px-1"
                     scope="col"
-                >
-                  <div
+                  >
+                    <div
                       :class="{
                         'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
                       }"
                       class="py-2.5 px-2"
                       @click.prevent="col.sortable ? doSort(col.field) : false"
-                  >
-                    <div
-                        class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
-                      <ArrowUpIcon
+                    >
+                      <div class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
+                        <ArrowUpIcon
                           v-if="setting.order === col.field && setting.sort === 'desc'"
                           class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
-                      />
-                      <ArrowDownIcon
+                        />
+                        <ArrowDownIcon
                           v-else-if="setting.order === col.field && setting.sort === 'asc'"
                           class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
-                      />
-                      <ArrowsUpDownIcon
+                        />
+                        <ArrowsUpDownIcon
                           v-else-if="col.sortable"
                           class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"
-                      />
-                      <span class="ml-2 leading-relaxed">{{ col.label }}</span>
+                        />
+                        <span class="ml-2 leading-relaxed">{{ col.label }}</span>
+                      </div>
                     </div>
-                  </div>
-                </th>
+                  </th>
+                </template>
               </tr>
               </thead>
 
@@ -141,8 +149,10 @@
                     v-for="(rows, groupingIndex) in templateRows"
                     :key="groupingIndex"
                 >
-                  <tr v-if="groupingKey !== ''"
-                      class="border-b transition">
+                  <tr
+                    v-if="groupingKey !== ''"
+                    class="border-b transition"
+                  >
                     <td
                         :colspan="hasCheckbox ? columns.length + 1 : columns.length"
                         class="px-6 py-4"
@@ -204,9 +214,13 @@
                         >
                       </div>
                     </td>
-                    <td
+
+                    <template
                         v-for="(col, j) in columns"
                         :key="j"
+                    >
+                      <td
+                        v-if="col?.show !== false"
                         :class="[
                           typeof col.cellClasses === 'function' ? col.cellClasses(row) : col.cellClasses,
                            col.columnClasses
@@ -216,19 +230,20 @@
                         class="px-5 py-2.5"
                         @mouseenter="addHoverClassToTd"
                         @mouseleave="removeHoverClassFromTd"
-                    >
-                      <div v-if="col.display" v-html="col.display(row)"></div>
-                      <div v-else>
-                        <div v-if="setting.isSlotMode && slots[col.field]">
-                          <slot
+                      >
+                        <div v-if="col.display" v-html="col.display(row)"></div>
+                        <div v-else>
+                          <div v-if="setting.isSlotMode && slots[col.field]">
+                            <slot
                               :index="i + setting.offset"
                               :name="col.field"
                               :value="row"
-                          ></slot>
+                            ></slot>
+                          </div>
+                          <span v-else>{{ row[col.field] }}</span>
                         </div>
-                        <span v-else>{{ row[col.field] }}</span>
-                      </div>
-                    </td>
+                      </td>
+                    </template>
                   </tr>
                 </template>
                 </tbody>
@@ -307,9 +322,13 @@
                         >
                       </div>
                     </td>
-                    <td
+
+                    <template
                         v-for="(col, j) in columns"
                         :key="j"
+                    >
+                      <td
+                        v-if="col?.show !== false"
                         :class="[
                           typeof col.cellClasses === 'function' ? col.cellClasses(row) : col.cellClasses,
                            col.columnClasses
@@ -319,19 +338,20 @@
                         class="px-6 py-4"
                         @mouseenter="addHoverClassToTd"
                         @mouseleave="removeHoverClassFromTd"
-                    >
-                      <div v-if="col.display" v-html="col.display(row)"></div>
-                      <div v-else>
-                        <div v-if="setting.isSlotMode && slots[col.field]">
-                          <slot
+                      >
+                        <div v-if="col.display" v-html="col.display(row)"></div>
+                        <div v-else>
+                          <div v-if="setting.isSlotMode && slots[col.field]">
+                            <slot
                               :index="i + setting.offset"
                               :name="col.field"
                               :value="row"
-                          ></slot>
+                            ></slot>
+                          </div>
+                          <span v-else>{{ row[col.field] }}</span>
                         </div>
-                        <span v-else>{{ row[col.field] }}</span>
-                      </div>
-                    </td>
+                      </td>
+                    </template>
                   </tr>
                 </template>
                 </tbody>
@@ -339,8 +359,11 @@
 
               <tfoot class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
               <tr>
-                <th v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5"
-                    scope="col">
+                <th
+                  v-if="hasCheckbox"
+                  class="w-[1%] min-w-[38px] px-5 py-2.5"
+                  scope="col"
+                >
                   <div class="flex items-center">
                     <input
                         v-model="setting.isCheckAll"
@@ -350,35 +373,42 @@
                     >
                   </div>
                 </th>
-                <th v-for="(col, index) in columns" :key="index"
+                <template
+                  v-for="(col, index) in columns"
+                  :key="index"
+                >
+                  <th
+                    v-if="col?.show !== false"
                     :class="[col.sortable ? 'cursor-pointer' : '', col.columnClasses]"
                     :style="[col.width ? 'width: ' + col.width : 'width: auto', col.columnStyles]"
                     class="px-1"
                     scope="col"
-                >
-                  <div
-                      :class="{
-                                            'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
-                                        }"
-                      class="py-2.5 px-2"
-                      @click.prevent="col.sortable ? doSort(col.field) : false"
                   >
                     <div
-                        class="flex rtl:flex-row-reverse items-center justify-between gap-2">
-                      <ArrowUpIcon
+                      :class="{
+                        'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
+                    }"
+                      class="py-2.5 px-2"
+                      @click.prevent="col.sortable ? doSort(col.field) : false"
+                    >
+                      <div class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
+                        <ArrowUpIcon
                           v-if="setting.order === col.field && setting.sort === 'desc'"
-                          class="w-4 h-4 shrink-0"/>
-                      <ArrowDownIcon
+                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
+                        />
+                        <ArrowDownIcon
                           v-else-if="setting.order === col.field && setting.sort === 'asc'"
-                          class="w-4 h-4 shrink-0"/>
-                      <ArrowsUpDownIcon
+                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
+                        />
+                        <ArrowsUpDownIcon
                           v-else-if="col.sortable"
-                          class="text-white text-opacity-40 w-4 h-4 shrink-0"
-                      />
-                      <span class="leading-relaxed">{{ col.label }}</span>
+                          class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"
+                        />
+                        <span class="leading-relaxed">{{ col.label }}</span>
+                      </div>
                     </div>
-                  </div>
-                </th>
+                  </th>
+                </template>
               </tr>
               </tfoot>
             </table>
@@ -391,7 +421,7 @@
       <template v-if="!setting.isHidePaging">
         <div class="sm:flex sm:justify-between sm:items-start sm:rtl:flex-row-reverse">
           <div aria-live="polite"
-               class="mb-3 text-sm text-gray-500 mb-3 sm:mb-0"
+               class="text-sm text-gray-500 mb-3 sm:mb-0"
                role="status"
                v-html="stringFormat(messages.pagingInfo, setting.offset, setting.limit, total)">
           </div>
@@ -399,12 +429,13 @@
           <div v-if="setting.maxPage > 1" class="flex rtl:flex-row-reverse">
             <div class="mx-2">
               <span class="text-sm text-gray-500">{{ messages.pageSizeChangeLabel }}</span>
-              <base-select :options="pageOptions"
-                           :selected="{value: setting.pageSize, text: setting.pageSize}"
-                           options-class="bottom-full mb-1"
-                           options-key="value"
-                           options-text="text"
-                           @change="(item) => {setting.pageSize = item.value}"
+              <base-select
+                :options="pageOptions"
+                :selected="{value: setting.pageSize, text: setting.pageSize}"
+                options-class="bottom-full mb-1"
+                options-key="value"
+                options-text="text"
+                @change="(item) => {setting.pageSize = item.value}"
               >
                 <template #item="{item}">
                   {{ item.text }}
@@ -414,12 +445,13 @@
 
             <div v-if="!setting.isHideSelectPaging" class="mx-2">
               <span class="text-sm text-gray-500">{{ messages.gotoPageLabel }}</span>
-              <base-select :options="pageNumberOptions"
-                           :selected="{value: setting.page, text: setting.page}"
-                           options-class="bottom-full mb-1"
-                           options-key="value"
-                           options-text="text"
-                           @change="(item) => {setting.page = item.value}"
+              <base-select
+                :options="pageNumberOptions"
+                :selected="{value: setting.page, text: setting.page}"
+                options-class="bottom-full mb-1"
+                options-key="value"
+                options-text="text"
+                @change="(item) => {setting.page = item.value}"
               >
               </base-select>
             </div>
@@ -453,8 +485,12 @@
 <script setup>
 import {computed, nextTick, onBeforeUpdate, onMounted, reactive, ref, useSlots, watch} from "vue"
 import {
-  ChevronDownIcon, ArrowUpIcon, ArrowDownIcon,
-  ArrowsUpDownIcon, XCircleIcon, BackspaceIcon,
+  ArrowDownIcon,
+  ArrowsUpDownIcon,
+  ArrowUpIcon,
+  BackspaceIcon,
+  ChevronDownIcon,
+  XCircleIcon,
 } from '@heroicons/vue/24/outline'
 import BaseSelect from "./BaseSelect.vue";
 import LoaderCircle from "./loader/LoaderCircle.vue";
@@ -933,13 +969,17 @@ const doSearchText = (text) => {
 
 const clearSearchFilter = (payload) => {
   searchText.value = '';
-  payload.resetField(payload.name)
+
+  if (payload?.name) {
+    payload.resetField(payload.name)
+  }
 
   let offset = 0;
   let limit = setting.pageSize;
   let order = setting.order;
   let sort = setting.sort;
 
+  emit('clear-search-filter')
   emit("do-search", offset, limit, order, sort, searchText.value);
 
   if (setting.isCheckAll) {
@@ -1257,10 +1297,18 @@ const refresh = () => {
   emit("do-search", offset, limit, order, sort, text);
 }
 
+/**
+ * Different with "refresh" is reset offset and text of contents
+ */
+const reload = () => {
+  clearSearchFilter()
+}
+
 defineExpose({
   table: localTable,
   tableContainer,
   refresh,
+  reload,
   resetSelection: () => {
     clearSelectedItems()
   },

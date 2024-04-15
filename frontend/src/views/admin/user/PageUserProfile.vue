@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-wrap gap-3">
-    <div class="grow">
+    <div
+      v-if="userStore.hasPermission(PERMISSION_PLACES.ADDRESS_USER, PERMISSIONS.READ)"
+      class="grow"
+    >
       <partial-card-navigation
           :to="{name: 'admin.user.addresses', params: {id: idParam}}"
           bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
@@ -9,7 +12,10 @@
         <BookOpenIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
       </partial-card-navigation>
     </div>
-    <div class="grow">
+    <div
+      v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.READ)"
+      class="grow"
+    >
       <partial-card-navigation
           :to="{name: 'admin.user.purchases', params: {id: idParam}}"
           bg-color="bg-gradient-to-r from-purple-500 to-cyan-500"
@@ -18,7 +24,10 @@
         <ShoppingBagIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
       </partial-card-navigation>
     </div>
-    <div class="grow">
+    <div
+      v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.READ)"
+      class="grow"
+    >
       <partial-card-navigation
           :to="{name: 'admin.user.carts', params: {id: idParam}}"
           bg-color="bg-gradient-to-r from-pink-500 to-purple-500"
@@ -27,7 +36,10 @@
         <ShoppingCartIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
       </partial-card-navigation>
     </div>
-    <div class="grow">
+    <div
+      v-if="userStore.hasPermission(PERMISSION_PLACES.USER_FAVORITE_PRODUCT, PERMISSIONS.READ)"
+      class="grow"
+    >
       <partial-card-navigation
           :to="{name: 'admin.user.favorite_products', params: {id: idParam}}"
           bg-color="bg-gradient-to-r from-fuchsia-500 to-pink-500"
@@ -84,14 +96,14 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
-import {useRoute, useRouter} from "vue-router";
+import {onMounted, ref} from "vue";
+import {useRouter} from "vue-router";
 import {
-  BookOpenIcon,
-  ShoppingCartIcon,
-  ShoppingBagIcon,
-  TrashIcon,
   BookmarkSquareIcon,
+  BookOpenIcon,
+  ShoppingBagIcon,
+  ShoppingCartIcon,
+  TrashIcon,
 } from "@heroicons/vue/24/outline";
 import PartialCardNavigation from "@/components/partials/PartialCardNavigation.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -103,17 +115,13 @@ import {useToast} from "vue-toastification";
 import FormUserUpdateInfo from "./forms/FormUserUpdateInfo.vue";
 import FormUserUpdatePassword from "./forms/FormUserUpdatePassword.vue";
 import FormUserUpdateStatus from "./forms/FormUserUpdateStatus.vue";
-import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {UserAPI} from "@/service/APIUser.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
 
 const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
 const userStore = useAdminAuthStore()
 const currentUser = userStore.getUser
@@ -123,13 +131,15 @@ const tabs = {
   info: {
     text: 'مشخصات کاربر'
   },
-  password: {
-    text: 'تغییر کلمه عبور',
-  },
 }
 const user = ref(null)
 const initialRoles = ref(null)
 
+if (userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.UPDATE)) {
+  tabs.password = {
+    text: 'تغییر کلمه عبور',
+  }
+}
 if (currentUser.id !== idParam.value) {
   tabs.status = {
     text: 'ویرایش وضعیت‌ها',

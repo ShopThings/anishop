@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Jobs\CheckReservedOrdersJob;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -12,7 +13,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
+        // remove expired stored sessions of sanctum
         $schedule->command('sanctum:prune-expired --hours=24')->daily();
+
+        // check reserved orders and take action
+        $schedule->job(new CheckReservedOrdersJob)->everyMinute();
     }
 
     /**
@@ -20,7 +25,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands(): void
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

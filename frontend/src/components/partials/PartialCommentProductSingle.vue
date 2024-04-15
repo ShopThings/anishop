@@ -27,6 +27,7 @@
         <ul class="mt-2">
           <li
               v-for="i in 2"
+              :key="i"
               class="flex items-center space-y-1"
           >
             <PlusIcon class="w-5 h-5 text-emerald-500 ml-1"/>
@@ -37,6 +38,7 @@
         <ul class="mt-2">
           <li
               v-for="i in 2"
+              :key="i"
               class="flex items-center space-y-1"
           >
             <MinusIcon class="w-5 h-5 text-rose-500 ml-1"/>
@@ -81,7 +83,7 @@
         </p>
 
         <div
-            v-if="comment?.pros && comment.pros.length"
+          v-if="comment?.pros?.length"
             class="text-sm mt-3"
         >
           <h2 class="mb-2 text-emerald-600">
@@ -99,7 +101,7 @@
         </div>
 
         <div
-            v-if="comment?.cons && comment.cons.length"
+          v-if="comment?.cons?.length"
             class="text-sm mt-3"
         >
           <h2 class="mb-2 text-rose-600">

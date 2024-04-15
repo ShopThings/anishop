@@ -3,7 +3,7 @@
 
   <router-view v-slot="{ Component, route }">
     <VTransitionSlideFadeUpY>
-      <div>
+      <div class="max-w-7xl mx-auto w-full">
         <component :is="Component" :key="route.path"/>
       </div>
     </VTransitionSlideFadeUpY>

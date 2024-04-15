@@ -1,4 +1,23 @@
 <template>
+  <div
+    v-if="countingOrdersStore.getCounts?.length"
+    class="py-5 flex flex-wrap items-center justify-center gap-3"
+  >
+    <router-link
+      v-for="badge in countingOrdersStore.getCounts"
+      :key="badge.code"
+      :style="[
+            'background-color:' + badge.color_hex,
+            'color:' + getTextColor(badge.color_hex),
+        ]"
+      :to="route.path + '?badge_code=' + badge.code"
+      class="flex items-center gap-2 rounded-lg py-1 px-3 text-sm"
+    >
+      <span>{{ badge.title }}</span>
+      <span class="font-iranyekan-bold">{{ numberFormat(badge.count) }}</span>
+    </router-link>
+  </div>
+
   <partial-card ref="tableContainer">
     <template #header>
       لیست سفارشات
@@ -19,6 +38,7 @@
               :sortable="table.sortable"
               :total="table.totalRecordCount"
               @do-search="doSearch"
+              @clear-search-filter="clearFilterHandler"
           >
             <template #code="{value}">
               <span class="tracking-widest text-lg">{{ value.code }}</span>
@@ -118,28 +138,34 @@
 </template>
 
 <script setup>
-import {computed, reactive, ref} from "vue"
+import {computed, inject, reactive, ref} from "vue"
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
-import {useAdminAuthStore, ROLES} from "@/store/StoreUserAuth.js";
+import {ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import BaseButton from "@/components/base/BaseButton.vue";
 import {OrderAPI} from "@/service/APIOrder.js";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
+import {watchImmediate} from "@vueuse/core";
+import {getTextColor, numberFormat} from "@/composables/helper.js";
 
 const router = useRouter()
+const route = useRoute()
 const toast = useToast()
 
 const store = useAdminAuthStore()
+const countingOrdersStore = inject('countingOrderStore')
+
+const badgeCode = ref(null)
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -232,11 +258,6 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        if (!data.is_deletable) {
-          toast.warning('این آیتم قابل حذف نمی‌باشد.')
-          return
-        }
-
         useConfirmToast(() => {
           OrderAPI.deleteById(data.id, {
             success: () => {
@@ -256,7 +277,14 @@ const operations = [
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  OrderAPI.fetchAll({limit, offset, order, sort, text}, {
+  OrderAPI.fetchAll({
+    limit,
+    offset,
+    order,
+    sort,
+    text,
+    with_badge_code: badgeCode.value,
+  }, {
     success: (response) => {
       table.rows = response.data
       table.totalRecordCount = response.meta.total
@@ -280,6 +308,23 @@ const doSearch = (offset, limit, order, sort, text) => {
 }
 
 doSearch(0, 15, 'id', 'desc')
+
+//---------------------------------------------
+// Check query param of url
+//---------------------------------------------
+watchImmediate(() => route.query, () => {
+  if (route.query.badge_code) {
+    badgeCode.value = route.query.badge_code
+    doSearch(0, 15, 'id', 'desc')
+  } else {
+    badgeCode.value = null
+  }
+})
+
+function clearFilterHandler() {
+  badgeCode.value = null
+  router.push(route.path)
+}
 
 //---------------------------------------------
 // Receiver detail operations

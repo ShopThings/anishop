@@ -26,6 +26,18 @@ interface ProductRepositoryInterface extends RepositoryInterface
     ): Collection|LengthAwarePaginator;
 
     /**
+     * @param string $code
+     * @return Model|null
+     */
+    public function getProductVariantByCode(string $code): ?Model;
+
+    /**
+     * @param array $codes
+     * @return Collection
+     */
+    public function getProductVariantsByCodes(array $codes): Collection;
+
+    /**
      * @param HomeProductSideFilter $filter
      * @return Collection
      */

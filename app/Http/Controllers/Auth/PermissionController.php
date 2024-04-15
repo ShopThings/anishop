@@ -18,6 +18,7 @@ class PermissionController extends Controller
     {
         $permissions = $service->getPermissions();
         $status = ResponseCodes::HTTP_OK;
+
         if (count($permissions)) {
             $res = [
                 'type' => ResponseTypesEnum::SUCCESS->value,
@@ -30,6 +31,7 @@ class PermissionController extends Controller
             ];
             $status = ResponseCodes::HTTP_UNPROCESSABLE_ENTITY;
         }
+
         return response()->json($res, $status);
     }
 }

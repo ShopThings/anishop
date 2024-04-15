@@ -8,14 +8,13 @@ use App\Http\Requests\StoreBlogCategoryRequest;
 use App\Http\Requests\UpdateBlogCategoryRequest;
 use App\Http\Resources\BlogCategoryResource;
 use App\Models\BlogCategory;
-use App\Models\User;
 use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogCategoryController extends Controller
@@ -30,6 +29,7 @@ class BlogCategoryController extends Controller
     )
     {
         $this->considerDeletable = true;
+        $this->policyModel = BlogCategory::class;
     }
 
     /**
@@ -37,11 +37,10 @@ class BlogCategoryController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', BlogCategory::class);
         return BlogCategoryResource::collection($this->service->getCategories($filter));
     }
 
@@ -50,11 +49,10 @@ class BlogCategoryController extends Controller
      *
      * @param StoreBlogCategoryRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreBlogCategoryRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', BlogCategory::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -69,7 +67,7 @@ class BlogCategoryController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'خطا در ایجاد دسته‌بندی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -78,11 +76,10 @@ class BlogCategoryController extends Controller
      *
      * @param BlogCategory $blogCategory
      * @return BlogCategoryResource
-     * @throws AuthorizationException
      */
     public function show(BlogCategory $blogCategory): BlogCategoryResource
     {
-        $this->authorize('view', $blogCategory);
+        Gate::authorize('view', $blogCategory);
         return new BlogCategoryResource($blogCategory);
     }
 
@@ -92,14 +89,13 @@ class BlogCategoryController extends Controller
      * @param UpdateBlogCategoryRequest $request
      * @param BlogCategory $blogCategory
      * @return BlogCategoryResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(
         UpdateBlogCategoryRequest $request,
         BlogCategory              $blogCategory
     ): JsonResponse|BlogCategoryResource
     {
-        $this->authorize('update', $blogCategory);
+        Gate::authorize('update', $blogCategory);
 
         $validated = $request->validated();
         unset($validated['is_deletable']);
@@ -111,7 +107,7 @@ class BlogCategoryController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'خطا در ویرایش رنگ',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,20 +117,20 @@ class BlogCategoryController extends Controller
      * @param Request $request
      * @param BlogCategory $blogCategory
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, BlogCategory $blogCategory): JsonResponse
     {
-        $this->authorize('delete', $blogCategory);
+        Gate::authorize('delete', $blogCategory);
 
         $permanent = $request->user()->id === $blogCategory->creator?->id;
         $res = $this->service->deleteById($blogCategory->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
+        } else {
             return response()->json([
                 'type' => ResponseTypesEnum::WARNING->value,
                 'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

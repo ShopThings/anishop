@@ -99,7 +99,7 @@
                   <base-input
                       is-optional
                       label-title="شماره شبا"
-                      name="shaba_number"
+                      name="sheba_number"
                       placeholder="xxxxxxxxxxxxxxxx"
                   >
                     <template #icon>
@@ -203,11 +203,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .transform(transformNumbersToEnglish)
         .persianNationalCode('کد ملی نامعتبر است.')
         .required('کد ملی را وارد نمایید.'),
-    shaba_number: yup.string()
+    sheba_number: yup.string()
         .transform(transformNumbersToEnglish)
         .optional().nullable(),
   }),
-}, (values, actions) => {// validate extra inputs
+}, (values, actions) => {
+  // validate extra inputs
   if (!selectedRole.value || selectedRole.value.length === 0) {
     actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
     return

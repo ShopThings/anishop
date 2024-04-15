@@ -66,6 +66,14 @@ class User extends Model
     /**
      * @return bool
      */
+    public function isVerified(): bool
+    {
+        return !is_null($this->verified_at);
+    }
+
+    /**
+     * @return bool
+     */
     public function shouldSendActivationVerifyCode(): bool
     {
         return $this->verified_at !== null && now()->gt($this->verify_wait_for_code);
@@ -157,6 +165,14 @@ class User extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(OrderDetail::class, 'user_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function reservedOrders(): HasMany
+    {
+        return $this->hasMany(OrderReserve::class, 'user_id');
     }
 
     /*

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Repositories\Contracts\SendMethodRepositoryInterface;
 use App\Services\Contracts\SendMethodServiceInterface;
 use App\Support\Filter;
@@ -10,8 +11,8 @@ use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class SendMethodService extends Service implements SendMethodServiceInterface
 {
@@ -46,12 +47,39 @@ class SendMethodService extends Service implements SendMethodServiceInterface
     /**
      * @inheritDoc
      */
+    public function getHomeMethods(): Collection
+    {
+        $where = new WhereBuilder('send_methods');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository
+            ->newWith('image')
+            ->all(where: $where->build(), order: ['priority' => 'asc']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSpecificMethod(int $id, bool $publishedOne = true): ?Model
+    {
+        $where = new WhereBuilder('send_methods');
+        $where
+            ->whereEqual('id', $id)
+            ->when($publishedOne, function ($where) {
+                $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+            });
+
+        return $this->repository->findWhere($where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $attributes['image'] = $this->getImageId($attributes['image'] ?? null);
 
         $attrs = [
-            'code' => get_nanoid(),
             'title' => $attributes['title'],
             'description' => $attributes['description'] ?? '',
             'image_id' => $attributes['image'],
@@ -59,6 +87,7 @@ class SendMethodService extends Service implements SendMethodServiceInterface
             'priority' => abs($attributes['priority'] ?? 0),
             'determine_price_by_shop_location' => to_boolean($attributes['determine_price_by_shop_location']),
             'only_for_shop_location' => to_boolean($attributes['only_for_shop_location']),
+            'apply_number_of_shipments_on_price' => to_boolean($attributes['apply_number_of_shipments_on_price']),
             'is_published' => to_boolean($attributes['is_published']),
         ];
 
@@ -93,6 +122,9 @@ class SendMethodService extends Service implements SendMethodServiceInterface
         }
         if (isset($attributes['only_for_shop_location'])) {
             $updateAttributes['only_for_shop_location'] = to_boolean($attributes['only_for_shop_location']);
+        }
+        if (isset($attributes['apply_number_of_shipments_on_price'])) {
+            $updateAttributes['apply_number_of_shipments_on_price'] = to_boolean($attributes['apply_number_of_shipments_on_price']);
         }
         if (isset($attributes['is_published'])) {
             $updateAttributes['is_published'] = to_boolean($attributes['is_published']);

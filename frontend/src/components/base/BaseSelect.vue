@@ -127,7 +127,7 @@ const props = defineProps({
     type: String,
     default: 'block w-full rounded-md bg-white border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
   },
-  hasEditMode: {
+  inEditMode: {
     type: Boolean,
     default: true,
   },
@@ -143,10 +143,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['change', 'before-change'])
 
-const editMode = ref(props.hasEditMode)
+const editMode = ref(props.inEditMode)
 
-watch(() => props.hasEditMode, () => {
-  editMode.value = props.hasEditMode
+watch(() => props.inEditMode, () => {
+  editMode.value = props.inEditMode
 })
 
 function toggleEditMode() {

@@ -145,16 +145,13 @@ export const HomeCommentAPI = {
     )
   },
 
-  report(productId, commentId, data, callbacks) {
+  report(productId, commentId, callbacks) {
     useRequest(
       apiReplaceParams(apiRoutes.comments.report, {
         product: productId,
         comment: commentId,
       }),
-      {
-        method: 'PUT',
-        data,
-      },
+      {method: 'PUT'},
       callbacks
     )
   },
@@ -272,12 +269,12 @@ export const HomeSignupAPI = {
     )
   },
 
-  verifyCode(code, callbacks) {
+  verifyCode(data, callbacks) {
     useRequest(
       apiRoutes.signup.stepCode,
       {
         method: 'POST',
-        data: {code},
+        data,
       },
       callbacks
     )
@@ -315,12 +312,12 @@ export const HomeRecoverPasswordAPI = {
     )
   },
 
-  verifyCode(code, callbacks) {
+  verifyCode(data, callbacks) {
     useRequest(
       apiRoutes.recoverPass.stepCode,
       {
         method: 'POST',
-        data: {code},
+        data,
       },
       callbacks
     )
@@ -344,4 +341,82 @@ export const HomeRecoverPasswordAPI = {
       callbacks
     )
   },
+}
+
+export const HomePaymentMethodAPI = {
+  fetchAll(callbacks) {
+    useRequest(
+      apiRoutes.paymentMethods.index,
+      null,
+      callbacks
+    )
+  }
+}
+
+export const HomeSendMethodAPI = {
+  fetchAll(callbacks) {
+    useRequest(
+      apiRoutes.sendMethods.index,
+      null,
+      callbacks
+    )
+  }
+}
+
+export const HomeCouponAPI = {
+  checkCoupon(code, data, callbacks) {
+    useRequest(
+      apiReplaceParams(apiRoutes.coupons.check, {code}),
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  }
+}
+
+export const HomeCheckoutAPI = {
+  placeOrder(data, callbacks) {
+    useRequest(
+      apiRoutes.checkout.placeOrder,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  payOrder(id, orderCode, callbacks) {
+    useRequest(
+      apiReplaceParams(apiRoutes.checkout.payOrder, {id}),
+      {
+        method: 'POST',
+        data: {
+          order_code: orderCode,
+        },
+      },
+      callbacks
+    )
+  },
+
+  payOrderResult(id, callbacks) {
+    useRequest(
+      apiReplaceParams(apiRoutes.checkout.payResult, {id}),
+      {method: 'POST'},
+      callbacks
+    )
+  },
+
+  calculateSendPrice(data, callbacks) {
+    useRequest(
+      apiRoutes.checkout.sendPrice,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  }
 }

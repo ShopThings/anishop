@@ -28,7 +28,7 @@ interface BlogRepositoryInterface extends RepositoryInterface
     public function isBlogVoted(int $userId, int $blogId): BlogVotingTypesEnum;
 
     /**
-     * It will add vote(like/dislike) or remove it from DB when <code>$vote</code> is <b>null</b>
+     * It will add vote(like/dislike) or remove it from DB when <code>$vote</code> is <strong>null</strong>
      *
      * @param int $userId
      * @param int $blogId

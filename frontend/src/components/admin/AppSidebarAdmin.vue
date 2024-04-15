@@ -55,16 +55,24 @@
               </div>
 
               <div class="flex items-center mt-4">
-                <router-link :to="{name: 'home'}"
-                             class="flex justify-center px-2 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition"
-                             target="_blank">
+                <router-link
+                  :to="{name: 'home'}"
+                  class="flex justify-center px-2 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition"
+                  target="_blank"
+                >
                   <ComputerDesktopIcon class="h-6 w-6 ml-2"/>
                   <span>نمایش سایت</span>
                 </router-link>
 
-                <div class="mr-3 shrink-0">
-                  <router-link v-tooltip.left="'تنظیمات'" :to="{name: 'admin.settings'}"
-                               class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block">
+                <div
+                  v-if="store.hasPermission(PERMISSION_PLACES.SETTING, PERMISSIONS.UPDATE)"
+                  class="mr-3 shrink-0"
+                >
+                  <router-link
+                    v-tooltip.left="'تنظیمات'"
+                    :to="{name: 'admin.settings'}"
+                    class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block"
+                  >
                     <Cog6ToothIcon class="h-6 w-6"/>
                   </router-link>
                 </div>
@@ -87,22 +95,31 @@
             <div class="flex flex-col px-3">
               <div class="flex flex-col">
                 <div
-                    v-tooltip.left="'' + (user.first_name || user.last_name ? (user.first_name + ' ' + user.last_name).trim() : user.username) + ''"
-                    class="text-center w-12 h-12 rounded-full bg-white mx-auto p-3 bg-opacity-90 shadow-lg">
+                  v-tooltip.left="(user.first_name || user.last_name ? (user.first_name + ' ' + user.last_name).trim() : user.username)"
+                  class="text-center w-12 h-12 rounded-full bg-white mx-auto p-3 bg-opacity-90 shadow-lg"
+                >
                   <UserIcon class="h-6 w-6 mx-auto text-slate-700"/>
                 </div>
               </div>
 
               <div class="flex flex-col items-center mt-4">
-                <router-link v-tooltip.left="'نمایش سایت'" :to="{name: 'home'}"
-                             class="flex justify-center px-2.5 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition"
-                             target="_blank">
+                <router-link
+                  v-tooltip.left="'نمایش سایت'" :to="{name: 'home'}"
+                  class="flex justify-center px-2.5 py-2.5 bg-white text-black rounded-lg grow hover:bg-opacity-90 transition"
+                  target="_blank"
+                >
                   <ComputerDesktopIcon class="h-6 w-6"/>
                 </router-link>
 
-                <div class="mt-3">
-                  <router-link v-tooltip.left="'تنظیمات'" :to="{name: 'admin.settings'}"
-                               class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block">
+                <div
+                  v-if="store.hasPermission(PERMISSION_PLACES.SETTING, PERMISSIONS.UPDATE)"
+                  class="mt-3"
+                >
+                  <router-link
+                    v-tooltip.left="'تنظیمات'"
+                    :to="{name: 'admin.settings'}"
+                    class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block"
+                  >
                     <Cog6ToothIcon class="h-6 w-6"/>
                   </router-link>
                 </div>
@@ -135,8 +152,10 @@
             class="flex flex-col"
         >
           <li>
-            <router-link :to="{name: 'admin.logout'}"
-                         class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition">
+            <router-link
+              :to="{name: 'admin.logout'}"
+              class="rounded-lg py-3 px-3 flex hover:bg-white hover:bg-opacity-10 transition"
+            >
               <PowerIcon class="h-6 w-6 ml-2 shrink-0"/>
               <span
                   class="grow">خروج</span>
@@ -149,8 +168,10 @@
             class="flex flex-col"
         >
           <li v-tooltip.left="'خروج'">
-            <router-link :to="{name: 'admin.logout'}"
-                         class="rounded-lg py-3 px-2 flex justify-center hover:bg-white hover:bg-opacity-10 transition">
+            <router-link
+              :to="{name: 'admin.logout'}"
+              class="rounded-lg py-3 px-2 flex justify-center hover:bg-white hover:bg-opacity-10 transition"
+            >
               <PowerIcon class="h-6 w-6 shrink-0"/>
             </router-link>
           </li>
@@ -164,11 +185,11 @@
 import {ref, watch, watchEffect} from "vue"
 import {useResizeObserver, useWindowSize} from "@vueuse/core"
 import {OverlayScrollbarsComponent} from "overlayscrollbars-vue"
-import {UserIcon, Cog6ToothIcon} from '@heroicons/vue/24/solid'
+import {Cog6ToothIcon, UserIcon} from '@heroicons/vue/24/solid'
 import {ComputerDesktopIcon, PowerIcon} from '@heroicons/vue/24/outline'
 import BaseSidebar from "@/components/base/BaseSidebar.vue"
 import SidebarLinksAdmin from "./SidebarLinksAdmin.vue"
-import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {ChevronLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";

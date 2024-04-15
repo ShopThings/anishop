@@ -40,6 +40,8 @@ Route::prefix('user')
         /*
          * order routes
          */
+        Route::get('orders/unpaid-order-payments', [UserOrderController::class, 'unpaidOrderPayments'])
+            ->name('orders.unpaid-order-payments');
         Route::get('orders/latest', [UserOrderController::class, 'latest'])->name('orders.latest');
         Route::apiResource('orders', UserOrderController::class)->except(['store', 'destroy'])
             ->where(['order' => $codeRegex]);
@@ -63,7 +65,7 @@ Route::prefix('user')
         Route::get('product/comments/{comment}', [UserCommentController::class, 'show'])
             ->whereNumber('comment')->name('product.comments.show');
         Route::post('product/{product}/comments', [UserCommentController::class, 'store'])
-            ->whereNumber('product')->name('product.comments.store');
+            ->where(['product' => $codeRegex])->name('product.comments.store');
         Route::put('product/comments/{comment}', [UserCommentController::class, 'update'])
             ->whereNumber('comment')->name('product.comments.update');
         Route::delete('product/comments/{comment}', [UserCommentController::class, 'destroy'])
@@ -77,7 +79,7 @@ Route::prefix('user')
         Route::get('blog/comments/{comment}', [UserBlogCommentController::class, 'show'])
             ->whereNumber('comment')->name('blog.comments.show');
         Route::post('blog/{blog}/comments', [UserBlogCommentController::class, 'store'])
-            ->whereNumber('blog')->name('blog.comments.store');
+            ->where(['blog' => $codeRegex])->name('blog.comments.store');
         Route::put('blog/comments/{comment}', [UserBlogCommentController::class, 'update'])
             ->whereNumber('comment')->name('blog.comments.update');
         Route::delete('blog/comments/{comment}', [UserBlogCommentController::class, 'destroy'])

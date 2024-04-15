@@ -20,8 +20,8 @@ use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductRepository extends Repository implements ProductRepositoryInterface
@@ -98,7 +98,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                     ], $search);
             })
             ->when($where, function ($q, $where) {
-                $q->whereRaw($where->getStatement(), $where->getBindings());
+                if (trim($where->getStatement()) !== '') {
+                    $q->whereRaw($where->getStatement(), $where->getBindings());
+                }
             });
 
         // add extra filter product filter instance
@@ -200,6 +202,26 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getProductVariantByCode(string $code): ?Model
+    {
+        return $this->productPropertyModel->newQuery()
+            ->where('code', $code)
+            ->first();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantsByCodes(array $codes): Collection
+    {
+        return $this->productPropertyModel->newQuery()
+            ->whereIn('code', $codes)
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getFilterBrands(HomeProductSideFilter $filter): Collection
     {
         $query = $this->productPropertyModel::published();
@@ -250,11 +272,10 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         // otherwise there is no good reason to have any extra filters
         if (!$category) return collect();
 
-
         $query = $this->model::published()
             // -productAttrValues is "product_attribute_products" table relation
             // -attrValues is "product_attribute_values" table relation
-            ->withWhereHas('productAttrValues.attrValues', function ($q) use ($category) {
+            ->withWhereHas('productAttrValues.attrValue', function ($q) use ($category) {
                 $q
                     // we go nested inside relations to get product attributes for a specific category.
                     //   -productAttr is "product_attributes" table relation
@@ -267,7 +288,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
             // -productAttrValues is "product_attribute_products" table relation
             // -attrValues is "product_attribute_values" table relation
             // -productAttr is "product_attributes" table relation
-            ->with('productAttrValues.attrValues.productAttr');
+            ->with('productAttrValues.attrValue.productAttr');
 
         return $query->get();
     }

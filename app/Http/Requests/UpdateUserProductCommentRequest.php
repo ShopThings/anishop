@@ -23,10 +23,6 @@ class UpdateUserProductCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product' => [
-                'required',
-                'exists:' . Product::class . ',id',
-            ],
             'pros' => [
                 'sometimes',
                 'array',
@@ -44,7 +40,6 @@ class UpdateUserProductCommentRequest extends FormRequest
     public function attributes()
     {
         return [
-            'product' => 'محصول برای ثبت دیدگاه',
             'pros' => 'مزایای محصول',
             'cons' => 'معایب محصول',
         ];

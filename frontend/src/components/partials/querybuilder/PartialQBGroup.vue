@@ -14,7 +14,7 @@
           v-if="q.children"
           :columns="columns"
           :depth="depth + 1"
-          :dragging="dragging"
+          :draggable="draggable"
           :labels="labels"
           :max-depth="maxDepth"
           :query="q.children"
@@ -51,7 +51,8 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  dragging: {
+  // TODO: this feature is not implemented yet
+  draggable: {
     type: Boolean,
     required: true,
   },
@@ -87,20 +88,20 @@ function addRuleHandler(condition) {
 }
 
 function addGroupHandler(condition) {
-  if (props.depth < props.maxDepth) {
-    props.query.push({
-      condition: 'and',
-      children: [
-        {
-          rule: {
-            column: null,
-            operator: null,
-            condition,
-          },
+  if (props.depth >= props.maxDepth) return
+
+  props.query.push({
+    condition: 'and',
+    children: [
+      {
+        rule: {
+          column: null,
+          operator: null,
+          condition,
         },
-      ],
-    })
-  }
+      },
+    ],
+  })
 }
 
 function removeHandler(idx) {

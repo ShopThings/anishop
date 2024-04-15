@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\CleanHtmlCast;
 use App\Casts\StringToArray;
+use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\DatabaseEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
@@ -53,12 +54,23 @@ class Blog extends Model
         return BlogFactory::new();
     }
 
-    public function scopeArchivedInYear(Builder $query, $year)
+    /**
+     * @param Builder $query
+     * @param $year
+     * @return Builder
+     */
+    public function scopeArchivedInYear(Builder $query, $year): Builder
     {
         return $query->whereYear('created_at', $year);
     }
 
-    public function scopeArchivedInMonth(Builder $query, $year, $month)
+    /**
+     * @param Builder $query
+     * @param $year
+     * @param $month
+     * @return Builder
+     */
+    public function scopeArchivedInMonth(Builder $query, $year, $month): Builder
     {
         return $query
             ->whereYear('created_at', $year)
@@ -79,6 +91,22 @@ class Blog extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(BlogCategory::class, 'category_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(BlogComment::class, 'blog_id');
+    }
+
+    /**
+     * @return int
+     */
+    public function commentsCount(): int
+    {
+        return $this->comments()->where('condition', CommentConditionsEnum::ACCEPTED->value)->count();
     }
 
     /**

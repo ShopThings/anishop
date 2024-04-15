@@ -4,6 +4,7 @@ namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
 use App\Enums\Settings\SettingGroupsEnum;
+use App\Enums\Settings\SettingsEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
@@ -13,6 +14,12 @@ interface SettingServiceInterface extends ServiceInterface
      * @return Collection
      */
     public function getSettings(): Collection;
+
+    /**
+     * @param array<SettingsEnum> $settingNames
+     * @return Collection
+     */
+    public function getSpecificSettings(array $settingNames): Collection;
 
     /**
      * @param SettingGroupsEnum $groupName
@@ -35,7 +42,13 @@ interface SettingServiceInterface extends ServiceInterface
      * @param string $name
      * @param array $attributes
      * @param bool $returnUpdatedModel
+     * @param bool $silence
      * @return Model|bool|null
      */
-    public function updateByName(string $name, array $attributes, bool $returnUpdatedModel = false): Model|bool|null;
+    public function updateByName(
+        string $name,
+        array  $attributes,
+        bool   $returnUpdatedModel = false,
+        bool   $silence = false
+    ): Model|bool|null;
 }

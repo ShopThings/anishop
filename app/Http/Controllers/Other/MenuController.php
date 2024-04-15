@@ -9,12 +9,11 @@ use App\Http\Requests\UpdateMenuRequest;
 use App\Http\Resources\MenuItemResource;
 use App\Http\Resources\MenuResource;
 use App\Models\Menu;
-use App\Models\User;
 use App\Services\Contracts\MenuServiceInterface;
 use App\Support\Filter;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class MenuController extends Controller
@@ -33,11 +32,10 @@ class MenuController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Menu::class);
         return MenuResource::collection($this->service->getMenus($filter));
     }
 
@@ -46,11 +44,10 @@ class MenuController extends Controller
      *
      * @param Menu $menu
      * @return MenuResource
-     * @throws AuthorizationException
      */
     public function show(Menu $menu): MenuResource
     {
-        $this->authorize('view', $menu);
+        Gate::authorize('view', $menu);
         return new MenuResource($menu);
     }
 
@@ -60,11 +57,10 @@ class MenuController extends Controller
      * @param UpdateMenuRequest $request
      * @param Menu $menu
      * @return MenuResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateMenuRequest $request, Menu $menu): JsonResponse|MenuResource
     {
-        $this->authorize('update', $menu);
+        Gate::authorize('update', $menu);
 
         $validated = $request->validated();
         $model = $this->service->updateById($menu->id, [
@@ -74,22 +70,20 @@ class MenuController extends Controller
 
         if (!is_null($model)) {
             return new MenuResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش منو',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش منو',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Menu $menu
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function showItems(Menu $menu): AnonymousResourceCollection
     {
-        $this->authorize('view', $menu);
+        Gate::authorize('view', $menu);
         return MenuItemResource::collection(
             $menu->items()
                 ->with([
@@ -106,11 +100,10 @@ class MenuController extends Controller
      * @param StoreMenuItemRequest $request
      * @param Menu $menu
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function modifyMenus(StoreMenuItemRequest $request, Menu $menu): AnonymousResourceCollection
     {
-        $this->authorize('view', $menu);
+        Gate::authorize('view', $menu);
 
         $validated = $request->validated();
         return MenuItemResource::collection($this->service->modifyMenuItems($menu->id, $validated['menus']));

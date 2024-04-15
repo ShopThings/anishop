@@ -3,9 +3,9 @@
     <div class="mt-3 ml-3">
       تعداد موارد انتخاب شده:
       <span class="bg-sky-200 text-sky-700 rounded-md py-1 px-2 inline-block my-1">
-                <span class="mr-2 inline-block">{{ props.items.length }}</span>
-                مورد
-            </span>
+          <span class="mr-2 inline-block">{{ props.items.length }}</span>
+          مورد
+      </span>
     </div>
     <div class="flex">
       <base-button
@@ -16,7 +16,7 @@
         <outline.BackspaceIcon class="h-6 w-6"/>
       </base-button>
 
-      <base-dialog container-klass="overflow-auto">
+      <base-dialog>
         <template #button="{open}">
           <base-button
               v-tooltip.top="'مشاهده موارد انتخاب شده'"
@@ -49,25 +49,27 @@
             <base-button
                 v-tooltip.top="operation.btn.tooltip ? operation.btn.tooltip : ''"
                 :class="[
-                                key !== props.operations.length - 1 ? 'rounded-none' : 'rounded-l-lg rounded-r-none',
-                                operation.btn.class ? operation.btn.class : '',
-                            ]"
+                    key !== props.operations.length - 1 ? 'rounded-none' : 'rounded-l-lg rounded-r-none',
+                    operation.btn.class ? operation.btn.class : '',
+                ]"
                 class="text-sm mt-3 flex items-center"
                 @click="operationClicked(operation)"
             >
-              <component :is="outline[operation.btn.icon]"
-                         v-if="operation.btn.icon"
-                         :class="operation.btn.text ? 'ml-2' : ''"
-                         class="h-6 w-6"
+              <component
+                :is="outline[operation.btn.icon]"
+                v-if="operation.btn.icon"
+                :class="operation.btn.text ? 'ml-2' : ''"
+                class="h-6 w-6"
               />
               <span v-if="operation.btn.text">{{ operation.btn.text }}</span>
             </base-button>
           </template>
 
           <template #item="{item, hide}">
-            <div
+            <button
+              class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
                 :class="item.btn.class ? item.btn.class : ''"
-                class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md cursor-pointer"
+              type="button"
                 @click="operationClicked(item, hide)"
             >
               <component :is="outline[item.btn.icon]"
@@ -76,7 +78,7 @@
                          class="h-5 w-5"
               />
               <span v-if="item.btn.text" class="grow">{{ item.btn.text }}</span>
-            </div>
+            </button>
           </template>
         </base-floating-drop-down>
       </template>

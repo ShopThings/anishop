@@ -27,6 +27,17 @@ class ConvertInputsToEnglishNumbers extends TransformsRequest
     ];
 
     /**
+     * Register a callback that instructs the middleware to be skipped.
+     *
+     * @param Closure $callback
+     * @return void
+     */
+    public static function skipWhen(Closure $callback): void
+    {
+        static::$skipCallbacks[] = $callback;
+    }
+
+    /**
      * Handle an incoming request.
      *
      * @param Request $request
@@ -54,16 +65,5 @@ class ConvertInputsToEnglishNumbers extends TransformsRequest
     protected function transform($key, $value): mixed
     {
         return in_array($key, self::$skipKeys) ? $value : NumberConverter::toEnglish($value);
-    }
-
-    /**
-     * Register a callback that instructs the middleware to be skipped.
-     *
-     * @param Closure $callback
-     * @return void
-     */
-    public static function skipWhen(Closure $callback): void
-    {
-        static::$skipCallbacks[] = $callback;
     }
 }

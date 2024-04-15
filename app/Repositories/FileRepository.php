@@ -363,7 +363,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
      * @throws InvalidDiskException
      * @throws InvalidFileException
      */
-    public function download(string $path, string $disk)
+    public function download(string $path, string $disk): mixed
     {
         $path = $this->getNormalizedPath($path);
 

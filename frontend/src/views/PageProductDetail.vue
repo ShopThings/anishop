@@ -1,6 +1,6 @@
 <template>
   <div class="p-3">
-    <product-detail/>
+    <product-detail :slider-top-spacing="110"/>
   </div>
 
   <app-newsletter/>
@@ -9,5 +9,4 @@
 <script setup>
 import ProductDetail from "@/components/product/ProductDetail.vue";
 import AppNewsletter from "@/components/AppNewsletter.vue";
-
 </script>

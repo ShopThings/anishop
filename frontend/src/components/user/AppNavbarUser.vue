@@ -1,7 +1,7 @@
 <template>
   <div ref="navbar" class="sm:h-[64px] relative">
     <nav class="w-full">
-      <div class="h-auto sm:h-[64px] py-2 px-6 flex">
+      <div class="h-auto sm:h-[64px] py-2 px-6 flex max-w-7xl mx-auto w-full">
         <div class="h-full grow flex flex-col items-start gap-3 sm:gap-0 sm:flex-row sm:justify-between">
           <ul class="flex mt-[4px] space-x-reverse justify-between w-full sm:justify-start">
             <li class="px-1 lg:hidden">
@@ -97,12 +97,6 @@
                   </nav>
                 </template>
               </base-popover-side>
-            </li>
-            <li class="px-0.5">
-              <dialog-search/>
-            </li>
-            <li class="sm:relative px-0.5">
-              <navbar-cart position="right"/>
             </li>
           </ul>
           <ul class="flex mt-[4px] space-x-reverse shrink-0 w-full sm:w-auto">

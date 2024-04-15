@@ -58,7 +58,9 @@ export const UserPanelOrderAPI = Object.assign(
     replacement: 'order',
   }),
   {
-    // extra functionality goes here
+    fetchUnpaidOrderPayments(callbacks) {
+      useRequest(apiRoutes.user.orders.unpaidOrderPayments, null, callbacks)
+    },
   }
 )
 

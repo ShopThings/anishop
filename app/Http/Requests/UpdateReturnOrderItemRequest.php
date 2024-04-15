@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ReturnOrderRequestItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateReturnOrderItemRequest extends FormRequest

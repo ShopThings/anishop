@@ -4,6 +4,7 @@
       <partial-empty-rows
           image="/public/empty-statuses/empty-cart.svg"
           message="سبد خرید شما خالی می‌باشد"
+          image-class="!w-48"
       />
 
       <div class="flex justify-center mt-3">
@@ -25,5 +26,4 @@ import {ArrowLongRightIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "@/components/base/BaseButton.vue";
 import PartialEmptyRows from "../PartialEmptyRows.vue";
 import PartialCard from "../PartialCard.vue";
-
 </script>

@@ -50,7 +50,7 @@
             <div class="flex flex-col gap-3 shadow-md bg-white p-6 mt-3 border border-slate-50 leading-loose">
               <h3
                   v-if="complaint"
-                  class="iranyekan-bold text-lg"
+                  class="font-iranyekan-bold text-lg"
               >
                 {{ complaint?.title }}
               </h3>

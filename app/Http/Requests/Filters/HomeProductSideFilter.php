@@ -18,17 +18,6 @@ class HomeProductSideFilter extends Filter
     protected ?int $festival = null;
 
     /**
-     * @inheritDoc
-     */
-    protected function init(Request $request): void
-    {
-        parent::init($request);
-
-        $this->setCategory($request->integer('category'));
-        $this->setFestival($request->integer('festival'));
-    }
-
-    /**
      * @return int|null
      */
     public function getCategory(): ?int
@@ -75,5 +64,16 @@ class HomeProductSideFilter extends Filter
         $this->festival = null;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
+    {
+        parent::init($request);
+
+        $this->setCategory($request->integer('category'));
+        $this->setFestival($request->integer('festival'));
     }
 }

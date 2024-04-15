@@ -1,3 +1,5 @@
+export const MAX_RESERVED_TIME = 7200;
+
 export const PAYMENT_METHOD_TYPES = {
   BEHPARDAKHT: {
     value: 'behpardakht',
@@ -203,6 +205,21 @@ export const COMMENT_SEEN_STATUSES = {
   },
 }
 
+export const COMMENT_VOTED_TYPES = {
+  VOTED: 1,
+  NOT_VOTED: 2,
+  NOT_SET: 3,
+}
+
+export const COMMENT_VOTING_TYPES = {
+  LIKING: 1,
+  UNDO_LIKING: 2,
+  DISLIKING: 3,
+  UNDO_DISLIKING: 4,
+  FROM_LIKE_TO_DISLIKING: 5,
+  FROM_DISLIKING_TO_LIKE: 6,
+}
+
 export const BLOG_VOTING_TYPES = {
   VOTED: 1,
   NOT_VOTED: 2,
@@ -229,6 +246,7 @@ export const SETTING_KEYS = {
   STORE_PROVINCE: 'store_province',
   STORE_CITY: 'store_city',
   LAT_LNG: 'lat_lng',
+  DIVIDE_PAYMENT_PRICE: 'divide_payment_price',
   MIN_FREE_POST_PRICE: 'min_free_post_price',
   PRODUCT_EACH_PAGE: 'product_each_page',
   BLOG_EACH_PAGE: 'blog_each_page',

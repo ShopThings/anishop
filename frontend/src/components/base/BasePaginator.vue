@@ -1,21 +1,21 @@
 <template>
   <div
-      v-if="showSearch || (order && order.length)"
-      class="pb-3 flex flex-col"
+    v-if="showSearch || (order && order.length)"
+    class="pb-3 flex flex-col"
   >
     <div v-if="showSearch" class="grow">
       <base-datatable-search
-          :show-refresh-button="false"
-          :show-remove-filter-button-on-input="true"
-          class="!p-0"
-          @refresh="refreshSearchHandler"
-          @search="searchHandler"
-          @clear-filter="clearSearchHandler"
+        :show-refresh-button="false"
+        :show-remove-filter-button-on-input="true"
+        class="!p-0"
+        @refresh="refreshSearchHandler"
+        @search="searchHandler"
+        @clear-filter="clearSearchHandler"
       />
     </div>
     <div
-        v-if="order && order.length"
-        class="mt-3 w-full sm:mt-0"
+      v-if="order && order.length"
+      class="mt-3 w-full sm:mt-0"
     >
       <div class="hidden md:flex md:items-center md:gap-2">
         <div class="font-iranyekan-light text-sm">
@@ -24,16 +24,16 @@
 
         <ul class="flex items-center gap-2.5 grow">
           <li
-              v-for="o in order"
-              :key="o.id"
+            v-for="o in order"
+            :key="o.id"
           >
             <button
-                :class="[
+              :class="[
                     o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
                 ]"
-                class="border-b-2 border-transparent py-2 text-sm text-black"
-                type="button"
-                @click="changeOrderHandler(o)"
+              class="border-b-2 border-transparent py-2 text-sm text-black"
+              type="button"
+              @click="changeOrderHandler(o)"
             >
               {{ o.text }}
             </button>
@@ -43,33 +43,33 @@
 
       <div class="w-full sm:w-48 md:hidden mr-auto">
         <base-select
-            :options="order"
-            :selected="selectedOrder"
-            class="bg-white"
-            options-key="id"
-            options-text="text"
-            @change="changeOrderHandler"
+          :options="order"
+          :selected="selectedOrder"
+          class="bg-white"
+          options-key="id"
+          options-text="text"
+          @change="changeOrderHandler"
         />
       </div>
     </div>
   </div>
 
   <slot
-      :maxPage="maxPage"
-      :offset="offset"
-      :page="currentPage"
-      :perPage="+props.perPage"
-      :total="total"
-      name="BeforeItemsPanel"
+    :maxPage="maxPage"
+    :offset="offset"
+    :page="currentPage"
+    :perPage="+props.perPage"
+    :total="total"
+    name="BeforeItemsPanel"
   >
     <partial-paginator-pagniation-info
-        v-if="showPaginationDetail"
-        :offset="offset"
-        :per-page="props.perPage"
-        :current-page="currentPage"
-        :max-page="maxPage"
-        :total="total"
-        :items-length="items?.length || 0"
+      v-if="showPaginationDetail"
+      :current-page="currentPage"
+      :items-length="items?.length || 0"
+      :max-page="maxPage"
+      :offset="offset"
+      :per-page="props.perPage"
+      :total="total"
     />
   </slot>
 
@@ -79,22 +79,22 @@
         <slot name="empty"></slot>
       </div>
       <div
-          v-else
-          :class="containerClass"
+        v-else
+        :class="containerClass"
       >
         <div
-            v-for="(item, idx) of actualItems"
-            v-if="!loading && !isLoading"
-            :key="idx + '_1'"
-            :class="itemContainerClass"
+          v-for="(item, idx) of actualItems"
+          v-if="!loading && !isLoading"
+          :key="idx + '_1'"
+          :class="itemContainerClass"
         >
           <slot :item="item" name="item"></slot>
         </div>
         <div
-            v-for="idx in perPage"
-            v-else
-            :key="idx + '_2'"
-            :class="itemContainerClass"
+          v-for="idx in numberOfLoaders || perPage"
+          v-else
+          :key="idx + '_2'"
+          :class="itemContainerClass"
         >
           <slot :index="idx" name="loading"></slot>
         </div>
@@ -104,13 +104,13 @@
 
   <div v-if="showPagination && maxPage > 1" class="mt-3">
     <base-pagination
-        v-model:current-page="currentPage"
-        v-model:max-page="maxPage"
-        v-model:paging="paging"
-        :move-page="movePage"
-        :next-page="nextPage"
-        :prev-page="prevPage"
-        :theme="paginationTheme"
+      v-model:current-page="currentPage"
+      v-model:max-page="maxPage"
+      v-model:paging="paging"
+      :move-page="movePage"
+      :next-page="nextPage"
+      :prev-page="prevPage"
+      :theme="paginationTheme"
     />
   </div>
 </template>
@@ -122,7 +122,6 @@ import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
 import BasePagination from "./BasePagination.vue";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
 import {apiReplaceParams} from "@/router/api-routes.js";
 import isObject from "lodash.isobject";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
@@ -145,6 +144,7 @@ const props = defineProps({
   },
   // to control show loader from outside of component(local loading purposes)
   isLoading: Boolean,
+  numberOfLoaders: Number,
   order: {
     type: Array,
     default: () => [],
@@ -411,6 +411,7 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
+  isLoading: loading,
   goToPage,
   goToTop,
 })

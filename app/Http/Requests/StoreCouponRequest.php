@@ -80,8 +80,8 @@ class StoreCouponRequest extends FormRequest
     public function attributes()
     {
         return [
-            'apply_min_price' => 'حداقل قیمت اعمال کوپن',
-            'apply_max_price' => 'حداکثر قیمت اعمال کوپن',
+            'apply_min_price' => 'حداقل قیمت اعمال کد تخفیف',
+            'apply_max_price' => 'حداکثر قیمت اعمال کد تخفیف',
             'start_at' => 'تاریخ شروع',
             'end_at' => 'تاریخ انقضا',
             'use_count' => 'تعداد قابل استفاده',

@@ -18,20 +18,44 @@ export const adminRoutes = {
     {
       path: 'logout',
       name: 'admin.logout',
-      beforeEnter(to, from, next) {
+      beforeEnter: async (to, from, next) => {
         const store = useAdminAuthStore()
-        store.logout()
-        if (from.meta.requiresAuth) {
-          const pushObj = {name: 'admin.login'}
+        let route = null
 
-          if (
-            to.query.redirect &&
-            isValidInternalRedirectLink(to.query.redirect)
-          ) pushObj.query = {redirect: to.query.redirect}
-
-          return next(pushObj);
+        // Check if the user is authenticated
+        if (!store.getUser) {
+          // User is authenticated, continue navigation to the original destination
+          return next(from)
         }
-        location.reload();
+
+        // Logout the user
+        await new Promise((resolve, reject) => {
+          store.logout({
+            success() {
+              resolve()
+            },
+            error(error) {
+              reject(false)
+            },
+          })
+        }).then(() => {
+          // User is logged out, determine the redirect route
+          if (from.meta.requiresAuth) {
+            // If the original route requires authentication, redirect to log in
+            route = {name: 'admin.login'}
+
+            if (to.query.redirect && isValidInternalRedirectLink(to.query.redirect)) {
+              route.query = {redirect: to.query.redirect}
+            }
+          }
+        })
+
+        if (!route) {
+          // use this if needed later
+          // location.reload()
+          return next(from)
+        }
+        return next(route)
       },
     },
     {
@@ -638,14 +662,14 @@ export const adminRoutes = {
       name: 'admin.coupon.edit',
       component: () => import('@/views/admin/shop/PageCouponEdit.vue'),
       meta: {
-        title: 'ویرایش کوپن',
+        title: 'ویرایش کوپن تخفیف',
         breadcrumb: [
           {
             name: 'کوپن‌های تخفیف',
             link: 'admin.coupons',
           },
           {
-            name: 'ویرایش کوپن',
+            name: 'ویرایش کوپن تخفیف',
           },
         ],
       },
@@ -800,6 +824,23 @@ export const adminRoutes = {
               },
             },
           ],
+        },
+        {
+          path: 'comments',
+          name: 'admin.products.comments',
+          component: () => import('@/views/admin/product/PageProductsComments.vue'),
+          meta: {
+            title: 'دیدگاه‌های محصولات',
+            breadcrumb: [
+              {
+                name: 'محصولات',
+                link: 'admin.products',
+              },
+              {
+                name: 'دیدگاه‌های محصولات',
+              },
+            ],
+          },
         },
       ],
     },
@@ -1276,6 +1317,23 @@ export const adminRoutes = {
               },
               {
                 name: 'افزودن دسته‌بندی',
+              },
+            ],
+          },
+        },
+        {
+          path: 'comments',
+          name: 'admin.blogs.comments',
+          component: () => import('@/views/admin/page/PageBlogsComments.vue'),
+          meta: {
+            title: 'دیدگاه‌های بلاگ',
+            breadcrumb: [
+              {
+                name: 'بلاگ‌ها',
+                link: 'admin.blogs',
+              },
+              {
+                name: 'دیدگاه‌های بلاگ',
               },
             ],
           },
@@ -1811,19 +1869,19 @@ export const adminRoutes = {
       },
     },
 
-    {
-      path: 'guides',
-      name: 'admin.guides',
-      component: () => import('@/views/admin/PageGuides.vue'),
-      meta: {
-        title: 'راهنما',
-        breadcrumb: [
-          {
-            name: 'راهنما',
-          },
-        ],
-      },
-    },
+    // {
+    //   path: 'guides',
+    //   name: 'admin.guides',
+    //   component: () => import('@/views/admin/PageGuides.vue'),
+    //   meta: {
+    //     title: 'راهنما',
+    //     breadcrumb: [
+    //       {
+    //         name: 'راهنما',
+    //       },
+    //     ],
+    //   },
+    // },
 
     {
       path: 'settings',

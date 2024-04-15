@@ -1,15 +1,15 @@
 <template>
   <!-- ====== Forms Section Start -->
-  <section class="py-10">
-    <div class="md:container md:mx-auto">
-      <div class="flex flex-wrap justify-center items-center min-h-screen">
+  <section class="py-10 flex items-center justify-center min-h-dvh">
+    <div class="md:container">
+      <div class="flex flex-wrap justify-center items-center">
         <div class="w-full">
           <div
-              class="relative mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-xl shadow-gray-200 py-6 px-10 text-center"
+            class="relative mx-auto max-w-sm overflow-hidden rounded-lg bg-white shadow-xl shadow-gray-200 py-4 px-8 text-center"
           >
-            <div class="mb-6 text-center">
-              <UserCircleIcon class="w-24 h-24 mx-auto text-slate-400"/>
-              <h1 class="text-xl text-black">
+            <div class="mb-4 text-center">
+              <UserCircleIcon class="size-20 mx-auto text-slate-400"/>
+              <h1 class="text-lg text-black">
                 ورود به پنل ادمین
               </h1>
             </div>
@@ -19,7 +19,7 @@
               </base-message>
             </VTransitionSlideFadeDownY>
             <form @submit.prevent="onSubmit">
-              <div class="mb-3">
+              <div class="mb-2">
                 <base-input
                     label-title="نام کاربری:"
                     name="username"
@@ -42,7 +42,7 @@
                   </template>
                 </base-input>
               </div>
-              <div class="border-t my-6"></div>
+              <div class="border-t my-4"></div>
               <div class="mb-2">
                 <v-captcha ref="captchaCom" v-model="captchaKey"/>
               </div>
@@ -57,7 +57,7 @@
                   </template>
                 </base-input>
               </div>
-              <div class="mb-8">
+              <div>
                 <base-button
                     :class="store.isLoading ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
                     :disabled="store.isLoading"
@@ -79,7 +79,7 @@
               </div>
             </form>
 
-            <p class="text-base text-[#adadad]">
+            <p class="text-base text-[#adadad] mt-6">
               طراحی و توسعه توسط
               <a class="text-primary transition-all p-2 hover:shadow" href="javascript:void(0)">
                 تیم هیوا

@@ -1,6 +1,6 @@
 <template>
   <div class="relative bg-white">
-    <footer class="pt-20 pb-10 lg:pt-[120px] lg:pb-20 relative z-[1]">
+    <footer class="pt-20 pb-10 lg:pt-[120px] lg:pb-20 relative z-[1] max-w-7xl mx-auto w-full">
       <div class="px-6">
         <div class="flex flex-wrap">
           <div class="w-full px-4 sm:w-full lg:w-3/12">
@@ -142,7 +142,7 @@
         v-if="homeSettingStore.getFooterCopyright?.toString() !== ''"
         class="bg-gradient-to-b from-white to-sky-100 p-2 pb-8 text-center z-[1]"
     >
-      <div class="md:container md:mx-auto">
+      <div class="max-w-7xl mx-auto w-full">
         <p class="text-zinc-800 text-sm">
           &copy;
           {{ homeSettingStore.getFooterCopyright }}

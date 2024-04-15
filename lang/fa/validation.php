@@ -141,6 +141,7 @@ return [
     'uuid' => ':attribute باید مقدار UUID معتبر باشد',
 
     'captcha_api' => 'کد تصویر به درستی وارد نشده است.',
+    'captcha' => 'کد تصویر به درستی وارد نشده است.',
 
     // verta validations
     'jdate' => ':attribute معتبر نمی باشد.',
@@ -194,6 +195,7 @@ return [
     */
 
     'attributes' => [
+        'captcha' => 'کد تصویر',
         "name" => "نام",
         "latin_name" => "نام لاتین",
         "username" => "نام کاربری",

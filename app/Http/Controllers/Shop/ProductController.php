@@ -18,14 +18,13 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSingleResource;
 use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Models\Product;
-use App\Models\User;
 use App\Services\Contracts\ProductServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductController extends Controller
@@ -39,6 +38,7 @@ class ProductController extends Controller
         protected ProductServiceInterface $service
     )
     {
+        $this->policyModel = Product::class;
     }
 
     /**
@@ -46,11 +46,10 @@ class ProductController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(ProductFilter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Product::class);
         return ProductResource::collection($this->service->getProducts($filter));
     }
 
@@ -59,11 +58,10 @@ class ProductController extends Controller
      *
      * @param StoreProductRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreProductRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Product::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -74,12 +72,11 @@ class ProductController extends Controller
                 'message' => 'ایجاد محصول با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -87,32 +84,33 @@ class ProductController extends Controller
      *
      * @param Product $product
      * @return ProductSingleResource
-     * @throws AuthorizationException
      */
     public function show(Product $product): ProductSingleResource
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
         return new ProductSingleResource($product);
     }
 
     /**
      * Update the specified resource in storage.
+     * @param UpdateProductRequest $request
+     * @param Product $product
+     * @return JsonResponse|ProductResource
      */
     public function update(UpdateProductRequest $request, Product $product): JsonResponse|ProductResource
     {
-        $this->authorize('update', $product);
+        Gate::authorize('update', $product);
 
         $validated = $request->validated();
         $model = $this->service->updateById($product->id, $validated);
 
         if (!is_null($model)) {
             return new ProductResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -121,30 +119,30 @@ class ProductController extends Controller
      * @param Request $request
      * @param Product $product
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, Product $product): JsonResponse
     {
-        $this->authorize('delete', $product);
+        Gate::authorize('delete', $product);
 
         $permanent = $request->user()->id === $product->creator?->id;
         $res = $this->service->deleteById($product->id, $permanent);
-        if ($res) return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
 
+        if ($res) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
         return response()->json([
             'type' => ResponseTypesEnum::WARNING->value,
             'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Product $product
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function showVariants(Product $product): AnonymousResourceCollection
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
         return ProductPropertyResource::collection($product->items());
     }
 
@@ -152,14 +150,13 @@ class ProductController extends Controller
      * @param StoreProductGalleryRequest $request
      * @param Product $product
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function storeGalleryImages(
         StoreProductGalleryRequest $request,
         Product                    $product
     ): JsonResponse
     {
-        $this->authorize('update', $product);
+        Gate::authorize('update', $product);
 
         $validated = $request->validated();
         $res = $this->service->createGalley($product->id, $validated['images']);
@@ -169,22 +166,20 @@ class ProductController extends Controller
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'ایجاد گالری تصاویر با موفقیت انجام شد.',
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ذخیره تصاویر',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ذخیره تصاویر',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Product $product
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function showGalleryImages(Product $product): AnonymousResourceCollection
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
 
         $images = $product->images()->with('image')->get();
         return ImageShowInfoResource::collection($images);
@@ -194,14 +189,13 @@ class ProductController extends Controller
      * @param StoreProductRelatedProductRequest $request
      * @param Product $product
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function storeRelatedProducts(
         StoreProductRelatedProductRequest $request,
         Product                           $product
     ): JsonResponse
     {
-        $this->authorize('update', $product);
+        Gate::authorize('update', $product);
 
         $validated = $request->validated();
         $res = $this->service->createRelatedProducts($product->id, $validated['products']);
@@ -211,22 +205,20 @@ class ProductController extends Controller
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'محصولات مرتبط با موفقیت ثبت شد.',
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ذخیره محصولات مرتبط',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ذخیره محصولات مرتبط',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Product $product
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function showRelatedProducts(Product $product): AnonymousResourceCollection
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
 
         $products = $product->relatedProducts()->with('relatedProduct')->get();
         return ProductResource::collection($products);
@@ -236,14 +228,13 @@ class ProductController extends Controller
      * @param StoreProductPropertyRequest $request
      * @param Product $product
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function modifyProducts(
         StoreProductPropertyRequest $request,
         Product                     $product
     ): AnonymousResourceCollection
     {
-        $this->authorize('update', $product);
+        Gate::authorize('update', $product);
 
         $validated = $request->validated();
 
@@ -256,11 +247,10 @@ class ProductController extends Controller
     /**
      * @param UpdateMultiProductInfo $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function batchUpdateInfo(UpdateMultiProductInfo $request): JsonResponse
     {
-        $this->authorize('batchUpdate', User::class);
+        Gate::authorize('batchUpdate', Product::class);
 
         $validated = $request->validated();
 
@@ -272,21 +262,19 @@ class ProductController extends Controller
                 'message' => 'عملیات با موفقیت انجام شد.',
             ], ResponseCodes::HTTP_OK);
         }
-
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در تغییر دسته‌ای مشخصات',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param UpdateMultiProductPrice $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function batchUpdatePrice(UpdateMultiProductPrice $request): JsonResponse
     {
-        $this->authorize('batchUpdate', User::class);
+        Gate::authorize('batchUpdate', Product::class);
 
         $validated = $request->validated();
 
@@ -311,6 +299,6 @@ class ProductController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در تغییر دسته‌ای قیمت',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

@@ -63,7 +63,7 @@ class FestivalService extends Service implements FestivalServiceInterface
         return $this->repository->all([
             'id', 'title', 'slug',
             'start_at', 'end_at',
-        ]);
+        ], $where->build(), ['created_at' => 'asc']);
     }
 
     /**
@@ -161,7 +161,8 @@ class FestivalService extends Service implements FestivalServiceInterface
     public function removeProductFromFestival($productId, $festivalId): bool
     {
         $where = new WhereBuilder('product_festivals');
-        $where->whereEqual('product_id', $productId)
+        $where
+            ->whereEqual('product_id', $productId)
             ->whereEqual('festival_id', $festivalId);
 
         return $this->repository->deleteWhere($where->build());

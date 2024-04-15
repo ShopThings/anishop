@@ -1,7 +1,5 @@
 <template>
-  <base-dialog
-      container-klass="max-w-7xl overflow-auto"
-  >
+  <base-dialog container-klass="max-w-7xl w-full">
     <template #button="{open}">
       <div
           v-if="!selectedFile"

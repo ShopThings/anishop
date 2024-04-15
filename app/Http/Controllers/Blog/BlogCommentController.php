@@ -12,14 +12,13 @@ use App\Http\Resources\BlogCommentResource;
 use App\Http\Resources\BlogCommentSingleResource;
 use App\Models\Blog;
 use App\Models\BlogComment;
-use App\Models\User;
 use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class BlogCommentController extends Controller
@@ -33,6 +32,7 @@ class BlogCommentController extends Controller
         protected BlogCommentServiceInterface $service
     )
     {
+        $this->policyModel = BlogComment::class;
     }
 
     /**
@@ -41,12 +41,21 @@ class BlogCommentController extends Controller
      * @param Filter $filter
      * @param Blog $blog
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter, Blog $blog): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', BlogComment::class);
         return BlogCommentResource::collection($this->service->getComments(blogId: $blog->id, filter: $filter));
+    }
+
+    /**
+     * @param Filter $filter
+     * @return AnonymousResourceCollection
+     */
+    public function all(Filter $filter): AnonymousResourceCollection
+    {
+        Gate::authorize('viewAny', BlogComment::class);
+        return BlogCommentResource::collection($this->service->getAllComments($filter));
     }
 
     /**
@@ -54,11 +63,10 @@ class BlogCommentController extends Controller
      *
      * @param StoreBlogCommentRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreBlogCommentRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', BlogComment::class);
 
         $validated = $request->validated([
             'blog',
@@ -76,12 +84,11 @@ class BlogCommentController extends Controller
                 'message' => 'ایجاد دیدگاه با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -89,11 +96,10 @@ class BlogCommentController extends Controller
      *
      * @param BlogComment $blogComment
      * @return BlogCommentSingleResource
-     * @throws AuthorizationException
      */
     public function show(BlogComment $blogComment): BlogCommentSingleResource
     {
-        $this->authorize('view', $blogComment);
+        Gate::authorize('view', $blogComment);
         return new BlogCommentSingleResource($blogComment);
     }
 
@@ -103,11 +109,10 @@ class BlogCommentController extends Controller
      * @param UpdateBlogCommentRequest $request
      * @param BlogComment $blogComment
      * @return BlogCommentResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateBlogCommentRequest $request, BlogComment $blogComment): BlogCommentResource|JsonResponse
     {
-        $this->authorize('update', $blogComment);
+        Gate::authorize('update', $blogComment);
 
         $validated = $request->validated([
             'badge',
@@ -118,12 +123,11 @@ class BlogCommentController extends Controller
 
         if (!is_null($model)) {
             return new BlogCommentResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -132,20 +136,19 @@ class BlogCommentController extends Controller
      * @param Request $request
      * @param BlogComment $blogComment
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, BlogComment $blogComment): JsonResponse
     {
-        $this->authorize('delete', $blogComment);
+        Gate::authorize('delete', $blogComment);
 
         $permanent = $request->user()->id === $blogComment->creator?->id;
         $res = $this->service->deleteById($blogComment->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

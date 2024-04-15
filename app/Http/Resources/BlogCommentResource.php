@@ -6,7 +6,6 @@ use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\BlogBadgeShowResource;
-use App\Http\Resources\Showing\BlogCommentShowResource;
 use App\Http\Resources\Showing\BlogShowResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
@@ -23,6 +22,7 @@ class BlogCommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'blog' => new BlogShowResource($this->whenLoaded('blog')),
             'badge' => new BlogBadgeShowResource($this->whenLoaded('badge')),
             'has_children' => $this->resource->hasChildren(),
             'condition' => [

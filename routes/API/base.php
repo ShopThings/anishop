@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\RecoverPasswordController;
 use App\Http\Controllers\Auth\SignupController;
 use App\Http\Controllers\Blog\HomeBlogCommentController;
 use App\Http\Controllers\Blog\HomeBlogController;
+use App\Http\Controllers\Other\CartController;
+use App\Http\Controllers\Other\CheckoutController;
 use App\Http\Controllers\Other\CityController;
 use App\Http\Controllers\Other\FileManagerController;
 use App\Http\Controllers\Other\HomeController;
@@ -13,12 +15,15 @@ use App\Http\Controllers\Other\HomeMenuController;
 use App\Http\Controllers\Other\HomePageController;
 use App\Http\Controllers\Other\HomeSliderController;
 use App\Http\Controllers\Other\ProvinceController;
+use App\Http\Controllers\Payment\HomePaymentMethodController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Shop\HomeBrandController;
 use App\Http\Controllers\Shop\HomeCategoryController;
 use App\Http\Controllers\Shop\HomeCommentController;
+use App\Http\Controllers\Shop\HomeCouponController;
 use App\Http\Controllers\Shop\HomeFestivalController;
 use App\Http\Controllers\Shop\HomeProductController;
+use App\Http\Controllers\Shop\HomeSendMethodController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('api.')
@@ -26,18 +31,41 @@ Route::name('api.')
         Route::middleware('xss')->group(function () {
             $codeRegex = '[\d\w\-\_]+';
 
-            /*
-             * be careful with this route, because anyone can call it!
-             * TODO: make this route more secure (I think in controller).
-             */
-            Route::any('payments/{payment}/verify', [PaymentController::class, 'verify'])
-                ->name('payment.verify');
-
             Route::get('files', [FileManagerController::class, 'show'])
                 ->name('files.show');
 
             Route::post('login', [AuthController::class, 'login'])
                 ->name('login');
+
+            /*
+             * checkout routes
+             */
+            Route::post('place-order', [CheckoutController::class, 'placeOrder'])
+                ->name('checkout.place-order');
+            Route::post('pay/{id}/result', [PaymentController::class, 'verificationResult'])
+                ->whereNumber('id')->name('pay-result');
+            Route::post('pay/{id}', [CheckoutController::class, 'pay'])
+                ->whereNumber('id')->name('checkout.pay');
+
+            /*
+             * cart routes
+             */
+            // this is for getting session cart
+            Route::post('cart/session', [CartController::class, 'sessionCarts'])
+                ->name('cart.session.index');
+
+            Route::post('cart/{code}/add', [CartController::class, 'addToCart'])
+                ->where(['product' => $codeRegex])->name('cart.add');
+            Route::post('cart/addAll', [CartController::class, 'addAllToCart'])
+                ->where(['product' => $codeRegex])->name('cart.add');
+
+            // this is for signed_in users
+            Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+            Route::post('cart/{cart}', [CartController::class, 'show'])
+                ->whereAlpha('cart')->name('cart.show');
+            Route::post('cart', [CartController::class, 'store'])->name('cart.store');
+            Route::delete('cart', [CartController::class, 'destroy'])
+                ->name('cart.destroy');
 
             /*
              * city routes
@@ -74,6 +102,30 @@ Route::name('api.')
                 ->name('recover-password.assign-password');
             Route::post('recover-password/resend-code', [RecoverPasswordController::class, 'resendCode'])
                 ->name('recover-password.resend-code');
+
+            /*
+             * payment method page routes
+             */
+            Route::get('payment-methods', [HomePaymentMethodController::class, 'index'])
+                ->name('payment-methods.index');
+
+            /*
+             * send method page routes
+             */
+            Route::get('send-methods', [HomeSendMethodController::class, 'index'])
+                ->name('send-methods.index');
+
+            /*
+             * coupon page routes
+             */
+            Route::post('coupons/{code}/check', [HomeCouponController::class, 'check'])
+                ->where(['code' => '[a-zA-Z\-_]+'])->name('coupon.check');
+
+            /*
+             * checkout page routes
+             */
+            Route::post('send-price', [CheckoutController::class, 'calculateSendPrice'])
+                ->name('checkout.send-price');
 
             /*
              * main page routes

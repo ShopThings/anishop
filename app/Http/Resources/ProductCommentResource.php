@@ -38,11 +38,11 @@ class ProductCommentResource extends JsonResource
                 vertaTz($this->answered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
             'answered_by' => new UserShowResource($this->when($this->answered_by, $this->answered_by)),
-            'changed_status_at' => $this->when(
-                $this->changed_status_at,
-                vertaTz($this->changed_status_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+            'changed_condition_at' => $this->when(
+                $this->changed_condition_at,
+                vertaTz($this->changed_condition_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'changed_status_by' => new UserShowResource($this->when($this->changed_status_by, $this->status_changer)),
+            'changed_condition_by' => new UserShowResource($this->when($this->changed_condition_by, $this->condition_changer)),
             'flag_count' => $this->flag_count,
             'up_vote_count' => $this->up_vote_count,
             'down_vote_count' => $this->down_vote_count,

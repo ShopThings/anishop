@@ -18,6 +18,7 @@ use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +43,15 @@ class BlogService extends Service implements BlogServiceInterface
     public function getBlogs(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getBlogsSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSingleBlog(GetterExpressionInterface $where): ?Model
+    {
+        if (trim($where->getStatement()) === '') return null;
+        return $this->repository->findWhere($where);
     }
 
     /**

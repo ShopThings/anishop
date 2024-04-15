@@ -50,6 +50,31 @@ class ProductService extends Service implements ProductServiceInterface
     /**
      * @inheritDoc
      */
+    public function getSingleProduct(GetterExpressionInterface $where): ?Model
+    {
+        if (trim($where->getStatement()) === '') return null;
+        return $this->repository->findWhere($where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantByCode(string $code): ?Model
+    {
+        return $this->repository->getProductVariantByCode($code);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantsByCodes(array $codes): Collection
+    {
+        return $this->repository->getProductVariantsByCodes($codes);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getFilteredProducts(HomeProductFilter $filter): Collection|LengthAwarePaginator
     {
         $settingModel = $this->settingService->getSetting(SettingsEnum::PRODUCT_EACH_PAGE->value);

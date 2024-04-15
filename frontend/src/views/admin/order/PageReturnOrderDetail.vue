@@ -154,7 +154,7 @@
 
             <template v-slot:unit_price="{value}">
               <div class="text-lg font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.order_item.unit_price) }}
+                {{ numberFormat(value.order_item.unit_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
@@ -172,7 +172,7 @@
 
             <template v-slot:discounted_price="{value}">
               <div class="text-lg font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.order_item.discounted_price) }}
+                {{ numberFormat(value.order_item.discounted_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
@@ -195,7 +195,7 @@ import BaseAccordion from "@/components/base/BaseAccordion.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
-import {formatPriceLikeNumber, getRouteParamByKey} from "@/composables/helper.js";
+import {numberFormat, getRouteParamByKey} from "@/composables/helper.js";
 import {ReturnOrderAPI} from "@/service/APIOrder.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 import PartialBadgeSize from "@/components/partials/PartialBadgeSize.vue";

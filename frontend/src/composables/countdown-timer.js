@@ -1,8 +1,8 @@
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import isFunction from "lodash.isfunction";
 
 export function useCountdown(duration, elemRef = null) {
-  const refreshTimeSeconds = duration
+  const refreshTimeSeconds = parseInt(duration, 10) || 0
   const refreshTimeElem = elemRef
   const refreshCallbackInterval = ref(null)
   const refreshInterval = ref(null)
@@ -12,6 +12,39 @@ export function useCountdown(duration, elemRef = null) {
 
   const minutes = ref('00')
   const seconds = ref('00')
+
+  const minutesWithoutPadding = ref(0)
+  const secondsWithoutPadding = ref(0)
+
+  function assignDurationToValues(m, s) {
+    minutesWithoutPadding.value = m
+    secondsWithoutPadding.value = s
+
+    let minStr = minutesWithoutPadding.value.toString().padStart(2, '0')
+    let secStr = secondsWithoutPadding.value.toString().padStart(2, '0')
+
+    minutes.value = minStr
+    seconds.value = secStr
+
+    if (refreshTimeElem?.value) {
+      refreshTimeElem.value.textContent = minStr + ':' + secStr
+    }
+  }
+
+  function calculateDifference() {
+    let m, s
+    const diff = Math.abs(refreshTimeEnd.value - (new Date())) / 1000
+
+    m = Math.floor(diff / 60)
+    s = Math.ceil(diff - (m * 60))
+
+    if (s === 60) {
+      m = m + 1
+      s = 0
+    }
+
+    assignDurationToValues(m, s)
+  }
 
   let userCallback = () => {
   }
@@ -26,14 +59,17 @@ export function useCountdown(duration, elemRef = null) {
   function stop() {
     pause()
     reset()
+
+    // to show min number of duration(0)
+    assignDurationToValues(0, 0)
   }
 
   function pause() {
-    if (refreshInterval?.value) {
+    if (refreshInterval.value) {
       clearInterval(refreshInterval.value)
       refreshInterval.value = null
     }
-    if (refreshCallbackInterval?.value) {
+    if (refreshCallbackInterval.value) {
       clearInterval(refreshCallbackInterval.value)
       refreshCallbackInterval.value = null
     }
@@ -49,27 +85,11 @@ export function useCountdown(duration, elemRef = null) {
   function resume() {
     pause()
 
+    // to show max number of duration
+    calculateDifference()
+
     refreshInterval.value = setInterval(() => {
-      let m, s
-      const diff = Math.abs(refreshTimeEnd.value - (new Date())) / 1000
-
-      m = Math.floor(diff / 60)
-      s = Math.ceil(diff - (m * 60))
-
-      if (s === 60) {
-        m = m + 1
-        s = 0
-      }
-
-      let minStr = (m + '').padStart(2, '0')
-      let secStr = (s + '').padStart(2, '0')
-
-      minutes.value = minStr
-      seconds.value = secStr
-
-      if (refreshTimeElem?.value) {
-        refreshTimeElem.value.textContent = minStr + ':' + secStr
-      }
+      calculateDifference()
     }, 1000)
 
     refreshCallbackInterval.value = setInterval(() => {
@@ -79,9 +99,9 @@ export function useCountdown(duration, elemRef = null) {
     started.value = true
   }
 
-  function isStarted() {
+  const isStarted = computed(() => {
     return started.value
-  }
+  })
 
   return {
     start,
@@ -91,7 +111,7 @@ export function useCountdown(duration, elemRef = null) {
     resume,
     isStarted,
     //
-    minutes,
-    seconds,
+    minutes, minutesWithoutPadding,
+    seconds, secondsWithoutPadding,
   }
 }

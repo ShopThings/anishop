@@ -43,7 +43,7 @@ class UserHomeController extends Controller
         $blogCommentCount = $blogCommentService->getUserCommentsCount($user->id);
         $favoriteProductCount = $userService->getUserFavoriteProductsCount($user->id);
         $addressCount = $userService->getUserAddressesCount($user->id);
-        $contactCount = $contactUsService->getContactsCount($user->id);
+        $contactCount = $contactUsService->getUserContactsCount($user->id);
 
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,

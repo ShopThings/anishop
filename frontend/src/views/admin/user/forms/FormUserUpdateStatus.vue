@@ -12,33 +12,35 @@
         @change="(status) => {deletableStatus=status}"
     />
 
-    <base-switch
+    <template v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.BAN)">
+      <base-switch
         :enabled="!user?.is_banned"
         label="عدم اجازه فعالیت کاربر"
         name="is_banned"
         on-label="اجازه فعالیت کاربر"
         sr-text="اجازه یا جلوگیری از فعالیت کاربر"
         @change="(status) => {banStatus=status}"
-    />
+      />
 
-    <VTransitionSlideFadeDownY>
-      <div
+      <VTransitionSlideFadeDownY>
+        <div
           v-if="!banStatus"
           class="mt-3"
-      >
-        <base-textarea
-            :has-edit-mode="!user?.ban_desc"
+        >
+          <base-textarea
+            :in-edit-mode="!user?.ban_desc"
             :value="user?.ban_desc"
             label-title="علت عدم اجازه فعالیت به کاربر"
             name="ban_desc"
             placeholder="توضیحات خود را وارد کنید..."
-        >
-          <template #icon>
-            <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
-          </template>
-        </base-textarea>
-      </div>
-    </VTransitionSlideFadeDownY>
+          >
+            <template #icon>
+              <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
+            </template>
+          </base-textarea>
+        </div>
+      </VTransitionSlideFadeDownY>
+    </template>
 
     <div class="px-2 py-3">
       <base-animated-button
@@ -92,7 +94,7 @@ import {useRequest} from "@/composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import {useAdminAuthStore, ROLES} from "@/store/StoreUserAuth.js";
+import {PERMISSION_PLACES, PERMISSIONS, ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 
 const props = defineProps({
@@ -129,7 +131,10 @@ const {canSubmit, onSubmit} = useFormSubmit({
     ban_desc: yup.string().when('is_banned', {
       is: false,
       then: (schema) => {
-        return schema.required('وارد نمودن توضیحات عدم اجازه فعالیت ضروری می‌باشد.')
+        if (userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.BAN)) {
+          return schema.required('وارد نمودن توضیحات عدم اجازه فعالیت ضروری می‌باشد.')
+        }
+        return schema
       },
       otherwise: (schema) => schema.optional().nullable(),
     }),

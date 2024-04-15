@@ -8,14 +8,13 @@ use App\Http\Requests\StoreUnitRequest;
 use App\Http\Requests\UpdateUnitRequest;
 use App\Http\Resources\UnitResource;
 use App\Models\Unit;
-use App\Models\User;
 use App\Services\Contracts\UnitServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UnitController extends Controller
@@ -30,6 +29,7 @@ class UnitController extends Controller
     )
     {
         $this->considerDeletable = true;
+        $this->policyModel = Unit::class;
     }
 
     /**
@@ -37,11 +37,10 @@ class UnitController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Unit::class);
         return UnitResource::collection($this->service->getUnits($filter));
     }
 
@@ -50,11 +49,10 @@ class UnitController extends Controller
      *
      * @param StoreUnitRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreUnitRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Unit::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -65,12 +63,11 @@ class UnitController extends Controller
                 'message' => 'ایجاد واحد محصول با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد واحد محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد واحد محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -78,11 +75,10 @@ class UnitController extends Controller
      *
      * @param Unit $unit
      * @return UnitResource
-     * @throws AuthorizationException
      */
     public function show(Unit $unit): UnitResource
     {
-        $this->authorize('view', $unit);
+        Gate::authorize('view', $unit);
         return new UnitResource($unit);
     }
 
@@ -92,11 +88,10 @@ class UnitController extends Controller
      * @param UpdateUnitRequest $request
      * @param Unit $unit
      * @return UnitResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateUnitRequest $request, Unit $unit): JsonResponse|UnitResource
     {
-        $this->authorize('update', $unit);
+        Gate::authorize('update', $unit);
 
         $validated = $request->validated();
         unset($validated['is_deletable']);
@@ -104,12 +99,11 @@ class UnitController extends Controller
 
         if (!is_null($model)) {
             return new UnitResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش واحد محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش واحد محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -118,20 +112,19 @@ class UnitController extends Controller
      * @param Request $request
      * @param Unit $unit
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, Unit $unit): JsonResponse
     {
-        $this->authorize('delete', $unit);
+        Gate::authorize('delete', $unit);
 
         $permanent = $request->user()->id === $unit->creator?->id;
         $res = $this->service->deleteById($unit->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

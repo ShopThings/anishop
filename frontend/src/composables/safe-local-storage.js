@@ -1,6 +1,7 @@
 import Crypto from 'crypto-js'
 import Cookie from 'js-cookie'
 import {v4} from 'uuid'
+import isObject from "lodash.isobject";
 
 const cookieName = 'ensureSafeDataLocal'
 // Get the encryption token from cookie or generate a new one.

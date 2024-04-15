@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Shop;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Filters\HomeProductFilter;
@@ -13,9 +14,13 @@ use App\Http\Resources\Home\ProductResource as HomeProductResource;
 use App\Http\Resources\Home\ProductSingleResource as HomeProductSingleResource;
 use App\Models\Product;
 use App\Services\Contracts\ProductServiceInterface;
+use App\Support\WhereBuilder\WhereBuilder;
+use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HomeProductController extends Controller
 {
@@ -45,16 +50,32 @@ class HomeProductController extends Controller
      */
     public function show(Product $product): HomeProductSingleResource
     {
+        Gate::authorize('isPubliclyAccessible', $product);
         return new HomeProductSingleResource($product);
     }
 
     /**
-     * @param Product $product
+     * @param $product
      * @return HomeProductResource
      */
-    public function minifiedShow(Product $product): HomeProductResource
+    public function minifiedShow($product): HomeProductResource
     {
-        return new HomeProductResource($product);
+        $where = new WhereBuilder();
+        $where
+            ->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->group(function (WhereBuilderInterface $builder) use ($product) {
+                $builder
+                    ->orWhereEqual('id', $product)
+                    ->orWhereEqual('slug', $product);
+            });
+
+        $model = $this->service->getSingleProduct($where->build());
+
+        if (is_null($model)) {
+            throw new NotFoundHttpException();
+        }
+
+        return new HomeProductResource($model);
     }
 
     /**

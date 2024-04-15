@@ -2,11 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Payments\GatewaysEnum;
-use App\Enums\Payments\PaymentTypesEnum;
 use App\Rules\FileExistsRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
 
 class UpdateSendMethodRequest extends FormRequest
 {
@@ -53,6 +50,9 @@ class UpdateSendMethodRequest extends FormRequest
             'only_for_shop_location' => [
                 'boolean',
             ],
+            'apply_number_of_shipments_on_price' => [
+                'boolean',
+            ],
             'is_published' => [
                 'boolean',
             ],
@@ -65,6 +65,7 @@ class UpdateSendMethodRequest extends FormRequest
             'price' => 'هزینه ارسال',
             'determine_price_by_shop_location' => 'در نظرگیری مکان فروشگاه برای قیمت ارسال',
             'only_for_shop_location' => 'اعمال فقط برای محدوده مکان فروشگاه',
+            'apply_number_of_shipments_on_price' => 'اعمال هزینه ارسال به ازای هر مرسوله',
         ];
     }
 }

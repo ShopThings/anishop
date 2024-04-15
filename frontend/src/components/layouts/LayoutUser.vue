@@ -7,13 +7,13 @@
     <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-user ref="navbarCom"/>
 
-      <div v-if="title" ref="extra" class="p-3">
+      <div v-if="title" ref="extra" class="p-3 max-w-7xl mx-auto w-full">
         <h1 class="flex items-center text-indigo-700">
           {{ title }}
         </h1>
       </div>
 
-      <div ref="page" class="px-3 pb-3">
+      <div ref="page" class="px-3 pb-3 max-w-7xl mx-auto w-full">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">
@@ -23,7 +23,7 @@
         </router-view>
       </div>
 
-      <div ref="footer">
+      <div ref="footer" class="max-w-7xl mx-auto w-full">
         <app-footer-user/>
       </div>
     </div>
@@ -40,6 +40,7 @@ import AppSidebarUser from "@/components/user/AppSidebarUser.vue";
 import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
 import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPanel.js";
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const transitionProps = defineTransitionProps({
   mode: 'out-in',
@@ -63,6 +64,9 @@ provide('notificationStore', notificationStore);
 
 const homeSettingStore = useHomeSettingsStore()
 provide('homeSettingStore', homeSettingStore);
+
+const cartStore = useCartStore()
+provide('cartStore', cartStore)
 
 //--------------------------------------
 

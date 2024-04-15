@@ -5,8 +5,8 @@ namespace App\Contracts;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface RepositoryInterface
 {
@@ -138,6 +138,7 @@ interface RepositoryInterface
     /**
      * @param $id
      * @param array $columns
+     * @param array $order
      * @param bool $withTrashed
      * @param bool $onlyTrashed
      * @return Collection|Model|null
@@ -145,6 +146,7 @@ interface RepositoryInterface
     public function find(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null;
@@ -152,6 +154,7 @@ interface RepositoryInterface
     /**
      * @param $id
      * @param array $columns
+     * @param array $order
      * @param bool $withTrashed
      * @param bool $onlyTrashed
      * @return Collection|Model|null
@@ -159,6 +162,7 @@ interface RepositoryInterface
     public function findOrFail(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null;
@@ -166,6 +170,7 @@ interface RepositoryInterface
     /**
      * @param GetterExpressionInterface $where
      * @param array $columns
+     * @param array $order
      * @param bool $withTrashed
      * @param bool $onlyTrashed
      * @return Model|null
@@ -173,6 +178,7 @@ interface RepositoryInterface
     public function findWhere(
         GetterExpressionInterface $where,
         array                     $columns = ['*'],
+        array $order = [],
         bool                      $withTrashed = false,
         bool                      $onlyTrashed = false
     ): Model|null;

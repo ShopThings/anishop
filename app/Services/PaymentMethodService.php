@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Repositories\Contracts\PaymentMethodRepositoryInterface;
@@ -50,6 +51,19 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
                 page: $filter->getPage(),
                 order: $filter->getOrder()
             );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHomeMethods(): Collection
+    {
+        $where = new WhereBuilder('payment_methods');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository
+            ->newWith('image')
+            ->all(where: $where->build(), order: ['id' => 'asc']);
     }
 
     /**

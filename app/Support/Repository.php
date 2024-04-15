@@ -10,8 +10,8 @@ use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 abstract class Repository implements RepositoryInterface
 {
@@ -222,6 +222,7 @@ abstract class Repository implements RepositoryInterface
     public function find(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null
@@ -235,6 +236,8 @@ abstract class Repository implements RepositoryInterface
                 $query->withTrashed();
             }
         }
+
+        $query = $this->applyOrderToQuery($query, $order);
 
         return $query->find($id, $columns);
     }
@@ -245,6 +248,7 @@ abstract class Repository implements RepositoryInterface
     public function findOrFail(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null
@@ -259,6 +263,8 @@ abstract class Repository implements RepositoryInterface
             }
         }
 
+        $query = $this->applyOrderToQuery($query, $order);
+
         return $query->findOrFail($id, $columns);
     }
 
@@ -266,11 +272,14 @@ abstract class Repository implements RepositoryInterface
     public function findWhere(
         GetterExpressionInterface $where,
         array                     $columns = ['*'],
+        array $order = [],
         bool                      $withTrashed = false,
         bool                      $onlyTrashed = false
     ): Model|null
     {
         $query = $this->prepareGetQuery($where, [], $withTrashed, $onlyTrashed);
+        $query = $this->applyOrderToQuery($query, $order);
+
         return $query->first($columns);
     }
 
@@ -378,11 +387,7 @@ abstract class Repository implements RepositoryInterface
             }
         );
 
-        if (count($order)) {
-            foreach ($order as $column => $sort) {
-                $query->orderBy($column, $sort);
-            }
-        }
+        $query = $this->applyOrderToQuery($query, $order);
 
         return $query;
     }
@@ -416,5 +421,21 @@ abstract class Repository implements RepositoryInterface
         // reset with array for further operation
         $this->resetWith();
         $this->resetWithWhereHas();
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $order
+     * @return Builder
+     */
+    protected function applyOrderToQuery(Builder $query, array $order): Builder
+    {
+        if (count($order)) {
+            foreach ($order as $column => $sort) {
+                $query->orderBy($column, $sort);
+            }
+        }
+
+        return $query;
     }
 }

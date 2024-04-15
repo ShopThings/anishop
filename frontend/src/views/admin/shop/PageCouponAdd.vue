@@ -1,12 +1,12 @@
 <template>
   <partial-card>
     <template #header>
-      ایجاد کوپن جدید
+      ایجاد کد تخفیف جدید
     </template>
     <template #body>
       <div class="p-3">
         <base-message :has-close="false" type="info">
-          توجه داشته باشید، کد کوپن پس از ثبت، به دلیل یکتا نمودن کدها، قابلیت تغییر را
+          توجه داشته باشید، کد تخفیف پس از ثبت، به دلیل یکتا نمودن کدها، قابلیت تغییر را
           <span class="bg-orange-200 text-rose-600 rounded-lg px-3">ندارد</span>
           .
         </base-message>
@@ -15,9 +15,9 @@
           <div class="p-2">
             <base-switch
                 :enabled="true"
-                label="قابل استفاده نمودن کوپن"
+                label="قابل استفاده نمودن کد تخفیف"
                 name="is_published"
-                sr-text="قابل استفاده نمودن کوپن"
+                sr-text="قابل استفاده نمودن کد تخفیف"
                 @change="(status) => {publishStatus=status}"
             />
           </div>
@@ -193,7 +193,7 @@
                 <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
               </template>
 
-              <span class="ml-auto">افزودن کوپن</span>
+              <span class="ml-auto">افزودن کوپن تخفیف</span>
             </base-animated-button>
 
             <div
@@ -243,12 +243,15 @@ const endDate = ref(null)
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
-    code: yup.string().required('کد کوپن برای استفاده کاربر را وارد نمایید.'),
+    code: yup.string()
+      .transform(transformNumbersToEnglish)
+      .matches(/[a-zA-Z\-_]+/g, 'تنها از حروف و اعداد انگلیسی استفاده نمایید.')
+      .required('کد تخفیف برای استفاده کاربر را وارد نمایید.'),
     title: yup.string().required('عنوان را وارد نمایید.'),
     price: yup.string()
         .transform(transformNumbersToEnglish)
         .positiveNumber('مبلغ باید عددی مثبت و بیشتر از ۱۰۰۰ تومان باشد.', {gt: 1000})
-        .required('مبلغ کوپن را وارد نمایید.'),
+      .required('مبلغ کوپن تخفیف را وارد نمایید.'),
     apply_min_price: yup.string()
         .optional()
         .transform(transformNumbersToEnglish)

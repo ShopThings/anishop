@@ -7,7 +7,7 @@
     <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-admin ref="navbarCom"/>
 
-      <div v-if="title" ref="extra" class="p-3">
+      <div v-if="title" ref="extra" class="p-3 max-w-7xl mx-auto w-full">
         <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
           <h1 class="flex items-center">
             <ArrowLeftCircleIcon class="h-5 w-5 ml-2 text-emerald-500"/>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div ref="page" class="px-3 pb-3">
+      <div ref="page" class="px-3 pb-3 max-w-7xl mx-auto w-full">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">
@@ -51,7 +51,7 @@
       </div>
 
       <div class="bg-gradient-to-t from-indigo-200">
-        <div ref="footer">
+        <div ref="footer" class="max-w-7xl mx-auto w-full">
           <app-footer-admin/>
         </div>
       </div>
@@ -60,15 +60,16 @@
 </template>
 
 <script setup>
-import {ref, watch, watchEffect} from "vue"
+import {onBeforeMount, provide, ref, watch, watchEffect} from "vue"
 import {useResizeObserver} from "@vueuse/core"
-import {useRoute} from "vue-router"
-import {ChevronLeftIcon, ArrowLeftCircleIcon, HomeIcon} from '@heroicons/vue/24/outline'
-
+import {useRoute, useRouter} from "vue-router"
+import {ArrowLeftCircleIcon, ChevronLeftIcon, HomeIcon} from '@heroicons/vue/24/outline'
 import AppNavbarAdmin from "@/components/admin/AppNavbarAdmin.vue"
 import AppFooterAdmin from "@/components/admin/AppFooterAdmin.vue"
 import AppSidebarAdmin from "@/components/admin/AppSidebarAdmin.vue"
 import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+import {useCountingAlertsStore, useCountingOrdersStore, useNotificationStore} from "@/store/StoreAdminPanel.js";
+import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const transitionProps = defineTransitionProps({
   mode: 'out-in',
@@ -82,7 +83,20 @@ const transitionProps = defineTransitionProps({
 })
 
 const route = useRoute()
+const router = useRouter()
+const user = useAdminAuthStore()
 
+//--------------------------------------
+const countingAlertStore = useCountingAlertsStore();
+provide('countingAlertStore', countingAlertStore);
+
+const countingOrderStore = useCountingOrdersStore();
+provide('countingOrderStore', countingOrderStore);
+
+const notificationStore = useNotificationStore();
+provide('notificationStore', notificationStore);
+
+//--------------------------------------
 let title = ref(null)
 let breadcrumb = ref(null)
 
@@ -126,4 +140,11 @@ function calcCrumbLink(crumb) {
 
   return obj;
 }
+
+onBeforeMount(() => {
+  if (!user.getUser) {
+    user.$reset()
+    router.push({name: 'admin.login'})
+  }
+})
 </script>

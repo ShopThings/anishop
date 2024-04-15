@@ -7,7 +7,7 @@
     <template #content>
       <base-accordion
           btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
-          panel-class="max-h-96 overflow-auto"
+          panel-class="max-h-96 overflow-auto my-custom-scrollbar"
       >
         <template #button>
           محصولات انتخاب شده

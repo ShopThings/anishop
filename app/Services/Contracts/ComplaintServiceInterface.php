@@ -14,4 +14,9 @@ interface ComplaintServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getComplaints(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getNotSeenComplaintsCount(): int;
 }

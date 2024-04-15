@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Filters\OrderFilter;
 use App\Http\Requests\UpdateOrderDetailRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Http\Resources\OrderDetailResource;
@@ -14,10 +15,10 @@ use App\Models\OrderDetail;
 use App\Models\User;
 use App\Services\Contracts\OrderServiceInterface;
 use App\Support\Filter;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class OrderController extends Controller
@@ -29,6 +30,7 @@ class OrderController extends Controller
         protected OrderServiceInterface $service
     )
     {
+        $this->policyModel = Order::class;
     }
 
     /**
@@ -37,11 +39,10 @@ class OrderController extends Controller
      * @param Filter $filter
      * @param User|null $user
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
-    public function index(Filter $filter, ?User $user = null): AnonymousResourceCollection
+    public function index(OrderFilter $filter, ?User $user = null): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Order::class);
         return OrderDetailResource::collection($this->service->getOrders(userId: $user?->id, filter: $filter));
     }
 
@@ -50,11 +51,10 @@ class OrderController extends Controller
      *
      * @param OrderDetail $order
      * @return OrderDetailSingleResource
-     * @throws AuthorizationException
      */
     public function show(OrderDetail $order): OrderDetailSingleResource
     {
-        $this->authorize('view', $order);
+        Gate::authorize('view', $order);
         return new OrderDetailSingleResource($order);
     }
 
@@ -64,23 +64,21 @@ class OrderController extends Controller
      * @param UpdateOrderDetailRequest $request
      * @param OrderDetail $order
      * @return OrderDetailResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateOrderDetailRequest $request, OrderDetail $order): OrderDetailResource|JsonResponse
     {
-        $this->authorize('update', $order);
+        Gate::authorize('update', $order);
 
         $validated = $request->validated();
         $model = $this->service->updateByCode($order->code, $validated);
 
         if (!is_null($model)) {
             return new OrderDetailResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش جزئیات سفارش',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش جزئیات سفارش',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -89,48 +87,45 @@ class OrderController extends Controller
      * @param Request $request
      * @param OrderDetail $order
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, OrderDetail $order): JsonResponse
     {
-        $this->authorize('delete', $order);
+        Gate::authorize('delete', $order);
 
         $permanent = $request->user()->id === $order->creator?->id;
         $res = $this->service->deleteById($order->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param UpdateOrderRequest $request
      * @param Order $order
      * @return OrderResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function updatePayment(UpdateOrderRequest $request, Order $order): JsonResponse|OrderResource
     {
-        $this->authorize('update', $order);
+        Gate::authorize('update', $order);
 
         $validated = $request->validated();
         $model = $this->service->updatePayment($order->id, $validated);
 
         if (!is_null($model)) {
             return new OrderResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش سفارش',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش سفارش',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function paymentStatuses(): JsonResponse
     {
@@ -141,7 +136,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function sendStatuses(): JsonResponse
     {

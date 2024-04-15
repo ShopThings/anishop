@@ -175,6 +175,14 @@ export const CommentAPI = {
     )
   },
 
+  fetchAllComments(params, callbacks) {
+    useRequest(
+      apiRoutes.admin.comments.all,
+      {params},
+      callbacks
+    )
+  },
+
   updateById(productId, commentId, data, callback) {
     useRequest(
       apiReplaceParams(apiRoutes.admin.comments.update, {

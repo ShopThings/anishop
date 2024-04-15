@@ -1,6 +1,7 @@
 import Crypto from 'crypto-js'
 import Cookie from 'js-cookie'
 import {v4} from 'uuid'
+import isObject from "lodash.isobject";
 
 const cookieName = 'ensureSafeDataSession'
 // Get the encryption token from cookie or generate a new one.
@@ -20,7 +21,18 @@ export const useSafeSessionStorage = {
         // using our encryption token stored in cookies.
         const bytes = Crypto.AES.decrypt(store, encryptionToken)
 
-        return JSON.parse(bytes.toString(Crypto.enc.Utf8))
+        const decryptedValue = JSON.parse(bytes.toString(Crypto.enc.Utf8))
+
+        // Check if the decrypted value is in JSON format (object or array)
+        if (decryptedValue.startsWith('{') || decryptedValue.startsWith('[')) {
+          try {
+            return JSON.parse(decryptedValue); // Return parsed object or array
+          } catch (e) {
+            return decryptedValue; // Return decrypted string if JSON parsing fails
+          }
+        } else {
+          return decryptedValue; // Return decrypted primitive value
+        }
       } catch (e) {
         // The store will be reset if decryption fails.
         window.sessionStorage.removeItem(key)
@@ -30,6 +42,11 @@ export const useSafeSessionStorage = {
     return null;
   },
   setItem: (key, value) => {
+    // Serialize objects and arrays into JSON strings before encryption
+    if (isObject(value)) {
+      value = JSON.stringify(value)
+    }
+
     // Encrypt the store using our encryption token stored in cookies.
     const store = Crypto.AES.encrypt(value, encryptionToken).toString()
 

@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import {LockOpenIcon, LockClosedIcon} from "@heroicons/vue/24/outline/index.js";
+import {LockClosedIcon, LockOpenIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
@@ -56,6 +56,8 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {useRouter} from "vue-router";
 import {POSITION, useToast} from "vue-toastification";
 import {HomeRecoverPasswordAPI} from "@/service/APIHomePages.js";
+import {useRecoverPasswordStore} from "@/store/StoreUserHome.js";
+import {onMounted} from "vue";
 
 const props = defineProps({
   options: {
@@ -66,6 +68,8 @@ const props = defineProps({
 
 const router = useRouter()
 const toast = useToast()
+
+const recoverStore = useRecoverPasswordStore()
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
@@ -84,6 +88,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   HomeRecoverPasswordAPI.assignNewPassword(values, {
     success() {
+      recoverStore.$reset()
       actions.resetForm()
       toast.info('به پنل کاربری خود وارد شوید.', {
         position: POSITION.BOTTOM_CENTER,
@@ -99,5 +104,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       canSubmit.value = true
     },
   })
+})
+
+onMounted(() => {
+  if (!recoverStore.canGoToStepPassword) {
+    props.options.prev()
+  }
 })
 </script>

@@ -26,6 +26,7 @@ class ProductShowResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => new ImageShowResource($this->image),
+            'unit_name' => $this->unit_name,
             'is_available' => $this->is_available,
         ];
     }

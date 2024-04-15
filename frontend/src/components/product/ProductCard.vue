@@ -82,7 +82,7 @@
                   <div class="flex flex-col mr-3">
                     <div class="my-1 text-lg">
                       <span class="font-iranyekan-bold mx-1">
-                        {{ formatPriceLikeNumber(slide.discounted_price) }}
+                        {{ numberFormat(slide.discounted_price) }}
                       </span>
                       <span class="text-xs text-gray-400">تومان</span>
                     </div>
@@ -91,7 +91,7 @@
                         <span
                             class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-400 -rotate-3"></span>
                         <div class="text-slate-400 text-center">
-                          {{ formatPriceLikeNumber(slide.price) }}
+                          {{ numberFormat(slide.price) }}
                           <span class="text-xs text-gray-400">تومان</span>
                         </div>
                       </div>
@@ -146,7 +146,7 @@ import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import LoaderCard from "@/components/base/loader/LoaderCard.vue";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import BaseCarousel from "@/components/base/BaseCarousel.vue";
-import {formatPriceLikeNumber, getPercentageOfPortion} from "@/composables/helper.js";
+import {numberFormat, getPercentageOfPortion} from "@/composables/helper.js";
 import {watchImmediate} from "@vueuse/core";
 
 const props = defineProps({

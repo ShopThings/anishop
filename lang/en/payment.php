@@ -12,11 +12,11 @@ return [
     ],
 
     'status' => [
-        PaymentStatusesEnum::SUCCESS->value => 'Payed',
+        PaymentStatusesEnum::SUCCESS->value => 'Paid',
         PaymentStatusesEnum::FAILED->value => 'Failed Payment',
         PaymentStatusesEnum::WAIT_VERIFY->value => 'Wait To Verify',
         PaymentStatusesEnum::WAIT->value => 'Wait For Payment',
-        PaymentStatusesEnum::NOT_PAYED->value => 'Not Payed',
+        PaymentStatusesEnum::NOT_PAID->value => 'Not Paid',
     ],
 
     'gateways' => [

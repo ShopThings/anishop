@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {DevicePhoneMobileIcon, QrCodeIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
@@ -88,6 +88,7 @@ import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMes
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import BaseMessage from "@/components/base/BaseMessage.vue";
 import {HomeSignupAPI} from "@/service/APIHomePages.js";
+import {useSignupStore} from "@/store/StoreUserHome.js";
 
 const props = defineProps({
   options: {
@@ -95,6 +96,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const signupStore = useSignupStore()
 
 const agreementStatus = ref(false)
 
@@ -131,11 +134,17 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   HomeSignupAPI.storeMobile({
     username: values.username,
+    captcha: values.captcha,
     key: captchaKey.value,
   }, {
     success() {
+      actions.resetForm();
+
       if (isFunction(props.options?.next)) {
-        actions.resetForm();
+        signupStore.setMobileStep({
+          mobile: values.username,
+        })
+
         props.options.next()
       }
     },
@@ -156,5 +165,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       canSubmit.value = true
     },
   })
+})
+
+onMounted(() => {
+  signupStore.$reset()
 })
 </script>

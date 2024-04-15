@@ -260,7 +260,7 @@ const props = defineProps({
     type: String,
     default: 'mt-1'
   },
-  hasEditMode: {
+  inEditMode: {
     type: Boolean,
     default: true,
   },
@@ -277,10 +277,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['change', 'before-change', 'query', 'click-next-page', 'click-prev-page'])
 
-const editMode = ref(props.hasEditMode)
+const editMode = ref(props.inEditMode)
 
-watch(() => props.hasEditMode, () => {
-  editMode.value = props.hasEditMode
+watch(() => props.inEditMode, () => {
+  editMode.value = props.inEditMode
 })
 
 function toggleEditMode() {

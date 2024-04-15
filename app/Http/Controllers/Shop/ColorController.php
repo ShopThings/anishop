@@ -8,14 +8,13 @@ use App\Http\Requests\StoreColorRequest;
 use App\Http\Requests\UpdateColorRequest;
 use App\Http\Resources\ColorResource;
 use App\Models\Color;
-use App\Models\User;
 use App\Services\Contracts\ColorServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ColorController extends Controller
@@ -30,6 +29,7 @@ class ColorController extends Controller
     )
     {
         $this->considerDeletable = true;
+        $this->policyModel = Color::class;
     }
 
     /**
@@ -37,11 +37,10 @@ class ColorController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Color::class);
         return ColorResource::collection($this->service->getColors($filter));
     }
 
@@ -50,11 +49,10 @@ class ColorController extends Controller
      *
      * @param StoreColorRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreColorRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Color::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -65,12 +63,11 @@ class ColorController extends Controller
                 'message' => 'ایجاد رنگ با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد رنگ',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد رنگ',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -78,11 +75,10 @@ class ColorController extends Controller
      *
      * @param Color $color
      * @return ColorResource
-     * @throws AuthorizationException
      */
     public function show(Color $color): ColorResource
     {
-        $this->authorize('view', $color);
+        Gate::authorize('view', $color);
         return new ColorResource($color);
     }
 
@@ -92,11 +88,10 @@ class ColorController extends Controller
      * @param UpdateColorRequest $request
      * @param Color $color
      * @return ColorResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateColorRequest $request, Color $color): ColorResource|JsonResponse
     {
-        $this->authorize('update', $color);
+        Gate::authorize('update', $color);
 
         $validated = $request->validated();
         unset($validated['is_deletable']);
@@ -104,12 +99,11 @@ class ColorController extends Controller
 
         if (!is_null($model)) {
             return new ColorResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش رنگ',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش رنگ',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -118,20 +112,19 @@ class ColorController extends Controller
      * @param Request $request
      * @param Color $color
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, Color $color): JsonResponse
     {
-        $this->authorize('delete', $color);
+        Gate::authorize('delete', $color);
 
         $permanent = $request->user()->id === $color->creator?->id;
         $res = $this->service->deleteById($color->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

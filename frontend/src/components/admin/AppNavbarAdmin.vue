@@ -1,7 +1,7 @@
 <template>
   <div ref="navbar" class="h-[64px] relative">
     <nav class="bg-white w-full shadow-md">
-      <div class="h-[64px] py-2 px-6 flex">
+      <div class="h-[64px] py-2 px-6 flex max-w-7xl mx-auto w-full">
         <div class="h-full grow flex justify-between">
           <ul class="flex mt-[4px] space-x-reverse">
             <li class="px-1 xl:hidden">
@@ -30,9 +30,11 @@
                         <div class="flex flex-col pb-4 bg-gradient-to-b from-[#ffffff4f]">
                           <div class="py-4 bg-gradient-to-b from-[#ffffff4f] mb-0 lg:mb-4">
                             <router-link :to="{name: 'home'}" target="_blank">
-                              <img alt="لوگو"
-                                   class="h-[28px] mx-auto lg:h-[36px]"
-                                   src="/logo-with-type-light.png">
+                              <img
+                                alt="لوگو"
+                                class="h-[28px] mx-auto lg:h-[36px]"
+                                src="/logo-with-type-light.png"
+                              >
                             </router-link>
                           </div>
 
@@ -49,8 +51,7 @@
                                   <template v-if="user.roles">
                                       <span v-for="(role, key, idx) in user.roles">
                                           {{ role }}
-                                          <span
-                                              v-if="idx !== Object.keys(user.roles).length - 1">, </span>
+                                          <span v-if="idx !== Object.keys(user.roles).length - 1">, </span>
                                       </span>
                                   </template>
                                   <template v-else>
@@ -70,7 +71,10 @@
                                 <span>نمایش سایت</span>
                               </router-link>
 
-                              <div class="mr-3 shrink-0">
+                              <div
+                                v-if="store.hasPermission(PERMISSION_PLACES.SETTING, PERMISSIONS.UPDATE)"
+                                class="mr-3 shrink-0"
+                              >
                                 <router-link
                                     v-tooltip.left="'تنظیمات'" :to="{name: 'admin.settings'}"
                                     class="ring-1 ring-white text-center rounded-lg px-2.5 py-2.5 hover:bg-white hover:bg-opacity-10 transition block"
@@ -106,10 +110,20 @@
                 </template>
               </base-popover-side>
             </li>
-            <li class="px-1">
+            <li
+              v-if="countingAlertStore.hasAnyCount"
+              class="px-1"
+            >
               <navbar-alerts-admin/>
             </li>
             <li class="px-1">
+              <navbar-notification-admin/>
+            </li>
+            <li
+              v-if="store.hasPermission(PERMISSION_PLACES.ORDER, PERMISSIONS.READ) &&
+                 countingOrderStore.getCounts?.length"
+              class="px-1"
+            >
               <navbar-shopping-statuses/>
             </li>
           </ul>
@@ -125,19 +139,20 @@
 </template>
 
 <script setup>
-import {ref, watchEffect} from "vue"
+import {inject, ref, watchEffect} from "vue"
 import {Bars3BottomRightIcon} from '@heroicons/vue/24/outline'
 import NavbarUserActionAdmin from "./NavbarUserActionAdmin.vue"
 import NavbarAlertsAdmin from "./NavbarAlertsAdmin.vue"
 import NavbarShoppingStatuses from "./NavbarShoppingStatuses.vue"
-import {XMarkIcon, ComputerDesktopIcon, PowerIcon} from "@heroicons/vue/24/outline/index.js";
+import {ComputerDesktopIcon, PowerIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
 import SidebarLinksAdmin from "./SidebarLinksAdmin.vue";
 import {OverlayScrollbarsComponent} from "overlayscrollbars-vue";
 import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {Cog6ToothIcon, UserIcon} from "@heroicons/vue/24/solid/index.js";
-import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import NavbarNotificationAdmin from "@/components/admin/NavbarNotificationAdmin.vue";
 
 const props = defineProps({
   sidebarBgColor: {
@@ -156,6 +171,10 @@ const sidebar = ref(null)
 
 const store = useAdminAuthStore()
 const user = store.getUser
+
+const countingAlertStore = inject('countingAlertStore')
+const countingOrderStore = inject('countingOrderStore')
+const notificationStore = inject('notificationStore')
 
 watchEffect(() => {
   if (sidebar.value) {

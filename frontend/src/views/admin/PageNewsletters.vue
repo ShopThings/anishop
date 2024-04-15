@@ -25,6 +25,7 @@
               <template #title>
                 افزودن شماره موبایل به خبرنامه
               </template>
+
               <template #body>
                 <form @submit.prevent="onSubmit">
                   <base-input
@@ -76,7 +77,7 @@
               @do-search="doSearch"
           >
             <template v-slot:mobile="{value}">
-              <span class="tracking-widest iranyekan-bold">{{ value.mobile }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.mobile }}</span>
             </template>
 
             <template v-slot:created_at="{value}">

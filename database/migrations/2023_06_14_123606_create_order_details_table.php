@@ -25,9 +25,9 @@ return new class extends Migration {
             $table->string('postal_code', 15);
             $table->string('receiver_name');
             $table->string('receiver_mobile');
-            $table->text('description')
+            $table->text('description')->nullable()
                 ->comment('for additional information that can be update anytime with admin users.');
-            $table->string('coupon_code', 25);
+            $table->string('coupon_code', 25)->nullable();
             $table->unsignedBigInteger('coupon_price')->default(0);
             $table->unsignedBigInteger('shipping_price')->default(0);
             $table->unsignedBigInteger('discount_price');
@@ -37,6 +37,7 @@ return new class extends Migration {
             $table->boolean('send_status_is_starting_badge')->default(false);
             $table->boolean('send_status_is_end_badge')->default(false);
             $table->boolean('send_status_can_return_order')->default(false);
+            $table->string('send_status_code', 25);
             $table->string('send_status_title');
             $table->string('send_status_color_hex', 12);
             $table->timestamp('send_status_changed_at')->nullable();
@@ -52,6 +53,8 @@ return new class extends Migration {
             $table->index('mobile');
             $table->index('receiver_name');
             $table->index('receiver_mobile');
+            $table->index('send_method_title');
+            $table->index('send_status_code');
             $table->index('ordered_at');
         });
     }

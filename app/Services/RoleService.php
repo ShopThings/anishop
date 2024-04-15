@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Enums\Gates\RolesEnum;
+use App\Models\User;
 use App\Services\Contracts\RoleServiceInterface;
 use App\Support\Gate\PermissionHelper;
 use App\Support\Traits\ServiceTrait;
@@ -57,5 +58,13 @@ class RoleService implements RoleServiceInterface
 
         // I know it must be in another repository class but for now it is here
         return Permission::all(['id', 'name']);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUserPermissions(User $user): Collection
+    {
+        return $user->getAllPermissions()->pluck('name');
     }
 }

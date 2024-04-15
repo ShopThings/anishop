@@ -3,7 +3,7 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
             :is-editable="false"
             :value="user?.username"
             name="username"
@@ -28,7 +28,7 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
             :is-editable="!(!!user?.first_name)"
             :value="user?.first_name"
             label-title="نام"
@@ -42,7 +42,7 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
             :is-editable="!(!!user?.last_name)"
             :value="user?.last_name"
             label-title="نام خانوادگی"
@@ -56,7 +56,7 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
+          :in-edit-mode="false"
             :is-editable="!(!!user?.national_code)"
             :value="user?.national_code"
             label-title="کد ملی"
@@ -70,11 +70,11 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :value="user?.shaba_number"
-            is-optional
+          :in-edit-mode="false"
+          :is-optional="true"
+          :value="user?.sheba_number"
             label-title="شماره شبا"
-            name="shaba_number"
+          name="sheba_number"
             placeholder="xxxxxxxxxxxxxxxx"
         >
           <template #icon>
@@ -134,7 +134,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .transform(transformNumbersToEnglish)
         .persianNationalCode('کد ملی نامعتبر است.')
         .required('کد ملی را وارد نمایید.'),
-    shaba_number: yup.string()
+    sheba_number: yup.string()
         .transform(transformNumbersToEnglish)
         .optional().nullable(),
   }),

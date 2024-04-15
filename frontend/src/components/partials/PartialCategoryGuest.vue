@@ -51,6 +51,7 @@
           <router-link
               :to="{name: 'search', query: {category: activeMainMenu?.id}}"
               class="text-orange-600 hover:text-opacity-80 transition text-sm font-iranyekan-bold"
+              @click="() => {showCategoriesMenu = false}"
           >
             {{ activeMainMenu?.name }}
           </router-link>
@@ -91,6 +92,7 @@
             <router-link
                 :to="{name: 'search', query: {category: category.id}}"
                 class="block relative group pr-4 mb-4 text-sm"
+                @click="() => {showCategoriesMenu = false}"
             >
               <div
                   class="absolute w-2.5 h-2.5 rounded-full border-2 border-cyan-500 right-0 top-1.5 transition"></div>
@@ -105,6 +107,7 @@
                 :key="childCategory.id"
                 :to="{name: 'search', query: {category: childCategory.id}}"
                 class="text-sm block mb-4 pr-4 text-slate-500 hover:text-slate-700 transition"
+                @click="() => {showCategoriesMenu = false}"
             >
               {{ childCategory.name }}
             </router-link>
@@ -119,7 +122,7 @@
       <div
           v-if="showCategoriesMenu"
           class="hidden lg:block fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
-          @click="() => {showCategoriesMenu = !showCategoriesMenu}"
+          @click="() => {showCategoriesMenu = false}"
       ></div>
     </VTransitionFade>
   </Teleport>

@@ -32,24 +32,6 @@ class HomeBlogFilter extends Filter
     protected BlogOrderTypesEnum $blogOrder = BlogOrderTypesEnum::NEWEST;
 
     /**
-     * @inheritDoc
-     */
-    protected function init(Request $request): void
-    {
-        parent::init($request);
-
-        $this->setCategory($request->integer('category'));
-        $this->setArchive($request->string('archive')->toString());
-        $this->setBlogOrder($request->enum('order', BlogOrderTypesEnum::class));
-
-        // get tags
-        $tags = $request->input('tag');
-        if (is_string($tags) || is_array($tags)) {
-            $this->setTag($tags);
-        }
-    }
-
-    /**
      * @return string|null
      */
     public function getTag(): array|string|null
@@ -147,5 +129,23 @@ class HomeBlogFilter extends Filter
         $this->blogOrder = BlogOrderTypesEnum::NEWEST;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
+    {
+        parent::init($request);
+
+        $this->setCategory($request->integer('category'));
+        $this->setArchive($request->string('archive')->toString());
+        $this->setBlogOrder($request->enum('order', BlogOrderTypesEnum::class));
+
+        // get tags
+        $tags = $request->input('tag');
+        if (is_string($tags) || is_array($tags)) {
+            $this->setTag($tags);
+        }
     }
 }

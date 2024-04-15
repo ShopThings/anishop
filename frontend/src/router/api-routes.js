@@ -9,6 +9,17 @@ export const apiRoutes = {
     roles: 'api/admin/roles',
     permissions: 'api/admin/permissions',
 
+    main: {
+      countOfAlerts: 'api/admin/counting/alerts',
+      countOfOrders: 'api/admin/counting/orders',
+    },
+
+    notification: {
+      index: 'api/admin/notifications',
+      update: 'api/admin/notifications',
+      check: 'api/admin/notifications/new',
+    },
+
     users: {
       index: 'api/admin/users',
       show: 'api/admin/users/{user}',
@@ -160,6 +171,7 @@ export const apiRoutes = {
 
     comments: {
       index: 'api/admin/products/{product}/comments',
+      all: 'api/admin/products/comments/all',
       show: 'api/admin/products/{product}/comments/{comment}',
       update: 'api/admin/products/{product}/comments/{comment}',
       destroy: 'api/admin/products/{product}/comments/{comment}',
@@ -196,12 +208,15 @@ export const apiRoutes = {
     },
 
     reports: {
-      usersQueryBuilder: 'api/admin/users/query-builder',
-      productsQueryBuilder: 'api/admin/products/query-builder',
-      ordersQueryBuilder: 'api/admin/orders/query-builder',
+      usersQueryBuilder: 'api/admin/reports/users/query-builder',
+      productsQueryBuilder: 'api/admin/reports/products/query-builder',
+      ordersQueryBuilder: 'api/admin/reports/orders/query-builder',
       users: 'api/admin/reports/users',
       products: 'api/admin/reports/products',
       orders: 'api/admin/reports/orders',
+      usersExport: 'api/admin/reports/users/export',
+      productsExport: 'api/admin/reports/products/export',
+      ordersExport: 'api/admin/reports/orders/export',
     },
 
     blogBadges: {
@@ -224,6 +239,7 @@ export const apiRoutes = {
 
     blogComments: {
       index: 'api/admin/blogs/{blog}/comments',
+      all: 'api/admin/blogs/comments/all',
       show: 'api/admin/blogs/{blog}/comments/{comment}',
       store: 'api/admin/blogs/{blog}/comments',
       update: 'api/admin/blogs/{blog}/comments/{comment}',
@@ -368,6 +384,7 @@ export const apiRoutes = {
       index: 'api/user/orders',
       show: 'api/user/orders/{order}',
       update: 'api/user/orders/{order}',
+      unpaidOrderPayments: 'api/user/orders/unpaid-order-payments'
     },
 
     returnOrders: {
@@ -422,6 +439,17 @@ export const apiRoutes = {
 
   settings: 'api/settings',
 
+  cart: {
+    index: 'api/cart',
+    show: 'api/cart/{cart}',
+    sessionCarts: 'api/cart/session',
+    store: 'api/cart',
+    destroy: 'api/cart',
+    active: 'api/cart/active',
+    addAll: 'api/cart/addAll',
+    add: 'api/cart/{code}/add',
+  },
+
   provinces: 'api/provinces',
   cities: 'api/cities/{province}',
 
@@ -437,6 +465,25 @@ export const apiRoutes = {
     stepCode: 'api/recover-password/code',
     stepNewPass: 'api/recover-password/new-password',
     resendCode: 'api/recover-password/resend-code',
+  },
+
+  paymentMethods: {
+    index: 'api/payment-methods'
+  },
+
+  sendMethods: {
+    index: 'api/send-methods',
+  },
+
+  coupons: {
+    check: 'api/coupons/{code}/check'
+  },
+
+  checkout: {
+    placeOrder: 'api/place-order',
+    payOrder: 'api/pay/{id}',
+    sendPrice: 'api/send-price',
+    payResult: 'api/pay/{id}/result',
   },
 
   main: {

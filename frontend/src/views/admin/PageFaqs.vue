@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش سؤال نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.FAQ, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن سؤال جدید
     </template>
@@ -18,29 +21,29 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:is_published="{value}">
               <base-switch-confirmation
-                  :id="value.id"
-                  v-model="value.is_published"
-                  :api="FaqAPI"
-                  off-label="عدم انتشار"
-                  on-label="انتشار"
-                  update-key="is_published"
-                  @success="() => {datatable?.refresh()}"
+                :id="value.id"
+                v-model="value.is_published"
+                :api="FaqAPI"
+                off-label="عدم انتشار"
+                on-label="انتشار"
+                update-key="is_published"
+                @success="() => {datatable?.refresh()}"
               />
             </template>
 
@@ -55,10 +58,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -83,9 +86,12 @@ import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {FaqAPI} from "@/service/APIPage.js";
 import PartialTableKeywords from "@/components/partials/PartialTableKeywords.vue";
 import BaseSwitchConfirmation from "@/components/base/BaseSwitchConfirmation.vue";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -153,6 +159,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.FAQ, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -162,6 +169,19 @@ const table = reactive({
     sort: "desc",
   },
 })
+
+function calcRemovals(row) {
+  let removals = []
+
+  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.FAQ, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.FAQ, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+
+  return removals
+}
 
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
@@ -230,7 +250,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id && !items[item].is_deletable)
+            if (items[item].id && items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

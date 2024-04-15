@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+    "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000",
@@ -54,6 +54,6 @@
     "postcss": "^8.4.24",
     "sass": "^1.63.4",
     "tailwindcss": "^3.3.3",
-    "vite": "^4.3.9"
+      "vite": "^5.0.0"
   }
 }

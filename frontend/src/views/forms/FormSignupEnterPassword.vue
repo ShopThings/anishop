@@ -57,6 +57,8 @@ import {HomeSignupAPI} from "@/service/APIHomePages.js";
 import {useRouter} from "vue-router";
 import {useToast, POSITION} from "vue-toastification";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
+import {useSignupStore} from "@/store/StoreUserHome.js";
+import {onMounted} from "vue";
 
 const props = defineProps({
   options: {
@@ -68,6 +70,7 @@ const props = defineProps({
 const router = useRouter()
 const toast = useToast()
 
+const signupStore = useSignupStore()
 const store = useUserAuthStore()
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
@@ -85,8 +88,13 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 }, (values, actions) => {
   canSubmit.value = false
 
-  HomeSignupAPI.assignPassword(values, {
+  HomeSignupAPI.assignPassword({
+    password: values.password,
+    password_confirmation: values.password_confirmation,
+    username: signupStore.getMobileStep?.mobile
+  }, {
     success(response) {
+      signupStore.$reset()
       actions.resetForm()
       toast.success('تبریک، شما با موفقیت در سایت ثبت نام شدید، از خرید خود لذت ببرید.🤩')
 
@@ -113,5 +121,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       canSubmit.value = true
     },
   })
+})
+
+onMounted(() => {
+  if (!signupStore.canGoToStepPassword) {
+    props.options.prev()
+  }
 })
 </script>

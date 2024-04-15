@@ -83,7 +83,7 @@
           </div>
 
           <div class="sm:flex sm:flex-wrap">
-            <div class="p-2 md:w-1/2">
+            <div class="p-2 md:w-1/2 xl:w-1/3">
               <base-switch
                   :enabled="priceDetermineByLocStatus"
                   label="در نظرگیری مکان فروشگاه برای قیمت ارسال"
@@ -92,13 +92,22 @@
                   @change="(status) => {priceDetermineByLocStatus=status}"
               />
             </div>
-            <div class="p-2 md:w-1/2">
+            <div class="p-2 md:w-1/2 xl:w-1/3">
               <base-switch
                   :enabled="onlyForShopLocStatus"
                   label="اعمال فقط برای محدوده مکان فروشگاه"
                   name="only_for_shop_location"
                   sr-text="اعمال/عدم اعمال نوع روش برای محدوده مکان فروشگاه"
                   @change="(status) => {onlyForShopLocStatus=status}"
+              />
+            </div>
+            <div class="p-2 md:w-1/2 xl:w-1/3">
+              <base-switch
+                :enabled="applyPriceForEachShipmentStatus"
+                label="اعمال هزینه ارسال به ازای هر مرسوله"
+                name="apply_number_of_shipments_on_price"
+                sr-text="اعمال/عدم اعمال هزینه ارسال به ازای هر مرسوله"
+                @change="(status) => {applyPriceForEachShipmentStatus=status}"
               />
             </div>
           </div>
@@ -171,6 +180,7 @@ const router = useRouter()
 const methodImage = ref(null)
 const priceDetermineByLocStatus = ref(true)
 const onlyForShopLocStatus = ref(false)
+const applyPriceForEachShipmentStatus = ref(true)
 const publishStatus = ref(true)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
@@ -186,6 +196,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         .required('اولویت را وارد نمایید.'),
     determine_price_by_shop_location: yup.boolean().required('وضعیت در نظرگیری مکان فروشگاه برای قیمت ارسال را مشخص کنید.'),
     only_for_shop_location: yup.boolean().required('وضعیت اعمال فقط برای محدوده مکان فروشگاه را مشخص کنید.'),
+    apply_number_of_shipments_on_price: yup.boolean().required('وضعیت اعمال هزینه ارسال به ازای هر مرسوله را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (!methodImage.value) {
@@ -203,6 +214,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     priority: values.priority,
     determine_price_by_shop_location: priceDetermineByLocStatus.value,
     only_for_shop_location: onlyForShopLocStatus.value,
+    apply_number_of_shipments_on_price: applyPriceForEachShipmentStatus.value,
     is_published: publishStatus.value,
   }, {
     success() {
@@ -210,6 +222,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       methodImage.value = null
       priceDetermineByLocStatus.value = true
       onlyForShopLocStatus.value = false
+      applyPriceForEachShipmentStatus.value = true
       publishStatus.value = true
 
       router.push({name: 'admin.send_methods'})

@@ -186,7 +186,7 @@ onMounted(() => {
 
 function setFormFields(item) {
   festival.value = item
-  startDate.value = item.normal_start_at
-  endDate.value = item.normal_end_at
+  startDate.value = item.actual_start_at
+  endDate.value = item.actual_end_at
 }
 </script>

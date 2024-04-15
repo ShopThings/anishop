@@ -2,18 +2,13 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Comments\CommentConditionsEnum;
-use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Models\BlogCommentBadge;
-use App\Models\User;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreBlogCommentRequest extends FormRequest
 {

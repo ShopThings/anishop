@@ -4,7 +4,7 @@
         :class="klass"
         class="text-xs py-1 px-2.5 mt-1 inline-block rounded-sm"
     >
-      <slot v-if="slot['text']" name="text"></slot>
+      <slot v-if="slots['text']" name="text"></slot>
       <template v-else>{{ text }}</template>
     </label>
   </div>
@@ -21,5 +21,5 @@ defineProps({
   },
 })
 
-const slot = useSlots()
+const slots = useSlots()
 </script>

@@ -128,6 +128,7 @@ export const useRequest = (url, config, resultConfig) => {
   const toast = useToast()
 
   config = config || {}
+  const silent = resultConfig?.silent === true
   const onBeforeRequest = resultConfig?.beforeRequest
   const onSuccess = resultConfig?.success
   const onError = resultConfig?.error
@@ -158,12 +159,13 @@ export const useRequest = (url, config, resultConfig) => {
 
       // if returned value is false, overwrite functionality
       if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
-        if (type && type === responseTypes.info)
+        if (type && type === responseTypes.info) {
           toast.info(msg)
-        if (type && type === responseTypes.warning)
+        } else if (type && type === responseTypes.warning) {
           toast.warning(msg)
-        else
+        } else {
           toast.success(msg)
+        }
       }
     })
     .catch((error) => {
@@ -182,7 +184,10 @@ export const useRequest = (url, config, resultConfig) => {
       ) {
         if (msg.toLowerCase() !== "canceled") {
           console.error(error)
-          toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!')
+
+          if (!silent) {
+            toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!')
+          }
         }
         return
       }
@@ -193,19 +198,21 @@ export const useRequest = (url, config, resultConfig) => {
 
       // if returned value is false, overwrite functionality
       if (ans !== false && msg) {
-        if (type && type === responseTypes.error)
+        if (type && type === responseTypes.error) {
           toast.error(msg)
-        else if (type && type === responseTypes.info)
+        } else if (type && type === responseTypes.info) {
           toast.info(msg)
-        else if (type && type === responseTypes.warning)
+        } else if (type && type === responseTypes.warning) {
           toast.warning(msg)
-        else
+        } else {
           toast.error(msg)
+        }
       }
     })
     .finally(() => {
-      if (isFunction(onFinally))
+      if (isFunction(onFinally)) {
         onFinally.apply(null)
+      }
     })
 }
 
@@ -222,32 +229,37 @@ export function useRequestWrapper(url, config, callbacks, userCallbacks) {
   useRequest(url, config, {
     beforeRequest: onBeforeRequest,
     success: (response, total) => {
-
-      if (isFunction(onSuccess))
+      if (isFunction(onSuccess)) {
         onSuccess.apply(null, [response, total])
+      }
 
       let answer = true;
-      if (isFunction(onUserSuccess))
+      if (isFunction(onUserSuccess)) {
         answer = onUserSuccess.apply(null, [response, total])
+      }
 
       return answer !== false
     },
     error: (err) => {
-      if (isFunction(onError))
+      if (isFunction(onError)) {
         onError.apply(null, [err])
+      }
 
       let answer = true;
-      if (isFunction(onUserError))
+      if (isFunction(onUserError)) {
         answer = onUserError.apply(null, [err])
+      }
 
       return answer !== false
     },
     finally: () => {
-      if (isFunction(onFinally))
+      if (isFunction(onFinally)) {
         onFinally.apply(null)
+      }
 
-      if (isFunction(onUserFinally))
+      if (isFunction(onUserFinally)) {
         onUserFinally.apply(null)
+      }
     },
   })
 }

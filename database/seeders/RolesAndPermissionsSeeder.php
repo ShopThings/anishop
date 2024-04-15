@@ -797,6 +797,7 @@ class RolesAndPermissionsSeeder extends Seeder
             PermissionHelper::permission(PermissionsEnum::PERMANENT_DELETE, PermissionPlacesEnum::USER),
             PermissionHelper::permission(PermissionsEnum::BAN, PermissionPlacesEnum::USER),
             PermissionHelper::permission(PermissionsEnum::VERIFY, PermissionPlacesEnum::USER),
+            PermissionHelper::permission(PermissionsEnum::EXPORT, PermissionPlacesEnum::USER),
             PermissionHelper::permission(PermissionsEnum::CREATE, PermissionPlacesEnum::ADDRESS_USER),
             PermissionHelper::permission(PermissionsEnum::READ, PermissionPlacesEnum::ADDRESS_USER),
             PermissionHelper::permission(PermissionsEnum::UPDATE, PermissionPlacesEnum::ADDRESS_USER),

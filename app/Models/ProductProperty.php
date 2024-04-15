@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Support\Model\ExtendedModel as Model;
-use Gloudemans\Shoppingcart\Contracts\Buyable;
+use App\Support\Cart\BuyableInterface as Buyable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Parables\NanoId\GeneratesNanoId;
@@ -46,17 +46,46 @@ class ProductProperty extends Model implements Buyable
         return $this->belongsTo(Product::class);
     }
 
-    public function getBuyableIdentifier($options = null)
+    /**
+     * @return bool
+     */
+    public function isAvailableForCart(): bool
+    {
+        return $this->product->is_available &&
+            $this->product->is_published &&
+            $this->is_available &&
+            $this->is_published &&
+            $this->stock_count > 0;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBuyableIdentifier(): int|string
     {
         return $this->id;
     }
 
-    public function getBuyableDescription($options = null)
+    /**
+     * @inheritDoc
+     */
+    public function getBuyableDescription(): string
     {
-        return $this->product()->title;
+        return $this->product->title;
     }
 
-    public function getBuyablePrice($options = null)
+    /**
+     * @inheritDoc
+     */
+    public function getBuyablePrice(): float
+    {
+        return $this->_getDiscountedPrice();
+    }
+
+    /**
+     * @return float
+     */
+    private function _getDiscountedPrice(): float
     {
         $id = $this->id;
         $price = $this->price;
@@ -84,10 +113,10 @@ class ProductProperty extends Model implements Buyable
         // check product if it's in festival or not and if so, apply festival discount percentage to it
         $festivalProduct = $this->product()->with('festivals.items', function (Builder $query) use ($id) {
             $query->where('product_id', $id);
-        })->get(['discount_percentage']);
+        })->published()->activated()->first(['discount_percentage']);
 
-        if ($festivalProduct->count()) {
-            $off = $this->price * $festivalProduct->first()->discount_percentage / 100;
+        if ($festivalProduct) {
+            $off = floor($this->price * $festivalProduct->discount_percentage / 100.00);
             $price = $this->price - $off;
         }
 

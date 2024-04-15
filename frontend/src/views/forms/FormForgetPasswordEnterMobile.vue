@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {DevicePhoneMobileIcon, QrCodeIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
@@ -63,6 +63,7 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {HomeRecoverPasswordAPI} from "@/service/APIHomePages.js";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import BaseMessage from "@/components/base/BaseMessage.vue";
+import {useRecoverPasswordStore} from "@/store/StoreUserHome.js";
 
 const props = defineProps({
   options: {
@@ -70,6 +71,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const recoverStore = useRecoverPasswordStore()
 
 const captchaKey = ref(null)
 const err = reactive({})
@@ -99,11 +102,17 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   HomeRecoverPasswordAPI.checkMobile({
     username: values.username,
+    captcha: values.captcha,
     key: captchaKey.value,
   }, {
     success() {
+      actions.resetForm();
+
       if (isFunction(props.options?.next)) {
-        actions.resetForm();
+        recoverStore.setMobileStep({
+          mobile: values.username,
+        })
+
         props.options.next()
       }
     },
@@ -124,5 +133,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       canSubmit.value = true
     },
   })
+})
+
+onMounted(() => {
+  recoverStore.$reset()
 })
 </script>

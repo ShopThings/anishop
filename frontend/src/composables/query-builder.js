@@ -76,13 +76,13 @@ export const operatorsMap = {
   },
   beginsWith: {
     statement: '=',
-    replacement: '%{value}',
+    replacement: '{value}%',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
   notBeginsWith: {
     statement: '<>',
-    replacement: '%{value}',
+    replacement: '{value}%',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
@@ -100,13 +100,13 @@ export const operatorsMap = {
   },
   endsWith: {
     statement: '=',
-    replacement: '{value}%',
+    replacement: '%{value}',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
   notEndsWith: {
     statement: '<>',
-    replacement: '{value}%',
+    replacement: '%{value}',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
@@ -215,7 +215,7 @@ export function removeEmptyRules(query) {
   return newQuery
 }
 
-export function toSql(query, useNamedParameter, level) {
+export function toSql(query, useNamedParameter = true, level) {
   const useQuestionMark = !(!!useNamedParameter)
   let sql = ''
   let params
