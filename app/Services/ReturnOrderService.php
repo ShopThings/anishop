@@ -140,7 +140,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
 
             if ($inserted->count()) {
                 $orderCode = $this->orderRepository->find(id: $orderDetailId, columns: ['code'])?->code;
-                ReturnOrderRequestedEvent::dispatch($user, $request->code, $orderCode);
+                ReturnOrderRequestedEvent::dispatch($user, $request->code, $orderCode, $request);
 
                 DB::commit();
             } else {

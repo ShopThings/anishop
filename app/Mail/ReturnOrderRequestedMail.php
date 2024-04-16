@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\ReturnOrderRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
@@ -15,9 +16,11 @@ class ReturnOrderRequestedMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct(
+        public ReturnOrderRequest $request,
+        public string             $siteTitle
+    )
     {
-        //
     }
 
     /**
@@ -26,7 +29,7 @@ class ReturnOrderRequestedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Return Order Requested Mailable',
+            subject: 'سفارش مرجوعی با کد ' . '«' . $this->request->code . '»' . ' ثبت شد.',
         );
     }
 
@@ -36,7 +39,7 @@ class ReturnOrderRequestedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.return-order-requested',
         );
     }
 

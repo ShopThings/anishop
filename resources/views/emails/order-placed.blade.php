@@ -1,53 +1,51 @@
 @php
     use App\Enums\Times\TimeFormatsEnum;
+    use App\Support\Converters\NumberConverter;
 @endphp
 
-<x-emails.layout title="ثبت سفارش" siteTitle="{{ $siteTitle }}">
+<x-emails.layout
+    title="ثبت سفارش"
+    siteTitle="{{ $siteTitle }}"
+>
     <style>
         /* Table */
         .table {
             margin-top: 2.5rem;
-            width: 100%;
-            border-collapse: collapse;
-            border-spacing: 0;
         }
 
-        /* Table Header */
-        .table th {
-            font-size: .9rem;
-            text-align: right;
-            background-color: #f2f2f2;
-            padding: .5rem;
-            border: 1px solid #e0e0e0;
-            border-bottom: 2px solid #e0e0e0;
+        .test-warning {
+            padding: .75rem 1rem;
+            border-radius: .5rem;
+            background-color: #fff3cd;
         }
 
-        /* Table Body */
-        .table td {
-            padding: .5rem;
-            border: 1px solid #e0e0e0;
+        .test-warning > * {
+            margin: 0;
         }
 
         .w-60px {
-            width: 60px;
+            width: 80px;
         }
     </style>
 
-    <h2 class="font-iranyekan-bold">توجه</h2>
-    <h4 class="font-iranyekan-bold">(این ایمیل تنها جهت تست می‌باشد.)</h4>
+    @notproduction
+    <div class="test-warning">
+        <h3 class="font-iranyekan-bold">این ایمیل تنها جهت تست می‌باشد.</h3>
+    </div>
+    @endnotproduction
 
     <p>
         سفارش به کد
-        <span class="font-iranyekan-bold">{{ $orderDetail->code }}</span>
+        <span class="font-arial-sans" dir="ltr">{{ $orderDetail['code'] }}</span>
         ثبت شده است، لطفا پیگیری نمایید.
     </p>
 
     <p>
         ثبت شده برای
-        <span class="font-iranyekan-bold">{{ $orderDetail->first_name }}</span>
+        <span class="font-iranyekan-bold">{{ $orderDetail['first_name'] }}</span>
         در تاریخ
         <span
-            class="font-iranyekan-bold">{{ vertaTz($orderDetail->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value) }}</span>
+            class="font-iranyekan-bold">{{ NumberConverter::toPersian(vertaTz($orderDetail['ordered_at'])->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)) }}</span>
     </p>
 
     <table class="table">
@@ -57,24 +55,28 @@
         <thead>
         <tr>
             <th class="font-iranyekan-bold">عنوان محصول</th>
-            <th class="font-iranyekan-bold">تعداد</th>
+            <th class="font-iranyekan-bold text-center">تعداد</th>
         </tr>
         </thead>
         <tbody>
-        @forelse($orderDetail?->items as $item)
-            <tr>
-                <td>
-                    {{ $item->product_title }}
-                </td>
-                <td class="font-iranyekan-bold text-center w-60px">{{ $item->quantity }}</td>
-            </tr>
-        @empty
+        @if (is_array($orderDetail['items']) && !empty($orderDetail['items']))
+            @foreach($orderDetail['items'] as $item)
+                <tr>
+                    <td>
+                        {{ $item['product_title'] }}
+                    </td>
+                    <td class="font-iranyekan-bold text-center w-60px">
+                        {{ NumberConverter::toPersian($item['quantity']) }}
+                    </td>
+                </tr>
+            @endforeach
+        @else
             <tr>
                 <td colspan="2">
                     هیچ محصولی وجود ندارد!
                 </td>
             </tr>
-        @endforelse
+        @endif
         </tbody>
     </table>
 </x-emails.layout>

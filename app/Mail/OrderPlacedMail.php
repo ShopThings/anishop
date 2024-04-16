@@ -31,7 +31,7 @@ class OrderPlacedMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'سفارش با کد ' . '«' . $this->orderDetail->code . '»' . ' ثبت شد.',
+            subject: 'سفارش با کد ' . '«' . $this->orderDetail['code'] . '»' . ' ثبت شد.',
         );
     }
 

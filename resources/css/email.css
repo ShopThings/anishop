@@ -1,0 +1,142 @@
+/*
+------------------
+Define Fonts
+------------------
+*/
+
+@font-face {
+  font-family: 'IRANYekanWeb Light';
+  font-style: normal;
+  font-weight: normal;
+  src: url("./fonts/iranyekanweblight.woff2") format("woff");
+}
+
+@font-face {
+  font-family: 'IRANYekanWeb Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: url("./fonts/iranyekanwebregular.woff2") format("woff");
+}
+
+@font-face {
+  font-family: 'IRANYekanWeb Bold';
+  font-style: normal;
+  font-weight: bold;
+  src: url("./fonts/iranyekanwebbold.woff2") format("woff");
+}
+
+.font-iranyekan-light {
+  font-family: 'IRANYekanWeb Light', Tahoma, Arial, sans-serif !important;
+}
+
+.font-iranyekan-regular {
+  font-family: 'IRANYekanWeb Regular', Tahoma, Arial, sans-serif !important;
+}
+
+.font-iranyekan-bold {
+  font-family: 'IRANYekanWeb Bold', Tahoma, Arial, sans-serif !important;
+}
+
+.font-arial-sans {
+  font-family: Arial, sans-serif !important;
+}
+
+* {
+  font-family: 'IRANYekanWeb Regular', Tahoma, Arial, sans-serif;
+}
+
+/*
+------------------
+General Styles
+------------------
+*/
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/*
+------------------
+Utility Styles
+------------------
+*/
+
+.text-center {
+  text-align: center !important;
+}
+
+/*
+------------------
+Email Styles
+------------------
+*/
+
+body.emails {
+  background-color: #f8f9fa;
+}
+
+.email-container {
+  width: 100%;
+  padding: 1.25rem;
+  margin: 0 auto;
+}
+
+.email-wrapper {
+  max-width: 37.5rem; /* 600px */
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.25rem 1.25rem rgba(0, 0, 0, 0.1);
+}
+
+.email-header {
+  color: #ffffff;
+  text-align: right;
+  padding: .5rem 1.25rem;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+
+.email-header > * {
+  display: inline-block;
+  margin-left: .5rem;
+}
+
+.email-body {
+  padding: 1.25rem;
+}
+
+.email-footer {
+  text-align: center;
+  padding: 1.25rem 0;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Table Header */
+.table th {
+  font-size: .9rem;
+  text-align: right;
+  background-color: #f2f2f2;
+  padding: .5rem;
+  border: 1px solid #e0e0e0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+/* Table Body */
+.table td {
+  padding: .5rem;
+  border: 1px solid #e0e0e0;
+}

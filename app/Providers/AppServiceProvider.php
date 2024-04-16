@@ -2,20 +2,6 @@
 
 namespace App\Providers;
 
-use App\Repositories\AuthRepository;
-use App\Repositories\Contracts\AuthRepositoryInterface;
-use App\Repositories\Contracts\FileRepositoryInterface;
-use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\FileRepository;
-use App\Repositories\UserRepository;
-use App\Services\AuthService;
-use App\Services\Contracts\AuthServiceInterface;
-use App\Services\Contracts\FileServiceInterface;
-use App\Services\Contracts\RoleServiceInterface;
-use App\Services\Contracts\UserServiceInterface;
-use App\Services\FileService;
-use App\Services\RoleService;
-use App\Services\UserService;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Carbon\Carbon;
@@ -23,6 +9,7 @@ use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
@@ -91,13 +78,20 @@ class AppServiceProvider extends ServiceProvider
      */
     public function bootMacros(): void
     {
+        /*
+         * blade directives
+         */
+        Blade::if('notproduction', function () {
+            return !app()->isProduction();
+        });
+
+        //
+
         Collection::macro('pluckMultiple', function ($keys) {
             return $this->map(function ($item) use ($keys) {
                 return collect($item)->only($keys)->all();
             });
         });
-
-        //
 
         /*
          * where like expression
