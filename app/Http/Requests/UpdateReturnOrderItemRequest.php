@@ -31,7 +31,7 @@ class UpdateReturnOrderItemRequest extends FormRequest
     public function attributes()
     {
         return [
-            'is_accepted' => 'تایید مرجوع',
+            'is_accepted' => 'تایید مرجوع محصول',
         ];
     }
 }

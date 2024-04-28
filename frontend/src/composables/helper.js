@@ -2,6 +2,22 @@ import {computed} from "vue";
 import {useRoute} from "vue-router";
 import isObject from "lodash.isobject";
 
+/**
+ * This is mostly for integrated title concatenation
+ */
+export function assembleTitle(arr, separator = ' - ') {
+  if (Array.isArray(arr)) {
+    return arr.join(separator)
+  }
+
+  try {
+    return arr.toString()
+  } catch (e) {
+    console.error(e)
+    return ''
+  }
+}
+
 export function isValidInternalRedirectLink(link) {
   return link && /^\/[a-zA-Z0-9-_]+(?:\/[a-zA-Z0-9-_]+)*/g.test(link)
 }
@@ -15,7 +31,7 @@ export function trimChar(str, char) {
 }
 
 export function obfuscateEmail(email) {
-  return email.replace(/./g, '&#46;');
+  return email.replace(/./g, (match) => `&#${match.charCodeAt(0)};`);
 }
 
 export function obfuscateNumber(phone) {

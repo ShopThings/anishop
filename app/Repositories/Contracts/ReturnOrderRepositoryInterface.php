@@ -3,6 +3,8 @@
 namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
+use App\Enums\Results\ReturnOrderToStockResult;
+use App\Models\ReturnOrderRequest;
 use App\Support\Filter;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -31,6 +33,12 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
     public function updateOrCreateItems(string $returnCode, array $items): Collection;
 
     /**
+     * @param ReturnOrderRequest $request
+     * @return ReturnOrderToStockResult
+     */
+    public function returnItemsToStock(ReturnOrderRequest $request): ReturnOrderToStockResult;
+
+    /**
      * @param int $itemId
      * @param array $attributes
      * @return bool|int
@@ -43,4 +51,10 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
      * @return Model|null
      */
     public function getItemWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model;
+
+    /**
+     * @param ReturnOrderRequest $orderRequest
+     * @return bool
+     */
+    public function isRequestCancelable(ReturnOrderRequest $orderRequest): bool;
 }

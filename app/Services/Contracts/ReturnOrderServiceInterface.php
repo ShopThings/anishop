@@ -3,6 +3,9 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
+use App\Enums\Orders\ReturnOrderStatusesEnum;
+use App\Enums\Results\ChangeRequestStatusResult;
+use App\Enums\Results\ReturnOrderToStockResult;
 use App\Models\OrderDetail;
 use App\Models\ReturnOrderRequest;
 use App\Models\User;
@@ -51,10 +54,10 @@ interface ReturnOrderServiceInterface extends ServiceInterface
     public function canReturnOrder(OrderDetail $orderDetail): bool;
 
     /**
-     * @param ReturnOrderRequest $orderRequest
+     * @param ReturnOrderRequest $request
      * @return bool
      */
-    public function canCancelOrder(ReturnOrderRequest $orderRequest): bool;
+    public function canCancelRequest(ReturnOrderRequest $request): bool;
 
     /**
      * @param User $user
@@ -89,11 +92,27 @@ interface ReturnOrderServiceInterface extends ServiceInterface
     public function updateByCode($code, array $attributes, bool $silence = false): ?Model;
 
     /**
+     * @param ReturnOrderRequest $request
+     * @return ReturnOrderToStockResult
+     */
+    public function returnItemsToStock(ReturnOrderRequest $request): ReturnOrderToStockResult;
+
+    /**
      * @param int $itemId
      * @param array $attributes
      * @return Model|null
      */
     public function modifyItem(int $itemId, array $attributes): ?Model;
+
+    /**
+     * @param ReturnOrderRequest $request
+     * @param ReturnOrderStatusesEnum $toStatus
+     * @return ChangeRequestStatusResult
+     */
+    public function changeUserRequestStatus(
+        ReturnOrderRequest      $request,
+        ReturnOrderStatusesEnum $toStatus
+    ): ChangeRequestStatusResult;
 
     /**
      * @return array

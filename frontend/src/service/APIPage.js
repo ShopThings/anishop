@@ -48,6 +48,6 @@ export const NewsletterAPI = Object.assign(
 
 export const SmsLogAPI = {
   fetchAll(params, callbacks) {
-    useRequest(apiRoutes.admin.smsLogs.index, {params}, callbacks)
+    return useRequest(apiRoutes.admin.smsLogs.index, {params}, callbacks)
   },
 }

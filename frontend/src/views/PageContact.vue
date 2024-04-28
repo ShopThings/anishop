@@ -2,25 +2,25 @@
   <div aria-hidden="true"
        class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]">
     <div
-        class="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
-        style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
+      class="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]"
+      style="clip-path: polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)"></div>
   </div>
 
   <div
-      class="w-full relative overflow-hidden bg-fixed bg-cover"
-      style="background-image: url('/images/contact-us.jpg')"
+    class="w-full relative overflow-hidden bg-fixed bg-cover"
+    style="background-image: url('/images/contact-us.jpg')"
   >
     <div
-        class="w-full h-full bg-black bg-opacity-30 flex flex-col items-center justify-center text-white text-center p-3 py-20">
+      class="w-full h-full bg-black bg-opacity-30 flex flex-col items-center justify-center text-white text-center p-3 py-20">
       <h1
-          class="text-3xl pb-2 bg-white bg-opacity-20 py-2 px-6 rounded-full border border-yellow-400 text-yellow-400 text-shadow-sm shadow-black supports-[backdrop-filter]:backdrop-blur-sm">
+        class="text-3xl pb-2 bg-white bg-opacity-20 py-2 px-6 rounded-full border border-yellow-400 text-yellow-400 text-shadow-sm shadow-black supports-[backdrop-filter]:backdrop-blur-sm">
         راه‌های ارتباطی
       </h1>
       <div class="mt-8 font-iranyekan-light leading-relaxed text-shadow-lg shadow-black">
         برای ارتباط با ما از راه‌های ارتباطی زیر می‌توانید استفاده نمایید
       </div>
       <span
-          class="my-3  border border-white w-10 h-10 p-1.5 bg-white bg-opacity-20 rounded-full">یا</span>
+        class="my-3  border border-white w-10 h-10 p-1.5 bg-white bg-opacity-20 rounded-full">یا</span>
       <div class="font-iranyekan-light leading-relaxed text-shadow-lg shadow-black">
         با استفاده از فرم زیر پیام خود را ارسال نمایید
       </div>
@@ -39,8 +39,8 @@
         <div class="my-3 text-sm py-4 border-b">
           لطفاً پیش از ارسال ایمیل یا تماس تلفنی، ابتدا
           <router-link
-              :to="{name: 'faq'}"
-              class="text-blue-600 hover:text-opacity-80 transition"
+            :to="{name: 'faq'}"
+            class="text-blue-600 hover:text-opacity-80 transition"
           >
             پرسش‌‌های متداول
           </router-link>
@@ -52,10 +52,10 @@
             <div class="p-2 w-full sm:w-1/2">
               <partial-input-label title="موضوع"/>
               <base-select
-                  :options="contactTypes"
-                  options-key="value"
-                  options-text="text"
-                  @change="(selected) => {selectedContactType = selected}"
+                :options="contactTypes"
+                options-key="value"
+                options-text="text"
+                @change="(selected) => {selectedContactType = selected}"
               />
               <partial-input-error-message :error-message="errors.contact_type"/>
             </div>
@@ -63,9 +63,9 @@
             <template v-if="!(isValidPersianMobile(user?.username ?? 0))">
               <div class="p-2 w-full sm:w-1/2">
                 <base-input
-                    label-title="نام"
-                    name="name"
-                    placeholder="حروف فارسی"
+                  label-title="نام"
+                  name="name"
+                  placeholder="حروف فارسی"
                 >
                   <template #icon>
                     <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -74,10 +74,10 @@
               </div>
               <div class="p-2 w-full sm:w-1/2">
                 <base-input
-                    klass="tracking-widest"
-                    label-title="موبایل"
-                    name="mobile"
-                    placeholder="09xxxxxxxxx"
+                  klass="tracking-widest"
+                  label-title="موبایل"
+                  name="mobile"
+                  placeholder="09xxxxxxxxx"
                 >
                   <template #icon>
                     <DevicePhoneMobileIcon class="h-6 w-6 text-gray-400"/>
@@ -87,9 +87,9 @@
             </template>
             <div class="p-2 w-full">
               <base-textarea
-                  label-title="توضیحات"
-                  name="description"
-                  placeholder="متن پیام"
+                label-title="توضیحات"
+                name="description"
+                placeholder="متن پیام"
               >
                 <template #icon>
                   <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -111,15 +111,15 @@
               </div>
               <div class="px-2 py-3 w-full sm:w-1/2">
                 <base-button
-                    :disabled="!canSubmit"
-                    class="bg-primary text-white mr-auto px-6 w-full sm:w-auto flex items-center gap-3 group"
-                    type="submit"
+                  :disabled="!canSubmit"
+                  class="bg-primary text-white mr-auto px-6 w-full sm:w-auto flex items-center gap-3 group"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      v-if="!canSubmit"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -128,11 +128,11 @@
                 </base-button>
 
                 <div
-                    v-if="Object.keys(errors)?.length"
-                    class="text-left"
+                  v-if="Object.keys(errors)?.length"
+                  class="text-left"
                 >
                   <div
-                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                    class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
                   >
                     (
                     <span>{{ Object.keys(errors)?.length }}</span>
@@ -149,13 +149,13 @@
   </div>
 
   <div
-      v-if="getSiteFirstPhone || getSiteMail"
-      class="w-full mb-6 p-3"
+    v-if="getSiteFirstPhone || getSiteMail"
+    class="w-full mb-6 p-3"
   >
     <ul class="flex flex-col sm:flex-row gap-6">
       <li
-          v-if="getSiteFirstPhone"
-          class="rounded-lg bg-slate-200 py-5 pl-5 pr-8 w-full"
+        v-if="getSiteFirstPhone"
+        class="rounded-lg bg-slate-200 py-5 pl-5 pr-8 w-full"
       >
         <div class="flex flex-col items-center gap-2">
           <div class="p-2 rounded-full bg-blue-500">
@@ -165,14 +165,18 @@
         </div>
         <div class="mt-4 text-sm">
           <div class="flex justify-center items-center gap-3">
-            <span class="tracking-widest font-iranyekan-bold">{{ obfuscateNumber(getSiteFirstPhone?.phone) }}</span>
+            <a
+              :href="'tel:' + getSiteFirstPhone?.phone"
+              class="tracking-widest font-iranyekan-bold"
+              v-html="obfuscateNumber(getSiteFirstPhone?.phone)"
+            ></a>
             <span v-if="getSiteFirstPhone?.name" class="text-slate-500 text-sm">{{ getSiteFirstPhone?.name }}</span>
           </div>
         </div>
       </li>
       <li
-          v-if="getSiteMail"
-          class="rounded-lg bg-slate-200 py-5 pl-5 pr-8 w-full"
+        v-if="getSiteMail"
+        class="rounded-lg bg-slate-200 py-5 pl-5 pr-8 w-full"
       >
         <div class="flex flex-col items-center gap-2">
           <div class="p-2 rounded-full bg-teal-500">
@@ -181,7 +185,7 @@
           <span class="font-iranyekan-light">ایمیل فروشگاه</span>
         </div>
         <div class="mt-4 font-iranyekan-bold text-sm text-center">
-          <a :href="'mailto:' + obfuscateEmail(getSiteMail.link)">
+          <a :href="'mailto:' + getSiteMail.link">
             {{ obfuscateEmail(getSiteMail.link) }}
           </a>
         </div>
@@ -190,14 +194,14 @@
   </div>
 
   <div
-      v-if="homeSettingStore.getAddress || getSiteLatLng"
-      class="p-3 mb-12"
+    v-if="homeSettingStore.getAddress || getSiteLatLng"
+    class="p-3 mb-12"
   >
     <partial-card class="border-0 overflow-hidden shadow-xl">
       <template #body>
         <div
-            v-if="homeSettingStore.getAddress && homeSettingStore.getAddress?.toString()?.trim() !== ''"
-            class="m-2 p-3 border-r-4 border-rose-500"
+          v-if="homeSettingStore.getAddress && homeSettingStore.getAddress?.toString()?.trim() !== ''"
+          class="m-2 p-3 border-r-4 border-rose-500"
         >
           <div class="flex items-center gap-2">
             <MapPinIcon class="w-7 h-7 text-rose-500"/>
@@ -209,28 +213,28 @@
         </div>
 
         <base-loading-panel
-            v-if="getSiteLatLng"
-            :loading="mapLoading"
+          v-if="getSiteLatLng"
+          :loading="mapLoading"
         >
           <template #loader>
             <div
-                class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
+              class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
               <MapIcon class="h-16 w-16 text-slate-400"/>
               <span class="text-orange-300">در حال بارگذاری نقشه</span>
             </div>
           </template>
           <template #content>
             <base-map
-                v-model:center="mapSettings.center"
-                v-model:zoom="mapSettings.zoom"
+              v-model:center="mapSettings.center"
+              v-model:zoom="mapSettings.zoom"
             >
               <template #markerPopup>
                 <div class="text-right">
                   <div class="flex items-center gap-3 justify-center">
                     <img
-                        :alt="homeSettingStore.getTitle"
-                        class="object-contain h-8 w-auto"
-                        src="/logo.png"
+                      :alt="homeSettingStore.getTitle"
+                      class="object-contain h-8 w-auto"
+                      src="/logo.png"
                     >
                     <h1 class="shrink-0 text-lg font-iranyekan-bold">{{ homeSettingStore.getTitle }}</h1>
                   </div>
@@ -242,8 +246,8 @@
                         }}</span>
                     </div>
                     <div
-                        v-if="getSiteFirstPhone?.name"
-                        class="mt-1 text-left"
+                      v-if="getSiteFirstPhone?.name"
+                      class="mt-1 text-left"
                     >
                       {{ getSiteFirstPhone?.name }}
                     </div>
@@ -261,14 +265,14 @@
 <script setup>
 import {computed, inject, reactive, ref} from "vue";
 import {
-  MapIcon,
+  ArrowLeftCircleIcon,
+  ArrowLeftIcon,
   DevicePhoneMobileIcon,
   EnvelopeIcon,
+  InformationCircleIcon,
+  MapIcon,
   MapPinIcon,
   QrCodeIcon,
-  ArrowLeftCircleIcon,
-  InformationCircleIcon,
-  ArrowLeftIcon,
 } from "@heroicons/vue/24/outline/index.js";
 import BaseMap from "@/components/base/BaseMap.vue";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
@@ -370,22 +374,22 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     description: yup.string().required('توضیحات خود را وارد نمایید.'),
     name: yup.string()
-        .when([], (inputValue, schema) => {
-          return !(!!(user?.id))
-              ? schema
-                  .persian('نام باید از حروف فارسی باشد.')
-                  .required('نام را وارد نمایید.')
-              : schema.optional()
-        }),
+      .when([], (inputValue, schema) => {
+        return !(!!(user?.id))
+          ? schema
+            .persian('نام باید از حروف فارسی باشد.')
+            .required('نام را وارد نمایید.')
+          : schema.optional()
+      }),
     mobile: yup.string()
-        .when([], (inputValue, schema) => {
-          return !(isValidPersianMobile(user?.username ?? 0))
-              ? schema
-                  .transform(transformNumbersToEnglish)
-                  .persianMobile('شماره موبایل نامعتبر است.')
-                  .required('موبایل را وارد نمایید.')
-              : schema.optional()
-        }),
+      .when([], (inputValue, schema) => {
+        return !(isValidPersianMobile(user?.username ?? 0))
+          ? schema
+            .transform(transformNumbersToEnglish)
+            .persianMobile('شماره موبایل نامعتبر است.')
+            .required('موبایل را وارد نمایید.')
+          : schema.optional()
+      }),
     captcha: yup.string().required('کد تصویر را وارد نمایید.'),
   }),
 }, (values, actions) => {

@@ -3,7 +3,7 @@ import {apiRoutes} from "@/router/api-routes.js";
 
 export const AdminPanelDashboardAPI = {
   getCountAlerts(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.main.countOfAlerts,
       null,
       callbacks
@@ -11,7 +11,7 @@ export const AdminPanelDashboardAPI = {
   },
 
   getCountOrders(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.main.countOfOrders,
       null,
       callbacks

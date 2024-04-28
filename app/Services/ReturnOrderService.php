@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enums\DatabaseEnum;
 use App\Enums\Orders\ReturnOrderStatusesEnum;
+use App\Enums\Results\ChangeRequestStatusResult;
+use App\Enums\Results\ReturnOrderToStockResult;
 use App\Events\ReturnOrderRequestedEvent;
 use App\Events\ReturnOrderStatusChangedEvent;
 use App\Models\OrderDetail;
@@ -108,9 +110,9 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function canCancelOrder(ReturnOrderRequest $orderRequest): bool
+    public function canCancelRequest(ReturnOrderRequest $request): bool
     {
-        return $this->orderRepository->isReturnOrderCancelable($orderRequest);
+        return $this->repository->isRequestCancelable($request);
     }
 
     /**
@@ -170,6 +172,8 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         }
         if ($hasStatusUpdate) {
             $updateAttributes['status'] = ReturnOrderStatusesEnum::tryFrom($attributes['status'])->value;
+            $updateAttributes['status_changed_at'] = now();
+            $updateAttributes['status_changed_by'] = Auth::user()?->id;
         }
         if (isset($attributes['seen_status'])) {
             $updateAttributes['seen_status'] = to_boolean($attributes['seen_status']);
@@ -257,6 +261,14 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
+    public function returnItemsToStock(ReturnOrderRequest $request): ReturnOrderToStockResult
+    {
+        return $this->repository->returnItemsToStock($request);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function modifyItem(int $itemId, array $attributes): ?Model
     {
         $updateAttributes = [];
@@ -273,6 +285,37 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         $where = new WhereBuilder();
         $where->whereEqual('id', $itemId);
         return $this->repository->getItemWhere(where: $where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function changeUserRequestStatus(
+        ReturnOrderRequest      $request,
+        ReturnOrderStatusesEnum $toStatus
+    ): ChangeRequestStatusResult
+    {
+        // Check previous step and changing step to be valid changing step
+        if (
+            (
+                $request->status === ReturnOrderStatusesEnum::ACCEPT->value &&
+                $toStatus->value !== ReturnOrderStatusesEnum::SENDING->value
+            ) ||
+            (
+                $request->status === ReturnOrderStatusesEnum::RETURN_TO_USER->value &&
+                $toStatus->value !== ReturnOrderStatusesEnum::RECEIVED_BY_USER->value
+            )
+        ) {
+            return ChangeRequestStatusResult::NOT_POSSIBLE;
+        }
+
+        $res = $this->updateByCode($request->code, [
+            'status' => $toStatus->value
+        ]);
+
+        if (is_null($res)) return ChangeRequestStatusResult::ERROR;
+
+        return ChangeRequestStatusResult::SUCCESS;
     }
 
     /**

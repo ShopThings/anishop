@@ -75,7 +75,7 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted) {
+    if (!countdown.isStarted.value) {
       countdown.start(fetchCounting)
     }
   })
@@ -96,7 +96,7 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
 
 export const useNotificationStore = defineStore('userPanelNotifications', () => {
   let notifications = ref([])
-  const countdown = useCountdown(600)
+  const countdown = useCountdown(300)
 
   checkNewNotifications()
 
@@ -137,7 +137,7 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted) {
+    if (!countdown.isStarted.value) {
       countdown.start(checkNewNotifications)
     }
   })

@@ -30,7 +30,6 @@ class OrderController extends Controller
         protected OrderServiceInterface $service
     )
     {
-        $this->policyModel = Order::class;
     }
 
     /**

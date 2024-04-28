@@ -102,7 +102,11 @@
     </VTransitionSlideFadeDownY>
   </div>
 
-  <div v-if="showPagination && maxPage > 1" class="mt-3">
+  <div
+    v-if="showPagination && maxPage > 1"
+    :class="paginationContainerClass"
+    class="mt-3"
+  >
     <base-pagination
       v-model:current-page="currentPage"
       v-model:max-page="maxPage"
@@ -165,13 +169,19 @@ const props = defineProps({
   },
   showPaginationDetail: Boolean,
   paginationTheme: String,
+  paginationContainerClass: String,
   //
   scrollMarginTop: {
     type: Number,
     default: 0,
   },
 })
-const emit = defineEmits(['update:items', 'update:searchText', 'order-changed'])
+const emit = defineEmits([
+  'update:items',
+  'update:searchText',
+  'order-changed',
+  'items-loaded'
+])
 
 const itemsContainerRef = ref(null)
 const loading = ref(true)
@@ -341,31 +351,30 @@ function goToPage(page) {
         loading.value = false
         goToTop()
 
+        emit('items-loaded')
+
         resolve()
       }, 1000)
     })
   } else if (props.path && props.path.trim() !== '') {
+    let remotePath;
     if (isObject(props.pathReplacementParams)) {
-      useRequest(apiReplaceParams(props.path, props.pathReplacementParams), {params}, {
-        success: (response) => {
-          actualItems.value = response.data || []
-          total.value = response.meta.total || 0
-
-          loading.value = false
-          goToTop()
-        },
-      })
+      remotePath = apiReplaceParams(props.path, props.pathReplacementParams)
     } else {
-      useRequest(props.path, {params}, {
-        success: (response) => {
-          actualItems.value = response.data || []
-          total.value = response.meta.total || 0
-
-          loading.value = false
-          goToTop()
-        },
-      })
+      remotePath = props.path
     }
+
+    useRequest(remotePath, {params}, {
+      success: (response) => {
+        actualItems.value = response.data || []
+        total.value = response.meta.total || 0
+
+        loading.value = false
+        goToTop()
+
+        emit('items-loaded')
+      },
+    })
   } else {
     actualItems.value = []
     loading.value = false
@@ -395,11 +404,18 @@ function nextPage() {
 function goToTop() {
   if (!itemsContainerRef.value) return
 
+  // Get the closest scrolling container
+  // (this is just a hacky fix with overflow-hidden css class)
+  let scrollable = itemsContainerRef.value.closest('.overflow-hidden')
+  if (!scrollable) {
+    scrollable = window
+  }
+
   // Calculate the position to scroll to (slightly above the target element)
-  const scrollToY = itemsContainerRef.value.getBoundingClientRect().top + window.scrollY + props.scrollMarginTop;
+  const scrollToY = itemsContainerRef.value.getBoundingClientRect().top + scrollable.scrollY + props.scrollMarginTop;
 
   // Scroll to the calculated position
-  window.scrollTo({
+  scrollable.scrollTo({
     top: scrollToY,
     behavior: 'smooth'
   });

@@ -34,7 +34,7 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.show) !== -1 && except.indexOf(defaultUrlKeys.show) === -1) {
     api.fetchById = (id, callbacks) => {
-      useRequest(
+      return useRequest(
         apiReplaceParams(url[urlKeys.show], {[replacement]: id}),
         null,
         callbacks
@@ -44,13 +44,13 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.index) !== -1 && except.indexOf(defaultUrlKeys.index) === -1) {
     api.fetchAll = (params, callbacks) => {
-      useRequest(apiReplaceParams(url[urlKeys.index]), {params}, callbacks)
+      return useRequest(apiReplaceParams(url[urlKeys.index]), {params}, callbacks)
     }
   }
 
   if (only.indexOf(defaultUrlKeys.store) !== -1 && except.indexOf(defaultUrlKeys.store) === -1) {
     api.create = (data, callbacks) => {
-      useRequest(url[urlKeys.store], {
+      return useRequest(url[urlKeys.store], {
         method: 'POST',
         data,
       }, callbacks)
@@ -59,7 +59,7 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.update) !== -1 && except.indexOf(defaultUrlKeys.update) === -1) {
     api.updateById = (id, data, callbacks) => {
-      useRequest(apiReplaceParams(url[urlKeys.update], {[replacement]: id}), {
+      return useRequest(apiReplaceParams(url[urlKeys.update], {[replacement]: id}), {
         method: 'PUT',
         data,
       }, callbacks)
@@ -68,7 +68,7 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.destroy) !== -1 && except.indexOf(defaultUrlKeys.destroy) === -1) {
     api.deleteById = (id, callbacks) => {
-      useRequest(apiReplaceParams(url[urlKeys.destroy], {[replacement]: id}), {
+      return useRequest(apiReplaceParams(url[urlKeys.destroy], {[replacement]: id}), {
         method: 'DELETE'
       }, callbacks)
     }
@@ -76,7 +76,7 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.batchDestroy) !== -1 && except.indexOf(defaultUrlKeys.batchDestroy) === -1) {
     api.deleteByIds = (ids, callbacks) => {
-      useRequest(url[urlKeys.batchDestroy], {
+      return useRequest(url[urlKeys.batchDestroy], {
         method: 'DELETE',
         data: {
           ids,

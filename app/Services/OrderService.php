@@ -325,6 +325,8 @@ class OrderService extends Service implements OrderServiceInterface
 
             if ($saveChanger) {
                 $updateAttributes['payment_status_changed_by'] = Auth::user()?->id;
+            } else {
+                $updateAttributes['payment_status_changed_by'] = null;
             }
         }
 
@@ -443,6 +445,7 @@ class OrderService extends Service implements OrderServiceInterface
             'receiver_name' => $orderInfo['receiver_name'],
             'receiver_mobile' => $orderInfo['receiver_mobile'],
             'coupon_code' => $coupon instanceof Model ? $coupon->code : null,
+            'coupon_title' => $coupon instanceof Model ? $coupon->title : null,
             'coupon_price' => $coupon instanceof Model ? $coupon->price : 0,
             'shipping_price' => $shippingPrice,
             'discount_price' => $totalDiscount,

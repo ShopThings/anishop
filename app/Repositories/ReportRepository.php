@@ -7,6 +7,8 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Enums\QB\InputTypesEnum;
 use App\Enums\QB\TypesEnum;
+use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Support\Filter;
@@ -30,11 +32,12 @@ class ReportRepository implements ReportRepositoryInterface
      */
     private array $allowedProductsColumns = [
         'brand', 'category', 'title', 'unit_name', 'color_name', 'size',
-        'gurantee', 'is_spacial', 'is_available', 'is_each_available',
+        'guarantee', 'is_spacial', 'is_available', 'is_each_available',
         'is_commenting_allowed', 'is_published', 'is_each_published',
         'is_each_show_coming_soon', 'is_each_show_call_for_more',
-        'is_deleted', 'price', 'discounted_price', 'tax_rate',
-        'stock_count', 'max_cart_count', 'weight', 'discounted_until',
+        'is_deleted', 'price', 'discounted_price', 'tax_rate', 'stock_count',
+        'max_cart_count', 'weight', 'discounted_from', 'discounted_until',
+        'has_separate_shipment',
     ];
 
     /**
@@ -53,7 +56,9 @@ class ReportRepository implements ReportRepositoryInterface
     ];
 
     public function __construct(
-        protected UserRepositoryInterface $userRepository
+        protected UserRepositoryInterface    $userRepository,
+        protected ProductRepositoryInterface $productRepository,
+        protected OrderRepositoryInterface   $orderRepository
     )
     {
     }
@@ -73,6 +78,44 @@ class ReportRepository implements ReportRepositoryInterface
         }
 
         return $this->userRepository->getUsersFilterPaginatedForReport(
+            filter: $filter, reportQuery: $parsedReportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductsForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        if (is_array($reportQuery)) {
+            $parsedReportQuery = QBHelper::refineQuery($reportQuery, $this->allowedProductsColumns);
+        } else {
+            $parsedReportQuery = null;
+        }
+
+        return $this->productRepository->getProductsFilterPaginatedForReport(
+            filter: $filter, reportQuery: $parsedReportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrdersForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        if (is_array($reportQuery)) {
+            $parsedReportQuery = QBHelper::refineQuery($reportQuery, $this->allowedOrdersColumns);
+        } else {
+            $parsedReportQuery = null;
+        }
+
+        return $this->orderRepository->getOrdersFilterPaginatedForReport(
             filter: $filter, reportQuery: $parsedReportQuery
         );
     }
@@ -180,12 +223,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'value',
                     'options' => [
                         [
-                            'text' => 'خیر',
-                            'value' => DatabaseEnum::DB_NO,
-                        ],
-                        [
                             'text' => 'بله',
                             'value' => DatabaseEnum::DB_YES,
+                        ],
+                        [
+                            'text' => 'خیر',
+                            'value' => DatabaseEnum::DB_NO,
                         ],
                     ],
                 ],
@@ -240,7 +283,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'unit_name' => 'واحد شمارش',
                 'color_name' => 'رنگ',
                 'size' => 'سایز',
-                'gurantee' => 'گارانتی',
+                'guarantee' => 'گارانتی',
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
@@ -264,6 +307,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'is_each_published' => 'وضعیت انتشار هر محصول',
                 'is_each_show_coming_soon' => 'نمایش بزودی در هر محصول',
                 'is_each_show_call_for_more' => 'نمایش اطلاعات بیشتر در هر محصول',
+                'has_separate_shipment' => 'دارای مرسوله مجزا',
                 'is_deleted' => 'محصول حذف شده',
             ] as $value => $text) {
             $info[] = [
@@ -279,12 +323,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'value',
                     'options' => [
                         [
-                            'text' => 'خیر',
-                            'value' => DatabaseEnum::DB_NO,
-                        ],
-                        [
                             'text' => 'بله',
                             'value' => DatabaseEnum::DB_YES,
+                        ],
+                        [
+                            'text' => 'خیر',
+                            'value' => DatabaseEnum::DB_NO,
                         ],
                     ],
                 ],
@@ -467,12 +511,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'value',
                     'options' => [
                         [
-                            'text' => 'خیر',
-                            'value' => DatabaseEnum::DB_NO,
-                        ],
-                        [
                             'text' => 'بله',
                             'value' => DatabaseEnum::DB_YES,
+                        ],
+                        [
+                            'text' => 'خیر',
+                            'value' => DatabaseEnum::DB_NO,
                         ],
                     ],
                 ],
@@ -528,12 +572,12 @@ class ReportRepository implements ReportRepositoryInterface
                 'key' => 'value',
                 'options' => [
                     [
-                        'text' => 'خیر',
-                        'value' => DatabaseEnum::DB_NO,
-                    ],
-                    [
                         'text' => 'بله',
                         'value' => DatabaseEnum::DB_YES,
+                    ],
+                    [
+                        'text' => 'خیر',
+                        'value' => DatabaseEnum::DB_NO,
                     ],
                 ],
             ],

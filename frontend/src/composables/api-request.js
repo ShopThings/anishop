@@ -4,6 +4,7 @@ import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js"
 import {useToast} from "vue-toastification"
 import router from "@/router/index.js";
 import isObject from "lodash.isobject";
+import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 
 export const responseTypes = {
   success: 'success',
@@ -86,13 +87,36 @@ axiosClient.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 axiosClient.defaults.headers.common['Content-Type'] = 'application/json'
 
 axiosClient.interceptors.request.use((config) => {
+  // If we want check maintenance, we should attach secret if exists to sending info
+  const secretCode = useSafeLocalStorage.getItem('maintenance_secret');
+
+  if (secretCode) {
+    // Add maintenance_secret to the request params or data for all requests
+    if (config.params) {
+      config.params.maintenance_secret = secretCode;
+    } else {
+      config.params = {maintenance_secret: secretCode};
+    }
+
+    if (config.method !== 'get') {
+      if (config.data) {
+        config.data.maintenance_secret = secretCode;
+      } else {
+        config.data = {maintenance_secret: secretCode};
+      }
+    }
+  }
+
+  // Attach logged-in user token, to headers
   const store = useUserAuthStore()
   const adminStore = useAdminAuthStore()
+
   if (config.url.indexOf('/admin/') !== -1 && adminStore.getToken) {
     config.headers.Authorization = `Bearer ${adminStore.getToken}`
   } else if (store.getToken) {
     config.headers.Authorization = `Bearer ${store.getToken}`
   }
+
   return config
 })
 
@@ -124,109 +148,139 @@ axiosClient.interceptors.response.use(response => {
 
 export default axiosClient
 
-export const useRequest = (url, config, resultConfig) => {
-  const toast = useToast()
+export const useRequest = async (url, config, resultConfig) => {
+  return new Promise((resolve, reject) => {
+    const toast = useToast();
 
-  config = config || {}
-  const silent = resultConfig?.silent === true
-  const onBeforeRequest = resultConfig?.beforeRequest
-  const onSuccess = resultConfig?.success
-  const onError = resultConfig?.error
-  const onFinally = resultConfig?.finally
+    config = config || {};
+    const silent = resultConfig?.silent === true;
+    const onBeforeRequest = resultConfig?.beforeRequest;
+    const onSuccess = resultConfig?.success;
+    const onCriticalError = resultConfig?.criticalError;
+    const onError = resultConfig?.error;
+    const onAnyError = resultConfig?.anyError;
+    const onFinally = resultConfig?.finally;
 
-  if (isFunction(onBeforeRequest))
-    onBeforeRequest.apply(null)
+    if (isFunction(onBeforeRequest))
+      onBeforeRequest.apply(null);
 
-  config['method'] = config['method'] || 'GET'
-  axiosClient(url, config)
-    .then((response) => {
-      const data = response.data || []
-      const type = response.data?.data?.type || data?.type
-      const msg = response.data?.data?.message || response.data?.message
+    config['method'] = config['method'] || 'GET';
 
-      let total = 0
-      if (data?.meta?.total) {
-        total = data?.meta?.total
-      } else if (Array.isArray(data?.data) || Array.isArray(data)) {
-        total = data?.data?.length || data.length
-      } else if (isObject(data?.data) || isObject(data)) {
-        total = 1
-      }
+    axiosClient(url, config)
+      .then((response) => {
+        const data = response.data || [];
+        const type = response.data?.data?.type || data?.type;
+        const msg = response.data?.data?.message || response.data?.message;
 
-      let ans = true
-      if (isFunction(onSuccess))
-        ans = onSuccess.apply(null, [data, total])
-
-      // if returned value is false, overwrite functionality
-      if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
-        if (type && type === responseTypes.info) {
-          toast.info(msg)
-        } else if (type && type === responseTypes.warning) {
-          toast.warning(msg)
-        } else {
-          toast.success(msg)
+        let total = 0;
+        if (data?.meta?.total) {
+          total = data?.meta?.total;
+        } else if (Array.isArray(data?.data) || Array.isArray(data)) {
+          total = data?.data?.length || data.length;
+        } else if (isObject(data?.data) || isObject(data)) {
+          total = 1;
         }
-      }
-    })
-    .catch((error) => {
-      const data = error?.response?.data?.data || error?.response?.data || []
-      const type = error?.response?.data?.data?.type
-      const msg = error?.response?.data?.data?.message ||
-        error?.response?.data.message ||
-        error?.response?.statusText ||
-        error.message
 
-      // mostly it has debugging purposes
-      if ((isObject(data) && !Object.keys(data).length) ||
-        (Array.isArray(data) && !data.length) ||
-        error?.response.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR ||
-        error?.request.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR
-      ) {
-        if (msg.toLowerCase() !== "canceled") {
-          console.error(error)
+        let ans = true;
+        if (isFunction(onSuccess)) {
+          ans = onSuccess.apply(null, [data, total]);
+        }
 
-          if (!silent) {
-            toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!')
+        // if returned value is false, overwrite functionality
+        if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
+          if (type && type === responseTypes.info) {
+            toast.info(msg);
+          } else if (type && type === responseTypes.warning) {
+            toast.warning(msg);
+          } else {
+            toast.success(msg);
           }
         }
-        return
-      }
 
-      let ans = true
-      if (isFunction(onError))
-        ans = onError.apply(null, [data, msg])
+        resolve(data); // Resolve with data
+      })
+      .catch((error) => {
+        const data = error?.response?.data?.data || error?.response?.data || [];
+        const type = error?.response?.data?.data?.type;
+        const msg = error?.response?.data?.data?.message ||
+          error?.response?.data.message ||
+          error?.response?.statusText ||
+          error.message;
 
-      // if returned value is false, overwrite functionality
-      if (ans !== false && msg) {
-        if (type && type === responseTypes.error) {
-          toast.error(msg)
-        } else if (type && type === responseTypes.info) {
-          toast.info(msg)
-        } else if (type && type === responseTypes.warning) {
-          toast.warning(msg)
-        } else {
-          toast.error(msg)
+        // mostly it has debugging purposes
+        if ((isObject(data) && !Object.keys(data).length) ||
+          (Array.isArray(data) && !data.length) ||
+          error?.response.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR ||
+          error?.request.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR
+        ) {
+          if (msg.toLowerCase() !== "canceled") {
+            if (import.meta.env.DEV) {
+              console.error(error);
+            }
+
+            if (isFunction(onAnyError)) {
+              onAnyError.apply(null, [null, msg]);
+            }
+
+            if (isFunction(onCriticalError)) {
+              onCriticalError.apply(null, [msg]);
+            }
+
+            if (!silent) {
+              toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!');
+            }
+          }
+          reject(); // Reject without data
+          return;
         }
-      }
-    })
-    .finally(() => {
-      if (isFunction(onFinally)) {
-        onFinally.apply(null)
-      }
-    })
+
+        if (isFunction(onAnyError)) {
+          onAnyError.apply(null, [data, msg]);
+        }
+
+        let ans = true;
+        if (isFunction(onError)) {
+          ans = onError.apply(null, [data, msg]);
+        }
+
+        // if returned value is false, overwrite functionality
+        if (ans !== false && msg) {
+          if (type && type === responseTypes.error) {
+            toast.error(msg);
+          } else if (type && type === responseTypes.info) {
+            toast.info(msg);
+          } else if (type && type === responseTypes.warning) {
+            toast.warning(msg);
+          } else {
+            toast.error(msg);
+          }
+        }
+
+        reject(); // Reject without data
+      })
+      .finally(() => {
+        if (isFunction(onFinally)) {
+          onFinally.apply(null);
+        }
+      });
+  });
 }
 
-export function useRequestWrapper(url, config, callbacks, userCallbacks) {
+export async function useRequestWrapper(url, config, callbacks, userCallbacks) {
   const onBeforeRequest = callbacks?.beforeRequest
   const onSuccess = callbacks?.success
+  const onCriticalError = callbacks?.criticalError
   const onError = callbacks?.error
+  const onAnyError = callbacks?.anyError
   const onFinally = callbacks?.finally
 
   const onUserSuccess = userCallbacks?.success
+  const onUserCriticalError = userCallbacks?.criticalError
   const onUserError = userCallbacks?.error
+  const onUserAnyError = userCallbacks?.anyError
   const onUserFinally = userCallbacks?.finally
 
-  useRequest(url, config, {
+  return useRequest(url, config, {
     beforeRequest: onBeforeRequest,
     success: (response, total) => {
       if (isFunction(onSuccess)) {
@@ -240,17 +294,35 @@ export function useRequestWrapper(url, config, callbacks, userCallbacks) {
 
       return answer !== false
     },
-    error: (err) => {
+    criticalError: (...err) => {
+      if (isFunction(onCriticalError)) {
+        onCriticalError.apply(null, ...err)
+      }
+
+      if (isFunction(onUserCriticalError)) {
+        onUserCriticalError.apply(null, ...err)
+      }
+    },
+    error: (...err) => {
       if (isFunction(onError)) {
-        onError.apply(null, [err])
+        onError.apply(null, ...err)
       }
 
       let answer = true;
       if (isFunction(onUserError)) {
-        answer = onUserError.apply(null, [err])
+        answer = onUserError.apply(null, ...err)
       }
 
       return answer !== false
+    },
+    anyError: (...err) => {
+      if (isFunction(onAnyError)) {
+        onAnyError.apply(null, ...err)
+      }
+
+      if (isFunction(onUserAnyError)) {
+        onUserAnyError.apply(null, ...err)
+      }
     },
     finally: () => {
       if (isFunction(onFinally)) {

@@ -24,6 +24,7 @@ use App\Http\Controllers\Other\SmsLogController;
 use App\Http\Controllers\Other\StaticPageController;
 use App\Http\Controllers\Other\WeightPostPriceController;
 use App\Http\Controllers\Payment\PaymentMethodController;
+use App\Http\Controllers\Report\ExportOrderController;
 use App\Http\Controllers\Report\ReportOrderController;
 use App\Http\Controllers\Report\ReportProductController;
 use App\Http\Controllers\Report\ReportUserController;
@@ -248,10 +249,12 @@ Route::prefix('admin')
                     ->name('orders.send-statuses');
                 Route::get('orders/all/{user?}', [OrderController::class, 'index'])
                     ->whereNumber('user')->name('orders.index');
-                Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
-                    ->where(['order' => $codeRegex]);
+                Route::put('orders/export/{order}', [ExportOrderController::class, 'pdf'])
+                    ->where(['order' => $codeRegex])->name('orders.export.pdf');
                 Route::put('orders/{order}/payment', [OrderController::class, 'updatePayment'])
                     ->where(['order' => $codeRegex])->name('orders.update.payment');
+                Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
+                    ->where(['order' => $codeRegex]);
 
                 /*
                  * order badge routes
@@ -268,10 +271,12 @@ Route::prefix('admin')
                     ->name('return-orders.statuses');
                 Route::get('return-orders/all/{user?}', [ReturnOrderRequestController::class, 'index'])
                     ->whereNumber('user')->name('return-orders.index');
-                Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['index', 'store'])
-                    ->where(['return_order' => $codeRegex]);
+                Route::put('return-orders/{return_order}/to-stock', [ReturnOrderRequestController::class, 'returnItemsToStock'])
+                    ->where(['return_order' => $codeRegex])->name('return-orders.to-stock');
                 Route::put('return-orders/{return_order}/{return_order_item}/modify-item', [ReturnOrderRequestController::class, 'modifyItem'])
                     ->where(['return_order' => $codeRegex])->name('return-orders.modify-item');
+                Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['index', 'store'])
+                    ->where(['return_order' => $codeRegex]);
 
                 /*
                  * report routes

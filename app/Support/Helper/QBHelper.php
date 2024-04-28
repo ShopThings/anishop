@@ -3,6 +3,12 @@
 namespace App\Support\Helper;
 
 use App\Enums\QB\TypesEnum;
+use App\Support\QB\ItemActions\BetweenItemAction;
+use App\Support\QB\ItemActions\ComparisonItemAction;
+use App\Support\QB\ItemActions\HasReplacementItemAction;
+use App\Support\QB\ItemActions\IsMultipleItemAction;
+use App\Support\QB\ItemActions\NullableItemAction;
+use App\Support\QB\QueryItemActions;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Arr;
@@ -191,7 +197,6 @@ class QBHelper
                 TypesEnum::STRING->value,
                 TypesEnum::NUMBER->value,
                 TypesEnum::DATE_OR_TIME_OR_BOTH->value,
-                TypesEnum::BOOLEAN->value
             ],
         ],
         'isNotNull' => [
@@ -202,7 +207,6 @@ class QBHelper
                 TypesEnum::STRING->value,
                 TypesEnum::NUMBER->value,
                 TypesEnum::DATE_OR_TIME_OR_BOTH->value,
-                TypesEnum::BOOLEAN->value
             ],
         ],
     ];
@@ -410,9 +414,133 @@ class QBHelper
      */
     public static function addToWhereClause(WhereBuilderInterface $where, array $item): WhereBuilderInterface
     {
+        $actions = new QueryItemActions([
+            new IsMultipleItemAction(function (
+                array  $queryItem,
+                string $columnName,
+                array  $values,
+                string $condition,
+                bool   $reverseOperation
+            ) use ($where) {
+
+                $where->whereIn(
+                    $columnName,
+                    $values,
+                    $condition,
+                    $reverseOperation
+                );
+
+            }),
+
+            new HasReplacementItemAction(function (
+                array  $queryItem,
+                string $columnName,
+                       $value,
+                string $replacement,
+                string $condition,
+                bool   $reverseOperation
+            ) use ($where) {
+
+                $value = str_replace('{value}', $value, $replacement);
+                $operation = $value === ''
+                    ? ($reverseOperation ? '<>' : '=')
+                    : ($reverseOperation ? 'not like' : 'like');
+
+                $where->where($columnName, $operation, $value, $condition);
+
+            }),
+
+            new ComparisonItemAction(function (
+                array  $queryItem,
+                string $columnName,
+                string $operationStatement,
+                       $value,
+                string $condition
+            ) use ($where) {
+
+                $where->where(
+                    $columnName,
+                    $operationStatement,
+                    $value,
+                    $condition
+                );
+
+            }),
+
+            new BetweenItemAction(function (
+                array  $queryItem,
+                string $columnName,
+                       $firstValue,
+                       $secondValue,
+                string $condition,
+                bool   $reverseOperation
+            ) use ($where) {
+
+                $where->whereBetween(
+                    $columnName,
+                    $firstValue,
+                    $secondValue,
+                    $condition,
+                    $reverseOperation
+                );
+
+            }),
+
+            new NullableItemAction(function (
+                array  $queryItem,
+                string $columnName,
+                string $condition,
+                bool   $reverseOperation
+            ) use ($where) {
+
+                $where->whereNull(
+                    $columnName,
+                    $condition,
+                    $reverseOperation
+                );
+
+            }),
+        ]);
+
+        self::queryItemAction($actions, $item);
+
+        return $where;
+    }
+
+    /**
+     * "$item" should have the following structure:
+     * <code>
+     * [
+     * column => string,
+     * type => string,
+     * operator => array
+     * [
+     * value => string,
+     * statement => string,
+     * replacement => string, // {value}
+     * multiple => boolean,
+     * applyTo => array, // array of QB types
+     * ],
+     * condition => string,
+     * value => mixed, (optional in some cases)
+     * value2 => mixed, // (optional)
+     * ],
+     * ...,
+     * </code>
+     *
+     * @param QueryItemActions $actions
+     * @param array $item
+     * @return void
+     */
+    public static function queryItemAction(QueryItemActions $actions, array $item)
+    {
         // check if item's type is acceptable to apply operator
-        if (!isset($item['type']) || !in_array($item['type'], $item['operator']['applyTo'])) {
-            return $where;
+        if (
+            is_null($item['column']) ||
+            !isset($item['type']) ||
+            !in_array($item['type'], $item['operator']['applyTo'])
+        ) {
+            return;
         }
 
         // try parse all item value according to its type
@@ -426,28 +554,32 @@ class QBHelper
         // multiple means 'in' or 'or not' statement
         if ($item['operator']['multiple']) {
             if (is_array($item['value']) || is_string($item['value'])) {
+
                 $values = Arr::wrap(Arr::flatten($item['value']));
 
-                $where->whereIn(
+                $actions->isMultipleAction(
+                    $item,
                     $item['column'],
-                    $values,
-                    $item['condition'],
+                    $values, $item['condition'],
                     $item['operator']['opposite']
                 );
             }
         } // has replacements will replace value to specified operator pattern
         elseif (in_array($item['operator']['value'], QBHelper::$hasReplacements)) {
+
             $v = in_array($item['operator']['value'], QBHelper::$emptyReplacements)
                 ? ''
                 : $item['value'];
 
-            $where->whereLike(
+            $actions->hasReplacementAction(
+                $item,
                 $item['column'],
                 $v,
                 $item['operator']['replacement'],
                 $item['condition'],
                 $item['operator']['opposite']
             );
+
         } // otherwise we'll check other operator values
         else {
             switch ($item['operator']['value']) {
@@ -457,8 +589,10 @@ class QBHelper
                 case 'lessOrEqual':
                 case 'greater':
                 case 'greaterOrEqual':
-                    if (is_scalar($item['value'])) {
-                        $where->where(
+
+                if (is_scalar($item['value'])) {
+                    $actions->comparisonAction(
+                        $item,
                             $item['column'],
                             $item['operator']['statement'],
                             $item['value'],
@@ -469,12 +603,14 @@ class QBHelper
 
                 case 'between':
                 case 'notBetween':
-                    if (
+
+                if (
                         isset($item['value'], $item['value2']) &&
                         is_scalar($item['value']) &&
                         is_scalar($item['value2'])
                     ) {
-                        $where->whereBetween(
+                    $actions->betweenAction(
+                        $item,
                             $item['column'],
                             $item['value'],
                             $item['value2'],
@@ -486,7 +622,9 @@ class QBHelper
 
                 case 'isNull':
                 case 'isNotNull':
-                    $where->whereNull(
+
+                $actions->nullableAction(
+                    $item,
                         $item['column'],
                         $item['condition'],
                         $item['operator']['opposite']
@@ -494,8 +632,6 @@ class QBHelper
                     break;
             }
         }
-
-        return $where;
     }
 
     /**

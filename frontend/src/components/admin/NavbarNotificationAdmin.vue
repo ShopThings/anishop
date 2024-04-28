@@ -22,12 +22,23 @@
     <template #title>
       <div class="flex flex-wrap items-center justify-between gap-3 pl-6">
         <span>اعلانات</span>
+
         <base-button
+          :disabled="notificationOperationLoading"
           class="text-xs !text-black !py-1 border-2 hover:bg-slate-100"
           type="button"
           @click="loadNotificationsHandler"
         >
-          بارگذاری مجدد اعلانات
+          <VTransitionFade>
+            <loader-circle
+              v-if="notificationOperationLoading"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
+              spinner-klass="!w-6 !h-6"
+            />
+          </VTransitionFade>
+
+          <span>بارگذاری مجدد اعلانات</span>
         </base-button>
       </div>
     </template>
@@ -37,9 +48,12 @@
         ref="notificationPaginatorRef"
         v-model:items="notifications"
         :path="getPath"
-        :per-page="5"
+        :number-of-loaders="5"
+        :per-page="50"
         container-class="flex flex-col gap-3"
         pagination-theme="modern"
+        pagination-container-class="bg-white sticky bottom-0"
+        @items-loaded.once="itemsLoadedHandler"
       >
         <template #empty>
           <partial-empty-rows
@@ -50,19 +64,24 @@
         </template>
 
         <template #item="{item}">
-          <partial-card class="border-0 p-3 text-sm">
+          <partial-card
+            :class="{
+              '!bg-indigo-100 border-indigo-400': !item.read_at
+            }"
+            class="p-3 text-sm border-2"
+          >
             <template #body>
               <div class="flex flex-wrap items-center gap-2.5 relative pr-2.5">
                 <div
-                  :style="'background-color:' + getPriorityColor(item) + ';'"
-                  class="absolute rounded-full w-1 h-3/4 top-1/2 -translate-y-1/2 -right-1"
+                  :style="'background-color:' + getPriorityColor(item.data) + ';'"
+                  class="absolute rounded-full w-1 h-5/6 top-1/2 -translate-y-1/2 -right-1"
                 ></div>
 
                 <h1 class="text-black font-iranyekan-bold">
-                  {{ item.type_value }}
+                  {{ item.data.type_value }}
                 </h1>
                 <p class="text-slate-700 text-sm styling-paragraph leading-relaxed">
-                  {{ item.message }}
+                  {{ item.data.message }}
                 </p>
                 <span class="text-xs text-slate-400 mr-auto">{{ item.created_at }}</span>
               </div>
@@ -88,7 +107,7 @@
 </template>
 
 <script setup>
-import {inject, onMounted, ref} from "vue";
+import {inject, ref} from "vue";
 import BaseDialog from "@/components/base/BaseDialog.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
@@ -97,21 +116,42 @@ import {NotificationAPI} from "@/service/APINotification.js";
 import BasePaginator from "@/components/base/BasePaginator.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import {apiRoutes} from "@/router/api-routes.js";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 const notificationStore = inject('notificationStore')
 
 const notificationPaginatorRef = ref(null)
+const notificationOperationLoading = ref(false)
 const getPath = apiRoutes.admin.notification.index
 const notifications = ref([])
 
 function loadNotificationsHandler() {
   if (notificationPaginatorRef.value) {
-    if (notificationPaginatorRef.value?.isLoading.value) return
+    if (
+      notificationPaginatorRef.value?.isLoading.value ||
+      notificationOperationLoading.value
+    ) return
+
+    notificationOperationLoading.value = true
 
     if (notificationPaginatorRef.value?.goToPage) {
       notificationPaginatorRef.value.goToPage(0)
     }
+
+    notificationOperationLoading.value = false
   }
+}
+
+function itemsLoadedHandler() {
+  NotificationAPI.markAllAsRead({
+    success() {
+      return false
+    },
+    error() {
+      return false
+    },
+  })
 }
 
 const priorityColors = {
@@ -134,17 +174,6 @@ function getPriorityColor(item) {
         )
     )
 }
-
-onMounted(() => {
-  NotificationAPI.markAllAsRead({
-    success() {
-      return false
-    },
-    error() {
-      return false
-    },
-  })
-})
 </script>
 
 <style scoped>

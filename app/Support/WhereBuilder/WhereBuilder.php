@@ -75,7 +75,7 @@ class WhereBuilder implements WhereBuilderInterface
         $operator = $this->getValidOperator($operator);
         $this->where[] = [
             'query' => $column . ' ' . $operator . ' ?',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
         $this->bindings[] = $value;
     }
@@ -249,7 +249,7 @@ class WhereBuilder implements WhereBuilderInterface
         $column = $this->getColumnWithPrefix($column);
         $this->where[] = [
             'query' => $column . ($not ? ' NOT' : '') . ' LIKE ?',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
 
         $value = str_replace('%', '\\%', $value);
@@ -326,7 +326,7 @@ class WhereBuilder implements WhereBuilderInterface
         $values = implode(',', $values);
         $this->where[] = [
             'query' => $column . ($not ? ' NOT' : '') . ' IN (' . $values . ')',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
         foreach ($value as $val) {
             $this->bindings[] = $val;
@@ -397,7 +397,7 @@ class WhereBuilder implements WhereBuilderInterface
         $column = $this->getColumnWithPrefix($column);
         $this->where[] = [
             'query' => $column . ' IS' . ($not ? ' NOT' : '') . ' NULL',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
     }
 
@@ -469,7 +469,7 @@ class WhereBuilder implements WhereBuilderInterface
         $column = $this->getColumnWithPrefix($column);
         $this->where[] = [
             'query' => $column . ($not ? ' NOT' : '') . ' BETWEEN ? AND ?',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
         $this->bindings[] = $first;
         $this->bindings[] = $second;
@@ -539,7 +539,7 @@ class WhereBuilder implements WhereBuilderInterface
         $column = $this->getColumnWithPrefix($column);
         $this->where[] = [
             'query' => $column . ' REGEXP \'' . $pattern . '\'',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
     }
 
@@ -571,7 +571,7 @@ class WhereBuilder implements WhereBuilderInterface
     {
         $this->where[] = [
             'query' => '(' . $expression . ')',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
 
         foreach ($bindings as $binding) {
@@ -651,7 +651,7 @@ class WhereBuilder implements WhereBuilderInterface
 
         $this->where[] = [
             'query' => '(' . $built->getStatement() . ')',
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
         foreach ($built->getBindings() as $binding) {
             $this->bindings[] = $binding;
@@ -666,10 +666,10 @@ class WhereBuilder implements WhereBuilderInterface
         $statement = '';
         $len = count($this->where);
         for ($idx = 0; $idx < $len; $idx++) {
-            $statement .= $this->where[$idx]['query'];
-            if ($idx < $len - 1) {
+            if ($idx > 0) {
                 $statement .= ' ' . strtoupper($this->where[$idx]['bool']) . ' ';
             }
+            $statement .= $this->where[$idx]['query'];
         }
         $bindings = $this->bindings;
 
@@ -718,7 +718,7 @@ class WhereBuilder implements WhereBuilderInterface
         $second = $this->getColumnWithPrefix($second);
         $this->where[] = [
             'query' => $first . ' ' . $operator . ' ' . $second,
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
     }
 
@@ -861,7 +861,7 @@ class WhereBuilder implements WhereBuilderInterface
         $second = $this->getColumnWithPrefix($second);
         $this->where[] = [
             'query' => $first . ($not ? ' NOT' : '') . ' LIKE ' . $second,
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
     }
 
@@ -935,8 +935,17 @@ class WhereBuilder implements WhereBuilderInterface
         $second = $this->getColumnWithPrefix($second);
         $this->where[] = [
             'query' => $column . ($not ? ' NOT' : '') . ' BETWEEN ' . $first . ' AND ' . $second,
-            'bool' => $boolean,
+            'bool' => $this->getValidatedCondition($boolean),
         ];
+    }
+
+    /**
+     * @param string $boolean
+     * @return string
+     */
+    protected function getValidatedCondition(string $boolean): string
+    {
+        return in_array($boolean, ['and', 'or']) ? $boolean : 'and';
     }
 
     /**

@@ -3,19 +3,19 @@ import {apiRoutes} from "@/router/api-routes.js";
 
 export const ReportAPI = {
   getUsersQB(callbacks) {
-    useRequest(apiRoutes.admin.reports.usersQueryBuilder, null, callbacks)
+    return useRequest(apiRoutes.admin.reports.usersQueryBuilder, null, callbacks)
   },
 
   getProductsQB(callbacks) {
-    useRequest(apiRoutes.admin.reports.productsQueryBuilder, null, callbacks)
+    return useRequest(apiRoutes.admin.reports.productsQueryBuilder, null, callbacks)
   },
 
   getOrdersQB(callbacks) {
-    useRequest(apiRoutes.admin.reports.ordersQueryBuilder, null, callbacks)
+    return useRequest(apiRoutes.admin.reports.ordersQueryBuilder, null, callbacks)
   },
 
   fetchUsers(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.reports.users,
       {
         method: 'POST',
@@ -26,7 +26,7 @@ export const ReportAPI = {
   },
 
   fetchProducts(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.reports.products,
       {
         method: 'POST',
@@ -37,7 +37,7 @@ export const ReportAPI = {
   },
 
   fetchOrders(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.reports.orders,
       {
         method: 'POST',
@@ -48,7 +48,7 @@ export const ReportAPI = {
   },
 
   exportUsers(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.reports.usersExport,
       {
         method: 'POST',
@@ -59,7 +59,7 @@ export const ReportAPI = {
   },
 
   exportProducts(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.reports.productsExport,
       {
         method: 'POST',
@@ -70,7 +70,7 @@ export const ReportAPI = {
   },
 
   exportOrders(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.reports.ordersExport,
       {
         method: 'POST',

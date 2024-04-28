@@ -2,11 +2,11 @@
   <app-navbar-blog/>
 
   <router-view v-slot="{ Component, route }">
-    <VTransitionSlideFadeUpY>
-      <div class="max-w-7xl mx-auto w-full">
+    <PageTransition v-bind='transitionProps'>
+      <div :key="route.path" class="max-w-7xl mx-auto w-full">
         <component :is="Component" :key="route.path"/>
       </div>
-    </VTransitionSlideFadeUpY>
+    </PageTransition>
   </router-view>
 
   <app-footer-user/>
@@ -14,10 +14,13 @@
 
 <script setup>
 import {provide} from "vue";
-import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue"
 import AppNavbarBlog from "@/components/AppNavbarBlog.vue";
 import AppFooterUser from "@/components/user/AppFooterUser.vue";
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
+import {PageTransition} from "vue3-page-transition";
+import {usePageTransition} from "@/composables/page-transition.js";
+
+const transitionProps = usePageTransition()
 
 //--------------------------------------
 const homeSettingStore = useHomeSettingsStore()

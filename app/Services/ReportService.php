@@ -36,6 +36,38 @@ class ReportService extends Service implements ReportServiceInterface
     /**
      * @inheritDoc
      */
+    public function getProductsForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $filter->setSearchText(null);
+
+        return $this->repository->getProductsForReport(
+            filter: $filter,
+            reportQuery: $reportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrdersForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $filter->setSearchText(null);
+
+        return $this->repository->getOrdersForReport(
+            filter: $filter,
+            reportQuery: $reportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUsersQueryBuilderInfo(): array
     {
         return $this->repository->getUsersQueryBuilderInfo();

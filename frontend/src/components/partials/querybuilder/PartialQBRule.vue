@@ -363,7 +363,10 @@ const inputSelectConfig = useSelectSearching({
   searchFn(query) {
     let inp = getInput.value
 
-    if (!inp || !inp.remoteUrl) return
+    if (!inp || !inp.remoteUrl) {
+      inputSelectConfig.isLoading.value = false
+      return
+    }
 
     useRequest(inp.remoteUrl, {
       params: {

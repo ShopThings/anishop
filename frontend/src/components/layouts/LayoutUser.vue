@@ -37,23 +37,14 @@ import AppFooterUser from "@/components/user/AppFooterUser.vue";
 import {useResizeObserver} from "@vueuse/core";
 import AppNavbarUser from "@/components/user/AppNavbarUser.vue";
 import AppSidebarUser from "@/components/user/AppSidebarUser.vue";
-import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+import {PageTransition} from "vue3-page-transition";
 import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPanel.js";
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 import {useCartStore} from "@/store/StoreUserCart.js";
-
-const transitionProps = defineTransitionProps({
-  mode: 'out-in',
-  name: TransitionPresets.fadeInUp,
-  appear: true,
-  overlay: true,
-  overlayBgClassName: 'bg-violet-500',
-  overlayZIndex: 999,
-  transformDistance: '2rem',
-  transitionDuration: 300,
-})
+import {usePageTransition} from "@/composables/page-transition.js";
 
 const route = useRoute()
+const transitionProps = usePageTransition()
 
 //--------------------------------------
 const countingStore = useCountingStuffsStore();

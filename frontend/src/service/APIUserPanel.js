@@ -4,7 +4,7 @@ import {GenericAPI} from "./ServiceAPIs.js";
 
 export const UserPanelDashboardAPI = {
   getCountOfStuffs(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.user.main.countOfStuffs,
       null,
       callbacks
@@ -12,7 +12,7 @@ export const UserPanelDashboardAPI = {
   },
 
   fetchLatestOrders(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.user.main.latestOrders,
       null,
       callbacks
@@ -20,7 +20,7 @@ export const UserPanelDashboardAPI = {
   },
 
   fetchLatestReturnOrders(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.user.main.latestReturnOrders,
       null,
       callbacks
@@ -30,7 +30,7 @@ export const UserPanelDashboardAPI = {
 
 export const UserPanelInfoAPI = {
   updateInfo(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.user.info.info,
       {
         method: 'PUT',
@@ -41,7 +41,7 @@ export const UserPanelInfoAPI = {
   },
 
   updatePassword(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.user.info.password,
       {
         method: 'PUT',
@@ -59,7 +59,7 @@ export const UserPanelOrderAPI = Object.assign(
   }),
   {
     fetchUnpaidOrderPayments(callbacks) {
-      useRequest(apiRoutes.user.orders.unpaidOrderPayments, null, callbacks)
+      return useRequest(apiRoutes.user.orders.unpaidOrderPayments, null, callbacks)
     },
   }
 )
@@ -71,11 +71,11 @@ export const UserPanelReturnOrderAPI = Object.assign(
   }),
   {
     fetchReturnableOrders(callbacks) {
-      useRequest(apiRoutes.user.returnOrders.returnableOrders, null, callbacks);
+      return useRequest(apiRoutes.user.returnOrders.returnableOrders, null, callbacks);
     },
 
     create(orderCode, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.user.returnOrders.store, {order: orderCode}),
         {
           method: 'POST',
@@ -83,6 +83,17 @@ export const UserPanelReturnOrderAPI = Object.assign(
         callbacks
       )
     },
+
+    changeStatus(requestCode, data, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.user.returnOrders.changeStatus, {return_order: requestCode}),
+        {
+          method: 'POST',
+          data,
+        },
+        callbacks
+      )
+    }
   }
 )
 
@@ -93,7 +104,7 @@ export const UserPanelCommentAPI = Object.assign(
   }),
   {
     create(productId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.user.comments.store, {product: productId}),
         {
           method: 'POST',
@@ -112,7 +123,7 @@ export const UserPanelBlogCommentAPI = Object.assign(
   }),
   {
     create(blogId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.user.blogComments.store, {blog: blogId}),
         {
           method: 'POST',

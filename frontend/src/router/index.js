@@ -3,7 +3,15 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {adminRoutes} from "./admin-routes.js";
 import {userRoutes} from "./user-routes.js";
-import {HomeBlogAPI, HomeProductAPI} from "@/service/APIHomePages.js";
+import {HomeBlogAPI, HomeProductAPI, HomeSettingAPI} from "@/service/APIHomePages.js";
+import isObject from "lodash.isobject";
+import {useRequest} from "@/composables/api-request.js";
+import {apiRoutes} from "@/router/api-routes.js";
+import {TransitionPresets} from "vue3-page-transition";
+import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
+import {usePageLoaderStore} from "@/store/StorePageLoader.js";
+import {useHead} from "@unhead/vue";
+import {assembleTitle} from "@/composables/helper.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 
@@ -17,8 +25,8 @@ const routes = [
       title: 'مدیریت فایل‌ها',
       requiresAuth: true,
       isAdminRoute: true,
+      layout: 'layout-empty',
     },
-    layout: 'layout-empty',
   },
 
   {...userRoutes},
@@ -29,25 +37,37 @@ const routes = [
     alias: [''],
     name: 'home',
     component: () => import('@/views/PageHome.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'صفحه اصلی',
+      layout: 'layout-guest',
+    },
   },
   {
     path: '/login',
     name: 'login',
     component: () => import('@/views/PageLogin.vue'),
-    meta: {layout: 'layout-empty-guest'},
+    meta: {
+      title: 'ورود',
+      layout: 'layout-empty-guest',
+    },
   },
   {
     path: '/signup',
     name: 'signup',
     component: () => import('@/views/PageSignup.vue'),
-    meta: {layout: 'layout-empty-guest'},
+    meta: {
+      title: 'ثبت نام',
+      layout: 'layout-empty-guest',
+    },
   },
   {
     path: '/forget-password',
     name: 'forget_password',
     component: () => import('@/views/PageForgetPassword.vue'),
-    meta: {layout: 'layout-empty-guest'},
+    meta: {
+      title: 'فراموشی کلمه عبور',
+      layout: 'layout-empty-guest',
+    },
   },
   {
     path: '/pages/:url([a-zA-Z]+[a-zA-Z\/\-]*[a-zA-Z]+)',
@@ -60,40 +80,36 @@ const routes = [
     path: '/blog/',
     name: 'blogs',
     beforeEnter: async (to, from, next) => {
-      const id = to.query?.id
-      let route = null
+      const id = to.query?.id;
+      let route = null;
 
       if (id) {
-        await new Promise((resolve, reject) => {
-          HomeBlogAPI.fetchByIdMinified(id, {
-            success(response) {
-              resolve(response.data)
-            },
-            error() {
-              reject(false)
-              return false
-            },
-          })
-        }).then((item) => {
+        try {
+          const response = await HomeBlogAPI.fetchByIdMinified(id);
+          const item = response.data;
+
           route = {
             name: 'blog.detail',
             params: {
               slug: item.slug
             }
-          }
-        }).catch(() => {
+          };
+        } catch (error) {
           // do nothing
-        })
+        }
       }
 
       if (route) {
-        next(route)
+        next(route);
       } else {
-        next()
+        next();
       }
     },
     component: () => import('@/views/PageBlogs.vue'),
-    meta: {layout: 'layout-blog'},
+    meta: {
+      title: 'بلاگ',
+      layout: 'layout-blog',
+    },
   },
   {
     path: '/blog/search/:searchText',
@@ -121,48 +137,43 @@ const routes = [
     path: '/blog/search',
     name: 'blog.search',
     component: () => import('@/views/PageSearchBlog.vue'),
-    meta: {layout: 'layout-blog'},
+    meta: {
+      title: 'جستجوی بلاگ',
+      layout: 'layout-blog',
+    },
   },
   {
     path: '/blog/:slug' + slugRouteRegex,
     name: 'blog.detail',
     component: () => import('@/views/PageBlogDetail.vue'),
-    meta: {layout: 'layout-blog'},
+    meta: {
+      title: 'جزئیات بلاگ',
+      layout: 'layout-blog',
+    },
   },
 
   {
     path: '/product',
     name: 'product',
     beforeEnter: async (to, from, next) => {
-      const id = to.query?.id
+      const id = to.query?.id;
 
       if (id) {
-        let route
+        try {
+          const response = await HomeProductAPI.fetchByIdMinified(id);
+          const item = response.data;
 
-        await new Promise((resolve, reject) => {
-          HomeProductAPI.fetchByIdMinified(id, {
-            success(response) {
-              resolve(response.data)
-            },
-            error() {
-              reject(false)
-              return false
-            },
-          })
-        }).then((item) => {
-          route = {
+          next({
             name: 'product.detail',
             params: {
               slug: item.slug
             }
-          }
-        }).catch(() => {
-          route = {name: 'not-found'}
-        })
-
-        next(route)
+          });
+        } catch (error) {
+          next({name: 'not-found'});
+        }
       } else {
-        next({name: 'not-found'})
+        next({name: 'not-found'});
       }
     },
   },
@@ -182,33 +193,48 @@ const routes = [
     path: '/search',
     name: 'search',
     component: () => import('@/views/PageSearch.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'جستجوی محصول',
+      layout: 'layout-guest',
+    },
   },
   {
     path: '/product/:slug' + slugRouteRegex,
     name: 'product.detail',
     component: () => import('@/views/PageProductDetail.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'جزئیات محصول',
+      layout: 'layout-guest',
+    },
   },
 
   {
     path: '/brands',
     name: 'brands',
     component: () => import('@/views/PageBrands.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'برندها',
+      layout: 'layout-guest',
+    },
   },
 
   {
     path: '/faq',
     name: 'faq',
     component: () => import('@/views/PageFaq.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'سؤالات متداول',
+      layout: 'layout-guest',
+    },
   },
   {
     path: '/contact',
     name: 'contact',
     component: () => import('@/views/PageContact.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'تماس با ما',
+      layout: 'layout-guest',
+    },
   },
 
   {
@@ -216,8 +242,7 @@ const routes = [
     name: 'cart',
     component: () => import('@/views/PageCart.vue'),
     meta: {
-      layout: 'layout-guest',
-      title: 'سبر خرید',
+      title: 'سبد خرید',
       breadcrumb: [
         {
           name: 'خانه',
@@ -227,6 +252,7 @@ const routes = [
           name: 'سبد خرید',
         },
       ],
+      layout: 'layout-guest',
     },
   },
   {
@@ -235,6 +261,7 @@ const routes = [
     component: () => import('@/views/PageCheckout.vue'),
     meta: {
       requiresAuth: true,
+      title: 'بازنگری و پرداخت',
       layout: 'layout-guest',
     },
   },
@@ -242,20 +269,24 @@ const routes = [
     path: '/purchase-result',
     name: 'result',
     component: () => import('@/views/PageResult.vue'),
-    meta: {layout: 'layout-guest'},
+    meta: {
+      title: 'نتیجه پرداخت',
+      layout: 'layout-guest',
+    },
   },
   //
 
   {
-    path: '/logout',
-    name: 'logout',
-    beforeEnter(to, from, next) {
-      const store = useUserAuthStore()
-      store.logout()
-      if (from.meta.requiresAuth) {
-        return next('/');
-      }
-      location.reload();
+    path: '/maintenance',
+    name: 'maintenance',
+    component: () => import('@/views/PageMaintenance.vue'),
+    meta: {
+      title: 'در دست تعمیر',
+      layout: 'layout-empty-guest',
+      appearance: {
+        name: TransitionPresets.flipY,
+        overlayBgClassName: '!bg-cool',
+      },
     },
   },
 
@@ -266,6 +297,7 @@ const routes = [
   },
 ];
 
+//------------------------------------------------------------------------------
 const index = createRouter({
   history: createWebHistory(),
   routes,
@@ -278,7 +310,45 @@ const index = createRouter({
   },
 });
 
-index.beforeEach((to, from, next) => {
+//------------------------------------------------------------------------------
+async function checkMaintenanceGuard(to) {
+  // If maintenance mode is active in frontend, just return true
+  if (import.meta.env.VITE_IN_MAINTENANCE_MODE === 'true') {
+    return true;
+  }
+
+  try {
+    const data = {};
+
+    if (to.query?.secret) {
+      data.maintenance_secret = to.query.secret;
+    } else {
+      const secret = useSafeLocalStorage.getItem('maintenance_secret');
+      if (secret) {
+        data.maintenance_secret = secret;
+      }
+    }
+
+    const response = await useRequest(apiRoutes.maintenance, {
+      method: 'POST',
+      data,
+    }, {silent: true});
+
+    const shouldRemove = !response?.in_maintenance_mode;
+    if (data.maintenance_secret && !shouldRemove) {
+      useSafeLocalStorage.setItem('maintenance_secret', data.maintenance_secret);
+    } else {
+      useSafeLocalStorage.removeItem('maintenance_secret');
+    }
+
+    return false; // Continue navigation
+  } catch (error) {
+    useSafeLocalStorage.removeItem('maintenance_secret');
+    return true; // Prevent navigation
+  }
+}
+
+function checkLoginGuard(to) {
   if (
     to.matched.some(record => record.meta.requiresAuth) &&
     to.name !== 'login' && to.name !== 'admin.login' &&
@@ -292,25 +362,85 @@ index.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.isAdminRoute)) {
       if (!adminStore.getToken) {
         adminStore.$reset()
-        next({
+        return {
           name: 'admin.login',
           query: {redirect: to.fullPath}
-        })
-      } else {
-        next()
+        }
       }
     } else if (!store.getToken) {
       store.$reset()
-      next({
+      return {
         name: 'login',
         query: {redirect: to.fullPath}
-      })
-    } else {
-      next()
+      }
     }
-  } else {
-    next() // make sure to always call next()!
   }
+
+  return null
+}
+
+//------------------------------------------------------------------------------
+// Page loading progress bar operations
+//------------------------------------------------------------------------------
+function startPageLoading() {
+  const loadingStore = usePageLoaderStore()
+  loadingStore.setLoading(true)
+}
+
+function endPageLoading() {
+  const loadingStore = usePageLoaderStore()
+  loadingStore.setLoading(false)
+}
+
+//------------------------------------------------------------------------------
+// Meta tags
+//------------------------------------------------------------------------------
+async function setMetaTags(to) {
+  try {
+    const response = await HomeSettingAPI.fetchAll({
+      silent: true,
+    })
+
+    const settings = response.data
+
+    // TODO: add setting title and description that comes from backend
+    // useHead({
+    //   titleTemplate: (title) => !title ? '' : assembleTitle(['', title]),
+    // })
+  } catch (error) {
+    useHead({
+      titleTemplate: (title) => !title ? 'آیریا کالا' : assembleTitle(['آیریا کالا', title]),
+    })
+  }
+}
+
+//------------------------------------------------------------------------------
+index.beforeEach(async (to, from, next) => {
+  startPageLoading()
+
+  let maintenance = await checkMaintenanceGuard(to)
+
+  if (maintenance) {
+    next({name: 'maintenance'})
+  } else {
+    if (to.name !== 'maintenance') {
+      let result = checkLoginGuard(to)
+
+      if (isObject(result)) {
+        next(result)
+      } else {
+        next() // make sure to always call next()!
+      }
+    } else {
+      next({name: 'not-found'})
+    }
+  }
+
+  await setMetaTags(to)
+})
+
+index.beforeResolve(() => {
+  endPageLoading()
 })
 
 export default index;

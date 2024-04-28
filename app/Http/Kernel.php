@@ -115,5 +115,6 @@ class Kernel extends HttpKernel
         // Custom middleware aliasing
         'admin' => AdminCheck::class,
         'xss' => XSS::class,
+        'maintenance' => PreventRequestsDuringMaintenance::class,
     ];
 }

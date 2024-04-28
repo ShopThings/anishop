@@ -27,18 +27,18 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="false"
-              :enable-search-box="true"
-              :has-checkbox="false"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
-              @clear-search-filter="clearFilterHandler"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="false"
+            :enable-search-box="true"
+            :has-checkbox="false"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
+            @clear-search-filter="clearFilterHandler"
           >
             <template #code="{value}">
               <span class="tracking-widest text-lg">{{ value.code }}</span>
@@ -46,18 +46,17 @@
 
             <template v-slot:user="{value}">
               <router-link
-                  :to="{name: 'admin.user.profile', params: {id: value.user.id}}"
-                  class="text-blue-600 hover:text-opacity-80"
+                :to="{name: 'admin.user.profile', params: {id: value.user.id}}"
+                class="text-blue-600 hover:text-opacity-80"
               >
                 <partial-username-label :user="value.user"/>
               </router-link>
-
             </template>
 
             <template v-slot:receiver_info="{value}">
               <base-button
-                  class="text-white bg-black text-sm !py-1"
-                  @click="showReceiverDetails(value)"
+                class="text-white bg-black text-sm !py-1"
+                @click="showReceiverDetails(value)"
               >
                 مشاهده
               </base-button>
@@ -65,15 +64,15 @@
 
             <template #payment_status="{value}">
               <partial-badge-status-payment
-                  :color-hex="value.payment_status.color_hex"
-                  :text="value.payment_status.text"
+                :color-hex="value.payment_status.color_hex"
+                :text="value.payment_status.text"
               />
             </template>
 
             <template v-slot:send_status="{value}">
               <partial-badge-status-send
-                  :color-hex="value.send_status_color_hex"
-                  :text="value.send_status_title"
+                :color-hex="value.send_status_color_hex"
+                :text="value.send_status_title"
               />
             </template>
 
@@ -84,10 +83,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
-                  :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
               />
             </template>
           </base-datatable>

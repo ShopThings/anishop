@@ -13,7 +13,7 @@ export const FestivalAPI = Object.assign(
   GenericAPI(apiRoutes.admin.festivals, {replacement: 'festival'}),
   {
     fetchProducts(festivalId, params, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.products, {festival: festivalId}),
         {params},
         callbacks
@@ -21,7 +21,7 @@ export const FestivalAPI = Object.assign(
     },
 
     addProduct(festivalId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.storeProduct, {festival: festivalId}),
         {
           method: 'POST',
@@ -32,7 +32,7 @@ export const FestivalAPI = Object.assign(
     },
 
     addCategory(festivalId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.storeCategoryProducts, {festival: festivalId}),
         {
           method: 'POST',
@@ -43,7 +43,7 @@ export const FestivalAPI = Object.assign(
     },
 
     removeProduct(festivalId, productId, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.destroyProduct, {
           festival: festivalId,
           product: productId,
@@ -54,7 +54,7 @@ export const FestivalAPI = Object.assign(
     },
 
     removeProducts(festivalId, ids, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.batchDestroyProduct, {
           festival: festivalId,
         }),
@@ -69,7 +69,7 @@ export const FestivalAPI = Object.assign(
     },
 
     removeCategoryProducts(festivalId, categoryId, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.festivals.batchDestroyCategory, {
           festival: festivalId,
           category: categoryId,
@@ -104,11 +104,11 @@ export const WeightPostPriceAPI = Object.assign(
 
 export const ProvinceAPI = {
   fetchAll(callbacks) {
-    useRequest(apiRoutes.provinces, null, callbacks)
+    return useRequest(apiRoutes.provinces, null, callbacks)
   },
 
   fetchCities(provinceId, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.cities, {province: provinceId}),
       null,
       callbacks

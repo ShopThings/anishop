@@ -101,7 +101,7 @@ export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () 
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted) {
+    if (!countdown.isStarted.value) {
       countdown.start(fetchCounting)
     }
   })
@@ -182,7 +182,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted) {
+    if (!countdown.isStarted.value) {
       countdown.start(fetchCounting)
     }
   })
@@ -205,7 +205,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
 export const useNotificationStore = defineStore('adminPanelNotifications', () => {
   let notifications = ref([])
   let loading = ref(false)
-  const countdown = useCountdown(600)
+  const countdown = useCountdown(300)
 
   const isLoading = computed(() => {
     return loading.value
@@ -249,13 +249,14 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
   function $reset() {
     countdown.stop()
 
+    loading.value = false
     notifications.value = []
 
     countdown.start(checkNewNotifications)
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted) {
+    if (!countdown.isStarted.value) {
       countdown.start(checkNewNotifications)
     }
   })

@@ -54,6 +54,19 @@ enum ReturnOrderStatusesEnum: string
     /**
      * @return array
      */
+    public static function getEndingStatuses(): array
+    {
+        return [
+            self::DENIED_BY_USER->value,
+            self::DENIED->value,
+            self::RECEIVED_BY_USER->value,
+            self::MONEY_RETURNED->value,
+        ];
+    }
+
+    /**
+     * @return array
+     */
     public static function getDeletableStatuses(): array
     {
         return [

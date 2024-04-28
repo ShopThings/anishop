@@ -1,16 +1,2 @@
+@import "reset.css";
 @import "scss/fonts.scss";
-
-/*
-------------------
-General Styles
-------------------
-*/
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-}

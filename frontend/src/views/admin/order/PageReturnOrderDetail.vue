@@ -1,13 +1,13 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="content"
+    :loading="loading"
+    type="content"
   >
     <template #content>
       <div class="mb-3">
         <partial-card-navigation
-            :to="{name: 'admin.order.detail', params: {id: order?.code}}"
-            bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
+          :to="{name: 'admin.order.detail', params: {id: order?.code}}"
+          bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
         >
           <span class="text-white text-lg grow">جزئیات سفارش</span>
           <ShoppingBagIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -17,25 +17,54 @@
       <div class="bg-white mb-3 rounded-lg border p-3">
         جزئیات سفارش مرجوعی به کد
         <span
-            v-if="returnOrder?.id"
-            class="text-slate-400 text-base"
+          v-if="returnOrder?.id"
+          class="text-slate-400 text-base"
         >{{ returnOrder?.code }}</span>
       </div>
 
       <div class="bg-white mb-3 rounded-lg border p-3">
         مرجوع کننده -
         <router-link
-            v-if="returnOrder?.user.id"
-            :to="{name: 'admin.user.profile', params: {id: returnOrder?.user.id}}"
-            class="text-blue-600 hover:text-opacity-90"
+          v-if="returnOrder?.user.id"
+          :to="{name: 'admin.user.profile', params: {id: returnOrder?.user.id}}"
+          class="text-blue-600 hover:text-opacity-90"
         >
-          <partial-username-label v-if="returnOrder?.user" :user="returnOrder?.user"/>
+          <partial-username-label :user="returnOrder?.user"/>
         </router-link>
+        <div v-else class="text-slate-600">
+          <partial-username-label
+            :user="{first_name: order?.first_name, last_name: order?.last_name, username: order?.mobile}"
+          />
+        </div>
       </div>
 
       <partial-card
-          v-if="!returnOrder?.wait_for_user"
-          class="mb-3"
+        v-if="returnOrder?.is_in_end_status"
+        class="mb-3 p-3 text-left"
+      >
+        <template #body>
+          <base-button
+            :disabled="returnOrdersItemsLoading"
+            class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+            type="button"
+            @click="returnOrderItemsHandler"
+          >
+            <VTransitionFade>
+              <loader-circle
+                v-if="returnOrdersItemsLoading"
+                big-circle-color="border-transparent"
+                main-container-klass="absolute w-full h-full top-0 left-0"
+              />
+            </VTransitionFade>
+
+            <span>بازگردانی محصولات مرجوعی به انبار</span>
+          </base-button>
+        </template>
+      </partial-card>
+
+      <partial-card
+        v-if="!returnOrder?.wait_for_user"
+        class="mb-3"
       >
         <template #header>
           تغییر وضعیت مرجوعی
@@ -43,9 +72,9 @@
         <template #body>
           <div class="p-3">
             <form-return-order-change-status
-                :description="returnOrder?.not_accepted_description"
-                :selected="returnStatus"
-                @updated="fetchReturnOrder"
+              :description="returnOrder?.not_accepted_description"
+              :selected="returnStatus"
+              @updated="fetchReturnOrder"
             />
           </div>
         </template>
@@ -70,11 +99,17 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">وضعیت ارجاع:</span>
-                    <div class="text-black ">
+                    <div class="text-black">
                       <partial-badge-status-return-order
-                          :color-hex="returnOrder?.status.color_hex"
-                          :text="returnOrder?.status.text"
+                        :color-hex="returnOrder?.status.color_hex"
+                        :text="returnOrder?.status.text"
                       />
+                    </div>
+                    <div
+                      v-if="returnOrder?.wait_for_user"
+                      class="mt-2 text-orange-500 text-sm"
+                    >
+                      در انتظار اقدام کاربر
                     </div>
                   </div>
                 </template>
@@ -114,13 +149,13 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              :columns="table.columns"
-              :enable-multi-operation="false"
-              :enable-search-box="false"
-              :has-checkbox="false"
-              :is-slot-mode="true"
-              :is-static-mode="true"
-              :rows="table.rows"
+            :columns="table.columns"
+            :enable-multi-operation="false"
+            :enable-search-box="false"
+            :has-checkbox="false"
+            :is-slot-mode="true"
+            :is-static-mode="true"
+            :rows="table.rows"
           >
             <template v-slot:product="{value}">
               <div class="flex flex-col gap-3">
@@ -130,8 +165,8 @@
                 <ul class="flex flex-col gap-2.5">
                   <li v-if="value.order_item.color_name">
                     <partial-badge-color
-                        :hex="value.order_item.color_hex"
-                        :title="value.order_item.color_name"
+                      :hex="value.order_item.color_hex"
+                      :title="value.order_item.color_name"
                     />
                   </li>
                   <li v-if="value.order_item.size">
@@ -145,10 +180,23 @@
             </template>
 
             <template v-slot:is_accepted="{value}">
+              <base-switch-confirmation
+                v-if="!returnOrder?.is_in_end_status"
+                v-model="value.is_accepted"
+                :api="ReturnOrderAPI"
+                :parameters="[idParam, value.id]"
+                api-method="modifyOrderItem"
+                off-label="عدم تایید درخواست"
+                on-label="تایید درخواست"
+                success-message="وضعیت تایید مرجوع کالا تغییر یافت."
+                update-key="is_accepted"
+              />
+
               <partial-badge-publish
-                  :publish="value.is_accepted"
-                  publish-text="تایید درخواست"
-                  unpublish-text="عدم تایید درخواست"
+                v-else
+                :publish="value.is_accepted"
+                publish-text="تایید درخواست"
+                unpublish-text="عدم تایید درخواست"
               />
             </template>
 
@@ -195,12 +243,17 @@ import BaseAccordion from "@/components/base/BaseAccordion.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
-import {numberFormat, getRouteParamByKey} from "@/composables/helper.js";
+import {getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {ReturnOrderAPI} from "@/service/APIOrder.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 import PartialBadgeSize from "@/components/partials/PartialBadgeSize.vue";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import BaseSwitchConfirmation from "@/components/base/BaseSwitchConfirmation.vue";
+import BaseButton from "@/components/base/BaseButton.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import {useConfirmToast} from "@/composables/toast-helper.js";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
@@ -258,12 +311,37 @@ const table = reactive({
 })
 
 //-----------------------------------
+// Return order items operation
+//-----------------------------------
+const returnOrdersItemsLoading = ref(false)
+
+function returnOrderItemsHandler() {
+  useConfirmToast(() => {
+      returnOrdersItemsLoading.value = true
+
+      ReturnOrderAPI.returnOrderItemsToStock(idParam.value, {
+        success() {
+          toast.success('محصولات بازگشتی به انبار بازگردانده شد.')
+        },
+        finally() {
+          returnOrdersItemsLoading.value = false
+        },
+      })
+    },
+    'بازگرداندن کالاهای مرجوع شده به انبار',
+    'توجه داشته باشید، پس از انجام این عمل، وضعیت مرجوع را تغییر ندهید. در صورت تغییر وضعیت تمام مشکلات احتمالی به عهده خود شماست.'
+  )
+}
+
+//-----------------------------------
 function fetchReturnOrder() {
   ReturnOrderAPI.fetchById(idParam.value, {
     success: (response) => {
       returnOrder.value = response.data
       order.value = response.data.order_detail
       returnStatus.value = response.data.status
+
+      table.rows = response.data.items
 
       loading.value = false
     },

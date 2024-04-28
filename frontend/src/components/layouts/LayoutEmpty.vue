@@ -9,16 +9,8 @@
 </template>
 
 <script setup>
-import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+import {PageTransition} from "vue3-page-transition";
+import {usePageTransition} from "@/composables/page-transition.js";
 
-const transitionProps = defineTransitionProps({
-  mode: 'out-in',
-  name: TransitionPresets.fadeInUp,
-  appear: true,
-  overlay: true,
-  overlayBgClassName: 'bg-violet-500',
-  overlayZIndex: 999,
-  transformDistance: '2rem',
-  transitionDuration: 300,
-})
+const transitionProps = usePageTransition()
 </script>

@@ -15,31 +15,28 @@ export const useSafeSessionStorage = {
     // Get the store from local storage.
     const store = window.sessionStorage.getItem(key)
 
-    if (store) {
-      try {
-        // Decrypt the store retrieved from local storage
-        // using our encryption token stored in cookies.
-        const bytes = Crypto.AES.decrypt(store, encryptionToken)
+    if (!store) return null
 
-        const decryptedValue = JSON.parse(bytes.toString(Crypto.enc.Utf8))
+    let stringBytes
 
-        // Check if the decrypted value is in JSON format (object or array)
-        if (decryptedValue.startsWith('{') || decryptedValue.startsWith('[')) {
-          try {
-            return JSON.parse(decryptedValue); // Return parsed object or array
-          } catch (e) {
-            return decryptedValue; // Return decrypted string if JSON parsing fails
-          }
-        } else {
-          return decryptedValue; // Return decrypted primitive value
-        }
-      } catch (e) {
-        // The store will be reset if decryption fails.
-        window.sessionStorage.removeItem(key)
-      }
+    try {
+      // Decrypt the store retrieved from local storage
+      // using our encryption token stored in cookies.
+      const bytes = Crypto.AES.decrypt(store, encryptionToken)
+
+      stringBytes = bytes.toString(Crypto.enc.Utf8)
+    } catch (e) {
+      // The store will be reset if decryption fails.
+      window.sessionStorage.removeItem(key)
+
+      return null
     }
 
-    return null;
+    try {
+      return JSON.parse(stringBytes)
+    } catch (e) {
+      return stringBytes
+    }
   },
   setItem: (key, value) => {
     // Serialize objects and arrays into JSON strings before encryption

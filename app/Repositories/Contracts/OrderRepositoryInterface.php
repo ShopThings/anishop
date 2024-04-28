@@ -4,7 +4,6 @@ namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
 use App\Models\OrderDetail;
-use App\Models\ReturnOrderRequest;
 use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -22,6 +21,16 @@ interface OrderRepositoryInterface extends RepositoryInterface
         ?int  $userId = null,
         array $columns = ['*'],
         Filter $filter = null
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param Filter|null $filter
+     * @param array|null $reportQuery
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getOrdersFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
     ): Collection|LengthAwarePaginator;
 
     /**
@@ -47,12 +56,6 @@ interface OrderRepositoryInterface extends RepositoryInterface
      * @return bool
      */
     public function isOrderReturnable(OrderDetail $orderDetail): bool;
-
-    /**
-     * @param OrderDetail $orderDetail
-     * @return bool
-     */
-    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool;
 
     /**
      * It'll receive an array of payments (that is array too) and

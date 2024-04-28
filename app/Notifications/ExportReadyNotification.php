@@ -36,6 +36,7 @@ class ExportReadyNotification extends Notification
      */
     public function toArray(object $notifiable): array
     {
+        $msg = '';
         if (str_contains($this->path, 'users')) {
             $msg = ' از کاربران ';
         } elseif (str_contains($this->path, 'products')) {
@@ -48,7 +49,8 @@ class ExportReadyNotification extends Notification
             'type' => UserNotificationTypesEnum::EXPORT->value,
             'type_value' => UserNotificationTypesEnum::getTranslations(UserNotificationTypesEnum::EXPORT->value, 'نامشخص'),
             'priority' => UserNotificationPrioritiesEnum::HIGH->value,
-            'message' => 'گرفتن خروجی' . $msg . 'و ذخیره در مسیر ' . '[' . $this->path . ']',
+            'message' => 'گرفتن خروجی' . $msg . 'و ذخیره در مسیر ' .
+                '<span>' . '[' . $this->path . ']' . '</span>',
         ];
     }
 }

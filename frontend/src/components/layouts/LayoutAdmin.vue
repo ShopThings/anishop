@@ -67,24 +67,16 @@ import {ArrowLeftCircleIcon, ChevronLeftIcon, HomeIcon} from '@heroicons/vue/24/
 import AppNavbarAdmin from "@/components/admin/AppNavbarAdmin.vue"
 import AppFooterAdmin from "@/components/admin/AppFooterAdmin.vue"
 import AppSidebarAdmin from "@/components/admin/AppSidebarAdmin.vue"
-import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+import {PageTransition} from "vue3-page-transition";
 import {useCountingAlertsStore, useCountingOrdersStore, useNotificationStore} from "@/store/StoreAdminPanel.js";
 import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
-
-const transitionProps = defineTransitionProps({
-  mode: 'out-in',
-  name: TransitionPresets.fadeInUp,
-  appear: true,
-  overlay: true,
-  overlayBgClassName: 'bg-violet-500',
-  overlayZIndex: 999,
-  transformDistance: '2rem',
-  transitionDuration: 300,
-})
+import {usePageTransition} from "@/composables/page-transition.js";
 
 const route = useRoute()
 const router = useRouter()
 const user = useAdminAuthStore()
+
+const transitionProps = usePageTransition()
 
 //--------------------------------------
 const countingAlertStore = useCountingAlertsStore();

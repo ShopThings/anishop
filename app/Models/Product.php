@@ -30,6 +30,8 @@ class Product extends Model
     ];
 
     protected $casts = [
+        'quick_properties' => 'array',
+        'properties' => 'array',
         'keywords' => StringToArray::class,
         'description' => CleanHtmlCast::class,
         'is_available' => 'boolean',

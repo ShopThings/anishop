@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Http\Requests\Filters\OrderFilter;
@@ -11,10 +10,13 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\OrderItem;
 use App\Models\OrderReserve;
-use App\Models\ReturnOrderRequest;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Support\Filter;
+use App\Support\Helper\QBHelper;
+use App\Support\QB\ItemActions\ComparisonItemAction;
+use App\Support\QB\QueryItemActions;
+use App\Support\QB\ReportQueryAppenderTrait;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\WhereBuilder;
@@ -26,7 +28,192 @@ use Illuminate\Support\Facades\DB;
 
 class OrderRepository extends Repository implements OrderRepositoryInterface
 {
-    use RepositoryTrait;
+    use RepositoryTrait,
+        ReportQueryAppenderTrait;
+
+    /**
+     * @inheritDoc
+     */
+    protected function getMappedReportColumnToActualColumn(): array
+    {
+        return [
+            'user' => 'user_id',
+            'code' => 'code',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
+            'national_code' => 'national_code',
+            'mobile' => 'mobile',
+            'province' => 'province',
+            'city' => 'city',
+            'postal_code' => 'postal_code',
+            'address' => 'address',
+            'receiver_name' => 'receiver_name',
+            'receiver_mobile' => 'receiver_mobile',
+            'description' => 'description',
+            'coupon_code' => 'coupon_code',
+            'coupon_price' => 'coupon_price',
+            'shipping_price' => 'shipping_price',
+            'discount_price' => 'discount_price',
+            'final_price' => 'final_price',
+            'total_price' => 'total_price',
+            'send_method_title' => 'send_method_title',
+            'send_status_title' => 'send_status_title',
+            'send_status_changed_at' => 'send_status_changed_at',
+            'is_needed_factor' => 'is_needed_factor',
+            'is_returned' => 'is_product_returned_to_stock',
+            'ordered_at' => 'ordered_at',
+            //
+            'payment_method_title' => [
+                'column' => 'payment_method_title',
+                'with' => 'orders',
+            ],
+            'payment_method_type' => [
+                'column' => 'payment_method_type',
+                'with' => 'orders',
+            ],
+            'payment_status' => [
+                'column' => 'payment_status',
+                'with' => 'orders',
+            ],
+            //
+            'product_title' => [
+                'column' => 'product_title',
+                'with' => 'items',
+            ],
+            'color_name' => [
+                'column' => 'color_name',
+                'with' => 'items',
+            ],
+            'size' => [
+                'column' => 'size',
+                'with' => 'items',
+            ],
+            'guarantee' => [
+                'column' => 'guarantee',
+                'with' => 'items',
+            ],
+            'weight' => [
+                'column' => 'weight',
+                'with' => 'items',
+            ],
+            'quantity' => [
+                'column' => 'quantity',
+                'with' => 'items',
+            ],
+            'unit_price' => [
+                'column' => 'unit_price',
+                'with' => 'items',
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialReportColumns(): array
+    {
+        return [
+            'payment_method_title', 'payment_method_type', 'payment_status',
+            'has_full_payment', 'product_title', 'color_name', 'size',
+            'guarantee', 'weight', 'quantity', 'unit_price',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getIsMultipleColumns(): array
+    {
+        return [
+            'payment_method_title', 'payment_method_type', 'payment_status',
+            'product_title', 'color_name', 'size',
+            'guarantee', 'weight', 'quantity', 'unit_price',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getHasReplacementColumns(): array
+    {
+        return [
+            'payment_method_title', 'payment_method_type', 'payment_status',
+            'product_title', 'color_name', 'size',
+            'guarantee', 'weight', 'quantity', 'unit_price',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getComparisonColumns(): array
+    {
+        return [
+            'payment_method_title', 'payment_method_type', 'payment_status',
+            'product_title', 'color_name', 'size',
+            'guarantee', 'weight', 'quantity', 'unit_price',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getBetweenColumns(): array
+    {
+        return [
+            'payment_method_type', 'size', 'weight', 'quantity', 'unit_price',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getNullableColumns(): array
+    {
+        return [
+            'payment_method_title', 'payment_method_type', 'payment_status',
+            'product_title', 'color_name', 'size',
+            'guarantee', 'weight', 'quantity', 'unit_price',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function specialReportQuery(Builder $query, array $item): Builder
+    {
+        $actions = new QueryItemActions([
+
+            new ComparisonItemAction(function (
+                array  $queryItem,
+                string $columnName,
+                string $operationStatement,
+                       $value,
+                string $condition
+            ) use (&$query) {
+
+                if ($columnName === 'has_full_payment') {
+
+                    if ($queryItem['operator']['value'] == 'equal') {
+
+                        $query->WithCompletePaidOrder($condition);
+
+                    } elseif ($queryItem['operator']['value'] == 'notEqual') {
+
+                        $query->WithoutCompletePaidOrder($condition);
+
+                    }
+
+                }
+
+            }),
+
+        ]);
+
+        QBHelper::queryItemAction($actions, $item);
+
+        return $query;
+    }
 
     public function __construct(
         OrderDetail                          $model,
@@ -129,6 +316,28 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getOrdersFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->model->newQuery();
+        $query->with('user');
+
+        if (!empty($reportQuery)) {
+            $query = $this->addToEloquentBuilder($query, $reportQuery);
+        }
+
+        return $this->_paginateWithOrder(query: $query, limit: $limit, page: $page, order: $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getOrdersCountWithBadges(): Collection
     {
         $orderQuery = $this->model->newQuery()
@@ -201,14 +410,6 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
         return $orderDetail->hasCompletePaid() &&
             $orderDetail->ordered_at >= now()->subWeek() &&
             $orderDetail->send_status_can_return_order;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool
-    {
-        return $orderRequest->status === ReturnOrderStatusesEnum::CHECKING->value;
     }
 
     /**

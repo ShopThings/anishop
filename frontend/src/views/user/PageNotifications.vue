@@ -1,16 +1,17 @@
 <template>
   <base-paginator
-      v-model:items="notifications"
-      :path="getPath"
-      :per-page="10"
-      container-class="flex flex-col gap-3"
-      pagination-theme="modern"
+    v-model:items="notifications"
+    :path="getPath"
+    :per-page="10"
+    container-class="flex flex-col gap-3"
+    pagination-theme="modern"
+    @items-loaded.once="itemsLoadedHandler"
   >
     <template #empty>
       <partial-empty-rows
-          image="/empty-statuses/empty-notification.svg"
-          image-class="w-60"
-          message="هیچ اعلانی برای شما وجود ندارد"
+        image="/empty-statuses/empty-notification.svg"
+        image-class="w-60"
+        message="هیچ اعلانی برای شما وجود ندارد"
       />
     </template>
 
@@ -19,15 +20,15 @@
         <template #body>
           <div class="flex flex-wrap items-center gap-2.5 relative pr-2.5">
             <div
-              :style="'background-color:' + getPriorityColor(item) + ';'"
+              :style="'background-color:' + getPriorityColor(item.data) + ';'"
               class="absolute rounded-full w-1 h-3/4 top-1/2 -translate-y-1/2 -right-1"
             ></div>
 
             <h1 class="text-black font-iranyekan-bold">
-              {{ item.type_value }}
+              {{ item.data.type_value }}
             </h1>
             <p class="text-slate-700 text-sm styling-paragraph leading-relaxed">
-              {{ item.message }}
+              {{ item.data.message }}
             </p>
             <span class="text-xs text-slate-400 mr-auto">{{ item.created_at }}</span>
           </div>
@@ -37,8 +38,8 @@
 
     <template #loading>
       <div
-          class="bg-white py-6 px-6 md:py-4 space-y-4 border border-slate-200 divide-y divide-slate-200 rounded-lg shadow animate-pulse dark:divide-slate-700 dark:border-slate-700"
-          role="status"
+        class="bg-white py-6 px-6 md:py-4 space-y-4 border border-slate-200 divide-y divide-slate-200 rounded-lg shadow animate-pulse dark:divide-slate-700 dark:border-slate-700"
+        role="status"
       >
         <div class="flex items-center justify-between gap-2.5">
           <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24"></div>
@@ -51,7 +52,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BasePaginator from "@/components/base/BasePaginator.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
@@ -82,7 +83,7 @@ function getPriorityColor(item) {
     )
 }
 
-onMounted(() => {
+function itemsLoadedHandler() {
   UserNotificationAPI.markAllAsRead({
     success() {
       return false
@@ -91,7 +92,7 @@ onMounted(() => {
       return false
     },
   })
-})
+}
 </script>
 
 <style scoped>

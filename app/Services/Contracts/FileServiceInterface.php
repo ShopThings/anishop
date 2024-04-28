@@ -8,6 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 interface FileServiceInterface
 {
     /**
+     * 📍[Use with caution]
+     *  -Only use this if you are absolutely sure the file exists but not stored in database.
+     *
+     * @param array|string $data Data is an array of database fields,
+     *                           or it is a typical full path of a file that will parse to database fields.
+     * @param array $extraAttributes This parameter is for using with string $data parameter
+     *                               to add extra parameter to add in database.
+     * @return Model|null
+     */
+    public function saveToDb(array|string $data, array $extraAttributes = []): ?Model;
+
+    /**
      * @param string $path
      * @param $file
      * @param string $disk

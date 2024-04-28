@@ -527,7 +527,7 @@ import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
-import {numberFormat, getRouteParamByKey} from "@/composables/helper.js";
+import {getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {OrderAPI} from "@/service/APIOrder.js";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
@@ -683,6 +683,14 @@ const isDownloadFactor = ref(false)
 
 function factorDownloadHandler() {
   if (!isDownloadFactor.value) return
+
+  isDownloadFactor.value = true
+
+  OrderAPI.exportPdf(idParam.value, {
+    finally() {
+      isDownloadFactor.value = false
+    },
+  })
 }
 
 //-----------------------------------

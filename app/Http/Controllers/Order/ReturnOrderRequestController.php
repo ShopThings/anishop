@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Enums\Responses\ResponseTypesEnum;
+use App\Enums\Results\ReturnOrderToStockResult;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateReturnOrderItemRequest;
 use App\Http\Requests\UpdateReturnOrderRequest;
@@ -103,6 +104,32 @@ class ReturnOrderRequestController extends Controller
         }
         return response()->json([
             'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @param ReturnOrderRequest $returnOrder
+     * @return JsonResponse
+     */
+    public function returnItemsToStock(ReturnOrderRequest $returnOrder): JsonResponse
+    {
+        Gate::authorize('update', $returnOrder);
+
+        $res = $this->service->returnItemsToStock($returnOrder);
+        if ($res === ReturnOrderToStockResult::ALREADY_RETURNED) {
+
+            return response()->json([
+                'type' => ResponseTypesEnum::WARNING->value,
+                'message' => 'بازگردانی محصولات مرجوعی به انبار قبلا انجام شده است.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+
+        } elseif ($res === ReturnOrderToStockResult::SUCCESS) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }

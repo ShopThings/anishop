@@ -1,4 +1,5 @@
 <template>
+  <base-page-progress-bar/>
   <component :is="layout">
     <router-view/>
   </component>
@@ -7,15 +8,11 @@
 <script setup>
 import {computed} from "vue"
 import {useRoute} from "vue-router"
+import BasePageProgressBar from "./components/base/BasePageProgressBar.vue";
 
 const route = useRoute()
-let layoutMeta;
-
 const layout = computed(() => {
-  layoutMeta = route.meta.layout
-  if (layoutMeta) {
-    return layoutMeta
-  }
-  return 'layout-empty'
+  const layoutMeta = route?.meta?.layout
+  return layoutMeta ? layoutMeta : 'layout-empty'
 })
 </script>

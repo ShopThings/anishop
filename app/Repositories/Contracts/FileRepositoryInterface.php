@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
 use App\Http\Requests\Filters\FileListFilter;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 
 interface FileRepositoryInterface extends RepositoryInterface
@@ -13,7 +14,7 @@ interface FileRepositoryInterface extends RepositoryInterface
      */
     public const STORAGE_DISK_PUBLIC = 'public';
 
-    public const STORAGE_DISK_LOCAL = 'local';
+    public const STORAGE_DISK_LOCAL = 'private';
 
     /**
      * File sizes for images
@@ -48,6 +49,13 @@ interface FileRepositoryInterface extends RepositoryInterface
      */
     public const OPERATION_MOVE = 'move';
     public const OPERATION_COPY = 'copy';
+
+    /**
+     * @param string $fullPath
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function savePath(string $fullPath, array $attributes = []): ?Model;
 
     /**
      * @param string $path

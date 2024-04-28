@@ -16,6 +16,9 @@ export function useCountdown(duration, elemRef = null) {
   const minutesWithoutPadding = ref(0)
   const secondsWithoutPadding = ref(0)
 
+  let userCallback = () => {
+  }
+
   function assignDurationToValues(m, s) {
     minutesWithoutPadding.value = m
     secondsWithoutPadding.value = s
@@ -44,9 +47,6 @@ export function useCountdown(duration, elemRef = null) {
     }
 
     assignDurationToValues(m, s)
-  }
-
-  let userCallback = () => {
   }
 
   function start(callback) {

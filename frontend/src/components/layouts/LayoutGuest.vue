@@ -14,22 +14,14 @@
 
 <script setup>
 import {provide} from "vue";
-import {PageTransition, TransitionPresets, defineTransitionProps} from 'vue3-page-transition'
+import {PageTransition} from 'vue3-page-transition'
 import AppNavbar from "@/components/AppNavbar.vue"
 import AppFooter from "@/components/AppFooter.vue"
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 import {useCartStore} from "@/store/StoreUserCart.js";
+import {usePageTransition} from "@/composables/page-transition.js";
 
-const transitionProps = defineTransitionProps({
-  mode: 'out-in',
-  name: TransitionPresets.fadeInUp,
-  appear: true,
-  overlay: true,
-  overlayBgClassName: 'bg-violet-500',
-  overlayZIndex: 999,
-  transformDistance: '2rem',
-  transitionDuration: 300,
-})
+const transitionProps = usePageTransition()
 
 //--------------------------------------
 const homeSettingStore = useHomeSettingsStore()

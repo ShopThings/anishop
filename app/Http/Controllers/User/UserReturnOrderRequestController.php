@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
+use App\Enums\Results\ChangeRequestStatusResult;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserReturnOrderRequest;
 use App\Http\Resources\User\UserReturnableOrderResource;
@@ -15,6 +17,7 @@ use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserReturnOrderRequestController extends Controller
@@ -155,7 +158,7 @@ class UserReturnOrderRequestController extends Controller
      */
     public function destroy(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
     {
-        if (!$this->service->canCancelOrder($returnOrder)) {
+        if (!$this->service->canCancelRequest($returnOrder)) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'امکان لغو درخواست مرجوع وجود ندارد.',
@@ -177,6 +180,43 @@ class UserReturnOrderRequestController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در لغو درخواست! لطفا دوباره تلاش نمایید.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @param Request $request
+     * @param ReturnOrderRequest $returnOrder
+     * @return JsonResponse
+     */
+    public function changeStatus(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
+    {
+        if ($request->user()->id !== $returnOrder->user_id) {
+            throw new UnauthorizedException();
+        }
+
+        $status = $request->enum('status', ReturnOrderStatusesEnum::class);
+
+        if (is_null($status)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'وضعیت ارسال شده نامعتبر می‌باشد!'
+            ], ResponseCodes::HTTP_NOT_ACCEPTABLE);
+        }
+
+        $res = $this->service->changeUserRequestStatus($returnOrder, $status);
+
+        if ($res === ChangeRequestStatusResult::NOT_POSSIBLE) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'امکان تغییر به وضعیت خواسته شده وجود ندارد.'
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        } elseif ($res === ChangeRequestStatusResult::SUCCESS) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در تغییر وضعیت'
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

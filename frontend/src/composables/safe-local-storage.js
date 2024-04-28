@@ -15,22 +15,35 @@ export const useSafeLocalStorage = {
     // Get the store from local storage.
     const store = window.localStorage.getItem(key)
 
-    if (store) {
-      try {
-        // Decrypt the store retrieved from local storage
-        // using our encryption token stored in cookies.
-        const bytes = Crypto.AES.decrypt(store, encryptionToken)
+    if (!store) return null
 
-        return JSON.parse(bytes.toString(Crypto.enc.Utf8))
-      } catch (e) {
-        // The store will be reset if decryption fails.
-        window.localStorage.removeItem(key)
-      }
+    let stringBytes
+
+    try {
+      // Decrypt the store retrieved from local storage
+      // using our encryption token stored in cookies.
+      const bytes = Crypto.AES.decrypt(store, encryptionToken)
+
+      stringBytes = bytes.toString(Crypto.enc.Utf8)
+    } catch (e) {
+      // The store will be reset if decryption fails.
+      window.localStorage.removeItem(key)
+
+      return null
     }
 
-    return null;
+    try {
+      return JSON.parse(stringBytes)
+    } catch (e) {
+      return stringBytes
+    }
   },
   setItem: (key, value) => {
+    // Serialize objects and arrays into JSON strings before encryption
+    if (isObject(value)) {
+      value = JSON.stringify(value)
+    }
+
     // Encrypt the store using our encryption token stored in cookies.
     const store = Crypto.AES.encrypt(value, encryptionToken).toString()
 

@@ -1,8 +1,8 @@
 <template>
   <base-loading-panel
-      :loading="builderLoading"
-      loading-text="در حال بارگذاری جستجوی پیشرفته"
-      type="dot-orbit"
+    :loading="builderLoading"
+    loading-text="در حال بارگذاری جستجوی پیشرفته"
+    type="dot-orbit"
   >
     <template #content>
       <base-query-builder :columns="columns" :query="query"/>
@@ -12,7 +12,7 @@
           <div class="flex flex-col sm:flex-row justify-end p-3">
             <base-button
               :disabled="filterApplyLoading"
-                class="bg-primary rounded-r-lg rounded-l-lg sm:rounded-l-none border-primary text-sm my-1.5 sm:px-6"
+              class="bg-primary rounded-r-lg rounded-l-lg sm:rounded-l-none border-primary text-sm my-1.5 sm:px-6"
               @click="filterQB"
             >
               <VTransitionFade>
@@ -28,7 +28,7 @@
 
             <base-button
               :disabled="filterApplyLoading"
-                class="bg-gray-200 !text-black border border-gray-300 rounded-l-lg rounded-r-lg sm:rounded-r-none text-sm my-1.5 sm:px-6"
+              class="bg-gray-200 !text-black border border-gray-300 rounded-l-lg rounded-r-lg sm:rounded-r-none text-sm my-1.5 sm:px-6"
               @click="clearQBFilter"
             >
               <VTransitionFade>
@@ -48,8 +48,8 @@
   </base-loading-panel>
 
   <partial-card
-      ref="tableContainer"
-      class="mt-3"
+    ref="tableContainer"
+    class="mt-3"
   >
     <template #header>
       لیست کاربران
@@ -57,20 +57,20 @@
 
     <template #body>
       <div
-          v-if="!loading"
-          class="p-3"
+        v-if="!loading"
+        class="p-3"
       >
         <base-button
-            :disabled="isDownloadExcel"
-            class="bg-green-600 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
-            type="submit"
-            @click="excelDownloadHandler"
+          :disabled="isDownloadExcel"
+          class="bg-green-600 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
+          type="submit"
+          @click="excelDownloadHandler"
         >
           <VTransitionFade>
             <loader-circle
-                v-if="isDownloadExcel"
-                big-circle-color="border-transparent"
-                main-container-klass="absolute w-full h-full top-0 left-0"
+              v-if="isDownloadExcel"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
             />
           </VTransitionFade>
 
@@ -82,17 +82,17 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="false"
-              :enable-search-box="false"
-              :has-checkbox="false"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="false"
+            :enable-search-box="false"
+            :has-checkbox="false"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:roles="{value}">
               <span v-for="(role) in value.roles"
@@ -149,10 +149,12 @@ const columns = ref([])
 const isDownloadExcel = ref(false)
 
 function excelDownloadHandler() {
-  if (!isDownloadExcel.value) return
+  if (isDownloadExcel.value) return
 
   isDownloadExcel.value = true;
-  ReportAPI.exportUsers({}, {
+  ReportAPI.exportUsers({
+    query: query.value,
+  }, {
     finally() {
       isDownloadExcel.value = false
     },

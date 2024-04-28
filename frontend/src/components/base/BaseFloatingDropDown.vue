@@ -9,7 +9,7 @@
 
     <template v-if="itemsLength > 0" #popper="{hide}">
       <ul class="p-2 min-w-[9rem] text-gray-700">
-        <li v-for="(item, idx) in items" :key="idx">
+        <li v-for="(item, idx) in items" :key="idx" class="w-full">
           <slot :hide="hide" :index="idx" :item="item" name="item"></slot>
         </li>
       </ul>

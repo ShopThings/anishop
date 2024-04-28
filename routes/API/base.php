@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Responses\ResponseTypesEnum;
 use App\Exceptions\RouteNotFoundException;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\RecoverPasswordController;
@@ -25,9 +26,23 @@ use App\Http\Controllers\Shop\HomeFestivalController;
 use App\Http\Controllers\Shop\HomeProductController;
 use App\Http\Controllers\Shop\HomeSendMethodController;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 Route::name('api.')
     ->group(function () {
+        Route::post('maintenance', function () {
+            if (app()->maintenanceMode()->active()) {
+                $inMaintenanceMode = true;
+            } else {
+                $inMaintenanceMode = false;
+            }
+
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'in_maintenance_mode' => $inMaintenanceMode,
+            ], ResponseCodes::HTTP_OK);
+        })->name('check-maintenance');
+
         Route::middleware('xss')->group(function () {
             $codeRegex = '[\d\w\-\_]+';
 

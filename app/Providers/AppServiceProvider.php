@@ -100,11 +100,7 @@ class AppServiceProvider extends ServiceProvider
             $this->where(function (Builder $query) use ($columns, $search, $operator) {
                 $columns = !is_array($columns) ? [$columns] : $columns;
                 foreach ($columns as $column) {
-                    if (mb_strtolower($operator) == 'and') {
-                        $query->where($column, 'like', '%' . $search . '%');
-                    } else {
-                        $query->orWhere($column, 'like', '%' . $search . '%');
-                    }
+                    $query->where($column, 'like', '%' . $search . '%', mb_strtolower($operator));
                 }
             });
 
@@ -125,11 +121,7 @@ class AppServiceProvider extends ServiceProvider
             $this->where(function (Builder $query) use ($columns, $search, $operator) {
                 $columns = !is_array($columns) ? [$columns] : $columns;
                 foreach ($columns as $column) {
-                    if (mb_strtolower($operator) == 'and') {
-                        $query->where($column, 'REGEXP', $search);
-                    } else {
-                        $query->orWhere($column, 'REGEXP', $search);
-                    }
+                    $query->where($column, 'REGEXP', $search, mb_strtolower($operator));
                 }
             });
 

@@ -52,10 +52,12 @@ Route::prefix('user')
         Route::get('return-orders/latest', [UserReturnOrderRequestController::class, 'latest'])->name('return-orders.latest');
         Route::get('return-orders/returnable-orders', [UserReturnOrderRequestController::class, 'returnableOrders'])
             ->name('return-orders.returnable-orders');
-        Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
-            ->where(['return_order' => $codeRegex]);
         Route::post('return-orders/{order}', [UserReturnOrderRequestController::class, 'store'])
             ->where(['order' => $codeRegex])->name('return-orders.store');
+        Route::post('return-orders/{return-order}/change-status', [UserReturnOrderRequestController::class, 'changeStatus'])
+            ->where(['order' => $codeRegex])->name('return-orders.change-status');
+        Route::apiResource('return-orders', UserReturnOrderRequestController::class)->except(['store'])
+            ->where(['return_order' => $codeRegex]);
 
         /*
          * comment routes

@@ -7,6 +7,7 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Events\OrderPaidEvent;
 use App\Models\GatewayPayment;
+use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Contracts\OrderServiceInterface;
 use Exception;
@@ -123,6 +124,9 @@ class PaymentHelper
         }
 
         try {
+            /**
+             * @var Order $order
+             */
             $order = $payment->order;
 
             $amount = $order->must_pay_price;
@@ -134,21 +138,17 @@ class PaymentHelper
                 ->transactionId($transactionId)
                 ->verify();
 
-            $payment
-                ->setReceipt($receipt->getReferenceId())
-                ->setStatus(true)
-                ->setAsPaid();
+            $payment->setReceipt($receipt->getReferenceId());
+            $payment->setStatus(true);
+            $payment->setAsPaid();
 
             // show payment referenceId to the user.
             $data = $receipt->getReferenceId();
 
-            /**
-             * @var OrderServiceInterface $orderService
-             */
-            $orderService = app()->get(OrderServiceInterface::class);
-            $orderService->updatePayment($order->id, [
-                'payment_status' => PaymentStatusesEnum::SUCCESS,
-            ], false);
+            $order->payment_status = PaymentStatusesEnum::SUCCESS;
+            $order->payment_status_changed_at = now();
+            $order->paid_at = now();
+            $order->save();
 
             $orderDetail = $order->detail;
             if ($orderDetail->hasCompletePaid()) {

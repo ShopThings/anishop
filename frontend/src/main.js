@@ -9,6 +9,7 @@ import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 import VueEasyLightbox from "vue-easy-lightbox";
 import VueTheMask from "vue-the-mask";
 import money from "v-money";
+import {InferSeoMetaPlugin} from '@unhead/addons'
 
 // import function to register Swiper custom elements
 import {register} from 'swiper/element/bundle';
@@ -32,7 +33,11 @@ import LayoutEmpty from "./components/layouts/LayoutEmpty.vue";
 import LayoutBlog from "./components/layouts/LayoutBlog.vue";
 import LayoutEmptyGuest from "@/components/layouts/LayoutEmptyGuest.vue";
 
-const head = createHead()
+const head = createHead({
+  plugins: [
+    InferSeoMetaPlugin()
+  ]
+})
 const pinia = createPinia()
 
 // register Swiper custom elements

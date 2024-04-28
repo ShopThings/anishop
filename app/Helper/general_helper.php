@@ -122,3 +122,36 @@ if (!function_exists('str_slug_persian')) {
         return $title;
     }
 }
+
+if (!function_exists('get_color_from_bg')) {
+    /**
+     * @see https://betterprogramming.pub/generate-contrasting-text-for-your-random-background-color-ac302dc87b4
+     *
+     * @param string $bgColor
+     * @param string $lightColor
+     * @param string $darkColor
+     * @return string
+     */
+    function get_color_from_bg(
+        string $bgColor,
+        string $lightColor = '#ffffff',
+        string $darkColor = '#000000'
+    ): string
+    {
+        $color = ($bgColor[0] === '#') ? substr($bgColor, 1) : $bgColor;
+        if (strlen($color) === 3) {
+            $colorArr = array_map(function ($value) {
+                return $value . $value;
+            }, str_split($color));
+            $color = '';
+            foreach ($colorArr as $c) {
+                $color .= $c;
+            }
+        }
+        $r = hexdec(substr($color, 0, 2)); // hexToR
+        $g = hexdec(substr($color, 2, 2)); // hexToG
+        $b = hexdec(substr($color, 4, 2)); // hexToB
+        $brightness = round((($r * 299) + ($g * 587) + ($b * 114)) / 1000);
+        return $brightness > 150 ? $darkColor : $lightColor;
+    }
+}

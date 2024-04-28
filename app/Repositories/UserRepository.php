@@ -12,7 +12,7 @@ use App\Models\User;
 use App\Models\UserFavoriteProduct;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Support\Filter;
-use App\Support\Helper\QBHelper;
+use App\Support\QB\ReportQueryAppenderTrait;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
@@ -24,7 +24,42 @@ use Illuminate\Support\Collection;
 
 class UserRepository extends Repository implements UserRepositoryInterface
 {
-    use RepositoryTrait;
+    use RepositoryTrait,
+        ReportQueryAppenderTrait;
+
+    /**
+     * @inheritDoc
+     */
+    protected function getMappedReportColumnToActualColumn(): array
+    {
+        return [
+            'username' => 'username',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
+            'national_code' => 'national_code',
+            'sheba_number' => 'sheba_number',
+            'is_admin' => 'is_admin',
+            'is_banned' => 'is_banned',
+            'is_verified' => 'verified_at',
+            'is_deleted' => 'deleted_at',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialReportColumns(): array
+    {
+        return ['is_verified', 'is_deleted'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialBooleanColumns(): array
+    {
+        return ['is_verified', 'is_deleted'];
+    }
 
     public function __construct(
         User                          $model,
@@ -419,77 +454,5 @@ class UserRepository extends Repository implements UserRepositoryInterface
                 $q->whereRaw($where->getStatement(), $where->getBindings());
             })
             ->forceDelete();
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Add report query to builder operations
-    |--------------------------------------------------------------------------
-    |
-    | A st of methods that can convert a valid report query to a valid where
-    | that can be added to a laravel builder as where clause
-    |
-    */
-
-    /**
-     * @param Builder $query
-     * @param array $appendingQuery
-     * @return Builder
-     */
-    private function addToEloquentBuilder(Builder $query, array $appendingQuery): Builder
-    {
-        $where = $this->convertReportQueryToWhereClause($appendingQuery);
-
-        $query->when(!empty($where->getStatement()), function ($q) use ($where) {
-            $q->whereRaw($where->getStatement(), $where->getBindings());
-        });
-
-        return $query;
-    }
-
-    /**
-     * @param $query
-     * @return GetterExpressionInterface
-     */
-    private function convertReportQueryToWhereClause($query): GetterExpressionInterface
-    {
-        $where = new WhereBuilder();
-
-        /**
-         * $item has the following structure:
-         *   [
-         *     column => string,
-         *     type => string,
-         *     operator => array
-         *                 [
-         *                   value => string,
-         *                   statement => string,
-         *                   replacement => string, // {value}
-         *                   multiple => boolean,
-         *                   applyTo => array, // array of QB types
-         *                 ],
-         *     condition => string,
-         *     value => mixed, (optional in some cases)
-         *     value2 => mixed, // (optional)
-         *   ],
-         *   ...,
-         */
-        foreach ($query as $item) {
-            if (isset($item['children'])) {
-                if ($item['condition'] === 'or') {
-                    $where->orGroup(function (WhereBuilder &$whereBuilder) use ($item) {
-                        $whereBuilder = $this->convertReportQueryToWhereClause($item['children']);
-                    });
-                } else {
-                    $where->group(function (WhereBuilder &$whereBuilder) use ($item) {
-                        $whereBuilder = $this->convertReportQueryToWhereClause($item['children']);
-                    });
-                }
-            } else {
-                QBHelper::addToWhereClause($where, $item);
-            }
-        }
-
-        return $where->build();
     }
 }

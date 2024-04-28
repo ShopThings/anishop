@@ -3,9 +3,11 @@
 use App\Http\Controllers\Payment\PaymentController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    // ...
-});
+if (!app()->isProduction()) {
+    Route::get('/', function () {
+        // ...
+    });
+}
 
 Route::middleware('xss')->group(function () {
     /*

@@ -111,7 +111,7 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted) {
+    if (!countdown.isStarted.value) {
       countdown.start(fetchSettings)
     }
   });

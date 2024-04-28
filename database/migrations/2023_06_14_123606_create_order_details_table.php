@@ -28,6 +28,7 @@ return new class extends Migration {
             $table->text('description')->nullable()
                 ->comment('for additional information that can be update anytime with admin users.');
             $table->string('coupon_code', 25)->nullable();
+            $table->string('coupon_title')->nullable();
             $table->unsignedBigInteger('coupon_price')->default(0);
             $table->unsignedBigInteger('shipping_price')->default(0);
             $table->unsignedBigInteger('discount_price');
