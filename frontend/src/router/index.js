@@ -3,15 +3,16 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import {useAdminAuthStore, useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {adminRoutes} from "./admin-routes.js";
 import {userRoutes} from "./user-routes.js";
-import {HomeBlogAPI, HomeProductAPI, HomeSettingAPI} from "@/service/APIHomePages.js";
+import {HomeBlogAPI, HomeProductAPI} from "@/service/APIHomePages.js";
 import isObject from "lodash.isobject";
 import {useRequest} from "@/composables/api-request.js";
 import {apiRoutes} from "@/router/api-routes.js";
 import {TransitionPresets} from "vue3-page-transition";
 import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 import {usePageLoaderStore} from "@/store/StorePageLoader.js";
-import {useHead} from "@unhead/vue";
-import {assembleTitle} from "@/composables/helper.js";
+import {useHead, useSeoMeta} from "@unhead/vue";
+import {titleOperations} from "@/composables/helper.js";
+import {useHomeSettingNoTimerStore} from "@/store/StoreSettings.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 
@@ -396,22 +397,43 @@ function endPageLoading() {
 // Meta tags
 //------------------------------------------------------------------------------
 async function setMetaTags(to) {
-  try {
-    const response = await HomeSettingAPI.fetchAll({
-      silent: true,
-    })
+  // Fetch settings and wait for it to complete
+  await fetchSettings();
 
-    const settings = response.data
+  // Retrieve settings from the store
+  const settingStore = useHomeSettingNoTimerStore();
+  const localTitle = settingStore.getTitle;
+  const localDescription = settingStore.getDescription;
+  const localKeywords = settingStore.getKeywords;
 
-    // TODO: add setting title and description that comes from backend
-    // useHead({
-    //   titleTemplate: (title) => !title ? '' : assembleTitle(['', title]),
-    // })
-  } catch (error) {
-    useHead({
-      titleTemplate: (title) => !title ? 'آیریا کالا' : assembleTitle(['آیریا کالا', title]),
+  useHead({
+    titleTemplate: (title) => !title ? localTitle : titleOperations.join([localTitle, title]),
+  })
+
+  useSeoMeta({
+    description: localDescription,
+    keywords: Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords
+  })
+
+  // If the route has a meta title, set it
+  if (to?.meta?.title) {
+    useSeoMeta({
+      title: to.meta.title
     })
   }
+}
+
+async function fetchSettings() {
+  // Fetch settings from the store
+  const settingStore = useHomeSettingNoTimerStore();
+
+  // If settings are already fetched, return
+  if (settingStore.settings?.length > 0) {
+    return;
+  }
+
+  // Otherwise, fetch settings from the API
+  await settingStore.fetchSettings();
 }
 
 //------------------------------------------------------------------------------
@@ -436,11 +458,13 @@ index.beforeEach(async (to, from, next) => {
     }
   }
 
-  await setMetaTags(to)
+  setMetaTags(to)
 })
 
-index.beforeResolve(() => {
+index.beforeResolve((to, from, next) => {
   endPageLoading()
+
+  next()
 })
 
 export default index;

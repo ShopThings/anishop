@@ -125,24 +125,31 @@ axiosClient.interceptors.response.use(response => {
 }, error => {
   const store = useUserAuthStore()
   const adminStore = useAdminAuthStore()
+
   if (error?.response?.status === responseStatuses.HTTP_FORBIDDEN) {
     const route = window.location.pathname
+
     if (route.indexOf('/admin') !== -1) {
       adminStore.$reset()
       const pushObj = {name: 'admin.login'}
+
       if (route !== '/admin/login') {
         pushObj.query = {redirect: route}
       }
+
       router.push(pushObj)
     } else {
       store.$reset()
       const pushObj = {name: 'login'}
+
       if (route !== '/login') {
         pushObj.query = {redirect: route}
       }
+
       router.push(pushObj)
     }
   }
+
   throw error
 })
 

@@ -1,14 +1,15 @@
 import {apiReplaceParams} from "@/router/api-routes.js";
-import {useRequest} from "@/composables/api-request.js";
+import {useRequest, useRequestWrapper} from "@/composables/api-request.js";
 import isObject from "lodash.isobject";
 
-export const GenericAPI = (url, config) => {
+export const GenericAPI = (url, {
+  replacement,
+  only,
+  except,
+  urlKeys,
+  urlCallbacks,
+}) => {
   const api = {}
-
-  const replacement = config?.replacement
-  let only = config?.only
-  let except = config?.except
-  let urlKeys = config?.urlKeys
 
   const defaultUrlKeys = {
     show: 'show',
@@ -34,54 +35,96 @@ export const GenericAPI = (url, config) => {
 
   if (only.indexOf(defaultUrlKeys.show) !== -1 && except.indexOf(defaultUrlKeys.show) === -1) {
     api.fetchById = (id, callbacks) => {
-      return useRequest(
-        apiReplaceParams(url[urlKeys.show], {[replacement]: id}),
-        null,
-        callbacks
-      )
+      if (isObject(urlCallbacks?.show)) {
+        return useRequestWrapper(
+          apiReplaceParams(url[urlKeys.show], {[replacement]: id}),
+          null,
+          urlCallbacks.show,
+          callbacks
+        )
+      } else {
+        return useRequest(
+          apiReplaceParams(url[urlKeys.show], {[replacement]: id}),
+          null,
+          callbacks
+        )
+      }
     }
   }
 
   if (only.indexOf(defaultUrlKeys.index) !== -1 && except.indexOf(defaultUrlKeys.index) === -1) {
     api.fetchAll = (params, callbacks) => {
-      return useRequest(apiReplaceParams(url[urlKeys.index]), {params}, callbacks)
+      if (isObject(urlCallbacks?.index)) {
+        return useRequestWrapper(apiReplaceParams(url[urlKeys.index]), {params}, urlCallbacks.index, callbacks)
+      } else {
+        return useRequest(apiReplaceParams(url[urlKeys.index]), {params}, callbacks)
+      }
     }
   }
 
   if (only.indexOf(defaultUrlKeys.store) !== -1 && except.indexOf(defaultUrlKeys.store) === -1) {
     api.create = (data, callbacks) => {
-      return useRequest(url[urlKeys.store], {
-        method: 'POST',
-        data,
-      }, callbacks)
+      if (isObject(urlCallbacks?.store)) {
+        return useRequestWrapper(url[urlKeys.store], {
+          method: 'POST',
+          data,
+        }, urlCallbacks.store, callbacks)
+      } else {
+        return useRequest(url[urlKeys.store], {
+          method: 'POST',
+          data,
+        }, callbacks)
+      }
     }
   }
 
   if (only.indexOf(defaultUrlKeys.update) !== -1 && except.indexOf(defaultUrlKeys.update) === -1) {
     api.updateById = (id, data, callbacks) => {
-      return useRequest(apiReplaceParams(url[urlKeys.update], {[replacement]: id}), {
-        method: 'PUT',
-        data,
-      }, callbacks)
+      if (isObject(urlCallbacks?.update)) {
+        return useRequestWrapper(apiReplaceParams(url[urlKeys.update], {[replacement]: id}), {
+          method: 'PUT',
+          data,
+        }, urlCallbacks.update, callbacks)
+      } else {
+        return useRequest(apiReplaceParams(url[urlKeys.update], {[replacement]: id}), {
+          method: 'PUT',
+          data,
+        }, callbacks)
+      }
     }
   }
 
   if (only.indexOf(defaultUrlKeys.destroy) !== -1 && except.indexOf(defaultUrlKeys.destroy) === -1) {
     api.deleteById = (id, callbacks) => {
-      return useRequest(apiReplaceParams(url[urlKeys.destroy], {[replacement]: id}), {
-        method: 'DELETE'
-      }, callbacks)
+      if (isObject(urlCallbacks?.destroy)) {
+        return useRequestWrapper(apiReplaceParams(url[urlKeys.destroy], {[replacement]: id}), {
+          method: 'DELETE'
+        }, urlCallbacks.destroy, callbacks)
+      } else {
+        return useRequest(apiReplaceParams(url[urlKeys.destroy], {[replacement]: id}), {
+          method: 'DELETE'
+        }, callbacks)
+      }
     }
   }
 
   if (only.indexOf(defaultUrlKeys.batchDestroy) !== -1 && except.indexOf(defaultUrlKeys.batchDestroy) === -1) {
     api.deleteByIds = (ids, callbacks) => {
-      return useRequest(url[urlKeys.batchDestroy], {
-        method: 'DELETE',
-        data: {
-          ids,
-        }
-      }, callbacks)
+      if (isObject(urlCallbacks?.batchDestroy)) {
+        return useRequestWrapper(url[urlKeys.batchDestroy], {
+          method: 'DELETE',
+          data: {
+            ids,
+          }
+        }, urlCallbacks.batchDestroy, callbacks)
+      } else {
+        return useRequest(url[urlKeys.batchDestroy], {
+          method: 'DELETE',
+          data: {
+            ids,
+          }
+        }, callbacks)
+      }
     }
   }
 

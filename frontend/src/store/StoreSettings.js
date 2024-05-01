@@ -5,10 +5,10 @@ import {useCountdown} from "@/composables/countdown-timer.js";
 import {findItemByKey} from "@/composables/helper.js";
 import {SETTING_KEYS} from "@/composables/constants.js";
 import {HomeSettingAPI} from "@/service/APIHomePages.js";
+import isFunction from "lodash.isfunction";
 
-export const useHomeSettingsStore = defineStore('homeSettings', () => {
+export const useHomeSettingNoTimerStore = defineStore('homeSettingsNoTimer', () => {
   let settings = ref([])
-  const countdown = useCountdown(1800) // 30min
 
   fetchSettings()
 
@@ -83,18 +83,66 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
     return getSetting(SETTING_KEYS.FOOTER_NAMADS)
   })
 
-  function fetchSettings() {
-    countdown.pause()
-
-    HomeSettingAPI.fetchAll({
+  function fetchSettings(callbacks) {
+    return HomeSettingAPI.fetchAll({
       silent: true,
       success(response) {
         settings.value = response.data
+
+        if (isFunction(callbacks?.success)) {
+          callbacks.success(response)
+        }
+
         return false
       },
-      error() {
+      error(err) {
+        if (isFunction(callbacks?.error)) {
+          callbacks.error(err)
+        }
+
         return false
       },
+      finally() {
+        if (isFunction(callbacks?.finally)) {
+          callbacks.finally()
+        }
+      },
+    })
+  }
+
+  function $reset() {
+    settings.value = []
+  }
+
+  // refs' become states,
+  // computed() become getters
+  // and functions become actions
+  return {
+    settings,
+    getSetting, getSettingObject,
+    setSetting,
+    fetchSettings,
+    //
+    getTitle, getDescription, getKeywords,
+    getAddress, getPhones, getStoreProvince,
+    getStoreCity, getLatLng, getProductEachPage,
+    getBlogEachPage, getSocials, getFooterDescription,
+    getFooterCopyright, getFooterNamads,
+    //
+    $reset,
+  }
+})
+
+export const useHomeSettingsStore = defineStore('homeSettings', () => {
+  const settingStore = useHomeSettingNoTimerStore()
+  const countdown = useCountdown(1800) // 30min
+
+  fetchSettings()
+
+  function fetchSettings() {
+    countdown.pause()
+
+    settingStore.fetchSettings({
       finally() {
         countdown.reset()
         countdown.resume()
@@ -105,7 +153,7 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
   function $reset() {
     countdown.stop()
 
-    settings.value = []
+    settingStore.$reset()
 
     countdown.start(fetchSettings)
   }
@@ -124,15 +172,25 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
   // computed() become getters
   // and functions become actions
   return {
-    settings,
-    getSetting, getSettingObject,
-    setSetting,
+    settings: settingStore.settings,
+    getSetting: settingStore.getSetting,
+    getSettingObject: settingStore.getSettingObject,
+    setSetting: settingStore.setSetting,
     //
-    getTitle, getDescription, getKeywords,
-    getAddress, getPhones, getStoreProvince,
-    getStoreCity, getLatLng, getProductEachPage,
-    getBlogEachPage, getSocials, getFooterDescription,
-    getFooterCopyright, getFooterNamads,
+    getTitle: settingStore.getTitle,
+    getDescription: settingStore.getDescription,
+    getKeywords: settingStore.getKeywords,
+    getAddress: settingStore.getAddress,
+    getPhones: settingStore.getPhones,
+    getStoreProvince: settingStore.getStoreProvince,
+    getStoreCity: settingStore.getStoreCity,
+    getLatLng: settingStore.getLatLng,
+    getProductEachPage: settingStore.getProductEachPage,
+    getBlogEachPage: settingStore.getBlogEachPage,
+    getSocials: settingStore.getSocials,
+    getFooterDescription: settingStore.getFooterDescription,
+    getFooterCopyright: settingStore.getFooterCopyright,
+    getFooterNamads: settingStore.getFooterNamads,
     //
     $reset,
   }

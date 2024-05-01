@@ -3,19 +3,40 @@ import {useRoute} from "vue-router";
 import isObject from "lodash.isobject";
 
 /**
- * This is mostly for integrated title concatenation
+ * This is mostly for integrated title operations
  */
-export function assembleTitle(arr, separator = ' - ') {
-  if (Array.isArray(arr)) {
-    return arr.join(separator)
-  }
+export const titleOperations = {
+  join(arr, {withRouteTitle, withTitleFromRoute} = {
+    withRouteTitle: false,
+    withTitleFromRoute: null
+  }, separator = ' - ') {
+    let joinedTitle = ''
 
-  try {
-    return arr.toString()
-  } catch (e) {
-    console.error(e)
-    return ''
-  }
+    if (Array.isArray(arr)) {
+      arr = arr.filter((item) => {
+        return item.toString().trim() !== ''
+      })
+
+      joinedTitle = arr.join(separator)
+    } else {
+      try {
+        joinedTitle = arr.toString()
+      } catch (e) {
+        console.error(e)
+      }
+    }
+
+    if (withTitleFromRoute && withTitleFromRoute?.meta?.title) {
+      joinedTitle = titleOperations.join([withTitleFromRoute.meta.title, joinedTitle])
+    } else if (!!withRouteTitle) {
+      const route = useRoute()
+      if (route?.meta?.title) {
+        joinedTitle = titleOperations.join([route.meta.title, joinedTitle])
+      }
+    }
+
+    return joinedTitle
+  },
 }
 
 export function isValidInternalRedirectLink(link) {
