@@ -12,8 +12,8 @@
           <partial-card class="border-0 p-6">
             <template #body>
               <div
-                  class="styled-description"
-                  v-html="page?.description"
+                class="styled-description"
+                v-html="page?.description"
               ></div>
 
             </template>
@@ -22,9 +22,9 @@
       </template>
       <div v-else class="mt-8 px-3">
         <partial-empty-rows
-            image="/empty-statuses/empty-page.svg"
-            image-class="!w-72"
-            message="صفحه مورد نظر شما وجود ندارد!"
+          image="/empty-statuses/empty-page.svg"
+          image-class="!w-72"
+          message="صفحه مورد نظر شما وجود ندارد!"
         />
       </div>
     </template>
@@ -43,6 +43,8 @@ import {HomePageAPI} from "@/service/APIHomePages.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import LoaderPage from "@/components/base/loader/LoaderPage.vue";
+import {useHomeSettingNoTimerStore} from "@/store/StoreSettings.js";
+import {useSeoMeta} from "@unhead/vue";
 
 const urlParam = getRouteParamByKey('url', null, false)
 
@@ -50,11 +52,33 @@ const loading = ref(true)
 const page = ref(null)
 const isPageExists = ref(false)
 
+const settingStore = useHomeSettingNoTimerStore()
+
+const localKeywords = ref(settingStore.getKeywords)
+const title = ref(null)
+const keywords = ref(null)
+
+useSeoMeta({
+  title: title,
+  keywords: keywords.value.length
+    ? [
+      Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,
+      keywords.value.join(', '),
+    ]
+    : Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,
+})
+
 onMounted(() => {
   HomePageAPI.fetchById(urlParam.value, {
     success(response) {
       page.value = response.value
       isPageExists.value = true
+
+      localKeywords.value = settingStore.getKeywords
+
+      title.value = page.value.title
+      keywords.value = page.value.keywords
+
       return false
     },
     error() {

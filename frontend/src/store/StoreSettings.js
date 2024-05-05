@@ -6,6 +6,7 @@ import {findItemByKey} from "@/composables/helper.js";
 import {SETTING_KEYS} from "@/composables/constants.js";
 import {HomeSettingAPI} from "@/service/APIHomePages.js";
 import isFunction from "lodash.isfunction";
+import {useOnline} from "@vueuse/core";
 
 export const useHomeSettingNoTimerStore = defineStore('homeSettingsNoTimer', () => {
   let settings = ref([])
@@ -83,7 +84,7 @@ export const useHomeSettingNoTimerStore = defineStore('homeSettingsNoTimer', () 
     return getSetting(SETTING_KEYS.FOOTER_NAMADS)
   })
 
-  function fetchSettings(callbacks) {
+  function fetchSettings(callbacks = {}) {
     return HomeSettingAPI.fetchAll({
       silent: true,
       success(response) {
@@ -136,10 +137,13 @@ export const useHomeSettingNoTimerStore = defineStore('homeSettingsNoTimer', () 
 export const useHomeSettingsStore = defineStore('homeSettings', () => {
   const settingStore = useHomeSettingNoTimerStore()
   const countdown = useCountdown(1800) // 30min
+  const online = useOnline()
 
   fetchSettings()
 
   function fetchSettings() {
+    if (!online.value) return
+
     countdown.pause()
 
     settingStore.fetchSettings({

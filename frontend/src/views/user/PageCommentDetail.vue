@@ -27,8 +27,8 @@
 
   <div class="mb-3">
     <base-loading-panel
-        :loading="loading"
-        type="list-single"
+      :loading="loading"
+      type="list-single"
     >
       <template #content>
         <partial-card class="border-0">
@@ -40,7 +40,7 @@
                     :alt="product?.title"
                     :lazy-src="product?.image?.path"
                     :size="FileSizes.SMALL"
-                      class="!h-28 sm:!h-20 w-auto rounded"
+                    class="!h-28 sm:!h-20 w-auto rounded"
                   />
                 </div>
                 <div class="grow text-sm">
@@ -49,7 +49,7 @@
                 <div class="text-sm shrink-0">
                   <router-link
                     :to="{name: 'product.detail', params: {slug: product?.slug}}"
-                      class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                   >
                     <span class="mx-auto">مشاهده محصول</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -65,7 +65,7 @@
 
   <div
     v-if="!loading"
-      class="mb-3"
+    class="mb-3"
   >
     <partial-badge-condition-comment
       :condition="comment?.condition"
@@ -85,8 +85,8 @@
     </h2>
 
     <base-loading-panel
-        :loading="loading"
-        type="form"
+      :loading="loading"
+      type="form"
     >
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -94,9 +94,9 @@
             <template #body>
               <div class="px-3 pt-3">
                 <base-message
-                    :has-close="false"
-                    class="rounded-md"
-                    type="info"
+                  :has-close="false"
+                  class="rounded-md"
+                  type="info"
                 >
                   <div class="leading-relaxed">
                     امکان ویرایش پس از تغییر وضعیت توسط سایت، وجود ندارد.
@@ -109,9 +109,9 @@
                 <base-tags-input
                   :add-tag-on-keys="[13, 188]"
                   :read-only="comment?.is_condition_changed"
-                    :tags="pros"
-                    placeholder="وارد نمایید"
-                    @on-tags-changed="(t) => {pros = t}"
+                  :tags="pros"
+                  placeholder="وارد نمایید"
+                  @on-tags-changed="(t) => {pros = t}"
                 />
                 <partial-input-error-message :error-message="errors.pros"/>
               </div>
@@ -120,9 +120,9 @@
                 <base-tags-input
                   :add-tag-on-keys="[13, 188]"
                   :read-only="comment?.is_condition_changed"
-                    :tags="cons"
-                    placeholder="وارد نمایید"
-                    @on-tags-changed="(t) => {cons = t}"
+                  :tags="cons"
+                  placeholder="وارد نمایید"
+                  @on-tags-changed="(t) => {cons = t}"
                 />
                 <partial-input-error-message :error-message="errors.cons"/>
               </div>
@@ -130,10 +130,10 @@
                 <base-textarea
                   :in-edit-mode="!comment?.is_condition_changed"
                   :is-editable="!comment?.is_condition_changed"
-                    label-title="توضیحات"
-                    name="description"
-                    placeholder="دیدگاه خود را وارد نمایید..."
                   :value="comment?.description"
+                  label-title="توضیحات"
+                  name="description"
+                  placeholder="دیدگاه خود را وارد نمایید..."
                 />
               </div>
               <div
@@ -147,14 +147,14 @@
               <div class="p-3">
                 <base-animated-button
                   :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
                       v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -271,8 +271,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       setFormFields(response.data)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

@@ -145,8 +145,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       setFormFields(response.data)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

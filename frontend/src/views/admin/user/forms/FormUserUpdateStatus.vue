@@ -1,15 +1,15 @@
 <template>
   <form @submit.prevent="onSubmit">
     <base-switch
-        v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
-        :enabled="!user?.is_deletable"
-        class="mb-3"
-        disabled-color="bg-pink-300"
-        enabled-color="bg-pink-600"
-        label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
-        name="is_deletable"
-        sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
-        @change="(status) => {deletableStatus=status}"
+      v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
+      :enabled="!user?.is_deletable"
+      class="mb-3"
+      disabled-color="bg-pink-300"
+      enabled-color="bg-pink-600"
+      label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
+      name="is_deletable"
+      sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
+      @change="(status) => {deletableStatus=status}"
     />
 
     <template v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.BAN)">
@@ -44,15 +44,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -64,11 +64,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -166,8 +166,9 @@ const {canSubmit, onSubmit} = useFormSubmit({
       return false
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
       return false
     },

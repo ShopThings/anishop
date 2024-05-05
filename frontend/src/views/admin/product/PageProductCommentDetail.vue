@@ -1,15 +1,15 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="list-single"
+    :loading="loading"
+    type="list-single"
   >
     <template #content>
       <partial-card class="border-0 mb-3">
         <template #header>
           دیدگاه کاربر درباره بلاگ
           <span
-              v-if="product?.slug"
-              class="text-slate-400 text-base"
+            v-if="product?.slug"
+            class="text-slate-400 text-base"
           >{{ product?.title }}</span>
         </template>
         <template #body>
@@ -17,10 +17,10 @@
             <div class="flex flex-col sm:flex-row gap-3 items-center">
               <div class="shrink-0">
                 <base-lazy-image
-                    :alt="product?.title"
-                    :lazy-src="product?.image.path"
-                    :size="FileSizes.SMALL"
-                    class="!h-28 sm:!h-20 w-auto rounded"
+                  :alt="product?.title"
+                  :lazy-src="product?.image.path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
                 />
               </div>
               <div class="grow text-sm">
@@ -28,8 +28,8 @@
               </div>
               <div class="text-sm shrink-0">
                 <router-link
-                    :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
-                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                  :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
+                  class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                 >
                   <span class="mx-auto">مشاهده محصول</span>
                   <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -46,35 +46,35 @@
     <template #header>
       جزئیات دیدگاه برای محصول -
       <span
-          v-if="product?.id"
-          class="text-slate-400 text-base"
+        v-if="product?.id"
+        class="text-slate-400 text-base"
       >{{ product?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="content"
+          :loading="loading"
+          type="content"
         >
           <template #content>
             <div class="flex flex-wrap">
               <div class="p-2 md:w-1/2 relative">
                 <VTransitionFade>
                   <loader-circle
-                      v-if="conditionUpdateLoading"
-                      big-circle-color="border-transparent"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
+                    v-if="conditionUpdateLoading"
+                    big-circle-color="border-transparent"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
                   />
                 </VTransitionFade>
 
                 <partial-input-label title="تغییر وضعیت دیدگاه کاربر"/>
                 <base-select
-                    :before-change-fn="changeUserCommentCondition"
-                    :options="conditions"
-                    :selected="selectedUserCommentCondition"
-                    options-key="value"
-                    options-text="text"
-                    @change="(selected) => {selectedUserCommentCondition = selected}"
+                  :before-change-fn="changeUserCommentCondition"
+                  :options="conditions"
+                  :selected="selectedUserCommentCondition"
+                  options-key="value"
+                  options-text="text"
+                  @change="(selected) => {selectedUserCommentCondition = selected}"
                 >
                   <template #item="{item}">
                     <partial-badge-color :hex="item.color_hex" :title="item.text"/>
@@ -96,22 +96,22 @@
                 <div class="p-2">
                   <partial-input-label title="پاسخ خود را وارد نمایید"/>
                   <base-editor
-                      :value="comment?.answer"
-                      name="answer"
+                    :value="comment?.answer"
+                    name="answer"
                   />
                 </div>
 
                 <div class="px-2 py-3">
                   <base-animated-button
-                      :disabled="!canSubmit"
-                      class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                      type="submit"
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                   >
                     <VTransitionFade>
                       <loader-circle
-                          v-if="!canSubmit"
-                          big-circle-color="border-transparent"
-                          main-container-klass="absolute w-full h-full top-0 left-0"
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                       />
                     </VTransitionFade>
 
@@ -166,8 +166,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     answer: yup.string().when([], (inputValue, schema) => {
       return !!(comment.value?.created_by)
-          ? schema.required('پاسخ خود را وارد نمایید.')
-          : schema.optional()
+        ? schema.required('پاسخ خود را وارد نمایید.')
+        : schema.optional()
     }),
   }),
 }, (values, actions) => {
@@ -181,8 +181,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       setFormFields(response.data)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

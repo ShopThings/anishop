@@ -10,7 +10,7 @@
     </p>
     <p class="font-iranyekan-light mt-1">
       در صورتی که به درگاه هدایت نشدید، لینک زیر را کلیک کنید
-      <span class="font-iranyekan-bold text-lg text-amber-600">{{ countdown.secondsWithoutPadding }}</span>
+      <span class="font-iranyekan-bold text-lg text-amber-600">{{ countdown.secondsWithoutPadding.value }}</span>
       ثانیه...
     </p>
 

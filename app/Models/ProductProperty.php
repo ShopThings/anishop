@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Support\Model\ExtendedModel as Model;
 use App\Support\Cart\BuyableInterface as Buyable;
+use App\Support\Model\ExtendedModel as Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Parables\NanoId\GeneratesNanoId;
@@ -31,6 +31,7 @@ class ProductProperty extends Model implements Buyable
         'show_call_for_more' => 'boolean',
         'is_published' => 'boolean',
         'has_separate_shipment' => 'boolean',
+        'updated_at' => 'datetime',
     ];
 
     public function nanoIdColumn()
@@ -53,9 +54,21 @@ class ProductProperty extends Model implements Buyable
     {
         return $this->product->is_available &&
             $this->product->is_published &&
+            !$this->show_coming_soon &&
+            !$this->show_call_for_more &&
             $this->is_available &&
             $this->is_published &&
             $this->stock_count > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasFestivalDiscount(): bool
+    {
+        return $this->product()->whereHas('festivals', function (Builder $query) {
+            $query->published()->activated();
+        })->exists();
     }
 
     /**
@@ -87,37 +100,37 @@ class ProductProperty extends Model implements Buyable
      */
     private function _getDiscountedPrice(): float
     {
-        $id = $this->id;
         $price = $this->price;
 
-        // check if product have discount
-        if (
-            (
-                !isset($this->discounted_from) &&
-                isset($this->discounted_until) &&
-                $this->discounted_until >= now()
-            ) ||
-            (
-                isset($this->discounted_from) &&
-                !isset($this->discounted_until) &&
-                $this->discounted_from <= now()
-            ) ||
-            (
-                isset($this->discounted_from, $this->discounted_until) &&
-                $this->discounted_from <= now() && $this->discounted_until >= now()
-            )
-        ) {
-            $price = $this->discounted_price;
-        }
-
         // check product if it's in festival or not and if so, apply festival discount percentage to it
-        $festivalProduct = $this->product()->with('festivals.items', function (Builder $query) use ($id) {
-            $query->where('product_id', $id);
-        })->published()->activated()->first(['discount_percentage']);
+        $festivalProduct = $this->product()->with('festivals', function (Builder $query) {
+            $query->published()->activated();
+        })->first();
+        $record = $festivalProduct->festivals->first(['discount_percentage']);
 
-        if ($festivalProduct) {
-            $off = floor($this->price * $festivalProduct->discount_percentage / 100.00);
+        if (!is_null($record)) {
+            $off = $this->price * $record->discount_percentage / 100.00;
             $price = $this->price - $off;
+        } else {
+            // check if product have discount
+            if (
+                (
+                    !isset($this->discounted_from) &&
+                    isset($this->discounted_until) &&
+                    $this->discounted_until >= now()
+                ) ||
+                (
+                    isset($this->discounted_from) &&
+                    !isset($this->discounted_until) &&
+                    $this->discounted_from <= now()
+                ) ||
+                (
+                    isset($this->discounted_from, $this->discounted_until) &&
+                    $this->discounted_from <= now() && $this->discounted_until >= now()
+                )
+            ) {
+                $price = $this->discounted_price;
+            }
         }
 
         return $price;

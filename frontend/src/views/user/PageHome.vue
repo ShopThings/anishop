@@ -188,9 +188,9 @@
                 >
                   <span class="text-sm">زمان باقیمانده رزرو:</span>
                   <div class="min-w-12 text-left text-emerald-700 flex flex-row-reverse items-center gap-1">
-                    <span>{{ countdowns[order.code].minutes }}</span>
+                    <span>{{ countdowns[order.code].minutes.value }}</span>
                     <span>:</span>
-                    <span>{{ countdowns[order.code].seconds }}</span>
+                    <span>{{ countdowns[order.code].seconds.value }}</span>
                   </div>
                 </div>
 
@@ -575,6 +575,4 @@ onMounted(() => {
     },
   })
 })
-</script>
-<script setup>
 </script>

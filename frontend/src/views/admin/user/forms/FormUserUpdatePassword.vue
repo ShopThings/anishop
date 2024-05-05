@@ -98,8 +98,9 @@ const {canSubmit, onSubmit} = useFormSubmit({
       return false
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
       return false
     },

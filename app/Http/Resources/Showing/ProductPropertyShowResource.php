@@ -16,6 +16,19 @@ class ProductPropertyShowResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $productFestival = $this->product()->whereHas('festivals', function ($query) {
+            $query->published()->activated();
+        })->fisrt();
+
+        $festivalDiscountedFrom = null;
+        $festivalDiscountedUntil = null;
+
+        if (!is_null($productFestival)) {
+            $festival = $productFestival->festivals()->first();
+            $festivalDiscountedFrom = $festival->start_at;
+            $festivalDiscountedUntil = $festival->end_at;
+        }
+
         return [
             'id' => $this->id,
             'product_id' => $this->product_id,
@@ -26,11 +39,29 @@ class ProductPropertyShowResource extends JsonResource
             'guarantee' => $this->guarantee,
             'price' => $this->price,
             'discounted_price' => $this->discounted_price,
+            'discounted_from_in_seconds' => $this->discounted_from
+                ? vertaTz($this->discounted_from)->diffSeconds(now())
+                : 0,
+            'discounted_until_in_seconds' => $this->discounted_until
+                ? vertaTz($this->discounted_until)->diffSeconds(now())
+                : 0,
             'discounted_from' => $this->discounted_from
                 ? Carbon::parse($this->discounted_from)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'discounted_until' => $this->discounted_until
                 ? Carbon::parse($this->discounted_until)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'festival_discounted_from_in_seconds' => $festivalDiscountedFrom
+                ? vertaTz($festivalDiscountedFrom)->diffSeconds(now())
+                : 0,
+            'festival_discounted_until_in_seconds' => $festivalDiscountedUntil
+                ? vertaTz($festivalDiscountedUntil)->diffSeconds(now())
+                : 0,
+            'festival_discounted_from' => $festivalDiscountedFrom
+                ? vertaTz($festivalDiscountedFrom)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                : null,
+            'festival_discounted_until' => $festivalDiscountedUntil
+                ? vertaTz($festivalDiscountedUntil)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'stock_count' => $this->stock_count,
             'max_cart_count' => $this->max_cart_count,

@@ -58,13 +58,13 @@
 
                       <div>
                         <button
-                            v-tooltip.bottom="'نپسندیدم'"
-                            type="button"
-                            :class="[
+                          v-tooltip.bottom="'نپسندیدم'"
+                          :class="[
                                 blog.vote_type === BLOG_VOTING_TYPES.NOT_VOTED ? 'text-black' : 'text-slate-400',
                             ]"
-                            class="hover:text-black transition flex items-center gap-2"
-                            @click="unlikeHandler"
+                          class="hover:text-black transition flex items-center gap-2"
+                          type="button"
+                          @click="unlikeHandler"
                         >
                           <HandThumbDownIcon class="w-6 h-6"/>
                           <span class="flex items-center gap-0.5">
@@ -76,13 +76,13 @@
                       </div>
                       <div>
                         <button
-                            v-tooltip.bottom="'خوشم اومده'"
-                            type="button"
-                            :class="[
+                          v-tooltip.bottom="'خوشم اومده'"
+                          :class="[
                               blog.vote_type === BLOG_VOTING_TYPES.VOTED ? 'text-black' : 'text-slate-400',
                             ]"
-                            class="hover:text-black transition flex items-center gap-2"
-                            @click="likeHandler"
+                          class="hover:text-black transition flex items-center gap-2"
+                          type="button"
+                          @click="likeHandler"
                         >
                           <HandThumbUpIcon class="w-6 h-6"/>
                           <span class="flex items-center gap-0.5">
@@ -97,9 +97,9 @@
                     <ul class="flex flex-wrap items-center justify-end gap-4 mr-auto">
                       <li class="pl-4 border-l-2 border-slate-200">
                         <a
-                            v-tooltip.bottom="'دیدگاه‌ها'"
-                            class="text-slate-400 hover:text-black transition flex items-center gap-2"
-                            href="#"
+                          v-tooltip.bottom="'دیدگاه‌ها'"
+                          class="text-slate-400 hover:text-black transition flex items-center gap-2"
+                          href="#"
                         >
                           <div class="flex items-center gap-0.5">
                             <span class="text-xs">(</span>
@@ -114,7 +114,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.EMAIL.text"
                           :href="emailSharingLink"
-                            class="text-slate-400 hover:text-black transition"
+                          class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.EMAIL.icon"
                         ></a>
                       </li>
@@ -122,7 +122,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.TELEGRAM.text"
                           :href="telegramSharingLink"
-                            class="text-slate-400 hover:text-black transition"
+                          class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.TELEGRAM.icon"
                         ></a>
                       </li>
@@ -130,7 +130,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.X.text"
                           :href="twitterSharingLink"
-                            class="text-slate-400 hover:text-black transition"
+                          class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.X.icon"
                         ></a>
                       </li>
@@ -138,7 +138,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.WHATSAPP.text"
                           :href="whatsappSharingLink"
-                            class="text-slate-400 hover:text-black transition"
+                          class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.WHATSAPP.icon"
                         ></a>
                       </li>
@@ -147,7 +147,7 @@
 
                   <base-lazy-image
                     :alt="blog.title"
-                      class="!w-full !h-auto rounded-lg"
+                    class="!w-full !h-auto rounded-lg"
                     :lazy-src="blog.image.path"
                   />
 
@@ -171,7 +171,7 @@
                       >
                         <router-link
                           :to="{name: 'blog.search', query: {tag: keyword}}"
-                            class="py-1 text-xs px-3 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black transition"
+                          class="py-1 text-xs px-3 rounded-md bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black transition"
                         >
                           {{ keyword }}
                         </router-link>
@@ -184,8 +184,8 @@
               <partial-card class="border-0 p-6">
                 <template #body>
                   <partial-general-title
-                      container-class="mb-5"
-                      title="دیدگاه‌ها"
+                    container-class="mb-5"
+                    title="دیدگاه‌ها"
                   />
 
                   <div class="mb-12">
@@ -202,12 +202,12 @@
 
       <Vue3StickySidebar
         v-if="hasPopularCategories || hasBlogArchives || hasMostViewsBlogs"
-          :bottom-spacing="20"
-          :min-width="1024"
+        :bottom-spacing="20"
+        :min-width="1024"
         :top-spacing="79"
-          class="shrink-0 lg:w-80"
-          containerSelector=".sticky-container"
-          innerWrapperSelector='.sidebar__inner'
+        class="shrink-0 lg:w-80"
+        containerSelector=".sticky-container"
+        innerWrapperSelector='.sidebar__inner'
       >
         <div class="flex flex-col gap-6">
           <partial-card
@@ -216,8 +216,8 @@
           >
             <template #body>
               <partial-general-title
-                  title="دسته‌بندی‌های پرطرفدار"
-                  type="side"
+                title="دسته‌بندی‌های پرطرفدار"
+                type="side"
               />
 
               <app-side-categories-blog @loaded="(hasData) => {hasPopularCategories = hasData}"/>
@@ -230,8 +230,8 @@
           >
             <template #body>
               <partial-general-title
-                  title="آرشیو نوشته‌ها"
-                  type="side"
+                title="آرشیو نوشته‌ها"
+                type="side"
               />
 
               <blog-side-archives @loaded="(hasData) => {hasBlogArchives = hasData}"/>
@@ -244,8 +244,8 @@
           >
             <template #body>
               <partial-general-title
-                  title="پربازدیدترین نوشته‌ها"
-                  type="side"
+                title="پربازدیدترین نوشته‌ها"
+                type="side"
               />
 
               <blog-side-most-viewed @loaded="(hasData) => {hasMostViewsBlogs = hasData}"/>
@@ -280,12 +280,14 @@ import BlogComments from "@/components/blog/BlogComments.vue";
 import BlogSideArchives from "@/components/blog/BlogSideArchives.vue";
 import BlogSideMostViewed from "@/components/blog/BlogSideMostViewed.vue";
 import {BLOG_VOTING_TYPES, SOCIAL_NETWORKS} from "@/composables/constants.js";
-import {estimateReadTime, numberFormat, getRouteParamByKey} from "@/composables/helper.js";
+import {estimateReadTime, getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {HomeBlogAPI} from "@/service/APIHomePages.js";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {useToast} from "vue-toastification";
+import {useSeoMeta} from "@unhead/vue";
+import {useHomeSettingNoTimerStore} from "@/store/StoreSettings.js";
 
 const toast = useToast()
 const userStore = useUserAuthStore()
@@ -366,11 +368,37 @@ const whatsappSharingLink = computed(() => {
 })
 
 //-----------------------------------------
+const settingStore = useHomeSettingNoTimerStore()
+
+const localDescription = ref(settingStore.getDescription)
+const localKeywords = ref(settingStore.getKeywords)
+const title = ref(null)
+const briefDescription = ref(null)
+const keywords = ref([])
+
+useSeoMeta({
+  title: title,
+  description: [localDescription, briefDescription],
+  keywords: keywords.value.length
+    ? [
+      Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,
+      keywords.value.join(', ')
+    ]
+    : Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,
+})
+
 onMounted(() => {
   HomeBlogAPI.fetchById(slugParam.value, {
     success(response) {
       blog.value = response.data
       loading.value = false
+
+      localDescription.value = settingStore.getDescription
+      localKeywords.value = settingStore.getKeywords
+
+      title.value = blog.value.title
+      briefDescription.value = blog.value.brief_description
+      keywords.value = blog.value.keywords
     },
   })
 })

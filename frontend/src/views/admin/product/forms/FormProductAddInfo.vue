@@ -3,16 +3,16 @@
     <partial-card class="mb-3 p-3 relative">
       <template #body>
         <loader-dot-orbit
-            v-if="!canSubmit"
-            container-bg-color="bg-blue-50 opacity-40"
-            main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+          v-if="!canSubmit"
+          container-bg-color="bg-blue-50 opacity-40"
+          main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
         />
 
         <div class="p-2 flex flex-col items-center">
           <partial-input-label title="انتخاب تصویر شاخص"/>
           <base-media-placeholder
-              v-model:selected="productImage"
-              type="image"
+            v-model:selected="productImage"
+            type="image"
           />
           <partial-input-error-message :error-message="errors.image"/>
         </div>
@@ -20,9 +20,9 @@
         <div class="flex flex-wrap">
           <div class="w-full p-2 sm:w-1/2 xl:w-5/12">
             <base-input
-                label-title="نام محصول"
-                name="title"
-                placeholder="وارد نمایید"
+              label-title="نام محصول"
+              name="title"
+              placeholder="وارد نمایید"
             >
               <template #icon>
                 <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -33,20 +33,20 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
             <partial-input-label title="واحد محصول"/>
             <base-select-searchable
-                :current-page="unitSelectConfig.currentPage.value"
-                :has-pagination="true"
-                :is-loading="loadingGetUnits"
-                :is-local-search="false"
-                :last-page="unitSelectConfig.lastPage.value"
-                :options="units"
-                name="unit"
-                options-key="id"
-                options-text="name"
-                placeholder="جستجوی واحد محصول..."
-                @change="(selected) => {selectedUnit = selected}"
-                @query="searchUnit"
-                @click-next-page="searchUnitNextPage"
-                @click-prev-page="searchUnitPrevPage"
+              :current-page="unitSelectConfig.currentPage.value"
+              :has-pagination="true"
+              :is-loading="loadingGetUnits"
+              :is-local-search="false"
+              :last-page="unitSelectConfig.lastPage.value"
+              :options="units"
+              name="unit"
+              options-key="id"
+              options-text="name"
+              placeholder="جستجوی واحد محصول..."
+              @change="(selected) => {selectedUnit = selected}"
+              @query="searchUnit"
+              @click-next-page="searchUnitNextPage"
+              @click-prev-page="searchUnitPrevPage"
             />
             <partial-input-error-message :error-message="errors.unit"/>
           </div>
@@ -54,20 +54,20 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
             <partial-input-label title="برند"/>
             <base-select-searchable
-                :current-page="brandSelectConfig.currentPage.value"
-                :has-pagination="true"
-                :is-loading="loadingGetBrands"
-                :is-local-search="false"
-                :last-page="brandSelectConfig.lastPage.value"
-                :options="brands"
-                name="brand"
-                options-key="id"
-                options-text="name"
-                placeholder="جستجوی برند..."
-                @change="(selected) => {selectedBrand = selected}"
-                @query="searchBrand"
-                @click-next-page="searchBrandNextPage"
-                @click-prev-page="searchBrandPrevPage"
+              :current-page="brandSelectConfig.currentPage.value"
+              :has-pagination="true"
+              :is-loading="loadingGetBrands"
+              :is-local-search="false"
+              :last-page="brandSelectConfig.lastPage.value"
+              :options="brands"
+              name="brand"
+              options-key="id"
+              options-text="name"
+              placeholder="جستجوی برند..."
+              @change="(selected) => {selectedBrand = selected}"
+              @query="searchBrand"
+              @click-next-page="searchBrandNextPage"
+              @click-prev-page="searchBrandPrevPage"
             />
             <partial-input-error-message :error-message="errors.brand"/>
           </div>
@@ -75,20 +75,20 @@
           <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
             <partial-input-label title="دسته‌بندی"/>
             <base-select-searchable
-                :current-page="categorySelectConfig.currentPage.value"
-                :has-pagination="true"
-                :is-loading="loadingGetCategories"
-                :is-local-search="false"
-                :last-page="categorySelectConfig.lastPage.value"
-                :options="categories"
-                name="category"
-                options-key="id"
-                options-text="name"
-                placeholder="جستجوی دسته‌بندی..."
-                @change="(selected) => {selectedCategory = selected}"
-                @query="searchCategory"
-                @click-next-page="searchCategoryNextPage"
-                @click-prev-page="searchCategoryPrevPage"
+              :current-page="categorySelectConfig.currentPage.value"
+              :has-pagination="true"
+              :is-loading="loadingGetCategories"
+              :is-local-search="false"
+              :last-page="categorySelectConfig.lastPage.value"
+              :options="categories"
+              name="category"
+              options-key="id"
+              options-text="name"
+              placeholder="جستجوی دسته‌بندی..."
+              @change="(selected) => {selectedCategory = selected}"
+              @query="searchCategory"
+              @click-next-page="searchCategoryNextPage"
+              @click-prev-page="searchCategoryPrevPage"
             />
             <partial-input-error-message :error-message="errors.category"/>
           </div>
@@ -97,29 +97,29 @@
         <div class="flex flex-wrap">
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                :enabled="true"
-                label="موجود"
-                name="is_available"
-                sr-text="موجود/ناموجود بودن محصول"
-                @change="(status) => {availableStatus = status}"
+              :enabled="true"
+              label="موجود"
+              name="is_available"
+              sr-text="موجود/ناموجود بودن محصول"
+              @change="(status) => {availableStatus = status}"
             />
           </div>
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                :enabled="true"
-                label="نمایش کلی محصول"
-                name="is_published"
-                sr-text="نمایش/عدم نمایش تمامی محصولات"
-                @change="(status) => {publishStatus = status}"
+              :enabled="true"
+              label="نمایش کلی محصول"
+              name="is_published"
+              sr-text="نمایش/عدم نمایش تمامی محصولات"
+              @change="(status) => {publishStatus = status}"
             />
           </div>
           <div class="p-2 w-full sm:w-auto sm:grow">
             <base-switch
-                :enabled="true"
-                label="اجازه ارسال دیدگاه"
-                name="is_commenting_allowed"
-                sr-text="اجازه/عدم اجازه ارسال دیدگاه"
-                @change="(status) => {allowCommentingStatus = status}"
+              :enabled="true"
+              label="اجازه ارسال دیدگاه"
+              name="is_commenting_allowed"
+              sr-text="اجازه/عدم اجازه ارسال دیدگاه"
+              @change="(status) => {allowCommentingStatus = status}"
             />
           </div>
         </div>
@@ -127,19 +127,19 @@
         <div class="p-2">
           <partial-input-label title="کلمات کلیدی"/>
           <base-tags-input
-              :tags="tags"
-              placeholder="کلمات کلیدی خود را وارد نمایید"
-              @on-tags-changed="(t) => {tags = t}"
+            :tags="tags"
+            placeholder="کلمات کلیدی خود را وارد نمایید"
+            @on-tags-changed="(t) => {tags = t}"
           />
         </div>
 
         <div class="p-2">
           <partial-input-label class="mb-2" title="ویژگی‌های سریع"/>
           <partial-baby-property-builder
-              v-model:properties="babyProps"
-              new-button-text="ویژگی جدید"
-              property-title-text="عنوان ویژگی"
-              tags-text="ویژگی‌ها"
+            v-model:properties="babyProps"
+            new-button-text="ویژگی جدید"
+            property-title-text="عنوان ویژگی"
+            tags-text="ویژگی‌ها"
           />
         </div>
         <partial-input-error-message :error-message="errors.quick_properties"/>
@@ -149,13 +149,13 @@
     <partial-card>
       <template #body>
         <partial-stepy-next-prev-buttons
-            :allow-next-step="canSubmit"
-            :allow-prev-step="canSubmit"
-            :current-step="options.currentStep"
-            :current-step-index="options.currentStepIndex"
-            :last-step="options.lastStep"
-            :loading="!canSubmit"
-            @next="handleNextClick(options.next)"
+          :allow-next-step="canSubmit"
+          :allow-prev-step="canSubmit"
+          :current-step="options.currentStep"
+          :current-step-index="options.currentStepIndex"
+          :last-step="options.lastStep"
+          :loading="!canSubmit"
+          @next="handleNextClick(options.next)"
         />
       </template>
     </partial-card>
@@ -356,8 +356,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       if (nextFn) nextFn()
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

@@ -46,6 +46,9 @@ class StoreBlogRequest extends FormRequest
                 'required',
                 new FileExistsRule(),
             ],
+            'brief_description' => [
+                'required',
+            ],
             'description' => [
                 'required',
             ],
@@ -64,6 +67,7 @@ class StoreBlogRequest extends FormRequest
     public function attributes()
     {
         return [
+            'brief_description' => 'توضیحات مختصر',
             'is_commenting_allowed' => 'اجازه ارسال دیدگاه',
         ];
     }

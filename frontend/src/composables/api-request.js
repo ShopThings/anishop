@@ -88,21 +88,21 @@ axiosClient.defaults.headers.common['Content-Type'] = 'application/json'
 
 axiosClient.interceptors.request.use((config) => {
   // If we want check maintenance, we should attach secret if exists to sending info
-  const secretCode = useSafeLocalStorage.getItem('maintenance_secret');
+  const secretCode = useSafeLocalStorage.getItem('maintenance_secret')
 
   if (secretCode) {
     // Add maintenance_secret to the request params or data for all requests
     if (config.params) {
-      config.params.maintenance_secret = secretCode;
+      config.params.maintenance_secret = secretCode
     } else {
-      config.params = {maintenance_secret: secretCode};
+      config.params = {maintenance_secret: secretCode}
     }
 
     if (config.method !== 'get') {
       if (config.data) {
-        config.data.maintenance_secret = secretCode;
+        config.data.maintenance_secret = secretCode
       } else {
-        config.data = {maintenance_secret: secretCode};
+        config.data = {maintenance_secret: secretCode}
       }
     }
   }
@@ -121,7 +121,7 @@ axiosClient.interceptors.request.use((config) => {
 })
 
 axiosClient.interceptors.response.use(response => {
-  return response;
+  return response
 }, error => {
   const store = useUserAuthStore()
   const adminStore = useAdminAuthStore()
@@ -157,62 +157,63 @@ export default axiosClient
 
 export const useRequest = async (url, config, resultConfig) => {
   return new Promise((resolve, reject) => {
-    const toast = useToast();
+    const toast = useToast()
 
-    config = config || {};
-    const silent = resultConfig?.silent === true;
-    const onBeforeRequest = resultConfig?.beforeRequest;
-    const onSuccess = resultConfig?.success;
-    const onCriticalError = resultConfig?.criticalError;
-    const onError = resultConfig?.error;
-    const onAnyError = resultConfig?.anyError;
-    const onFinally = resultConfig?.finally;
+    config = config || {}
+    const silent = resultConfig?.silent === true
+    const onBeforeRequest = resultConfig?.beforeRequest
+    const onSuccess = resultConfig?.success
+    const onCriticalError = resultConfig?.criticalError
+    const onError = resultConfig?.error
+    const onAnyError = resultConfig?.anyError
+    const onFinally = resultConfig?.finally
 
-    if (isFunction(onBeforeRequest))
-      onBeforeRequest.apply(null);
+    if (isFunction(onBeforeRequest)) {
+      onBeforeRequest()
+    }
 
-    config['method'] = config['method'] || 'GET';
+    config['method'] = config['method'] || 'GET'
 
     axiosClient(url, config)
       .then((response) => {
-        const data = response.data || [];
-        const type = response.data?.data?.type || data?.type;
-        const msg = response.data?.data?.message || response.data?.message;
+        const data = response.data || []
+        const type = response.data?.data?.type || data?.type
+        const msg = response.data?.data?.message || response.data?.message
 
-        let total = 0;
+        let total = 0
         if (data?.meta?.total) {
-          total = data?.meta?.total;
+          total = data?.meta?.total
         } else if (Array.isArray(data?.data) || Array.isArray(data)) {
-          total = data?.data?.length || data.length;
+          total = data?.data?.length || data.length
         } else if (isObject(data?.data) || isObject(data)) {
-          total = 1;
+          total = 1
         }
 
-        let ans = true;
+        let ans = true
         if (isFunction(onSuccess)) {
-          ans = onSuccess.apply(null, [data, total]);
+          ans = onSuccess(data, total)
         }
 
         // if returned value is false, overwrite functionality
         if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
           if (type && type === responseTypes.info) {
-            toast.info(msg);
+            toast.info(msg)
           } else if (type && type === responseTypes.warning) {
-            toast.warning(msg);
+            toast.warning(msg)
           } else {
-            toast.success(msg);
+            toast.success(msg)
           }
         }
 
-        resolve(data); // Resolve with data
+        resolve(data) // Resolve with data
       })
       .catch((error) => {
-        const data = error?.response?.data?.data || error?.response?.data || [];
-        const type = error?.response?.data?.data?.type;
+        const data = error?.response?.data?.data || error?.response?.data || []
+        const type = error?.response?.data?.data?.type
         const msg = error?.response?.data?.data?.message ||
           error?.response?.data.message ||
           error?.response?.statusText ||
-          error.message;
+          error.message
 
         // mostly it has debugging purposes
         if ((isObject(data) && !Object.keys(data).length) ||
@@ -222,55 +223,56 @@ export const useRequest = async (url, config, resultConfig) => {
         ) {
           if (msg.toLowerCase() !== "canceled") {
             if (import.meta.env.DEV) {
-              console.error(error);
+              console.error(error)
             }
 
             if (isFunction(onAnyError)) {
-              onAnyError.apply(null, [null, msg]);
+              onAnyError(null, msg)
             }
 
             if (isFunction(onCriticalError)) {
-              onCriticalError.apply(null, [msg]);
+              onCriticalError(msg)
             }
 
             if (!silent) {
-              toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!');
+              toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!')
             }
           }
-          reject(); // Reject without data
-          return;
+
+          reject(null, msg)
+          return
         }
 
         if (isFunction(onAnyError)) {
-          onAnyError.apply(null, [data, msg]);
+          onAnyError(data, msg)
         }
 
-        let ans = true;
+        let ans = true
         if (isFunction(onError)) {
-          ans = onError.apply(null, [data, msg]);
+          ans = onError(data, msg)
         }
 
         // if returned value is false, overwrite functionality
         if (ans !== false && msg) {
           if (type && type === responseTypes.error) {
-            toast.error(msg);
+            toast.error(msg)
           } else if (type && type === responseTypes.info) {
-            toast.info(msg);
+            toast.info(msg)
           } else if (type && type === responseTypes.warning) {
-            toast.warning(msg);
+            toast.warning(msg)
           } else {
-            toast.error(msg);
+            toast.error(msg)
           }
         }
 
-        reject(); // Reject without data
+        reject(data, msg)
       })
       .finally(() => {
         if (isFunction(onFinally)) {
-          onFinally.apply(null);
+          onFinally()
         }
-      });
-  });
+      })
+  })
 }
 
 export async function useRequestWrapper(url, config, callbacks, userCallbacks) {
@@ -291,53 +293,53 @@ export async function useRequestWrapper(url, config, callbacks, userCallbacks) {
     beforeRequest: onBeforeRequest,
     success: (response, total) => {
       if (isFunction(onSuccess)) {
-        onSuccess.apply(null, [response, total])
+        onSuccess(response, total)
       }
 
-      let answer = true;
+      let answer = true
       if (isFunction(onUserSuccess)) {
-        answer = onUserSuccess.apply(null, [response, total])
+        answer = onUserSuccess(response, total)
       }
 
       return answer !== false
     },
     criticalError: (...err) => {
       if (isFunction(onCriticalError)) {
-        onCriticalError.apply(null, ...err)
+        onCriticalError(...err)
       }
 
       if (isFunction(onUserCriticalError)) {
-        onUserCriticalError.apply(null, ...err)
+        onUserCriticalError(...err)
       }
     },
     error: (...err) => {
       if (isFunction(onError)) {
-        onError.apply(null, ...err)
+        onError(...err)
       }
 
-      let answer = true;
+      let answer = true
       if (isFunction(onUserError)) {
-        answer = onUserError.apply(null, ...err)
+        answer = onUserError(...err)
       }
 
       return answer !== false
     },
     anyError: (...err) => {
       if (isFunction(onAnyError)) {
-        onAnyError.apply(null, ...err)
+        onAnyError(...err)
       }
 
       if (isFunction(onUserAnyError)) {
-        onUserAnyError.apply(null, ...err)
+        onUserAnyError(...err)
       }
     },
     finally: () => {
       if (isFunction(onFinally)) {
-        onFinally.apply(null)
+        onFinally()
       }
 
       if (isFunction(onUserFinally)) {
-        onUserFinally.apply(null)
+        onUserFinally()
       }
     },
   })

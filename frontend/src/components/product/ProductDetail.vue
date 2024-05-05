@@ -1,17 +1,17 @@
 <template>
   <div class="flex flex-col lg:flex-row gap-3 sticky-container">
     <Vue3StickySidebar
-        :bottom-spacing="20"
-        :min-width="1024"
-        :top-spacing="sliderTopSpacing"
-        class="w-full lg:w-96 xl:w-[32rem] shrink-0 mx-auto"
-        containerSelector=".sticky-container"
-        innerWrapperSelector='.sidebar__inner'
+      :bottom-spacing="20"
+      :min-width="1024"
+      :top-spacing="sliderTopSpacing"
+      class="w-full lg:w-96 xl:w-[32rem] shrink-0 mx-auto"
+      containerSelector=".sticky-container"
+      innerWrapperSelector='.sidebar__inner'
     >
       <div class="flex flex-col">
         <div
           v-if="showProductExtraOption && currentMainProduct"
-            class="shrink-0 p-2 bg-white shadow rounded-lg ring-1 ring-primary mb-3"
+          class="shrink-0 p-2 bg-white shadow rounded-lg ring-1 ring-primary mb-3"
         >
           <div class="flex items-center justify-center gap-4">
             <button
@@ -163,7 +163,7 @@
                 :wrap-around="mainGallerySettings.wrapAround"
                 @slide-change="(index) => {currentSlide = index}"
               >
-                <template #default="{slide, index}">
+                <template #default="{slide}">
                   <div class="bg-white border rounded-lg lg:h-96 xl:h-[32rem]">
                     <base-lazy-image
                       :alt="slide.name"
@@ -173,7 +173,7 @@
                   </div>
                 </template>
 
-                <template #thumbSlide="{slide, index}">
+                <template #thumbSlide="{slide}">
                   <div
                     class="bg-white border rounded-lg cursor-pointer"
                   >
@@ -285,6 +285,14 @@
             <div class="grow h-0.5 bg-red-400 rounded-full"></div>
           </div>
 
+          <div
+            v-if="selectedProduct.updated_at"
+            class="flex gap-1.5 items-center my-2"
+          >
+            <span class="text-slate-400 text-xs">آخرین بروزرسانی:</span>
+            <span class="text-amber-500 text-sm">{{ selectedProduct.updated_at }}</span>
+          </div>
+
           <h1 class="text-xl leading-loose hyphens-auto break-words font-iranyekan-bold">
             {{ currentMainProduct.title }}
           </h1>
@@ -308,34 +316,48 @@
             >
               اتمام موجودی
             </div>
-            <div
-              v-else
-              class="flex flex-wrap mt-3 items-center"
-            >
-              <div class="ml-3 text-xl my-1 font-iranyekan-bold">
-                {{ numberFormat(selectedProduct.discounted_price ?? selectedProduct.price) }}
-                <span class="text-xs text-gray-400">تومان</span>
+            <template v-else>
+              <div class="flex flex-wrap mt-3 items-center">
+                <div class="ml-3 text-xl my-1 font-iranyekan-bold">
+                  <template v-if="getBuyablePrice === 0">
+                    رایگان
+                  </template>
+                  <template v-else>
+                    {{ numberFormat(getBuyablePrice) }}
+                    <span class="text-xs text-gray-400">تومان</span>
+                  </template>
+                </div>
+
+                <template v-if="getBuyablePrice < selectedProduct.price && +selectedProduct.price !== 0">
+                  <div class="relative ml-3 my-1">
+                  <span
+                    class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
+                    <div class="text-slate-500">
+                      {{ numberFormat(selectedProduct.price) }}
+                      <span class="text-xs text-gray-400">تومان</span>
+                    </div>
+                  </div>
+                  <div
+                    v-if="getPercentageOfPortion(getBuyablePrice, selectedProduct.price) > 0"
+                    class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1"
+                  >
+                    <span class="text-xs">%</span>
+                    {{ getPercentageOfPortion(getBuyablePrice, selectedProduct.price) }}
+                    <span class="text-xs mr-1">تخفیف</span>
+                  </div>
+                </template>
               </div>
 
-              <template
-                v-if="selectedProduct.discounted_price && selectedProduct.discounted_price < selectedProduct.price">
-                <div class="relative ml-3 my-1">
-                <span
-                    class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
-                  <div class="text-slate-500">
-                    {{ numberFormat(selectedProduct.price) }}
-                    <span class="text-xs text-gray-400">تومان</span>
-                  </div>
-                </div>
-                <div class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1">
-                  <span class="text-xs">%</span>
-                  {{
-                    Math.round(((selectedProduct.price - selectedProduct.discounted_price) / selectedProduct.price) * 100)
-                  }}
-                  <span class="text-xs mr-1">تخفیف</span>
-                </div>
-              </template>
-            </div>
+              <div
+                v-if="getDiscountTimer"
+                class="mt-3"
+              >
+                <partial-countdown-show
+                  :duration="getDiscountTimer"
+                  :hide-after-end="true"
+                />
+              </div>
+            </template>
           </template>
           <div v-else class="text-teal text-sm mt-3">
             برای مشاهده قیمت ابتدا محصول را انتخاب نمایید
@@ -384,7 +406,6 @@
             </ul>
           </template>
 
-
           <hr class="h-0.5 mx-auto my-3 bg-slate-100 border-0 rounded">
 
           <div>
@@ -395,9 +416,9 @@
 
             <ul class="flex flex-wrap gap-2">
               <li
-                  v-for="color in colorFiltered"
-                  v-tooltip.top="'' + color.color_name + ''"
-                  :class="[
+                v-for="color in colorFiltered"
+                v-tooltip.top="'' + color.color_name + ''"
+                :class="[
                     'relative rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
                     color.active === 'yes'
                     ? 'border-indigo-500 cursor-pointer shadow-lg'
@@ -410,12 +431,12 @@
                     ? '!border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
                     : ''
                 ]"
-                  :style="'background-color:' + color.color_hex"
-                  @click="handleColorChange(color)"
+                :style="'background-color:' + color.color_hex"
+                @click="handleColorChange(color)"
               >
                 <div
-                    v-if="color.active === 'no'"
-                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                  v-if="color.active === 'no'"
+                  class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
                 ></div>
               </li>
             </ul>
@@ -429,8 +450,8 @@
 
             <ul class="flex flex-wrap gap-2">
               <li
-                  v-for="size in sizeFiltered"
-                  :class="[
+                v-for="size in sizeFiltered"
+                :class="[
                     'relative rounded-lg py-1 px-3 border-2 transition',
                     size.active === 'yes'
                     ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
@@ -443,11 +464,11 @@
                     ? '!border-emerald-500 !bg-emerald-50 cursor-pointer'
                     : ''
                 ]"
-                  @click="handleSizeChange(size)"
+                @click="handleSizeChange(size)"
               >
                 <div
-                    v-if="size.active === 'no'"
-                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                  v-if="size.active === 'no'"
+                  class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
                 ></div>
 
                 {{ size.size }}
@@ -466,24 +487,24 @@
 
             <div class="w-full md:w-2/3">
               <base-select
-                  :options="guaranteeFiltered"
-                  :selected="selectedGuarantee"
-                  options-key="id"
-                  options-text="guarantee"
-                  @change="handleGuaranteeChange"
+                :options="guaranteeFiltered"
+                :selected="selectedGuarantee"
+                options-key="id"
+                options-text="guarantee"
+                @change="handleGuaranteeChange"
               >
                 <template #item="{item, selected}">
                   <div class="flex items-center cursor-pointer">
                     <CheckCircleIcon
-                        v-if="item.active === 'yes'"
-                        class="w-5 h-5 ml-2 text-emerald-500 shrink-0"
+                      v-if="item.active === 'yes'"
+                      class="w-5 h-5 ml-2 text-emerald-500 shrink-0"
                     />
                     <XCircleIcon
-                        v-else-if="item.active === 'no'"
-                        class="w-5 h-5 ml-2 text-rose-400 shrink-0"
+                      v-else-if="item.active === 'no'"
+                      class="w-5 h-5 ml-2 text-rose-400 shrink-0"
                     />
                     <span
-                        :class="[
+                      :class="[
                           item.active === 'yes'
                           ? 'text-emerald-500'
                           : (
@@ -541,11 +562,11 @@
   </div>
 
   <vue-easy-lightbox
-      :imgs="itemsRef"
-      :index="currentSlide"
-      :rtl="true"
-      :visible="visibleRef"
-      @hide="onLightboxHide"
+    :imgs="itemsRef"
+    :index="currentSlide"
+    :rtl="true"
+    :visible="visibleRef"
+    @hide="onLightboxHide"
   ></vue-easy-lightbox>
 
   <div class="mt-12">
@@ -585,11 +606,11 @@
   </template>
   <div
     v-else-if="Object.keys(tabs).length"
-      class="mt-12"
+    class="mt-12"
   >
     <base-tab-panel
-        :tabs="tabs"
-        tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
+      :tabs="tabs"
+      tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
     >
       <template #description>
         <div
@@ -600,12 +621,12 @@
 
       <template #properties>
         <template
-            v-for="(property, idx) in currentMainProduct.properties"
-            :key="idx"
+          v-for="(property, idx) in currentMainProduct.properties"
+          :key="idx"
         >
           <h1
-              :class="idx !== 0 ? 'mt-5' : ''"
-              class="text-lg text-indigo-600 mb-2 flex items-center"
+            :class="idx !== 0 ? 'mt-5' : ''"
+            class="text-lg text-indigo-600 mb-2 flex items-center"
           >
             <StopIcon class="w-4 h-4 ml-1 rotate-45 bg-violet-600 rounded bg-opacity-20"/>
             <span>{{ property.title }}</span>
@@ -613,24 +634,24 @@
 
           <div>
             <div
-                v-for="(child, idx2) in property.children"
-                :key="idx2"
-                class="flex flex-col mb-2 shadow md:shadow-none md:mb-0 md:grid md:grid-cols-3"
+              v-for="(child, idx2) in property.children"
+              :key="idx2"
+              class="flex flex-col mb-2 shadow md:shadow-none md:mb-0 md:grid md:grid-cols-3"
             >
               <div
-                  :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : 'md:bg-transparent'"
-                  class="p-2 text-center text-sm bg-slate-100 text-slate-500  md:text-right md:rounded-l-none md:col-span-1"
+                :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : 'md:bg-transparent'"
+                class="p-2 text-center text-sm bg-slate-100 text-slate-500  md:text-right md:rounded-l-none md:col-span-1"
               >
                 {{ child.title }}
               </div>
               <div
-                  :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : ''"
-                  class="grow text-center md:text-right md:col-span-2"
+                :class="idx2 % 2 === 0 ? 'md:bg-slate-100' : ''"
+                class="grow text-center md:text-right md:col-span-2"
               >
                 <div
-                    v-for="(subProperty, idx3) in child.tags"
-                    :key="idx3"
-                    class="p-2"
+                  v-for="(subProperty, idx3) in child.tags"
+                  :key="idx3"
+                  class="p-2"
                 >
                   {{ subProperty }}
                 </div>
@@ -644,7 +665,7 @@
         <product-comment
           :product-slug="currentMainProduct.slug"
           :product-title="currentMainProduct.title"
-            :show-add-comment="showAddComment"
+          :show-add-comment="showAddComment"
         />
       </template>
     </base-tab-panel>
@@ -680,7 +701,7 @@ import ProductCarousel from "./ProductCarousel.vue";
 import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
 import ProductComment from "./ProductComment.vue";
 import PartialGeneralTitle from "@/components/partials/PartialGeneralTitle.vue";
-import {numberFormat, getRouteParamByKey} from "@/composables/helper.js";
+import {getPercentageOfPortion, getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {useLightbox} from "@/composables/lightbox-view.js";
 import {HomeProductAPI} from "@/service/APIHomePages.js";
 import {UserPanelFavoriteProductAPI} from "@/service/APIUserPanel.js";
@@ -693,6 +714,7 @@ import BaseDialog from "@/components/base/BaseDialog.vue";
 import {useToast} from "vue-toastification";
 import {useClipboard} from "@vueuse/core";
 import {SOCIAL_NETWORKS} from "@/composables/constants.js";
+import PartialCountdownShow from "@/components/partials/PartialCountdownShow.vue";
 
 defineProps({
   showProductExtraOption: {
@@ -712,6 +734,7 @@ defineProps({
     default: 20,
   },
 })
+const emit = defineEmits(['product-loaded'])
 
 const toast = useToast()
 const slugParam = getRouteParamByKey('slug', null, false)
@@ -719,11 +742,11 @@ const slugParam = getRouteParamByKey('slug', null, false)
 const productCartCounting = ref([])
 const currentProductCartCounting = computed({
   get() {
-    let idx = productCartCounting.findIndex(item => item.id === [selectedProduct.id])
+    let idx = productCartCounting.findIndex(item => item.id === selectedProduct.value.id)
     return productCartCounting[idx]?.quantity || 0
   },
   set(value) {
-    let idx = productCartCounting.findIndex(item => item.id === [selectedProduct.id])
+    let idx = productCartCounting.findIndex(item => item.id === selectedProduct.value.id)
     if (idx) {
       productCartCounting[idx].quantity = !isNaN(+value) ? +value : 0
     }
@@ -775,6 +798,77 @@ watchEffect(() => {
   }
 })
 
+//------------------------------------------------------------
+// Discount timer operations
+//------------------------------------------------------------
+const getDiscountTimer = computed(() => {
+  const currentDate = new Date()
+  const seconds = currentDate.getTime() / 1000
+
+  // Check if product have festival discount
+  if (
+    (
+      !selectedProduct.value.festival_discounted_from_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds >= seconds
+    ) ||
+    (
+      selectedProduct.value.festival_discounted_from_in_seconds &&
+      !selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
+    ) ||
+    (
+      selectedProduct.value.festival_discounted_from_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds >= seconds &&
+      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
+    )
+  ) {
+    if (selectedProduct.value.festival_discounted_until_in_seconds !== null) {
+      return selectedProduct.value.festival_discounted_until_in_seconds
+    }
+    return 0
+  }
+
+  // Check if product have general discount
+  if (
+    (
+      !selectedProduct.value.discounted_from_in_seconds &&
+      selectedProduct.value.discounted_until_in_seconds &&
+      selectedProduct.value.discounted_until_in_seconds >= seconds
+    ) ||
+    (
+      selectedProduct.value.discounted_from_in_seconds &&
+      !selectedProduct.value.discounted_until_in_seconds &&
+      selectedProduct.value.discounted_from_in_seconds <= seconds
+    ) ||
+    (
+      selectedProduct.value.discounted_from_in_seconds &&
+      selectedProduct.value.discounted_until_in_seconds &&
+      selectedProduct.value.discounted_until_in_seconds >= seconds &&
+      selectedProduct.value.discounted_from_in_seconds <= seconds
+    )
+  ) {
+    if (selectedProduct.value.discounted_until_in_seconds !== null) {
+      return selectedProduct.value.discounted_until_in_seconds
+    }
+    return 0
+  }
+
+  return null
+})
+
+const getBuyablePrice = computed(() => {
+  let price = +selectedProduct.value.buyable_price
+
+  if (getDiscountTimer.value !== null) {
+    price = +selectedProduct.value.price
+  }
+
+  return price
+})
+
+//------------------------------------------------------------
 function setCurrentProductProperties() {
   if (selectedProduct.value) {
     for (let i of colorFiltered.value) {
@@ -959,16 +1053,16 @@ function handleColorChange(color) {
       // make active status of other property to "yes" if it is in specific property and current property
       changeActiveInArrayWhere('yes', guaranteeFiltered.value, (item) => {
         return (
-            selectedSize.value.guarantees.indexOf(item.guarantee) !== -1 &&
-            color.guarantees.indexOf(item.guarantee) !== -1
+          selectedSize.value.guarantees.indexOf(item.guarantee) !== -1 &&
+          color.guarantees.indexOf(item.guarantee) !== -1
         )
       })
     } else if (selectedGuarantee.value && !selectedSize.value) {
       changeActiveInArray('no', sizeFiltered.value)
       changeActiveInArrayWhere('yes', sizeFiltered.value, (item) => {
         return (
-            selectedGuarantee.value.sizes.indexOf(item.size) !== -1 &&
-            color.sizes.indexOf(item.size) !== -1
+          selectedGuarantee.value.sizes.indexOf(item.size) !== -1 &&
+          color.sizes.indexOf(item.size) !== -1
         )
       })
     }
@@ -1000,16 +1094,16 @@ function handleSizeChange(size) {
       changeActiveInArray('no', guaranteeFiltered.value)
       changeActiveInArrayWhere('yes', guaranteeFiltered.value, (item) => {
         return (
-            selectedColor.value.guarantees.indexOf(item.guarantee) !== -1 &&
-            size.guarantees.indexOf(item.guarantee) !== -1
+          selectedColor.value.guarantees.indexOf(item.guarantee) !== -1 &&
+          size.guarantees.indexOf(item.guarantee) !== -1
         )
       })
     } else if (selectedGuarantee.value && !selectedColor.value) {
       changeActiveInArray('no', colorFiltered.value)
       changeActiveInArrayWhere('yes', colorFiltered.value, (item) => {
         return (
-            selectedGuarantee.value.colors.indexOf(item.color_name) !== -1 &&
-            size.colors.indexOf(item.color_name) !== -1
+          selectedGuarantee.value.colors.indexOf(item.color_name) !== -1 &&
+          size.colors.indexOf(item.color_name) !== -1
         )
       })
     }
@@ -1042,16 +1136,16 @@ function handleGuaranteeChange(selected) {
       changeActiveInArray('no', sizeFiltered.value)
       changeActiveInArrayWhere('yes', sizeFiltered.value, (item) => {
         return (
-            selectedColor.value.sizes.indexOf(item.size) !== -1 &&
-            selected.sizes.indexOf(item.size) !== -1
+          selectedColor.value.sizes.indexOf(item.size) !== -1 &&
+          selected.sizes.indexOf(item.size) !== -1
         )
       })
     } else if (selectedSize.value && !selectedColor.value) {
       changeActiveInArray('no', colorFiltered.value)
       changeActiveInArrayWhere('yes', colorFiltered.value, (item) => {
         return (
-            selectedSize.value.colors.indexOf(item.color_name) !== -1 &&
-            selected.colors.indexOf(item.color_name) !== -1
+          selectedSize.value.colors.indexOf(item.color_name) !== -1 &&
+          selected.colors.indexOf(item.color_name) !== -1
         )
       })
     }
@@ -1172,6 +1266,8 @@ onMounted(() => {
           })
         }
       }
+
+      emit('product-loaded', response.data)
     },
   })
 })

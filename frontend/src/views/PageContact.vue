@@ -307,7 +307,7 @@ const getSiteFirstPhone = computed(() => {
   let first = phones[0]
   let splatted = first.split(' ')
 
-  if (splatted?.length !== 2) {
+  if (splatted?.length < 2) {
     return {
       phone: first
     }
@@ -315,7 +315,7 @@ const getSiteFirstPhone = computed(() => {
 
   return {
     phone: splatted[0],
-    name: splatted[1],
+    name: splatted.slice(1).join(' '),
   }
 })
 const getSiteMail = computed(() => {
@@ -437,8 +437,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         actions.resetForm()
       },
       error(error) {
-        if (error.errors && Object.keys(error.errors).length >= 1)
+        if (error?.errors && Object.keys(error.errors).length >= 1) {
           actions.setErrors(error.errors)
+        }
       },
       finally() {
         if (captchaCom.value)
@@ -451,8 +452,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         actions.resetForm()
       },
       error(error) {
-        if (error.errors && Object.keys(error.errors).length >= 1)
+        if (error?.errors && Object.keys(error.errors).length >= 1) {
           actions.setErrors(error.errors)
+        }
       },
     })
   }

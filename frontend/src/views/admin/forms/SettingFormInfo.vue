@@ -1,40 +1,40 @@
 <template>
   <form
-      class="relative"
-      @submit.prevent="onSubmit"
+    class="relative"
+    @submit.prevent="onSubmit"
   >
     <loader-dot-orbit
-        v-if="isFetching"
-        container-bg-color="bg-blue-50 opacity-40"
-        loading-text="در حال بارگذاری تنظیمات"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      v-if="isFetching"
+      container-bg-color="bg-blue-50 opacity-40"
+      loading-text="در حال بارگذاری تنظیمات"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <div class="flex flex-wrap">
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <partial-input-label title="انتخاب استان"/>
         <base-select-searchable
-            :is-loading="provinceLoading"
-            :options="provinces"
-            :selected="selectedProvince"
-            name="store_province"
-            options-key="id"
-            options-text="name"
-            @change="handleProvinceChange"
+          :is-loading="provinceLoading"
+          :options="provinces"
+          :selected="selectedProvince"
+          name="store_province"
+          options-key="id"
+          options-text="name"
+          @change="handleProvinceChange"
         />
         <partial-input-error-message :error-message="errors.store_province"/>
       </div>
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <partial-input-label title="انتخاب شهرستان"/>
         <base-select-searchable
-            ref="citySelectRef"
-            :is-loading="cityLoading"
-            :options="cities"
-            :selected="selectedCity"
-            name="store_city"
-            options-key="id"
-            options-text="name"
-            @change="(status) => {selectedCity = status}"
+          ref="citySelectRef"
+          :is-loading="cityLoading"
+          :options="cities"
+          :selected="selectedCity"
+          name="store_city"
+          options-key="id"
+          options-text="name"
+          @change="(status) => {selectedCity = status}"
         />
         <partial-input-error-message :error-message="errors.store_city"/>
       </div>
@@ -42,8 +42,8 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.ADDRESS]"
-          name="address"
+        :value="settingValues[SETTING_KEYS.ADDRESS]"
+        name="address"
       >
         <template #label>
           <div class="flex items-center gap-1.5 text-sm">
@@ -83,10 +83,10 @@
         </template>
       </partial-input-label>
       <base-tags-input
-          :add-tag-on-keys="[13, 188]"
-          :tags="phones"
-          placeholder="وارد نمایید"
-          @on-tags-changed="(t) => {phones = t}"
+        :add-tag-on-keys="[13, 188]"
+        :tags="phones"
+        placeholder="وارد نمایید"
+        @on-tags-changed="(t) => {phones = t}"
       />
       <partial-input-error-message :error-message="errors.phone"/>
     </div>
@@ -101,11 +101,11 @@
       </div>
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <base-input
-            :value="mapSettings.center[1].toString()"
-            label-title="طول جغرافیایی"
-            name="longitude"
-            placeholder="وارد نمایید"
-            @input="changeLongitude"
+          :value="mapSettings.center[1].toString()"
+          label-title="طول جغرافیایی"
+          name="longitude"
+          placeholder="وارد نمایید"
+          @input="changeLongitude"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -114,11 +114,11 @@
       </div>
       <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
         <base-input
-            :value="mapSettings.center[0].toString()"
-            label-title="عرض جغرافیایی"
-            name="latitude"
-            placeholder="وارد نمایید"
-            @input="changeLatitude"
+          :value="mapSettings.center[0].toString()"
+          label-title="عرض جغرافیایی"
+          name="latitude"
+          placeholder="وارد نمایید"
+          @input="changeLatitude"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -138,17 +138,17 @@
       <base-loading-panel :loading="mapLoading">
         <template #loader>
           <div
-              class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
+            class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
             <MapIcon class="h-16 w-16 text-slate-400"/>
             <span class="text-orange-300">در حال بارگذاری نقشه</span>
           </div>
         </template>
         <template #content>
           <base-map
-              v-model:center="mapSettings.center"
-              v-model:zoom="mapSettings.zoom"
-              :allow-edit-marker="mapSettings.allowEditMarker"
-              :allow-find-my-location="mapSettings.allowFindMyLocation"
+            v-model:center="mapSettings.center"
+            v-model:zoom="mapSettings.zoom"
+            :allow-edit-marker="mapSettings.allowEditMarker"
+            :allow-find-my-location="mapSettings.allowFindMyLocation"
           />
         </template>
       </base-loading-panel>
@@ -156,15 +156,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit || isFetching"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit || isFetching"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit || isFetching"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit || isFetching"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -176,11 +176,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -341,8 +341,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       emit('updated', updateArr)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

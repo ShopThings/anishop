@@ -6,29 +6,29 @@
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <base-switch
-                    :enabled="badge?.is_published"
-                    label="عدم نمایش برچسب"
-                    name="is_published"
-                    on-label="نمایش برچسب"
-                    sr-text="نمایش/عدم نمایش برچسب دیدگاه"
-                    @change="(status) => {publishStatus=status}"
+                  :enabled="badge?.is_published"
+                  label="عدم نمایش برچسب"
+                  name="is_published"
+                  on-label="نمایش برچسب"
+                  sr-text="نمایش/عدم نمایش برچسب دیدگاه"
+                  @change="(status) => {publishStatus=status}"
                 />
               </div>
 
               <div class="flex flex-wrap items-end">
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      :value="badge?.title"
-                      label-title="نام"
-                      name="title"
-                      placeholder="وارد نمایید"
+                    :value="badge?.title"
+                    label-title="نام"
+                    name="title"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -38,10 +38,10 @@
                 <div class="flex p-2">
                   <partial-input-label title="انتخاب رنگ"/>
                   <color-picker
-                      v-model:pureColor="pureColor"
-                      :disable-alpha="true"
-                      format="hex6"
-                      lang="En"
+                    v-model:pureColor="pureColor"
+                    :disable-alpha="true"
+                    format="hex6"
+                    lang="En"
                   />
                   <partial-input-error-message :error-message="errors.color_hex"/>
                 </div>
@@ -49,15 +49,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  :disabled="!canSubmit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      v-if="!canSubmit"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -69,11 +69,11 @@
                 </base-animated-button>
 
                 <div
-                    v-if="Object.keys(errors)?.length"
-                    class="text-left"
+                  v-if="Object.keys(errors)?.length"
+                  class="text-left"
                 >
                   <div
-                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                    class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
                   >
                     (
                     <span>{{ Object.keys(errors)?.length }}</span>
@@ -140,8 +140,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

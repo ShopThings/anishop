@@ -93,7 +93,7 @@ const getSiteFirstPhone = computed(() => {
   let first = phones[0]
   let splatted = first.split(' ')
 
-  if (splatted?.length !== 2) {
+  if (splatted?.length < 2) {
     return {
       phone: first
     }
@@ -101,7 +101,7 @@ const getSiteFirstPhone = computed(() => {
 
   return {
     phone: splatted[0],
-    name: splatted[1],
+    name: splatted.slice(1).join(' '),
   }
 })
 
@@ -122,13 +122,13 @@ const getSiteMail = computed(() => {
 
 @keyframes gradient-animation {
   0% {
-    background-position: 0% 50%;
+    background-position: 0 50%;
   }
   50% {
     background-position: 100% 50%;
   }
   100% {
-    background-position: 0% 50%;
+    background-position: 0 50%;
   }
 }
 </style>

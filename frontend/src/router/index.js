@@ -10,9 +10,6 @@ import {apiRoutes} from "@/router/api-routes.js";
 import {TransitionPresets} from "vue3-page-transition";
 import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 import {usePageLoaderStore} from "@/store/StorePageLoader.js";
-import {useHead, useSeoMeta} from "@unhead/vue";
-import {titleOperations} from "@/composables/helper.js";
-import {useHomeSettingNoTimerStore} from "@/store/StoreSettings.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 
@@ -394,49 +391,6 @@ function endPageLoading() {
 }
 
 //------------------------------------------------------------------------------
-// Meta tags
-//------------------------------------------------------------------------------
-async function setMetaTags(to) {
-  // Fetch settings and wait for it to complete
-  await fetchSettings();
-
-  // Retrieve settings from the store
-  const settingStore = useHomeSettingNoTimerStore();
-  const localTitle = settingStore.getTitle;
-  const localDescription = settingStore.getDescription;
-  const localKeywords = settingStore.getKeywords;
-
-  useHead({
-    titleTemplate: (title) => !title ? localTitle : titleOperations.join([localTitle, title]),
-  })
-
-  useSeoMeta({
-    description: localDescription,
-    keywords: Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords
-  })
-
-  // If the route has a meta title, set it
-  if (to?.meta?.title) {
-    useSeoMeta({
-      title: to.meta.title
-    })
-  }
-}
-
-async function fetchSettings() {
-  // Fetch settings from the store
-  const settingStore = useHomeSettingNoTimerStore();
-
-  // If settings are already fetched, return
-  if (settingStore.settings?.length > 0) {
-    return;
-  }
-
-  // Otherwise, fetch settings from the API
-  await settingStore.fetchSettings();
-}
-
-//------------------------------------------------------------------------------
 index.beforeEach(async (to, from, next) => {
   startPageLoading()
 
@@ -457,8 +411,6 @@ index.beforeEach(async (to, from, next) => {
       next({name: 'not-found'})
     }
   }
-
-  setMetaTags(to)
 })
 
 index.beforeResolve((to, from, next) => {

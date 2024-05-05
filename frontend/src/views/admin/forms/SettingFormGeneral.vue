@@ -1,27 +1,27 @@
 <template>
   <form
-      class="relative"
-      @submit.prevent="onSubmit"
+    class="relative"
+    @submit.prevent="onSubmit"
   >
     <loader-dot-orbit
-        v-if="isFetching"
-        container-bg-color="bg-blue-50 opacity-40"
-        loading-text="در حال بارگذاری تنظیمات"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      v-if="isFetching"
+      container-bg-color="bg-blue-50 opacity-40"
+      loading-text="در حال بارگذاری تنظیمات"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <div class="flex flex-wrap">
       <div class="p-2 w-full md:w-1/2">
         <base-input
-            :max="25"
-            :min="0"
-            :money-mask="true"
-            :value="settingValues[SETTING_KEYS.PRODUCT_EACH_PAGE]?.toString()"
-            klass="no-spin-arrow"
-            label-title="تعداد نمایش کالا در هر صفحه"
-            name="product_each_page"
-            placeholder="وارد نمایید"
-            type="text"
+          :max="25"
+          :min="0"
+          :money-mask="true"
+          :value="settingValues[SETTING_KEYS.PRODUCT_EACH_PAGE]?.toString()"
+          klass="no-spin-arrow"
+          label-title="تعداد نمایش کالا در هر صفحه"
+          name="product_each_page"
+          placeholder="وارد نمایید"
+          type="text"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -30,15 +30,15 @@
       </div>
       <div class="p-2 w-full md:w-1/2">
         <base-input
-            :max="25"
-            :min="0"
-            :money-mask="true"
-            :value="settingValues[SETTING_KEYS.BLOG_EACH_PAGE]?.toString()"
-            klass="no-spin-arrow"
-            label-title="تعداد نمایش بلاگ در هر صفحه"
-            name="blog_each_page"
-            placeholder="وارد نمایید"
-            type="text"
+          :max="25"
+          :min="0"
+          :money-mask="true"
+          :value="settingValues[SETTING_KEYS.BLOG_EACH_PAGE]?.toString()"
+          klass="no-spin-arrow"
+          label-title="تعداد نمایش بلاگ در هر صفحه"
+          name="blog_each_page"
+          placeholder="وارد نمایید"
+          type="text"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -49,15 +49,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit || isFetching"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit || isFetching"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit || isFetching"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit || isFetching"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -69,11 +69,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -122,13 +122,13 @@ watchImmediate(() => props.setting, () => {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     product_each_page: yup.string()
-        .transform(transformNumbersToEnglish)
-        .positiveNumber('تعداد محصول برای نمایش باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
-        .required('تعداد محصول برای نمایش را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('تعداد محصول برای نمایش باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
+      .required('تعداد محصول برای نمایش را وارد نمایید.'),
     blog_each_page: yup.string()
-        .transform(transformNumbersToEnglish)
-        .positiveNumber('تعداد بلاگ برای نمایش باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
-        .required('تعداد بلاگ برای نمایش را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('تعداد بلاگ برای نمایش باید عددی مثبت و بیشتر از ۱ باشد.', {gt: 1})
+      .required('تعداد بلاگ برای نمایش را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (props.isFetching) return
@@ -145,8 +145,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       emit('updated', updateArr)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

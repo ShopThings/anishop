@@ -1,24 +1,24 @@
 <template>
   <form
-      class="relative"
-      @submit.prevent="onSubmit"
+    class="relative"
+    @submit.prevent="onSubmit"
   >
     <loader-dot-orbit
-        v-if="isFetching"
-        container-bg-color="bg-blue-50 opacity-40"
-        loading-text="در حال بارگذاری تنظیمات"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      v-if="isFetching"
+      container-bg-color="bg-blue-50 opacity-40"
+      loading-text="در حال بارگذاری تنظیمات"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <div class="flex flex-wrap">
       <div class="p-2 w-full md:w-1/2 lg:w-1/3">
         <base-input
-            :min="0"
-            :money-mask="true"
-            :value="settingValues[SETTING_KEYS.MIN_FREE_POST_PRICE].toString()"
-            name="min_free_post_price"
-            placeholder="وارد نمایید"
-            type="text"
+          :min="0"
+          :money-mask="true"
+          :value="settingValues[SETTING_KEYS.MIN_FREE_POST_PRICE].toString()"
+          name="min_free_post_price"
+          placeholder="وارد نمایید"
+          type="text"
         >
           <template #label>
             <div class="flex items-center gap-1.5 text-sm">
@@ -37,12 +37,12 @@
       </div>
       <div class="p-2 w-full md:w-1/2 lg:w-1/3">
         <base-input
-            :min="0"
-            :money-mask="true"
-            :value="settingValues[SETTING_KEYS.DEFAULT_POST_PRICE].toString()"
-            name="default_post_price"
-            placeholder="وارد نمایید"
-            type="text"
+          :min="0"
+          :money-mask="true"
+          :value="settingValues[SETTING_KEYS.DEFAULT_POST_PRICE].toString()"
+          name="default_post_price"
+          placeholder="وارد نمایید"
+          type="text"
         >
           <template #label>
             <div class="flex items-center gap-1.5 text-sm">
@@ -91,15 +91,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit || isFetching"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit || isFetching"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit || isFetching"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit || isFetching"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -111,11 +111,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -165,13 +165,13 @@ watchImmediate(() => props.setting, () => {
 const {canSubmit, values, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     min_free_post_price: yup.string()
-        .transform(transformNumbersToEnglish)
-        .positiveNumber('حداقل قیمت خرید برای رایگان شدن هزینه ارسال باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
-        .required('حداقل قیمت خرید برای رایگان شدن هزینه ارسال را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('حداقل قیمت خرید برای رایگان شدن هزینه ارسال باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
+      .required('حداقل قیمت خرید برای رایگان شدن هزینه ارسال را وارد نمایید.'),
     default_post_price: yup.string()
-        .transform(transformNumbersToEnglish)
-        .positiveNumber('هزیته ارسال باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
-        .required('هزینه ارسال پیش فرض را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('هزیته ارسال باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
+      .required('هزینه ارسال پیش فرض را وارد نمایید.'),
     divide_payment_price: yup.string()
       .transform(transformNumbersToEnglish)
       .positiveNumber('مبلغ تقسیم‌بندی پرداخت باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
@@ -193,8 +193,9 @@ const {canSubmit, values, errors, onSubmit} = useFormSubmit({
       emit('updated', updateArr)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

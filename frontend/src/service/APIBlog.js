@@ -1,19 +1,9 @@
 import {GenericAPI} from "./ServiceAPIs.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {useRequest} from "@/composables/api-request.js";
-import {useHead} from "@unhead/vue";
 
 export const BlogAPI = Object.assign(
-  GenericAPI(apiRoutes.admin.blogs, {
-    replacement: 'blog',
-    urlCallbacks: {
-      show: {
-        success(response) {
-          useHead()
-        },
-      },
-    },
-  }),
+  GenericAPI(apiRoutes.admin.blogs, {replacement: 'blog'}),
   {
     // extra functionality goes here
   }

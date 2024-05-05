@@ -4,6 +4,7 @@ import {useCountdown} from "@/composables/countdown-timer.js";
 import {AdminPanelDashboardAPI} from "@/service/APIAdminPanel.js";
 import {findItemByKey} from "@/composables/helper.js";
 import {NotificationAPI} from "@/service/APINotification.js";
+import {useOnline} from "@vueuse/core";
 
 export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () => {
   let counts = reactive({})
@@ -15,6 +16,7 @@ export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () 
     complaint_count: 0,
   }
   const countdown = useCountdown(600)
+  const online = useOnline()
 
   function getCountByKey(key) {
     return counts.hasOwnProperty(key) ? counts[key] : null;
@@ -61,6 +63,8 @@ export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () 
   })
 
   function fetchCounting() {
+    if (!online.value) return
+
     countdown.pause()
 
     if (hasNewChange.value) {
@@ -127,6 +131,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
   let counts = ref([])
   let prevCounts = []
   const countdown = useCountdown(300)
+  const online = useOnline()
 
   const getCounts = computed(() => {
     return counts.value
@@ -146,6 +151,8 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
   })
 
   function fetchCounting() {
+    if (!online.value) return
+
     countdown.pause()
 
     if (hasNewChange.value) {
@@ -206,6 +213,7 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
   let notifications = ref([])
   let loading = ref(false)
   const countdown = useCountdown(300)
+  const online = useOnline()
 
   const isLoading = computed(() => {
     return loading.value
@@ -222,7 +230,7 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
   checkNewNotifications()
 
   function checkNewNotifications() {
-    if (isLoading.value) return
+    if (!online.value || isLoading.value) return
 
     countdown.pause()
 

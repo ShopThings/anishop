@@ -3,10 +3,12 @@ import {defineStore} from "pinia"
 import {useCountdown} from "@/composables/countdown-timer.js";
 import {UserPanelDashboardAPI} from "@/service/APIUserPanel.js";
 import {UserNotificationAPI} from "@/service/APINotification.js";
+import {useOnline} from "@vueuse/core";
 
 export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   let counts = reactive({})
   const countdown = useCountdown(600)
+  const online = useOnline()
 
   fetchCounting()
 
@@ -43,6 +45,8 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   })
 
   function fetchCounting() {
+    if (!online.value) return
+
     countdown.pause()
 
     UserPanelDashboardAPI.getCountOfStuffs({
@@ -97,6 +101,9 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
 export const useNotificationStore = defineStore('userPanelNotifications', () => {
   let notifications = ref([])
   const countdown = useCountdown(300)
+  const online = useOnline()
+
+  if (!online.value) return
 
   checkNewNotifications()
 
@@ -109,6 +116,8 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
   })
 
   function checkNewNotifications() {
+    if (!online.value) return
+
     countdown.pause()
 
     UserNotificationAPI.checkNotifications({

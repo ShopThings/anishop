@@ -8,8 +8,8 @@
               <base-popover-side panel-class="">
                 <template #button>
                   <button
-                      class="relative w-[40px] h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]"
-                      type="button">
+                    class="relative w-[40px] h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center z-[1]"
+                    type="button">
                     <Bars3BottomRightIcon class="w-6 h-6"/>
                   </button>
                 </template>
@@ -17,24 +17,24 @@
                 <template #panel="{close}">
                   <nav ref="sidebar" class="bg-awesome text-black h-full">
                     <button
-                        class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
-                        type="button"
-                        @click="close"
+                      class="w-10 h-10 absolute left-0 top-2 -translate-x-12 rounded-lg p-2 bg-white text-black group transition bg-opacity-60 hover:bg-opacity-100"
+                      type="button"
+                      @click="close"
                     >
                       <XMarkIcon class="w-6 h-6 group-hover:scale-110 transition"/>
                     </button>
 
                     <div
-                        ref="topSection"
-                        class="flex flex-col"
+                      ref="topSection"
+                      class="flex flex-col"
                     >
                       <div
-                          class="flex flex-row items-center gap-3 border-b-2 border-slate-200 py-3 px-2">
+                        class="flex flex-row items-center gap-3 border-b-2 border-slate-200 py-3 px-2">
                         <div
-                            class="text-center w-12 h-12 rounded-full bg-indigo-400 p-1 bg-opacity-90">
+                          class="text-center w-12 h-12 rounded-full bg-indigo-400 p-1 bg-opacity-90">
                           <div
-                              v-if="user.first_name || user.last_name"
-                              class="w-full h-full text-center text-2xl text-indigo-900"
+                            v-if="user.first_name || user.last_name"
+                            class="w-full h-full text-center text-2xl text-indigo-900"
                           >
                             {{ (user.first_name + ' ' + user.last_name).trim().at(0) }}
                           </div>
@@ -49,26 +49,26 @@
                               <span v-for="(role, key, idx) in user.roles">
                                   {{ role }}
                                   <span
-                                      v-if="idx !== Object.keys(user.roles).length - 1">, </span>
+                                    v-if="idx !== Object.keys(user.roles).length - 1">, </span>
                               </span>
                             </template>
                             <template v-else>
                               <span
-                                  class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
+                                class="px-2 py-1 bg-white bg-opacity-60 text-black rounded inline-block">فاقد نقش</span>
                             </template>
                           </div>
                         </div>
                         <div class="flex items-center justify-center mr-auto">
                           <base-button
-                              v-tooltip.bottom="'اعلانات'"
-                              :to="{name: 'user.notifications'}"
-                              class="relative w-[40] h-[40] border-0 !px-2 rounded-lg bg-transparent !text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
-                              type="link"
+                            v-tooltip.bottom="'اعلانات'"
+                            :to="{name: 'user.notifications'}"
+                            class="relative w-[40] h-[40] border-0 !px-2 rounded-lg bg-transparent !text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
+                            type="link"
                           >
                             <template v-if="notificationsStore.hasNewNotification">
                               <BellAlertIcon class="h-5 w-5 animate-wiggle"/>
                               <span
-                                  class="absolute rounded-full bg-sky-500 text-white w-1.5 h-1.5 z-[1] top-0.5 right-0.5 text-sm"></span>
+                                class="absolute rounded-full bg-sky-500 text-white w-1.5 h-1.5 z-[1] top-0.5 right-0.5 text-sm"></span>
                             </template>
                             <BellIcon v-else class="h-5 w-5"/>
                           </base-button>
@@ -89,7 +89,7 @@
                                        class="rounded-lg border-2 border-transparent py-2.5 px-3 flex hover:border-indigo-400 hover:bg-indigo-100 transition">
                             <PowerIcon class="h-6 w-6 ml-2 shrink-0"/>
                             <span
-                                class="grow">خروج</span>
+                              class="grow">خروج</span>
                           </router-link>
                         </li>
                       </ul>
@@ -102,18 +102,18 @@
           <ul class="flex mt-[4px] space-x-reverse shrink-0 w-full sm:w-auto">
             <li class="px-1 grow sm:grow-0">
               <base-button
-                  :to="{name: 'home'}"
-                  class="text-sm !text-black border-2 hover:bg-primary hover:!bg-opacity-[15%] w-full border-primary !py-1"
-                  type="link"
+                :to="{name: 'home'}"
+                class="text-sm !text-black border-2 hover:bg-primary hover:!bg-opacity-[15%] w-full border-primary !py-1"
+                type="link"
               >
                 مشاهده سایت
               </base-button>
             </li>
             <li class="relative px-1 grow sm:grow-0">
               <base-button
-                  :to="{name: 'user.profile'}"
-                  class="bg-primary border-primary w-full border-2 !py-1"
-                  type="link"
+                :to="{name: 'user.profile'}"
+                class="bg-primary border-primary w-full border-2 !py-1"
+                type="link"
               >
                 <span class="grow text-sm">اطلاعات حساب</span>
               </base-button>
@@ -127,15 +127,13 @@
 
 <script setup>
 import {inject, ref, watchEffect} from "vue"
-import {XMarkIcon, PowerIcon, BellIcon, Bars3BottomRightIcon, BellAlertIcon} from "@heroicons/vue/24/outline/index.js";
+import {Bars3BottomRightIcon, BellAlertIcon, BellIcon, PowerIcon, XMarkIcon} from "@heroicons/vue/24/outline/index.js";
 import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {UserIcon} from "@heroicons/vue/24/solid/index.js";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useResizeObserver} from "@vueuse/core";
 import SidebarLinksUser from "./SidebarLinksUser.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
-import DialogSearch from "@/components/DialogSearch.vue";
-import NavbarCart from "@/components/NavbarCart.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 
 const notificationsStore = inject('notificationStore')

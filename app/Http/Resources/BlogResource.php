@@ -28,6 +28,7 @@ class BlogResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => new ImageShowInfoResource($this->whenLoaded('image')),
+            'brief_description' => $this->brief_description,
             'description' => $this->description,
             'keywords' => $this->keywords,
             'is_commenting_allowed' => $this->is_commenting_allowed,

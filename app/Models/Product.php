@@ -13,6 +13,7 @@ use App\Traits\HasUpdatedRelationTrait;
 use App\Traits\VisitorViewTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Mews\Purifier\Casts\CleanHtml;
 use Shetabit\Visitor\Traits\Visitable;
 
 class Product extends Model
@@ -33,6 +34,7 @@ class Product extends Model
         'quick_properties' => 'array',
         'properties' => 'array',
         'keywords' => StringToArray::class,
+        'brief_description' => CleanHtml::class,
         'description' => CleanHtmlCast::class,
         'is_available' => 'boolean',
         'is_commenting_allowed' => 'boolean',

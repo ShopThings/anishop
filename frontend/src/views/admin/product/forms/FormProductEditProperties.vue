@@ -1,16 +1,16 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="form"
+    :loading="loading"
+    type="form"
   >
     <template #content>
       <form>
         <partial-card class="mb-3 p-3 relative">
           <template #body>
             <loader-dot-orbit
-                v-if="!canSubmit"
-                container-bg-color="bg-blue-50 opacity-40"
-                main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+              v-if="!canSubmit"
+              container-bg-color="bg-blue-50 opacity-40"
+              main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
             />
 
             <div class="p-2">
@@ -28,14 +28,14 @@
         <partial-card>
           <template #body>
             <partial-stepy-next-prev-buttons
-                :allow-next-step="canSubmit"
-                :allow-prev-step="canSubmit"
-                :current-step="options.currentStep"
-                :current-step-index="options.currentStepIndex"
-                :last-step="options.lastStep"
-                :loading="!canSubmit"
-                :show-prev-step-button="canSubmit"
-                @finish="handleFinishClick"
+              :allow-next-step="canSubmit"
+              :allow-prev-step="canSubmit"
+              :current-step="options.currentStep"
+              :current-step-index="options.currentStepIndex"
+              :last-step="options.lastStep"
+              :loading="!canSubmit"
+              :show-prev-step-button="canSubmit"
+              @finish="handleFinishClick"
             />
           </template>
         </partial-card>
@@ -82,12 +82,13 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
   ProductAPI.updateById(slugParam.value, {
     properties: getDefinedProperties(),
   }, {
-    success(response) {
+    success() {
       toast.success('ویژگی‌های محصول ثبت شد.')
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

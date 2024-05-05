@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('slug');
             $table->foreignId('image_id')->nullable()
                 ->constrained('file_manager')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('brief_description', 300);
             $table->text('description');
             $table->text('keywords');
             $table->boolean('is_commenting_allowed')->default(true);

@@ -282,7 +282,7 @@ export const useAdminAuthStore = defineStore('admin_auth', () => {
   }
 
   function login(data, callbacks) {
-    useRequestWrapper(apiRoutes.admin.login, {
+    return useRequestWrapper(apiRoutes.admin.login, {
       method: 'POST',
       data,
     }, {
@@ -304,7 +304,7 @@ export const useAdminAuthStore = defineStore('admin_auth', () => {
   }
 
   function logout(callbacks) {
-    useRequestWrapper(apiRoutes.admin.logout, {method: 'POST'}, {
+    return useRequestWrapper(apiRoutes.admin.logout, {method: 'POST'}, {
       success() {
         $reset()
       },

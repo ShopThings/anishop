@@ -10,20 +10,20 @@
             <div class="p-2">
               <partial-input-label title="انتخاب تصویر"/>
               <base-media-placeholder
-                  v-model:selected="methodImage"
-                  type="image"
+                v-model:selected="methodImage"
+                type="image"
               />
               <partial-input-error-message :error-message="errors.image"/>
             </div>
 
             <div class="p-2">
               <base-switch
-                  :enabled="publishStatus"
-                  label="عدم نمایش روش ارسال"
-                  name="is_published"
-                  on-label="نمایش روش ارسال"
-                  sr-text="نمایش/عدم نمایش روش ارسال"
-                  @change="(status) => {publishStatus=status}"
+                :enabled="publishStatus"
+                label="عدم نمایش روش ارسال"
+                name="is_published"
+                on-label="نمایش روش ارسال"
+                sr-text="نمایش/عدم نمایش روش ارسال"
+                @change="(status) => {publishStatus=status}"
               />
             </div>
           </div>
@@ -31,9 +31,9 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  label-title="عنوان روش ارسال"
-                  name="title"
-                  placeholder="عنوان را وارد نمایید"
+                label-title="عنوان روش ارسال"
+                name="title"
+                placeholder="عنوان را وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -42,10 +42,10 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  :is-optional="true"
-                  label-title="توضیحات روش ارسال"
-                  name="description"
-                  placeholder="توضیحات را وارد نمایید"
+                :is-optional="true"
+                label-title="توضیحات روش ارسال"
+                name="description"
+                placeholder="توضیحات را وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -54,12 +54,12 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  :min="0"
-                  :money-mask="true"
-                  label-title="هزینه ارسال"
-                  name="price"
-                  placeholder="وارد نمایید"
-                  type="text"
+                :min="0"
+                :money-mask="true"
+                label-title="هزینه ارسال"
+                name="price"
+                placeholder="وارد نمایید"
+                type="text"
               >
                 <template #icon>
                   <CurrencyDollarIcon class="h-6 w-6 text-gray-400"/>
@@ -68,12 +68,12 @@
             </div>
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  :min="0"
-                  :money-mask="true"
-                  label-title="اولویت"
-                  name="priority"
-                  placeholder="وارد نمایید"
-                  type="text"
+                :min="0"
+                :money-mask="true"
+                label-title="اولویت"
+                name="priority"
+                placeholder="وارد نمایید"
+                type="text"
               >
                 <template #icon>
                   <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -85,20 +85,20 @@
           <div class="sm:flex sm:flex-wrap">
             <div class="p-2 md:w-1/2 xl:w-1/3">
               <base-switch
-                  :enabled="priceDetermineByLocStatus"
-                  label="در نظرگیری مکان فروشگاه برای قیمت ارسال"
-                  name="determine_price_by_shop_location"
-                  sr-text="در نظرگیری/عدم در نظرگیری مکان فروشگاه برای قیمت ارسال"
-                  @change="(status) => {priceDetermineByLocStatus=status}"
+                :enabled="priceDetermineByLocStatus"
+                label="در نظرگیری مکان فروشگاه برای قیمت ارسال"
+                name="determine_price_by_shop_location"
+                sr-text="در نظرگیری/عدم در نظرگیری مکان فروشگاه برای قیمت ارسال"
+                @change="(status) => {priceDetermineByLocStatus=status}"
               />
             </div>
             <div class="p-2 md:w-1/2 xl:w-1/3">
               <base-switch
-                  :enabled="onlyForShopLocStatus"
-                  label="اعمال فقط برای محدوده مکان فروشگاه"
-                  name="only_for_shop_location"
-                  sr-text="اعمال/عدم اعمال نوع روش برای محدوده مکان فروشگاه"
-                  @change="(status) => {onlyForShopLocStatus=status}"
+                :enabled="onlyForShopLocStatus"
+                label="اعمال فقط برای محدوده مکان فروشگاه"
+                name="only_for_shop_location"
+                sr-text="اعمال/عدم اعمال نوع روش برای محدوده مکان فروشگاه"
+                @change="(status) => {onlyForShopLocStatus=status}"
               />
             </div>
             <div class="p-2 md:w-1/2 xl:w-1/3">
@@ -114,15 +114,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                :disabled="!canSubmit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                type="submit"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="!canSubmit"
-                    big-circle-color="border-transparent"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -134,11 +134,11 @@
             </base-animated-button>
 
             <div
-                v-if="Object.keys(errors)?.length"
-                class="text-left"
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
             >
               <div
-                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
               >
                 (
                 <span>{{ Object.keys(errors)?.length }}</span>
@@ -160,12 +160,7 @@ import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
-import {
-  ArrowLeftCircleIcon,
-  CheckIcon,
-  CurrencyDollarIcon,
-  HashtagIcon,
-} from "@heroicons/vue/24/outline";
+import {ArrowLeftCircleIcon, CheckIcon, CurrencyDollarIcon, HashtagIcon,} from "@heroicons/vue/24/outline";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -189,11 +184,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     description: yup.string().optional(),
     is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     price: yup.number()
-        .min(0, 'هزینه ارسال باید بزرگتر از صفر باشد.')
-        .required('هزینه ارسال را وارد نمایید.'),
+      .min(0, 'هزینه ارسال باید بزرگتر از صفر باشد.')
+      .required('هزینه ارسال را وارد نمایید.'),
     priority: yup.number()
-        .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
-        .required('اولویت را وارد نمایید.'),
+      .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
+      .required('اولویت را وارد نمایید.'),
     determine_price_by_shop_location: yup.boolean().required('وضعیت در نظرگیری مکان فروشگاه برای قیمت ارسال را مشخص کنید.'),
     only_for_shop_location: yup.boolean().required('وضعیت اعمال فقط برای محدوده مکان فروشگاه را مشخص کنید.'),
     apply_number_of_shipments_on_price: yup.boolean().required('وضعیت اعمال هزینه ارسال به ازای هر مرسوله را مشخص کنید.'),
@@ -228,8 +223,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'admin.send_methods'})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

@@ -545,8 +545,8 @@
 
                       <template #item="{item, hide}">
                         <button
-                          type="button"
                           class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+                          type="button"
                           @click="handleOrderItemOperation(product, item, hide)"
                         >
                           <span class="text-sm">{{ item.text }}</span>
@@ -621,7 +621,7 @@
                           class="relative text-center"
                         >
                         <span
-                            class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
+                          class="absolute top-1/2 -translate-y-1/2 left-0 h-[1px] w-full bg-slate-500 -rotate-3"></span>
                           <div class="text-slate-500 text-sm">
                             {{ numberFormat(product.price) }}
                             <span class="text-xs text-gray-400">تومان</span>
@@ -855,12 +855,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     address: yup.string().required('آدرس خود را وارد نمایید.'),
     postal_code: yup.number().required('کدپستی را وارد نمایید.'),
     receiver_name: yup.string()
-        .persian('نام گیرنده باید از حروف فارسی باشد.')
-        .required('نام گیرنده را وارد نمایید.'),
+      .persian('نام گیرنده باید از حروف فارسی باشد.')
+      .required('نام گیرنده را وارد نمایید.'),
     receiver_mobile: yup.string()
-        .transform(transformNumbersToEnglish)
-        .persianMobile('شماره موبایل گیرنده نامعتبر است.')
-        .required('موبایل گیرنده را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .persianMobile('شماره موبایل گیرنده نامعتبر است.')
+      .required('موبایل گیرنده را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (!info.value?.send_status?.is_starting_badge) {
@@ -886,8 +886,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       info.value.receiver_mobile = response.data.receiver_mobile
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

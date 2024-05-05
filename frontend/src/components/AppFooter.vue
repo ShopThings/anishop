@@ -211,7 +211,7 @@
 
 <script setup>
 import {computed, inject, onMounted, ref} from "vue";
-import {PhoneIcon, DevicePhoneMobileIcon} from "@heroicons/vue/24/outline/index.js";
+import {DevicePhoneMobileIcon, PhoneIcon} from "@heroicons/vue/24/outline/index.js";
 import {MENU_PLACES, SOCIAL_NETWORKS} from "@/composables/constants.js";
 import {findItemByKey, obfuscateEmail, obfuscateNumber} from "@/composables/helper.js";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
@@ -228,7 +228,7 @@ const getPhones = computed(() => {
   for (let phone in phones) {
     let splatted = phone.split(' ')
 
-    if (splatted?.length !== 2) {
+    if (splatted?.length < 2) {
       definedPhones.push({
         phone: phone
       })
@@ -236,7 +236,7 @@ const getPhones = computed(() => {
 
     definedPhones.push({
       phone: splatted[0],
-      name: splatted[1],
+      name: splatted.slice(1).join(' '),
     })
   }
 })

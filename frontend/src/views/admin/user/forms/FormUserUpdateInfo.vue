@@ -5,10 +5,10 @@
         <base-input
           :in-edit-mode="false"
           :is-editable="userStore.hasRole(ROLES.DEVELOPER)"
-            :value="user?.username"
-            label-title="نام کاربری"
-            name="username"
-            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
+          :value="user?.username"
+          label-title="نام کاربری"
+          name="username"
+          placeholder="(معمولا شماره تلفن همراه می‌باشد)"
         >
           <template #icon>
             <UserIcon class="h-6 w-6 text-gray-400"/>
@@ -20,13 +20,13 @@
         <base-select-searchable
           :in-edit-mode="false"
           :is-editable="hasEditPermission"
-            :multiple="true"
-            :options="roles"
-            :selected="initialRoles"
-            name="roles"
-            options-key="value"
-            options-text="name"
-            @change="roleChange"
+          :multiple="true"
+          :options="roles"
+          :selected="initialRoles"
+          name="roles"
+          options-key="value"
+          options-text="name"
+          @change="roleChange"
         />
         <partial-input-error-message :error-message="errors.roles"/>
       </div>
@@ -39,10 +39,10 @@
         <base-input
           :in-edit-mode="false"
           :is-editable="hasEditPermission"
-            :value="user?.first_name"
-            label-title="نام"
-            name="first_name"
-            placeholder="حروف فارسی"
+          :value="user?.first_name"
+          label-title="نام"
+          name="first_name"
+          placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -53,10 +53,10 @@
         <base-input
           :in-edit-mode="false"
           :is-editable="hasEditPermission"
-            :value="user?.last_name"
-            label-title="نام خانوادگی"
-            name="last_name"
-            placeholder="حروف فارسی"
+          :value="user?.last_name"
+          label-title="نام خانوادگی"
+          name="last_name"
+          placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -67,10 +67,10 @@
         <base-input
           :in-edit-mode="false"
           :is-editable="hasEditPermission"
-            :value="user?.national_code"
-            label-title="کد ملی"
-            name="national_code"
-            placeholder="فقط شامل اعداد"
+          :value="user?.national_code"
+          label-title="کد ملی"
+          name="national_code"
+          placeholder="فقط شامل اعداد"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -82,10 +82,10 @@
           :in-edit-mode="false"
           :is-editable="hasEditPermission"
           :value="user?.sheba_number"
-            is-optional
-            label-title="شماره شبا"
+          is-optional
+          label-title="شماره شبا"
           name="sheba_number"
-            placeholder="xxxxxxxxxxxxxxxx"
+          placeholder="xxxxxxxxxxxxxxxx"
         >
           <template #icon>
             <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -99,15 +99,15 @@
       class="px-2 py-3"
     >
       <base-animated-button
-          :disabled="!canSubmit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -119,11 +119,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -206,12 +206,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     first_name: yup.string().persian('نام باید از حروف فارسی باشد.').required('نام را وارد نمایید.'),
     last_name: yup.string().persian('نام خانوادگی باید از حروف فارسی باشد.').required('نام خانوادگی را وارد نمایید.'),
     national_code: yup.string()
-        .transform(transformNumbersToEnglish)
-        .persianNationalCode('کد ملی نامعتبر است.')
-        .required('کد ملی را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .persianNationalCode('کد ملی نامعتبر است.')
+      .required('کد ملی را وارد نمایید.'),
     sheba_number: yup.string()
-        .transform(transformNumbersToEnglish)
-        .optional().nullable(),
+      .transform(transformNumbersToEnglish)
+      .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
 }, (values, actions) => {
@@ -265,8 +265,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       return false
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
       return false
     },

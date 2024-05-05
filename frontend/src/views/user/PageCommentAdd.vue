@@ -1,8 +1,8 @@
 <template>
   <div class="mb-3">
     <base-loading-panel
-        :loading="loading"
-        type="list-single"
+      :loading="loading"
+      type="list-single"
     >
       <template #content>
         <partial-card class="border-0">
@@ -11,10 +11,10 @@
               <div class="flex flex-col sm:flex-row gap-3 items-center">
                 <div class="shrink-0">
                   <base-lazy-image
-                      :alt="product?.title"
-                      :lazy-src="product?.image?.path"
-                      :size="FileSizes.SMALL"
-                      class="!h-28 sm:!h-20 w-auto rounded"
+                    :alt="product?.title"
+                    :lazy-src="product?.image?.path"
+                    :size="FileSizes.SMALL"
+                    class="!h-28 sm:!h-20 w-auto rounded"
                   />
                 </div>
                 <div class="grow text-sm">
@@ -22,8 +22,8 @@
                 </div>
                 <div class="text-sm shrink-0">
                   <router-link
-                      :to="{name: 'product.detail', params: {slug: product?.slug}}"
-                      class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                    :to="{name: 'product.detail', params: {slug: product?.slug}}"
+                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                   >
                     <span class="mx-auto">مشاهده محصول</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -43,8 +43,8 @@
     </h2>
 
     <base-loading-panel
-        :loading="loading"
-        type="form"
+      :loading="loading"
+      type="form"
     >
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -53,42 +53,42 @@
               <div class="px-3 py-2 vue3-tags-pros-container">
                 <partial-input-label :is-optional="true" title="مزایای محصول"/>
                 <base-tags-input
-                    :add-tag-on-keys="[13, 188]"
-                    :tags="pros"
-                    placeholder="وارد نمایید"
-                    @on-tags-changed="(t) => {pros = t}"
+                  :add-tag-on-keys="[13, 188]"
+                  :tags="pros"
+                  placeholder="وارد نمایید"
+                  @on-tags-changed="(t) => {pros = t}"
                 />
                 <partial-input-error-message :error-message="errors.pros"/>
               </div>
               <div class="px-3 py-2 vue3-tags-cons-container">
                 <partial-input-label :is-optional="true" title="معایب محصول"/>
                 <base-tags-input
-                    :add-tag-on-keys="[13, 188]"
-                    :tags="cons"
-                    placeholder="وارد نمایید"
-                    @on-tags-changed="(t) => {cons = t}"
+                  :add-tag-on-keys="[13, 188]"
+                  :tags="cons"
+                  placeholder="وارد نمایید"
+                  @on-tags-changed="(t) => {cons = t}"
                 />
                 <partial-input-error-message :error-message="errors.cons"/>
               </div>
               <div class="px-3 py-2">
                 <base-textarea
-                    label-title="توضیحات"
-                    name="description"
-                    placeholder="دیدگاه خود را وارد نمایید..."
+                  label-title="توضیحات"
+                  name="description"
+                  placeholder="دیدگاه خود را وارد نمایید..."
                 />
               </div>
 
               <div class="p-3">
                 <base-animated-button
-                    :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  :disabled="!canSubmit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      v-if="!canSubmit"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -152,8 +152,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'product.detail', params: {slug: slugParam.value}})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

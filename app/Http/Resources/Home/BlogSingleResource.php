@@ -28,6 +28,7 @@ class BlogSingleResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => new ImageShowResource($this->image),
+            'brief_description' => $this->brief_description,
             'description' => $this->description,
             'keywords' => $this->keywords,
             'is_commenting_allowed' => $this->is_commenting_allowed,

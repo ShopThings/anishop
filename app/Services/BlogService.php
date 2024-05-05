@@ -128,6 +128,7 @@ class BlogService extends Service implements BlogServiceInterface
             'title' => $attributes['title'],
             'escaped_title' => NumberConverter::toEnglish($attributes['title']),
             'image_id' => $attributes['image'],
+            'brief_description' => $attributes['brief_description'],
             'description' => $attributes['description'],
             'keywords' => $attributes['keywords'],
             'is_commenting_allowed' => to_boolean($attributes['is_commenting_allowed']),

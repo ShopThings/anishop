@@ -27,8 +27,8 @@
 
   <div class="mb-3">
     <base-loading-panel
-        :loading="loading"
-        type="list-single"
+      :loading="loading"
+      type="list-single"
     >
       <template #content>
         <partial-card class="border-0">
@@ -40,7 +40,7 @@
                     :alt="blog?.title"
                     :lazy-src="blog?.image?.path"
                     :size="FileSizes.SMALL"
-                      class="!h-28 sm:!h-20 w-auto rounded"
+                    class="!h-28 sm:!h-20 w-auto rounded"
                   />
                 </div>
                 <div class="grow text-sm">
@@ -49,7 +49,7 @@
                 <div class="text-sm shrink-0">
                   <router-link
                     :to="{name: 'blog.detail', params: {slug: blog?.slug}}"
-                      class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                   >
                     <span class="mx-auto">مشاهده بلاگ</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -65,7 +65,7 @@
 
   <div
     v-if="!loading"
-      class="mb-3"
+    class="mb-3"
   >
     <partial-badge-condition-comment
       :condition="comment?.condition"
@@ -85,8 +85,8 @@
     </h2>
 
     <base-loading-panel
-        :loading="loading"
-        type="form"
+      :loading="loading"
+      type="form"
     >
       <template #content>
         <form @submit.prevent="onSubmit">
@@ -94,9 +94,9 @@
             <template #body>
               <div class="px-3 pt-3">
                 <base-message
-                    :has-close="false"
-                    class="rounded-md"
-                    type="info"
+                  :has-close="false"
+                  class="rounded-md"
+                  type="info"
                 >
                   <div class="leading-relaxed">
                     امکان ویرایش پس از تغییر وضعیت توسط سایت، وجود ندارد.
@@ -112,7 +112,7 @@
                   <partial-input-label title="پاسخ شما به دیدگاه"/>
                   <partial-comment-blog-single
                     :comment="comment.parent"
-                      :show-answer-button="false"
+                    :show-answer-button="false"
                   />
                 </div>
 
@@ -121,16 +121,16 @@
                     <partial-input-label title="توضیحات شما"/>
                     <partial-comment-blog-single
                       :comment="comment"
-                        :show-answer-button="false"
-                        container-class="!bg-indigo-50"
+                      :show-answer-button="false"
+                      container-class="!bg-indigo-50"
                     />
                   </template>
                   <base-textarea
-                      v-else
-                      label-title="توضیحات شما"
-                      name="description"
-                      placeholder="دیدگاه خود را وارد نمایید..."
-                      :value="comment?.description"
+                    v-else
+                    :value="comment?.description"
+                    label-title="توضیحات شما"
+                    name="description"
+                    placeholder="دیدگاه خود را وارد نمایید..."
                   />
                 </div>
 
@@ -146,14 +146,14 @@
               >
                 <base-animated-button
                   :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
                       v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -261,8 +261,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       setFormFields(response.data)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true
