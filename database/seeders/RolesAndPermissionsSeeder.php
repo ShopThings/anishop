@@ -783,6 +783,12 @@ class RolesAndPermissionsSeeder extends Seeder
             PermissionPlacesEnum::FILE_MANAGER
         ));
 
+        // create sms-log permissions
+        $this->createPermission(PermissionHelper::permission(
+            PermissionsEnum::READ,
+            PermissionPlacesEnum::SMS_LOG
+        ));
+
         //---------------------------------------------------------------------
 
         $this->createRole(RolesEnum::DEVELOPER->value, Permission::all());

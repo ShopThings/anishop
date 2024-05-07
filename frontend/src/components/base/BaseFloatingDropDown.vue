@@ -43,10 +43,12 @@ const props = defineProps({
 })
 
 const itemsLength = computed(() => {
-  if (isObject(props.items))
+  if (isObject(props.items)) {
     return Object.keys(props.items).length
-  else if (Array.isArray(props.items))
+  } else if (Array.isArray(props.items)) {
     return props.items.length
+  }
+
   return 0
 })
 </script>

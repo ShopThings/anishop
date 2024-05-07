@@ -7,7 +7,7 @@
         :name="name"
     >
       <div class="relative">
-        <ListboxButton :class="btnClass" class="relative">
+        <ListboxButton :class="[btnClass, btnSpaceClass]" class="relative">
           <slot name="button">
             <span class="block truncate text-right pr-6">{{ selectText || 'انتخاب کنید' }}</span>
 
@@ -86,7 +86,7 @@
 <script setup>
 import {computed, nextTick, ref, watch} from "vue"
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue"
-import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
+import {CheckIcon, ChevronUpDownIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import isObject from "lodash.isobject";
@@ -125,7 +125,11 @@ const props = defineProps({
   },
   btnClass: {
     type: String,
-    default: 'block w-full rounded-md bg-white border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+    default: 'block w-full rounded-md bg-white border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+  },
+  btnSpaceClass: {
+    type: String,
+    default: 'p-3',
   },
   inEditMode: {
     type: Boolean,

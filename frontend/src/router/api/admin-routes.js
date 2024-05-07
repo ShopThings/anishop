@@ -17,6 +17,15 @@ export default {
       check: 'api/admin/notifications/new',
     },
 
+    dashboard: {
+      totalSell: 'api/admin/sell/total',
+      periodSell: 'api/admin/sell/{period}',
+      chartUsers: 'api/admin/chart/users/{period}',
+      chartOrders: 'api/admin/chart/orders/{period}',
+      chartReturnOrders: 'api/admin/chart/return-orders/{period}',
+      tableMostSellProducts: 'api/admin/table/most-sell-product/{period}',
+    },
+
     users: {
       index: 'api/admin/users',
       show: 'api/admin/users/{user}',

@@ -11,6 +11,7 @@ use App\Http\Controllers\Order\OrderBadgeController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\ReturnOrderRequestController;
 use App\Http\Controllers\Other\AdminController;
+use App\Http\Controllers\Other\AdminDashboardController;
 use App\Http\Controllers\Other\CityPostPriceController;
 use App\Http\Controllers\Other\ComplaintController;
 use App\Http\Controllers\Other\ContactUsController;
@@ -74,6 +75,22 @@ Route::prefix('admin')
                 Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
                 Route::put('notifications', [NotificationController::class, 'update'])->name('notifications.update');
                 Route::get('notifications/new', [NotificationController::class, 'newNotifications'])->name('notifications.new');
+
+                /*
+                 * dashboard routes
+                 */
+                Route::get('sell/total', [AdminDashboardController::class, 'totalSell'])
+                    ->name('dashboard.sell.total');
+                Route::get('sell/{period}', [AdminDashboardController::class, 'periodSell'])
+                    ->name('dashboard.sell.period');
+                Route::get('chart/users/{period}', [AdminDashboardController::class, 'chartUsers'])
+                    ->name('dashboard.users.period');
+                Route::get('chart/orders/{period}', [AdminDashboardController::class, 'chartOrders'])
+                    ->name('dashboard.orders.period');
+                Route::get('chart/return-orders/{period}', [AdminDashboardController::class, 'chartReturnOrders'])
+                    ->name('dashboard.return-orders.period');
+                Route::get('table/most-sell-product/{period}', [AdminDashboardController::class, 'tableMostSellProducts'])
+                    ->name('dashboard.most-sell-products.period');
 
                 /*
                  * user routes

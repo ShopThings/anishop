@@ -195,7 +195,7 @@ export const useRequest = async (url, config, resultConfig) => {
         }
 
         // if returned value is false, overwrite functionality
-        if (ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
+        if (!silent && ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
           if (type && type === responseTypes.info) {
             toast.info(msg)
           } else if (type && type === responseTypes.warning) {
@@ -253,7 +253,7 @@ export const useRequest = async (url, config, resultConfig) => {
         }
 
         // if returned value is false, overwrite functionality
-        if (ans !== false && msg) {
+        if (!silent && ans !== false && msg) {
           if (type && type === responseTypes.error) {
             toast.error(msg)
           } else if (type && type === responseTypes.info) {
@@ -276,6 +276,7 @@ export const useRequest = async (url, config, resultConfig) => {
 }
 
 export async function useRequestWrapper(url, config, callbacks, userCallbacks) {
+  const silent = callbacks?.silent === true
   const onBeforeRequest = callbacks?.beforeRequest
   const onSuccess = callbacks?.success
   const onCriticalError = callbacks?.criticalError
@@ -290,6 +291,7 @@ export async function useRequestWrapper(url, config, callbacks, userCallbacks) {
   const onUserFinally = userCallbacks?.finally
 
   return useRequest(url, config, {
+    silent,
     beforeRequest: onBeforeRequest,
     success: (response, total) => {
       if (isFunction(onSuccess)) {
