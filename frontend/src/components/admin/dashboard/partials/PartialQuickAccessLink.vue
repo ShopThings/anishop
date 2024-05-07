@@ -3,7 +3,7 @@
     v-if="isObject(link) || link?.toString().trim() !== ''"
     :class="btnClass"
     :to="link"
-    class="quick-access-link-btn flex lg:flex-col gap-2 items-center py-1 sm:py-2 lg:py-4 px-3 relative z-[2] bg-white border-[3px] border-transparent focus:border-green-400 group transition overflow-hidden shadow"
+    class="quick-access-link-btn flex lg:flex-col gap-2 items-center py-1 sm:py-2 lg:py-4 px-3 relative z-[2] bg-white border-[3px] border-transparent focus:border-indigo-400 group transition overflow-hidden shadow"
     @click="emit('click')"
     @mouseleave.self="mouseleaveHandler"
     @mousemove.self="mousemoveHandler"
@@ -12,7 +12,7 @@
   >
     <component
       :is="outline[icon]"
-      class="pointer-events-none size-9 md:size-10 lg:size-12 text-green-400 group-hover:text-green-500 group-focus:text-green-400 transition"
+      class="pointer-events-none size-9 md:size-10 lg:size-12 text-slate-300 group-hover:text-indigo-400 group-focus:text-indigo-400 transition"
     />
 
     <span
@@ -78,7 +78,7 @@ function mousemoveHandler(e) {
   const rect = e.target.getBoundingClientRect();
   const x = clientX - rect.left; // x position within the element.
   const y = clientY - rect.top; // y position within the element.
-  e.target.style.background = `radial-gradient(70% 90% at ${x}px ${y}px, rgba(187, 247, 208, 0.6), rgba(255, 255, 255, 0.15))`;
-  e.target.style.borderImage = `radial-gradient(20% 75% at ${x}px ${y}px, rgba(74, 222, 128, 0.9), rgba(74, 222, 128, 0.1)) 1 / 3px / 0px stretch`;
+  e.target.style.background = `radial-gradient(70% 90% at ${x}px ${y}px, rgba(59, 130, 246, 0.3), rgba(255, 255, 255, 0.15))`;
+  e.target.style.borderImage = `radial-gradient(20% 75% at ${x}px ${y}px, rgba(37, 99, 237, 0.9), rgba(37, 99, 237, 0.1)) 1 / 3px / 0px stretch`;
 }
 </script>

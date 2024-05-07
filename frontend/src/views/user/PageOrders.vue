@@ -22,6 +22,7 @@
           :is-loading="table.isLoading"
           :rows="table.rows"
           :total="table.total"
+          :sortable="table.sortable"
           pagination-theme="modern"
           @do-search="doSearch"
       >

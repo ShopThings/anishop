@@ -6,6 +6,7 @@
           :is-loading="table.isLoading"
           :rows="table.rows"
           :total="table.total"
+          :sortable="table.sortable"
           pagination-theme="modern"
           @do-search="doSearch"
       >
@@ -91,6 +92,7 @@ const table = reactive({
     {
       field: 'id',
       label: '#',
+      columnStyles: "width: 3%;",
       columnClasses: 'whitespace-nowrap',
     },
     {

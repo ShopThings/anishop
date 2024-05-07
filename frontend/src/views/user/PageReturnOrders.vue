@@ -63,6 +63,7 @@
         :is-loading="returnOrdersTableSetting.isLoading"
         :rows="returnOrdersTableSetting.rows"
         :total="returnOrdersTableSetting.total"
+        :sortable="returnOrdersTableSetting.sortable"
         pagination-theme="modern"
         @do-search="getReturnOrders"
       >

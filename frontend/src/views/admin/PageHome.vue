@@ -42,15 +42,21 @@
     class="mt-3"
   >
     <hr class="my-6">
-
     <quick-access-links/>
   </div>
 
-  <div class="mt-3">
+  <div
+    v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.READ) ||
+          userStore.hasPermission(PERMISSION_PLACES.ORDER, PERMISSIONS.READ) ||
+          userStore.hasPermission(PERMISSION_PLACES.RETURN_ORDER_REQUEST, PERMISSIONS.READ) ||
+          userStore.hasPermission(PERMISSION_PLACES.PRODUCT, PERMISSIONS.READ)"
+    class="mt-3"
+  >
     <needed-charts/>
   </div>
 
   <div class="mt-3">
+    <hr class="my-6">
     <counting-badges/>
   </div>
 </template>

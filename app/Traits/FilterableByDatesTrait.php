@@ -33,7 +33,8 @@ trait FilterableByDatesTrait
      */
     public function scopeMonthToDate($query, string $column = 'created_at'): mixed
     {
-        return $query->whereBetween($column, [Carbon::now()->startOfMonth(), Carbon::now()]);
+        $now = Carbon::now();
+        return $query->whereBetween($column, [$now->startOfMonth(), $now]);
     }
 
     /**
@@ -54,7 +55,8 @@ trait FilterableByDatesTrait
      */
     public function scopeYearToDate($query, string $column = 'created_at'): mixed
     {
-        return $query->whereBetween($column, [Carbon::now()->startOfYear(), Carbon::now()]);
+        $now = Carbon::now();
+        return $query->whereBetween($column, [$now->startOfYear(), $now]);
     }
 
     /**
@@ -95,6 +97,7 @@ trait FilterableByDatesTrait
      */
     public function scopeLastYear($query, string $column = 'created_at'): mixed
     {
-        return $query->whereBetween($column, [Carbon::now()->subYear(), Carbon::now()]);
+        $now = Carbon::now();
+        return $query->whereBetween($column, [$now->subYear(), $now]);
     }
 }

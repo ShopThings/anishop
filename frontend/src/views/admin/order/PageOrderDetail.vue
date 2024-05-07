@@ -92,6 +92,7 @@
                         :is-loading="false"
                         :rows="ordersTableSetting.rows"
                         :total="ordersTableSetting.total"
+                        :sortable="ordersTableSetting.sortable"
                     >
                       <template #payment_status="{value}">
                         <partial-badge-status-payment

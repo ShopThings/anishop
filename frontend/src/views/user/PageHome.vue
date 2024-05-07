@@ -249,6 +249,7 @@
             :is-loading="topOrdersTableSetting.isLoading"
             :rows="topOrdersTableSetting.rows"
             :total="topOrdersTableSetting.total"
+            :sortable="topOrdersTableSetting.sortable"
             @do-search="getLatestOrders"
           >
             <template #emptyTableRows>
@@ -324,6 +325,7 @@
             :is-loading="topReturnOrdersTableSetting.isLoading"
             :rows="topReturnOrdersTableSetting.rows"
             :total="topReturnOrdersTableSetting.total"
+            :sortable="topReturnOrdersTableSetting.sortable"
             @do-search="getLatestReturnOrders"
           >
             <template #code="{value}">

@@ -8,6 +8,7 @@
               :is-loading="productCommentTable.isLoading"
               :rows="productCommentTable.rows"
               :total="productCommentTable.total"
+              :sortable="productCommentTable.sortable"
               pagination-theme="modern"
               @do-search="doSearchProductComment"
           >
@@ -85,6 +86,7 @@
               :is-loading="blogCommentTable.isLoading"
               :rows="blogCommentTable.rows"
               :total="blogCommentTable.total"
+              :sortable="blogCommentTable.sortable"
               pagination-theme="modern"
               @do-search="doSearchBlogComment"
           >

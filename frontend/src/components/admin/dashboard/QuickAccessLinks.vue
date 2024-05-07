@@ -131,26 +131,12 @@ import {onMounted} from "vue";
 
 const userStore = useAdminAuthStore()
 
-const offset = 85
+const offset = 69
 const angles = [] //in deg
 let nearBy = []
 
-function removeBorderOfElements(e) {
-  let parent = e.target.classList.contains('quick-access-link-container')
-    ? e.target
-    : e.target.closest('.quick-access-link-container')
-
-  if (!parent) return
-
-  const children = parent.childNodes
-
-  if (children?.length) {
-    children.forEach((element) => {
-      if (element.classList.contains('quick-access-link-btn')) {
-        element.style.borderImage = null
-      }
-    })
-  }
+function removeBorderOfElements() {
+  nearBy.splice(0, nearBy.length).forEach((e) => (e.style.borderImage = null))
 }
 
 function mousemoveHandler(e) {
@@ -162,7 +148,7 @@ function mousemoveHandler(e) {
     y = e.changedTouches[0]?.y || y
   }
 
-  removeBorderOfElements(e)
+  removeBorderOfElements()
 
   nearBy = angles.reduce((acc, rad) => {
     const cx = Math.floor(x + Math.cos(rad) * offset)
@@ -177,7 +163,7 @@ function mousemoveHandler(e) {
 
         element.style.borderImage = `radial-gradient(${offset * 2}px ${
           offset * 2
-        }px at ${bx}px ${by}px ,rgba(74, 222, 128, 0.9),rgba(74, 222, 128, 0.1), transparent) 9 / 3px / 0px stretch `
+        }px at ${bx}px ${by}px ,rgba(37, 99, 237, 0.9),rgba(37, 99, 237, 0.1), transparent) 9 / 3px / 0px stretch `
 
         return [...acc, element]
       }
@@ -186,8 +172,8 @@ function mousemoveHandler(e) {
   }, []);
 }
 
-function mouseleaveHandler(e) {
-  removeBorderOfElements(e)
+function mouseleaveHandler() {
+  removeBorderOfElements()
 }
 
 onMounted(() => {
