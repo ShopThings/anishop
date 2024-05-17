@@ -7,8 +7,8 @@
         :options="statuses"
         :selected="selectedStatus"
         name="return_status"
-        options-key="value"
-        options-text="text"
+        options-key="code"
+        options-text="title"
         @change="statusChange"
       />
       <partial-input-error-message :error-message="errors.status"/>
@@ -116,17 +116,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 onMounted(() => {
   ReturnOrderAPI.fetchStatuses({
     success: (response) => {
-      statuses.value = []
-      let res = response.data
-      for (let i in res) {
-        if (res.hasOwnProperty(i)) {
-          statuses.value.push({
-            text: res[i],
-            value: i,
-          })
-        }
-      }
-
+      statuses.value = response.data
       loading.value = false
     },
   })

@@ -38,8 +38,9 @@
                     >
                       <base-lazy-image
                         :alt="item.product.title"
-                        class="!w-36 !h-36 sm:!w-28 sm:!h-28 object-contain hover:scale-95 transition rounded-lg"
                         :lazy-src="item.product.image.path"
+                        :is-local="false"
+                        class="!w-36 !h-36 sm:!w-28 sm:!h-28 object-contain hover:scale-95 transition rounded-lg"
                       />
                     </router-link>
                   </div>

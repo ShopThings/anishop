@@ -41,7 +41,7 @@ enum RolesEnum: string
     {
         return [
             self::DEVELOPER, self::SUPER_ADMIN, self::ADMIN, self::USER_MANAGER,
-            self::ORDER_MANAGER, self::PRODUCT_MANAGER, self::WRITER,
+            self::PRODUCT_MANAGER, self::ORDER_MANAGER, self::WRITER,
         ];
     }
 

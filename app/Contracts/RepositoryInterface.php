@@ -21,6 +21,11 @@ interface RepositoryInterface
     public function resetWithWhereHas(): static;
 
     /**
+     * @return static
+     */
+    public function resetWhereHas(): static;
+
+    /**
      * Use this to have a fresh with collector
      *
      * @param array|string $relations
@@ -57,6 +62,38 @@ interface RepositoryInterface
     public function withWhereHas(array|string $relations, Closure|null|string $callback = null): static;
 
     /**
+     * Use this to have a fresh whereHas collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @param $operator
+     * @param $count
+     * @return static
+     */
+    public function newWhereHas(
+        array|string        $relations,
+        Closure|null|string $callback = null,
+                            $operator = '>=',
+                            $count = 1
+    ): static;
+
+    /**
+     * Use this to continue whereHas collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @param $operator
+     * @param $count
+     * @return static
+     */
+    public function whereHas(
+        array|string        $relations,
+        Closure|null|string $callback = null,
+                            $operator = '>=',
+                            $count = 1
+    ): static;
+
+    /**
      * @param GetterExpressionInterface|null $where
      * @return bool
      */
@@ -65,11 +102,13 @@ interface RepositoryInterface
     /**
      * @param GetterExpressionInterface|null $where
      * @param bool $withTrashed
+     * @param bool $onlyTrashed
      * @return int
      */
     public function count(
         ?GetterExpressionInterface $where = null,
-        bool                       $withTrashed = false
+        bool $withTrashed = false,
+        bool $onlyTrashed = false
     ): int;
 
     /**

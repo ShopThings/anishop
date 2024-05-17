@@ -66,6 +66,11 @@ export default {
 
   brands: 'api/brands',
 
+  search: {
+    product: 'api/search/products',
+    blog: 'api/search/blogs',
+  },
+
   products: {
     index: 'api/products',
     show: 'api/products/{product}',

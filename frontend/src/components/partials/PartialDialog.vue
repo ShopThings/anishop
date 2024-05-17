@@ -15,7 +15,8 @@
 
       <div class="fixed z-20 inset-0 overflow-y-auto">
         <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
+          :class="dialogContainerClass"
+          class="flex min-h-full justify-center p-4 text-center"
         >
           <TransitionChild
               as="template"
@@ -73,8 +74,12 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  dialogContainerClass: {
+    type: [String, Object],
+    default: 'items-center',
+  },
   containerKlass: {
-    type: String,
+    type: [String, Object],
     default: 'max-w-md overflow-hidden',
   },
 })

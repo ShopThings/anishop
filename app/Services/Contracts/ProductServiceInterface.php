@@ -9,8 +9,8 @@ use App\Http\Requests\Filters\HomeProductSideFilter;
 use App\Support\Filter;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface ProductServiceInterface extends ServiceInterface
 {
@@ -23,6 +23,11 @@ interface ProductServiceInterface extends ServiceInterface
         Filter                    $filter,
         GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getProductsCount(): int;
 
     /**
      * @param GetterExpressionInterface $where

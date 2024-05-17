@@ -17,6 +17,11 @@ interface CityPostPriceServiceInterface extends ServiceInterface
     public function getPostPrices(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getPostPricesCount(): int;
+
+    /**
      * @param int $cityId
      * @return Model|null
      */

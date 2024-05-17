@@ -35,6 +35,7 @@
             <base-lazy-image
                 :alt="item.name"
                 :lazy-src="item.image.path"
+                :is-local="false"
                 class="w-full h-full rounded-2xl p-3"
             />
           </router-link>

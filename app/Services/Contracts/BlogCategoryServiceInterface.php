@@ -16,7 +16,13 @@ interface BlogCategoryServiceInterface extends ServiceInterface
     public function getCategories(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
-     * @return Collection
+     * @return int
      */
-    public function getSideCategories(): Collection;
+    public function getCategoriesCount(): int;
+
+    /**
+     * @param Filter|null $filter
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getPublishedHighPriorityCategories(Filter $filter = null): Collection|LengthAwarePaginator;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Gates\RolesEnum;
 use App\Enums\Notification\UserNotificationTypesEnum;
 use App\Enums\Results\FavoriteProductResultEnum;
@@ -34,6 +35,21 @@ class UserService extends Service implements UserServiceInterface
     public function getUsers(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getUsersSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsersCount(?bool $isAdmin = null): int
+    {
+        if (!is_null($isAdmin)) {
+            $where = new WhereBuilder();
+            $where->whereEqual('is_admin', $isAdmin ? DatabaseEnum::DB_YES : DatabaseEnum::DB_NO);
+
+            return $this->repository->count($where->build());
+        }
+
+        return $this->repository->count();
     }
 
     /**

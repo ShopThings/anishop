@@ -545,8 +545,9 @@
                           >
                             <base-lazy-image
                               :alt="item.product.title"
-                              class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
                               :lazy-src="item.product.image.path"
+                              :is-local="false"
+                              class="!w-32 !h-32 object-contain hover:scale-95 transition rounded-lg"
                             />
                           </router-link>
                         </div>

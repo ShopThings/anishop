@@ -7,6 +7,7 @@
               :alt="blog.title"
               :size="FileSizes.LARGE"
               :src="blog.image.path"
+              :is-local="false"
               class="w-full h-full object-cover rounded-3xl"
           />
         </div>

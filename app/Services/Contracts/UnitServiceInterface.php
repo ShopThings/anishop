@@ -14,4 +14,9 @@ interface UnitServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getUnits(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getUnitsCount(): int;
 }

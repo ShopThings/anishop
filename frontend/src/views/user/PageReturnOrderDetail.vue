@@ -191,6 +191,7 @@
                         :alt="product.product.title"
                         :lazy-src="product.image.path"
                         :size="FileSizes.SMALL"
+                        :is-local="false"
                         class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>

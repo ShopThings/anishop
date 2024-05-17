@@ -13,8 +13,8 @@ use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class PaymentMethodService extends Service implements PaymentMethodServiceInterface
 {
@@ -51,6 +51,14 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
                 page: $filter->getPage(),
                 order: $filter->getOrder()
             );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMethodsCount(): int
+    {
+        return $this->repository->count();
     }
 
     /**

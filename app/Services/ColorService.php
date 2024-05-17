@@ -46,6 +46,14 @@ class ColorService extends Service implements ColorServiceInterface
     /**
      * @inheritDoc
      */
+    public function getColorsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $attrs = [

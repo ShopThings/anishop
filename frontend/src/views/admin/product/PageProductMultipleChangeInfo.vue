@@ -34,6 +34,7 @@
                         :alt="product.title"
                         :lazy-src="product.image.path"
                         :size="FileSizes.SMALL"
+                        :is-local="false"
                         class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>

@@ -147,8 +147,9 @@
 
                   <base-lazy-image
                     :alt="blog.title"
-                    class="!w-full !h-auto rounded-lg"
                     :lazy-src="blog.image.path"
+                    :is-local="false"
+                    class="!w-full !h-auto rounded-lg"
                   />
 
                   <div class="mt-6">

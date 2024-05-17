@@ -40,6 +40,14 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
     /**
      * @inheritDoc
      */
+    public function getCommentsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getAllComments(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getCommentsSearchFilterPaginated(filter: $filter);

@@ -22,6 +22,11 @@ interface BlogServiceInterface extends ServiceInterface
     public function getBlogs(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getBlogsCount(): int;
+
+    /**
      * @param GetterExpressionInterface $where
      * @return Model|null
      */
@@ -29,9 +34,13 @@ interface BlogServiceInterface extends ServiceInterface
 
     /**
      * @param HomeBlogFilter $filter
+     * @param bool $enforceProvidedFilterLimit
      * @return Collection|LengthAwarePaginator
      */
-    public function getFilteredBlogs(HomeBlogFilter $filter): Collection|LengthAwarePaginator;
+    public function getFilteredBlogs(
+        HomeBlogFilter $filter,
+        bool           $enforceProvidedFilterLimit = false
+    ): Collection|LengthAwarePaginator;
 
     /**
      * @param int $userId

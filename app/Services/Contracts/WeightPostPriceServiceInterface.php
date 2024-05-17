@@ -17,6 +17,11 @@ interface WeightPostPriceServiceInterface extends ServiceInterface
     public function getPostPrices(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getPostPricesCount(): int;
+
+    /**
      * @param int $weight
      * @return Model|null
      */

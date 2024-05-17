@@ -11,8 +11,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class BlogCategoryService extends Service implements BlogCategoryServiceInterface
 {
@@ -46,14 +46,24 @@ class BlogCategoryService extends Service implements BlogCategoryServiceInterfac
     /**
      * @inheritDoc
      */
-    public function getSideCategories(): Collection
+    public function getCategoriesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPublishedHighPriorityCategories(Filter $filter = null): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('blog_categories');
         $where->whereEqual('is_published', DatabaseEnum::DB_YES);
 
-        return $this->repository->all(
+        return $this->repository->paginate(
             columns: ['id', 'name', 'escaped_name', 'slug', 'keywords'],
             where: $where->build(),
+            limit: $filter?->getLimit(),
+            page: $filter?->getPage() ?? 1,
             order: ['priority' => 'asc', 'id' => 'asc']
         );
     }

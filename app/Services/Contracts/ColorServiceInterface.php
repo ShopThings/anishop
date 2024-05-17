@@ -15,4 +15,9 @@ interface ColorServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getColors(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getColorsCount(): int;
 }

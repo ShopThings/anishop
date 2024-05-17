@@ -84,6 +84,14 @@ class OrderService extends Service implements OrderServiceInterface
     /**
      * @inheritDoc
      */
+    public function getOrdersCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getOrdersCountWithBadges(): Collection
     {
         return $this->repository->getOrdersCountWithBadges();

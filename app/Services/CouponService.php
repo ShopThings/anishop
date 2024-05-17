@@ -47,6 +47,14 @@ class CouponService extends Service implements CouponServiceInterface
     /**
      * @inheritDoc
      */
+    public function getCouponsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function checkCoupon(string $code, User $user): Model|CouponResultEnum
     {
         return $this->repository->checkCoupon($code, $user);

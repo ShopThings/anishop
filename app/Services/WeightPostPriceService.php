@@ -45,6 +45,14 @@ class WeightPostPriceService extends Service implements WeightPostPriceServiceIn
     /**
      * @inheritDoc
      */
+    public function getPostPricesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getPostPriceByWeight(int $weight): ?Model
     {
         $where = new WhereBuilder();

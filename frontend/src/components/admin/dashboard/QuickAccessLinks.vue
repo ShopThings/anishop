@@ -4,7 +4,7 @@
   </h2>
 
   <div
-    class="quick-access-link-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pb-3 max-h-96 lg:max-h-none overflow-auto my-custom-scrollbar"
+    class="quick-access-link-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 pb-3 max-h-[400px] md:max-h-none overflow-auto my-custom-scrollbar"
     @mouseleave="mouseleaveHandler"
     @mousemove="mousemoveHandler"
     @touchend="mouseleaveHandler"

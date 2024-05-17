@@ -18,12 +18,13 @@ export default {
     },
 
     dashboard: {
-      totalSell: 'api/admin/sell/total',
-      periodSell: 'api/admin/sell/{period}',
+      totalSale: 'api/admin/sale/total',
+      periodSale: 'api/admin/sale/{period}',
       chartUsers: 'api/admin/chart/users/{period}',
-      chartOrders: 'api/admin/chart/orders/{period}',
-      chartReturnOrders: 'api/admin/chart/return-orders/{period}',
-      tableMostSellProducts: 'api/admin/table/most-sell-product/{period}',
+      chartOrders: 'api/admin/chart/orders/{period}/{status}',
+      chartReturnOrders: 'api/admin/chart/return-orders/{period}/{status}',
+      tableMostSaleProducts: 'api/admin/table/most-sale-product/{period}',
+      dashboardCounting: 'api/admin/dashboard/counting',
     },
 
     users: {
@@ -211,6 +212,7 @@ export default {
       update: 'api/admin/return-orders/{return_order}',
       destroy: 'api/admin/return-orders/{return_order}',
       modifyOrderItem: 'api/admin/return-orders/{return_order}/{return_order_item}/modify-item',
+      allStatuses: 'api/admin/return-orders/all-statuses',
       statuses: 'api/admin/return-orders/statuses',
       returnOrderItems: 'api/admin/return-orders/{return_order}/to-stock',
     },

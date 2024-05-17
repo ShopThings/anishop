@@ -79,18 +79,20 @@ Route::prefix('admin')
                 /*
                  * dashboard routes
                  */
-                Route::get('sell/total', [AdminDashboardController::class, 'totalSell'])
-                    ->name('dashboard.sell.total');
-                Route::get('sell/{period}', [AdminDashboardController::class, 'periodSell'])
-                    ->name('dashboard.sell.period');
+                Route::get('sale/total', [AdminDashboardController::class, 'totalSale'])
+                    ->name('dashboard.sale.total');
+                Route::get('sale/{period}', [AdminDashboardController::class, 'periodSale'])
+                    ->name('dashboard.sale.period');
                 Route::get('chart/users/{period}', [AdminDashboardController::class, 'chartUsers'])
                     ->name('dashboard.users.period');
-                Route::get('chart/orders/{period}', [AdminDashboardController::class, 'chartOrders'])
+                Route::get('chart/orders/{period}/{status}', [AdminDashboardController::class, 'chartOrders'])
                     ->name('dashboard.orders.period');
-                Route::get('chart/return-orders/{period}', [AdminDashboardController::class, 'chartReturnOrders'])
+                Route::get('chart/return-orders/{period}/{status}', [AdminDashboardController::class, 'chartReturnOrders'])
                     ->name('dashboard.return-orders.period');
-                Route::get('table/most-sell-product/{period}', [AdminDashboardController::class, 'tableMostSellProducts'])
-                    ->name('dashboard.most-sell-products.period');
+                Route::get('table/most-sale-product/{period}', [AdminDashboardController::class, 'tableMostSaleProducts'])
+                    ->name('dashboard.most-sale-products.period');
+                Route::get('dashboard/counting', [AdminDashboardController::class, 'itemsCounts'])
+                    ->name('dashboard.counting');
 
                 /*
                  * user routes
@@ -284,6 +286,8 @@ Route::prefix('admin')
                 /*
                  * return order routes
                  */
+                Route::get('return-orders/all-statuses', [ReturnOrderRequestController::class, 'allStatuses'])
+                    ->name('return-orders.all-statuses');
                 Route::get('return-orders/statuses', [ReturnOrderRequestController::class, 'statuses'])
                     ->name('return-orders.statuses');
                 Route::get('return-orders/all/{user?}', [ReturnOrderRequestController::class, 'index'])

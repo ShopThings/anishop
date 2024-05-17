@@ -36,6 +36,14 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
     /**
      * @inheritDoc
      */
+    public function getCommentsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getAllComments(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getCommentsSearchFilterPaginated(filter: $filter);

@@ -26,6 +26,7 @@
                   :alt="value.product.title"
                   :lazy-src="value.product.image.path"
                   :size="FileSizes.SMALL"
+                  :is-local="false"
                   class="!h-28 sm:!h-20 w-auto rounded"
                 />
                 <router-link

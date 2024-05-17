@@ -16,15 +16,7 @@
 
             <div class="h-full grow">
               <div class="px-6 max-w-lg xl:max-w-2xl hidden md:block">
-                <base-input
-                  klass="bg-slate-100 focus:bg-white !ring-0 focus:!ring-2 rounded-xl"
-                  name="search"
-                  placeholder="جستجو..."
-                >
-                  <template #icon>
-                    <MagnifyingGlassIcon class="w-6 h-6 text-slate-400"/>
-                  </template>
-                </base-input>
+                <navbar-search/>
               </div>
             </div>
 
@@ -89,17 +81,17 @@
 
 <script setup>
 import {computed, inject, onMounted, ref} from "vue";
-import {DevicePhoneMobileIcon, MagnifyingGlassIcon} from '@heroicons/vue/24/outline'
+import {DevicePhoneMobileIcon} from '@heroicons/vue/24/outline'
 import NavbarCart from "./NavbarCart.vue"
 import NavbarUserAction from "./NavbarUserAction.vue"
 import PartialNavbarGuest from "./partials/PartialNavbarGuest.vue"
-import DialogSearch from "./DialogSearch.vue";
-import BaseInput from "./base/BaseInput.vue";
+import DialogSearch from "./product/global-search/DialogSearch.vue";
 import NavbarCategories from "./NavbarCategories.vue";
 import PartialNavbarGuestMobile from "@/components/partials/PartialNavbarGuestMobile.vue";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import {MENU_PLACES} from "@/composables/constants.js";
 import {obfuscateNumber} from "@/composables/helper.js";
+import NavbarSearch from "@/components/product/global-search/NavbarSearch.vue";
 
 const homeSettingStore = inject('homeSettingStore')
 

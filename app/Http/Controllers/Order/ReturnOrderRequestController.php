@@ -167,6 +167,17 @@ class ReturnOrderRequestController extends Controller
     /**
      * @return JsonResponse
      */
+    public function allStatuses(): JsonResponse
+    {
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getAllStatuses(),
+        ], ResponseCodes::HTTP_OK);
+    }
+
+    /**
+     * @return JsonResponse
+     */
     public function statuses(): JsonResponse
     {
         return response()->json([

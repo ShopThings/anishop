@@ -2,7 +2,11 @@
     "name": "mmdm/anishop",
     "type": "project",
     "description": "Laravel and Vue Online Shop.",
-    "keywords": ["online-shop", "e-commerce", "laravel-e-commerce"],
+    "keywords": [
+        "online-shop",
+        "e-commerce",
+        "laravel-e-commerce"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",

@@ -30,6 +30,14 @@ class CityPostPriceService extends Service implements CityPostPriceServiceInterf
     /**
      * @inheritDoc
      */
+    public function getPostPricesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getPostPriceByCityId(int $cityId): ?Model
     {
         $where = new WhereBuilder();

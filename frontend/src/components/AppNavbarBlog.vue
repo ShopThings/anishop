@@ -44,7 +44,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import PartialNavbarBlog from "./partials/PartialNavbarBlog.vue";
-import DialogSearchBlog from "./DialogSearchBlog.vue";
+import DialogSearchBlog from "./blog/global-search/DialogSearchBlog.vue";
 import PartialNavbarBlogMobile from "@/components/partials/PartialNavbarBlogMobile.vue";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import {MENU_PLACES} from "@/composables/constants.js";

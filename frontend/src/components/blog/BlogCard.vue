@@ -9,23 +9,27 @@
       class="w-full h-full p-3 border bg-white"
     >
       <template v-if="type === 'vertical'">
-        <router-link
-          :to="{name: 'blog.detail', params: {slug: blog.slug}}"
-          class="group relative block"
-          target="_blank"
-        >
-          <base-lazy-image
-            :alt="blog.title"
-            :lazy-src="blog.image.path"
-            class="w-full h-56 bg-white !object-cover rounded-lg transition group-hover:scale-95"
-          />
+        <div class="relative">
+          <router-link
+            :to="{name: 'blog.detail', params: {slug: blog.slug}}"
+            class="group block"
+            target="_blank"
+          >
+            <base-lazy-image
+              :alt="blog.title"
+              :is-local="false"
+              :lazy-src="blog.image.path"
+              class="w-full h-56 bg-white !object-cover rounded-lg transition group-hover:scale-95"
+            />
+          </router-link>
 
           <router-link
             class="rounded-full bg-indigo-600 text-white py-1.5 px-3 text-xs absolute bottom-2 left-2 z-[1] shadow hover:bg-indigo-500 transition"
-            to="#">
+            :to="{name: 'blog.search', query: {category: blog.category.id}}"
+          >
             {{ blog.category.name }}
           </router-link>
-        </router-link>
+        </div>
 
         <div class="mt-3 flex flex-col justify-center gap-3">
           <h1>
@@ -65,6 +69,7 @@
               :alt="blog.title"
               :lazy-src="blog.image.path"
               :size="FileSizes.LARGE"
+              :is-local="false"
               class="bg-white !object-cover rounded-lg transition group-hover:scale-95 w-full h-56 sm:w-40 sm:h-full"
             />
           </router-link>

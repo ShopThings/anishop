@@ -26,6 +26,11 @@ interface ReturnOrderServiceInterface extends ServiceInterface
     /**
      * @return int
      */
+    public function getRequestsCount(): int;
+
+    /**
+     * @return int
+     */
     public function getNotSeenRequestsCount(): int;
 
     /**
@@ -113,6 +118,11 @@ interface ReturnOrderServiceInterface extends ServiceInterface
         ReturnOrderRequest      $request,
         ReturnOrderStatusesEnum $toStatus
     ): ChangeRequestStatusResult;
+
+    /**
+     * @return array
+     */
+    public function getAllStatuses(): array;
 
     /**
      * @return array

@@ -10,8 +10,8 @@
       main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
-    <div class="flex flex-wrap">
-      <div class="p-2 w-full md:w-1/2 lg:w-1/3">
+    <div class="flex flex-wrap items-end">
+      <div class="p-2 w-full md:w-1/2 xl:w-1/3">
         <base-input
           :min="0"
           :money-mask="true"
@@ -35,7 +35,7 @@
           <span class="text-xs text-slate-400">تومان</span>
         </div>
       </div>
-      <div class="p-2 w-full md:w-1/2 lg:w-1/3">
+      <div class="p-2 w-full md:w-1/2 xl:w-1/3">
         <base-input
           :min="0"
           :money-mask="true"
@@ -59,7 +59,7 @@
           <span class="text-xs text-slate-400">تومان</span>
         </div>
       </div>
-      <div class="p-2 w-full md:w-1/2 lg:w-1/3">
+      <div class="p-2 w-full md:w-1/2 xl:w-1/3">
         <base-input
           :is-optional="true"
           :min="0"
@@ -84,7 +84,7 @@
             <span class="text-slate-500 text-xl">{{ numberFormat(values?.divide_payment_price) }}</span>
             <span class="text-xs text-slate-400">تومان</span>
           </template>
-          <span v-else>عدم تقسیم‌بندی</span>
+          <span v-else class="text-orange-300 text-sm bg-orange-50 rounded py-0.5 px-1.5">تقسیم‌بندی انجام نشده</span>
         </div>
       </div>
     </div>

@@ -17,8 +17,8 @@ use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class ProductService extends Service implements ProductServiceInterface
@@ -45,6 +45,14 @@ class ProductService extends Service implements ProductServiceInterface
         return $this->repository
             ->newWith(['creator', 'updater', 'deleter'])
             ->getProductsSearchFilterPaginated(filter: $filter, where: $where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductsCount(): int
+    {
+        return $this->repository->count();
     }
 
     /**

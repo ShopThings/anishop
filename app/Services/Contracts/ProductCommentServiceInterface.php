@@ -19,6 +19,11 @@ interface ProductCommentServiceInterface extends ServiceInterface
     public function getComments(int $productId, Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getCommentsCount(): int;
+
+    /**
      * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */

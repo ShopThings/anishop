@@ -52,6 +52,14 @@ class FestivalService extends Service implements FestivalServiceInterface
     /**
      * @inheritDoc
      */
+    public function getFestivalsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getHomeFestivals(): Collection
     {
         $where = new WhereBuilder();

@@ -22,17 +22,10 @@
     :rows="table.rows"
     :sortable="table.sortable"
     :total="table.total"
-    loading-message="در حال بارگذاری پرفرپش‌ترین محصولات"
+    empty-message="محصول پرفروشی وجود ندارد!"
+    loading-message="در حال بارگذاری پرفروش‌ترین محصولات"
     pagination-theme="modern"
   >
-    <template #emptyTableRows>
-      <partial-empty-rows
-        image="/empty-statuses/empty-product.svg"
-        image-class="w-60"
-        message="محصول پرفروشی وجود ندارد!"
-      />
-    </template>
-
     <template #id="{index}">
       <span class="text-sm">{{ index }}</span>
     </template>
@@ -42,6 +35,7 @@
         :alt="value.title"
         :lazy-src="value.image.path"
         :size="FileSizes.SMALL"
+        :is-local="false"
         class="h-auto !w-20 rounded"
       />
     </template>
@@ -70,12 +64,12 @@
 <script setup>
 import {onMounted, reactive, ref} from "vue";
 import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
-import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {FileSizes} from "@/composables/file-list.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import {REPORT_PERIODS} from "@/composables/constants.js";
+import {AdminPanelDashboardAPI} from "@/service/APIAdminPanel.js";
 
 const table = reactive({
   isLoading: true,
@@ -110,84 +104,8 @@ const table = reactive({
       columnClasses: 'whitespace-nowrap',
     },
   ],
-  rows: [
-    {
-      id: 1,
-      image: {
-        name: 'no',
-      },
-      title: 'محصول پرفروش شماره ۱',
-      brand: {
-        name: 'سامسونگ',
-      },
-      category: {
-        name: 'لوازم خانگی',
-      },
-      unit_name: 'عدد',
-      count: 5,
-    },
-    {
-      id: 2,
-      image: {
-        name: 'no',
-      },
-      title: 'محصول پرفروش شماره ۱',
-      brand: {
-        name: 'سامسونگ',
-      },
-      category: {
-        name: 'لوازم خانگی',
-      },
-      unit_name: 'عدد',
-      count: 2,
-    },
-    {
-      id: 3,
-      image: {
-        name: 'no',
-      },
-      title: 'محصول پرفروش شماره ۱',
-      brand: {
-        name: 'سامسونگ',
-      },
-      category: {
-        name: 'لوازم خانگی',
-      },
-      unit_name: 'عدد',
-      count: 9,
-    },
-    {
-      id: 4,
-      image: {
-        name: 'no',
-      },
-      title: 'محصول پرفروش شماره ۱',
-      brand: {
-        name: 'سامسونگ',
-      },
-      category: {
-        name: 'لوازم خانگی',
-      },
-      unit_name: 'عدد',
-      count: 3,
-    },
-    {
-      id: 5,
-      image: {
-        name: 'no',
-      },
-      title: 'محصول پرفروش شماره ۱',
-      brand: {
-        name: 'سامسونگ',
-      },
-      category: {
-        name: 'لوازم خانگی',
-      },
-      unit_name: 'عدد',
-      count: 4,
-    },
-  ],
-  total: 10,
+  rows: [],
+  total: 0,
   sortable: {
     order: "count",
     sort: "desc",
@@ -221,19 +139,34 @@ const selectedPeriod = ref({
   text: REPORT_PERIODS.WEEKLY.text,
 })
 
+function getPeriodData(selected = null) {
+  table.isLoading = true
+
+  AdminPanelDashboardAPI.getMostSaleProducts(selectedPeriod.value.value, {
+    success(response) {
+      table.rows = response.rows || []
+      table.total = response.rows?.length || 0
+
+      if (selected) {
+        // Assign selected period again to prevent mistaken selecting
+        selectedPeriod.value = selected
+      }
+    },
+    finally() {
+      table.isLoading = false
+    },
+  })
+}
+
 function periodChangeHandler(selected) {
   if (table.isLoading) return
 
   selectedPeriod.value = selected
 
-  // TODO: make an API call to get what we needed...
+  getPeriodData(selected)
 }
 
 onMounted(() => {
-  // TODO: make request to get most sold products...
-
-  setTimeout(() => {
-    table.isLoading = false
-  }, 3000)
+  getPeriodData()
 })
 </script>

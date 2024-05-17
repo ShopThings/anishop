@@ -48,6 +48,14 @@ class BlogService extends Service implements BlogServiceInterface
     /**
      * @inheritDoc
      */
+    public function getBlogsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getSingleBlog(GetterExpressionInterface $where): ?Model
     {
         if (trim($where->getStatement()) === '') return null;
@@ -57,12 +65,17 @@ class BlogService extends Service implements BlogServiceInterface
     /**
      * @inheritDoc
      */
-    public function getFilteredBlogs(HomeBlogFilter $filter): Collection|LengthAwarePaginator
+    public function getFilteredBlogs(
+        HomeBlogFilter $filter,
+        bool           $enforceProvidedFilterLimit = false
+    ): Collection|LengthAwarePaginator
     {
-        $settingModel = $this->settingService->getSetting(SettingsEnum::BLOG_EACH_PAGE->value);
-        $limit = $settingModel->setting_value ?: $settingModel->default_value;
+        if (!$enforceProvidedFilterLimit) {
+            $settingModel = $this->settingService->getSetting(SettingsEnum::BLOG_EACH_PAGE->value);
+            $limit = $settingModel->setting_value ?: $settingModel->default_value;
 
-        $filter->setLimit($limit);
+            $filter->setLimit($limit);
+        }
 
         return $this->getBlogs($filter);
     }

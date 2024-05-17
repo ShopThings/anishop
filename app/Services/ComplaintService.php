@@ -51,6 +51,14 @@ class ComplaintService extends Service implements ComplaintServiceInterface
     /**
      * @inheritDoc
      */
+    public function getComplaintsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getNotSeenComplaintsCount(): int
     {
         $where = new WhereBuilder('complaints');

@@ -14,6 +14,7 @@
           <base-lazy-image
               :alt="blog.title"
               :lazy-src="blog.image.path"
+              :is-local="false"
               class="bg-white !object-cover rounded-lg transition group-hover:scale-95 w-full h-56 sm:w-20 sm:h-20"
           />
         </router-link>

@@ -15,10 +15,10 @@
     </template>
     <template #items>
       <MenuItems
-          :class="[
+        :class="[
               position === 'right' ? 'right-0 origin-top-left' : 'left-0 origin-top-right',
           ]"
-          class="absolute z-[10] mt-3 w-full sm:w-[22rem] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="absolute z-[10] mt-3 w-full sm:w-[22rem] rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
       >
         <div
           v-if="cartStore.getCartItems?.length"
@@ -41,8 +41,9 @@
               >
                 <base-lazy-image
                   :alt="item.product.title"
-                    class="w-full h-full object-contain group-hover:scale-110 transition"
                   :lazy-src="item.product.image.path"
+                  :is-local="false"
+                  class="w-full h-full object-contain group-hover:scale-110 transition"
                 />
               </router-link>
               <div class="flex flex-col grow text-right">
@@ -122,9 +123,9 @@
         </div>
 
         <base-popover-side
-            btn-class="w-full"
-            panel-class="py-3 pl-6 pr-3"
-            position="left"
+          btn-class="w-full"
+          panel-class="py-3 pl-6 pr-3"
+          position="left"
         >
           <template #button>
             <base-button class="bg-slate-100 !text-black rounded-t-none w-full text-sm">
@@ -136,9 +137,9 @@
             <div class="mb-3 flex flex-row-reverse items-center">
               <span class="mr-auto text-sm text-gray-400">سبد‌های خرید</span>
               <button
-                  class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
-                  type="button"
-                  @click="close">
+                class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
+                type="button"
+                @click="close">
                 <XMarkIcon class="h-6 w-6"/>
               </button>
             </div>

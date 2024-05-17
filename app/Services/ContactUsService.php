@@ -51,6 +51,14 @@ class ContactUsService extends Service implements ContactUsServiceInterface
     /**
      * @inheritDoc
      */
+    public function getContactsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUserContacts($userId, Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('contact_us');

@@ -49,6 +49,14 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
+    public function getRequestsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getNotSeenRequestsCount(): int
     {
         $where = new WhereBuilder('return_order_requests');
@@ -321,14 +329,39 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function getStatuses(): array
+    public function getAllStatuses(): array
     {
         $statuses = ReturnOrderStatusesEnum::translationArray();
-        $userStatuses = $this->getUserStatuses();
 
-        return array_filter($statuses, function ($item, $key) use ($userStatuses) {
-            return !in_array($key, array_keys($userStatuses));
-        }, ARRAY_FILTER_USE_BOTH);
+        $arrStatuses = [];
+        foreach ($statuses as $status => $title) {
+            $arrStatuses[] = [
+                'code' => $status,
+                'title' => $title,
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
+            ];
+        }
+
+        return $arrStatuses;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatuses(): array
+    {
+        $statuses = ReturnOrderStatusesEnum::getAdminStatuses();
+
+        $arrStatuses = [];
+        foreach ($statuses as $status) {
+            $arrStatuses[] = [
+                'code' => $status,
+                'title' => ReturnOrderStatusesEnum::getSimilarValuesFromString($status),
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
+            ];
+        }
+
+        return $arrStatuses;
     }
 
     /**
@@ -340,7 +373,11 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
 
         $arrStatuses = [];
         foreach ($statuses as $status) {
-            $arrStatuses[$status] = ReturnOrderStatusesEnum::getSimilarValuesFromString($status);
+            $arrStatuses[] = [
+                'code' => $status,
+                'title' => ReturnOrderStatusesEnum::getSimilarValuesFromString($status),
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
+            ];
         }
 
         return $arrStatuses;

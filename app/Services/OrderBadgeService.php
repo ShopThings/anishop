@@ -9,8 +9,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class OrderBadgeService extends Service implements OrderBadgeServiceInterface
 {
@@ -36,6 +36,25 @@ class OrderBadgeService extends Service implements OrderBadgeServiceInterface
             page: $filter->getPage(),
             order: $filter->getOrder()
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBadgesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBadgeByCode(string $code): ?Model
+    {
+        $where = new WhereBuilder('order_badges');
+        $where->whereEqual('code', $code);
+
+        return $this->repository->findWhere($where->build());
     }
 
     /**

@@ -47,6 +47,14 @@ class SendMethodService extends Service implements SendMethodServiceInterface
     /**
      * @inheritDoc
      */
+    public function getMethodsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getHomeMethods(): Collection
     {
         $where = new WhereBuilder('send_methods');

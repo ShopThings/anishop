@@ -19,6 +19,12 @@ interface UserServiceInterface extends ServiceInterface
     public function getUsers(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @param bool|null $isAdmin
+     * @return int
+     */
+    public function getUsersCount(?bool $isAdmin = null): int;
+
+    /**
      * @param string $username
      * @return Model|null
      */

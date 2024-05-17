@@ -1,14 +1,14 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="dot-orbit"
+    :loading="loading"
+    type="dot-orbit"
   >
     <template #content>
       <div class="bg-white mb-3 rounded-lg border p-3">
         نمایش سبد‌های خرید کاربر -
         <span
-            v-if="user?.id"
-            class="text-slate-400 text-base"
+          v-if="user?.id"
+          class="text-slate-400 text-base"
         ><partial-username-label :user="user"/></span>
       </div>
 
@@ -31,20 +31,21 @@
                   <div class="shrink-0">
                     <router-link
                       :to="{name: 'admin.product.detail', params: {slug: cart.product.slug}}"
-                        class="inline-block"
+                      class="inline-block"
                     >
                       <base-lazy-image
                         :alt="cart.product.title"
                         :lazy-src="cart.product.image.path"
                         :size="FileSizes.SMALL"
-                          class="!w-24 h-auto hover:scale-95 transition"
+                        :is-local="false"
+                        class="!w-24 h-auto hover:scale-95 transition"
                       />
                     </router-link>
                   </div>
                   <div class="grow mr-3">
                     <router-link
                       :to="{name: 'admin.product.detail', params: {slug: cart.product.slug}}"
-                        class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                      class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
                     >
                       {{ cart.product.title }}
                     </router-link>
@@ -69,7 +70,7 @@
                       {{ cart.color_name }}
                       <span
                         v-tooltip.top="cart.color_name.toString()"
-                          class="inline-block w-5 h-5 rounded-full border mr-2"
+                        class="inline-block w-5 h-5 rounded-full border mr-2"
                         :style="'background-color:' + cart.color_hex + ';'"
                       ></span>
                     </div>
@@ -107,7 +108,7 @@ import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import BaseAccordion from "@/components/base/BaseAccordion.vue";
-import {numberFormat, getRouteParamByKey} from "@/composables/helper.js";
+import {getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 import {UserAPI, UserCartAPI} from "@/service/APIUser.js";
 import {FileSizes} from "@/composables/file-list.js";

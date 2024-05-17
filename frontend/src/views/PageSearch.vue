@@ -14,6 +14,7 @@
           :scroll-margin-top="-160"
           :show-pagination-detail="true"
           :show-search="true"
+          :search-text="route.query?.q || ''"
           container-class="flex flex-wrap"
           item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 ml-[-1px] mt-[-1px]"
           pagination-theme="modern"
@@ -153,7 +154,6 @@ import ProductCard from "@/components/product/ProductCard.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
 import AppNewsletter from "@/components/AppNewsletter.vue";
-import {numberFormat} from "@/composables/helper.js";
 import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {XMarkIcon} from "@heroicons/vue/24/solid/index.js";
 import {PRODUCT_ORDER_TYPES} from "@/composables/constants.js";

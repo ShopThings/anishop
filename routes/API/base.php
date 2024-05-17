@@ -14,6 +14,7 @@ use App\Http\Controllers\Other\FileManagerController;
 use App\Http\Controllers\Other\HomeController;
 use App\Http\Controllers\Other\HomeMenuController;
 use App\Http\Controllers\Other\HomePageController;
+use App\Http\Controllers\Other\HomeSearchController;
 use App\Http\Controllers\Other\HomeSliderController;
 use App\Http\Controllers\Other\ProvinceController;
 use App\Http\Controllers\Payment\HomePaymentMethodController;
@@ -158,6 +159,12 @@ Route::name('api.')
              * brand routes
              */
             Route::get('brands', [HomeBrandController::class, 'brands'])->name('brands.index');
+
+            /*
+             * search routes
+             */
+            Route::get('search/products', [HomeSearchController::class, 'products'])->name('products.search.index');
+            Route::get('search/blogs', [HomeSearchController::class, 'blogs'])->name('blogs.search.index');
 
             /*
              * product routes

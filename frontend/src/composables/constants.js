@@ -318,7 +318,7 @@ export const REPORT_PERIODS = {
   },
   WEEKLY: {
     value: 'weekly',
-    text: 'هفته اخیر',
+    text: 'این هفته',
   },
   MONTHLY: {
     value: 'monthly',

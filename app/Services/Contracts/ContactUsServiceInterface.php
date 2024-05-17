@@ -16,6 +16,11 @@ interface ContactUsServiceInterface extends ServiceInterface
     public function getContacts(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getContactsCount(): int;
+
+    /**
      * @param $userId
      * @param Filter $filter
      * @return Collection|LengthAwarePaginator

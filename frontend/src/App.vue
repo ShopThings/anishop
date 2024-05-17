@@ -94,17 +94,49 @@ const localTitle = ref(settingStore.getTitle)
 const localDescription = ref(settingStore.getDescription)
 const localKeywords = ref(settingStore.getKeywords)
 
+const routePath = ref(route.path)
+
 useHead({
   titleTemplate: (title) => !title ? toValue(localTitle) : titleOperations.join([toValue(localTitle), title]),
+
+  link: [
+    {rel: 'canonical', href: (window ? window.location.origin : import.meta.env.VITE_BASE_URL) + routePath}
+  ],
+
   meta: [
-    {
-      name: 'apple-mobile-web-app-title',
-      content: toValue(localTitle),
-    },
-    {
-      property: 'og:site_name',
-      content: toValue(localTitle),
-    },
+    {name: 'apple-mobile-web-app-title', content: toValue(localTitle)},
+
+    // OpenGraph data (Most widely used)
+    {property: 'og:title', content: toValue(routeTitle)},
+    {property: 'og:site_name', content: toValue(localTitle)},
+
+    // The list of types is available here: http://ogp.me/#types
+    {property: 'og:type', content: 'website'},
+
+    // Should be the same as your canonical link, see below.
+    {property: 'og:url', content: (window ? window.location.origin : import.meta.env.VITE_BASE_URL) + routePath},
+
+    // DON'T HAVE IMAGE RIGHT NOW!
+    // {property: 'og:image', content: ...},
+
+    // Often the same as your meta description, but not always.
+    {property: 'og:description', content: toValue(localDescription)},
+
+    // Twitter card
+    {name: 'twitter:card', content: '...'},
+    {name: 'twitter:site', content: (window ? window.location.origin : import.meta.env.VITE_BASE_URL) + routePath},
+    {name: 'twitter:title', content: toValue(localTitle)},
+    {name: 'twitter:description', content: toValue(localDescription)},
+
+    // DON'T HAVE IMAGE RIGHT NOW!
+    // {name: 'twitter:image:src', content: ...},
+
+    // Google / Schema.org markup:
+    {itemprop: 'name', content: toValue(localTitle)},
+    {itemprop: 'description', content: toValue(localDescription)},
+
+    // DON'T HAVE IMAGE RIGHT NOW!
+    // {itemprop: 'image', content: ...}
   ],
 })
 
@@ -116,6 +148,7 @@ useSeoMeta({
 
 //----------------------------------------------------------------
 watch(route, () => {
+  routePath.value = route.path
   routeTitle.value = route?.meta?.title
 })
 

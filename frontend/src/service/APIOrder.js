@@ -98,6 +98,14 @@ export const ReturnOrderAPI = Object.assign(
       )
     },
 
+    fetchAllStatuses(callbacks) {
+      return useRequest(
+        apiRoutes.admin.returnOrders.allStatuses,
+        null,
+        callbacks
+      )
+    },
+
     fetchStatuses(callbacks) {
       return useRequest(
         apiRoutes.admin.returnOrders.statuses,

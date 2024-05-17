@@ -30,6 +30,7 @@
                       :alt="value.product.title"
                       :lazy-src="value.product.image.path"
                       :size="FileSizes.SMALL"
+                      :is-local="false"
                       class="!w-24 h-auto hover:scale-95 transition"
                   />
                 </router-link>
@@ -108,6 +109,7 @@
                       :alt="value.blog.title"
                       :lazy-src="value.blog.image.path"
                       :size="FileSizes.SMALL"
+                      :is-local="false"
                       class="!w-24 h-auto hover:scale-95 transition"
                   />
                 </router-link>

@@ -3,6 +3,7 @@
 
   <partial-dialog
       v-model:open="isOpen"
+      :dialog-container-class="dialogContainerClass"
       :container-klass="containerKlass"
       @close="closeModal"
       @open="openModal"
@@ -27,7 +28,8 @@ import {ref, useSlots, watch} from "vue";
 
 const props = defineProps({
   open: Boolean,
-  containerKlass: String,
+  dialogContainerClass: [String, Object],
+  containerKlass: [String, Object],
 })
 
 const emit = defineEmits(['open', 'close'])

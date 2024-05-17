@@ -2,7 +2,7 @@
   <div class="flex flex-col sm:flex-row items-end justify-center gap-6 sm:gap-4">
     <div class="flex flex-col gap-3 w-full">
       <div class="bg-amber-500 rounded-lg w-full">
-        <base-loading-panel :loading="allAmountsLoading">
+        <base-loading-panel :loading="allAmountsLoading || allAmounts === null">
           <template #loader>
             <div class="flex flex-col gap-3 p-5">
               <loader-circle
@@ -19,7 +19,7 @@
             <div class="flex items-center p-5 gap-3">
               <div class="flex flex-col gap-3.5">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-xl text-white">300,000,000</span>
+                  <span class="text-xl text-white">{{ numberFormat(allAmounts) }}</span>
                   <span class="text-sm text-amber-100">تومان</span>
                 </div>
 
@@ -48,7 +48,7 @@
       </div>
 
       <div class="bg-purple-500 rounded-lg w-full">
-        <base-loading-panel :loading="periodAmountsLoading">
+        <base-loading-panel :loading="periodAmountLoading || periodAmount === null">
           <template #loader>
             <div class="flex flex-col gap-3 p-5">
               <loader-circle
@@ -68,7 +68,7 @@
             <div class="flex items-center p-5 gap-3">
               <div class="flex flex-col gap-3.5">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="text-xl text-white">300,000,000</span>
+                  <span class="text-xl text-white">{{ numberFormat(periodAmount) }}</span>
                   <span class="text-sm text-purple-100">تومان</span>
                 </div>
 
@@ -95,9 +95,14 @@ import {onMounted, ref} from "vue";
 import {REPORT_PERIODS} from "@/composables/constants.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {AdminPanelDashboardAPI} from "@/service/APIAdminPanel.js";
+import {numberFormat} from "@/composables/helper.js";
 
+const allAmounts = ref(null)
 const allAmountsLoading = ref(true)
-const periodAmountsLoading = ref(true)
+
+const periodAmount = ref(null)
+const periodAmountLoading = ref(true)
 
 const periods = [
   {
@@ -126,19 +131,41 @@ const selectedPeriod = ref({
   text: REPORT_PERIODS.TODAY.text,
 })
 
+function getPeriodData(selected = null) {
+  periodAmountLoading.value = true
+
+  AdminPanelDashboardAPI.getPeriodSales(selectedPeriod.value.value, {
+    success(response) {
+      periodAmount.value = response.data
+
+      if (selected) {
+        // Assign selected period again to prevent mistaken selecting
+        selectedPeriod.value = selected
+      }
+    },
+    finally() {
+      periodAmountLoading.value = false
+    },
+  })
+}
+
 function periodChangeHandler(selected) {
-  if (periodAmountsLoading.value) return
+  if (periodAmountLoading.value) return
 
   selectedPeriod.value = selected
 
-  // TODO: make an API call to get what we needed...
+  getPeriodData(selected)
 }
 
 onMounted(() => {
-  // TODO: get amount of sells of all time...
+  AdminPanelDashboardAPI.getTotalSales({
+    success(response) {
+      allAmounts.value = response.data
 
-  setTimeout(() => {
-    periodAmountsLoading.value = false
-  }, 10000)
+      allAmountsLoading.value = false
+    },
+  })
+
+  getPeriodData()
 })
 </script>

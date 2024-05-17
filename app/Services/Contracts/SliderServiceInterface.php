@@ -17,6 +17,11 @@ interface SliderServiceInterface extends ServiceInterface
     public function getSliders(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getSlidersCount(): int;
+
+    /**
      * @param SliderPlacesEnum|array $place
      * @param bool $withUnpublished
      * @return Collection

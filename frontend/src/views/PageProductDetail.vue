@@ -83,10 +83,35 @@ useHead({
 })
 //-------------------------------
 
+useHead({
+  meta: [
+    {property: 'og:title', content: product?.title},
+    {
+      property: 'og:image',
+      content: product?.image
+        ? import.meta.env.VITE_API_BASE_URL + apiRoutes.showFile + '?file=' + product.image.path + '&size=' + FileSizes.ORIGINAL
+        : null,
+    },
+
+    {name: 'twitter:title', content: product?.title},
+    {
+      name: 'twitter:image:src',
+      content: product?.image
+        ? import.meta.env.VITE_API_BASE_URL + apiRoutes.showFile + '?file=' + product.image.path + '&size=' + FileSizes.ORIGINAL
+        : null,
+    },
+
+    {itemprop: 'name', content: product?.title},
+    {
+      itemprop: 'image',
+      content: product?.image
+        ? import.meta.env.VITE_API_BASE_URL + apiRoutes.showFile + '?file=' + product.image.path + '&size=' + FileSizes.ORIGINAL
+        : null,
+    }
+  ],
+})
+
 useSeoMeta({
-  'og:image': product?.image
-    ? import.meta.env.VITE_API_BASE_URL + apiRoutes.showFile + '?file=' + product.image.path + '&size=' + FileSizes.ORIGINAL
-    : null,
   title: product?.title,
   description: properties.value.trim() !== '' ? [localDescription, properties] : localDescription,
   keywords: product?.keywords?.length

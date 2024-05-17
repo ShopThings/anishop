@@ -18,5 +18,10 @@ interface ComplaintServiceInterface extends ServiceInterface
     /**
      * @return int
      */
+    public function getComplaintsCount(): int;
+
+    /**
+     * @return int
+     */
     public function getNotSeenComplaintsCount(): int;
 }

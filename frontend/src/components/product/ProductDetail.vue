@@ -168,6 +168,7 @@
                     <base-lazy-image
                       :alt="slide.name"
                       :lazy-src="slide.path"
+                      :is-local="false"
                       class="rounded-lg"
                     />
                   </div>
@@ -180,6 +181,7 @@
                     <base-lazy-image
                       :alt="slide.name"
                       :lazy-src="slide.path"
+                      :is-local="false"
                       class="!w-auto !h-28 rounded-lg"
                     />
                   </div>

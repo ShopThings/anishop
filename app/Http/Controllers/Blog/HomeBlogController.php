@@ -155,7 +155,7 @@ class HomeBlogController extends Controller
      */
     public function popularCategories(BlogCategoryServiceInterface $service): AnonymousResourceCollection
     {
-        return HomeBlogCategoryResource::collection($service->getSideCategories());
+        return HomeBlogCategoryResource::collection($service->getPublishedHighPriorityCategories());
     }
 
     /**

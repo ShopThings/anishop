@@ -54,6 +54,7 @@ import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {REPORT_PERIODS} from "@/composables/constants.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
+import {AdminPanelDashboardAPI} from "@/service/APIAdminPanel.js";
 
 ChartJS.register(
   CategoryScale,
@@ -137,30 +138,45 @@ const chartOptions = {
   },
 }
 
+function getPeriodData(selected = null) {
+  periodLoading.value = true
+
+  AdminPanelDashboardAPI.getChartUsers(selectedPeriod.value.value, {
+    success(response) {
+      chartData.value = {
+        labels: response.labels,
+        datasets: [
+          {
+            label: response.dataset_label,
+            borderColor: '#f87979',
+            data: response.data,
+            fill: false,
+            tension: 0.4,
+          },
+        ],
+      }
+
+      if (selected) {
+        // Assign selected period again to prevent mistaken selecting
+        selectedPeriod.value = selected
+      }
+    },
+    finally() {
+      periodLoading.value = false
+      chartLoading.value = false
+    },
+  })
+}
+
 function periodChangeHandler(selected) {
   if (periodLoading.value) return
 
   selectedPeriod.value = selected
 
-  // TODO: make an API call to get what we needed...
+  getPeriodData(selected)
 }
 
 onMounted(() => {
-  setTimeout(() => {
-    chartLoading.value = false
-
-    chartData.value = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'تعداد عضویت کاربران (امروز)',
-          borderColor: '#f87979',
-          data: [40, 39, 10, 40, 39, 80, 40],
-          fill: false,
-          tension: 0.4,
-        }
-      ],
-    }
-  }, 2000)
+  getPeriodData()
 })
 </script>

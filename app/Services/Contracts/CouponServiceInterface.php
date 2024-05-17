@@ -19,6 +19,11 @@ interface CouponServiceInterface extends ServiceInterface
     public function getCoupons(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getCouponsCount(): int;
+
+    /**
      * @param string $code
      * @param User $user
      * @return Model|CouponResultEnum

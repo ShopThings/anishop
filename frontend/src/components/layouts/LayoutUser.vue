@@ -42,6 +42,7 @@ import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPan
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 import {useCartStore} from "@/store/StoreUserCart.js";
 import {usePageTransition} from "@/composables/page-transition.js";
+import {useHead} from "@unhead/vue";
 
 const route = useRoute()
 const transitionProps = usePageTransition()
@@ -60,7 +61,13 @@ const cartStore = useCartStore()
 provide('cartStore', cartStore)
 
 //--------------------------------------
+useHead({
+  meta: [
+    {name: 'robots', content: 'noindex'},
+  ],
+})
 
+//--------------------------------------
 let title = ref(null)
 let breadcrumb = ref(null)
 

@@ -12,10 +12,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Parables\NanoId\GeneratesNanoId;
 
 /**
- * @method withCompletePaidOrder(string $condition = 'and'): Builder
- * @method withoutAnyPaidOrder(string $condition = 'and'): Builder
- * @method withAnyPaidOrder(string $condition = 'and'): Builder
- * @method withWaitingOrder(string $condition = 'and'): Builder
+ * @method Builder withCompletePaidOrder(string $condition = 'and')
+ * @method Builder withoutAnyPaidOrder(string $condition = 'and')
+ * @method Builder withAnyPaidOrder(string $condition = 'and')
+ * @method Builder withWaitingOrder(string $condition = 'and')
  */
 class OrderDetail extends Model
 {
@@ -125,6 +125,7 @@ class OrderDetail extends Model
 
     /**
      * @param Builder $query
+     * @param string $condition
      * @return mixed
      */
     public function scopeWithCompletePaidOrder(Builder $query, string $condition = 'and'): mixed
@@ -136,14 +137,12 @@ class OrderDetail extends Model
 
         return $query->{$method}('orders', function ($query) {
             $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
-        }, '=', function ($query) {
-            // The count of all related payments
-            $query->count();
-        });
+        }, '=', $this->orders()->count());
     }
 
     /**
      * @param Builder $query
+     * @param string $condition
      * @return mixed
      */
     public function scopeWithoutAnyPaidOrder(Builder $query, string $condition = 'and'): mixed
@@ -164,6 +163,7 @@ class OrderDetail extends Model
 
     /**
      * @param Builder $query
+     * @param string $condition
      * @return mixed
      */
     public function scopeWithAnyPaidOrder(Builder $query, string $condition = 'and'): mixed
@@ -180,6 +180,7 @@ class OrderDetail extends Model
 
     /**
      * @param Builder $query
+     * @param string $condition
      * @return mixed
      */
     public function scopeWithWaitingOrder(Builder $query, string $condition = 'and'): mixed

@@ -63,6 +63,10 @@ export const adminRoutes = {
       alias: [''],
       name: 'admin.home',
       component: () => import('@/views/admin/PageHome.vue'),
+      meta: {
+        titleAppearance: false,
+        title: 'داشبورد',
+      },
     },
     {
       path: 'users',

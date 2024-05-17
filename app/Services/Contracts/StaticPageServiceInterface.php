@@ -16,6 +16,11 @@ interface StaticPageServiceInterface extends ServiceInterface
     public function getPages(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getPagesCount(): int;
+
+    /**
      * @param array $urls
      * @param bool $permanent
      * @param bool $considerDeletable

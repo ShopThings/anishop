@@ -1,12 +1,12 @@
 <template>
   <ul
-      v-if="categoriesLoading || !categories?.length"
-      class="flex flex-wrap items-center justify-center gap-8"
+    v-if="categoriesLoading || !categories?.length"
+    class="flex flex-wrap items-center justify-center gap-8"
   >
     <li
-        v-for="i in 6"
-        :key="i"
-        class="flex flex-col items-center gap-3 animate-pulse"
+      v-for="i in 6"
+      :key="i"
+      class="flex flex-col items-center gap-3 animate-pulse"
     >
       <div class="rounded-full size-32 bg-slate-200"></div>
       <div class="h-3 w-full rounded bg-slate-200"></div>
@@ -14,26 +14,27 @@
   </ul>
   <template v-else>
     <partial-general-title
-        container-class="mb-5 mt-6 p-2"
-        title="دسته‌بندی‌های منتخب"
-        title-size="text-xl"
-        type="side"
+      container-class="mb-5 mt-6 p-2"
+      title="دسته‌بندی‌های منتخب"
+      title-size="text-xl"
+      type="side"
     />
 
     <ul class="flex flex-wrap items-center justify-center gap-8">
       <li
-          v-for="category in categories"
-          :key="category.id"
+        v-for="category in categories"
+        :key="category.id"
       >
         <router-link
-            :to="{name: 'search', query: {category: category.id}}"
-            class="flex flex-col items-center gap-3"
+          :to="{name: 'search', query: {category: category.id}}"
+          class="flex flex-col items-center gap-3"
         >
           <base-lazy-image
-              :alt="category.name"
-              :lazy-src="category.image.path"
-              :size="FileSizes.LARGE"
-              class="w-32 h-auto"
+            :alt="category.name"
+            :is-local="false"
+            :lazy-src="category.image.path"
+            :size="FileSizes.LARGE"
+            class="w-32 h-auto"
           />
 
           <h1 class="font-iranyekan-bold text-sm">

@@ -20,17 +20,17 @@ export const AdminPanelDashboardAPI = {
 
   //-----------------------------------------------------
 
-  getTotalSells(callbacks) {
+  getTotalSales(callbacks) {
     return useRequest(
-      apiRoutes.admin.dashboard.totalSell,
+      apiRoutes.admin.dashboard.totalSale,
       null,
       callbacks
     )
   },
 
-  getPeriodSells(period, callbacks) {
+  getPeriodSales(period, callbacks) {
     return useRequest(
-      apiReplaceParams(apiRoutes.admin.dashboard.periodSell, {period}),
+      apiReplaceParams(apiRoutes.admin.dashboard.periodSale, {period}),
       null,
       callbacks
     )
@@ -44,25 +44,33 @@ export const AdminPanelDashboardAPI = {
     )
   },
 
-  getChartOrders(period, callbacks) {
+  getChartOrders(period, status, callbacks) {
     return useRequest(
-      apiReplaceParams(apiRoutes.admin.dashboard.chartOrders, {period}),
+      apiReplaceParams(apiRoutes.admin.dashboard.chartOrders, {period, status}),
       null,
       callbacks
     )
   },
 
-  getChartReturnOrders(period, callbacks) {
+  getChartReturnOrders(period, status, callbacks) {
     return useRequest(
-      apiReplaceParams(apiRoutes.admin.dashboard.chartReturnOrders, {period}),
+      apiReplaceParams(apiRoutes.admin.dashboard.chartReturnOrders, {period, status}),
       null,
       callbacks
     )
   },
 
-  getMostSellProducts(period, callbacks) {
+  getMostSaleProducts(period, callbacks) {
     return useRequest(
-      apiReplaceParams(apiRoutes.admin.dashboard.tableMostSellProducts, {period}),
+      apiReplaceParams(apiRoutes.admin.dashboard.tableMostSaleProducts, {period}),
+      null,
+      callbacks
+    )
+  },
+
+  getDashboardCounting(callbacks) {
+    return useRequest(
+      apiRoutes.admin.dashboard.dashboardCounting,
       null,
       callbacks
     )

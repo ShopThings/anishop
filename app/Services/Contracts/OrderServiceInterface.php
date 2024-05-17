@@ -33,6 +33,11 @@ interface OrderServiceInterface extends ServiceInterface
     public function getOrders(?int $userId = null, Filter $filter = null): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getOrdersCount(): int;
+
+    /**
      * @return Collection
      */
     public function getOrdersCountWithBadges(): Collection;

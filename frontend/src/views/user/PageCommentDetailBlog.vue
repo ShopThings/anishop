@@ -40,6 +40,7 @@
                     :alt="blog?.title"
                     :lazy-src="blog?.image?.path"
                     :size="FileSizes.SMALL"
+                    :is-local="false"
                     class="!h-28 sm:!h-20 w-auto rounded"
                   />
                 </div>

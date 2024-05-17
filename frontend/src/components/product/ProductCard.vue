@@ -13,6 +13,7 @@
         <base-lazy-image
           :alt="product.title"
           :lazy-src="product.image.path"
+          :is-local="false"
           class="w-full h-48 bg-white rounded-lg transition group-hover:scale-95"
         />
       </router-link>

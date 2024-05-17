@@ -31,6 +31,7 @@
                   <base-lazy-image
                       :alt="item.title"
                       :lazy-src="item.image.path"
+                      :is-local="false"
                       class="!w-20 ml-3 mb-0 h-auto hover:scale-95 md:!w-full md:mb-3 md:ml-0 transition shrink-0"
                   />
                 </router-link>

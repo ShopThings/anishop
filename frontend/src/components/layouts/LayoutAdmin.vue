@@ -71,6 +71,7 @@ import {PageTransition} from "vue3-page-transition";
 import {useCountingAlertsStore, useCountingOrdersStore, useNotificationStore} from "@/store/StoreAdminPanel.js";
 import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {usePageTransition} from "@/composables/page-transition.js";
+import {useHead} from "@unhead/vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -87,6 +88,13 @@ provide('countingOrderStore', countingOrderStore);
 
 const notificationStore = useNotificationStore();
 provide('notificationStore', notificationStore);
+
+//--------------------------------------
+useHead({
+  meta: [
+    {name: 'robots', content: 'noindex'},
+  ],
+})
 
 //--------------------------------------
 let title = ref(null)
@@ -112,7 +120,7 @@ watchEffect(() => {
 })
 
 watch(route, (to) => {
-  title.value = to.meta?.title || null
+  title.value = (to.meta?.titleAppearance !== false && to.meta?.title) ? to.meta?.title : null
   breadcrumb.value = to.meta?.breadcrumb || []
 }, {flush: 'pre', immediate: true, deep: true})
 

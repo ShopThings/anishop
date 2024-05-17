@@ -19,7 +19,7 @@
     userStore.hasPermission(PERMISSION_PLACES.ORDER, PERMISSIONS.READ)"
     class="mt-3"
   >
-    <sell-info/>
+    <sale-info/>
   </div>
 
   <div
@@ -66,7 +66,7 @@ import {onBeforeMount, onBeforeUnmount, ref} from "vue";
 import QuickAccessLinks from "@/components/admin/dashboard/QuickAccessLinks.vue";
 import NeededCharts from "@/components/admin/dashboard/NeededCharts.vue";
 import CountingBadges from "@/components/admin/dashboard/CountingBadges.vue";
-import SellInfo from "@/components/admin/dashboard/SellInfo.vue";
+import SaleInfo from "@/components/admin/dashboard/SaleInfo.vue";
 import {PERMISSION_PLACES, PERMISSIONS, ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const userStore = useAdminAuthStore()

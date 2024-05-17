@@ -22,7 +22,7 @@ enum ChartPeriodsEnum: string
     {
         return [
             self::TODAY->value => 'امروز',
-            self::WEEKLY->value => 'هفته اخیر',
+            self::WEEKLY->value => 'این هفته',
             self::MONTHLY->value => 'این ماه',
             self::MONTHS_3->value => 'سه ماهه اخیر',
             self::MONTHS_6->value => 'شش ماهه اخیر',
