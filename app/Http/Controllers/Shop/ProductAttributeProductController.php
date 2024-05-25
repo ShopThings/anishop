@@ -7,12 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductAttributeProductRequest;
 use App\Http\Resources\ProductAttributeProductResource;
 use App\Models\Product;
-use App\Models\User;
+use App\Models\ProductAttributeProduct;
 use App\Services\Contracts\ProductAttributeProductServiceInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductAttributeProductController extends Controller
@@ -32,11 +32,10 @@ class ProductAttributeProductController extends Controller
      * @param Request $request
      * @param Product $product
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreProductAttributeProductRequest $request, Product $product): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', ProductAttributeProduct::class);
 
         $validated = $request->validated();
         $model = $this->service->modifyProductAttributes(
@@ -50,12 +49,11 @@ class ProductAttributeProductController extends Controller
                 'message' => 'تغییر مقدار ویژگی محصول با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در تغییر مقدار ویژگی محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در تغییر مقدار ویژگی محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -63,11 +61,10 @@ class ProductAttributeProductController extends Controller
      *
      * @param Product $product
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function show(Product $product): AnonymousResourceCollection
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
         return ProductAttributeProductResource::collection($this->service->getProductAttributes($product->id));
     }
 }

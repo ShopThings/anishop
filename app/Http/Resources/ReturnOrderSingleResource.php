@@ -38,6 +38,7 @@ class ReturnOrderSingleResource extends JsonResource
                 'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status] ?? '#000000',
             ],
             'wait_for_user' => in_array($this->status, ReturnOrderStatusesEnum::getUserStatuses()),
+            'is_in_end_status' => in_array($this->status, ReturnOrderStatusesEnum::getEndingStatuses()),
             'seen_status' => $this->seen_status,
             'status_changed_at' => $this->status_changed_at
                 ? vertaTz($this->status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

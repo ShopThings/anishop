@@ -57,7 +57,7 @@
     >
       <template #empty>
         <partial-empty-rows
-            image="/empty-statuses/empty-note.svg"
+          image="/images/empty-statuses/empty-note.svg"
             image-class="w-60"
             message="هیچ پرسشی ثبت نشده است"
         />

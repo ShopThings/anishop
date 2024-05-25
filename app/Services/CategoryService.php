@@ -13,8 +13,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class CategoryService extends Service implements CategoryServiceInterface
 {
@@ -37,12 +37,22 @@ class CategoryService extends Service implements CategoryServiceInterface
     /**
      * @inheritDoc
      */
-    public function getHomeCategories(Filter $filter): Collection
+    public function getCategoriesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPublishedCategories(Filter $filter, bool $containMenuCategories = false): Collection
     {
         $where = new WhereBuilder();
-        $where
-            ->whereEqual('show_in_menu', DatabaseEnum::DB_YES)
-            ->whereEqual('is_published', DatabaseEnum::DB_YES);
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        if ($containMenuCategories) {
+            $where->whereEqual('show_in_menu', DatabaseEnum::DB_YES);
+        }
 
         $repo = $this->repository;
         $with = [];

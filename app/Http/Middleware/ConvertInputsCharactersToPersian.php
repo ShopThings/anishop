@@ -15,6 +15,17 @@ class ConvertInputsCharactersToPersian extends TransformsRequest
     protected static array $skipCallbacks = [];
 
     /**
+     * Register a callback that instructs the middleware to be skipped.
+     *
+     * @param Closure $callback
+     * @return void
+     */
+    public static function skipWhen(Closure $callback): void
+    {
+        static::$skipCallbacks[] = $callback;
+    }
+
+    /**
      * Handle an incoming request.
      *
      * @param Request $request
@@ -42,16 +53,5 @@ class ConvertInputsCharactersToPersian extends TransformsRequest
     protected function transform($key, $value): mixed
     {
         return CharacterConverter::toPersian($value);
-    }
-
-    /**
-     * Register a callback that instructs the middleware to be skipped.
-     *
-     * @param Closure $callback
-     * @return void
-     */
-    public static function skipWhen(Closure $callback): void
-    {
-        static::$skipCallbacks[] = $callback;
     }
 }

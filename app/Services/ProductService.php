@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Settings\SettingsEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
@@ -16,9 +17,10 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class ProductService extends Service implements ProductServiceInterface
@@ -37,6 +39,26 @@ class ProductService extends Service implements ProductServiceInterface
     /**
      * @inheritDoc
      */
+    public function getDataForSitemap(Filter $filter, ?array $condition = null): Collection|LengthAwarePaginator
+    {
+        if (!empty($condition)) {
+            $this->repository->resetWithWhereHas();
+            foreach ($condition as $item) {
+                if (is_array($item)) {
+                    $this->repository->withWhereHas($item['relation'], $item['callback']);
+                }
+            }
+        }
+
+        $where = new WhereBuilder('products');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->getProductsSearchFilterPaginated(filter: $filter, where: $where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getProducts(
         Filter                    $filter,
         GetterExpressionInterface $where = null
@@ -45,6 +67,39 @@ class ProductService extends Service implements ProductServiceInterface
         return $this->repository
             ->newWith(['creator', 'updater', 'deleter'])
             ->getProductsSearchFilterPaginated(filter: $filter, where: $where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSingleProduct(GetterExpressionInterface $where): ?Model
+    {
+        if (trim($where->getStatement()) === '') return null;
+        return $this->repository->findWhere($where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantByCode(string $code): ?Model
+    {
+        return $this->repository->getProductVariantByCode($code);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantsByCodes(array $codes): Collection
+    {
+        return $this->repository->getProductVariantsByCodes($codes);
     }
 
     /**

@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Enums\Results\CouponResultEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Models\User;
 use App\Repositories\Contracts\CouponRepositoryInterface;
 use App\Services\Contracts\CouponServiceInterface;
 use App\Support\Filter;
@@ -11,8 +13,8 @@ use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class CouponService extends Service implements CouponServiceInterface
 {
@@ -40,6 +42,22 @@ class CouponService extends Service implements CouponServiceInterface
                 page: $filter->getPage(),
                 order: $filter->getOrder()
             );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCouponsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkCoupon(string $code, User $user): Model|CouponResultEnum
+    {
+        return $this->repository->checkCoupon($code, $user);
     }
 
     /**

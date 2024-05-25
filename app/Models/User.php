@@ -11,6 +11,7 @@ use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
@@ -18,6 +19,9 @@ use Laravel\Sanctum\HasApiTokens;
 use Shetabit\Visitor\Traits\Visitor;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @method Builder verified()
+ */
 class User extends Model
 {
     use SoftDeletesTrait,
@@ -59,9 +63,32 @@ class User extends Model
 
     /*
     |--------------------------------------------------------------------------
+    | Some Needed Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeVerified(Builder $query): Builder
+    {
+        return $query->whereNotNull('verified_at');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
     | Some Needed Functionality
     |--------------------------------------------------------------------------
     */
+
+    /**
+     * @return bool
+     */
+    public function isVerified(): bool
+    {
+        return !is_null($this->verified_at);
+    }
 
     /**
      * @return bool
@@ -157,6 +184,14 @@ class User extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(OrderDetail::class, 'user_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function reservedOrders(): HasMany
+    {
+        return $this->hasMany(OrderReserve::class, 'user_id');
     }
 
     /*

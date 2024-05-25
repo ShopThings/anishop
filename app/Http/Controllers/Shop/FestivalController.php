@@ -12,14 +12,13 @@ use App\Http\Resources\FestivalResource;
 use App\Models\Category;
 use App\Models\Festival;
 use App\Models\Product;
-use App\Models\User;
 use App\Services\Contracts\FestivalServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class FestivalController extends Controller
@@ -33,6 +32,7 @@ class FestivalController extends Controller
         protected FestivalServiceInterface $service
     )
     {
+        $this->policyModel = Festival::class;
     }
 
     /**
@@ -40,11 +40,10 @@ class FestivalController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Festival::class);
         return FestivalResource::collection($this->service->getFestivals($filter));
     }
 
@@ -53,11 +52,10 @@ class FestivalController extends Controller
      *
      * @param Request $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreFestivalRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Festival::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -68,12 +66,11 @@ class FestivalController extends Controller
                 'message' => 'ایجاد جشنواره با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد جشنواره',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد جشنواره',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -81,11 +78,10 @@ class FestivalController extends Controller
      *
      * @param Festival $festival
      * @return FestivalResource
-     * @throws AuthorizationException
      */
     public function show(Festival $festival): FestivalResource
     {
-        $this->authorize('view', $festival);
+        Gate::authorize('view', $festival);
         return new FestivalResource($festival);
     }
 
@@ -95,23 +91,21 @@ class FestivalController extends Controller
      * @param UpdateFestivalRequest $request
      * @param Festival $festival
      * @return FestivalResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateFestivalRequest $request, Festival $festival): FestivalResource|JsonResponse
     {
-        $this->authorize('update', $festival);
+        Gate::authorize('update', $festival);
 
         $validated = $request->validated();
         $model = $this->service->updateById($festival->id, $validated);
 
         if (!is_null($model)) {
             return new FestivalResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش جشنواره',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش جشنواره',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -119,31 +113,29 @@ class FestivalController extends Controller
      *
      * @param Festival $festival
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Festival $festival): JsonResponse
     {
-        $this->authorize('delete', $festival);
+        Gate::authorize('delete', $festival);
 
         $res = $this->service->deleteById($festival->id);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Filter $filter
      * @param Festival $festival
      * @return FestivalProductResource
-     * @throws AuthorizationException
      */
     public function products(Filter $filter, Festival $festival): FestivalProductResource
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Festival::class);
 
         return new FestivalProductResource($this->service->getFestivalProducts(
             festivalId: $festival->id,
@@ -155,11 +147,10 @@ class FestivalController extends Controller
      * @param StoreFestivalProductRequest $request
      * @param Festival $festival
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function storeProduct(StoreFestivalProductRequest $request, Festival $festival): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Festival::class);
 
         $validated = $request->validated();
         $model = $this->service->addProductToFestival(
@@ -172,23 +163,21 @@ class FestivalController extends Controller
                 'message' => 'محصول به جشنواره اضافه شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در افزودن محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در افزودن محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param StoreFestivalProductRequest $request
      * @param Festival $festival
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function storeCategoryProducts(StoreFestivalProductRequest $request, Festival $festival): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Festival::class);
 
         $validated = $request->validated();
         $model = $this->service->addCategoryToFestival(
@@ -201,73 +190,69 @@ class FestivalController extends Controller
                 'message' => 'محصولات دسته‌بندی به جشنواره اضافه شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در افزودن محصولات دسته‌بندی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در افزودن محصولات دسته‌بندی',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Festival $festival
      * @param Product $product
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroyProduct(Festival $festival, Product $product): JsonResponse
     {
-        $this->authorize('delete', $festival);
+        Gate::authorize('delete', $festival);
 
         $res = $this->service->removeProductFromFestival($product->id, $festival->id);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Request $request
      * @param Festival $festival
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function batchDestroyProduct(Request $request, Festival $festival): JsonResponse
     {
-        $this->authorize('delete', $festival);
+        Gate::authorize('delete', $festival);
 
         $ids = $request->input('ids', []);
 
         $res = $this->service->removeProductsFromFestival($festival->id, $ids);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Festival $festival
      * @param Category $category
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function batchDestroyCategory(Festival $festival, Category $category): JsonResponse
     {
-        $this->authorize('delete', $festival);
+        Gate::authorize('delete', $festival);
 
         $res = $this->service->removeCategoryFromFestival($category->id, $festival->id);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

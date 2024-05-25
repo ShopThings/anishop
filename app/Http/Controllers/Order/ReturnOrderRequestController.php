@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Enums\Responses\ResponseTypesEnum;
+use App\Enums\Results\ReturnOrderToStockResult;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateReturnOrderItemRequest;
 use App\Http\Requests\UpdateReturnOrderRequest;
@@ -13,17 +14,14 @@ use App\Models\ReturnOrderRequestItem;
 use App\Models\User;
 use App\Services\Contracts\ReturnOrderServiceInterface;
 use App\Support\Filter;
-use App\Traits\ControllerPaginateTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ReturnOrderRequestController extends Controller
 {
-    use ControllerPaginateTrait;
-
     /**
      * @param ReturnOrderServiceInterface $service
      */
@@ -39,11 +37,10 @@ class ReturnOrderRequestController extends Controller
      * @param Filter $filter
      * @param User|null $user
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter, ?User $user = null): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', ReturnOrderRequest::class);
         return ReturnOrderResource::collection($this->service->getRequests(userId: $user?->id, filter: $filter));
     }
 
@@ -52,11 +49,10 @@ class ReturnOrderRequestController extends Controller
      *
      * @param ReturnOrderRequest $returnOrder
      * @return ReturnOrderSingleResource
-     * @throws AuthorizationException
      */
     public function show(ReturnOrderRequest $returnOrder): ReturnOrderSingleResource
     {
-        $this->authorize('view', $returnOrder);
+        Gate::authorize('view', $returnOrder);
         return new ReturnOrderSingleResource($returnOrder);
     }
 
@@ -66,48 +62,76 @@ class ReturnOrderRequestController extends Controller
      * @param UpdateReturnOrderRequest $request
      * @param ReturnOrderRequest $returnOrder
      * @return ReturnOrderSingleResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(
         UpdateReturnOrderRequest $request,
         ReturnOrderRequest $returnOrder
     ): ReturnOrderSingleResource|JsonResponse
     {
-        $this->authorize('update', $returnOrder);
+        Gate::authorize('update', $returnOrder);
 
         $validated = $request->validated([
             'not_accepted_description',
             'status',
             'seen_status',
         ]);
-        $model = $this->service->updateById($returnOrder->id, $validated);
+        $model = $this->service->updateByCode($returnOrder->code, $validated);
 
         if (!is_null($model)) {
             return new ReturnOrderSingleResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش سفارش مرجوعی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش سفارش مرجوعی',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param Request $request
+     * @param ReturnOrderRequest $returnOrder
+     * @return JsonResponse
      */
     public function destroy(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
     {
-        $this->authorize('delete', $returnOrder);
+        Gate::authorize('delete', $returnOrder);
 
         $permanent = $request->user()->id === $returnOrder->user()?->id;
         $res = $this->service->deleteById($returnOrder->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @param ReturnOrderRequest $returnOrder
+     * @return JsonResponse
+     */
+    public function returnItemsToStock(ReturnOrderRequest $returnOrder): JsonResponse
+    {
+        Gate::authorize('update', $returnOrder);
+
+        $res = $this->service->returnItemsToStock($returnOrder);
+        if ($res === ReturnOrderToStockResult::ALREADY_RETURNED) {
+
             return response()->json([
                 'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+                'message' => 'بازگردانی محصولات مرجوعی به انبار قبلا انجام شده است.',
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+
+        } elseif ($res === ReturnOrderToStockResult::SUCCESS) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -115,7 +139,6 @@ class ReturnOrderRequestController extends Controller
      * @param ReturnOrderRequest $returnOrder
      * @param ReturnOrderRequestItem $returnOrderItem
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function modifyItem(
         UpdateReturnOrderItemRequest $request,
@@ -123,7 +146,7 @@ class ReturnOrderRequestController extends Controller
         ReturnOrderRequestItem $returnOrderItem
     ): JsonResponse
     {
-        $this->authorize('update', $returnOrder);
+        Gate::authorize('update', $returnOrder);
 
         $validated = $request->validated('is_accepted');
         $model = $this->service->modifyItem($returnOrderItem->id, $validated);
@@ -137,8 +160,19 @@ class ReturnOrderRequestController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'خطا در ویرایش محصول مرجوعی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function allStatuses(): JsonResponse
+    {
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getAllStatuses(),
+        ], ResponseCodes::HTTP_OK);
     }
 
     /**

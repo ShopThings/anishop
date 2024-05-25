@@ -1,9 +1,9 @@
 <template>
   <form class="relative" @submit.prevent="onSubmit">
     <loader-dot-orbit
-        v-if="!canSubmit"
-        container-bg-color="bg-blue-50 opacity-40"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      v-if="!canSubmit"
+      container-bg-color="bg-blue-50 opacity-40"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <VTransitionSlideFadeDownY>
@@ -14,9 +14,9 @@
 
     <div class="mb-3 mt-12">
       <base-input
-          label-title="شماره موبایل"
-          name="username"
-          placeholder="شماره موبایل"
+        label-title="شماره موبایل"
+        name="username"
+        placeholder="شماره موبایل"
       >
         <template #icon>
           <DevicePhoneMobileIcon class="w-6 h-6 text-gray-400"/>
@@ -40,9 +40,9 @@
           <template #label>
             من با
             <router-link
-                :to="{name: 'pages', params: {url: 'privacy-policy'}}"
-                class="text-orange-500 hover:text-opacity-80 transition"
-                target="_blank"
+              :to="{name: 'pages', params: {url: 'privacy-policy'}}"
+              class="text-orange-500 hover:text-opacity-80 transition"
+              target="_blank"
             >
               شرایط و سیاست‌های سایت
             </router-link>
@@ -50,29 +50,29 @@
           </template>
         </partial-input-label>
         <base-checkbox
-            id="usageAgreement"
-            v-model="agreementStatus"
-            name="usage_agreement"
+          id="usageAgreement"
+          v-model="agreementStatus"
+          name="usage_agreement"
         />
       </div>
       <partial-input-error-message :error-message="errors?.agreement"/>
     </div>
     <div class="mb-3">
       <base-button
-          :disabled="!canSubmit"
-          class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-          type="submit"
+        :disabled="!canSubmit"
+        class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+        type="submit"
       >
         <span class="mx-auto">ارسال کد</span>
         <ArrowLeftIcon
-            class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+          class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
       </base-button>
     </div>
   </form>
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {DevicePhoneMobileIcon, QrCodeIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
@@ -88,6 +88,7 @@ import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMes
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
 import BaseMessage from "@/components/base/BaseMessage.vue";
 import {HomeSignupAPI} from "@/service/APIHomePages.js";
+import {useSignupStore} from "@/store/StoreUserHome.js";
 
 const props = defineProps({
   options: {
@@ -95,6 +96,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const signupStore = useSignupStore()
 
 const agreementStatus = ref(false)
 
@@ -110,9 +113,9 @@ function closeAlert() {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     username: yup.string()
-        .transform(transformNumbersToEnglish)
-        .persianMobile('شماره موبایل نامعتبر است.')
-        .required('شماره موبایل خود را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .persianMobile('شماره موبایل نامعتبر است.')
+      .required('شماره موبایل خود را وارد نمایید.'),
     captcha: yup.string().required('کد تصویر را وارد نمایید.'),
   }),
 }, (values, actions) => {
@@ -131,21 +134,28 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   HomeSignupAPI.storeMobile({
     username: values.username,
+    captcha: values.captcha,
     key: captchaKey.value,
   }, {
     success() {
+      actions.resetForm();
+
       if (isFunction(props.options?.next)) {
-        actions.resetForm();
+        signupStore.setMobileStep({
+          mobile: values.username,
+        })
+
         props.options.next()
       }
     },
     error(error) {
       actions.resetField('captcha')
 
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
-      err.message = error.message || 'خطا در ثبت نام!'
+      err.message = error?.message || 'خطا در ثبت نام!'
       err.type = 'error'
       return false
     },
@@ -156,5 +166,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       canSubmit.value = true
     },
   })
+})
+
+onMounted(() => {
+  signupStore.$reset()
 })
 </script>

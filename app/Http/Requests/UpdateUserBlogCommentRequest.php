@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Blog;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserBlogCommentRequest extends FormRequest
@@ -23,20 +22,9 @@ class UpdateUserBlogCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'blog' => [
-                'required',
-                'exists:' . Blog::class . ',id',
-            ],
             'description' => [
-                'sometimes',
+                'required', // because it is just a property, made it required
             ],
-        ];
-    }
-
-    public function attributes()
-    {
-        return [
-            'blog' => 'بلاگ برای ثبت دیدگاه',
         ];
     }
 }

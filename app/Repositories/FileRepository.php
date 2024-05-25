@@ -15,10 +15,10 @@ use App\Support\Traits\FileTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
@@ -33,6 +33,31 @@ class FileRepository extends Repository implements FileRepositoryInterface
     public function __construct(FileManager $model)
     {
         parent::__construct($model);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws InvalidFileException
+     */
+    public function savePath(string $fullPath, array $attributes = []): ?Model
+    {
+        $fullPath = $this->getNormalizedPath($fullPath);
+
+        $info = pathinfo($fullPath);
+        $filename = $info['filename'];
+        $extension = $info['extension'] ?? null;
+
+        if (empty($extension)) {
+            throw new InvalidFileException('تنها فایل‌ها قابلیت ذخیره شدن در پایگاه داده را دارا می‌باشند.');
+        }
+
+        $attributes = $attributes + [
+                'name' => $filename,
+                'extension' => $extension,
+                'path' => $fullPath,
+            ];
+
+        return $this->create($attributes);
     }
 
     /**
@@ -363,7 +388,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
      * @throws InvalidDiskException
      * @throws InvalidFileException
      */
-    public function download(string $path, string $disk)
+    public function download(string $path, string $disk): mixed
     {
         $path = $this->getNormalizedPath($path);
 

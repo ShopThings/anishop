@@ -13,7 +13,8 @@ return new class extends Migration {
     {
         Schema::create('gateway_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_id')->constrained('orders')->restrictOnDelete()->cascadeOnUpdate();
+            $table->foreignId('order_id')
+                ->constrained('orders')->restrictOnDelete()->cascadeOnUpdate();
             $table->boolean('status')->default(false);
             $table->text('message');
             $table->string('transaction')->nullable()
@@ -22,13 +23,13 @@ return new class extends Migration {
                 ->comment('it is reference_id to track payment');
             $table->enum('gateway_type', array_map(fn($item) => $item->value, GatewaysEnum::cases()))
                 ->comment('indicates which gateway is this');
-            $table->string('meta')->nullable();
-            $table->timestamp('payed_at')->nullable();
+            $table->text('meta')->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();
 
             $table->index('status');
             $table->index('transaction');
-            $table->index('payed_at');
+            $table->index('paid_at');
             $table->index('created_at');
         });
     }

@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
@@ -82,6 +82,7 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {HomeRecoverPasswordAPI} from "@/service/APIHomePages.js";
 import {useCountdown} from "@/composables/countdown-timer.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
+import {useRecoverPasswordStore} from "@/store/StoreUserHome.js";
 
 const props = defineProps({
   options: {
@@ -89,6 +90,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const recoverStore = useRecoverPasswordStore()
 
 //----------------------------------------------
 // Handle dynamic input validation and focusing
@@ -197,12 +200,19 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
 
   canSubmit.value = false
 
-  HomeRecoverPasswordAPI.verifyCode(code, {
+  HomeRecoverPasswordAPI.verifyCode({
+    code,
+    username: recoverStore.getMobileStep?.mobile
+  }, {
     success() {
       actions.resetForm()
       resetFormInputs()
 
       if (isFunction(props.options?.next)) {
+        recoverStore.setCodeStep({
+          code,
+        })
+
         props.options.next()
       }
     },
@@ -238,4 +248,12 @@ function resetFormInputs() {
     }
   }
 }
+
+onMounted(() => {
+  if (!recoverStore.canGoToStepCode) {
+    props.options.prev()
+  }
+
+  recoverStore.resetCodeStep()
+})
 </script>

@@ -12,10 +12,14 @@ return new class extends Migration {
     {
         Schema::create('order_reserves', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_code')
-                ->constrained('orders')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->timestamp('expire_at')->nullable();
+            $table->foreignId('user_id')->nullable()
+                ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('order_key_id')
+                ->constrained('order_details')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->timestamp('expires_at')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();
+
+            $table->index('order_key_id');
         });
     }
 

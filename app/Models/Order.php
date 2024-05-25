@@ -27,7 +27,7 @@ class Order extends Model
         'payment_method_type' => PaymentTypesEnum::class,
         'payment_status' => PaymentStatusesEnum::class,
         'payment_status_changed_at' => 'datetime',
-        'payed_at' => 'datetime',
+        'paid_at' => 'datetime',
         'can_pay_again_at' => 'datetime',
         'created_at' => 'datetime',
     ];
@@ -45,15 +45,15 @@ class Order extends Model
      */
     public function detail(): HasOne
     {
-        return $this->hasOne(OrderDetail::class, 'id', 'key_id');
+        return $this->hasOne(OrderDetail::class, 'key_id');
     }
 
     /**
-     * @return HasMany
+     * @return HasOne
      */
-    public function reservedOrders(): HasMany
+    public function paymentMethod(): HasOne
     {
-        return $this->hasMany(OrderReserve::class, 'order_code', 'code');
+        return $this->hasOne(PaymentMethod::class, 'payment_method_id');
     }
 
     /**
@@ -62,6 +62,14 @@ class Order extends Model
     public function payments(): HasMany
     {
         return $this->hasMany(GatewayPayment::class, 'order_id');
+    }
+
+    /**
+     * @return bool
+     */
+    public function waitForPay(): bool
+    {
+        return $this->payment_status === PaymentStatusesEnum::WAIT->value;
     }
 
     /**

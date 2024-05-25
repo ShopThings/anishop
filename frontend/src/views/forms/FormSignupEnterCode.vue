@@ -71,7 +71,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
@@ -82,6 +82,7 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {HomeSignupAPI} from "@/service/APIHomePages.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {useCountdown} from "@/composables/countdown-timer.js";
+import {useSignupStore} from "@/store/StoreUserHome.js";
 
 const props = defineProps({
   options: {
@@ -89,6 +90,8 @@ const props = defineProps({
     required: true,
   },
 })
+
+const signupStore = useSignupStore()
 
 //----------------------------------------------
 // Handle dynamic input validation and focusing
@@ -196,12 +199,19 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
 
   canSubmit.value = false
 
-  HomeSignupAPI.verifyCode(code, {
+  HomeSignupAPI.verifyCode({
+    code,
+    username: signupStore.getMobileStep?.mobile
+  }, {
     success() {
       actions.resetForm()
       resetFormInputs()
 
       if (isFunction(props.options?.next)) {
+        signupStore.setCodeStep({
+          code,
+        })
+
         props.options.next()
       }
     },
@@ -237,4 +247,12 @@ function resetFormInputs() {
     }
   }
 }
+
+onMounted(() => {
+  if (!signupStore.canGoToStepCode) {
+    props.options.prev()
+  }
+
+  signupStore.resetCodeStep()
+})
 </script>

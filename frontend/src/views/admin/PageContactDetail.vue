@@ -50,7 +50,7 @@
             <div class="flex flex-col gap-3 shadow-md bg-white p-6 mt-3 border border-slate-50 leading-loose">
               <h3
                   v-if="contact"
-                  class="iranyekan-bold text-lg"
+                  class="font-iranyekan-bold text-lg"
               >
                 {{ contact?.title }}
               </h3>
@@ -145,8 +145,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       setFormFields(response.data)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

@@ -17,6 +17,11 @@ interface FestivalServiceInterface extends ServiceInterface
     public function getFestivals(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getFestivalsCount(): int;
+
+    /**
      * @return Collection
      */
     public function getHomeFestivals(): Collection;

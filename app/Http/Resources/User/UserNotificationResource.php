@@ -21,7 +21,7 @@ class UserNotificationResource extends JsonResource
                 ? vertaTz($this->read_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
             'created_at' => $this->created_at
-                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::NOTIFICATION_DEFAULT->value)
                 : null,
         ];
     }

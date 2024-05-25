@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Blog;
 
 use App\Enums\Blogs\BlogVotingTypesEnum;
+use App\Enums\DatabaseEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Filters\HomeBlogFilter;
@@ -10,14 +11,18 @@ use App\Http\Requests\UpdateHomeBlogRequest;
 use App\Http\Resources\Home\ArchiveResource;
 use App\Http\Resources\Home\BlogCategoryResource as HomeBlogCategoryResource;
 use App\Http\Resources\Home\BlogResource as HomeBLogResource;
+use App\Http\Resources\Home\BlogSingleResource as HomeBlogSingleResource;
 use App\Models\Blog;
 use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Services\Contracts\BlogServiceInterface;
-use App\Support\Filter;
+use App\Support\WhereBuilder\WhereBuilder;
+use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HomeBlogController extends Controller
 {
@@ -39,9 +44,12 @@ class HomeBlogController extends Controller
         return HomeBlogResource::collection($this->service->getFilteredBlogs($filter));
     }
 
-    public function homeLatestBlogs()
+    /**
+     * @return AnonymousResourceCollection
+     */
+    public function homeLatestBlogs(): AnonymousResourceCollection
     {
-        $filter = new Filter();
+        $filter = new HomeBlogFilter();
         $filter
             ->setLimit(3)
             ->setOrder([
@@ -55,19 +63,35 @@ class HomeBlogController extends Controller
      * This will use 'log_visit' to log too
      *
      * @param Blog $blog
-     * @return HomeBlogResource
+     * @return HomeBlogSingleResource
      */
-    public function show(Blog $blog): HomeBlogResource
+    public function show(Blog $blog): HomeBlogSingleResource
     {
-        return new HomeBlogResource($blog);
+        Gate::authorize('isPubliclyAccessible', $blog);
+        return new HomeBlogSingleResource($blog);
     }
 
     /**
-     * @param Blog $blog
+     * @param $blog
      * @return HomeBLogResource
      */
-    public function minifiedShow(Blog $blog): HomeBlogResource
+    public function minifiedShow($blog): HomeBlogResource
     {
+        $where = new WhereBuilder();
+        $where
+            ->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->group(function (WhereBuilderInterface $builder) use ($blog) {
+                $builder
+                    ->orWhereEqual('id', $blog)
+                    ->orWhereEqual('slug', $blog);
+            });
+
+        $model = $this->service->getSingleBlog($where->build());
+
+        if (is_null($model)) {
+            throw new NotFoundHttpException();
+        }
+
         return new HomeBlogResource($blog);
     }
 
@@ -94,12 +118,11 @@ class HomeBlogController extends Controller
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'رأی شما با موفقیت ثبت شد.',
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ثبت رأی',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ثبت رأی',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -132,7 +155,7 @@ class HomeBlogController extends Controller
      */
     public function popularCategories(BlogCategoryServiceInterface $service): AnonymousResourceCollection
     {
-        return HomeBlogCategoryResource::collection($service->getSideCategories());
+        return HomeBlogCategoryResource::collection($service->getPublishedHighPriorityCategories());
     }
 
     /**

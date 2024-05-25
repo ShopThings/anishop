@@ -15,15 +15,29 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            FileManagerSeeder::class,
+            //
             ProvinceAndCitySeeder::class,
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
+            //
             SettingSeeder::class,
+            //
+            SendMethodSeeder::class,
+            //
             BlogCommentBadgeSeeder::class,
+            BlogSeeder::class,
+            BlogCommentSeeder::class,
+            //
             MenuAndPlaceSeeder::class,
+            //
+            ColorSeeder::class,
             BrandSeeder::class,
             CategorySeeder::class,
             UnitSeeder::class,
+//            ProductSeeder::class,
+//            ProductCommentSeeder::class,
+            //
             OrderBadgeSeeder::class,
         ]);
     }

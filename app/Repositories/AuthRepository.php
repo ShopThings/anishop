@@ -49,6 +49,7 @@ class AuthRepository implements AuthRepositoryInterface
 
     /**
      * @inheritDoc
+     * @throws PleaseWaitException
      */
     public function sendActivationVerificationCode(User $user): bool
     {
@@ -60,12 +61,11 @@ class AuthRepository implements AuthRepositoryInterface
 
         $diffTime = vertaTz($user->verify_wait_for_code)->diffSeconds(now());
         throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
-
-        return false;
     }
 
     /**
      * @inheritDoc
+     * @throws PleaseWaitException
      */
     public function sendForgetPasswordVerificationCode(User $user): bool
     {
@@ -77,8 +77,6 @@ class AuthRepository implements AuthRepositoryInterface
 
         $diffTime = vertaTz($user->forget_password_wait_for_code)->diffSeconds(now());
         throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
-
-        return false;
     }
 
     /**

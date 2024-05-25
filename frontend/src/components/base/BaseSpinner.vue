@@ -19,23 +19,33 @@
         v-if="hasEditableInput"
         v-model="value"
         :class="[
-          'py-1 px-4 text-gray-900 border-0 ring-1 ring-inset ring-gray-300 grow text-center text-lg !iranyekan-bold w-20 focus:ring-inset focus:ring-indigo-500',
+          'py-1 px-4 text-gray-900 border-0 ring-1 ring-inset ring-gray-300 grow text-center text-lg font-iranyekan-bold w-20 focus:ring-inset focus:ring-indigo-500',
           valueContainerClass,
           readonly ? 'rounded-md' : '!rounded-none'
         ]"
         name="quantity_spinner"
         type="text"
     >
-    <div
-        v-else
-        :class="[
-          valueContainerClass,
-          readonly ? 'rounded-md' : ''
-        ]"
-        class="py-1.5 px-4 text-gray-900 ring-1 ring-inset ring-gray-300 grow text-center text-lg iranyekan-bold w-20"
-    >
-      {{ value }}
-    </div>
+    <template v-else>
+      <div class="flex items-center">
+        <div
+          :class="[
+              valueContainerClass,
+              readonly ? 'rounded-md' : ''
+            ]"
+          class="py-1.5 px-3 text-gray-900 border-y border-gray-200 grow text-center text-lg font-iranyekan-bold w-20"
+        >
+          {{ value }}
+        </div>
+
+        <div
+          v-if="slots['afterValue']"
+          class="border-y border-gray-200 h-full flex items-center justify-center pl-2"
+        >
+          <slot name="afterValue"></slot>
+        </div>
+      </div>
+    </template>
 
     <base-button
         v-if="!readonly"
@@ -55,9 +65,9 @@
 </template>
 
 <script setup>
+import {computed, ref, useSlots} from "vue";
 import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "@/components/base/BaseButton.vue";
-import {computed, ref} from "vue";
 import isFunction from "lodash.isfunction";
 
 const props = defineProps({
@@ -78,7 +88,8 @@ const props = defineProps({
   minusBtnClass: String,
   plusBtnClass: String,
 })
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'increase', 'decrease'])
+const slots = useSlots()
 
 const value = computed({
   get() {
@@ -98,6 +109,7 @@ function handleDecrease() {
   }
 
   value.value--
+  emit('decrease', value.value)
 }
 
 function handleIncrease() {
@@ -107,6 +119,7 @@ function handleIncrease() {
   }
 
   value.value++
+  emit('increase', value.value)
 }
 
 //------------------------------------------

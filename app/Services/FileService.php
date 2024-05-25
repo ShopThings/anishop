@@ -28,6 +28,32 @@ class FileService implements FileServiceInterface
 
     /**
      * @inheritDoc
+     * @throws InvalidFileException
+     */
+    public function saveToDb(array|string $data, array $extraAttributes = []): ?Model
+    {
+        if (is_string($data)) {
+            return $this->repository->savePath($data, $extraAttributes);
+        }
+
+        $attrs = [
+            'name' => $data['name'],
+            'extension' => $data['extension'],
+            'path' => $data['path'],
+        ];
+
+        if (isset($data['created_by'])) {
+            $attrs['created_by'] = $data['created_by'];
+        }
+        if (isset($data['updated_by'])) {
+            $attrs['updated_by'] = $data['updated_by'];
+        }
+
+        return $this->repository->create($attrs);
+    }
+
+    /**
+     * @inheritDoc
      * @throws FileDuplicationException
      * @throws InvalidDiskException
      * @throws InvalidPathException

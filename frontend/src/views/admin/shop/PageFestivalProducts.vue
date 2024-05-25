@@ -7,7 +7,7 @@
       panel-class="bg-white rounded-lg border mb-3"
   >
     <template #button>
-      <span class="iranyekan-bold">افزودن محصول به جشنواره</span>
+      <span class="font-iranyekan-bold">افزودن محصول به جشنواره</span>
     </template>
 
     <template #panel>
@@ -23,7 +23,7 @@
       panel-class="bg-white rounded-lg border mb-3"
   >
     <template #button>
-      <span class="iranyekan-bold">افزودن محصولات دسته‌بندی به جشنواره</span>
+      <span class="font-iranyekan-bold">افزودن محصولات دسته‌بندی به جشنواره</span>
     </template>
 
     <template #panel>
@@ -63,12 +63,15 @@
                   :alt="value.product.title"
                   :lazy-src="value.product.image.path"
                   :size="FileSizes.SMALL"
+                  :is-local="false"
                   class="!h-28 sm:!h-20 w-auto rounded"
               />
             </template>
 
             <template #discount_percentage="{value}">
-              <span class="iranyekan-bold rounded py-0.5 px-1.5 bg-violet-200">{{ value.discount_percentage }}%</span>
+              <span class="font-iranyekan-bold rounded py-0.5 px-1.5 bg-violet-200">{{
+                  value.discount_percentage
+                }}%</span>
             </template>
 
             <template v-slot:op="{value}">

@@ -8,14 +8,13 @@ use App\Http\Requests\StoreCityPostPriceRequest;
 use App\Http\Requests\UpdateCityPostPriceRequest;
 use App\Http\Resources\CityPostPriceResource;
 use App\Models\CityPostPrice;
-use App\Models\User;
 use App\Services\Contracts\CityPostPriceServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CityPostPriceController extends Controller
@@ -29,6 +28,7 @@ class CityPostPriceController extends Controller
         protected CityPostPriceServiceInterface $service
     )
     {
+        $this->policyModel = CityPostPrice::class;
     }
 
     /**
@@ -36,11 +36,10 @@ class CityPostPriceController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', CityPostPrice::class);
         return CityPostPriceResource::collection($this->service->getPostPrices($filter));
     }
 
@@ -49,11 +48,10 @@ class CityPostPriceController extends Controller
      *
      * @param StoreCityPostPriceRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreCityPostPriceRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', CityPostPrice::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -64,12 +62,11 @@ class CityPostPriceController extends Controller
                 'message' => 'هزینه ارسال با موفقیت ثبت شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ثبت هزینه ارسال',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ثبت هزینه ارسال',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -77,11 +74,10 @@ class CityPostPriceController extends Controller
      *
      * @param CityPostPrice $cityPostPrice
      * @return CityPostPriceResource
-     * @throws AuthorizationException
      */
     public function show(CityPostPrice $cityPostPrice): CityPostPriceResource
     {
-        $this->authorize('view', $cityPostPrice);
+        Gate::authorize('view', $cityPostPrice);
         return new CityPostPriceResource($cityPostPrice);
     }
 
@@ -91,26 +87,24 @@ class CityPostPriceController extends Controller
      * @param UpdateCityPostPriceRequest $request
      * @param CityPostPrice $cityPostPrice
      * @return CityPostPriceResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(
         UpdateCityPostPriceRequest $request,
         CityPostPrice              $cityPostPrice
     ): CityPostPriceResource|JsonResponse
     {
-        $this->authorize('update', $cityPostPrice);
+        Gate::authorize('update', $cityPostPrice);
 
         $validated = $request->validated();
         $model = $this->service->updateById($cityPostPrice->id, $validated);
 
         if (!is_null($model)) {
             return new CityPostPriceResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش هزینه ارسال',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش هزینه ارسال',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -119,20 +113,19 @@ class CityPostPriceController extends Controller
      * @param Request $request
      * @param CityPostPrice $cityPostPrice
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, CityPostPrice $cityPostPrice): JsonResponse
     {
-        $this->authorize('delete', $cityPostPrice);
+        Gate::authorize('delete', $cityPostPrice);
 
         $permanent = $request->user()->id === $cityPostPrice->creator?->id;
         $res = $this->service->deleteById($cityPostPrice->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

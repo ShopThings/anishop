@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Repositories\Contracts\ReportRepositoryInterface;
 use App\Services\Contracts\ReportServiceInterface;
+use App\Support\Filter;
 use App\Support\Service;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ReportService extends Service implements ReportServiceInterface
 {
@@ -12,6 +15,54 @@ class ReportService extends Service implements ReportServiceInterface
         protected ReportRepositoryInterface $repository
     )
     {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsersForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $filter->setSearchText(null);
+
+        return $this->repository->getUsersForReport(
+            filter: $filter,
+            reportQuery: $reportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductsForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $filter->setSearchText(null);
+
+        return $this->repository->getProductsForReport(
+            filter: $filter,
+            reportQuery: $reportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrdersForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $filter->setSearchText(null);
+
+        return $this->repository->getOrdersForReport(
+            filter: $filter,
+            reportQuery: $reportQuery
+        );
     }
 
     /**

@@ -13,17 +13,6 @@ class ProductFilter extends Filter
     protected ?array $ids = null;
 
     /**
-     * @inheritDoc
-     */
-    protected function init(Request $request): void
-    {
-        parent::init($request);
-
-        $ids = $request->input('ids', []);
-        $this->setIds(is_array($ids) ? $ids : []);
-    }
-
-    /**
      * @return array|null
      */
     public function getIds(): ?array
@@ -51,5 +40,16 @@ class ProductFilter extends Filter
         $this->ids = null;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
+    {
+        parent::init($request);
+
+        $ids = $request->input('ids', []);
+        $this->setIds(is_array($ids) ? $ids : []);
     }
 }

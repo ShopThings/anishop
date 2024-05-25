@@ -7,12 +7,13 @@ use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
 use App\Http\Requests\Filters\HomeProductSideFilter;
 use App\Support\Filter;
+use App\Support\SitemapFetchInterface;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
-interface ProductServiceInterface extends ServiceInterface
+interface ProductServiceInterface extends ServiceInterface, SitemapFetchInterface
 {
     /**
      * @param Filter $filter
@@ -23,6 +24,29 @@ interface ProductServiceInterface extends ServiceInterface
         Filter                    $filter,
         GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getProductsCount(): int;
+
+    /**
+     * @param GetterExpressionInterface $where
+     * @return Model|null
+     */
+    public function getSingleProduct(GetterExpressionInterface $where): ?Model;
+
+    /**
+     * @param string $code
+     * @return Model|null
+     */
+    public function getProductVariantByCode(string $code): ?Model;
+
+    /**
+     * @param array $codes
+     * @return Collection
+     */
+    public function getProductVariantsByCodes(array $codes): Collection;
 
     /**
      * @param HomeProductFilter $filter

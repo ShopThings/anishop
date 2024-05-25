@@ -16,6 +16,11 @@ interface FaqServiceInterface extends ServiceInterface
     public function getFaqs(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getFaqsCount(): int;
+
+    /**
      * @param Filter $filter
      * @return Collection
      */

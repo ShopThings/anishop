@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
+use App\Http\Requests\Filters\HomeBlogCommentFilter;
 use App\Models\BlogComment;
 use App\Repositories\Contracts\BlogCommentRepositoryInterface;
 use App\Support\Filter;
@@ -26,7 +27,7 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
      * @inheritDoc
      */
     public function getCommentsSearchFilterPaginated(
-        int    $blogId,
+        ?int $blogId = null,
         array  $columns = ['*'],
         Filter $filter = null
     ): Collection|LengthAwarePaginator
@@ -87,7 +88,19 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
                     })
                     ->orWhereLike('blog_comments.description', $search);
             })
-            ->where('blog_comments.blog_id', $blogId);
+            ->when($blogId, function ($q, $blogId) {
+                $q->where('blog_comments.blog_id', $blogId);
+            });
+
+        if ($filter instanceof HomeBlogCommentFilter) {
+            $parentId = $filter->getParentId();
+
+            $query
+                ->when($parentId > 0, function ($q) use ($parentId) {
+                    $q->where('comment_id', $parentId);
+                })
+                ->accepted();
+        }
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }

@@ -1,12 +1,12 @@
 <template>
   <base-switch
-      v-model:loading="operationLoading"
-      :before-change-fn="handleSwitchChange"
-      :enabled="value"
-      :label="label || offLabel"
-      :name="generateUniqueName"
-      :on-label="onLabel"
-      :sr-text="label"
+    v-model:loading="operationLoading"
+    :before-change-fn="handleSwitchChange"
+    :enabled="value"
+    :label="label || offLabel"
+    :name="generateUniqueName"
+    :on-label="onLabel"
+    :sr-text="label"
   />
 </template>
 
@@ -19,19 +19,30 @@ import {useToast} from "vue-toastification";
 import uniqueId from "lodash.uniqueid";
 
 const props = defineProps({
-  id: {
-    type: Number,
-    required: true,
-  },
+  id: Number,
+  // parameters to pass api method in order
+  parameters: Array,
+  data: Object,
   modelValue: {
     type: Boolean,
     default: false,
   },
+  //
   label: String,
   onLabel: String,
   offLabel: String,
+  //
   api: Object,
+  apiMethod: {
+    type: String,
+    default: 'updateById',
+  },
   updateKey: String,
+  //
+  successMessage: {
+    type: String,
+    default: 'وضعیت با موفقیت تغییر یافت.',
+  },
 })
 const emit = defineEmits(['update:modelValue', 'success', 'fail'])
 
@@ -54,14 +65,22 @@ function handleSwitchChange(status) {
 
     useConfirmToast({
       accept() {
-        if (isObject(props.api) && props.id) {
+        if (isObject(props.api) && (props.id || (props.parameters?.length))) {
           operationLoading.value = true
 
-          props.api.updateById(props.id, {
+          const parameters = props.id
+            ? [props.id]
+            : (
+              props.parameters?.length
+                ? props.parameters
+                : []
+            )
+
+          props.api[props.apiMethod](...parameters, Object.assign(props.data, {
             [props.updateKey]: status,
-          }, {
+          }), {
             success() {
-              toast.success('وضعیت با موفقیت تغییر یافت.')
+              toast.success(props.successMessage)
               emit('success')
               resolve(true)
             },

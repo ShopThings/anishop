@@ -23,7 +23,7 @@ class UserSingleResource extends JsonResource
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
             'national_code' => $this->national_code,
-            'shaba_number' => $this->shaba_number,
+            'sheba_number' => $this->sheba_number,
             'is_admin' => $this->is_admin,
             'is_banned' => $this->is_banned,
             'ban_desc' => $this->ban_desc,

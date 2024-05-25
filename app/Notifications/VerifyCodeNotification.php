@@ -16,6 +16,9 @@ class VerifyCodeNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * @var SettingServiceInterface
+     */
     protected SettingServiceInterface $settingService;
 
     /**
@@ -51,17 +54,15 @@ class VerifyCodeNotification extends Notification implements ShouldQueue
         $mobile = $this->user->username;
         $replacements = [
             'username' => $mobile,
+            'first_name' => $this->user->first_name ?: 'کاربر',
             'shop' => $title,
             'code' => $this->code,
         ];
 
-        if (!empty($this->user->first_name)) {
-            $replacements['first_name'] = $this->user->first_name;
-        }
-
         return new SMSMessage(
             $mobile,
-            replace_sms_variables($msg, $this->smsType, $replacements)
+            replace_sms_variables($msg, $this->smsType, $replacements),
+            $this->smsType
         );
     }
 }

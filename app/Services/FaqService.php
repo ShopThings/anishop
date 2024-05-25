@@ -45,6 +45,14 @@ class FaqService extends Service implements FaqServiceInterface
     /**
      * @inheritDoc
      */
+    public function getFaqsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getHomeFaqs(Filter $filter): Collection
     {
         $where = new WhereBuilder('faqs');

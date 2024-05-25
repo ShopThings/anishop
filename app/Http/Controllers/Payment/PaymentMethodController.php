@@ -8,14 +8,13 @@ use App\Http\Requests\StorePaymentMethodRequest;
 use App\Http\Requests\UpdatePaymentMethodRequest;
 use App\Http\Resources\PaymentMethodResource;
 use App\Models\PaymentMethod;
-use App\Models\User;
 use App\Services\Contracts\PaymentMethodServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class PaymentMethodController extends Controller
@@ -30,6 +29,7 @@ class PaymentMethodController extends Controller
     )
     {
         $this->considerDeletable = true;
+        $this->policyModel = PaymentMethod::class;
     }
 
     /**
@@ -37,11 +37,10 @@ class PaymentMethodController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', PaymentMethod::class);
         return PaymentMethodResource::collection($this->service->getMethods($filter));
     }
 
@@ -50,11 +49,10 @@ class PaymentMethodController extends Controller
      *
      * @param StorePaymentMethodRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StorePaymentMethodRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', PaymentMethod::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -65,12 +63,11 @@ class PaymentMethodController extends Controller
                 'message' => 'ایجاد روش پرداخت با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد روش پرداخت',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد روش پرداخت',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -78,11 +75,10 @@ class PaymentMethodController extends Controller
      *
      * @param PaymentMethod $paymentMethod
      * @return PaymentMethodResource
-     * @throws AuthorizationException
      */
     public function show(PaymentMethod $paymentMethod): PaymentMethodResource
     {
-        $this->authorize('view', $paymentMethod);
+        Gate::authorize('view', $paymentMethod);
         return new PaymentMethodResource($paymentMethod);
     }
 
@@ -92,14 +88,13 @@ class PaymentMethodController extends Controller
      * @param UpdatePaymentMethodRequest $request
      * @param PaymentMethod $paymentMethod
      * @return PaymentMethodResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(
         UpdatePaymentMethodRequest $request,
         PaymentMethod $paymentMethod
     ): PaymentMethodResource|JsonResponse
     {
-        $this->authorize('update', $paymentMethod);
+        Gate::authorize('update', $paymentMethod);
 
         $validated = $request->validated();
         unset($validated['code']);
@@ -108,12 +103,11 @@ class PaymentMethodController extends Controller
 
         if (!is_null($model)) {
             return new PaymentMethodResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش روش پرداخت',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش روش پرداخت',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -122,20 +116,19 @@ class PaymentMethodController extends Controller
      * @param Request $request
      * @param PaymentMethod $paymentMethod
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, PaymentMethod $paymentMethod): JsonResponse
     {
-        $this->authorize('delete', $paymentMethod);
+        Gate::authorize('delete', $paymentMethod);
 
         $permanent = $request->user()->id === $paymentMethod->creator?->id;
         $res = $this->service->deleteById($paymentMethod->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

@@ -5,7 +5,7 @@
     }}
   </template>
   <template v-else>
-    {{ user?.username || '-' }}
+    {{ user?.username || 'کاربر نامشخص می‌باشد' }}
   </template>
 </template>
 

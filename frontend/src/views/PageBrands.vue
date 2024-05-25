@@ -21,7 +21,7 @@
     >
       <template #empty>
         <partial-empty-rows
-            image="/empty-statuses/empty-data.svg"
+          image="/images/empty-statuses/empty-data.svg"
             message="هیچ برندی وجود ندارد!"
         />
       </template>
@@ -35,6 +35,7 @@
             <base-lazy-image
                 :alt="item.name"
                 :lazy-src="item.image.path"
+                :is-local="false"
                 class="w-full h-full rounded-2xl p-3"
             />
           </router-link>

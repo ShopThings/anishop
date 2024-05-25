@@ -14,34 +14,34 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="false"
-              :enable-search-box="true"
-              :has-checkbox="false"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="false"
+            :enable-search-box="true"
+            :has-checkbox="false"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:image="{value}">
               <div class="relative">
                 <VTransitionFade>
                   <loader-circle
-                      v-if="operationLoading"
-                      big-circle-color="border-transparent"
-                      main-container-klass="absolute w-[calc(100%+1rem)] h-[calc(100%+1rem)] -top-2 -left-2"
+                    v-if="operationLoading"
+                    big-circle-color="border-transparent"
+                    main-container-klass="absolute w-[calc(100%+1rem)] h-[calc(100%+1rem)] -top-2 -left-2"
                   />
                 </VTransitionFade>
 
                 <base-media-placeholder
-                    v-model:selected="value.image"
-                    :clear-check-fn="(selectedFile) => {return handleImageClear(value, selectedFile)}"
-                    :has-clear-button="true"
-                    type="image"
-                    @file-changed="(selectedFile) => {handleImageSelection(value, selectedFile)}"
+                  v-model:selected="value.image"
+                  :clear-check-fn="(selectedFile) => {return handleImageClear(value, selectedFile)}"
+                  :has-clear-button="userStore.hasPermission(PERMISSION_PLACES.CATEGORY_IMAGE, PERMISSIONS.DELETE)"
+                  type="image"
+                  @file-changed="(selectedFile) => {handleImageSelection(value, selectedFile)}"
                 />
               </div>
             </template>
@@ -73,9 +73,12 @@ import {CategoryImageAPI} from "@/service/APIProduct.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -182,7 +185,11 @@ function handleImageSelection(item, file) {
 }
 
 function handleImageClear(item, file) {
-  if (operationLoading.value || !item.category_image_id) return
+  if (
+    !userStore.hasPermission(PERMISSION_PLACES.CATEGORY_IMAGE, PERMISSIONS.DELETE) ||
+    operationLoading.value ||
+    !item.category_image_id
+  ) return
 
   useConfirmToast(() => {
     operationLoading.value = true
@@ -200,6 +207,4 @@ function handleImageClear(item, file) {
 
   return false
 }
-
-//------------------------------------------------
 </script>

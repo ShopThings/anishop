@@ -3,53 +3,53 @@
     <template #header>
       ویرایش ویژگی جستجوی
       <span
-          v-if="product?.id"
-          class="text-slate-400 text-base"
+        v-if="product?.id"
+        class="text-slate-400 text-base"
       >{{ product?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
             <form @submit.prevent="onSubmit">
               <partial-error-message
-                  v-if="errors.values"
-                  :has-close="false"
+                v-if="errors.values"
+                :has-close="false"
               >
                 {{ errors.values }}
               </partial-error-message>
 
               <div class="flex flex-wrap">
                 <div
-                    v-for="(attr) in productAttributes"
-                    class="w-full p-2 sm:w-1/2 xl:w-1/3"
+                  v-for="(attr) in productAttributes"
+                  class="w-full p-2 sm:w-1/2 xl:w-1/3"
                 >
                   <partial-input-label :title="attr.title"/>
                   <base-select
-                      :name="'attr' + attr.id"
-                      :options="attr.attr_values"
-                      :selected="attr.product_attr_value[attr.id]"
-                      options-key="id"
-                      options-text="product_attribute_value.attribute_value"
-                      @change="(t) => {attr.product_attr_value[attr.id] = t}"
+                    :name="'attr' + attr.id"
+                    :options="attr.attr_values"
+                    :selected="attr.product_attr_value[attr.id]"
+                    options-key="id"
+                    options-text="product_attribute_value.attribute_value"
+                    @change="(t) => {attr.product_attr_value[attr.id] = t}"
                   />
                 </div>
               </div>
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  :disabled="!canSubmit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      v-if="!canSubmit"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -61,11 +61,11 @@
                 </base-animated-button>
 
                 <div
-                    v-if="Object.keys(errors)?.length"
-                    class="text-left"
+                  v-if="Object.keys(errors)?.length"
+                  class="text-left"
                 >
                   <div
-                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                    class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
                   >
                     (
                     <span>{{ Object.keys(errors)?.length }}</span>
@@ -119,8 +119,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     values: selectedAttrValues.value,
   }, {
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

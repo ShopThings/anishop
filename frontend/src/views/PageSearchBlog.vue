@@ -13,6 +13,7 @@
             :extra-search-params="searchParams"
             :show-pagination-detail="true"
             :show-search="true"
+            :search-text="route.query?.q || ''"
             :scroll-margin-top="-130"
             container-class="flex flex-wrap"
             item-container-class="w-full xl:w-1/2 ml-[-1px] mt-[-1px]"
@@ -21,7 +22,7 @@
         >
           <template #empty>
             <partial-empty-rows
-                image="/empty-statuses/empty-blog.svg"
+              image="/images/empty-statuses/empty-blog.svg"
                 image-class="w-60"
                 message="هیچ نوشته‌ای پیدا نشد!"
             />

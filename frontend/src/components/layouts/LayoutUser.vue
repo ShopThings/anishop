@@ -7,13 +7,13 @@
     <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-user ref="navbarCom"/>
 
-      <div v-if="title" ref="extra" class="p-3">
+      <div v-if="title" ref="extra" class="p-3 max-w-7xl mx-auto w-full">
         <h1 class="flex items-center text-indigo-700">
           {{ title }}
         </h1>
       </div>
 
-      <div ref="page" class="px-3 pb-3">
+      <div ref="page" class="px-3 pb-3 max-w-7xl mx-auto w-full">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">
@@ -23,7 +23,7 @@
         </router-view>
       </div>
 
-      <div ref="footer">
+      <div ref="footer" class="max-w-7xl mx-auto w-full">
         <app-footer-user/>
       </div>
     </div>
@@ -37,22 +37,16 @@ import AppFooterUser from "@/components/user/AppFooterUser.vue";
 import {useResizeObserver} from "@vueuse/core";
 import AppNavbarUser from "@/components/user/AppNavbarUser.vue";
 import AppSidebarUser from "@/components/user/AppSidebarUser.vue";
-import {defineTransitionProps, PageTransition, TransitionPresets} from "vue3-page-transition";
+import {PageTransition} from "vue3-page-transition";
 import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPanel.js";
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
-
-const transitionProps = defineTransitionProps({
-  mode: 'out-in',
-  name: TransitionPresets.fadeInUp,
-  appear: true,
-  overlay: true,
-  overlayBgClassName: 'bg-violet-500',
-  overlayZIndex: 999,
-  transformDistance: '2rem',
-  transitionDuration: 300,
-})
+import {useCartStore} from "@/store/StoreUserCart.js";
+import {usePageTransition} from "@/composables/page-transition.js";
+import {useHead, useSeoMeta} from "@unhead/vue";
+import {titleOperations} from "@/composables/helper.js";
 
 const route = useRoute()
+const transitionProps = usePageTransition()
 
 //--------------------------------------
 const countingStore = useCountingStuffsStore();
@@ -64,8 +58,22 @@ provide('notificationStore', notificationStore);
 const homeSettingStore = useHomeSettingsStore()
 provide('homeSettingStore', homeSettingStore);
 
-//--------------------------------------
+const cartStore = useCartStore()
+provide('cartStore', cartStore)
 
+//--------------------------------------
+const headTitle = ref(null)
+
+useHead({
+  meta: [
+    {name: 'robots', content: 'noindex'},
+  ],
+})
+useSeoMeta({
+  title: headTitle,
+})
+
+//--------------------------------------
 let title = ref(null)
 let breadcrumb = ref(null)
 
@@ -91,5 +99,19 @@ watchEffect(() => {
 watch(route, (to) => {
   title.value = to.meta?.title || null
   breadcrumb.value = to.meta?.breadcrumb || []
+
+  // Create a title from breadcrumb to set as title of page
+  let assembledTitle = [];
+  breadcrumb.value.forEach((item) => {
+    if (item.name) {
+      assembledTitle.push(item.name)
+    }
+  })
+
+  if (assembledTitle.length) {
+    headTitle.value = titleOperations.join(assembledTitle)
+  } else {
+    headTitle.value = to.meta?.title
+  }
 }, {flush: 'pre', immediate: true, deep: true})
 </script>

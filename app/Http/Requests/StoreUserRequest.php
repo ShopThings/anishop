@@ -91,7 +91,7 @@ class StoreUserRequest extends FormRequest
                 'required',
                 new PersianNationalCodeRule(),
             ],
-            'shaba_number' => [
+            'sheba_number' => [
                 'nullable',
                 'max:30'
             ],
@@ -101,7 +101,7 @@ class StoreUserRequest extends FormRequest
     public function attributes()
     {
         return [
-            'shaba_number' => 'شماره شبا',
+            'sheba_number' => 'شماره شبا',
         ];
     }
 }

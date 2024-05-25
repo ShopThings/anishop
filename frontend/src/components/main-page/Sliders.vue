@@ -7,7 +7,7 @@
       <loader-card
           v-for="i in 5"
           :key="i"
-          class="!w-72 rounded-lg shadow-lg"
+          class="!w-80 rounded-lg shadow-lg"
       />
     </div>
     <div class="grid gap-4 grid-cols-1 md:grid-cols-2">

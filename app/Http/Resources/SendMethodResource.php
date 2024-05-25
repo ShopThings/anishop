@@ -25,6 +25,7 @@ class SendMethodResource extends JsonResource
             'image' => new ImageShowInfoResource($this->image),
             'determine_price_by_shop_location' => $this->determine_price_by_shop_location,
             'only_for_shop_location' => $this->only_for_shop_location,
+            'apply_number_of_shipments_on_price' => $this->apply_number_of_shipments_on_price,
             'is_published' => $this->is_published,
             'is_deletable' => $this->is_deletable,
             'price' => $this->price,

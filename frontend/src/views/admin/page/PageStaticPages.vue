@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش صفحه نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.STATIC_PAGE, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن صفحه ایستا جدید
     </template>
@@ -52,7 +55,7 @@
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:keywords="{value}">
@@ -69,7 +72,7 @@
                   :container="getMenuContainer"
                   :data="value"
                   :items="operations"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                  :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -81,7 +84,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue"
-import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
+import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
@@ -95,9 +98,12 @@ import PartialTableKeywords from "@/components/partials/PartialTableKeywords.vue
 import {StaticPageAPI} from "@/service/APIPage.js";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const host = window.location.host + '/pages/'
 
@@ -197,6 +203,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.STATIC_PAGE, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -206,6 +213,19 @@ const table = reactive({
     sort: "desc",
   },
 })
+
+function calcRemovals(row) {
+  let removals = []
+
+  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.STATIC_PAGE, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.STATIC_PAGE, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+
+  return removals
+}
 
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'

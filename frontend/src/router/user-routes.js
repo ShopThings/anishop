@@ -9,20 +9,44 @@ export const userRoutes = {
     {
       path: 'logout',
       name: 'user.logout',
-      beforeEnter(to, from, next) {
+      beforeEnter: async (to, from, next) => {
         const store = useUserAuthStore()
-        store.logout()
-        if (from.meta.requiresAuth) {
-          const pushObj = {name: 'user.login'}
+        let route = null
 
-          if (
-            to.query.redirect &&
-            isValidInternalRedirectLink(to.query.redirect)
-          ) pushObj.query = {redirect: to.query.redirect}
-
-          return next(pushObj);
+        // Check if the user is authenticated
+        if (!store.getUser) {
+          // User is authenticated, continue navigation to the original destination
+          return next(from)
         }
-        location.reload();
+
+        // Logout the user
+        await new Promise((resolve, reject) => {
+          store.logout({
+            success() {
+              resolve()
+            },
+            error(error) {
+              reject(false)
+            },
+          })
+        }).then(() => {
+          // User is logged out, determine the redirect route
+          if (from.meta.requiresAuth) {
+            // If the original route requires authentication, redirect to log in
+            route = {name: 'user.login'}
+
+            if (to.query.redirect && isValidInternalRedirectLink(to.query.redirect)) {
+              route.query = {redirect: to.query.redirect}
+            }
+          }
+        })
+
+        if (!route) {
+          // use this if needed later
+          // location.reload()
+          return next(from)
+        }
+        return next(route)
       },
     },
     {

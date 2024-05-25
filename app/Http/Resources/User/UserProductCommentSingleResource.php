@@ -3,7 +3,6 @@
 namespace App\Http\Resources\User;
 
 use App\Enums\Comments\CommentConditionsEnum;
-use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\ProductShowResource;
 use Illuminate\Http\Request;
@@ -30,6 +29,8 @@ class UserProductCommentSingleResource extends JsonResource
             'pros' => $this->pros,
             'cons' => $this->cons,
             'description' => $this->description,
+            'answer' => $this->answer,
+            'is_condition_changed' => !!$this->changed_condition_at,
             'up_vote_count' => $this->up_vote_count,
             'down_vote_count' => $this->down_vote_count,
             'created_at' => $this->created_at

@@ -19,9 +19,10 @@ const props = defineProps({
   addTagOnKeys: {
     type: Array,
     // 13: Enter
+    // 190: Comma or '.'
     // 188: Comma or ','
     // 32: Space or ' '
-    default: [13, 188, 32],
+    default: [13, 190, 32],
   },
 })
 const emit = defineEmits(['update:tags', 'on-tags-changed'])

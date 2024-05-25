@@ -85,6 +85,12 @@ class UpdateSettingRequest extends FormRequest
                 'required_if:latitude',
                 'numeric',
             ],
+            SettingsEnum::DIVIDE_PAYMENT_PRICE->value => [
+                'sometimes',
+                'nullable',
+                'numeric',
+                'min:0',
+            ],
             SettingsEnum::MIN_FREE_POST_PRICE->value => [
                 'sometimes',
                 'numeric',
@@ -160,6 +166,7 @@ class UpdateSettingRequest extends FormRequest
             SettingsEnum::SMS_RETURN_ORDER_STATUS->value => 'متن پیامک تغییر وضعیت سفارش مرجوعی',
             'latitude' => 'عرض جغرافیایی',
             'longitude' => 'طول جغرافیایی',
+            SettingsEnum::DIVIDE_PAYMENT_PRICE->value => 'مبلغ تقسیم پرداخت‌ها',
             SettingsEnum::MIN_FREE_POST_PRICE->value => 'حداقل مبلغ خرید برای رایگان شدن هزینه ارسال',
             SettingsEnum::PRODUCT_EACH_PAGE->value => 'تعداد نمایش محصول در هر صفحه',
             SettingsEnum::BLOG_EACH_PAGE->value => 'تعداد نمایش بلاگ در هر صفحه',

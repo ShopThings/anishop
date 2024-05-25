@@ -7,7 +7,6 @@ use App\Http\Resources\Showing\BrandShowResource;
 use App\Http\Resources\Showing\CategoryShowResource;
 use App\Http\Resources\Showing\FestivalShowResource;
 use App\Http\Resources\Showing\ImageShowResource;
-use App\Http\Resources\Showing\ProductAttributeValueShowResource;
 use App\Http\Resources\Showing\ProductShowResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
@@ -27,13 +26,13 @@ class ProductSingleResource extends JsonResource
         $this->resource->load('image');
         $this->resource->load('images');
         $this->resource->load('items');
-        $this->resource->load('festivals');
         $this->resource->load('relatedProducts.product');
-        $this->resource->load('productAttrValues');
-        $this->resource->load('favoriteProducts.product');
         $this->resource->load('creator');
         $this->resource->load('updater');
         $this->resource->load('deleter');
+
+        $user = auth()->user();
+        $festival = $this->festivals()->published()->activated()->first();
 
         return [
             'id' => $this->id,
@@ -51,10 +50,9 @@ class ProductSingleResource extends JsonResource
             'unit_name' => $this->unit_name,
             'keywords' => $this->keywords,
             'items' => ProductPropertyResource::collection($this->items),
-            'festivals' => FestivalShowResource::collection($this->festivals),
+            'festival' => $festival ? new FestivalShowResource($festival) : null,
             'related_products' => ProductShowResource::collection($this->relatedProducts->product),
-            'product_attr_values' => ProductAttributeValueShowResource::collection($this->product_attr_values),
-            'favorite_products' => ProductShowResource::collection($this->favorite_products->product),
+            'is_favorited' => $this->isFavoritedByUser($user),
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'is_published' => $this->is_published,
@@ -73,5 +71,20 @@ class ProductSingleResource extends JsonResource
                 vertaTz($this->deleted_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
+    }
+
+    /**
+     * @param $user
+     * @return bool
+     */
+    protected function isFavoritedByUser($user): bool
+    {
+        // If user is not authenticated or the product does not have a favoriteProducts relation, return false
+        if (!$user || !method_exists($this, 'favoriteProducts')) {
+            return false;
+        }
+
+        // Check if there is a favorite product record for the current user and this product
+        return $this->favoriteProducts()->where('user_id', $user->id)->isNotEmpty();
     }
 }

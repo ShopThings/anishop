@@ -51,7 +51,7 @@ class MenuAndPlaceSeeder extends Seeder
         ]);
         MenuItem::create([
             'menu_id' => $topMenu->id,
-            'title' => 'درباره ما',
+            'title' => 'تماس با ما',
             'link' => '#',
         ]);
 

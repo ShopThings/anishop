@@ -35,6 +35,7 @@ return new class extends Migration {
             $table->boolean('is_published')->default(true);
             $table->boolean('has_separate_shipment')->default(false)
                 ->comment('this make send price for this product consider as another separate payment');
+            $table->timestamp('updated_at')->nullable();
 
             $table->index('color_name');
             $table->index('size');

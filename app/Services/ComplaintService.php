@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
+use App\Events\ComplaintAddedEvent;
 use App\Repositories\Contracts\ComplaintRepositoryInterface;
 use App\Services\Contracts\ComplaintServiceInterface;
 use App\Support\Filter;
@@ -9,8 +11,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class ComplaintService extends Service implements ComplaintServiceInterface
@@ -39,11 +41,30 @@ class ComplaintService extends Service implements ComplaintServiceInterface
         return $this->repository
             ->newWith(['statusChanger', 'creator', 'deleter'])
             ->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getComplaintsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNotSeenComplaintsCount(): int
+    {
+        $where = new WhereBuilder('complaints');
+        $where->whereEqual('is_seen', DatabaseEnum::DB_NO);
+
+        return $this->repository->count($where->build());
     }
 
     /**
@@ -58,7 +79,17 @@ class ComplaintService extends Service implements ComplaintServiceInterface
             'description' => $attributes['description'],
         ];
 
-        return $this->repository->create($attrs);
+        $model = $this->repository->create($attrs);
+
+        if (is_null($model)) {
+            return null;
+        }
+
+        $user = Auth::user();
+        if (!is_null($user)) {
+            ComplaintAddedEvent::dispatch($user);
+        }
+        return $model;
     }
 
     /**

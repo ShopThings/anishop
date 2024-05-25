@@ -114,9 +114,6 @@ class AuthService extends Service implements AuthServiceInterface
         $where = new WhereBuilder('users');
         $where->whereEqual('username', $username);
 
-        $user = $this->userRepository->findWhere($where->build());
-
-        if (!$user instanceof Model) return null;
-        return $user;
+        return $this->userRepository->findWhere($where->build());
     }
 }

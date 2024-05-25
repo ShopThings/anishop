@@ -8,12 +8,13 @@
               :is-loading="productCommentTable.isLoading"
               :rows="productCommentTable.rows"
               :total="productCommentTable.total"
+              :sortable="productCommentTable.sortable"
               pagination-theme="modern"
               @do-search="doSearchProductComment"
           >
             <template #emptyTableRows>
               <partial-empty-rows
-                  image="/empty-statuses/empty-comment.svg"
+                image="/images/empty-statuses/empty-comment.svg"
                   image-class="w-64"
                   message="هیچ دیدگاهی برای محصولات ثبت نشده است"
               />
@@ -29,6 +30,7 @@
                       :alt="value.product.title"
                       :lazy-src="value.product.image.path"
                       :size="FileSizes.SMALL"
+                      :is-local="false"
                       class="!w-24 h-auto hover:scale-95 transition"
                   />
                 </router-link>
@@ -47,14 +49,14 @@
 
             <template #up_vote="{value}">
               <span class="border-2 border-emerald-500 text-sm rounded-lg px-2.5">{{
-                  formatPriceLikeNumber(value.up_vote_count)
+                  numberFormat(value.up_vote_count)
                 }}</span>
               <span class="text-sm mr-2 text-gray-400">مفید</span>
             </template>
 
             <template #down_vote="{value}">
               <span class="border-2 border-rose-500 text-sm rounded-lg px-2.5">{{
-                  formatPriceLikeNumber(value.down_vote_count)
+                  numberFormat(value.down_vote_count)
                 }}</span>
               <span class="text-sm mr-2 text-gray-400">نامرتبط</span>
             </template>
@@ -85,12 +87,13 @@
               :is-loading="blogCommentTable.isLoading"
               :rows="blogCommentTable.rows"
               :total="blogCommentTable.total"
+              :sortable="blogCommentTable.sortable"
               pagination-theme="modern"
               @do-search="doSearchBlogComment"
           >
             <template #emptyTableRows>
               <partial-empty-rows
-                  image="/empty-statuses/empty-comment.svg"
+                image="/images/empty-statuses/empty-comment.svg"
                   image-class="w-64"
                   message="هیچ دیدگاهی برای بلاگ ثبت نشده است"
               />
@@ -106,6 +109,7 @@
                       :alt="value.blog.title"
                       :lazy-src="value.blog.image.path"
                       :size="FileSizes.SMALL"
+                      :is-local="false"
                       class="!w-24 h-auto hover:scale-95 transition"
                   />
                 </router-link>
@@ -162,7 +166,7 @@ import PartialBadgeStatusBlogComment from "@/components/partials/PartialBadgeSta
 import {UserPanelBlogCommentAPI, UserPanelCommentAPI} from "@/service/APIUserPanel.js";
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import {FileSizes} from "@/composables/file-list.js";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
 
 const tabs = ref({
   productComments: {

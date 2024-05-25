@@ -28,7 +28,7 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
      * @inheritDoc
      */
     public function getCommentsSearchFilterPaginated(
-        int    $productId,
+        ?int $productId = null,
         array  $columns = ['*'],
         Filter $filter = null
     ): Collection|LengthAwarePaginator
@@ -75,7 +75,9 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
                         'comments.description',
                     ], $search);
             })
-            ->where('comments.product_id', $productId);
+            ->when($productId, function ($q, $productId) {
+                $q->where('comments.product_id', $productId);
+            });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }

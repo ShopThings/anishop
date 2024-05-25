@@ -69,7 +69,7 @@ class LoginRequest extends FormRequest
                 'username' => 'اکانت شما فعال نمی‌باشد. لطفا ابتدا آن را فعال نمایید.',
             ]);
         }
-        if($user->is_banned) {
+        if ($user->is_banned) {
             $authService->logout();
             throw ValidationException::withMessages([
                 'username' => $user->ban_desc || 'اکانت شما بن شده است!',

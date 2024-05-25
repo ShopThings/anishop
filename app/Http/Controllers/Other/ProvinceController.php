@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Other;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProvinceResource;
-use App\Models\User;
 use App\Services\Contracts\ProvinceServiceInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProvinceController extends Controller
@@ -24,7 +22,6 @@ class ProvinceController extends Controller
      * Display a listing of the resource.
      *
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(): AnonymousResourceCollection
     {

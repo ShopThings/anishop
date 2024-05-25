@@ -19,6 +19,8 @@ trait EnumTranslateTrait
      */
     public static function getTranslations(BackedEnum|array|string $needed, $default = null): array|string|null
     {
+        if (empty($needed)) return null;
+
         $translates = self::translationArray();
 
         $isOriginalParameterArray = is_array($needed);

@@ -166,7 +166,7 @@ class Filter
      *  [
      *    'id' => 'desc',
      *    'name' => 'asc',
-     *    ...
+     *    ...,
      *  ]
      * </code>
      */

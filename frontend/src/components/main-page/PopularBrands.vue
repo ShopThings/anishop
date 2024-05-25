@@ -1,42 +1,43 @@
 <template>
   <div
-      v-if="brandsLoading || !brands?.length"
-      class="flex items-center overflow-hidden divide-x divide-x-reverse divide-slate-100"
+    v-if="brandsLoading || !brands?.length"
+    class="flex items-center overflow-hidden divide-x divide-x-reverse divide-slate-100"
   >
     <div
-        v-for="i in 8"
-        :key="i"
-        class="min-w-48 h-36 p-3 flex items-center justify-center bg-white animate-pulse"
+      v-for="i in 8"
+      :key="i"
+      class="min-w-48 h-36 p-3 flex items-center justify-center bg-white animate-pulse"
     >
       <PhotoIcon class="size-10 text-orange-200"/>
     </div>
   </div>
   <template v-else>
     <partial-general-title
-        container-class="mb-5 mt-6 p-2"
-        title="محبوب‌ترین برندها"
-        title-size="text-xl"
-        type="side"
+      container-class="mb-5 mt-6 p-2"
+      title="محبوب‌ترین برندها"
+      title-size="text-xl"
+      type="side"
     />
 
     <base-carousel
-        v-slot="slide"
-        v-model="brands"
-        v-model:current="currentSlide"
-        :breakpoints="carouselSettings.breakpoints"
-        :class-name="carouselSettings.className"
-        :free-mode="carouselSettings.freeMode"
-        :has-navigation="carouselSettings.hasNavigation"
-        :has-pagination="carouselSettings.hasPagination"
-        :navigation-display="carouselSettings.navigationDisplay"
-        :space-between="carouselSettings.spaceBetween"
-        :wrap-around="carouselSettings.wrapAround"
+      v-slot="slide"
+      v-model="brands"
+      v-model:current="currentSlide"
+      :breakpoints="carouselSettings.breakpoints"
+      :class-name="carouselSettings.className"
+      :free-mode="carouselSettings.freeMode"
+      :has-navigation="carouselSettings.hasNavigation"
+      :has-pagination="carouselSettings.hasPagination"
+      :navigation-display="carouselSettings.navigationDisplay"
+      :space-between="carouselSettings.spaceBetween"
+      :wrap-around="carouselSettings.wrapAround"
     >
       <div class="p-3 h-36 flex items-center justify-center bg-white">
         <router-link :to="{name: 'search', query: {brand: slide.id}}">
           <base-lazy-image
-              :alt="slide?.name"
-              :lazy-src="slide.image.path"
+            :alt="slide?.name"
+            :is-local="false"
+            :lazy-src="slide.image.path"
           />
         </router-link>
       </div>

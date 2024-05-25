@@ -18,6 +18,7 @@ use App\Support\Converters\NumberConverter;
 use App\Support\Filter;
 use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
@@ -39,6 +40,26 @@ class BlogService extends Service implements BlogServiceInterface
     /**
      * @inheritDoc
      */
+    public function getDataForSitemap(Filter $filter, ?array $condition = null): Collection|LengthAwarePaginator
+    {
+        if (!empty($condition)) {
+            $this->repository->resetWithWhereHas();
+            foreach ($condition as $item) {
+                if (is_array($item)) {
+                    $this->repository->withWhereHas($item['relation'], $item['callback']);
+                }
+            }
+        }
+
+        $where = new WhereBuilder('blogs');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->getBlogsSearchFilterPaginated(filter: $filter, where: $where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getBlogs(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getBlogsSearchFilterPaginated(filter: $filter);
@@ -47,12 +68,34 @@ class BlogService extends Service implements BlogServiceInterface
     /**
      * @inheritDoc
      */
-    public function getFilteredBlogs(HomeBlogFilter $filter): Collection|LengthAwarePaginator
+    public function getBlogsCount(): int
     {
-        $settingModel = $this->settingService->getSetting(SettingsEnum::BLOG_EACH_PAGE->value);
-        $limit = $settingModel->setting_value ?: $settingModel->default_value;
+        return $this->repository->count();
+    }
 
-        $filter->setLimit($limit);
+    /**
+     * @inheritDoc
+     */
+    public function getSingleBlog(GetterExpressionInterface $where): ?Model
+    {
+        if (trim($where->getStatement()) === '') return null;
+        return $this->repository->findWhere($where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getFilteredBlogs(
+        HomeBlogFilter $filter,
+        bool           $enforceProvidedFilterLimit = false
+    ): Collection|LengthAwarePaginator
+    {
+        if (!$enforceProvidedFilterLimit) {
+            $settingModel = $this->settingService->getSetting(SettingsEnum::BLOG_EACH_PAGE->value);
+            $limit = $settingModel->setting_value ?: $settingModel->default_value;
+
+            $filter->setLimit($limit);
+        }
 
         return $this->getBlogs($filter);
     }
@@ -118,6 +161,7 @@ class BlogService extends Service implements BlogServiceInterface
             'title' => $attributes['title'],
             'escaped_title' => NumberConverter::toEnglish($attributes['title']),
             'image_id' => $attributes['image'],
+            'brief_description' => $attributes['brief_description'],
             'description' => $attributes['description'],
             'keywords' => $attributes['keywords'],
             'is_commenting_allowed' => to_boolean($attributes['is_commenting_allowed']),

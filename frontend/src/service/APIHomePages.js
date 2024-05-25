@@ -4,7 +4,7 @@ import {GenericAPI} from "./ServiceAPIs.js";
 
 export const HomeSettingAPI = {
   fetchAll(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.settings,
       null,
       callbacks
@@ -14,39 +14,39 @@ export const HomeSettingAPI = {
 
 export const HomeMainPageAPI = {
   fetchMenu(menu, callbacks) {
-    useRequest(apiReplaceParams(apiRoutes.main.menu, {menu}), null, callbacks)
+    return useRequest(apiReplaceParams(apiRoutes.main.menu, {menu}), null, callbacks)
   },
 
   fetchCategoriesMain(params, callbacks) {
-    useRequest(apiRoutes.main.categories, {params}, callbacks)
+    return useRequest(apiRoutes.main.categories, {params}, callbacks)
   },
 
   fetchSliderMain(callbacks) {
-    useRequest(apiRoutes.main.sliderMain, null, callbacks)
+    return useRequest(apiRoutes.main.sliderMain, null, callbacks)
   },
 
   fetchSliderChosenCategories(callbacks) {
-    useRequest(apiRoutes.main.sliderChosenCategories, null, callbacks)
+    return useRequest(apiRoutes.main.sliderChosenCategories, null, callbacks)
   },
 
   fetchSliderPopularBrands(callbacks) {
-    useRequest(apiRoutes.main.sliderPopularBrands, null, callbacks)
+    return useRequest(apiRoutes.main.sliderPopularBrands, null, callbacks)
   },
 
   fetchSliderOffers(callbacks) {
-    useRequest(apiRoutes.main.sliderOffers, null, callbacks)
+    return useRequest(apiRoutes.main.sliderOffers, null, callbacks)
   },
 
   fetchSliders(callbacks) {
-    useRequest(apiRoutes.main.sliders, null, callbacks)
+    return useRequest(apiRoutes.main.sliders, null, callbacks)
   },
 
   fetchLatestBlogs(callbacks) {
-    useRequest(apiRoutes.main.latestBlogs, null, callbacks)
+    return useRequest(apiRoutes.main.latestBlogs, null, callbacks)
   },
 
   createContactUs(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.contactUs,
       {
         method: 'POST',
@@ -57,7 +57,7 @@ export const HomeMainPageAPI = {
   },
 
   createComplaint(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.complaints,
       {
         method: 'POST',
@@ -68,7 +68,7 @@ export const HomeMainPageAPI = {
   },
 
   addToNewsletter(mobile, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.newsletters,
       {
         method: 'POST',
@@ -79,13 +79,13 @@ export const HomeMainPageAPI = {
   },
 
   fetchAllFaqs(callbacks) {
-    useRequest(apiRoutes.faqs, null, callbacks)
+    return useRequest(apiRoutes.faqs, null, callbacks)
   },
 }
 
 export const HomePageAPI = {
   fetchById(id, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.pages, {page: id}),
       null,
       callbacks
@@ -95,7 +95,7 @@ export const HomePageAPI = {
 
 export const HomeBrandAPI = {
   fetchAll(callbacks) {
-    useRequest(apiRoutes.brands, null, callbacks)
+    return useRequest(apiRoutes.brands, null, callbacks)
   },
 }
 
@@ -105,7 +105,7 @@ export const HomeProductAPI = Object.assign(
     replacement: 'product',
   }), {
     fetchByIdMinified(id, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.products.minifiedShow, {product: id}),
         null,
         callbacks
@@ -113,54 +113,51 @@ export const HomeProductAPI = Object.assign(
     },
 
     fetchBrandsFilter(params, callbacks) {
-      useRequest(apiRoutes.products.brandsFilter, {params}, callbacks)
+      return useRequest(apiRoutes.products.brandsFilter, {params}, callbacks)
     },
 
     fetchColorsAndSizesFilter(params, callbacks) {
-      useRequest(apiRoutes.products.colorsAndSizesFilter, {params}, callbacks)
+      return useRequest(apiRoutes.products.colorsAndSizesFilter, {params}, callbacks)
     },
 
     fetchPriceRangeFilter(params, callbacks) {
-      useRequest(apiRoutes.products.priceRangeFilter, {params}, callbacks)
+      return useRequest(apiRoutes.products.priceRangeFilter, {params}, callbacks)
     },
 
     fetchDynamicFilters(params, callbacks) {
-      useRequest(apiRoutes.products.dynamicFilters, {params}, callbacks)
+      return useRequest(apiRoutes.products.dynamicFilters, {params}, callbacks)
     },
   }
 )
 
 export const HomeFestivalAPI = {
   fetchAll(callbacks) {
-    useRequest(apiRoutes.festivals.index, null, callbacks)
+    return useRequest(apiRoutes.festivals.index, null, callbacks)
   },
 }
 
 export const HomeCommentAPI = {
   fetchAll(productId, params, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.comments.index, {product: productId}),
       {params},
       callbacks
     )
   },
 
-  report(productId, commentId, data, callbacks) {
-    useRequest(
+  report(productId, commentId, callbacks) {
+    return useRequest(
       apiReplaceParams(apiRoutes.comments.report, {
         product: productId,
         comment: commentId,
       }),
-      {
-        method: 'PUT',
-        data,
-      },
+      {method: 'PUT'},
       callbacks
     )
   },
 
   vote(productId, commentId, data, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.comments.vote, {
         product: productId,
         comment: commentId,
@@ -176,7 +173,7 @@ export const HomeCommentAPI = {
 
 export const HomeBlogCommentAPI = {
   fetchAll(blogId, params, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.blogComments.index, {blog: blogId}),
       {params},
       callbacks
@@ -184,7 +181,7 @@ export const HomeBlogCommentAPI = {
   },
 
   report(blogId, commentId, data, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.blogComments.report, {
         blog: blogId,
         comment: commentId,
@@ -198,7 +195,7 @@ export const HomeBlogCommentAPI = {
   },
 
   vote(blogId, commentId, data, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.blogComments.vote, {
         blog: blogId,
         comment: commentId,
@@ -214,19 +211,19 @@ export const HomeBlogCommentAPI = {
 
 export const HomeBlogMainPage = {
   fetchSliderMain(callbacks) {
-    useRequest(apiRoutes.blogs.sliderMain, null, callbacks)
+    return useRequest(apiRoutes.blogs.sliderMain, null, callbacks)
   },
 
   fetchSliderMainSideImages(callbacks) {
-    useRequest(apiRoutes.blogs.sliderMainSide, null, callbacks)
+    return useRequest(apiRoutes.blogs.sliderMainSide, null, callbacks)
   },
 
   fetchPopularCategories(callbacks) {
-    useRequest(apiRoutes.blogs.popularCategories, null, callbacks)
+    return useRequest(apiRoutes.blogs.popularCategories, null, callbacks)
   },
 
   fetchMostViewedBlogs(callbacks) {
-    useRequest(apiRoutes.blogs.mostViewedPosts, null, callbacks)
+    return useRequest(apiRoutes.blogs.mostViewedPosts, null, callbacks)
   },
 }
 
@@ -236,7 +233,7 @@ export const HomeBlogAPI = Object.assign(
     replacement: 'blog',
   }), {
     fetchByIdMinified(id, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.blogs.minifiedShow, {blog: id}),
         null,
         callbacks
@@ -244,11 +241,11 @@ export const HomeBlogAPI = Object.assign(
     },
 
     fetchBlogArchive(callbacks) {
-      useRequest(apiRoutes.blogs.archive, null, callbacks)
+      return useRequest(apiRoutes.blogs.archive, null, callbacks)
     },
 
     vote(blogId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.blogs.vote, {blog: blogId}),
         {
           method: 'POST',
@@ -262,7 +259,7 @@ export const HomeBlogAPI = Object.assign(
 
 export const HomeSignupAPI = {
   storeMobile(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.signup.stepMobile,
       {
         method: 'POST',
@@ -272,19 +269,19 @@ export const HomeSignupAPI = {
     )
   },
 
-  verifyCode(code, callbacks) {
-    useRequest(
+  verifyCode(data, callbacks) {
+    return useRequest(
       apiRoutes.signup.stepCode,
       {
         method: 'POST',
-        data: {code},
+        data,
       },
       callbacks
     )
   },
 
   assignPassword(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.signup.stepPass,
       {
         method: 'POST',
@@ -295,7 +292,7 @@ export const HomeSignupAPI = {
   },
 
   resendVerifyCode(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.signup.resendCode,
       {method: 'POST'},
       callbacks
@@ -305,7 +302,7 @@ export const HomeSignupAPI = {
 
 export const HomeRecoverPasswordAPI = {
   checkMobile(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.recoverPass.stepMobile,
       {
         method: 'POST',
@@ -315,19 +312,19 @@ export const HomeRecoverPasswordAPI = {
     )
   },
 
-  verifyCode(code, callbacks) {
-    useRequest(
+  verifyCode(data, callbacks) {
+    return useRequest(
       apiRoutes.recoverPass.stepCode,
       {
         method: 'POST',
-        data: {code},
+        data,
       },
       callbacks
     )
   },
 
   assignNewPassword(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.recoverPass.stepNewPass,
       {
         method: 'POST',
@@ -338,10 +335,88 @@ export const HomeRecoverPasswordAPI = {
   },
 
   resendVerifyCode(callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.recoverPass.resendCode,
       {method: 'POST'},
       callbacks
     )
   },
+}
+
+export const HomePaymentMethodAPI = {
+  fetchAll(callbacks) {
+    return useRequest(
+      apiRoutes.paymentMethods.index,
+      null,
+      callbacks
+    )
+  }
+}
+
+export const HomeSendMethodAPI = {
+  fetchAll(callbacks) {
+    return useRequest(
+      apiRoutes.sendMethods.index,
+      null,
+      callbacks
+    )
+  }
+}
+
+export const HomeCouponAPI = {
+  checkCoupon(code, data, callbacks) {
+    return useRequest(
+      apiReplaceParams(apiRoutes.coupons.check, {code}),
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  }
+}
+
+export const HomeCheckoutAPI = {
+  placeOrder(data, callbacks) {
+    return useRequest(
+      apiRoutes.checkout.placeOrder,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  payOrder(id, orderCode, callbacks) {
+    return useRequest(
+      apiReplaceParams(apiRoutes.checkout.payOrder, {id}),
+      {
+        method: 'POST',
+        data: {
+          order_code: orderCode,
+        },
+      },
+      callbacks
+    )
+  },
+
+  payOrderResult(id, callbacks) {
+    return useRequest(
+      apiReplaceParams(apiRoutes.checkout.payResult, {id}),
+      {method: 'POST'},
+      callbacks
+    )
+  },
+
+  calculateSendPrice(data, callbacks) {
+    return useRequest(
+      apiRoutes.checkout.sendPrice,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  }
 }

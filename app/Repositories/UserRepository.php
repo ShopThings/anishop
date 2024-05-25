@@ -4,12 +4,15 @@ namespace App\Repositories;
 
 use App\Enums\DatabaseEnum;
 use App\Enums\Gates\RolesEnum;
+use App\Enums\Notification\UserNotificationTypesEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
+use App\Enums\Results\FavoriteProductResultEnum;
 use App\Models\AddressUser;
 use App\Models\User;
 use App\Models\UserFavoriteProduct;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Support\Filter;
+use App\Support\QB\ReportQueryAppenderTrait;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
@@ -21,7 +24,42 @@ use Illuminate\Support\Collection;
 
 class UserRepository extends Repository implements UserRepositoryInterface
 {
-    use RepositoryTrait;
+    use RepositoryTrait,
+        ReportQueryAppenderTrait;
+
+    /**
+     * @inheritDoc
+     */
+    protected function getMappedReportColumnToActualColumn(): array
+    {
+        return [
+            'username' => 'username',
+            'first_name' => 'first_name',
+            'last_name' => 'last_name',
+            'national_code' => 'national_code',
+            'sheba_number' => 'sheba_number',
+            'is_admin' => 'is_admin',
+            'is_banned' => 'is_banned',
+            'is_verified' => 'verified_at',
+            'is_deleted' => 'deleted_at',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialReportColumns(): array
+    {
+        return ['is_verified', 'is_deleted'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialBooleanColumns(): array
+    {
+        return ['is_verified', 'is_deleted'];
+    }
 
     public function __construct(
         User                          $model,
@@ -60,11 +98,33 @@ class UserRepository extends Repository implements UserRepositoryInterface
                         'users.first_name',
                         'users.last_name',
                         'users.national_code',
-                        'users.shaba_number'
+                        'users.sheba_number'
                     ], $search);
             });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsersFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->model->newQuery();
+        $query->with(['creator', 'updater', 'roles']);
+
+        if (!empty($reportQuery)) {
+            $query = $this->addToEloquentBuilder($query, $reportQuery);
+        }
+
+        return $this->_paginateWithOrder(query: $query, limit: $limit, page: $page, order: $order);
     }
 
     /**
@@ -212,6 +272,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
     public function getUserNotifications(
         User   $user,
         Filter $filter,
+        array $notificationTypes = [],
         array  $columns = ['*']
     ): Collection|LengthAwarePaginator
     {
@@ -219,8 +280,18 @@ class UserRepository extends Repository implements UserRepositoryInterface
         $page = $filter->getPage();
         $order = $filter->getOrder();
 
+        $types = [];
+        foreach ($notificationTypes as $notificationType) {
+            if ($notificationType instanceof UserNotificationTypesEnum) {
+                $types[] = $notificationType;
+            }
+        }
+
         $query = $user->notifications();
         $query
+            ->when(!empty($types), function ($q) use ($types) {
+                $q->whereIn('data->type', array_map(fn($item) => $item->value, $types));
+            })
             ->orderByRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(data, '$.priority')) AS UNSIGNED) DESC")
             ->orderByDesc('created_at')
             ->orderByRaw('read_at IS NULL')
@@ -232,14 +303,26 @@ class UserRepository extends Repository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getUnreadNotifications(User $user, array $columns = ['*']): Collection
+    public function getUnreadNotifications(
+        User  $user,
+        array $notificationTypes = [],
+        array $columns = ['*']
+    ): Collection
     {
+        $types = [];
+        foreach ($notificationTypes as $notificationType) {
+            if ($notificationType instanceof UserNotificationTypesEnum) {
+                $types[] = $notificationType;
+            }
+        }
+
         $query = $user->unreadNotifications();
         $query
+            ->when(!empty($types), function ($q) use ($types) {
+                $q->whereIn('data->type', array_map(fn($item) => $item->value, $types));
+            })
             ->orderByRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(data, '$.priority')) AS UNSIGNED) DESC")
             ->orderByDesc('created_at');
-
-//        $query->dd();
 
         return $query->get($columns);
     }
@@ -259,15 +342,25 @@ class UserRepository extends Repository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function addFavoriteProduct($userId, $productId): bool
+    public function toggleFavoriteProduct($userId, $productId): FavoriteProductResultEnum
     {
-        $res = $this->userFavoriteProductModel->firstOrCreate([
-            'user_id' => $userId,
-            'product_id' => $productId,
-        ]);
+        $query = $this->userFavoriteProductModel->newQuery()
+            ->where('user_id', $userId)
+            ->where('product_id', $productId);
 
-        if ($res instanceof Model) return true;
-        return false;
+        if ($query->exists()) {
+            $query->delete();
+            return FavoriteProductResultEnum::REMOVED;
+        } else {
+            $res = $this->userFavoriteProductModel->create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+            ]);
+        }
+
+        return $res instanceof Model
+            ? FavoriteProductResultEnum::REMOVED
+            : FavoriteProductResultEnum::ERROR;
     }
 
     /**
@@ -293,11 +386,28 @@ class UserRepository extends Repository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function makeAllNotificationAsRead(User $user): int
+    public function makeAllNotificationAsRead(User $user, array $notificationTypes = []): bool
     {
-        return $user->notifications()->whereNull('read_at')->update([
-            'read_at' => now(),
-        ]);
+        $types = [];
+        foreach ($notificationTypes as $notificationType) {
+            if ($notificationType instanceof UserNotificationTypesEnum) {
+                $types[] = $notificationType;
+            }
+        }
+
+        $query = $user->notifications()
+            ->whereNull('read_at')
+            ->when(!empty($types), function ($q) use ($types) {
+                $q->whereIn('data->type', array_map(fn($item) => $item->value, $types));
+            });
+
+        if ($query->exists()) {
+            return (bool)$query->update([
+                'read_at' => now(),
+            ]);
+        }
+
+        return true;
     }
 
     /**

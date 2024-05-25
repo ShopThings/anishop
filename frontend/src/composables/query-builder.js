@@ -76,13 +76,13 @@ export const operatorsMap = {
   },
   beginsWith: {
     statement: '=',
-    replacement: '%{value}',
+    replacement: '{value}%',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
   notBeginsWith: {
     statement: '<>',
-    replacement: '%{value}',
+    replacement: '{value}%',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
@@ -100,13 +100,13 @@ export const operatorsMap = {
   },
   endsWith: {
     statement: '=',
-    replacement: '{value}%',
+    replacement: '%{value}',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
   notEndsWith: {
     statement: '<>',
-    replacement: '{value}%',
+    replacement: '%{value}',
     multiple: false,
     applyTo: [TYPES.STRING],
   },
@@ -125,12 +125,12 @@ export const operatorsMap = {
   isNull: {
     statement: 'IS NULL',
     multiple: false,
-    applyTo: [TYPES.STRING, TYPES.NUMBER, TYPES.DATETIME, TYPES.BOOLEAN],
+    applyTo: [TYPES.STRING, TYPES.NUMBER, TYPES.DATETIME],
   },
   isNotNull: {
     statement: 'NOT IS NULL',
     multiple: false,
-    applyTo: [TYPES.STRING, TYPES.NUMBER, TYPES.DATETIME, TYPES.BOOLEAN],
+    applyTo: [TYPES.STRING, TYPES.NUMBER, TYPES.DATETIME],
   }
 }
 
@@ -215,7 +215,7 @@ export function removeEmptyRules(query) {
   return newQuery
 }
 
-export function toSql(query, useNamedParameter, level) {
+export function toSql(query, useNamedParameter = true, level) {
   const useQuestionMark = !(!!useNamedParameter)
   let sql = ''
   let params
@@ -232,19 +232,23 @@ export function toSql(query, useNamedParameter, level) {
     if (q[i].children) {
       tmpSql = toSql(q[i].children, useNamedParameter, level + 1)
       if (tmpSql && tmpSql.sql) {
+        if (i > 0) {
+          sql += ' ' + q[i].condition
+        }
+
         sql += ' (' + tmpSql.sql + ')'
         if (useQuestionMark)
           params = [...params, ...tmpSql.params]
         else
           params = {...params, ...tmpSql.params}
-
-        if (i < q.length - 1) {
-          sql += ' ' + q[i].condition + ' '
-        }
       }
     } else {
       let paramName = paramStr + level + '_' + i
       let paramName2 = paramName + '_2'
+
+      if (i > 0) {
+        sql += q[i].rule.condition + ' '
+      }
 
       sql += q[i].rule.column.value + ' '
       sql += q[i].rule.operator.statement + ' '
@@ -280,10 +284,6 @@ export function toSql(query, useNamedParameter, level) {
           else
             params[paramName] = q[i].rule.value
         }
-      }
-
-      if (i < q.length - 1) {
-        sql += ' ' + q[i].rule.condition + ' '
       }
     }
   }

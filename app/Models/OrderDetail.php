@@ -11,6 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Parables\NanoId\GeneratesNanoId;
 
+/**
+ * @method Builder withCompletePaidOrder(string $condition = 'and')
+ * @method Builder withoutAnyPaidOrder(string $condition = 'and')
+ * @method Builder withAnyPaidOrder(string $condition = 'and')
+ * @method Builder withWaitingOrder(string $condition = 'and')
+ */
 class OrderDetail extends Model
 {
     use GeneratesNanoId;
@@ -67,6 +73,30 @@ class OrderDetail extends Model
     }
 
     /**
+     * @return HasMany
+     */
+    public function reservedOrders(): HasMany
+    {
+        return $this->hasMany(OrderReserve::class, 'order_key_id');
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'order_key_id', 'id');
+    }
+
+    /**
+     * @return HasOne
+     */
+    public function returnOrder(): HasOne
+    {
+        return $this->hasOne(ReturnOrderRequest::class, 'order_detail_id');
+    }
+
+    /**
      * Determine if current order has paid any(even partially).
      *
      * @return bool
@@ -95,42 +125,73 @@ class OrderDetail extends Model
 
     /**
      * @param Builder $query
+     * @param string $condition
      * @return mixed
      */
-    public function scopeWithAnyPaidOrder(Builder $query): mixed
+    public function scopeWithCompletePaidOrder(Builder $query, string $condition = 'and'): mixed
     {
-        return $query->whereHas('orders', function ($query) {
+        $method = 'whereHas';
+        if ($condition == 'or') {
+            $method = 'orWhereHas';
+        }
+
+        return $query->{$method}('orders', function ($query) {
+            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
+        }, '=', $this->orders()->count());
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $condition
+     * @return mixed
+     */
+    public function scopeWithoutAnyPaidOrder(Builder $query, string $condition = 'and'): mixed
+    {
+        $method = 'whereHas';
+        if ($condition == 'or') {
+            $method = 'orWhereHas';
+        }
+
+        return $query->{$method}('orders', function ($query) {
+            $query->where(function ($q) {
+                $q
+                    ->where('payment_status', PaymentStatusesEnum::SUCCESS)
+                    ->orWhere('payment_status', PaymentStatusesEnum::PARTIAL_SUCCESS);
+            });
+        }, '=', 0);
+    }
+
+    /**
+     * @param Builder $query
+     * @param string $condition
+     * @return mixed
+     */
+    public function scopeWithAnyPaidOrder(Builder $query, string $condition = 'and'): mixed
+    {
+        $method = 'whereHas';
+        if ($condition == 'or') {
+            $method = 'orWhereHas';
+        }
+
+        return $query->{$method}('orders', function ($query) {
             $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
         });
     }
 
     /**
      * @param Builder $query
+     * @param string $condition
      * @return mixed
      */
-    public function scopeWithCompletePaidOrder(Builder $query): mixed
+    public function scopeWithWaitingOrder(Builder $query, string $condition = 'and'): mixed
     {
-        return $query->whereHas('orders', function ($query) {
-            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
-        }, '=', function ($query) {
-            // The count of all related payments
-            $query->count();
+        $method = 'whereHas';
+        if ($condition == 'or') {
+            $method = 'orWhereHas';
+        }
+
+        return $query->{$method}('orders', function ($query) {
+            $query->where('payment_status', PaymentStatusesEnum::WAIT);
         });
-    }
-
-    /**
-     * @return HasMany
-     */
-    public function items(): HasMany
-    {
-        return $this->hasMany(OrderItem::class, 'order_key_id', 'id');
-    }
-
-    /**
-     * @return HasOne
-     */
-    public function returnOrder(): HasOne
-    {
-        return $this->hasOne(ReturnOrderRequest::class, 'order_detail_id');
     }
 }

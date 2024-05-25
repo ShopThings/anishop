@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserOrderDetailRequest;
 use App\Http\Resources\User\UserOrderResource;
 use App\Http\Resources\User\UserOrderSingleResource;
+use App\Http\Resources\User\UserUnpaidOrderPaymentsResource;
 use App\Models\OrderDetail;
 use App\Services\Contracts\OrderServiceInterface;
 use App\Support\Filter;
@@ -30,9 +31,20 @@ class UserOrderController extends Controller
      * @param Request $request
      * @return AnonymousResourceCollection
      */
+    public function unpaidOrderPayments(Request $request): AnonymousResourceCollection
+    {
+        return UserUnpaidOrderPaymentsResource::collection($this->service->getUserUnpaidOrderPayments(
+            $request->user()
+        ));
+    }
+
+    /**
+     * @param Request $request
+     * @return AnonymousResourceCollection
+     */
     public function latest(Request $request): AnonymousResourceCollection
     {
-        return UserOrderResource::collection($this->service->getLatestUserOrders(
+        return UserOrderResource::collection($this->service->getUserLatestOrders(
             userId: $request->user()->id,
             limit: 5
         ));
@@ -91,6 +103,6 @@ class UserOrderController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ویرایش اطلاعات سفارش',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

@@ -28,7 +28,7 @@ class UserSpecificationController extends Controller
      */
     public function updateInfo(UpdateUserInfoRequest $request): JsonResponse
     {
-        $validated = $request->validated(['first_name', 'last_name', 'national_code', 'shaba_number']);
+        $validated = $request->validated(['first_name', 'last_name', 'national_code', 'sheba_number']);
 
         $user = $request->user();
 
@@ -60,7 +60,7 @@ class UserSpecificationController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ویرایش اطلاعات! لطفا دوباره تلاش نمایید.',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -84,6 +84,6 @@ class UserSpecificationController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ویرایش کلمه عبور! لطفا دوباره تلاش نمایید.',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

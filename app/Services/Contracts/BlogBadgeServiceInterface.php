@@ -14,4 +14,9 @@ interface BlogBadgeServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getBadges(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getBadgesCount(): int;
 }

@@ -59,67 +59,65 @@ class UserBlogCommentController extends Controller
                 'message' => 'دیدگاه شما با موفقیت ثبت شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ثبت دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ثبت دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param BlogComment $blogComment
+     * @param BlogComment $comment
      * @return UserBlogCommentSingleResource
      */
-    public function show(BlogComment $blogComment): UserBlogCommentSingleResource
+    public function show(BlogComment $comment): UserBlogCommentSingleResource
     {
-        return new UserBlogCommentSingleResource($blogComment);
+        return new UserBlogCommentSingleResource($comment);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateUserBlogCommentRequest $request
-     * @param BlogComment $blogComment
+     * @param BlogComment $comment
      * @return UserBlogCommentSingleResource|JsonResponse
      */
     public function update(
         UpdateUserBlogCommentRequest $request,
-        BlogComment                  $blogComment
+        BlogComment $comment
     ): UserBlogCommentSingleResource|JsonResponse
     {
-        $validated = $request->validated(['blog', 'description']);
-        $model = $this->service->updateById($blogComment->id, $validated);
+        $validated = $request->validated(['description']);
+        $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {
             return new UserBlogCommentSingleResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param BlogComment $blogComment
+     * @param BlogComment $comment
      * @return JsonResponse
      */
-    public function destroy(Request $request, BlogComment $blogComment): JsonResponse
+    public function destroy(Request $request, BlogComment $comment): JsonResponse
     {
-        $res = $this->service->deleteUserCommentById($request->user()->id, $blogComment->id);
+        $res = $this->service->deleteUserCommentById($request->user()->id, $comment->id);
 
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

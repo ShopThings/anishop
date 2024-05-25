@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\ReturnOrderRequestItem;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateReturnOrderItemRequest extends FormRequest
@@ -32,7 +31,7 @@ class UpdateReturnOrderItemRequest extends FormRequest
     public function attributes()
     {
         return [
-            'is_accepted' => 'تایید مرجوع',
+            'is_accepted' => 'تایید مرجوع محصول',
         ];
     }
 }

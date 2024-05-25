@@ -15,7 +15,8 @@
 
       <div class="fixed z-20 inset-0 overflow-y-auto">
         <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
+          :class="dialogContainerClass"
+          class="flex min-h-full justify-center p-4 text-center"
         >
           <TransitionChild
               as="template"
@@ -26,19 +27,22 @@
               leave-from="opacity-100 scale-100"
               leave-to="opacity-0 scale-90"
           >
-            <DialogPanel :class="[
-                            'relative w-full rounded-2xl bg-white text-right align-middle shadow-xl transition-all',
-                            'max-h-[calc(100vh-2rem)]',
-                             containerKlass,
-                        ]">
+            <DialogPanel
+              :class="[
+                    'relative w-full rounded-2xl bg-white text-right align-middle shadow-xl transition-all',
+                    'max-h-[calc(100vh-2rem)] overflow-hidden my-custom-scrollbar',
+                     containerKlass,
+                ]"
+            >
               <div class="sticky top-0 bg-white z-[1]">
                 <slot :close="closeModal" name="closeButton">
-                  <base-button-close class="absolute top-0 left-0 translate-x-2/4 translate-y-2/4"
-                                     @click="closeModal"/>
+                  <base-button-close
+                    class="absolute top-0 left-0 translate-x-2/4 translate-y-2/4"
+                    @click="closeModal"
+                  />
                 </slot>
 
-                <div v-if="slots['title']"
-                     class="p-6 border-b">
+                <div v-if="slots['title']" class="p-6 border-b">
                   <DialogTitle
                       as="h3"
                       class="text-lg font-medium leading-6 text-gray-900"
@@ -61,7 +65,7 @@
 
 <script setup>
 import {computed, useSlots} from "vue";
-import {TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle} from '@headlessui/vue';
+import {Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot} from '@headlessui/vue';
 import BaseButtonClose from "@/components/base/BaseButtonClose.vue";
 
 const slots = useSlots()
@@ -70,8 +74,12 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  dialogContainerClass: {
+    type: [String, Object],
+    default: 'items-center',
+  },
   containerKlass: {
-    type: String,
+    type: [String, Object],
     default: 'max-w-md overflow-hidden',
   },
 })

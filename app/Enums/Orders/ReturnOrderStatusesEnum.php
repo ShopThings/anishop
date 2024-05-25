@@ -47,7 +47,20 @@ enum ReturnOrderStatusesEnum: string
             self::RECEIVED->value => '#910A67',
             self::RETURN_TO_USER->value => '#FE7A36',
             self::RECEIVED_BY_USER->value => '#7FC7D9',
-            self::MONEY_RETURNED->value => '#836FFF',
+            self::MONEY_RETURNED->value => '#C922BE',
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getEndingStatuses(): array
+    {
+        return [
+            self::DENIED_BY_USER->value,
+            self::DENIED->value,
+            self::RECEIVED_BY_USER->value,
+            self::MONEY_RETURNED->value,
         ];
     }
 
@@ -61,6 +74,20 @@ enum ReturnOrderStatusesEnum: string
             self::DENIED_BY_USER->value,
             self::DENIED->value,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAdminStatuses(): array
+    {
+        $statuses = array_map(function ($status) {
+            return $status->value;
+        }, self::cases());
+
+        return array_filter($statuses, function ($status) {
+            return !in_array($status, self::getUserStatuses());
+        });
     }
 
     /**

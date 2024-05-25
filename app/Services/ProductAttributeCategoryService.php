@@ -7,8 +7,8 @@ use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class ProductAttributeCategoryService extends Service implements ProductAttributeCategoryServiceInterface
 {
@@ -24,6 +24,14 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     public function getAttributeCategories(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getAttributeCategoriesSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAttributeCategoriesCount(): int
+    {
+        return $this->repository->count();
     }
 
     /**

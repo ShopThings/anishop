@@ -11,13 +11,13 @@ use Illuminate\Support\Collection;
 interface ProductCommentRepositoryInterface extends RepositoryInterface
 {
     /**
-     * @param int $productId
+     * @param int|null $productId
      * @param array $columns
      * @param Filter|null $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getCommentsSearchFilterPaginated(
-        int    $productId,
+        ?int $productId = null,
         array  $columns = ['*'],
         Filter $filter = null
     ): Collection|LengthAwarePaginator;

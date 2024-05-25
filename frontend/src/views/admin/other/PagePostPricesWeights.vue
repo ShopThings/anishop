@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش هزینه ارسال نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.WEIGHT_POST_PRICE, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن هزینه ارسال جدید
     </template>
@@ -34,14 +37,14 @@
           >
             <template v-slot:min_weight="{value}">
               <div class="font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.min_weight) }}
+                {{ numberFormat(value.min_weight) }}
                 <span class="text-xs text-gray-400">گرم</span>
               </div>
             </template>
 
             <template v-slot:max_weight="{value}">
               <div class="font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.max_weight) }}
+                {{ numberFormat(value.max_weight) }}
                 <span class="text-xs text-gray-400">گرم</span>
               </div>
             </template>
@@ -51,7 +54,7 @@
                   v-if="value.post_price > 0"
                   class="font-iranyekan-bold"
               >
-                {{ formatPriceLikeNumber(value.post_price) }}
+                {{ numberFormat(value.post_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
               <MinusIcon v-else class="w-5 h-5 text-rose-500"/>
@@ -63,7 +66,12 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
+              <base-datatable-menu
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
+              />
             </template>
           </base-datatable>
         </template>
@@ -85,10 +93,13 @@ import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {WeightPostPriceAPI} from "@/service/APIShop.js";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -158,6 +169,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.WEIGHT_POST_PRICE, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -168,12 +180,26 @@ const table = reactive({
   },
 })
 
+function calcRemovals(row) {
+  let removals = []
+
+  if (!userStore.hasPermission(PERMISSION_PLACES.WEIGHT_POST_PRICE, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.WEIGHT_POST_PRICE, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+
+  return removals
+}
+
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -190,6 +216,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

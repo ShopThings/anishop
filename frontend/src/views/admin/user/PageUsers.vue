@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و مشاهده کاربر نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن کاربر جدید
     </template>
@@ -18,26 +21,26 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:roles="{value}">
-                            <span v-for="(role) in value.roles"
-                                  v-if="value.roles"
-                                  class="rounded-md text-white bg-fuchsia-700 text-xs py-1 px-2 inline-block m-1 whitespace-nowrap">
-                                {{ role }}
-                            </span>
+              <span v-for="(role) in value.roles"
+                    v-if="value.roles"
+                    class="rounded-md text-white bg-fuchsia-700 text-xs py-1 px-2 inline-block m-1 whitespace-nowrap">
+                  {{ role }}
+              </span>
               <span v-else
                     class="rounded-md text-white bg-black text-xs py-1 px-2 inline-block whitespace-nowrap">فاقد نقش</span>
             </template>
@@ -46,19 +49,19 @@
               <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
             <template v-slot:verified_at="{value}">
-                            <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
-                                <span
-                                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
-                                {{ value.verified_at }}
-                            </span>
+              <span v-if="value.verified_at" class="text-emerald-500 text-xs flex flex-col">
+                  <span
+                    class="text-gray-500 border rounded-full py-1 px-2 bg-white shadow inline-block mb-1 mx-auto">تایید شده در تاریخ</span>
+                  {{ value.verified_at }}
+              </span>
               <span v-else class="rounded-md text-white bg-rose-500 text-xs p-1">تایید نشده</span>
             </template>
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -70,7 +73,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue"
-import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
+import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
@@ -81,9 +84,12 @@ import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {UserAPI} from "@/service/APIUser.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -175,6 +181,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.USER, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -184,6 +191,19 @@ const table = reactive({
     sort: "desc",
   },
 })
+
+function calcRemovals(row) {
+  let removals = []
+
+  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+
+  return removals
+}
 
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
@@ -252,7 +272,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id && !items[item].is_deletable)
+            if (items[item].id && items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

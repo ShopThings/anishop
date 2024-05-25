@@ -1,15 +1,15 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="list-single"
+    :loading="loading"
+    type="list-single"
   >
     <template #content>
       <partial-card class="border-0 mb-3">
         <template #header>
           دیدگاه کاربر درباره بلاگ
           <span
-              v-if="blog?.slug"
-              class="text-slate-400 text-base"
+            v-if="blog?.slug"
+            class="text-slate-400 text-base"
           >{{ blog?.title }}</span>
         </template>
         <template #body>
@@ -17,10 +17,11 @@
             <div class="flex flex-col sm:flex-row gap-3 items-center">
               <div class="shrink-0">
                 <base-lazy-image
-                    :alt="blog?.title"
-                    :lazy-src="blog?.image.path"
-                    :size="FileSizes.SMALL"
-                    class="!h-28 sm:!h-20 w-auto rounded"
+                  :alt="blog?.title"
+                  :lazy-src="blog?.image.path"
+                  :size="FileSizes.SMALL"
+                  :is-local="false"
+                  class="!h-28 sm:!h-20 w-auto rounded"
                 />
               </div>
               <div class="grow text-sm">
@@ -28,8 +29,8 @@
               </div>
               <div class="text-sm shrink-0">
                 <router-link
-                    :to="{name: 'blog.detail', params: {slug: blog?.slug}}"
-                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                  :to="{name: 'blog.detail', params: {slug: blog?.slug}}"
+                  class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                 >
                   <span class="mx-auto">مشاهده بلاگ</span>
                   <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -49,29 +50,29 @@
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="content"
+          :loading="loading"
+          type="content"
         >
           <template #content>
             <div class="flex flex-wrap">
               <div class="p-2 md:w-1/2 relative">
                 <VTransitionFade>
                   <loader-circle
-                      v-if="badgeUpdateLoading"
-                      big-circle-color="border-transparent"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
+                    v-if="badgeUpdateLoading"
+                    big-circle-color="border-transparent"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
                   />
                 </VTransitionFade>
 
                 <partial-input-label title="تغییر برچسب دیدگاه کاربر"/>
                 <base-select
-                    :before-change-fn="changeUserCommentBadge"
-                    :is-loading="badgeLoading"
-                    :options="badges"
-                    :selected="selectedUserCommentBadge"
-                    options-key="id"
-                    options-text="title"
-                    @change="(selected) => {selectedUserCommentBadge = selected}"
+                  :before-change-fn="changeUserCommentBadge"
+                  :is-loading="badgeLoading"
+                  :options="badges"
+                  :selected="selectedUserCommentBadge"
+                  options-key="id"
+                  options-text="title"
+                  @change="(selected) => {selectedUserCommentBadge = selected}"
                 >
                   <template #item="{item}">
                     <partial-badge-color :hex="item.color_hex" :title="item.title"/>
@@ -82,20 +83,20 @@
               <div class="p-2 md:w-1/2 relative">
                 <VTransitionFade>
                   <loader-circle
-                      v-if="conditionUpdateLoading"
-                      big-circle-color="border-transparent"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
+                    v-if="conditionUpdateLoading"
+                    big-circle-color="border-transparent"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
                   />
                 </VTransitionFade>
 
                 <partial-input-label title="تغییر وضعیت دیدگاه کاربر"/>
                 <base-select
-                    :before-change-fn="changeUserCommentCondition"
-                    :options="conditions"
-                    :selected="selectedUserCommentCondition"
-                    options-key="value"
-                    options-text="text"
-                    @change="(selected) => {selectedUserCommentCondition = selected}"
+                  :before-change-fn="changeUserCommentCondition"
+                  :options="conditions"
+                  :selected="selectedUserCommentCondition"
+                  options-key="value"
+                  options-text="text"
+                  @change="(selected) => {selectedUserCommentCondition = selected}"
                 >
                   <template #item="{item}">
                     <partial-badge-color :hex="item.color_hex" :title="item.text"/>
@@ -105,22 +106,22 @@
             </div>
 
             <div
-                v-if="comment?.parent || 1"
-                class="mt-3"
+              v-if="comment?.parent || 1"
+              class="mt-3"
             >
               <partial-input-label title="پاسخ کاربر به دیدگاه"/>
               <partial-comment-blog-single
-                  :comment="comment?.parent || {}"
-                  :show-answer-button="false"
-                  container-class="!bg-violet-50"
+                :comment="comment?.parent || {}"
+                :show-answer-button="false"
+                container-class="!bg-violet-50"
               />
             </div>
 
             <div class="mt-3">
               <partial-input-label title="دیدگاه کاربر"/>
               <partial-comment-blog-single
-                  :comment="comment || {}"
-                  :show-answer-button="false"
+                :comment="comment || {}"
+                :show-answer-button="false"
               />
             </div>
 
@@ -133,11 +134,11 @@
                 <div class="p-2 sm:w-1/2">
                   <partial-input-label title="برچسب پاسخ دیدگاه"/>
                   <base-select
-                      :is-loading="badgeLoading"
-                      :options="badges"
-                      options-key="id"
-                      options-text="title"
-                      @change="(selected) => {selectedAnswerBadge=selected}"
+                    :is-loading="badgeLoading"
+                    :options="badges"
+                    options-key="id"
+                    options-text="title"
+                    @change="(selected) => {selectedAnswerBadge=selected}"
                   >
                     <template #item="{item}">
                       <partial-badge-color :hex="item.color_hex" :title="item.title"/>
@@ -148,8 +149,8 @@
 
                 <div class="p-2">
                   <base-textarea
-                      label-title="پاسخ خود را وارد نمایید"
-                      name="answer"
+                    label-title="پاسخ خود را وارد نمایید"
+                    name="answer"
                   >
                     <template #icon>
                       <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -159,15 +160,15 @@
 
                 <div class="px-2 py-3">
                   <base-animated-button
-                      :disabled="!canSubmit"
-                      class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                      type="submit"
+                    :disabled="!canSubmit"
+                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                    type="submit"
                   >
                     <VTransitionFade>
                       <loader-circle
-                          v-if="!canSubmit"
-                          big-circle-color="border-transparent"
-                          main-container-klass="absolute w-full h-full top-0 left-0"
+                        v-if="!canSubmit"
+                        big-circle-color="border-transparent"
+                        main-container-klass="absolute w-full h-full top-0 left-0"
                       />
                     </VTransitionFade>
 
@@ -260,8 +261,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'admin.blog.comments', params: {slug: slugParam.value}})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

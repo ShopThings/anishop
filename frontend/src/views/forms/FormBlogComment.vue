@@ -1,37 +1,37 @@
 <template>
   <VTransitionScaleUp mode="out-in">
-    <div v-if="showCommentDescription">
+    <div v-if="showFormDirectly || showCommentDescription">
       <form
-          v-if="user"
-          @submit.prevent="onSubmit"
+        v-if="user"
+        @submit.prevent="onSubmit"
       >
         <div class="mb-3 text-center flex items-center gap-3">
           <div class="grow h-0.5 bg-blue-400 rounded-full"></div>
           <div class="text-orange-500 text-base sm:text-slate-400 sm:text-lg leading-relaxed">
-            دیدگاه خود را درباره این نوشته ما با به اشتراک بگذارید
+            دیدگاه خود را درباره این نوشته با ما به اشتراک بگذارید
           </div>
           <div class="grow h-0.5 bg-blue-400 rounded-full"></div>
         </div>
 
         <div>
           <base-textarea
-              label-title="توضیحات شما"
-              name="description"
-              placeholder="دیدگاه خود را وارد نمایید..."
+            label-title="توضیحات شما"
+            name="description"
+            placeholder="دیدگاه خود را وارد نمایید..."
           />
         </div>
 
         <div class="pt-3">
           <base-animated-button
-              :disabled="isSubmitting"
-              class="!text-black border-2 mr-auto px-6 w-full sm:w-auto hover:bg-slate-100"
-              type="submit"
+            :disabled="!canSubmit"
+            class="!text-black border-2 mr-auto px-6 w-full sm:w-auto hover:bg-slate-100"
+            type="submit"
           >
             <VTransitionFade>
               <loader-circle
-                  v-if="isSubmitting"
-                  big-circle-color="border-transparent"
-                  main-container-klass="absolute w-full h-full top-0 left-0"
+                v-if="!canSubmit"
+                big-circle-color="border-transparent"
+                main-container-klass="absolute w-full h-full top-0 left-0"
               />
             </VTransitionFade>
 
@@ -48,8 +48,8 @@
         <p class="p-3 border-r-4 border-rose-500 bg-rose-50">
           برای ارسال نظر لطفا ابتدا به سایت
           <router-link
-              :to="{name: 'login', query: {redirect: route.fullPath}}"
-              class="text-blue-600 hover:text-opacity-80 transition"
+            :to="{name: 'login', query: {redirect: route.fullPath}}"
+            class="text-blue-600 hover:text-opacity-80 transition"
           >
             وارد شوید.
           </router-link>
@@ -58,9 +58,9 @@
     </div>
 
     <div
-        v-else
-        class="flex items-center gap-3 cursor-pointer rounded-lg p-3 bg-slate-100 hover:bg-slate-50 transition"
-        @click="showCommentDescription = true"
+      v-else
+      class="flex items-center gap-3 cursor-pointer rounded-lg p-3 bg-slate-100 hover:bg-slate-50 transition"
+      @click="showCommentDescription = true"
     >
       <PaperAirplaneIcon class="w-6 h-6 text-slate-300"/>
       <div class="text-sm text-slate-400">
@@ -77,25 +77,61 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {PaperAirplaneIcon} from "@heroicons/vue/24/outline/index.js";
-import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
 import VTransitionScaleUp from "@/transitions/VTransitionScaleUp.vue";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useRoute} from "vue-router";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {UserPanelBlogCommentAPI} from "@/service/APIUserPanel.js";
+import {useToast} from "vue-toastification";
+import {getRouteParamByKey} from "@/composables/helper.js";
+
+const props = defineProps({
+  commentId: [Number, String],
+  showFormDirectly: Boolean,
+})
 
 const userStore = useUserAuthStore()
 const user = userStore.getUser
 
 const route = useRoute()
+const toast = useToast()
+const slugParam = getRouteParamByKey('slug', null, false)
 
 const showCommentDescription = ref(false)
 
-const canSubmit = ref(true)
-const {handleSubmit, errors, isSubmitting} = useForm({
-  validationSchema: yup.object().shape({}),
-})
+const {canSubmit, errors, onSubmit} = useFormSubmit({
+  validationSchema: yup.object().shape({
+    description: yup.string().requred('توضیحات خود را وارد نمایید.'),
+  }),
+}, (values, actions) => {
+  if (!user) {
+    toast.error('برای ارسال نظر لطفا ابتدا به سایت وارد شوید.')
+    return
+  }
 
-const onSubmit = handleSubmit((values, actions) => {
+  canSubmit.value = false
 
+  let data = {
+    description: values.description,
+  }
+
+  if (props.commentId) {
+    data.comment = props.commentId
+  }
+
+  UserPanelBlogCommentAPI.create(slugParam.value, data, {
+    success() {
+      actions.resetForm()
+    },
+    error(error) {
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
+        actions.setErrors(error.errors)
+      }
+    },
+    finally() {
+      canSubmit.value = true
+    },
+  })
 })
 </script>

@@ -1,7 +1,8 @@
 <template>
   <label
       :for="id"
-      class="mb-1 text-right text-black flex justify-between items-center gap-1.5"
+      :class="space"
+      class="text-right text-black flex justify-between items-center gap-1.5"
   >
     <span class="text-sm">
         <slot name="label">{{ title }}</slot>
@@ -15,5 +16,9 @@ defineProps({
   title: String,
   id: String,
   isOptional: Boolean,
+  space: {
+    type: [Object, String],
+    default: 'mb-1'
+  },
 })
 </script>

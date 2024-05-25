@@ -39,7 +39,7 @@
     <template v-if="showBackdrop">
       <Teleport to="body">
         <div
-            class="slide-rotate-hor-t-fwd fixed z-[9] w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
+          class="slide-rotate-hor-t-fwd fixed z-10 w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
             @click="close"
         ></div>
       </Teleport>

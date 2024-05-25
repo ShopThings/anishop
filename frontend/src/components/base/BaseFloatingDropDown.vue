@@ -9,7 +9,7 @@
 
     <template v-if="itemsLength > 0" #popper="{hide}">
       <ul class="p-2 min-w-[9rem] text-gray-700">
-        <li v-for="(item, idx) in items" :key="idx">
+        <li v-for="(item, idx) in items" :key="idx" class="w-full">
           <slot :hide="hide" :index="idx" :item="item" name="item"></slot>
         </li>
       </ul>
@@ -43,10 +43,12 @@ const props = defineProps({
 })
 
 const itemsLength = computed(() => {
-  if (isObject(props.items))
+  if (isObject(props.items)) {
     return Object.keys(props.items).length
-  else if (Array.isArray(props.items))
+  } else if (Array.isArray(props.items)) {
     return props.items.length
+  }
+
   return 0
 })
 </script>

@@ -16,10 +16,16 @@ interface CategoryServiceInterface extends ServiceInterface
     public function getCategories(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getCategoriesCount(): int;
+
+    /**
      * @param Filter $filter
+     * @param bool $containMenuCategories
      * @return Collection
      */
-    public function getHomeCategories(Filter $filter): Collection;
+    public function getPublishedCategories(Filter $filter, bool $containMenuCategories = false): Collection;
 
     /**
      * @return Collection

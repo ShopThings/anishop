@@ -31,7 +31,7 @@
 defineProps({
   containerClass: String,
   bulletContainerClass: String,
-  bulletClass: String,
+  bulletClass: [String, Array],
   lineClass: String,
   isLast: Boolean,
 })

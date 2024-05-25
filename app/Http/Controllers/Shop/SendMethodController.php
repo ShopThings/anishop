@@ -8,14 +8,13 @@ use App\Http\Requests\StoreSendMethodRequest;
 use App\Http\Requests\UpdateSendMethodRequest;
 use App\Http\Resources\SendMethodResource;
 use App\Models\SendMethod;
-use App\Models\User;
 use App\Services\Contracts\SendMethodServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class SendMethodController extends Controller
@@ -37,11 +36,10 @@ class SendMethodController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', SendMethod::class);
         return SendMethodResource::collection($this->service->getMethods($filter));
     }
 
@@ -50,11 +48,10 @@ class SendMethodController extends Controller
      *
      * @param StoreSendMethodRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreSendMethodRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', SendMethod::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -65,12 +62,11 @@ class SendMethodController extends Controller
                 'message' => 'ایجاد روش ارسال با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد روش ارسال',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد روش ارسال',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -78,11 +74,10 @@ class SendMethodController extends Controller
      *
      * @param SendMethod $sendMethod
      * @return SendMethodResource
-     * @throws AuthorizationException
      */
     public function show(SendMethod $sendMethod): SendMethodResource
     {
-        $this->authorize('view', $sendMethod);
+        Gate::authorize('view', $sendMethod);
         return new SendMethodResource($sendMethod);
     }
 
@@ -92,14 +87,13 @@ class SendMethodController extends Controller
      * @param UpdateSendMethodRequest $request
      * @param SendMethod $sendMethod
      * @return SendMethodResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(
         UpdateSendMethodRequest $request,
         SendMethod              $sendMethod
     ): SendMethodResource|JsonResponse
     {
-        $this->authorize('update', $sendMethod);
+        Gate::authorize('update', $sendMethod);
 
         $validated = $request->validated();
         unset($validated['code']);
@@ -109,12 +103,11 @@ class SendMethodController extends Controller
 
         if (!is_null($model)) {
             return new SendMethodResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش روش ارسال',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش روش ارسال',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -123,20 +116,19 @@ class SendMethodController extends Controller
      * @param Request $request
      * @param SendMethod $sendMethod
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, SendMethod $sendMethod): JsonResponse
     {
-        $this->authorize('delete', $sendMethod);
+        Gate::authorize('delete', $sendMethod);
 
         $permanent = $request->user()->id === $sendMethod->creator?->id;
         $res = $this->service->deleteById($sendMethod->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

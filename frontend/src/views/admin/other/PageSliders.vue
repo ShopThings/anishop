@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش اسلایدر نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن اسلایدر جدید
     </template>
@@ -37,16 +40,15 @@
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  v-if="getMenuRemovals(value).length !== 2"
                   :container="getMenuContainer"
                   :data="value"
                   :items="operations"
-                  :removals="getMenuRemovals(value)"
+                  :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -71,9 +73,12 @@ import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {SLIDER_PLACES} from "@/composables/constants.js";
 import {SliderAPI} from "@/service/APIConfig.js";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -139,6 +144,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.SLIDER, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -149,14 +155,24 @@ const table = reactive({
   },
 })
 
-const getMenuRemovals = computed((value) => {
+function calcRemovals(row) {
   let removals = []
 
-  if (!value.is_deletable) removals.push('delete')
-  if (value.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value) removals.push('edit_slides')
+  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+  if (
+    row.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value &&
+    !userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.UPDATE)
+  ) {
+    removals.push(['edit_slides'])
+  }
 
   return removals
-})
+}
 
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
@@ -242,7 +258,7 @@ const selectionOperations = [
         const ids = []
         for (const item in items) {
           if (items.hasOwnProperty(item)) {
-            if (items[item].id && !items[item].is_deletable)
+            if (items[item].id && items[item].is_deletable)
               ids.push(items[item].id)
           }
         }

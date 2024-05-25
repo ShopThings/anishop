@@ -19,7 +19,7 @@ class OrderReserve extends Model
     ];
 
     protected $casts = [
-        'expire_at' => 'datetime',
+        'expires_at' => 'datetime',
         'created_at' => 'datetime',
     ];
 
@@ -28,6 +28,6 @@ class OrderReserve extends Model
      */
     public function order(): BelongsTo
     {
-        return $this->belongsTo(Order::class, 'order_code', 'code');
+        return $this->belongsTo(OrderDetail::class, 'order_key_id');
     }
 }

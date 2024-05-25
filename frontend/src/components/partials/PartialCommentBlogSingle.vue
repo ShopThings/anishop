@@ -1,11 +1,11 @@
 <template>
   <div
-      :class="containerClass"
-      class="flex flex-col gap-3 shadow-md bg-white p-6 grow border border-slate-50"
+    :class="containerClass"
+    class="flex flex-col gap-3 shadow-md bg-white p-6 grow border border-slate-50"
   >
     <div
-        v-if="!hasCommentInfo"
-        class="animate-pulse"
+      v-if="!hasCommentInfo"
+      class="animate-pulse"
     >
       <ul class="flex flex-wrap gap-4 items-center">
         <li class="bg-slate-300 w-20 h-4"></li>
@@ -30,8 +30,8 @@
         </li>
         <li>
           <partial-badge-status-blog-comment
-              :color-hex="comment?.color_hex"
-              :text="comment?.title"
+            :color-hex="comment?.color_hex"
+            :text="comment?.title"
           />
         </li>
       </ul>
@@ -42,16 +42,19 @@
 
     <div v-if="showAnswerButton" class="flex flex-col items-end">
       <div
-          v-if="!hasCommentInfo"
-          class="animate-pulse"
+        v-if="!hasCommentInfo"
+        class="animate-pulse"
       >
-        <div class="rounded bg-emerald-300 w-24 h-7 inline-block"></div>
+        <div class="flex items-center gap-2 rounded-lg border border-slate-200 p-2">
+          <div class="rounded bg-slate-200 w-24 h-3 inline-block"></div>
+          <ArrowUturnLeftIcon class="w-5 h-5 text-slate-400"/>
+        </div>
       </div>
       <template v-else>
         <button
-            class="text-slate-500 hover:text-slate-600 transition text-sm flex items-center gap-2"
-            type="button"
-            @click="handleAnswerClick"
+          class="text-slate-500 hover:text-slate-600 transition text-sm flex items-center gap-2"
+          type="button"
+          @click="handleAnswerClick"
         >
           <span>پاسخ</span>
           <ArrowUturnLeftIcon class="w-5 h-5"/>
@@ -59,13 +62,13 @@
 
         <VTransitionSlideFadeDownY>
           <div
-              v-if="showAnswerForm"
-              class="w-full mt-3 p-2 border-[3px] border-emerald-400 rounded-lg bg-slate-50 relative"
+            v-if="showAnswerForm"
+            class="w-full mt-3 p-2 border-[3px] border-emerald-400 rounded-lg bg-slate-50 relative"
           >
             <base-button-close
-                v-tooltip.right="'بستن فرم پاسخ'"
-                class="absolute top-4 left-4"
-                @click="() => {showAnswerForm = false}"
+              v-tooltip.right="'بستن فرم پاسخ'"
+              class="absolute top-4 left-4"
+              @click="() => {showAnswerForm = false}"
             />
 
             <h2 class="text-lg p-3 font-iranyekan-bold">
@@ -75,8 +78,8 @@
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <base-textarea
-                    label-title="پاسخ خود را وارد نمایید"
-                    name="answer"
+                  label-title="پاسخ خود را وارد نمایید"
+                  name="answer"
                 >
                   <template #icon>
                     <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -86,15 +89,15 @@
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  :disabled="!canSubmit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      v-if="!canSubmit"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -130,7 +133,7 @@ import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.v
 import {useToast} from "vue-toastification";
 
 const props = defineProps({
-  containerClass: String,
+  containerClass: [String, Array],
   comment: {
     type: Object,
     required: true,
@@ -147,8 +150,8 @@ const toast = useToast()
 
 const hasCommentInfo = computed(() => {
   return props.comment &&
-      isObject(props.comment) &&
-      Object.keys(props.comment).length
+    isObject(props.comment) &&
+    Object.keys(props.comment).length
 })
 const showAnswerForm = ref(false)
 
@@ -175,8 +178,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       return false
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

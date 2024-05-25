@@ -79,9 +79,9 @@ class OrderDetailSingleResource extends JsonResource
                     ]
                     :
                     [
-                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAYED, 'نامشخص'),
-                        'value' => PaymentStatusesEnum::NOT_PAYED->value,
-                        'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::NOT_PAYED->value] ?? '#000000',
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAID, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::NOT_PAID->value,
+                        'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::NOT_PAID->value] ?? '#000000',
                     ]
                 ),
             'orders' => OrderResource::collection($this->orders),

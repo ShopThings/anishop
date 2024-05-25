@@ -5,50 +5,90 @@
           class="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center"
           type="button"
       >
-        <BellAlertIcon class="h-6 w-6 "/>
+        <BellAlertIcon v-if="countingAlertStore.hasNewChange" class="h-6 w-6 animate-wiggle"/>
+        <BellIcon v-else class="h-6 w-6"/>
         <ChevronDownIcon class="h-3 w-3 mr-1"/>
 
-        <span
-            class="absolute rounded-full bg-orange-400 w-2 h-2 z-[1] -top-1 -right-1"></span>
+        <span v-if="countingAlertStore.hasNewChange"
+              class="absolute rounded-full bg-orange-400 w-2 h-2 z-[1] -top-1 -right-1"></span>
       </button>
     </template>
 
     <template #panel>
-      <ul class="divide-y divide-gray-100 py-2">
-        <li class="py-2 px-4 flex flex-col">
+      <ul class="divide-y divide-gray-100 py-1.5">
+        <li
+          v-if="userStore.hasPermission(PERMISSION_PLACES.PRODUCT_COMMENT, PERMISSIONS.READ) &&
+            countingAlertStore.getProductCommentCount !== null"
+          class="py-1 px-3 flex flex-col"
+        >
           <router-link
-              class="flex justify-between items-center group px-4 py-3 hover:bg-indigo-50 transition rounded-lg"
-              to="#"
+            :to="{name: 'admin.products.comments'}"
+            class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
-            <span>دیدگاه شما</span>
-            <span class="w-6 h-6 rounded bg-teal-500 text-white px-1 text-center mr-2">5</span>
+            <span>دیدگاه محصول</span>
+            <span class="w-6 h-6 rounded bg-teal-500 text-white px-1 text-center mr-2">{{
+                numberFormat(countingAlertStore.getProductCommentCount)
+              }}</span>
           </router-link>
         </li>
-        <li class="py-2 px-4 flex flex-col">
+        <li
+          v-if="userStore.hasPermission(PERMISSION_PLACES.BLOG_COMMENT, PERMISSIONS.READ) &&
+            countingAlertStore.getBlogCommentCount !== null"
+          class="py-1 px-3 flex flex-col"
+        >
           <router-link
-              class="flex justify-between items-center group px-4 py-3 hover:bg-indigo-50 transition rounded-lg"
-              to="#"
+            :to="{name: 'admin.blogs.comments'}"
+            class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
+          >
+            <span>دیدگاه بلاگ</span>
+            <span class="w-6 h-6 rounded bg-green-500 text-white px-1 text-center mr-2">{{
+                numberFormat(countingAlertStore.getBlogCommentCount)
+              }}</span>
+          </router-link>
+        </li>
+        <li
+          v-if="userStore.hasPermission(PERMISSION_PLACES.RETURN_ORDER_REQUEST, PERMISSIONS.READ) &&
+            countingAlertStore.getReturnOrderCount !== null"
+          class="py-1 px-3 flex flex-col"
+        >
+          <router-link
+            :to="{name: 'admin.return_orders'}"
+            class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>درخواست مرجوعی کالا</span>
-            <span class="w-6 h-6 rounded bg-pink-500 text-white px-1 text-center mr-2">2</span>
+            <span class="w-6 h-6 rounded bg-pink-500 text-white px-1 text-center mr-2">{{
+                numberFormat(countingAlertStore.getReturnOrderCount)
+              }}</span>
           </router-link>
         </li>
-        <li class="py-2 px-4 flex flex-col">
+        <li
+          v-if="userStore.hasPermission(PERMISSION_PLACES.CONTACT_US, PERMISSIONS.READ) &&
+            countingAlertStore.getContactCount !== null"
+          class="py-1 px-3 flex flex-col"
+        >
           <router-link
-              class="flex justify-between items-center group px-4 py-3 hover:bg-indigo-50 transition rounded-lg"
-              to="#"
+            :to="{name: 'admin.contacts'}"
+            class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>تماس با ما</span>
-            <span class="w-6 h-6 rounded bg-cyan-500 text-white px-1 text-center mr-2">9</span>
+            <span class="w-6 h-6 rounded bg-cyan-500 text-white px-1 text-center mr-2">{{
+                numberFormat(countingAlertStore.getContactCount)
+              }}</span>
           </router-link>
         </li>
-        <li class="py-2 px-4 flex flex-col">
+        <li
+          v-if="userStore.hasPermission(PERMISSION_PLACES.COMPLAINT, PERMISSIONS.READ) &&
+             countingAlertStore.getComplaintCount !== null"
+          class="py-1 px-3 flex flex-col"
+        >
           <router-link
-              class="flex justify-between items-center group px-4 py-3 hover:bg-indigo-50 transition rounded-lg"
-              to="#"
+            :to="{name: 'admin.complaints'}"
+            class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>شکایات</span>
-            <span class="w-6 h-6 rounded bg-rose-500 text-white px-1 text-center mr-2">0</span>
+            <span class="w-6 h-6 rounded bg-rose-500 text-white px-1 text-center mr-2">{{
+                numberFormat(countingAlertStore.getComplaintCount)
+              }}</span>
           </router-link>
         </li>
       </ul>
@@ -57,7 +97,13 @@
 </template>
 
 <script setup>
+import {inject} from "vue";
 import {ChevronDownIcon} from "@heroicons/vue/24/solid/index.js";
 import BasePopover from "@/components/base/BasePopover.vue";
-import {BellAlertIcon} from "@heroicons/vue/24/outline/index.js";
+import {BellAlertIcon, BellIcon} from "@heroicons/vue/24/outline/index.js";
+import {numberFormat} from "@/composables/helper.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
+
+const userStore = useAdminAuthStore()
+const countingAlertStore = inject('countingAlertStore')
 </script>

@@ -56,4 +56,39 @@ class UserPolicy
                 PermissionPlacesEnum::USER)
         );
     }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    public function canMakeDeletable(User $user): bool
+    {
+        return $user->hasAnyRole([RolesEnum::DEVELOPER->value, RolesEnum::SUPER_ADMIN->value]);
+    }
+
+    /**
+     * @param User $user
+     * @param User $model
+     * @return bool
+     */
+    public function canBan(User $user, User $model): bool
+    {
+        if (
+            (
+                !$user->hasRole(RolesEnum::DEVELOPER->value) &&
+                $model->hasAnyRole([RolesEnum::DEVELOPER->value, RolesEnum::SUPER_ADMIN->value])
+            )
+            ||
+            (
+                $user->hasAnyRole([RolesEnum::ADMIN->value, RolesEnum::USER_MANAGER->value]) &&
+                $model->hasRole(RolesEnum::ADMIN->value)
+            )
+        ) return false;
+
+        return $user->hasPermissionTo(
+            PermissionHelper::permission(
+                PermissionsEnum::BAN,
+                PermissionPlacesEnum::USER)
+        );
+    }
 }

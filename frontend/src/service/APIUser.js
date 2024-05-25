@@ -11,7 +11,7 @@ export const UserAPI = Object.assign(
 
 export const UserAddressAPI = {
   fetchAll(userId, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.users.addresses, {user: userId}),
       null,
       callbacks
@@ -21,7 +21,7 @@ export const UserAddressAPI = {
 
 export const UserFavoriteProductAPI = {
   fetchAll(userId, params, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.users.favoriteProducts, {user: userId}),
       {params},
       callbacks
@@ -31,7 +31,7 @@ export const UserFavoriteProductAPI = {
 
 export const UserPurchaseAPI = {
   fetchAll(userId, params, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.users.purchases, {user: userId}),
       {params},
       callbacks
@@ -41,7 +41,7 @@ export const UserPurchaseAPI = {
 
 export const UserCartAPI = {
   fetchAll(userId, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.users.carts, {user: userId}),
       null,
       callbacks

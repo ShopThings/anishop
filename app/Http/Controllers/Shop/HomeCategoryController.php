@@ -25,6 +25,6 @@ class HomeCategoryController extends Controller
      */
     public function categories(HomeCategoryFilter $filter): AnonymousResourceCollection
     {
-        return MainCategoryResource::collection($this->service->getHomeCategories($filter));
+        return MainCategoryResource::collection($this->service->getPublishedCategories($filter, true));
     }
 }

@@ -15,18 +15,200 @@ use App\Models\RelatedProduct;
 use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Model\CaseWhen;
+use App\Support\QB\ReportQueryAppenderTrait;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductRepository extends Repository implements ProductRepositoryInterface
 {
-    use RepositoryTrait;
+    use RepositoryTrait,
+        ReportQueryAppenderTrait;
+
+    /**
+     * @inheritDoc
+     */
+    protected function getMappedReportColumnToActualColumn(): array
+    {
+        return [
+            'brand' => 'brand_id',
+            'category' => 'category_id',
+            'title' => 'title',
+            'unit_name' => 'unit_name',
+            'is_available' => 'is_available',
+            'is_commenting_allowed' => 'is_commenting_allowed',
+            'is_published' => 'is_published',
+            'is_deleted' => 'deleted_at',
+            //
+            'color_name' => [
+                'column' => 'color_name',
+                'with' => 'items',
+            ],
+            'size' => [
+                'column' => 'size',
+                'with' => 'items',
+            ],
+            'guarantee' => [
+                'column' => 'guarantee',
+                'with' => 'items',
+            ],
+            'weight' => [
+                'column' => 'weight',
+                'with' => 'items',
+            ],
+            'price' => [
+                'column' => 'price',
+                'with' => 'items',
+            ],
+            'discounted_price' => [
+                'column' => 'discounted_price',
+                'with' => 'items',
+            ],
+            'discounted_from' => [
+                'column' => 'discounted_from',
+                'with' => 'items',
+            ],
+            'discounted_until' => [
+                'column' => 'discounted_until',
+                'with' => 'items',
+            ],
+            'tax_rate' => [
+                'column' => 'tax_rate',
+                'with' => 'items',
+            ],
+            'stock_count' => [
+                'column' => 'stock_count',
+                'with' => 'items',
+            ],
+            'max_cart_count' => [
+                'column' => 'max_cart_count',
+                'with' => 'items',
+            ],
+            'is_spacial' => [
+                'column' => 'is_spacial',
+                'with' => 'items',
+            ],
+            'is_each_available' => [
+                'column' => 'is_available',
+                'with' => 'items',
+            ],
+            'is_each_show_coming_soon' => [
+                'column' => 'show_coming_soon',
+                'with' => 'items',
+            ],
+            'is_each_show_call_for_more' => [
+                'column' => 'show_call_for_more',
+                'with' => 'items',
+            ],
+            'is_each_published' => [
+                'column' => 'is_published',
+                'with' => 'items',
+            ],
+            'has_separate_shipment' => [
+                'column' => 'has_separate_shipment',
+                'with' => 'items',
+            ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialReportColumns(): array
+    {
+        return [
+            'is_deleted',
+            //
+            'color_name', 'size', 'guarantee', 'price', 'discounted_price',
+            'stock_count', 'max_cart_count', 'weight', 'discounted_from',
+            'discounted_until', 'tax_rate', 'is_spacial', 'is_each_available',
+            'is_each_show_coming_soon', 'is_each_show_call_for_more',
+            'is_each_published', 'has_separate_shipment',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getIsMultipleColumns(): array
+    {
+        return [
+            'color_name', 'size', 'guarantee', 'price',
+            'discounted_price', 'stock_count', 'max_cart_count',
+            'weight', 'discounted_from', 'discounted_until', 'tax_rate',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getHasReplacementColumns(): array
+    {
+        return [
+            'color_name', 'size', 'guarantee', 'price',
+            'discounted_price', 'stock_count', 'max_cart_count',
+            'weight', 'discounted_from', 'discounted_until', 'tax_rate',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getComparisonColumns(): array
+    {
+        return [
+            'color_name', 'size', 'guarantee', 'price',
+            'discounted_price', 'stock_count', 'max_cart_count',
+            'weight', 'discounted_from', 'discounted_until', 'tax_rate',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getBetweenColumns(): array
+    {
+        return [
+            'price', 'discounted_price', 'stock_count', 'max_cart_count',
+            'weight', 'discounted_from', 'discounted_until', 'tax_rate',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getNullableColumns(): array
+    {
+        return [
+            'color_name', 'size', 'guarantee', 'price',
+            'discounted_price', 'stock_count', 'max_cart_count',
+            'weight', 'discounted_from', 'discounted_until', 'tax_rate',
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getSpecialBooleanColumns(): array
+    {
+        return ['is_deleted'];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function getGeneralBooleanColumns(): array
+    {
+        return [
+            'is_spacial', 'is_each_available', 'is_each_show_coming_soon',
+            'is_each_show_call_for_more', 'is_each_published', 'has_separate_shipment'
+        ];
+    }
 
     public function __construct(
         Product                   $model,
@@ -98,7 +280,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                     ], $search);
             })
             ->when($where, function ($q, $where) {
-                $q->whereRaw($where->getStatement(), $where->getBindings());
+                if (trim($where->getStatement()) !== '') {
+                    $q->whereRaw($where->getStatement(), $where->getBindings());
+                }
             });
 
         // add extra filter product filter instance
@@ -200,6 +384,48 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function getProductsFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        $limit = $filter->getLimit();
+        $page = $filter->getPage();
+        $order = $filter->getOrder();
+
+        $query = $this->model->newQuery();
+        $query->with(['brand', 'category', 'image']);
+
+        if (!empty($reportQuery)) {
+            $query = $this->addToEloquentBuilder($query, $reportQuery);
+        }
+
+        return $this->_paginateWithOrder(query: $query, limit: $limit, page: $page, order: $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantByCode(string $code): ?Model
+    {
+        return $this->productPropertyModel->newQuery()
+            ->where('code', $code)
+            ->first();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantsByCodes(array $codes): Collection
+    {
+        return $this->productPropertyModel->newQuery()
+            ->whereIn('code', $codes)
+            ->get();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getFilterBrands(HomeProductSideFilter $filter): Collection
     {
         $query = $this->productPropertyModel::published();
@@ -250,11 +476,10 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         // otherwise there is no good reason to have any extra filters
         if (!$category) return collect();
 
-
         $query = $this->model::published()
             // -productAttrValues is "product_attribute_products" table relation
             // -attrValues is "product_attribute_values" table relation
-            ->withWhereHas('productAttrValues.attrValues', function ($q) use ($category) {
+            ->withWhereHas('productAttrValues.attrValue', function ($q) use ($category) {
                 $q
                     // we go nested inside relations to get product attributes for a specific category.
                     //   -productAttr is "product_attributes" table relation
@@ -267,7 +492,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
             // -productAttrValues is "product_attribute_products" table relation
             // -attrValues is "product_attribute_values" table relation
             // -productAttr is "product_attributes" table relation
-            ->with('productAttrValues.attrValues.productAttr');
+            ->with('productAttrValues.attrValue.productAttr');
 
         return $query->get();
     }

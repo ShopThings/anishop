@@ -137,7 +137,7 @@
             <span>از</span>
             <div>
               <span class="font-iranyekan-bold text-sm">{{
-                  formatPriceLikeNumber(selectedMinmaxPrice[0])
+                  numberFormat(selectedMinmaxPrice[0])
                 }}</span>
               <span class="mr-1">تومان</span>
             </div>
@@ -147,7 +147,7 @@
             <span>تا</span>
             <div>
               <span class="font-iranyekan-bold text-sm">{{
-                  formatPriceLikeNumber(selectedMinmaxPrice[1])
+                  numberFormat(selectedMinmaxPrice[1])
                 }}</span>
               <span class="mr-1">تومان</span>
             </div>
@@ -162,7 +162,7 @@
           <span class="text-slate-500">از</span>
           <div class="grow">
             <base-input
-                :value="formatPriceLikeNumber(selectedMinmaxPrice[0] ?? minmaxPrice[0])"
+              :value="numberFormat(selectedMinmaxPrice[0] ?? minmaxPrice[0])"
                 klass="no-spin-arrow !py-1.5 !text-xl font-iranyekan-bold"
                 name="min_price"
                 @input="formatPriceNumberInput"
@@ -176,7 +176,7 @@
           <span class="text-slate-500">تا</span>
           <div class="grow">
             <base-input
-                :value="formatPriceLikeNumber(selectedMinmaxPrice[1] ?? minmaxPrice[1])"
+              :value="numberFormat(selectedMinmaxPrice[1] ?? minmaxPrice[1])"
                 klass="no-spin-arrow !py-1.5 !text-xl font-iranyekan-bold"
                 name="max_price"
                 @input="formatPriceNumberInput"
@@ -285,7 +285,7 @@ import {computed, onMounted, ref, watch} from "vue";
 import PartialFilterCard from "@/components/partials/pages/PartialFilterCard.vue";
 import BaseRangeSlider from "@/components/base/BaseRangeSlider.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import {PRODUCT_ATTRIBUTE_TYPES} from "@/composables/constants.js";
 import isObject from "lodash.isobject";
@@ -355,7 +355,7 @@ const minmaxPrice = ref([0, 0])
 const minmaxPriceLoading = ref(true)
 
 function formatPriceNumberInput(value, evt) {
-  value = formatPriceLikeNumber(value)
+  value = numberFormat(value)
   evt.target.value = value
 
   let tmpValue = value.replace(/\D/g, '')

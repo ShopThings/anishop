@@ -14,4 +14,9 @@ interface NewsletterServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getMembers(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getMembersCount(): int;
 }

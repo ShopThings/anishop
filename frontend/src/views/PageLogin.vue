@@ -147,7 +147,7 @@ import BaseInput from '@/components/base/BaseInput.vue';
 import BaseButton from "@/components/base/BaseButton.vue";
 import VCaptcha from "@/components/base/VCaptcha.vue";
 import {ArrowLeftIcon} from '@heroicons/vue/24/solid'
-import {ArrowLongLeftIcon, UserIcon, KeyIcon, QrCodeIcon} from '@heroicons/vue/24/outline'
+import {ArrowLongLeftIcon, KeyIcon, QrCodeIcon, UserIcon} from '@heroicons/vue/24/outline'
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import yup from "@/validation/index.js";
@@ -208,10 +208,11 @@ const {canSubmit, onSubmit} = useFormSubmit({
       actions.resetField('password')
       actions.resetField('captcha')
 
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
-      err.message = error.message || 'خطا در عملیات ورود!'
+      err.message = error?.message || 'خطا در عملیات ورود!'
       err.type = 'error'
       return false
     },

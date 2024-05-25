@@ -3,6 +3,7 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\VersionInterface;
+use App\Models\User;
 use Illuminate\Support\Collection;
 
 interface RoleServiceInterface extends VersionInterface
@@ -16,4 +17,10 @@ interface RoleServiceInterface extends VersionInterface
      * @return Collection
      */
     public function getPermissions(): Collection;
+
+    /**
+     * @param User $user
+     * @return Collection
+     */
+    public function getUserPermissions(User $user): Collection;
 }

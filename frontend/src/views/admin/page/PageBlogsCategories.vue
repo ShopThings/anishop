@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش دسته‌بندی بلاگ نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.BLOG_CATEGORY, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن دسته‌بندی بلاگ جدید
     </template>
@@ -18,38 +21,38 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:show_in_menu="{value}">
               <partial-badge-publish
-                  :publish="value.show_in_menu"
-                  publish-text="نمایش"
-                  unpublish-text="عدم نمایش"
+                :publish="!!value.show_in_menu"
+                publish-text="نمایش"
+                unpublish-text="عدم نمایش"
               />
             </template>
 
             <template v-slot:show_in_side_menu="{value}">
               <partial-badge-publish
-                  :publish="value.show_in_side_menu"
-                  publish-text="نمایش"
-                  unpublish-text="عدم نمایش"
+                :publish="!!value.show_in_side_menu"
+                publish-text="نمایش"
+                unpublish-text="عدم نمایش"
               />
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:created_at="{value}">
@@ -59,10 +62,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
-                  :removals="!value.is_deletable ? ['delete'] : []"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -86,9 +89,12 @@ import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {BlogCategoryAPI} from "@/service/APIBlog.js";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -186,6 +192,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.BLOG_CATEGORY, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -195,6 +202,19 @@ const table = reactive({
     sort: "desc",
   },
 })
+
+function calcRemovals(row) {
+  let removals = []
+
+  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.BLOG_CATEGORY, PERMISSIONS.DELETE)) {
+    removals.push(['delete'])
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.BLOG_CATEGORY, PERMISSIONS.UPDATE)) {
+    removals.push(['edit'])
+  }
+
+  return removals
+}
 
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'

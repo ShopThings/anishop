@@ -1,15 +1,15 @@
 <template>
   <base-loading-panel
-      :loading="blogLoading"
-      type="list-single"
+    :loading="blogLoading"
+    type="list-single"
   >
     <template #content>
       <partial-card class="border-0 mb-3">
         <template #header>
           دیدگاه کاربر درباره بلاگ
           <span
-              v-if="blog?.slug"
-              class="text-slate-400 text-base"
+            v-if="blog?.slug"
+            class="text-slate-400 text-base"
           >{{ blog?.title }}</span>
         </template>
         <template #body>
@@ -17,10 +17,11 @@
             <div class="flex flex-col sm:flex-row gap-3 items-center">
               <div class="shrink-0">
                 <base-lazy-image
-                    :alt="blog?.title"
-                    :lazy-src="blog?.image.path"
-                    :size="FileSizes.SMALL"
-                    class="!h-28 sm:!h-20 w-auto rounded"
+                  :alt="blog?.title"
+                  :is-local="false"
+                  :lazy-src="blog?.image.path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
                 />
               </div>
               <div class="grow text-sm">
@@ -28,8 +29,8 @@
               </div>
               <div class="text-sm shrink-0">
                 <router-link
-                    :to="{name: 'blog.detail', params: {slug: blog?.slug}}"
-                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                  :to="{name: 'blog.detail', params: {slug: blog?.slug}}"
+                  class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                 >
                   <span class="mx-auto">مشاهده بلاگ</span>
                   <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -51,24 +52,24 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:sender="{value}">
               <router-link
-                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
-                  class="text-blue-600 hover:text-opacity-90"
+                :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                class="text-blue-600 hover:text-opacity-90"
               >
                 <partial-username-label :user="value.created_by"/>
               </router-link>

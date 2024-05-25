@@ -1,7 +1,7 @@
 <template>
   <div class="h-[64px]">
     <nav class="fixed bg-white w-full shadow-md z-10">
-      <div class="md:container mx-auto">
+      <div class="max-w-7xl mx-auto w-full">
         <div class="h-[64px] py-2 px-6 flex">
           <div class="h-full shrink-0">
             <router-link :to="{name: 'home'}">
@@ -44,7 +44,7 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import PartialNavbarBlog from "./partials/PartialNavbarBlog.vue";
-import DialogSearchBlog from "./DialogSearchBlog.vue";
+import DialogSearchBlog from "./blog/global-search/DialogSearchBlog.vue";
 import PartialNavbarBlogMobile from "@/components/partials/PartialNavbarBlogMobile.vue";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import {MENU_PLACES} from "@/composables/constants.js";

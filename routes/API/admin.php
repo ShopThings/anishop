@@ -10,6 +10,8 @@ use App\Http\Controllers\Blog\BlogController;
 use App\Http\Controllers\Order\OrderBadgeController;
 use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\ReturnOrderRequestController;
+use App\Http\Controllers\Other\AdminController;
+use App\Http\Controllers\Other\AdminDashboardController;
 use App\Http\Controllers\Other\CityPostPriceController;
 use App\Http\Controllers\Other\ComplaintController;
 use App\Http\Controllers\Other\ContactUsController;
@@ -23,7 +25,10 @@ use App\Http\Controllers\Other\SmsLogController;
 use App\Http\Controllers\Other\StaticPageController;
 use App\Http\Controllers\Other\WeightPostPriceController;
 use App\Http\Controllers\Payment\PaymentMethodController;
-use App\Http\Controllers\Report\ReportController;
+use App\Http\Controllers\Report\ExportOrderController;
+use App\Http\Controllers\Report\ReportOrderController;
+use App\Http\Controllers\Report\ReportProductController;
+use App\Http\Controllers\Report\ReportUserController;
 use App\Http\Controllers\Shop\BrandController;
 use App\Http\Controllers\Shop\CategoryController;
 use App\Http\Controllers\Shop\CategoryImageController;
@@ -38,6 +43,7 @@ use App\Http\Controllers\Shop\ProductAttributeValueController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\Shop\SendMethodController;
 use App\Http\Controllers\Shop\UnitController;
+use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +60,39 @@ Route::prefix('admin')
 
             Route::middleware('xss')->group(function () {
                 $codeRegex = '[\d\w\-\_]+';
+
+                /*
+                 * dashboard routes
+                 */
+                Route::get('counting/alerts', [AdminController::class, 'alertCounting'])
+                    ->name('index.counting.alerts');
+                Route::get('counting/orders', [AdminController::class, 'orderCounting'])
+                    ->name('index.counting.orders');
+
+                /*
+                 * notification routes
+                 */
+                Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
+                Route::put('notifications', [NotificationController::class, 'update'])->name('notifications.update');
+                Route::get('notifications/new', [NotificationController::class, 'newNotifications'])->name('notifications.new');
+
+                /*
+                 * dashboard routes
+                 */
+                Route::get('sale/total', [AdminDashboardController::class, 'totalSale'])
+                    ->name('dashboard.sale.total');
+                Route::get('sale/{period}', [AdminDashboardController::class, 'periodSale'])
+                    ->name('dashboard.sale.period');
+                Route::get('chart/users/{period}', [AdminDashboardController::class, 'chartUsers'])
+                    ->name('dashboard.users.period');
+                Route::get('chart/orders/{period}/{status}', [AdminDashboardController::class, 'chartOrders'])
+                    ->name('dashboard.orders.period');
+                Route::get('chart/return-orders/{period}/{status}', [AdminDashboardController::class, 'chartReturnOrders'])
+                    ->name('dashboard.return-orders.period');
+                Route::get('table/most-sale-product/{period}', [AdminDashboardController::class, 'tableMostSaleProducts'])
+                    ->name('dashboard.most-sale-products.period');
+                Route::get('dashboard/counting', [AdminDashboardController::class, 'itemsCounts'])
+                    ->name('dashboard.counting');
 
                 /*
                  * user routes
@@ -213,6 +252,8 @@ Route::prefix('admin')
                 /*
                  * comment routes
                  */
+                Route::get('products/comments/all', [CommentController::class, 'all'])
+                    ->name('products.comments.all');
                 Route::delete('products/{product}/comments/batch', [CommentController::class, 'batchDestroy'])
                     ->whereNumber('product')->name('products.comments.destroy.batch');
                 Route::apiResource('products.comments', CommentController::class)->except(['store'])
@@ -227,10 +268,12 @@ Route::prefix('admin')
                     ->name('orders.send-statuses');
                 Route::get('orders/all/{user?}', [OrderController::class, 'index'])
                     ->whereNumber('user')->name('orders.index');
-                Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
-                    ->where(['order' => $codeRegex]);
+                Route::put('orders/export/{order}', [ExportOrderController::class, 'pdf'])
+                    ->where(['order' => $codeRegex])->name('orders.export.pdf');
                 Route::put('orders/{order}/payment', [OrderController::class, 'updatePayment'])
                     ->where(['order' => $codeRegex])->name('orders.update.payment');
+                Route::apiResource('orders', OrderController::class)->except(['index', 'store'])
+                    ->where(['order' => $codeRegex]);
 
                 /*
                  * order badge routes
@@ -243,30 +286,42 @@ Route::prefix('admin')
                 /*
                  * return order routes
                  */
+                Route::get('return-orders/all-statuses', [ReturnOrderRequestController::class, 'allStatuses'])
+                    ->name('return-orders.all-statuses');
                 Route::get('return-orders/statuses', [ReturnOrderRequestController::class, 'statuses'])
                     ->name('return-orders.statuses');
                 Route::get('return-orders/all/{user?}', [ReturnOrderRequestController::class, 'index'])
                     ->whereNumber('user')->name('return-orders.index');
-                Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['index', 'store'])
-                    ->where(['return_order' => $codeRegex]);
+                Route::put('return-orders/{return_order}/to-stock', [ReturnOrderRequestController::class, 'returnItemsToStock'])
+                    ->where(['return_order' => $codeRegex])->name('return-orders.to-stock');
                 Route::put('return-orders/{return_order}/{return_order_item}/modify-item', [ReturnOrderRequestController::class, 'modifyItem'])
                     ->where(['return_order' => $codeRegex])->name('return-orders.modify-item');
+                Route::apiResource('return-orders', ReturnOrderRequestController::class)->except(['index', 'store'])
+                    ->where(['return_order' => $codeRegex]);
 
                 /*
                  * report routes
                  */
-                Route::get('reports/users', [ReportController::class, 'users'])
-                    ->name('reports.users');
-                Route::get('reports/products', [ReportController::class, 'products'])
-                    ->name('reports.products');
-                Route::get('reports/orders', [ReportController::class, 'orders'])
-                    ->name('reports.orders');
-                Route::get('reports/users/query-builder', [ReportController::class, 'usersQB'])
+                Route::get('reports/users/query-builder', [ReportUserController::class, 'usersQB'])
                     ->name('reports.users.query-builder');
-                Route::get('reports/products/query-builder', [ReportController::class, 'productsQB'])
+                Route::post('reports/users/export', [ReportUserController::class, 'export'])
+                    ->name('reports.users.export');
+                Route::post('reports/users', [ReportUserController::class, 'users'])
+                    ->name('reports.users');
+
+                Route::get('reports/products/query-builder', [ReportProductController::class, 'productsQB'])
                     ->name('reports.products.query-builder');
-                Route::get('reports/orders/query-builder', [ReportController::class, 'ordersQB'])
+                Route::post('reports/products/export', [ReportProductController::class, 'export'])
+                    ->name('reports.products.export');
+                Route::post('reports/products', [ReportProductController::class, 'products'])
+                    ->name('reports.products');
+
+                Route::get('reports/orders/query-builder', [ReportOrderController::class, 'ordersQB'])
                     ->name('reports.orders.query-builder');
+                Route::post('reports/orders/export', [ReportOrderController::class, 'export'])
+                    ->name('reports.orders.export');
+                Route::post('reports/orders', [ReportOrderController::class, 'orders'])
+                    ->name('reports.orders');
 
                 /*
                  * blog comment badge routes
@@ -287,6 +342,8 @@ Route::prefix('admin')
                 /*
                  * blog comment routes
                  */
+                Route::get('blogs/comments/all', [BlogCommentController::class, 'all'])
+                    ->name('blogs.comments.all');
                 Route::delete('blogs/{blog}/comments/batch', [BlogCommentController::class, 'batchDestroy'])
                     ->name('blogs.comments.destroy.batch');
                 Route::apiResource('blogs.comments', BlogCommentController::class)

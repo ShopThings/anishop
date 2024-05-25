@@ -19,7 +19,8 @@ class AmazingOfferSliderResource extends JsonResource
     {
         $this->resource->load('image');
         $this->resource->load('items');
-        $this->resource->load('festivals');
+
+        $festival = $this->festivals()->published()->activated()->first();
 
         return [
             'id' => $this->id,
@@ -29,7 +30,7 @@ class AmazingOfferSliderResource extends JsonResource
             'unit_name' => $this->unit_name,
             'keywords' => $this->keywords,
             'items' => ProductPropertyShowResource::collection($this->items),
-            'festivals' => FestivalShowResource::collection($this->festivals),
+            'festival' => $festival ? new FestivalShowResource($festival) : null,
             'is_available' => $this->is_available,
         ];
     }

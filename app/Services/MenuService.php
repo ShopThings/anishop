@@ -46,6 +46,14 @@ class MenuService extends Service implements MenuServiceInterface
     /**
      * @inheritDoc
      */
+    public function getMenusCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getHomeMenus(MenuPlacesEnum $placeIn): Collection
     {
         return $this->repository->getHomeMenus($placeIn);

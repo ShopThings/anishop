@@ -1,6 +1,11 @@
 import {ref} from 'vue'
 import mime from 'mime-types'
 
+export const Storages = {
+  public: 'public',
+  local: 'private',
+}
+
 export const FileSizes = {
   ORIGINAL: 'original',
   SMALL: 'small',

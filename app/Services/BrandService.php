@@ -12,8 +12,8 @@ use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class BrandService extends Service implements BrandServiceInterface
 {
@@ -47,6 +47,14 @@ class BrandService extends Service implements BrandServiceInterface
                 page: $filter->getPage(),
                 order: $filter->getOrder()
             );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBrandsCount(): int
+    {
+        return $this->repository->count();
     }
 
     /**

@@ -10,7 +10,7 @@ export const useSelectSearching = (
     },
   } = {}
 ) => {
-  const loading = ref(true)
+  const loading = ref(false)
 
   const currentPageLocal = ref(currentPage)
   const lastPageLocal = ref(lastPage)

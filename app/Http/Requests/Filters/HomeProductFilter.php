@@ -54,40 +54,6 @@ class HomeProductFilter extends Filter
     protected ?array $dynamicFilters = null;
 
     /**
-     * @inheritDoc
-     */
-    protected function init(Request $request): void
-    {
-        parent::init($request);
-
-        $this->setBrand($request->integer('brand'));
-        $this->setCategory($request->integer('category'));
-        $this->setProductOrder($request->enum('order', ProductOrderTypesEnum::class));
-        $this->setIsSpecial($request->boolean('is_special'));
-        $this->setOnlyAvailable($request->boolean('only_available'));
-        $this->setDynamicFilters($request->input('dynamic_filters'));
-
-        // set brands
-        $brands = $request->input('brands', []);
-        if (is_array($brands) || is_numeric($brands)) {
-            $this->setBrands(is_array($brands) ? $brands : [$brands]);
-        }
-
-        // set price range
-        $minPrice = $request->integer('min_price');
-        $maxPrice = $request->integer('max_price');
-        if ($minPrice !== 0 || $maxPrice !== 0 && $minPrice <= $maxPrice) {
-            $this->setPriceRange([$minPrice, $maxPrice]);
-        }
-
-        $priceRange = $request->input('price_range', []);
-        if (isset($priceRange[0], $priceRange[1])) {
-            $this->setPriceRange([$priceRange[0], $priceRange[1]]);
-        }
-        //
-    }
-
-    /**
      * @return int|null
      */
     public function getBrand(): ?int
@@ -212,7 +178,7 @@ class HomeProductFilter extends Filter
     }
 
     /**
-     * It is different from <b>setIsAvailable()</b> method because
+     * It is different from <strong>setIsAvailable()</strong> method because
      * this method will measure other factor like "stock_count" too
      *
      * @param bool $onlyAvailable
@@ -292,5 +258,39 @@ class HomeProductFilter extends Filter
         $this->dynamicFilters = null;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
+    {
+        parent::init($request);
+
+        $this->setBrand($request->integer('brand'));
+        $this->setCategory($request->integer('category'));
+        $this->setProductOrder($request->enum('order', ProductOrderTypesEnum::class));
+        $this->setIsSpecial($request->boolean('is_special'));
+        $this->setOnlyAvailable($request->boolean('only_available'));
+        $this->setDynamicFilters($request->input('dynamic_filters'));
+
+        // set brands
+        $brands = $request->input('brands', []);
+        if (is_array($brands) || is_numeric($brands)) {
+            $this->setBrands(is_array($brands) ? $brands : [$brands]);
+        }
+
+        // set price range
+        $minPrice = $request->integer('min_price');
+        $maxPrice = $request->integer('max_price');
+        if ($minPrice !== 0 || $maxPrice !== 0 && $minPrice <= $maxPrice) {
+            $this->setPriceRange([$minPrice, $maxPrice]);
+        }
+
+        $priceRange = $request->input('price_range', []);
+        if (isset($priceRange[0], $priceRange[1])) {
+            $this->setPriceRange([$priceRange[0], $priceRange[1]]);
+        }
+        //
     }
 }

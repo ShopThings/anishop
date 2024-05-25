@@ -73,13 +73,13 @@ class SettingSeeder extends Seeder
         Setting::create([
             'name' => SettingsEnum::SMS_ORDER_STATUS->value,
             'setting_value' => "{{shop}}" . "\n"
-                . "مشترک گرامی سفارش به شماره {{order_code}} در وضعیت {{status}} قرار گرفت.",
+                . "کاربر گرامی سفارش به شماره {{order_code}} در وضعیت {{status}} قرار گرفت.",
             'group_name' => SettingGroupsEnum::SMS->value,
         ]);
         Setting::create([
             'name' => SettingsEnum::SMS_RETURN_ORDER->value,
             'setting_value' => "{{shop}}" . "\n"
-                . "سفارش بازگشتی به کد {{code}} به {{status}} تغییر یافت."
+                . "سفارش بازگشتی با شماره {{return_code}} برای شما ثبت گردید."
                 . "\n"
                 . "برای اطلاعات بیشتر به سایت مراجعه نمایید.",
             'group_name' => SettingGroupsEnum::SMS->value,
@@ -87,7 +87,7 @@ class SettingSeeder extends Seeder
         Setting::create([
             'name' => SettingsEnum::SMS_RETURN_ORDER_STATUS->value,
             'setting_value' => "{{shop}}" . "\n"
-                . "مشترک گرامی سفارش مرجوعی به شماره {{order_code}} در وضعیت {{status}} قرار گرفت.",
+                . "کاربر گرامی سفارش مرجوعی به شماره {{return_code}} در وضعیت {{status}} قرار گرفت.",
             'group_name' => SettingGroupsEnum::SMS->value,
         ]);
 
@@ -119,6 +119,11 @@ class SettingSeeder extends Seeder
         ]);
 
         // shop group
+        Setting::create([
+            'name' => SettingsEnum::DIVIDE_PAYMENT_PRICE->value,
+            'setting_value' => '',
+            'group_name' => SettingGroupsEnum::SHOP->value,
+        ]);
         Setting::create([
             'name' => SettingsEnum::MIN_FREE_POST_PRICE->value,
             'setting_value' => '',
@@ -161,7 +166,7 @@ class SettingSeeder extends Seeder
         ]);
         Setting::create([
             'name' => SettingsEnum::FOOTER_COPYRIGHT->value,
-            'setting_value' => '&copy; کلیه حقوق این فروشگاه متعلق به شرکت هیوا می‌باشد و هرگونه کپی برداری از آن پیگرد قانونی دارد.',
+            'setting_value' => 'کلیه حقوق این فروشگاه متعلق به شرکت هیوا می‌باشد و هرگونه کپی برداری از آن پیگرد قانونی دارد.',
             'group_name' => SettingGroupsEnum::FOOTER->value,
         ]);
         Setting::create([

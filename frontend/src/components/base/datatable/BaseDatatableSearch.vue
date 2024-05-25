@@ -1,7 +1,7 @@
 <template>
   <form class="px-3 pt-3" @submit.prevent="onSubmit">
     <div class="flex flex-col sm:flex-row sm:items-start gap-3 mb-3">
-      <div class="w-full sm:w-96 sm:ml-3 relative">
+      <div class="w-full sm:w-96 relative">
         <base-input
             :klass="showRemoveFilterButtonOnInput ? 'pl-10' : ''"
             name="search"
@@ -72,6 +72,7 @@
 </template>
 
 <script setup>
+import {ref} from "vue";
 import {
   MagnifyingGlassIcon,
   MagnifyingGlassCircleIcon,
@@ -84,7 +85,6 @@ import yup from "@/validation/index.js";
 import BaseInput from "../BaseInput.vue";
 import BaseButton from "../BaseButton.vue";
 import BaseAnimatedButton from "../BaseAnimatedButton.vue";
-import {ref} from "vue";
 
 defineProps({
   showRemoveFilterButtonOnInput: Boolean,

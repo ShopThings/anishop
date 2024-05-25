@@ -13,7 +13,7 @@
           v-if="q.children"
           :columns="columns"
           :depth="2"
-          :dragging="dragging"
+          :draggable="draggable"
           :labels="labels"
           :max-depth="maxDepth"
           :query="q.children"
@@ -95,7 +95,8 @@ const props = defineProps({
       }
     },
   },
-  dragging: {
+  // TODO: this feature is not implemented yet
+  draggable: {
     type: Boolean,
     default: true,
   },

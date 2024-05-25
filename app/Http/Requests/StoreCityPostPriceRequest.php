@@ -2,14 +2,15 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\City;
 use App\Models\Province;
 use App\Rules\CityInProvinceRule;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class StoreCityPostPriceRequest extends FormRequest
 {
@@ -35,7 +36,9 @@ class StoreCityPostPriceRequest extends FormRequest
         return [
             'province' => [
                 'required',
-                'exists:' . Province::class . ',id',
+                Rule::exists(Province::class, 'id')->where(function ($query) {
+                    $query->where('is_published', DatabaseEnum::DB_YES);
+                }),
             ],
             'city' => [
                 'required_with:province',

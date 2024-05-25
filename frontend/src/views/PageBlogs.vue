@@ -91,6 +91,7 @@
                 :alt="slide.title"
                 :lazy-src="slide.path"
                 :size="FileSizes.LARGE"
+                :is-local="false"
                 class="rounded-lg h-[30rem] w-full !object-cover"
             />
 
@@ -150,6 +151,7 @@
                 :alt="item.title"
                 :lazy-src="item.image.path"
                 :size="FileSizes.LARGE"
+                :is-local="false"
                 class="rounded-lg h-[calc(15rem-12px)] w-full !object-cover"
             />
 

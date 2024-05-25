@@ -141,6 +141,7 @@ return [
     'uuid' => 'The :attribute field must be a valid UUID.',
 
     'captcha_api' => 'Entered captcha is invalid, Please try again.',
+    'captcha' => 'Entered captcha is invalid, Please try again.',
 
     // verta validations
     'jdate' => ':attribute is not valid.',
@@ -193,6 +194,7 @@ return [
     */
 
     'attributes' => [
+        'captcha' => 'Captcha',
         "name" => "Name",
         "latin_name" => "Latin Name",
         "username" => "User Name",

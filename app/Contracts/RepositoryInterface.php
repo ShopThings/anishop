@@ -5,8 +5,8 @@ namespace App\Contracts;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface RepositoryInterface
 {
@@ -19,6 +19,11 @@ interface RepositoryInterface
      * @return static
      */
     public function resetWithWhereHas(): static;
+
+    /**
+     * @return static
+     */
+    public function resetWhereHas(): static;
 
     /**
      * Use this to have a fresh with collector
@@ -57,6 +62,38 @@ interface RepositoryInterface
     public function withWhereHas(array|string $relations, Closure|null|string $callback = null): static;
 
     /**
+     * Use this to have a fresh whereHas collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @param $operator
+     * @param $count
+     * @return static
+     */
+    public function newWhereHas(
+        array|string        $relations,
+        Closure|null|string $callback = null,
+                            $operator = '>=',
+                            $count = 1
+    ): static;
+
+    /**
+     * Use this to continue whereHas collector
+     *
+     * @param array|string $relations
+     * @param Closure|string|null $callback
+     * @param $operator
+     * @param $count
+     * @return static
+     */
+    public function whereHas(
+        array|string        $relations,
+        Closure|null|string $callback = null,
+                            $operator = '>=',
+                            $count = 1
+    ): static;
+
+    /**
      * @param GetterExpressionInterface|null $where
      * @return bool
      */
@@ -65,11 +102,13 @@ interface RepositoryInterface
     /**
      * @param GetterExpressionInterface|null $where
      * @param bool $withTrashed
+     * @param bool $onlyTrashed
      * @return int
      */
     public function count(
         ?GetterExpressionInterface $where = null,
-        bool                       $withTrashed = false
+        bool $withTrashed = false,
+        bool $onlyTrashed = false
     ): int;
 
     /**
@@ -138,6 +177,7 @@ interface RepositoryInterface
     /**
      * @param $id
      * @param array $columns
+     * @param array $order
      * @param bool $withTrashed
      * @param bool $onlyTrashed
      * @return Collection|Model|null
@@ -145,6 +185,7 @@ interface RepositoryInterface
     public function find(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null;
@@ -152,6 +193,7 @@ interface RepositoryInterface
     /**
      * @param $id
      * @param array $columns
+     * @param array $order
      * @param bool $withTrashed
      * @param bool $onlyTrashed
      * @return Collection|Model|null
@@ -159,6 +201,7 @@ interface RepositoryInterface
     public function findOrFail(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null;
@@ -166,6 +209,7 @@ interface RepositoryInterface
     /**
      * @param GetterExpressionInterface $where
      * @param array $columns
+     * @param array $order
      * @param bool $withTrashed
      * @param bool $onlyTrashed
      * @return Model|null
@@ -173,6 +217,7 @@ interface RepositoryInterface
     public function findWhere(
         GetterExpressionInterface $where,
         array                     $columns = ['*'],
+        array $order = [],
         bool                      $withTrashed = false,
         bool                      $onlyTrashed = false
     ): Model|null;

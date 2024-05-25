@@ -4,20 +4,20 @@
       <div class="w-full p-2 md:w-2/3">
         <partial-input-label title="دسته‌بندی"/>
         <base-select-searchable
-            :current-page="categorySelectConfig.currentPage.value"
-            :has-pagination="true"
-            :is-loading="loadingGetCategories"
-            :is-local-search="false"
-            :last-page="categorySelectConfig.lastPage.value"
-            :options="categories"
-            name="category"
-            options-key="id"
-            options-text="name"
-            placeholder="جستجوی دسته‌بندی..."
-            @change="(selected) => {selectedCategory = selected}"
-            @query="searchCategory"
-            @click-next-page="searchCategoryNextPage"
-            @click-prev-page="searchCategoryPrevPage"
+          :current-page="categorySelectConfig.currentPage.value"
+          :has-pagination="true"
+          :is-loading="loadingGetCategories"
+          :is-local-search="false"
+          :last-page="categorySelectConfig.lastPage.value"
+          :options="categories"
+          name="category"
+          options-key="id"
+          options-text="name"
+          placeholder="جستجوی دسته‌بندی..."
+          @change="(selected) => {selectedCategory = selected}"
+          @query="searchCategory"
+          @click-next-page="searchCategoryNextPage"
+          @click-prev-page="searchCategoryPrevPage"
         >
           <template #item="{item}">
             <div class="flex items-center gap-2">
@@ -33,13 +33,13 @@
       </div>
       <div class="w-full p-2 md:w-1/3">
         <base-input
-            :max="100"
-            :min="1"
-            :money-mask="true"
-            label-title="درصد تخفیف"
-            name="discount_percentage"
-            placeholder="وارد نمایید"
-            type="text"
+          :max="100"
+          :min="1"
+          :money-mask="true"
+          label-title="درصد تخفیف"
+          name="discount_percentage"
+          placeholder="وارد نمایید"
+          type="text"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -51,17 +51,17 @@
     <div class="sm:flex sm:flex-wrap sm:flex-row-reverse">
       <div class="px-2 py-3">
         <base-animated-button
-            :class="{'!cursor-not-allowed': !canSubmit}"
-            :disabled="!canSubmit"
-            class="bg-blue-500 border-blue-500 border-2 text-white px-6 w-full sm:w-auto"
-            type="submit"
-            @click="handleSubmitOperation('add')"
+          :class="{'!cursor-not-allowed': !canSubmit}"
+          :disabled="!canSubmit"
+          class="bg-blue-500 border-blue-500 border-2 text-white px-6 w-full sm:w-auto"
+          type="submit"
+          @click="handleSubmitOperation('add')"
         >
           <VTransitionFade>
             <loader-circle
-                v-if="!canSubmit && submitOperation === 'add'"
-                big-circle-color="border-transparent"
-                main-container-klass="absolute w-full h-full top-0 left-0"
+              v-if="!canSubmit && submitOperation === 'add'"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
             />
           </VTransitionFade>
 
@@ -74,17 +74,17 @@
       </div>
       <div class="px-2 py-3">
         <base-animated-button
-            :class="{'!cursor-not-allowed': !canSubmit}"
-            :disabled="!canSubmit"
-            class="!text-pink-500 border-pink-500 border-2 px-6 w-full sm:w-auto hover:bg-pink-50"
-            type="submit"
-            @click="handleSubmitOperation('remove')"
+          :class="{'!cursor-not-allowed': !canSubmit}"
+          :disabled="!canSubmit"
+          class="!text-pink-500 border-pink-500 border-2 px-6 w-full sm:w-auto hover:bg-pink-50"
+          type="submit"
+          @click="handleSubmitOperation('remove')"
         >
           <VTransitionFade>
             <loader-circle
-                v-if="!canSubmit && submitOperation === 'remove'"
-                big-circle-color="border-transparent"
-                main-container-klass="absolute w-full h-full top-0 left-0"
+              v-if="!canSubmit && submitOperation === 'remove'"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
             />
           </VTransitionFade>
 
@@ -162,8 +162,9 @@ function submitAdd(values, actions) {
       actions.resetForm()
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true
@@ -178,8 +179,9 @@ function submitRemove(values, actions) {
       actions.resetForm()
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true
@@ -190,9 +192,9 @@ function submitRemove(values, actions) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     discount_percentage: yup.string()
-        .min(1, 'حداقل درصد تخفیف بایستی از عدد ۱ شروع شود.')
-        .percentage('درصد تخفیف باید عددی بین ۰ و ۱۰۰ باشد.')
-        .required('درصد تخفیف را وارد نمایید.'),
+      .min(1, 'حداقل درصد تخفیف بایستی از عدد ۱ شروع شود.')
+      .percentage('درصد تخفیف باید عددی بین ۰ و ۱۰۰ باشد.')
+      .required('درصد تخفیف را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (!selectedCategory.value?.id) {
