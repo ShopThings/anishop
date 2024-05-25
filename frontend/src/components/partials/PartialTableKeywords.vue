@@ -1,7 +1,7 @@
 <template>
   <ul
       v-if="keywords && keywords.length"
-      class="flex flex-wrap gap-2.5"
+      class="flex flex-wrap gap-2.5 min-w-60"
   >
     <li
         v-for="(keyword, idx) in keywords"

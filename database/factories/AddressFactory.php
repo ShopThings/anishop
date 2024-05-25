@@ -35,4 +35,14 @@ class AddressFactory extends Factory
             'created_at' => now(),
         ];
     }
+
+    /**
+     * Assign address to specific user
+     */
+    public function onUser(User $user): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'user_id' => $user->id,
+        ]);
+    }
 }

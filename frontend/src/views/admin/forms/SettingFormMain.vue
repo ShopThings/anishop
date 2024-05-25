@@ -26,7 +26,7 @@
     <div class="p-2">
       <partial-input-label title="کلمات کلیدی"/>
       <base-tags-input
-        :add-tag-on-keys="[13, 188]"
+        :add-tag-on-keys="[13, 190]"
         :tags="tags"
         placeholder="کلمات کلیدی خود را وارد نمایید"
         @on-tags-changed="(t) => {tags = t}"

@@ -36,18 +36,18 @@
             @do-search="doSearch"
           >
             <template v-slot:name="{value}">
-              <div class="flex items-center">
-                <span>{{ value.name }}</span>
+              <div class="flex items-center gap-2">
                 <span
                   v-tooltip.top="{message: value.name}"
                   :style="'background-color: ' + value.hex + ';'"
-                  class="inline-block w-5 h-5 rounded-full border mr-2"
+                  class="inline-block w-5 h-5 rounded-full border shadow"
                 ></span>
+                <span>{{ value.name }}</span>
               </div>
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:created_at="{value}">

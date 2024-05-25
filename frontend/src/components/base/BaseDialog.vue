@@ -2,11 +2,11 @@
   <slot :open="openModal" name="button"></slot>
 
   <partial-dialog
-      v-model:open="isOpen"
-      :dialog-container-class="dialogContainerClass"
-      :container-klass="containerKlass"
-      @close="closeModal"
-      @open="openModal"
+    v-model:open="isOpen"
+    :container-klass="containerKlass"
+    :dialog-container-class="dialogContainerClass"
+    @close="closeModal"
+    @open="openModal"
   >
     <template v-if="slots['closeButton']" #closeButton="{close}">
       <slot :close="close" name="closeButton"></slot>
@@ -16,7 +16,7 @@
       <slot name="title"></slot>
     </template>
 
-    <template v-if="slots['body']" #body="{close}">
+    <template v-if="slots['body']" #body>
       <slot :close="closeModal" name="body"></slot>
     </template>
   </partial-dialog>

@@ -42,7 +42,8 @@ import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPan
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 import {useCartStore} from "@/store/StoreUserCart.js";
 import {usePageTransition} from "@/composables/page-transition.js";
-import {useHead} from "@unhead/vue";
+import {useHead, useSeoMeta} from "@unhead/vue";
+import {titleOperations} from "@/composables/helper.js";
 
 const route = useRoute()
 const transitionProps = usePageTransition()
@@ -61,10 +62,15 @@ const cartStore = useCartStore()
 provide('cartStore', cartStore)
 
 //--------------------------------------
+const headTitle = ref(null)
+
 useHead({
   meta: [
     {name: 'robots', content: 'noindex'},
   ],
+})
+useSeoMeta({
+  title: headTitle,
 })
 
 //--------------------------------------
@@ -93,5 +99,19 @@ watchEffect(() => {
 watch(route, (to) => {
   title.value = to.meta?.title || null
   breadcrumb.value = to.meta?.breadcrumb || []
+
+  // Create a title from breadcrumb to set as title of page
+  let assembledTitle = [];
+  breadcrumb.value.forEach((item) => {
+    if (item.name) {
+      assembledTitle.push(item.name)
+    }
+  })
+
+  if (assembledTitle.length) {
+    headTitle.value = titleOperations.join(assembledTitle)
+  } else {
+    headTitle.value = to.meta?.title
+  }
 }, {flush: 'pre', immediate: true, deep: true})
 </script>

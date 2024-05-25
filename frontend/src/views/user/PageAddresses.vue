@@ -117,7 +117,7 @@
 
           <partial-empty-rows
             v-else
-            image="/empty-statuses/empty-address.svg"
+            image="/images/empty-statuses/empty-address.svg"
             image-class="w-60"
             message="هیچ آدرسی ذخیره نشده است"
           />

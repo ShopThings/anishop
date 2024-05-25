@@ -177,11 +177,13 @@ class FileListFilter
      * @return static
      *
      * @example As an example:
+     * <code>
      *  [
      *    'id' => 'desc',
      *    'name' => 'asc',
-     *    ...
+     *    ...,
      *  ]
+     * </code>
      */
     public function setOrder(array $order): static
     {

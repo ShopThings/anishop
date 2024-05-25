@@ -65,6 +65,20 @@
               :show-prev-step-button="canSubmit"
               @next="handleNextClick(options.next)"
             />
+
+            <div
+              v-if="Object.keys(errors)?.length"
+              class="text-left px-3.5 mb-3"
+            >
+              <div
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+              >
+                (
+                <span>{{ Object.keys(errors)?.length }}</span>
+                )
+                خطا، لطفا بررسی کنید
+              </div>
+            </div>
           </template>
         </partial-card>
       </form>

@@ -4,10 +4,11 @@ namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
 use App\Support\Filter;
+use App\Support\SitemapFetchInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-interface StaticPageServiceInterface extends ServiceInterface
+interface StaticPageServiceInterface extends ServiceInterface, SitemapFetchInterface
 {
     /**
      * @param Filter $filter

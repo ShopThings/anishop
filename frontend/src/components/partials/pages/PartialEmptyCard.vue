@@ -2,7 +2,7 @@
   <partial-card class="border-0 px-3 py-6 w-full">
     <template #body>
       <partial-empty-rows
-          image="/public/empty-statuses/empty-cart.svg"
+        image="/images/empty-statuses/empty-cart.svg"
           message="سبد خرید شما خالی می‌باشد"
           image-class="!w-48"
       />

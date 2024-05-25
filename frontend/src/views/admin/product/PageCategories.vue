@@ -65,7 +65,7 @@
 
             <template v-slot:show_in_menu="{value}">
               <partial-badge-publish
-                :publish="value.show_in_menu"
+                :publish="!!value.show_in_menu"
                 publish-text="نمایش در منو"
                 unpublish-text="عدم نمایش در منو"
               />
@@ -73,7 +73,7 @@
 
             <template v-slot:show_in_search_side_menu="{value}">
               <partial-badge-publish
-                :publish="value.show_in_search_side_menu"
+                :publish="!!value.show_in_search_side_menu"
                 publish-text="نمایش در منوی کنار جستجو"
                 unpublish-text="عدم نمایش در منوی کنار جستجو"
               />
@@ -81,14 +81,14 @@
 
             <template v-slot:show_in_slider="{value}">
               <partial-badge-publish
-                :publish="value.show_in_slider"
+                :publish="!!value.show_in_slider"
                 publish-text="نمایش در اسلایدر"
                 unpublish-text="عدم نمایش در اسلایدر"
               />
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:op="{value}">

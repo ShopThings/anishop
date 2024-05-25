@@ -21,7 +21,7 @@
     >
       <template #empty>
         <partial-empty-rows
-            image="/empty-statuses/empty-data.svg"
+          image="/images/empty-statuses/empty-data.svg"
             message="هیچ برندی وجود ندارد!"
         />
       </template>

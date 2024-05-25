@@ -14,7 +14,7 @@
           >
             <template #emptyTableRows>
               <partial-empty-rows
-                  image="/empty-statuses/empty-comment.svg"
+                image="/images/empty-statuses/empty-comment.svg"
                   image-class="w-64"
                   message="هیچ دیدگاهی برای محصولات ثبت نشده است"
               />
@@ -93,7 +93,7 @@
           >
             <template #emptyTableRows>
               <partial-empty-rows
-                  image="/empty-statuses/empty-comment.svg"
+                image="/images/empty-statuses/empty-comment.svg"
                   image-class="w-64"
                   message="هیچ دیدگاهی برای بلاگ ثبت نشده است"
               />

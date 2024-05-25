@@ -83,7 +83,7 @@
         </template>
       </partial-input-label>
       <base-tags-input
-        :add-tag-on-keys="[13, 188]"
+        :add-tag-on-keys="[13, 190]"
         :tags="phones"
         placeholder="وارد نمایید"
         @on-tags-changed="(t) => {phones = t}"

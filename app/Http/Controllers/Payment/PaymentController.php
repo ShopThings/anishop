@@ -39,7 +39,7 @@ class PaymentController extends Controller
     public function verificationResult(Request $request, GatewayPayment $id): GatewayPaymentResource
     {
         $user = $this->getLoggedInUser($request);
-        $orderDetail = $id?->order?->detail;
+        $orderDetail = $id->order?->detail;
 
         if (is_null($orderDetail) || $orderDetail->user_id !== $user->id) {
             throw new NotFoundHttpException();

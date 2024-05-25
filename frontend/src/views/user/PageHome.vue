@@ -254,7 +254,7 @@
           >
             <template #emptyTableRows>
               <partial-empty-rows
-                image="/empty-statuses/empty-order.svg"
+                image="/images/empty-statuses/empty-order.svg"
                 image-class="w-60"
                 message="هیچ سفارشی ثبت نشده است"
               />

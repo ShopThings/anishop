@@ -16,7 +16,7 @@
         <outline.BackspaceIcon class="h-6 w-6"/>
       </base-button>
 
-      <base-dialog>
+      <base-dialog container-klass="max-w-7xl overflow-hidden">
         <template #button="{open}">
           <base-button
             v-tooltip.top="'مشاهده موارد انتخاب شده'"
@@ -52,13 +52,12 @@
                   key !== props.operations.length - 1 ? 'rounded-none' : 'rounded-l-lg rounded-r-none',
                   operation.btn.class ? operation.btn.class : '',
               ]"
-              class="text-sm mt-3 flex items-center"
+              class="text-sm mt-3 flex gap-2 items-center"
               @click="operationClicked(operation)"
             >
               <component
                 :is="outline[operation.btn.icon]"
                 v-if="operation.btn.icon"
-                :class="operation.btn.text ? 'ml-2' : ''"
                 class="h-6 w-6"
               />
               <span v-if="operation.btn.text">{{ operation.btn.text }}</span>
@@ -67,7 +66,7 @@
 
           <template #item="{item, hide}">
             <button
-              class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+              class="flex gap-2 items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
               :class="item.btn.class ? item.btn.class : ''"
               type="button"
               @click="operationClicked(item, hide)"
@@ -75,10 +74,9 @@
               <component
                 :is="outline[item.btn.icon]"
                 v-if="item.btn.icon"
-                :class="item.btn.text ? 'ml-2' : ''"
                 class="h-5 w-5"
               />
-              <span v-if="item.btn.text" class="grow">{{ item.btn.text }}</span>
+              <span v-if="item.btn.text" class="grow text-right">{{ item.btn.text }}</span>
             </button>
           </template>
         </base-floating-drop-down>

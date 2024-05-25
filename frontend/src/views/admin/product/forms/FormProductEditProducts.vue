@@ -27,16 +27,18 @@
                 <base-message :has-close="false" type="default">
                   <div class="leading-loose">
                     وارد نمودن یکی از
-                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black mx-1">رنگ</span>
-                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black mx-1">سایز</span>
+                    <span
+                      class="rounded-lg py-0.5 px-2.5 bg-white text-black inline-block mx-1 mt-1 whitespace-nowrap">رنگ</span>
+                    <span
+                      class="rounded-lg py-0.5 px-2.5 bg-white text-black inline-block mx-1 mt-1 whitespace-nowrap">سایز</span>
                     یا
-                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black mx-1">گارانتی</span>
+                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black inline-block mx-1 mt-1 whitespace-nowrap">گارانتی</span>
                     و همچنین
-                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black mx-1">قیمت محصول</span>
+                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black inline-block mx-1 mt-1 whitespace-nowrap">قیمت محصول</span>
                     و
                     <span class="text-lime-200 text-shadow-lg underline underline-offset-8">مقدار بیشتر از صفر</span>
                     برای
-                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black mx-1">بیشترین تعداد در سبد خرید</span>
+                    <span class="rounded-lg py-0.5 px-2.5 bg-white text-black inline-block mx-1 mt-1 whitespace-nowrap">بیشترین تعداد در سبد خرید</span>
                     برای در نظر گرفته شدن محصول، ضروری می‌باشد. در غیر اینصورت محصول در نظر گرفته
                     <span class="text-lime-200 text-shadow-lg underline underline-offset-8">نمی‌شود</span>
                     .
@@ -92,7 +94,15 @@
                       @query="searchColor"
                       @click-next-page="searchColorNextPage"
                       @click-prev-page="searchColorPrevPage"
-                    />
+                    >
+                      <template #item="{item}">
+                        <div class="flex items-center gap-3">
+                          <span :style="'background-color: ' + item.hex + ';'"
+                                class="inline-block w-5 h-5 rounded-full border shadow"></span>
+                          <span>{{ item.name }}</span>
+                        </div>
+                      </template>
+                    </base-select-searchable>
                   </div>
                   <div class="w-full p-2 sm:w-1/2 xl:w-2/6">
                     <base-input
@@ -324,6 +334,20 @@
               :show-prev-step-button="canSubmit"
               @next="handleNextClick(options.next)"
             />
+
+            <div
+              v-if="Object.keys(errors)?.length"
+              class="text-left px-3.5 mb-3"
+            >
+              <div
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+              >
+                (
+                <span>{{ Object.keys(errors)?.length }}</span>
+                )
+                خطا، لطفا بررسی کنید
+              </div>
+            </div>
           </template>
         </partial-card>
       </form>

@@ -22,7 +22,7 @@
         >
           <template #empty>
             <partial-empty-rows
-                image="/empty-statuses/empty-blog.svg"
+              image="/images/empty-statuses/empty-blog.svg"
                 image-class="w-60"
                 message="هیچ نوشته‌ای پیدا نشد!"
             />

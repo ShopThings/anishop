@@ -108,7 +108,7 @@
               <div class="px-3 py-2 vue3-tags-pros-container">
                 <partial-input-label :is-optional="true" title="مزایای محصول"/>
                 <base-tags-input
-                  :add-tag-on-keys="[13, 188]"
+                  :add-tag-on-keys="[13, 190]"
                   :read-only="comment?.is_condition_changed"
                   :tags="pros"
                   placeholder="وارد نمایید"
@@ -119,7 +119,7 @@
               <div class="px-3 py-2 vue3-tags-cons-container">
                 <partial-input-label :is-optional="true" title="معایب محصول"/>
                 <base-tags-input
-                  :add-tag-on-keys="[13, 188]"
+                  :add-tag-on-keys="[13, 190]"
                   :read-only="comment?.is_condition_changed"
                   :tags="cons"
                   placeholder="وارد نمایید"

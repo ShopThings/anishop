@@ -118,12 +118,12 @@
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:is_available="{value}">
               <partial-badge-publish
-                :publish="value.is_available"
+                :publish="!!value.is_available"
                 publish-text="موجود"
                 unpublish-text="ناموجود"
               />

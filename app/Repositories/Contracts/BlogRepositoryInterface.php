@@ -5,6 +5,7 @@ namespace App\Repositories\Contracts;
 use App\Contracts\RepositoryInterface;
 use App\Enums\Blogs\BlogVotingTypesEnum;
 use App\Support\Filter;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -13,11 +14,13 @@ interface BlogRepositoryInterface extends RepositoryInterface
     /**
      * @param array $columns
      * @param Filter|null $filter
+     * @param GetterExpressionInterface|null $where
      * @return Collection|LengthAwarePaginator
      */
     public function getBlogsSearchFilterPaginated(
         array  $columns = ['*'],
-        Filter $filter = null
+        Filter                    $filter = null,
+        GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator;
 
     /**

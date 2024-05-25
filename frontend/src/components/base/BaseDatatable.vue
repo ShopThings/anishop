@@ -1,6 +1,5 @@
 <template>
-  <div class="vtl relative flex flex-col min-w-0">
-
+  <div class="vtl relative min-w-0">
     <slot v-if="title" name="title">
       <div class="mb-2">
         {{ title }}
@@ -9,35 +8,35 @@
 
     <div v-if="setting.enableMultiOperation && hasCheckbox">
       <base-datatable-multi-operation
-          :items="selectedItems"
-          :operations="setting.selectionOperations"
-          @clear-selected-items="clearSelectedItems"
+        :items="selectedItems"
+        :operations="setting.selectionOperations"
+        @clear-selected-items="clearSelectedItems"
       >
         <template #selectedItems="{items, close}">
-          <slot :close="close" name="beforeSelectedFilesTable"></slot>
+          <slot :close="close" name="beforeSelectedItemsTable"></slot>
 
           <base-datatable
-              :columns="setting.selectionColumns"
-              :is-slot-mode="setting.isSlotMode"
-              :is-static-mode="true"
-              :rows="items"
-              :total="items.length"
+            :columns="setting.selectionColumns"
+            :is-slot-mode="setting.isSlotMode"
+            :is-static-mode="true"
+            :rows="items"
+            :total="items.length"
           >
             <template v-for="(slot, index) of Object.keys(slots)" :key="index" v-slot:[slot]="data">
               <slot :index="index + setting.offset" :name="slot" :value="data.value"></slot>
             </template>
             <template v-slot:selection_remover="data">
               <BackspaceIcon
-                  v-tooltip.left="'حذف از انتخاب‌ها'"
-                  class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"
-                  @click="removeFromSelectedItem(data.value)"
+                v-tooltip.left="'حذف از انتخاب‌ها'"
+                class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"
+                @click="removeFromSelectedItem(data.value)"
               />
             </template>
           </base-datatable>
 
           <div class="mt-3">
-            <slot :close="close" name="afterSelectedFilesTable">
-              <base-animated-button class="bg-slate-600 px-5 mr-auto" @click="close">
+            <slot :close="close" name="afterSelectedItemsTable">
+              <base-animated-button class="bg-slate-600 !py-1 px-5 mr-auto" @click="close">
                 <template #icon="{klass}">
                   <XCircleIcon :class="klass" class="w-6 h-6 ml-2"/>
                 </template>
@@ -51,18 +50,20 @@
 
     <div v-if="setting.enableSearchBox">
       <base-datatable-search
-          @refresh="refresh"
-          @search="doSearchText"
-          @clear-filter="clearSearchFilter"
+        @refresh="refresh"
+        @search="doSearchText"
+        @clear-filter="clearSearchFilter"
       />
     </div>
 
+    <slot name="beforeItemsTable"></slot>
+
     <div
-        :class="{
+      :class="{
         '__fixed-first-column': isFixedFirstColumn,
         '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
       }"
-        class="flex flex-col relative"
+      class="flex flex-col relative"
     >
       <div v-show="isLoading"
            class="absolute z-[4] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/20 supports-[backdrop-filter]:backdrop-blur-sm flex flex-col transition">
@@ -70,8 +71,8 @@
           <div class="flex items-center justify-center flex-1">
             <span class="text-white text-shadow">{{ messages.loading }}</span>
             <loader-circle
-                container-bg-color=""
-                main-container-klass="h-6 w-6 relative mr-2.5"
+              container-bg-color=""
+              main-container-klass="h-6 w-6 relative mr-2.5"
             ></loader-circle>
           </div>
         </slot>
@@ -81,9 +82,9 @@
         <div class="inline-block min-w-full">
           <div ref="tableContainer" class="overflow-hidden">
             <table
-                ref="localTable"
-                :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
-                class="text-sm text-left text-gray-500 rtl:text-right w-full"
+              ref="localTable"
+              :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
+              class="text-sm text-left text-gray-500 rtl:text-right w-full"
             >
               <thead class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
               <tr>
@@ -94,10 +95,10 @@
                 >
                   <div class="flex items-center">
                     <input
-                        v-model="setting.isCheckAll"
-                        class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
-                        type="checkbox"
-                        @change="changeCheckAll"
+                      v-model="setting.isCheckAll"
+                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      type="checkbox"
+                      @change="changeCheckAll"
                     >
                   </div>
                 </th>
@@ -142,34 +143,34 @@
 
               <template v-if="rows.length > 0">
                 <tbody
-                    v-if="isStaticMode"
-                    :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
+                  v-if="isStaticMode"
+                  :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
                 >
                 <template
-                    v-for="(rows, groupingIndex) in templateRows"
-                    :key="groupingIndex"
+                  v-for="(rows, groupingIndex) in templateRows"
+                  :key="groupingIndex"
                 >
                   <tr
                     v-if="groupingKey !== ''"
                     class="border-b transition"
                   >
                     <td
-                        :colspan="hasCheckbox ? columns.length + 1 : columns.length"
-                        class="px-6 py-4"
+                      :colspan="hasCheckbox ? columns.length + 1 : columns.length"
+                      class="px-6 py-4"
                     >
                       <div class="flex">
                         <div v-if="hasGroupToggle">
                           <a
-                              :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                              class="cursor-pointer"
-                              @click.prevent="toggleGroup(groupingIndex)"
+                            :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                            class="cursor-pointer"
+                            @click.prevent="toggleGroup(groupingIndex)"
                           >
                             <ChevronDownIcon class="w-4 h-4"/>
                           </a>
                         </div>
                         <div
-                            class="ml-2"
-                            v-html="
+                          class="ml-2"
+                          v-html="
                               groupingDisplay
                                 ? groupingDisplay(groupingIndex)
                                 : groupingIndex
@@ -180,9 +181,9 @@
                   </tr>
 
                   <tr
-                      v-for="(row, i) in rows"
-                      :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
-                      :ref="
+                    v-for="(row, i) in rows"
+                    :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
+                    :ref="
                         (el) => {
                           if (!groupingRowsRefs[groupingIndex]) {
                             groupingRowsRefs[groupingIndex] = [];
@@ -190,16 +191,16 @@
                           groupingRowsRefs[groupingIndex][i] = el;
                         }
                       "
-                      :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                      :name="'vtl-group-' + groupingIndex"
-                      class="border-b transition"
-                      @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
-                      @contextmenu="emit('row-context-menu', $event, row)"
+                    :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+                    :name="'vtl-group-' + groupingIndex"
+                    class="border-b transition"
+                    @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
+                    @contextmenu="emit('row-context-menu', $event, row)"
                   >
                     <td v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5">
                       <div class="flex items-center">
                         <input
-                            :ref="
+                          :ref="
                             (el) => {
                               if(el && hasSelectedItemWithProperty(row)) {
                                 el.checked = true;
@@ -207,17 +208,17 @@
                               rowCheckbox.push(el);
                             }
                             "
-                            :value="row[setting.keyColumn]"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
-                            type="checkbox"
-                            @click="checked(row, $event)"
+                          :value="row[setting.keyColumn]"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
+                          type="checkbox"
+                          @click="checked(row, $event)"
                         >
                       </div>
                     </td>
 
                     <template
-                        v-for="(col, j) in columns"
-                        :key="j"
+                      v-for="(col, j) in columns"
+                      :key="j"
                     >
                       <td
                         v-if="col?.show !== false"
@@ -248,32 +249,32 @@
                 </template>
                 </tbody>
                 <tbody
-                    v-else
-                    :set="(templateRows = groupingKey === '' ? [rows] : groupingRows)"
+                  v-else
+                  :set="(templateRows = groupingKey === '' ? [rows] : groupingRows)"
                 >
                 <template
-                    v-for="(rows, groupingIndex) in templateRows"
-                    :key="groupingIndex"
+                  v-for="(rows, groupingIndex) in templateRows"
+                  :key="groupingIndex"
                 >
                   <tr v-if="groupingKey !== ''"
                       class="border-b transition">
                     <td
-                        :colspan="hasCheckbox ? columns.length + 1 : columns.length"
-                        class="px-6 py-4"
+                      :colspan="hasCheckbox ? columns.length + 1 : columns.length"
+                      class="px-6 py-4"
                     >
                       <div class="flex">
                         <div v-if="hasGroupToggle">
                           <a
-                              :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                              class="cursor-pointer"
-                              @click.prevent="toggleGroup(groupingIndex)"
+                            :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                            class="cursor-pointer"
+                            @click.prevent="toggleGroup(groupingIndex)"
                           >
                             <ChevronDownIcon class="w-4 h-4"/>
                           </a>
                         </div>
                         <div
-                            class="ml-2"
-                            v-html="
+                          class="ml-2"
+                          v-html="
                               groupingDisplay
                                 ? groupingDisplay(groupingIndex)
                                 : groupingIndex
@@ -284,9 +285,9 @@
                   </tr>
 
                   <tr
-                      v-for="(row, i) in rows"
-                      :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
-                      :ref="
+                    v-for="(row, i) in rows"
+                    :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
+                    :ref="
                         (el) => {
                           if (!groupingRowsRefs[groupingIndex]) {
                             groupingRowsRefs[groupingIndex] = [];
@@ -294,16 +295,16 @@
                           groupingRowsRefs[groupingIndex][i] = el;
                         }
                       "
-                      :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                      :name="'vtl-group-' + groupingIndex"
-                      class="border-b transition"
-                      @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
-                      @contextmenu="emit('row-context-menu', $event, row)"
+                    :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+                    :name="'vtl-group-' + groupingIndex"
+                    class="border-b transition"
+                    @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
+                    @contextmenu="emit('row-context-menu', $event, row)"
                   >
                     <td v-if="hasCheckbox" class="px-6 py-4">
                       <div class="flex items-center">
                         <input
-                            :ref="
+                          :ref="
                               (el) => {
                                 if(el && hasSelectedItemWithProperty(row)) {
                                   el.checked = true;
@@ -315,17 +316,17 @@
                                 rowCheckbox.push(el);
                               }
                             "
-                            :value="row[setting.keyColumn]"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
-                            type="checkbox"
-                            @click="checked(row, $event)"
+                          :value="row[setting.keyColumn]"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
+                          type="checkbox"
+                          @click="checked(row, $event)"
                         >
                       </div>
                     </td>
 
                     <template
-                        v-for="(col, j) in columns"
-                        :key="j"
+                      v-for="(col, j) in columns"
+                      :key="j"
                     >
                       <td
                         v-if="col?.show !== false"
@@ -366,10 +367,10 @@
                 >
                   <div class="flex items-center">
                     <input
-                        v-model="setting.isCheckAll"
-                        class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
-                        type="checkbox"
-                        @change="changeCheckAll"
+                      v-model="setting.isCheckAll"
+                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      type="checkbox"
+                      @change="changeCheckAll"
                     >
                   </div>
                 </th>
@@ -460,13 +461,13 @@
 
         <div v-if="setting.maxPage > 1" class="mt-3">
           <base-pagination
-              v-model:current-page="setting.page"
-              v-model:max-page="setting.maxPage"
-              v-model:paging="setting.paging"
-              :move-page="movePage"
-              :next-page="nextPage"
-              :prev-page="prevPage"
-              :theme="paginationTheme"
+            v-model:current-page="setting.page"
+            v-model:max-page="setting.maxPage"
+            v-model:paging="setting.paging"
+            :move-page="movePage"
+            :next-page="nextPage"
+            :prev-page="prevPage"
+            :theme="paginationTheme"
           />
         </div>
       </template>
@@ -568,8 +569,8 @@ const props = defineProps({
     default: () => {
       return {
         pagingInfo: 'نمایش' + " <span class=\"text-blue-500\">" + "{0}" + "</span>"
-            + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
-            + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
+          + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
+          + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
         pageSizeChangeLabel: "تعداد نمایش در هر صفحه:",
         gotoPageLabel: "رفتن به صفحه:",
         noDataAvailable: "هیچ داده‌ای وجود ندارد.",
@@ -672,15 +673,15 @@ const tableContainer = ref(null);
 let localTable = ref(null);
 
 let defaultPageSize =
-    props.pageOptions.length > 0
-        ? ref(props.pageOptions[0].value)
-        : ref(props.pageSize);
+  props.pageOptions.length > 0
+    ? ref(props.pageOptions[0].value)
+    : ref(props.pageSize);
 if (props.pageOptions.length > 0) {
   props.pageOptions.forEach((v) => {
     if (
-        Object.prototype.hasOwnProperty.call(v, "value") &&
-        Object.prototype.hasOwnProperty.call(v, "text") &&
-        props.pageSize === v.value
+      Object.prototype.hasOwnProperty.call(v, "value") &&
+      Object.prototype.hasOwnProperty.call(v, "text") &&
+      props.pageSize === v.value
     ) {
       defaultPageSize.value = v.value;
     }
@@ -703,6 +704,7 @@ const setting = reactive({
     cols.unshift({
       label: "",
       field: "selection_remover",
+      columnStyles: "width: 3%;",
       cellClasses: '!bg-rose-50',
     });
     return cols;
@@ -824,37 +826,37 @@ onBeforeUpdate(() => {
  * Check all checkboxes for monitoring
  */
 watch(
-    () => setting.isCheckAll,
-    (state) => {
-      if (props.hasCheckbox) {
-        isChecked.value = [];
-        let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
-        if (state) {
-          if (props.checkedReturnType === "row") {
-            isChecked.value = tmpRows;
-          } else {
-            tmpRows.forEach((val) => {
-              isChecked.value.push(val[setting.keyColumn]);
-            });
-          }
+  () => setting.isCheckAll,
+  (state) => {
+    if (props.hasCheckbox) {
+      isChecked.value = [];
+      let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
+      if (state) {
+        if (props.checkedReturnType === "row") {
+          isChecked.value = tmpRows;
+        } else {
+          tmpRows.forEach((val) => {
+            isChecked.value.push(val[setting.keyColumn]);
+          });
         }
-
-        // Return the selected data on the screen
-        emit("return-checked-rows", isChecked.value);
       }
+
+      // Return the selected data on the screen
+      emit("return-checked-rows", isChecked.value);
     }
+  }
 );
 
 /**
  * hasCheckbox props for monitoring
  */
 watch(
-    () => props.hasCheckbox,
-    (v) => {
-      if (!v) {
-        setting.isCheckAll = false;
-      }
+  () => props.hasCheckbox,
+  (v) => {
+    if (!v) {
+      setting.isCheckAll = false;
     }
+  }
 );
 
 function changeCheckAll(e) {
@@ -1036,18 +1038,18 @@ const changePage = (page, prevPage) => {
 watch(() => setting.page, changePage);
 // Monitor manual page switching
 watch(
-    () => props.page,
-    (val) => {
-      if (val <= 1) {
-        setting.page = 1;
-        emit("get-now-page", setting.page);
-      } else if (val >= setting.maxPage) {
-        setting.page = setting.maxPage;
-        emit("get-now-page", setting.page);
-      } else {
-        setting.page = val;
-      }
+  () => props.page,
+  (val) => {
+    if (val <= 1) {
+      setting.page = 1;
+      emit("get-now-page", setting.page);
+    } else if (val >= setting.maxPage) {
+      setting.page = setting.maxPage;
+      emit("get-now-page", setting.page);
+    } else {
+      setting.page = val;
     }
+  }
 );
 
 const changePageSize = () => {
@@ -1064,10 +1066,10 @@ const changePageSize = () => {
 watch(() => setting.pageSize, changePageSize);
 // Monitor display number switch from prop
 watch(
-    () => props.pageSize,
-    (newPageSize) => {
-      setting.pageSize = newPageSize;
-    }
+  () => props.pageSize,
+  (newPageSize) => {
+    setting.pageSize = newPageSize;
+  }
 );
 
 const prevPage = () => {
@@ -1095,18 +1097,18 @@ const nextPage = () => {
 
 // Monitoring data changes
 watch(
-    () => props.rows,
-    () => {
-      if (props.isReSearch || props.isStaticMode) {
-        setting.page = 1;
-      }
-      nextTick(function () {
-        // 資料完成渲染後回傳私有元件 (Return the private components after the data is rendered)
-        if (!props.isStaticMode) {
-          callIsFinished();
-        }
-      });
+  () => props.rows,
+  () => {
+    if (props.isReSearch || props.isStaticMode) {
+      setting.page = 1;
     }
+    nextTick(function () {
+      // 資料完成渲染後回傳私有元件 (Return the private components after the data is rendered)
+      if (!props.isStaticMode) {
+        callIsFinished();
+      }
+    });
+  }
 );
 
 const stringFormat = (template, ...args) => {
@@ -1147,14 +1149,14 @@ const groupingRows = computed(() => {
         if (el) {
           let isOpen = !props.startCollapsed;
           if (
-              props.isKeepCollapsed &&
-              groupingToggleStatus.value[groupIndex] !== undefined
+            props.isKeepCollapsed &&
+            groupingToggleStatus.value[groupIndex] !== undefined
           ) {
             isOpen = !groupingToggleStatus.value[groupIndex];
           }
           if (
-              (isOpen && el.parentElement.classList.contains("__group-open")) ||
-              (!isOpen && !el.parentElement.classList.contains("__group-open"))
+            (isOpen && el.parentElement.classList.contains("__group-open")) ||
+            (!isOpen && !el.parentElement.classList.contains("__group-open"))
           ) {
             el.parentElement.classList.toggle("__group-open");
             el.parentElement.classList.toggle("rotate-90 transition");

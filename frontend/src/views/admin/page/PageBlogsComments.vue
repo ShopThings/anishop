@@ -21,22 +21,23 @@
             @do-search="doSearch"
           >
             <template v-slot:blog="{value}">
-              <div class="flex flex-col gap-3">
-                <base-lazy-image
-                  :alt="value.blog.title"
-                  :lazy-src="value.blog.image.path"
-                  :size="FileSizes.SMALL"
-                  :is-local="false"
-                  class="!h-28 sm:!h-20 w-auto rounded"
-                />
-                <router-link
-                  :to="{name: 'admin.blog.edit', params: {slug: value.blog.slug}}"
-                  class="text-blue-600 hover:text-opacity-90"
-                  target="_blank"
-                >
-                  {{ value.blog.title }}
-                </router-link>
-              </div>
+              <router-link
+                :to="{name: 'admin.blog.edit', params: {slug: value.blog.slug}}"
+                class="flex flex-col gap-3 justify-start text-blue-600 hover:text-opacity-90"
+                target="_blank"
+              >
+                <div>
+                  <base-lazy-image
+                    :alt="value.blog.title"
+                    :is-local="false"
+                    :lazy-src="value.blog.image.path"
+                    :size="FileSizes.SMALL"
+                    class="!h-28 sm:!h-20 w-auto min-w-20 object-cover rounded"
+                  />
+                </div>
+
+                {{ value.blog.title }}
+              </router-link>
             </template>
 
             <template v-slot:sender="{value}">
@@ -108,6 +109,7 @@ const table = reactive({
     {
       label: "بلاگ",
       field: "blog",
+      columnClasses: "min-w-64",
     },
     {
       label: "ارسال توسط",

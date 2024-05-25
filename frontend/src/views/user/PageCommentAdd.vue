@@ -54,7 +54,7 @@
               <div class="px-3 py-2 vue3-tags-pros-container">
                 <partial-input-label :is-optional="true" title="مزایای محصول"/>
                 <base-tags-input
-                  :add-tag-on-keys="[13, 188]"
+                  :add-tag-on-keys="[13, 190]"
                   :tags="pros"
                   placeholder="وارد نمایید"
                   @on-tags-changed="(t) => {pros = t}"
@@ -64,7 +64,7 @@
               <div class="px-3 py-2 vue3-tags-cons-container">
                 <partial-input-label :is-optional="true" title="معایب محصول"/>
                 <base-tags-input
-                  :add-tag-on-keys="[13, 188]"
+                  :add-tag-on-keys="[13, 190]"
                   :tags="cons"
                   placeholder="وارد نمایید"
                   @on-tags-changed="(t) => {cons = t}"

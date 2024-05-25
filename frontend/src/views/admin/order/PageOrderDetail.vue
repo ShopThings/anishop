@@ -181,7 +181,7 @@
 
                   <template #status="{value}">
                     <partial-badge-publish
-                        :publish="value.status"
+                      :publish="!!value.status"
                         publish-text="پرداخت شده"
                         unpublish-text="پرداخت نشده"
                     />

@@ -57,7 +57,7 @@
       >
         <template #empty>
           <partial-empty-rows
-            image="/empty-statuses/empty-notification.svg"
+            image="/images/empty-statuses/empty-notification.svg"
             image-class="w-60"
             message="هیچ اعلانی برای شما وجود ندارد"
           />

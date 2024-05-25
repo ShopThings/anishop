@@ -52,7 +52,7 @@
 
             <template v-slot:determine_price_by_shop_location="{value}">
               <partial-badge-publish
-                :publish="value.determine_price_by_shop_location"
+                :publish="!!value.determine_price_by_shop_location"
                 publish-text="بله"
                 unpublish-text="خیر"
               />
@@ -60,7 +60,7 @@
 
             <template v-slot:only_for_shop_location="{value}">
               <partial-badge-publish
-                :publish="value.only_for_shop_location"
+                :publish="!!value.only_for_shop_location"
                 publish-text="فعال"
                 unpublish-text="غیر فعال"
               />
@@ -68,7 +68,7 @@
 
             <template v-slot:apply_number_of_shipments_on_price="{value}">
               <partial-badge-publish
-                :publish="value.apply_number_of_shipments_on_price"
+                :publish="!!value.apply_number_of_shipments_on_price"
                 publish-text="بله"
                 unpublish-text="خیر"
               />

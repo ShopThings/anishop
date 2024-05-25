@@ -61,14 +61,14 @@
 
             <template v-slot:should_return_order_product="{value}">
               <partial-badge-publish
-                :publish="value.should_return_order_product"
+                :publish="!!value.should_return_order_product"
                 publish-text="بله"
                 unpublish-text="خیر"
               />
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:created_at="{value}">

@@ -45,11 +45,13 @@
 
             <template v-slot:writer="{value}">
               <router-link
-                :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                v-if="value.created_by"
+                :to="{name: 'admin.user.profile', params: {id: value.created_by?.id}}"
                 class="text-blue-600 hover:text-opacity-80"
               >
                 <partial-username-label :user="value.created_by"/>
               </router-link>
+              <span v-else>ندارد</span>
             </template>
 
             <template v-slot:category="{value}">
@@ -57,7 +59,7 @@
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:keywords="{value}">

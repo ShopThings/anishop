@@ -14,7 +14,7 @@
         "doctrine/dbal": "^3.6",
         "fedeisas/laravel-mail-css-inliner": "^5.3",
         "guzzlehttp/guzzle": "^7.2",
-        "hekmatinasser/verta": "^8.3",
+        "hekmatinasser/verta": "^8.4",
         "intervention/image": "^2.7",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
@@ -29,6 +29,7 @@
         "shetabit/visitor": "^4.1",
         "spatie/laravel-image-optimizer": "^1.7",
         "spatie/laravel-permission": "^6.0",
+        "spatie/laravel-sitemap": "^7.2",
         "tzsk/sms": "^7.0"
     },
     "require-dev": {

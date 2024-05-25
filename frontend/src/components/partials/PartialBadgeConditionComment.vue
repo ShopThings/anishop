@@ -1,7 +1,7 @@
 <template>
   <div
       :style="{backgroundColor: bgColor, color: getTextColor(bgColor)}"
-      class="rounded py-1 px-3 text-white inline-block text-center text-xs"
+      class="rounded py-1 px-3 text-white inline-block text-center text-xs whitespace-nowrap"
   >
     {{ condition?.text ?? 'نامشخص' }}
   </div>

@@ -22,7 +22,7 @@
       </template>
       <div v-else class="mt-8 px-3">
         <partial-empty-rows
-          image="/empty-statuses/empty-page.svg"
+          image="/images/empty-statuses/empty-page.svg"
           image-class="!w-72"
           message="صفحه مورد نظر شما وجود ندارد!"
         />

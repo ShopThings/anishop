@@ -166,7 +166,7 @@ class SettingSeeder extends Seeder
         ]);
         Setting::create([
             'name' => SettingsEnum::FOOTER_COPYRIGHT->value,
-            'setting_value' => '&copy; کلیه حقوق این فروشگاه متعلق به شرکت هیوا می‌باشد و هرگونه کپی برداری از آن پیگرد قانونی دارد.',
+            'setting_value' => 'کلیه حقوق این فروشگاه متعلق به شرکت هیوا می‌باشد و هرگونه کپی برداری از آن پیگرد قانونی دارد.',
             'group_name' => SettingGroupsEnum::FOOTER->value,
         ]);
         Setting::create([

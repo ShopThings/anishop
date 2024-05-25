@@ -8,7 +8,9 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Database\Factories\BlogCommentFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -20,11 +22,17 @@ class BlogComment extends Model
     use SoftDeletesTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasDeletedRelationTrait;
+        HasDeletedRelationTrait,
+        HasFactory;
 
     protected $guarded = [
         'id',
     ];
+
+    protected static function newFactory()
+    {
+        return BlogCommentFactory::new();
+    }
 
     /**
      * @param Builder $query

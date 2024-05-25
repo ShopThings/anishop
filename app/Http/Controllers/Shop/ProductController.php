@@ -19,7 +19,6 @@ use App\Http\Resources\ProductSingleResource;
 use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Models\Product;
 use App\Services\Contracts\ProductServiceInterface;
-use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,7 +43,7 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Filter $filter
+     * @param ProductFilter $filter
      * @return AnonymousResourceCollection
      */
     public function index(ProductFilter $filter): AnonymousResourceCollection

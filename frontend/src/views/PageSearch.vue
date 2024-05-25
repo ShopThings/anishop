@@ -80,7 +80,7 @@
 
           <template #empty>
             <partial-empty-rows
-              image="/empty-statuses/empty-product.svg"
+              image="/images/empty-statuses/empty-product.svg"
               image-class="!w-80"
               message="هیچ محصولی پیدا نشد!"
             />

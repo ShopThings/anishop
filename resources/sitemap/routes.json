@@ -1,0 +1,76 @@
+[
+    {
+        "path": "/home",
+        "changefreq": "daily",
+        "priority": 1
+    },
+    {
+        "path": "/login",
+        "changefreq": "never",
+        "priority": 0.7
+    },
+    {
+        "path": "/signup",
+        "changefreq": "never",
+        "priority": 0.5
+    },
+    {
+        "path": "/forget-password",
+        "changefreq": "never",
+        "priority": 0.5
+    },
+    {
+        "path": "/pages/:url([a-zA-Z]+[a-zA-Z/-]*[a-zA-Z]+)",
+        "mapped_params": {
+            "url": "page"
+        },
+        "changefreq": "monthly",
+        "priority": 0.8
+    },
+    {
+        "path": "/blog/search",
+        "changefreq": "weekly",
+        "priority": 0.9
+    },
+    {
+        "path": "/blog/:slug([^\\/.]+)",
+        "mapped_params": {
+            "slug": "blog"
+        },
+        "changefreq": "monthly",
+        "priority": 0.9
+    },
+    {
+        "path": "/search",
+        "changefreq": "weekly",
+        "priority": 1
+    },
+    {
+        "path": "/product/:slug([^\\/.]+)",
+        "mapped_params": {
+            "slug": "product"
+        },
+        "changefreq": "weekly",
+        "priority": 1
+    },
+    {
+        "path": "/brands",
+        "changefreq": "weekly",
+        "priority": 0.9
+    },
+    {
+        "path": "/faq",
+        "changefreq": "weekly",
+        "priority": 1
+    },
+    {
+        "path": "/contact",
+        "changefreq": "monthly",
+        "priority": 0.9
+    },
+    {
+        "path": "/cart",
+        "changefreq": "never",
+        "priority": 0.5
+    }
+]

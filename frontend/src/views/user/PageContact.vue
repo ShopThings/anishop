@@ -12,7 +12,7 @@
       >
         <template #emptyTableRows>
           <partial-empty-rows
-              image="/empty-statuses/empty-contact.svg"
+            image="/images/empty-statuses/empty-contact.svg"
               image-class="w-60"
               message="شما هیچ پیامی ارسال نکرده‌اید"
           />

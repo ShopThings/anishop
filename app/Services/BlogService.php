@@ -40,6 +40,26 @@ class BlogService extends Service implements BlogServiceInterface
     /**
      * @inheritDoc
      */
+    public function getDataForSitemap(Filter $filter, ?array $condition = null): Collection|LengthAwarePaginator
+    {
+        if (!empty($condition)) {
+            $this->repository->resetWithWhereHas();
+            foreach ($condition as $item) {
+                if (is_array($item)) {
+                    $this->repository->withWhereHas($item['relation'], $item['callback']);
+                }
+            }
+        }
+
+        $where = new WhereBuilder('blogs');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->getBlogsSearchFilterPaginated(filter: $filter, where: $where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getBlogs(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getBlogsSearchFilterPaginated(filter: $filter);

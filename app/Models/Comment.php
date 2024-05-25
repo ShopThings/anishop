@@ -9,6 +9,8 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Database\Factories\ProductCommentFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comment extends Model
@@ -16,7 +18,8 @@ class Comment extends Model
     use SoftDeletesTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasDeletedRelationTrait;
+        HasDeletedRelationTrait,
+        HasFactory;
 
     protected $guarded = [
         'id',
@@ -29,6 +32,11 @@ class Comment extends Model
         'answered_at' => 'datetime',
         'changed_condition_at' => 'datetime',
     ];
+
+    protected static function newFactory()
+    {
+        return ProductCommentFactory::new();
+    }
 
     /**
      * @return BelongsTo

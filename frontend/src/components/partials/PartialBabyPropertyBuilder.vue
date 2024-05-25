@@ -23,7 +23,7 @@
         <div class="p-2 w-full sm:w-2/3 xl:w-2/3">
           <partial-input-label :title="tagsText"/>
           <base-tags-input
-              :add-tag-on-keys="[13, 188]"
+            :add-tag-on-keys="[13, 190]"
               :tags="property?.tags"
               placeholder="وارد نمایید"
               @on-tags-changed="(t) => {property.tags = t}"

@@ -64,8 +64,8 @@ trait RepositoryFilterableByDatesTrait
             $data[] = [
                 'label' => $this->getWeeklyLabel($startDate),
                 'data' => $tmpQuery->whereBetween($dateColumn, [
-                    $startDate?->startDay()->toCarbon() ?? $startDate->startOfDay(),
-                    $endDate?->endDay()->toCarbon() ?? $endDate->endOfDay(),
+                    $startDate?->startDay()->toCarbon()->timezone($this->getAppTimezone()) ?? $startDate->startOfDay(),
+                    $endDate?->endDay()->toCarbon()->timezone($this->getAppTimezone()) ?? $endDate->endOfDay(),
                 ])->count(),
             ];
         }
@@ -118,8 +118,8 @@ trait RepositoryFilterableByDatesTrait
             $data[] = [
                 'label' => $this->getMonthlyLabel($startDate),
                 'data' => $tmpQuery->whereBetween($dateColumn, [
-                    $startDate?->startWeek()->toCarbon() ?? $startDate->startOfWeek(),
-                    $endDate?->endWeek()->toCarbon() ?? $endDate->endOfWeek(),
+                    $startDate?->startWeek()->toCarbon()->timezone($this->getAppTimezone()) ?? $startDate->startOfWeek(),
+                    $endDate?->endWeek()->toCarbon()->timezone($this->getAppTimezone()) ?? $endDate->endOfWeek(),
                 ])->count(),
             ];
         }
@@ -178,8 +178,8 @@ trait RepositoryFilterableByDatesTrait
         $data[] = [
             'label' => $this->getQuarterlyLabel($startDate),
             'data' => $tmpQuery->whereBetween($dateColumn, [
-                $startDate?->startMonth()->toCarbon() ?? $startDate->startOfMonth(),
-                $endDate?->endMonth()->toCarbon() ?? $endDate->endOfMonth(),
+                $startDate?->startMonth()->toCarbon()->timezone($this->getAppTimezone()) ?? $startDate->startOfMonth(),
+                $endDate?->endMonth()->toCarbon()->timezone($this->getAppTimezone()) ?? $endDate->endOfMonth(),
             ])->count(),
         ];
         return $data;
@@ -250,8 +250,8 @@ trait RepositoryFilterableByDatesTrait
             $data[] = [
                 'label' => $this->getDailyLabel($i),
                 'data' => $tmpQuery->whereBetween($dateColumn, [
-                    $startDate?->startHour()->toCarbon() ?? $startDate->startOfHour(),
-                    $endDate?->endHour()->toCarbon() ?? $endDate->endOfHour(),
+                    $startDate?->startHour()->toCarbon()->timezone($this->getAppTimezone()) ?? $startDate->startOfHour(),
+                    $endDate?->endHour()->toCarbon()->timezone($this->getAppTimezone()) ?? $endDate->endOfHour(),
                 ])->count(),
             ];
         }
@@ -265,7 +265,15 @@ trait RepositoryFilterableByDatesTrait
     private function getDailyLabel(int $hour): string
     {
         return (mb_strlen($hour) == 1 ? '0' : '') . $hour .
-            ' تا ' .
+            trans('periodic.labels.daily') .
             (mb_strlen($hour + 1) == 1 ? '0' : '') . ($hour + 1);
+    }
+
+    /**
+     * @return string
+     */
+    private function getAppTimezone(): string
+    {
+        return config('app.timezone');
     }
 }

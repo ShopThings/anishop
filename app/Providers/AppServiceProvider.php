@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -96,19 +97,19 @@ class AppServiceProvider extends ServiceProvider
         /*
          * where like expression
          */
-        Builder::macro('whereLike', function (string|array $columns, string $search, string $operator = 'or') {
-            $this->where(function (Builder $query) use ($columns, $search, $operator) {
-                $columns = !is_array($columns) ? [$columns] : $columns;
+        Builder::macro('whereLike', function (string|array $columns, string $search, $replacement = '%{value}%', string $operator = 'and') {
+            $this->where(function (Builder $query) use ($columns, $search, $operator, $replacement) {
+                $columns = Arr::wrap($columns);
                 foreach ($columns as $column) {
-                    $query->where($column, 'like', '%' . $search . '%', mb_strtolower($operator));
+                    $query->where($column, 'like', str_replace('{value}', $search, $replacement), mb_strtolower($operator));
                 }
             });
 
             return $this;
         });
-        Builder::macro('orWhereLike', function (string|array $columns, string $search, string $operator = 'or') {
-            $this->orWhere(function (Builder $query) use ($columns, $search, $operator) {
-                $query->whereLike($columns, $search, $operator);
+        Builder::macro('orWhereLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
+            $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
+                $query->whereLike($columns, $search, 'or', $replacement);
             });
 
             return $this;
@@ -117,9 +118,9 @@ class AppServiceProvider extends ServiceProvider
         /*
          * where regexp expression
          */
-        Builder::macro('whereRegex', function (string|array $columns, string $search, string $operator = 'or') {
+        Builder::macro('whereRegex', function (string|array $columns, string $search, string $operator = 'and') {
             $this->where(function (Builder $query) use ($columns, $search, $operator) {
-                $columns = !is_array($columns) ? [$columns] : $columns;
+                $columns = Arr::wrap($columns);
                 foreach ($columns as $column) {
                     $query->where($column, 'REGEXP', $search, mb_strtolower($operator));
                 }
@@ -127,9 +128,9 @@ class AppServiceProvider extends ServiceProvider
 
             return $this;
         });
-        Builder::macro('orWhereRegex', function (string|array $columns, string $search, string $operator = 'or') {
-            $this->orWhere(function (Builder $query) use ($columns, $search, $operator) {
-                $query->whereRegex($columns, $search, $operator);
+        Builder::macro('orWhereRegex', function (string|array $columns, string $search) {
+            $this->orWhere(function (Builder $query) use ($columns, $search) {
+                $query->whereRegex($columns, $search, 'or');
             });
 
             return $this;

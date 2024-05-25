@@ -41,7 +41,7 @@
                 :lazy-src="value.image.path"
                 :size="FileSizes.SMALL"
                 :is-local="false"
-                class="!h-28 sm:!h-20 w-auto rounded"
+                class="!h-28 sm:!h-20 w-auto min-w-20 rounded"
               />
             </template>
 
@@ -53,18 +53,17 @@
               {{ value.category.name }}
             </template>
 
-            <template v-slot:stock_count="{value}">
-              <span>{{ value.stock_count }}</span>
-              <span class="text-xs text-slate-400">{{ value.unit.name }}</span>
+            <template v-slot:unit_name="{value}">
+              <span class="text-xs text-slate-400">{{ value.unit_name }}</span>
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:is_available="{value}">
               <partial-badge-publish
-                :publish="value.is_available"
+                :publish="!!value.is_available"
                 publish-text="موجود"
                 unpublish-text="ناموجود"
               />
@@ -152,8 +151,8 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "تعداد موجود",
-      field: "stock_count",
+      label: "واحد محصول",
+      field: "unit_name",
       sortable: true,
     },
     {
@@ -209,8 +208,8 @@ const table = reactive({
       sortable: true,
     },
     {
-      label: "تعداد موجود",
-      field: "stock_count",
+      label: "واحد محصول",
+      field: "unit_name",
       sortable: true,
     },
     {

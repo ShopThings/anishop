@@ -34,7 +34,7 @@ export const adminRoutes = {
             success() {
               resolve()
             },
-            error(error) {
+            error() {
               reject(false)
             },
           })

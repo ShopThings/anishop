@@ -37,7 +37,7 @@
           >
             <template v-slot:show_in_menu="{value}">
               <partial-badge-publish
-                :publish="value.show_in_menu"
+                :publish="!!value.show_in_menu"
                 publish-text="نمایش"
                 unpublish-text="عدم نمایش"
               />
@@ -45,14 +45,14 @@
 
             <template v-slot:show_in_side_menu="{value}">
               <partial-badge-publish
-                :publish="value.show_in_side_menu"
+                :publish="!!value.show_in_side_menu"
                 publish-text="نمایش"
                 unpublish-text="عدم نمایش"
               />
             </template>
 
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:created_at="{value}">

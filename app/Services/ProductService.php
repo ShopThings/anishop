@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Settings\SettingsEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
@@ -16,6 +17,7 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -32,6 +34,26 @@ class ProductService extends Service implements ProductServiceInterface
         protected SettingServiceInterface    $settingService,
     )
     {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDataForSitemap(Filter $filter, ?array $condition = null): Collection|LengthAwarePaginator
+    {
+        if (!empty($condition)) {
+            $this->repository->resetWithWhereHas();
+            foreach ($condition as $item) {
+                if (is_array($item)) {
+                    $this->repository->withWhereHas($item['relation'], $item['callback']);
+                }
+            }
+        }
+
+        $where = new WhereBuilder('products');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->getProductsSearchFilterPaginated(filter: $filter, where: $where->build());
     }
 
     /**

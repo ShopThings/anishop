@@ -36,7 +36,7 @@
             @do-search="doSearch"
           >
             <template v-slot:is_published="{value}">
-              <partial-badge-publish :publish="value.is_published"/>
+              <partial-badge-publish :publish="!!value.is_published"/>
             </template>
 
             <template v-slot:created_at="{value}">

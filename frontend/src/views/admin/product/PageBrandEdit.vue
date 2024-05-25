@@ -39,7 +39,7 @@
                 </div>
               </div>
 
-              <div class="flex flex-wrap items-end">
+              <div class="flex flex-wrap items-start">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
                       :value="brand?.name"
@@ -138,7 +138,7 @@ import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import {useToast} from "vue-toastification";

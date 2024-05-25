@@ -75,7 +75,7 @@ const routes = [
   },
 
   {
-    path: '/blog/',
+    path: '/blog',
     name: 'blogs',
     beforeEnter: async (to, from, next) => {
       const id = to.query?.id;

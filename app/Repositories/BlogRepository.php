@@ -11,7 +11,7 @@ use App\Repositories\Contracts\BlogRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
-use Hekmatinasser\Verta\Facades\Verta;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -35,7 +35,8 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
      */
     public function getBlogsSearchFilterPaginated(
         array  $columns = ['*'],
-        Filter $filter = null
+        Filter                    $filter = null,
+        GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator
     {
         $search = $filter->getSearchText();
@@ -66,6 +67,11 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
                         'blogs.escaped_title',
                         'blogs.keywords',
                     ], $search);
+            })
+            ->when($where, function ($q, $where) {
+                if (trim($where->getStatement()) !== '') {
+                    $q->whereRaw($where->getStatement(), $where->getBindings());
+                }
             });
 
         if ($filter instanceof HomeBlogFilter) {

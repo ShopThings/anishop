@@ -42,10 +42,10 @@ class FileService implements FileServiceInterface
             'path' => $data['path'],
         ];
 
-        if (isset($data['created_by']) || is_null($data)) {
+        if (isset($data['created_by'])) {
             $attrs['created_by'] = $data['created_by'];
         }
-        if (isset($data['updated_by']) || is_null($data)) {
+        if (isset($data['updated_by'])) {
             $attrs['updated_by'] = $data['updated_by'];
         }
 

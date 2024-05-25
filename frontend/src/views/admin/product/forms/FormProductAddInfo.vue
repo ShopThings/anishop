@@ -68,7 +68,28 @@
               @query="searchBrand"
               @click-next-page="searchBrandNextPage"
               @click-prev-page="searchBrandPrevPage"
-            />
+            >
+              <template #item="{item}">
+                <div class="flex items-center gap-3">
+                  <base-lazy-image
+                    v-if="item?.image?.full_path"
+                    :alt="item.name"
+                    :is-local="false"
+                    :lazy-src="item?.image?.full_path"
+                    :size="FileSizes.SMALL"
+                    class="!w-16 !h-auto object-cover rounded"
+                  />
+                  <img
+                    v-else
+                    :alt="item.name"
+                    class="w-16 h-auto object-cover rounded"
+                    src="/image-placeholder.jpg"
+                  >
+
+                  <span class="text-sm">{{ item.name }}</span>
+                </div>
+              </template>
+            </base-select-searchable>
             <partial-input-error-message :error-message="errors.brand"/>
           </div>
 
@@ -127,6 +148,7 @@
         <div class="p-2">
           <partial-input-label title="کلمات کلیدی"/>
           <base-tags-input
+            :add-tag-on-keys="[13, 190]"
             :tags="tags"
             placeholder="کلمات کلیدی خود را وارد نمایید"
             @on-tags-changed="(t) => {tags = t}"
@@ -157,6 +179,20 @@
           :loading="!canSubmit"
           @next="handleNextClick(options.next)"
         />
+
+        <div
+          v-if="Object.keys(errors)?.length"
+          class="text-left px-3.5 mb-3"
+        >
+          <div
+            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          >
+            (
+            <span>{{ Object.keys(errors)?.length }}</span>
+            )
+            خطا، لطفا بررسی کنید
+          </div>
+        </div>
       </template>
     </partial-card>
   </form>
@@ -178,10 +214,11 @@ import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {BrandAPI, CategoryAPI, ProductAPI, UnitAPI} from "@/service/APIProduct.js";
-import {useToast} from "vue-toastification";
 import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 import {useCreationProductStore} from "@/store/StoreProduct.js";
 import {useSelectSearching} from "@/composables/select-searching.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {FileSizes} from "@/composables/file-list.js";
 
 defineProps({
   options: {
@@ -189,8 +226,6 @@ defineProps({
     required: true,
   },
 })
-
-const toast = useToast()
 
 //---------------------------------------------------------
 // Unit operation
@@ -352,7 +387,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       productStore.setProduct(response.data)
 
       actions.resetForm()
-      toast.success('محصول با موفقیت ثبت شد.')
       if (nextFn) nextFn()
     },
     error(error) {

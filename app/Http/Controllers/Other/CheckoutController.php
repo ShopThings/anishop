@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Other;
 
 use App\Enums\Responses\ResponseTypesEnum;
-use App\Exceptions\InvalidCartNameException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\Home\OrderDetailResource as HomeOrderDetailResource;
@@ -60,7 +59,7 @@ class CheckoutController extends Controller
 
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'سفارش شما با موفقیت ثبت شد. نسبت به پرداخت آن تا زمان مشخص اقدام نمایید😉',
+                'message' => 'سفارش شما با موفقیت ثبت شد. نسبت به پرداخت آن تا زمان مشخص شده اقدام نمایید😉',
                 'data' => new HomeOrderDetailResource($orderDetail),
             ]);
         }
@@ -141,7 +140,6 @@ class CheckoutController extends Controller
      * @param Request $request
      * @return JsonResponse
      * @throws BindingResolutionException
-     * @throws InvalidCartNameException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */

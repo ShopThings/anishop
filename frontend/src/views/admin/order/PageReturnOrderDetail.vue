@@ -194,7 +194,7 @@
 
               <partial-badge-publish
                 v-else
-                :publish="value.is_accepted"
+                :publish="!!value.is_accepted"
                 publish-text="تایید درخواست"
                 unpublish-text="عدم تایید درخواست"
               />
