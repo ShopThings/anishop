@@ -14,7 +14,10 @@
           type="form"
         >
           <template #content>
-            <form @submit.prevent="onSubmit">
+            <form
+              v-if="productAttributes?.length"
+              @submit.prevent="onSubmit"
+            >
               <partial-error-message
                 v-if="errors.values"
                 :has-close="false"
@@ -75,6 +78,51 @@
                 </div>
               </div>
             </form>
+
+            <div v-else>
+              <partial-empty-rows
+                image="/images/empty-statuses/knowledge.svg"
+                imageClass="!w-60"
+                message="هیچ ویژگی جستجویی پیدا نشد!"
+              />
+
+              <span class="text-lg text-slate-400 mt-4">برای تغییر ویژگی‌های جستجوی محصول</span>
+              <ul class="flex flex-col gap-4 my-6 pr-3">
+                <li class="flex gap-2">
+                  <span class="rounded-full bg-slate-200 h-7 min-w-7 text-center text-lg">1</span>
+                  <div>
+                    <router-link
+                      :to="{name: 'admin.search.attrs'}"
+                      class="text-blue-600 hover:text-opacity-90"
+                    >
+                      ویژگی‌های جستجوی
+                    </router-link>
+                    دلخواه را اضافه نمایید.
+                  </div>
+                </li>
+
+                <li class="flex gap-2">
+                  <span class="rounded-full bg-slate-200 h-7 min-w-7 text-center text-lg">2</span>
+                  <div>
+                    به ازای هر ویژگی جستجو، مقادیر مورد نظر خود را برای آن وارد کنید.
+                  </div>
+                </li>
+
+                <li class="flex gap-2">
+                  <span class="rounded-full bg-slate-200 h-7 min-w-7 text-center text-lg">3</span>
+                  <div>
+                    سپس
+                    <router-link
+                      :to="{name: 'admin.search.attrs.categories'}"
+                      class="text-blue-600 hover:text-opacity-90"
+                    >
+                      ویژگی‌های جستجو را به دسته‌بندی
+                    </router-link>
+                    مورد نظر متصل کنید.
+                  </div>
+                </li>
+              </ul>
+            </div>
           </template>
         </base-loading-panel>
       </div>
@@ -99,6 +147,7 @@ import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {ProductAPI, ProductAttributeProductAPI} from "@/service/APIProduct.js";
 import PartialErrorMessage from "@/components/partials/message/PartialErrorMessage.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 
 const router = useRouter()
 const toast = useToast()
@@ -132,10 +181,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 onMounted(() => {
   ProductAttributeProductAPI.fetchById(slugParam.value, {
     success(response) {
-      console.log(response.data)
-
-      // productAttributes.value = response.data
-      // loading.value = false
+      productAttributes.value = response.data
+      loading.value = false
     },
   })
 

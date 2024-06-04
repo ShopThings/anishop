@@ -53,9 +53,14 @@ interface FileRepositoryInterface extends RepositoryInterface
     /**
      * @param string $fullPath
      * @param array $attributes
+     * @param string $disk
      * @return Model|null
      */
-    public function savePath(string $fullPath, array $attributes = []): ?Model;
+    public function savePath(
+        string $fullPath,
+        array  $attributes = [],
+        string $disk = self::STORAGE_DISK_PUBLIC
+    ): ?Model;
 
     /**
      * @param string $path

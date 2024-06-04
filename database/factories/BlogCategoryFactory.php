@@ -21,8 +21,8 @@ class BlogCategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = rtrim($this->faker->text(75), '.');
-        $keywords = explode(' ', rtrim($this->faker->text(300), '.'));
+        $name = rtrim($this->faker->realText(75), '.');
+        $keywords = explode(' ', rtrim($this->faker->realText(300), '.'));
 
         return [
             'name' => $name,

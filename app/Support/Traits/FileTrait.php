@@ -11,11 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
 trait FileTrait
 {
+    use FilenameTrait {
+        convertInvalidPathCharacters as private;
+    }
+
     /**
      * @param array $files
      * @param string $search
@@ -50,8 +53,7 @@ trait FileTrait
                 if (!isset($parts[1])) continue;
 
                 // create a default size
-                if (isset($parts[2])) $size = $parts[2];
-                else $size = self::ORIGINAL;
+                $size = $parts[2] ?? self::ORIGINAL;
 
                 $searchFiles->add([
                     'file' => $file,
@@ -113,7 +115,7 @@ trait FileTrait
      */
     protected function getUploadingFileName(string $name): string
     {
-        return $this->getNormalizedPath($name) . '-' . time();
+        return $this->getNormalizedPath($name, true) . '-' . time();
     }
 
     /**
@@ -206,6 +208,7 @@ trait FileTrait
 
                 $where
                     ->reset()
+                    ->whereEqual('disk', $disk)
                     ->whereEqual('name', $sourcePathInfo['filename'])
                     ->whereEqual('extension', $sourcePathInfo['extension'])
                     ->whereEqual('path', $sourcePathInfo['dirname']);
@@ -361,6 +364,7 @@ trait FileTrait
         // remove from database
         $fullPath = $path . '/' . $file;
         $where = new WhereBuilder('file_manager');
+        $where->whereEqual('disk', $disk);
 
         // to prevent left/right extra slash in case of directory path
         // to match database records
@@ -426,10 +430,11 @@ trait FileTrait
     public function checkDiskValidation(string $disk, bool $throw = true): bool
     {
         if (!in_array(strtolower($disk), self::STORAGE_DISKS)) {
-            if ($throw)
+            if ($throw) {
                 throw new InvalidDiskException();
-            else
+            } else {
                 return false;
+            }
         }
         return true;
     }
@@ -480,13 +485,13 @@ trait FileTrait
             if ('..' === $part) {
                 array_pop($absolutes);
             } else {
-                $absolutes[] = $this->_convertInvalidPathCharacters(trim($part));
+                $absolutes[] = $this->convertInvalidPathCharacters(trim($part));
             }
         }
 
         if (!empty($extension)) {
-            $filename = $this->_convertInvalidPathCharacters($filename, $isLocal);
-            $extension = $this->_convertInvalidPathCharacters($extension);
+            $filename = $this->convertInvalidPathCharacters($filename, $isLocal);
+            $extension = $this->convertInvalidPathCharacters($extension);
             $absolutes[] = $filename . '.' . $extension;
         }
 
@@ -499,7 +504,7 @@ trait FileTrait
      */
     protected function isSupportedImage(string $extension): bool
     {
-        $arr = ['jpeg', 'png', 'jpg', 'gif'];
+        $arr = ['jpeg', 'png', 'jpg'];
         return in_array($extension, $arr);
     }
 
@@ -553,24 +558,5 @@ trait FileTrait
     protected function normalizeDirname(?string $dirname): string
     {
         return trim(str_replace('\\', '/', $dirname ?? ''));
-    }
-
-    /**
-     * @param string $path
-     * @param bool $isLocal
-     * @return string
-     */
-    private function _convertInvalidPathCharacters(string $path, bool $isLocal = false): string
-    {
-        $escapes = ['?', '$', '<', '>', '&', '{', '}', '*', '\\', '/', ':', ';', ',', "'", '"'];
-
-        if (!$isLocal) $escapes[] = '-';
-
-        return strtolower(
-            str_replace(
-                $escapes,
-                '_', trim($path)
-            )
-        );
     }
 }

@@ -191,7 +191,7 @@ export const useRequest = async (url, config, resultConfig) => {
 
         let ans = true
         if (isFunction(onSuccess)) {
-          ans = onSuccess(data, total)
+          ans = onSuccess(data, total, response)
         }
 
         // if returned value is false, overwrite functionality

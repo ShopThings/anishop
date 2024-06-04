@@ -14,6 +14,7 @@
             :show-pagination-detail="true"
             :show-search="true"
             :search-text="route.query?.q || ''"
+            :scroll-to-element-on-appearance="true"
             :scroll-margin-top="-130"
             container-class="flex flex-wrap"
             item-container-class="w-full xl:w-1/2 ml-[-1px] mt-[-1px]"
@@ -47,7 +48,7 @@
           v-if="hasPopularCategories || hasBlogArchives"
           :bottom-spacing="20"
           :min-width="1024"
-          :top-spacing="114"
+          :top-spacing="79"
           class="shrink-0 lg:w-80"
           containerSelector=".sticky-container"
           innerWrapperSelector='.sidebar__inner'

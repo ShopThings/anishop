@@ -282,6 +282,7 @@ class ProductService extends Service implements ProductServiceInterface
      */
     public function createRelatedProducts(int $productId, array $products): bool
     {
+        $products = array_filter($products, fn($item) => !empty($item));
         return $this->repository->createRelatedProducts($productId, $products);
     }
 
@@ -371,19 +372,44 @@ class ProductService extends Service implements ProductServiceInterface
     {
         $refined = [];
         foreach ($products as $product) {
-            if ($product['color'] || $product['size'] || $product['guarantee']) {
+            if (
+                isset($product['color']['id']) ||
+                isset($product['size']) ||
+                isset($product['guarantee']) ||
+                isset($product['color_name'], $product['color_hex'])
+            ) {
                 $tmp = $product;
-                unset($tmp['color']);
 
-                $color = $this->colorRepository->find($product['color']);
-                $tmp['color_name'] = $color->name;
-                $tmp['color_hex'] = $color->hex;
+                unset($tmp['color']);
+                unset($tmp['color_name']);
+                unset($tmp['color_hex']);
+
+                if (isset($product['color']['id'])) {
+                    $color = $this->colorRepository->find($product['color']['id']);
+                    $tmp['color_name'] = $color->name;
+                    $tmp['color_hex'] = $color->hex;
+                }
+
+                if (
+                    (empty($product['discounted_price']) && $product['discounted_price'] != 0) ||
+                    $product['discounted_price'] < 0
+                ) {
+                    $tmp['discounted_price'] = null;
+                }
+
+                if (empty($product['discounted_from'])) {
+                    $tmp['discounted_from'] = null;
+                }
+                if (empty($product['discounted_until'])) {
+                    $tmp['discounted_until'] = null;
+                }
 
                 $tmp['is_special'] = to_boolean($product['is_special']);
                 $tmp['is_available'] = to_boolean($product['is_available']);
                 $tmp['show_coming_soon'] = to_boolean($product['show_coming_soon']);
                 $tmp['show_call_for_more'] = to_boolean($product['show_call_for_more']);
                 $tmp['is_published'] = to_boolean($product['is_published']);
+                $tmp['has_separate_shipment'] = to_boolean($product['has_separate_shipment']);
 
                 $refined[] = $tmp;
             }

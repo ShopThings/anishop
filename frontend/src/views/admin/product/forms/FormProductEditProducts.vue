@@ -5,6 +5,20 @@
   >
     <template #content>
       <form>
+        <base-message
+          v-if="errors && Object.keys(errors).length"
+          type="error"
+        >
+          <ul>
+            <li
+              v-for="(err, idx) in errors"
+              :key="idx"
+            >
+              {{ err }}
+            </li>
+          </ul>
+        </base-message>
+
         <partial-card class="mb-3 p-3 relative">
           <template #body>
             <loader-dot-orbit
@@ -46,7 +60,7 @@
                 </base-message>
 
                 <div class="flex flex-wrap">
-                  <div class="w-full p-2 sm:w-1/2 xl:w-1/6">
+                  <div class="w-full p-2 sm:w-1/2">
                     <base-input
                       :min="0"
                       :money-mask="true"
@@ -55,6 +69,7 @@
                       label-title="تعداد موجود"
                       placeholder="وارد نمایید"
                       type="text"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.stock_count = v}"
                     >
                       <template #icon>
@@ -62,7 +77,7 @@
                       </template>
                     </base-input>
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-1/6">
+                  <div class="w-full p-2 sm:w-1/2">
                     <base-input
                       :min="0"
                       :money-mask="true"
@@ -71,6 +86,7 @@
                       label-title="بیشترین تعداد در سبد خرید"
                       placeholder="وارد نمایید"
                       type="text"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.max_cart_count = v}"
                     >
                       <template #icon>
@@ -78,8 +94,25 @@
                       </template>
                     </base-input>
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-2/6">
-                    <partial-input-label :is-optional="true" title="رنگ"/>
+                  <div class="w-full p-2 sm:w-1/2">
+                    <partial-input-label :is-optional="true">
+                      <template #label>
+                        <div class="flex items-center gap-2">
+                          <span>رنگ</span>
+                          <div
+                            v-if="product?.color_name"
+                            class="flex items-center gap-1 text-slate-500 text-sm"
+                          >
+                            (
+                            <span class="text-xs">رنگ قبلی:</span>
+                            <span :style="'background-color: ' + product?.color_hex + ';'"
+                                  class="inline-block w-5 h-5 rounded-full border shadow"></span>
+                            <span>{{ product?.color_name }}</span>
+                            )
+                          </div>
+                        </div>
+                      </template>
+                    </partial-input-label>
                     <base-select-searchable
                       :current-page="colorSelectConfig.currentPage.value"
                       :is-loading="loadingGetColors"
@@ -104,13 +137,14 @@
                       </template>
                     </base-select-searchable>
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-2/6">
+                  <div class="w-full p-2 sm:w-1/2">
                     <base-input
                       :is-optional="true"
                       :name="'size[' + idx + ']'"
                       :value="product?.size"
                       label-title="سایز"
                       placeholder="وارد نمایید"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.size = v}"
                     >
                       <template #icon>
@@ -121,13 +155,14 @@
                 </div>
 
                 <div class="flex flex-wrap">
-                  <div class="w-full p-2 sm:w-1/2 xl:w-4/12">
+                  <div class="w-full p-2 sm:w-1/2 xl:w-5/12">
                     <base-input
                       :is-optional="true"
                       :name="'guarantee[' + idx + ']'"
                       :value="product?.guarantee"
                       label-title="گارانتی"
                       placeholder="وارد نمایید"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.guarantee = v}"
                     >
                       <template #icon>
@@ -135,58 +170,98 @@
                       </template>
                     </base-input>
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
+                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
                     <base-input
                       :min="0"
                       :money-mask="true"
                       :name="'weight[' + idx + ']'"
-                      :value="product?.weight"
-                      label-title="وزن با بسته‌بندی(گرم)"
+                      :use-dynamic-label-id="false"
                       placeholder="وارد نمایید"
                       type="text"
+                      :value="product?.weight?.toString()"
                       @input="(v) => {product.weight = v}"
                     >
+                      <template #label>
+                        <div class="flex items-center gap-1.5 text-sm">
+                          <span>وزن با بسته‌بندی</span>
+                          <span class="text-xs text-pink-600">(گرم)</span>
+                        </div>
+                      </template>
+
                       <template #icon>
                         <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                       </template>
                     </base-input>
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                  <div class="w-full p-2 sm:w-1/2 xl:w-4/12">
                     <base-input
                       :min="0"
                       :money-mask="true"
                       :name="'price[' + idx + ']'"
                       :value="product?.price?.toString()"
-                      label-title="قیمت"
                       placeholder="وارد نمایید"
                       type="text"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.price = v}"
                     >
+                      <template #label>
+                        <div class="flex items-center gap-1.5 text-sm">
+                          <span>قیمت</span>
+                          <span class="text-xs text-pink-600">(تومان)</span>
+                        </div>
+                      </template>
+
                       <template #icon>
                         <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                       </template>
                     </base-input>
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                  <div class="w-full p-2 sm:w-1/2">
                     <base-input
                       :min="0"
                       :money-mask="true"
                       :name="'discounted_price[' + idx + ']'"
                       :value="product?.discounted_price?.toString()"
-                      label-title="قیمت با تخفیف"
                       placeholder="وارد نمایید"
                       type="text"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.discounted_price = v}"
                     >
+                      <template #label>
+                        <div class="flex flex-wrap items-center gap-3">
+                          <div class="flex items-center gap-1.5 text-sm">
+                            <span>قیمت با تخفیف</span>
+                            <span class="text-xs text-pink-600">(تومان)</span>
+                          </div>
+
+                          <div
+                            class="flex gap-3 items-center py-1 px-2.5 mr-auto rounded border-2 border-blue-300 border-dashed"
+                          >
+                            <QuestionMarkCircleIcon
+                              v-tooltip.bottom="'در صورتی که می‌خواهید مبلغ صفر به عنوان مبلغ تخفیف در نظر گرفته نشود، این گزینه را فعال نمایید.'"
+                              class="size-7 text-slate-400 cursor-help"
+                            />
+
+                            <base-checkbox
+                              v-model="product.dont_consider_discounted_price"
+                              :name="'dont_consider_discounted_price[' + idx + ']'"
+                              :use-dynamic-label-id="false"
+                              label-class="text-slate-500"
+                              label-title="عدم در نظرگیری قیمت تخفیف"
+                              size-class="w-5 h-5"
+                              @change="(value) => {product.dont_consider_discounted_price = value}"
+                            />
+                          </div>
+                        </div>
+                      </template>
+
                       <template #icon>
                         <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                       </template>
                     </base-input>
                   </div>
-                </div>
 
-                <div class="flex flex-wrap items-end">
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                  <div class="w-full p-2 sm:w-1/2">
                     <partial-input-label
                       :is-optional="true"
                       title="تخفیف از تاریخ"
@@ -199,7 +274,7 @@
                       :error-message="customErrors[idx] ? customErrors[idx]?.discounted_from : null"
                     />
                   </div>
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                  <div class="w-full p-2 sm:w-1/2">
                     <partial-input-label
                       :is-optional="true"
                       title="تخفیف تا تاریخ"
@@ -213,14 +288,16 @@
                     />
                   </div>
 
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                  <div class="w-full p-2 sm:w-1/2">
                     <base-input
                       :min="0"
+                      :has-floating-point="true"
                       :money-mask="true"
                       :name="'tax_rate[' + idx + ']'"
                       :value="product?.tax_rate?.toString()"
                       placeholder="وارد نمایید"
                       type="text"
+                      :use-dynamic-label-id="false"
                       @input="(v) => {product.tax_rate = v}"
                     >
                       <template #label>
@@ -234,8 +311,12 @@
                       </template>
                     </base-input>
                   </div>
+                </div>
 
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                <hr class="my-3">
+
+                <div class="flex flex-wrap">
+                  <div class="p-2 w-full sm:w-auto sm:grow">
                     <base-switch
                       :enabled="product?.is_available"
                       :name="'is_available[' + idx + ']'"
@@ -245,7 +326,7 @@
                     />
                   </div>
 
-                  <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+                  <div class="p-2 w-full sm:w-auto sm:grow">
                     <base-switch
                       :enabled="product?.is_special"
                       :name="'is_special[' + idx + ']'"
@@ -333,6 +414,7 @@
               :loading="!canSubmit"
               :show-prev-step-button="canSubmit"
               @next="handleNextClick(options.next)"
+              @prev="options.prev"
             />
 
             <div
@@ -360,7 +442,7 @@ import {computed, onMounted, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialStepyNextPrevButtons from "@/components/partials/PartialStepyNextPrevButtons.vue";
 import yup from "@/validation/index.js";
-import {ArrowLeftCircleIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, PlusIcon, QuestionMarkCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseInput from "@/components/base/BaseInput.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
@@ -376,6 +458,7 @@ import BaseMessage from "@/components/base/BaseMessage.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {ColorAPI, ProductAPI} from "@/service/APIProduct.js";
 import {useSelectSearching} from "@/composables/select-searching.js";
+import BaseCheckbox from "@/components/base/BaseCheckbox.vue";
 
 defineProps({
   options: {
@@ -436,6 +519,7 @@ const products = ref([
     weight: null,
     price: null,
     discounted_price: null,
+    dont_consider_discounted_price: true,
     discounted_from: null,
     discounted_until: null,
     tax_rate: null,
@@ -459,6 +543,7 @@ function handleNewProductClick() {
     weight: null,
     price: null,
     discounted_price: null,
+    dont_consider_discounted_price: true,
     discounted_from: null,
     discounted_until: null,
     tax_rate: null,
@@ -568,15 +653,24 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 onMounted(() => {
   ProductAPI.fetchVariants(slugParam.value, {
     success: (response) => {
-      if (response.data) {
+      if (response.data?.length) {
         products.value = response.data.map((item) => {
+          if (item.discounted_price === null) {
+            item['dont_consider_discounted_price'] = true
+          } else {
+            item['dont_consider_discounted_price'] = false
+          }
+
           item['discounted_from'] = item['normal_discounted_from']
           item['discounted_until'] = item['normal_discounted_until']
 
           delete item['normal_discounted_from']
           delete item['normal_discounted_until']
+
+          return item
         })
       }
+
       loading.value = false
     },
   })
@@ -589,12 +683,12 @@ function getDefinedProducts() {
 
   let tmpProducts = JSON.parse(JSON.stringify(products.value))
   tmpProducts = escapeMoneyCharacter(tmpProducts, [
-    'stock_count', 'max_cart_count', 'price', 'discounted_price', 'tax_rate',
+    'stock_count', 'max_cart_count', 'price', 'discounted_price', 'tax_rate', 'weight',
   ])
 
   for (let i of tmpProducts) {
-    if ((i.color || i.size || i.guarantee) && i.price && i.max_cart_count > 0) {
-      if (i.discounted_price === 0) {
+    if ((i.color || i.size || i.guarantee || (i?.color_name && i?.color_hex)) && i.price && i.max_cart_count > 0) {
+      if (i.dont_consider_discounted_price) {
         i.discounted_price = null
       }
       p.push(i)

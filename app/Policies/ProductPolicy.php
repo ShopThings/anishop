@@ -61,11 +61,11 @@ class ProductPolicy
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param Product $model
      * @return mixed
      */
-    public function isPubliclyAccessible(User $user, Product $model): bool
+    public function isPubliclyAccessible(?User $user, Product $model): bool
     {
         return $model->is_published;
     }

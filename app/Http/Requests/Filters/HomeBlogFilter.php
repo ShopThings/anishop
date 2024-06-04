@@ -32,7 +32,7 @@ class HomeBlogFilter extends Filter
     protected BlogOrderTypesEnum $blogOrder = BlogOrderTypesEnum::NEWEST;
 
     /**
-     * @return string|null
+     * @return array|string|null
      */
     public function getTag(): array|string|null
     {
@@ -40,7 +40,7 @@ class HomeBlogFilter extends Filter
     }
 
     /**
-     * @param string|null $tag
+     * @param array|string|null $tag
      * @return static
      */
     public function setTag(array|string|null $tag): static

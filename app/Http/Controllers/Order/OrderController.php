@@ -14,7 +14,6 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\User;
 use App\Services\Contracts\OrderServiceInterface;
-use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -35,7 +34,7 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Filter $filter
+     * @param OrderFilter $filter
      * @param User|null $user
      * @return AnonymousResourceCollection
      */

@@ -1,5 +1,6 @@
 <?php
 
+use App\Repositories\Contracts\FileRepositoryInterface;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('extension', 10);
             $table->text('path');
+            $table->text('disk')->default(FileRepositoryInterface::STORAGE_DISK_PUBLIC);
             $table->boolean('is_deletable')->default(true);
             $table->timestamps();
             $table->foreignId('created_by')->nullable()

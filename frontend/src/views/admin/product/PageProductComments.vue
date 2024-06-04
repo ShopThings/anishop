@@ -18,7 +18,7 @@
               <div class="shrink-0">
                 <base-lazy-image
                     :alt="product?.title"
-                    :lazy-src="product?.image.path"
+                    :lazy-src="product?.image.full_path"
                     :size="FileSizes.SMALL"
                     :is-local="false"
                     class="!h-28 sm:!h-20 w-auto rounded"

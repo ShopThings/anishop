@@ -84,7 +84,12 @@ class HomeProductController extends Controller
      */
     public function brandsFilter(HomeProductSideFilter $filter): AnonymousResourceCollection
     {
-        return BrandResource::collection($this->service->getFilterBrands($filter));
+        $products = $this->service->getFilterBrands($filter);
+        $brands = $products->map(function ($item) {
+            return $item->product->brand;
+        });
+
+        return BrandResource::collection($brands);
     }
 
     /**

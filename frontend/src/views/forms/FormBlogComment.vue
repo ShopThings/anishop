@@ -102,7 +102,7 @@ const showCommentDescription = ref(false)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    description: yup.string().requred('توضیحات خود را وارد نمایید.'),
+    description: yup.string().required('توضیحات خود را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (!user) {

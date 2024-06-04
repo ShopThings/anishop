@@ -11,6 +11,7 @@ use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Repositories\FileRepository;
 use App\Services\Contracts\FileServiceInterface;
 use App\Support\Converters\NumberConverter;
+use App\Support\Traits\FilenameTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Traits\VersionTrait;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class FileService implements FileServiceInterface
 {
-    use VersionTrait;
+    use VersionTrait, FilenameTrait;
 
     public function __construct(protected FileRepository $repository)
     {
@@ -29,17 +30,27 @@ class FileService implements FileServiceInterface
     /**
      * @inheritDoc
      * @throws InvalidFileException
+     * @throws InvalidDiskException
      */
-    public function saveToDb(array|string $data, array $extraAttributes = []): ?Model
+    public function saveToDb(
+        array|string $data,
+        array        $extraAttributes = [],
+        string       $disk = FileRepositoryInterface::STORAGE_DISK_PUBLIC
+    ): ?Model
     {
+        if (!in_array(strtolower($disk), FileRepositoryInterface::STORAGE_DISKS)) {
+            throw new InvalidDiskException();
+        }
+
         if (is_string($data)) {
-            return $this->repository->savePath($data, $extraAttributes);
+            return $this->repository->savePath($data, $extraAttributes, $disk);
         }
 
         $attrs = [
-            'name' => $data['name'],
+            'name' => $this->getEscapedFilename($data['name']),
             'extension' => $data['extension'],
-            'path' => $data['path'],
+            'path' => $this->getEscapedFilename($data['path']),
+            'disk' => $disk,
         ];
 
         if (isset($data['created_by'])) {
@@ -161,7 +172,7 @@ class FileService implements FileServiceInterface
         $file = NumberConverter::toEnglish($file);
         $path = NumberConverter::toEnglish($path);
 
-        $file = rtrim($path, '\\/') . '/' . ltrim($file, '/');
+        $file = rtrim($path, '\\/') . '/' . ltrim($file, '\\/');
         return $this->repository->download($file, $disk);
     }
 

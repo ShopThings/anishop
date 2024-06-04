@@ -153,17 +153,17 @@
 </template>
 
 <script setup>
-import {inject} from "vue";
 import {ArrowDownOnSquareIcon, PlusIcon, ShoppingBagIcon, TrashIcon,} from "@heroicons/vue/24/outline";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {useToast} from "vue-toastification";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const toast = useToast()
 
 const userStore = useUserAuthStore()
-const cartStore = inject('cartStore')
+const cartStore = useCartStore()
 
 //-------------------------------------------
 // Shopping cart operations

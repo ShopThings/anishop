@@ -7,6 +7,8 @@ use App\Enums\Times\TimeFormatsEnum;
 use App\Jobs\NotifyUserOfCompletedExportJob;
 use App\Repositories\Contracts\FileRepositoryInterface;
 use App\Support\Filter;
+use App\Support\Traits\FilenameTrait;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -14,12 +16,15 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 trait ControllerExportResponseTrait
 {
+    use FilenameTrait;
+
     /**
      * @param Request $request
      * @param Filter $filter
      * @param string $exportName
      * @param string $exportClass
      * @return JsonResponse
+     * @throws BindingResolutionException
      */
     protected function exportResponse(
         Request $request,
@@ -46,14 +51,22 @@ trait ControllerExportResponseTrait
         ]);
 
         $filename = $exportName . '-report-' . vertaTz()->format(TimeFormatsEnum::EXPORT_FILENAME_WITH_TIME_AND_SECONDS->value);
+        $filename = $this->getEscapedFilename($filename);
+
         $fullFilename = 'reports/' . $filename . '.xlsx';
+        $storageDisk = FileRepositoryInterface::STORAGE_DISK_LOCAL;
 
         Excel::queue(
             $export,
-            $fullFilename,
-            FileRepositoryInterface::STORAGE_DISK_LOCAL
+            $this->getSaveFilename($fullFilename),
+            $storageDisk
         )->chain([
-            new NotifyUserOfCompletedExportJob($request->user(), 'reports/' . $filename, $fullFilename),
+            new NotifyUserOfCompletedExportJob(
+                $request->user(),
+                'reports/' . $filename,
+                $fullFilename,
+                $storageDisk
+            ),
         ]);
 
         return response()->json([

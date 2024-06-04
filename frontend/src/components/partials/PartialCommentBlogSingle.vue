@@ -20,7 +20,7 @@
     <template v-else>
       <ul class="flex flex-wrap gap-4 items-center">
         <li class="text-sm text-slate-500">
-          {{ comment?.createt_by?.first_name || 'کاربر سایت' }}
+          {{ comment?.created_by?.first_name || 'کاربر سایت' }}
         </li>
         <li class="flex justify-center items-center">
           <span class="w-1.5 h-1.5 rounded-full bg-slate-200 inline-block"></span>
@@ -30,8 +30,8 @@
         </li>
         <li>
           <partial-badge-status-blog-comment
-            :color-hex="comment?.color_hex"
-            :text="comment?.title"
+            :color-hex="comment?.badge?.color_hex"
+            :text="comment?.badge?.title"
           />
         </li>
       </ul>

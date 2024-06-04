@@ -35,10 +35,16 @@
       <div class="p-3 h-36 flex items-center justify-center bg-white">
         <router-link :to="{name: 'search', query: {brand: slide.id}}">
           <base-lazy-image
+            v-if="slide.image?.path"
             :alt="slide?.name"
             :is-local="false"
-            :lazy-src="slide.image.path"
+            :lazy-src="slide.image?.path"
           />
+          <img
+            v-else
+            :alt="slide?.name"
+            src="/image-placeholder.jpg"
+          >
         </router-link>
       </div>
     </base-carousel>

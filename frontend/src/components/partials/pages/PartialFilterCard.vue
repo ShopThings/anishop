@@ -46,7 +46,7 @@
             v-for="(item, idx) in items"
             :key="item?.id || idx"
             :class="itemContainerClass"
-            class="flex items-center gap-3"
+            class="flex items-center gap-2"
         >
           <div
               v-if="['multi', 'single'].indexOf(type) !== -1"
@@ -71,7 +71,7 @@
           </template>
 
           <label
-              :class="[!slots['item'] ? 'py-2 px-3 hover:bg-slate-50 transition rounded-full my-1' : 'p-0 m-0']"
+            :class="[!slots['item'] ? 'py-2 px-3 hover:bg-slate-100 transition rounded-full my-1' : 'p-0 m-0']"
               :for="`${itemUniqueKeyText}-item${item?.id || idx}`"
               class="grow cursor-pointer"
           >

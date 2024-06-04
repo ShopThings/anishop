@@ -63,7 +63,7 @@
     <template v-else>
       <ul class="flex flex-wrap gap-4 items-center">
         <li class="text-sm text-slate-500">
-          {{ comment?.createt_by?.first_name || 'کاربر سایت' }}
+          {{ comment?.created_by?.first_name || 'کاربر سایت' }}
         </li>
         <li class="flex justify-center items-center">
           <span class="w-1.5 h-1.5 rounded-full bg-slate-200 inline-block"></span>
@@ -141,13 +141,7 @@
 <script setup>
 import {computed} from "vue";
 import isObject from "lodash.isobject";
-import {
-  FlagIcon,
-  HandThumbDownIcon,
-  HandThumbUpIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/vue/24/outline/index.js";
+import {FlagIcon, HandThumbDownIcon, HandThumbUpIcon, MinusIcon, PlusIcon,} from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({
   containerClass: String,

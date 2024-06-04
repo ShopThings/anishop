@@ -35,6 +35,7 @@
               :last-step="options.lastStep"
               :loading="!canSubmit"
               :show-prev-step-button="canSubmit"
+              @prev="options.prev"
               @finish="handleFinishClick"
             />
 

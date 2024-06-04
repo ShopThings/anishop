@@ -17,17 +17,17 @@ class ProductPropertyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $productFestival = $this->product()->whereHas('festivals', function ($query) {
+        $productFestival = $this->product()->withWhereHas('festivals.festival', function ($query) {
             $query->published()->activated();
-        })->fisrt();
+        })->first();
 
         $festivalDiscountedFrom = null;
         $festivalDiscountedUntil = null;
 
         if (!is_null($productFestival)) {
-            $festival = $productFestival->festivals()->first();
-            $festivalDiscountedFrom = $festival->start_at;
-            $festivalDiscountedUntil = $festival->end_at;
+            $festival = $productFestival->festivals->first()?->festival;
+            $festivalDiscountedFrom = $festival?->start_at;
+            $festivalDiscountedUntil = $festival?->end_at;
         }
 
         return [

@@ -7,10 +7,11 @@
         <base-paginator
           ref="productPaginatorRef"
           v-model:items="products"
-          :extra-search-params="searchParams"
+          :extra-search-params="filterParamStore.searchParams"
           :order="productOrder"
           :path="getSearchPath"
           :per-page="productPerPage"
+          :scroll-to-element-on-appearance="true"
           :scroll-margin-top="-160"
           :show-pagination-detail="true"
           :show-search="true"
@@ -56,9 +57,9 @@
 
                         <div>
                           <product-search-filters-container
-                            :search-params="searchParams"
                             filter-btn-class="sticky bottom-0 z-[1]"
                             @filter="filterHandler"
+                            @clear="clearHandler"
                           />
                         </div>
                       </div>
@@ -89,7 +90,7 @@
           <template #item="{item}">
             <product-card
               :product="item"
-              container-class="hover:shadow-lg w-full hover:z-[1] hover:relative transition"
+              container-class="hover:shadow-xl duration-500 w-full hover:z-[1] hover:relative transition"
             />
           </template>
 
@@ -129,8 +130,8 @@
           <partial-card class="border-0 flex flex-col pb-3">
             <template #body>
               <product-search-filters-container
-                :search-params="searchParams"
                 @filter="filterHandler"
+                @clear="clearHandler"
               />
             </template>
           </partial-card>
@@ -143,7 +144,7 @@
 </template>
 
 <script setup>
-import {computed, inject, nextTick, onMounted, ref, shallowRef} from "vue";
+import {computed, inject, nextTick, ref, shallowRef} from "vue";
 import {FunnelIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import BasePaginator from "@/components/base/BasePaginator.vue";
@@ -163,6 +164,7 @@ import {useRoute, useRouter} from "vue-router";
 import ProductSearchFestivals from "@/components/product/ProductSearchFestivals.vue";
 import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
 import {watchImmediate} from "@vueuse/core";
+import {useProductFilterParamStore} from "@/store/StoreProductFilter.js";
 
 const homeSettingStore = inject('homeSettingStore')
 
@@ -184,8 +186,9 @@ const router = useRouter()
 const route = useRoute()
 
 const products = ref([])
-const searchParams = ref({})
 const productOrder = []
+
+const filterParamStore = useProductFilterParamStore()
 
 // create orders
 let counter = 1
@@ -196,65 +199,25 @@ for (const t in PRODUCT_ORDER_TYPES) {
       key: PRODUCT_ORDER_TYPES[t].value,
       text: PRODUCT_ORDER_TYPES[t].text,
     })
-    searchParams.value.order = PRODUCT_ORDER_TYPES[t].value
+    filterParamStore.setOrder(PRODUCT_ORDER_TYPES[t].value)
   }
 }
 
 function festivalChangeHandler(selected) {
-  searchParams.value.festival = selected.id
+  filterParamStore.setFestival(selected.id)
 }
 
 function orderChangeHandler(selected) {
-  searchParams.value.order = selected.key
-  router.push({query: Object.assign({}, route.query, searchParams.value)})
+  filterParamStore.setOrder(selected.key)
+  router.push({query: Object.assign({}, route.query, filterParamStore.getSearchParams)})
 }
 
 const isLocallyQueryChange = shallowRef(false)
 
-function assignQueryParamsToSearchParams() {
-  if (route.query?.min_price && route.query?.max_price) {
-    searchParams.value.price_range = [route.query.min_price, route.query.max_price]
-  }
-  searchParams.value.only_available = route.query?.only_available
-  searchParams.value.is_special = route.query?.is_special
-  searchParams.value.dynamic_filters = route.query?.dynamic_filters
-  searchParams.value.category = route.query?.category
-  searchParams.value.festival = route.query?.festival
-  searchParams.value.order = route.query?.order
-
-  // handle brands array or a single brand
-  if (route.query?.brands && Array.isArray(route.query.brands) && route.query.brands.length) {
-    searchParams.value.brands = route.query.brands
-  } else if (route.query?.brand) {
-    searchParams.value.brands = Array.isArray(route.query.brand) ? route.query.brand : [route.query.brand]
-  }
-}
-
-function filterHandler(params) {
-  Object.assign(searchParams.value, params)
-
+function triggerRouteOnSearchParams() {
   isLocallyQueryChange.value = true
 
-  let queryObj = {
-    query: {
-      brands: searchParams.value?.brands,
-      only_available: searchParams.value?.only_available,
-      is_special: searchParams.value?.is_special,
-      dynamic_filters: searchParams.value?.dynamic_filters,
-      order: searchParams.value?.order
-    }
-  }
-
-  if (
-    searchParams.value?.price_range &&
-    searchParams.value.price_range[0] &&
-    searchParams.value.price_range[1]
-  ) {
-    queryObj.min_price = searchParams.value.price_range[0]
-    queryObj.max_price = searchParams.value.price_range[1]
-  }
-
-  router.push(queryObj)
+  router.push(filterParamStore.getRouteQueryObject())
 
   nextTick(() => {
     if (productPaginatorRef.value) {
@@ -263,8 +226,17 @@ function filterHandler(params) {
   })
 }
 
+function filterHandler() {
+  triggerRouteOnSearchParams()
+}
+
+function clearHandler() {
+  filterParamStore.resetSearchParams(['category', 'festival', 'order'])
+  triggerRouteOnSearchParams()
+}
+
 watchImmediate(() => route.query, () => {
-  assignQueryParamsToSearchParams()
+  filterParamStore.readFiltersFromRoute()
 
   if (!isLocallyQueryChange.value) {
     nextTick(() => {
@@ -275,9 +247,5 @@ watchImmediate(() => route.query, () => {
   } else {
     isLocallyQueryChange.value = false
   }
-})
-
-onMounted(() => {
-  assignQueryParamsToSearchParams()
 })
 </script>

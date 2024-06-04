@@ -34,12 +34,4 @@ trait HasSluggableTrait
             ->generateSlugsFrom($this->getSluggableField())
             ->saveSlugsTo($this->getSlugField());
     }
-
-    /**
-     * @inheritDoc
-     */
-    public function getRouteKeyName()
-    {
-        return parent::getRouteKeyName();
-    }
 }

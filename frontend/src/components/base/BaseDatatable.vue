@@ -142,6 +142,7 @@
               </thead>
 
               <template v-if="rows.length > 0">
+
                 <tbody
                   v-if="isStaticMode"
                   :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
@@ -358,6 +359,20 @@
                 </tbody>
               </template>
 
+              <tbody v-else-if="!isLoading">
+              <tr>
+                <td :colspan="setting.columnsLength">
+                  <slot name="emptyTable">
+                    <div class="p-3">
+                      <div class="p-3 text-center text-rose-600 border rounded-md bg-gray-50 text-sm">
+                        {{ messages.noDataAvailable }}
+                      </div>
+                    </div>
+                  </slot>
+                </td>
+              </tr>
+              </tbody>
+
               <tfoot class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
               <tr>
                 <th
@@ -472,14 +487,6 @@
         </div>
       </template>
     </div>
-
-    <slot v-else-if="!isLoading" name="emptyTable">
-      <div class="p-3">
-        <div class="p-3 text-center text-rose-600 border rounded-md bg-gray-50 text-sm">
-          {{ messages.noDataAvailable }}
-        </div>
-      </div>
-    </slot>
   </div>
 </template>
 
@@ -708,6 +715,9 @@ const setting = reactive({
       cellClasses: '!bg-rose-50',
     });
     return cols;
+  }),
+  columnsLength: computed(() => {
+    return props.columns.length + (props.hasCheckbox ? 1 : 0)
   }),
   keyColumn: computed(() => {
     let key = "";

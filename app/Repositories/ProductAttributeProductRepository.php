@@ -8,8 +8,8 @@ use App\Models\ProductAttributeProduct;
 use App\Models\ProductAttributeValue;
 use App\Repositories\Contracts\ProductAttributeProductRepositoryInterface;
 use App\Support\Repository;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ProductAttributeProductRepository extends Repository implements ProductAttributeProductRepositoryInterface
@@ -44,7 +44,7 @@ class ProductAttributeProductRepository extends Repository implements ProductAtt
                 $query->where(
                     'category_id',
                     $this->productModel->newQuery()
-                        ->where('product_id', $productId)
+                        ->where('id', $productId)
                         ->first('category_id')?->category_id
                 );
             });
@@ -60,14 +60,10 @@ class ProductAttributeProductRepository extends Repository implements ProductAtt
         DB::beginTransaction();
 
         // first delete all attribute values that not exists in $attributeValues variable from db
-        $res = (bool)$this->productAttributeValueModel->newQuery()
+        $this->productAttributeValueModel->newQuery()
             ->where('product_id', $productId)
             ->whereNotIn('product_attribute_value_id', $attributeValues)
             ->delete();
-        if (!$res) {
-            DB::rollBack();
-            return false;
-        }
 
         // then update/create provided attribute values
         foreach ($attributeValues as $value) {

@@ -55,6 +55,14 @@ class Blog extends Model
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
      * @param Builder $query
      * @param $year
      * @return Builder

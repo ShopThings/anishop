@@ -16,16 +16,16 @@ export const useProductSearchStore = defineStore('product_search_result', () => 
     () => products.value
   )
 
-  function setBrands(brands) {
-    brands.value = brands
+  function setBrands(items) {
+    brands.value = items
   }
 
-  function setCategories(categories) {
-    categories.value = categories
+  function setCategories(items) {
+    categories.value = items
   }
 
-  function setProducts(products) {
-    products.value = products
+  function setProducts(items) {
+    products.value = items
   }
 
   function $reset() {

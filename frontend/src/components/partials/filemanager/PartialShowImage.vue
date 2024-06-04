@@ -7,57 +7,57 @@
   </div>
   <template v-else>
     <div
-        v-if="item.is_dir"
-        class="w-16 h-16"
+      v-if="item.is_dir"
+      class="w-16 h-16"
     >
       <FolderIcon
-          :title="item.name"
-          class="w-16 h-16 text-cyan-600 shrink-0 cursor-pointer hover:text-black transition"
-          @click="emit('click-dir', item)"
+        :title="item.name"
+        class="w-16 h-16 text-cyan-600 shrink-0 cursor-pointer hover:text-black transition"
+        @click="emit('click-dir', item)"
       />
     </div>
     <div
-        v-else-if="isImageExt(item.extension)"
-        class="w-20 h-20"
+      v-else-if="isImageExt(item.extension)"
+      class="w-20 h-20"
     >
       <base-lazy-image
-          :alt="item.name"
-          :is-local="false"
-          :lazy-src="item.full_path"
-          :size="FileSizes.SMALL"
-          :title="item.name"
-          class="w-20 h-20 object-contain shrink-0 border rounded-lg cursor-pointer"
-          @click="emit('click-image', item)"
+        :alt="item.name"
+        :is-local="false"
+        :lazy-src="item.full_path"
+        :size="isSizedImageExt(item.extension) ? FileSizes.SMALL : FileSizes.ORIGINAL"
+        :title="item.name"
+        class="w-20 h-20 object-contain shrink-0 border rounded-lg cursor-pointer"
+        @click="emit('click-image', item)"
       ></base-lazy-image>
     </div>
     <div
-        v-else-if="isAudioExt(item.extension)"
-        class="w-16 h-16"
+      v-else-if="isAudioExt(item.extension)"
+      class="w-16 h-16"
     >
       <MusicalNoteIcon
-          :title="item.name"
-          class="w-16 h-16 text-cyan-600 shrink-0 hover:text-black transition"
-          @click="emit('click-audio', item)"
+        :title="item.name"
+        class="w-16 h-16 text-cyan-600 shrink-0 hover:text-black transition"
+        @click="emit('click-audio', item)"
       />
     </div>
     <div
-        v-else-if="isVideoExt(item.extension)"
-        class="w-16 h-16"
+      v-else-if="isVideoExt(item.extension)"
+      class="w-16 h-16"
     >
       <FilmIcon
-          :title="item.name"
-          class="w-16 h-16 text-rose-600 shrink-0 hover:text-black transition"
-          @click="emit('click-video', item)"
+        :title="item.name"
+        class="w-16 h-16 text-rose-600 shrink-0 hover:text-black transition"
+        @click="emit('click-video', item)"
       />
     </div>
     <div
-        v-else
-        class="w-16 h-16"
+      v-else
+      class="w-16 h-16"
     >
       <DocumentTextIcon
-          :title="item.name"
-          class="w-16 h-16 text-gray-700 shrink-0 hover:text-black transition"
-          @click="emit('click-doc', item)"
+        :title="item.name"
+        class="w-16 h-16 text-gray-700 shrink-0 hover:text-black transition"
+        @click="emit('click-doc', item)"
       />
     </div>
   </template>
@@ -79,5 +79,5 @@ defineProps({
 })
 const emit = defineEmits(['click-dir', 'click-image', 'click-audio', 'click-video', 'click-doc'])
 
-const {isImageExt, isAudioExt, isVideoExt} = useFileList()
+const {isImageExt, isSizedImageExt, isAudioExt, isVideoExt} = useFileList()
 </script>

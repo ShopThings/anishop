@@ -80,8 +80,10 @@
                 <h1 class="text-black font-iranyekan-bold">
                   {{ item.data.type_value }}
                 </h1>
-                <p class="text-slate-700 text-sm styling-paragraph leading-relaxed">
-                  {{ item.data.message }}
+                <p
+                  class="text-slate-700 text-sm styling-paragraph leading-relaxed"
+                  v-html="item.data.message"
+                >
                 </p>
                 <span class="text-xs text-slate-400 mr-auto">{{ item.created_at }}</span>
               </div>

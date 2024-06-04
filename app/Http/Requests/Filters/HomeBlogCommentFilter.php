@@ -15,7 +15,7 @@ class HomeBlogCommentFilter extends Filter
     /**
      * @return int|null
      */
-    public function getParentId(): int
+    public function getParentId(): ?int
     {
         return $this->parentId;
     }

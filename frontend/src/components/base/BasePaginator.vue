@@ -29,8 +29,8 @@
           >
             <button
               :class="[
-                    o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
-                ]"
+                  o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
+              ]"
               class="border-b-2 border-transparent py-2 text-sm text-black"
               type="button"
               @click="changeOrderHandler(o)"
@@ -171,6 +171,10 @@ const props = defineProps({
   paginationTheme: String,
   paginationContainerClass: String,
   //
+  scrollToElementOnAppearance: {
+    type: Boolean,
+    default: false,
+  },
   scrollMarginTop: {
     type: Number,
     default: 0,
@@ -298,7 +302,7 @@ watch(currentPage, () => {
 
 let localLoadingTimeout = null
 
-function goToPage(page) {
+function goToPage(page, scrollToTop) {
   let params = {
     limit: props.perPage,
     offset: (page - 1) * props.perPage,
@@ -310,7 +314,7 @@ function goToPage(page) {
     params.sort = selectedOrder.value.sort
   }
 
-  if (isObject(props.extraSearchParams) && Object.keys(props.extraSearchParams).length) {
+  if (isObject(props.extraSearchParams)) {
     params = Object.assign({}, props.extraSearchParams, params)
     props.extraSearchParams.order = params.order
   }
@@ -349,7 +353,10 @@ function goToPage(page) {
 
       localLoadingTimeout = setTimeout(() => {
         loading.value = false
-        goToTop()
+
+        if (scrollToTop !== false) {
+          goToTop()
+        }
 
         emit('items-loaded')
 
@@ -370,7 +377,10 @@ function goToPage(page) {
         total.value = response.meta.total || 0
 
         loading.value = false
-        goToTop()
+
+        if (scrollToTop !== false) {
+          goToTop()
+        }
 
         emit('items-loaded')
       },
@@ -381,7 +391,7 @@ function goToPage(page) {
   }
 }
 
-goToPage(currentPage.value)
+goToPage(currentPage.value, props.scrollToElementOnAppearance)
 
 function prevPage() {
   if (currentPage.value - 1 > 0) {

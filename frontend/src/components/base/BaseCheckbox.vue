@@ -1,27 +1,27 @@
 <template>
   <div
-      :class="containerClass"
-      class="text-sm flex items-center gap-2"
+    :class="containerClass"
+    class="text-sm flex items-center gap-2"
   >
     <label
-        v-if="labelTitle && showLabel"
-        :class="labelClass"
-        :for="id ? id : labelId"
-        class="cursor-pointer grow sm:grow-0"
+      v-if="labelTitle && showLabel"
+      :class="labelClass"
+      :for="id ? id : labelId"
+      class="cursor-pointer grow sm:grow-0"
     >
       {{ labelTitle }}
     </label>
     <input
-        :id="id ? id : labelId"
-        v-model="value"
-        :disabled="disabled"
-        :name="name"
-        class="checkInput"
-        type="checkbox"
-        @change="emit('change', value)"
+      :id="id ? id : labelId"
+      v-model="value"
+      :disabled="disabled"
+      :name="name"
+      class="checkInput"
+      type="checkbox"
+      @change="emit('change', value)"
     >
     <div
-        :class="[
+      :class="[
           sizeClass,
           disabled
           ? disabledClass + ' ' + disabledHoverClass
@@ -31,9 +31,11 @@
               : uncheckedClass + ' ' + uncheckedHoverClass
           ),
       ]"
-        class="rounded border-2 cursor-pointer transition flex items-center justify-center shadow"
-        @click="() => {
+      class="rounded border-2 cursor-pointer transition flex items-center justify-center shadow"
+      @click="(e) => {
           if(!disabled) {
+              e.preventDefault()
+
               value = !value
               nextTick(() => {
                   emit('change', value)
@@ -42,8 +44,8 @@
       }"
     >
       <CheckIcon
-          v-if="value"
-          :class="[
+        v-if="value"
+        :class="[
             sizeClass,
             disabled ? disabledIconClass : iconClass,
         ]"
@@ -78,6 +80,11 @@ const props = defineProps({
   id: String,
   containerClass: String,
   labelClass: String,
+  useDynamicLabelId: {
+    type: Boolean,
+    default: true,
+  },
+
   sizeClass: {
     type: String,
     default: 'w-6 h-6',
@@ -128,7 +135,11 @@ const value = computed({
 })
 
 onMounted(() => {
-  labelId.value = uniqueId(props.name)
+  if (props.useDynamicLabelId) {
+    labelId.value = uniqueId(props.name)
+  } else {
+    labelId.value = props.name
+  }
 });
 </script>
 

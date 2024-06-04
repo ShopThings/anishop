@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
 
         //----------------------------------------------------------------
 
-        $roles = collect(RolesEnum::getAssignableRoles());
+        $roles = collect(RolesEnum::getAssignableAdminRoles());
 
         $users = User::factory()->count(10)->unverified()->notAdmin()->create();
         $users->each(function (User $user) {
@@ -43,7 +43,7 @@ class UserSeeder extends Seeder
         $users = User::factory()->count(10)->unverified()->admin()->create();
         $users->each(function (User $user) use ($roles) {
             AddressUser::factory()->count(mt_rand(0, 4))->onUser($user)->create();
-            $user->assignRole(array_map(fn($item) => $item->value, $roles->random(mt_rand(0, $roles->count() - 1))->toArray()));
+            $user->assignRole(array_map(fn($item) => $item->value, $roles->random(mt_rand(1, $roles->count() - 1))->toArray()));
         });
 
         $users = User::factory()->count(25)->notAdmin()->create();
@@ -55,7 +55,7 @@ class UserSeeder extends Seeder
         $users = User::factory()->count(25)->admin()->create();
         $users->each(function (User $user) use ($roles) {
             AddressUser::factory()->count(mt_rand(0, 4))->onUser($user)->create();
-            $user->assignRole(array_map(fn($item) => $item->value, $roles->random(mt_rand(0, $roles->count() - 1))->toArray()));
+            $user->assignRole(array_map(fn($item) => $item->value, $roles->random(mt_rand(1, $roles->count() - 1))->toArray()));
         });
     }
 }

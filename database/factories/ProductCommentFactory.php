@@ -36,9 +36,9 @@ class ProductCommentFactory extends Factory
     public function definition(): array
     {
         $condition = $this->faker->randomElement(array_map(fn($item) => $item->value, CommentConditionsEnum::cases()));
-        $answer = $this->faker->randomElement([null, $this->faker->text()]);
-        $pros = explode(' ', rtrim($this->faker->optional(0.4, '')->text(300), '.'));
-        $cons = explode(' ', rtrim($this->faker->optional(0.2, '')->text(300), '.'));
+        $answer = $this->faker->randomElement([null, $this->faker->realText()]);
+        $pros = explode(' ', rtrim($this->faker->optional(0.4, '')->realText(300), '.'));
+        $cons = explode(' ', rtrim($this->faker->optional(0.2, '')->realText(300), '.'));
 
         return [
             'product_id' => $this->faker->randomElement($this->productIds),
@@ -48,7 +48,7 @@ class ProductCommentFactory extends Factory
                 : CommentStatusesEnum::READ->value,
             'pros' => $this->faker->randomElements($pros, $this->faker->numberBetween(0, count($pros))),
             'cons' => $this->faker->randomElements($cons, $this->faker->numberBetween(0, count($cons))),
-            'description' => $this->faker->text(),
+            'description' => $this->faker->realText(),
             'answer' => $answer,
             'answered_at' => !is_null($answer) ? $this->faker->dateTime() : null,
             'answered_by' => !is_null($answer) ? 1 : null,

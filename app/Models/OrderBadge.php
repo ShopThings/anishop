@@ -29,7 +29,7 @@ class OrderBadge extends Model
         'is_deletable' => 'boolean',
     ];
 
-    public function nanoIdColumn()
+    public static function nanoIdColumn(): string
     {
         return 'code';
     }

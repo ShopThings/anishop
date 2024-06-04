@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Contracts\FileRateLimitInterface;
 use App\Jobs\Middleware\RateLimited;
 use App\Models\User;
 use App\Notifications\ExportReadyNotification;
@@ -11,21 +12,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
-class NotifyUserOfCompletedExportJob implements ShouldQueue
+class NotifyUserOfCompletedExportJob implements ShouldQueue, FileRateLimitInterface
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
         public User   $user,
         public string $path,
-        public string $fullPath
+        public string $fullPath,
+        public string $disk
     )
     {
     }
 
     /**
-     * @return string
+     * @inheritDoc
      */
     public function getJobGroup(): string
     {
@@ -34,6 +38,9 @@ class NotifyUserOfCompletedExportJob implements ShouldQueue
 
     /**
      * Execute the job.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     public function handle(): void
     {
@@ -41,7 +48,7 @@ class NotifyUserOfCompletedExportJob implements ShouldQueue
          * @var FileServiceInterface $fileService
          */
         $fileService = app()->get(FileServiceInterface::class);
-        $saved = $fileService->saveToDb($this->fullPath);
+        $saved = $fileService->saveToDb(data: $this->fullPath, disk: $this->disk);
 
         if (!is_null($saved)) {
             $this->user->notify(new ExportReadyNotification($this->user, $this->path));

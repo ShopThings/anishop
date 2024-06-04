@@ -142,7 +142,7 @@ class ProductController extends Controller
     public function showVariants(Product $product): AnonymousResourceCollection
     {
         Gate::authorize('view', $product);
-        return ProductPropertyResource::collection($product->items());
+        return ProductPropertyResource::collection($product->items);
     }
 
     /**
@@ -180,7 +180,7 @@ class ProductController extends Controller
     {
         Gate::authorize('view', $product);
 
-        $images = $product->images()->with('image')->get();
+        $images = $product->images()->with('image')->get()->pluck('image');
         return ImageShowInfoResource::collection($images);
     }
 
@@ -219,7 +219,10 @@ class ProductController extends Controller
     {
         Gate::authorize('view', $product);
 
-        $products = $product->relatedProducts()->with('relatedProduct')->get();
+        $products = $product->relatedProducts()
+            ->with(['relatedProduct', 'relatedProduct.image'])
+            ->get()
+            ->pluck('relatedProduct');
         return ProductResource::collection($products);
     }
 

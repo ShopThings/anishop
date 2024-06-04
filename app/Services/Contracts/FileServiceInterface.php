@@ -3,6 +3,7 @@
 namespace App\Services\Contracts;
 
 use App\Http\Requests\Filters\FileListFilter;
+use App\Repositories\Contracts\FileRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 
 interface FileServiceInterface
@@ -15,9 +16,14 @@ interface FileServiceInterface
      *                           or it is a typical full path of a file that will parse to database fields.
      * @param array $extraAttributes This parameter is for using with string $data parameter
      *                               to add extra parameter to add in database.
+     * @param string $disk
      * @return Model|null
      */
-    public function saveToDb(array|string $data, array $extraAttributes = []): ?Model;
+    public function saveToDb(
+        array|string $data,
+        array        $extraAttributes = [],
+        string       $disk = FileRepositoryInterface::STORAGE_DISK_PUBLIC
+    ): ?Model;
 
     /**
      * @param string $path

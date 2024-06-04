@@ -56,6 +56,12 @@ export function useFileList() {
     return ['jpeg', 'png', 'jpg', 'gif', 'svg'].indexOf(ext.toLowerCase()) !== -1
   }
 
+  function isSizedImageExt(ext) {
+    if (!ext) return false
+
+    return ['jpeg', 'png', 'jpg'].indexOf(ext.toLowerCase()) !== -1
+  }
+
   function isAudioExt(ext) {
     if (!ext) return false
 
@@ -68,7 +74,7 @@ export function useFileList() {
     return ['mp4'].indexOf(ext.toLowerCase()) !== -1
   }
 
-  return {files, addFiles, removeFile, isImageExt, isAudioExt, isVideoExt}
+  return {files, addFiles, removeFile, isImageExt, isSizedImageExt, isAudioExt, isVideoExt}
 }
 
 class UploadableFile {

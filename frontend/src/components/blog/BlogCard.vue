@@ -36,7 +36,7 @@
             <router-link
               :title="blog.title"
               :to="{name: 'blog.detail', params: {slug: blog.slug}}"
-              class="text-sm leading-loose h-[56px] ellipsis-2 hover:text-indigo-600 transition font-iranyekan-bold"
+              class="text-sm leading-loose h-[56px] line-clamp-2 hover:text-indigo-600 transition font-iranyekan-bold"
               target="_blank"
             >
               {{ blog.title }}
@@ -44,7 +44,10 @@
           </h1>
 
           <div class="flex gap-3 items-center justify-between mt-3">
-            <div class="flex gap-2 items-center">
+            <div
+              v-if="blog.creator"
+              class="flex gap-2 items-center"
+            >
               <UserCircleIcon class="w-8 h-8 text-slate-300 shrink-0"/>
               <span class="text-xs text-slate-400">{{
                   (blog.creator.first_name + ' ' + blog.creator.last_name).trim() || 'ادمین'
@@ -91,7 +94,7 @@
             <router-link
               :title="blog.title"
               :to="{name: 'blog.detail', params: {slug: blog.slug}}"
-              class="text-sm leading-loose h-[56px] ellipsis-2 hover:text-indigo-600 transition"
+              class="text-sm leading-loose h-[56px] line-clamp-2 hover:text-indigo-600 transition"
               target="_blank"
             >
               <h1 class="font-iranyekan-bold">
@@ -99,7 +102,10 @@
               </h1>
             </router-link>
 
-            <div class="flex gap-2 items-center">
+            <div
+              v-if="blog.creator"
+              class="flex gap-2 items-center"
+            >
               <UserCircleIcon class="w-8 h-8 text-slate-300 shrink-0"/>
               <span class="text-xs text-slate-400">{{
                   (blog.creator?.first_name + ' ' + blog.creator?.last_name).trim() || 'ادمین'

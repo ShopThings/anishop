@@ -166,7 +166,7 @@
                 <template #default="{slide}">
                   <div class="bg-white border rounded-lg lg:h-96 xl:h-[32rem]">
                     <base-lazy-image
-                      :alt="slide.name"
+                      :alt="currentMainProduct.title"
                       :lazy-src="slide.path"
                       :is-local="false"
                       class="rounded-lg"
@@ -179,7 +179,7 @@
                     class="bg-white border rounded-lg cursor-pointer"
                   >
                     <base-lazy-image
-                      :alt="slide.name"
+                      :alt="currentMainProduct.title"
                       :lazy-src="slide.path"
                       :is-local="false"
                       class="!w-auto !h-28 rounded-lg"
@@ -410,7 +410,7 @@
 
           <hr class="h-0.5 mx-auto my-3 bg-slate-100 border-0 rounded">
 
-          <div>
+          <div v-if="colorFiltered.length">
             <h4 class="mb-2">
               رنگ:
               <span v-if="selectedColor">{{ selectedColor.color_name }}</span>
@@ -444,7 +444,7 @@
             </ul>
           </div>
 
-          <div class="mt-3">
+          <div v-if="sizeFiltered.length" class="mt-3">
             <h4 class="mb-2">
               سایز:
               <span v-if="selectedSize">{{ selectedSize.size }}</span>
@@ -478,7 +478,7 @@
             </ul>
           </div>
 
-          <div class="mt-3">
+          <div v-if="guaranteeFiltered.length" class="mt-3">
             <h4 class="mb-2">
               <span class="flex items-center">
                 <CheckBadgeIcon class="h-7 w-7 text-emerald-400 ml-1.5"/>
@@ -571,9 +571,12 @@
     @hide="onLightboxHide"
   ></vue-easy-lightbox>
 
-  <div class="mt-12">
+  <div
+    v-if="!currentMainProduct && !relatedProducts?.length"
+    class="mt-12"
+  >
     <div
-      v-if="!relatedProducts?.length"
+      v-if="!currentMainProduct && !relatedProducts?.length"
       class="flex items-center gap-6 overflow-hidden"
     >
       <loader-card
@@ -582,7 +585,7 @@
         class="!w-80 rounded-lg shadow-lg"
       />
     </div>
-    <template v-else>
+    <template v-else-if="relatedProducts?.length">
       <partial-general-title title="محصولات مرتبط"/>
 
       <product-carousel :products="relatedProducts"/>
@@ -675,7 +678,7 @@
 </template>
 
 <script setup>
-import {computed, inject, onMounted, ref, watchEffect} from "vue";
+import {computed, onMounted, ref, watchEffect} from "vue";
 import VueEasyLightbox from 'vue-easy-lightbox'
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import {
@@ -717,6 +720,8 @@ import {useToast} from "vue-toastification";
 import {useClipboard} from "@vueuse/core";
 import {SOCIAL_NETWORKS} from "@/composables/constants.js";
 import PartialCountdownShow from "@/components/partials/PartialCountdownShow.vue";
+import {apiRoutes} from "@/router/api-routes.js";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 defineProps({
   showProductExtraOption: {
@@ -780,6 +785,9 @@ const mainGallerySettings = {
 const slides = ref([])
 const currentSlide = ref(0)
 
+const imageUrl = computed(() => {
+  return import.meta.env.VITE_API_BASE_URL + apiRoutes.showFile + '?file='
+})
 const previewingItems = ref([])
 const {visibleRef, itemsRef, onLightboxShow, onLightboxHide} = useLightbox(previewingItems)
 
@@ -931,55 +939,60 @@ function infoTabsCreation() {
 const colorFiltered = computed(() => {
   const filtered = []
   for (let i of products.value) {
-    if (!hasItemInArray('color_name', i.color_name, filtered)) {
+    if (
+      i.color_name &&
+      i.color_name?.toString() !== '' &&
+      !hasItemInArray('color_name', i.color_name, filtered)
+    ) {
       filtered.push({
         id: i.id,
-        color_name: i.color_name.trim(),
+        color_name: i.color_name?.trim(),
         color_hex: i.color_hex,
         active: null,
         sizes: [
-          i.size.trim(),
+          i.size?.trim(),
         ],
         guarantees: [
-          i.guarantee.trim(),
+          i.guarantee?.trim(),
         ],
       })
     } else {
       for (let j of filtered) {
-        if (i.color_name.trim() === j.color_name.trim()) {
-          if (j.sizes.indexOf(i.size.trim()) === -1)
-            j.sizes.push(i.size.trim())
-          if (j.guarantees.indexOf(i.guarantee.trim()) === -1)
-            j.guarantees.push(i.guarantee.trim())
+        if (i.color_name?.trim() === j.color_name?.trim()) {
+          if (j.sizes.indexOf(i.size?.trim()) === -1)
+            j.sizes.push(i.size?.trim())
+          if (j.guarantees.indexOf(i.guarantee?.trim()) === -1)
+            j.guarantees.push(i.guarantee?.trim())
           break
         }
       }
     }
   }
+
   return filtered
 })
 const sizeFiltered = computed(() => {
   const filtered = []
   for (let i of products.value) {
-    if (!hasItemInArray('size', i.size, filtered)) {
+    if (i.size?.toString() !== '' && !hasItemInArray('size', i.size, filtered)) {
       filtered.push({
         id: i.id,
-        size: i.size.trim(),
+        size: i.size?.trim(),
         active: null,
         colors: [
-          i.color_name.trim(),
+          i.color_name?.trim(),
         ],
         guarantees: [
-          i.guarantee.trim(),
+          i.guarantee?.trim(),
         ],
       })
     } else {
       for (let j of filtered) {
-        if (i.size.trim() === j.size.trim()) {
-          if (j.colors.indexOf(i.color_name.trim()) === -1)
-            j.colors.push(i.color_name.trim())
-          if (j.guarantees.indexOf(i.guarantee.trim()) === -1)
-            j.guarantees.push(i.guarantee.trim())
+        if (i.size?.trim() === j.size?.trim()) {
+          if (j.colors.indexOf(i.color_name?.trim()) === -1)
+            j.colors.push(i.color_name?.trim())
+          if (j.guarantees.indexOf(i.guarantee?.trim()) === -1)
+            j.guarantees.push(i.guarantee?.trim())
           break
         }
       }
@@ -990,25 +1003,25 @@ const sizeFiltered = computed(() => {
 const guaranteeFiltered = computed(() => {
   const filtered = []
   for (let i of products.value) {
-    if (!hasItemInArray('guarantee', i.guarantee, filtered)) {
+    if (i.guarantee?.toString() !== '' && !hasItemInArray('guarantee', i.guarantee, filtered)) {
       filtered.push({
         id: i.id,
-        guarantee: i.guarantee.trim(),
+        guarantee: i.guarantee?.trim(),
         active: null,
         colors: [
-          i.color_name.trim(),
+          i.color_name?.trim(),
         ],
         sizes: [
-          i.size.trim(),
+          i.size?.trim(),
         ],
       })
     } else {
       for (let j of filtered) {
-        if (i.guarantee.trim() === j.guarantee.trim()) {
-          if (j.sizes.indexOf(i.size.trim()) === -1)
-            j.sizes.push(i.size.trim())
-          if (j.colors.indexOf(i.color_name.trim()) === -1)
-            j.colors.push(i.color_name.trim())
+        if (i.guarantee?.trim() === j.guarantee?.trim()) {
+          if (j.sizes.indexOf(i.size?.trim()) === -1)
+            j.sizes.push(i.size?.trim())
+          if (j.colors.indexOf(i.color_name?.trim()) === -1)
+            j.colors.push(i.color_name?.trim())
           break
         }
       }
@@ -1211,9 +1224,11 @@ function copyHandler() {
 }
 
 //--------------------------------
-const cartStore = inject('cartStore')
+const cartStore = useCartStore()
 
 function addToCartHandler() {
+  if (!props.showAddToCart) return
+
   if (!selectedProduct.value?.code) {
     toast.warning('ابتدا محصول را انتخاب نمایید سپس دوباره تلاش کنید.')
     return
@@ -1253,6 +1268,22 @@ onMounted(() => {
 
       relatedProducts.value = currentMainProduct.value.related_products
       products.value = currentMainProduct.value.items
+
+      // Assign gallery images to slide show
+      slides.value = currentMainProduct.value.gallery_images
+
+      if (!slides.value?.length) {
+        slides.push({
+          path: imageUrl.value + currentMainProduct.image.path,
+        })
+      }
+
+      // assign them to image preview too
+      previewingItems.value = slides.value.map(item => {
+        return imageUrl.value + item.path
+      })
+
+      //-----
 
       infoTabsCreation()
 

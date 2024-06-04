@@ -46,7 +46,7 @@
         :dir="dir"
         :free-mode="true"
         :initial-slide="currentSlide"
-        :loop="true"
+        :loop="false"
         :slides-per-view="4"
         :space-between="10"
         :speed="transition"
@@ -64,15 +64,7 @@ import 'swiper/swiper-bundle.css';
 
 import {computed, onBeforeUnmount, ref, watchEffect} from "vue";
 import {watchImmediate} from "@vueuse/core";
-import {
-  A11y,
-  Autoplay,
-  EffectCoverflow,
-  EffectFade,
-  EffectFlip,
-  Thumbs,
-  FreeMode,
-} from 'swiper/modules';
+import {A11y, Autoplay, EffectCoverflow, EffectFade, EffectFlip, FreeMode, Thumbs,} from 'swiper/modules';
 import PartialCarouselNavigation from "@/components/partials/PartialCarouselNavigation.vue";
 import isObject from "lodash.isobject";
 import uniqueId from "lodash.uniqueid";

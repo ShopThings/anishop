@@ -10,11 +10,11 @@
       innerWrapperSelector='.sidebar__inner'
     >
       <div
-        class="flex justify-start flex-col sm:justify-between sm:flex-row lg:justify-start lg:flex-col gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3">
+        class="flex justify-start flex-col sm:justify-between sm:flex-row lg:justify-start lg:flex-col gap-3 border border-slate-100 shadow-md rounded-lg p-3">
         <div class="flex items-center">
-          <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
+          <ChatBubbleBottomCenterIcon class="size-12 text-gray-300 ml-3 shrink-0"/>
           <div class="text-sm leading-relaxed grow">
-            دیدگاه شما پس از بررسی و تایید در سایت نمایش داده می‌شود
+            دیدگاه شما پس از بررسی و تایید در سایت نمایش داده می‌شود.
           </div>
         </div>
 
@@ -43,7 +43,6 @@
 
       <base-paginator
         v-model:items="comments"
-        :extra-search-params="{product: productSlug}"
         :number-of-loaders="3"
         :path="getPath"
         :per-page="20"
@@ -121,12 +120,12 @@
 
           <div
             v-if="showAddComment"
-            class="flex justify-start flex-col sm:justify-between sm:flex-row gap-3 border-2 border-violet-400 border-dashed rounded-lg p-3"
+            class="flex justify-start flex-col sm:justify-between sm:flex-row gap-3 border border-slate-100 shadow-md rounded-lg p-3"
           >
             <div class="flex items-center">
-              <ChatBubbleBottomCenterIcon class="w-14 h-14 text-gray-300 ml-3 shrink-0"/>
+              <ChatBubbleBottomCenterIcon class="size-12 text-gray-300 ml-3 shrink-0"/>
               <div class="text-sm leading-relaxed grow">
-                دیدگاه شما پس از بررسی و تایید در سایت نمایش داده می‌شود
+                دیدگاه شما پس از بررسی و تایید در سایت نمایش داده می‌شود.
               </div>
             </div>
 
@@ -156,12 +155,12 @@
           <div class="py-2 text-sm flex flex-wrap items-center gap-3 pl-10 relative">
             <div class="absolute left-0 top-0">
               <base-floating-drop-down
-                  :items="[{
+                :items="[{
                       text: 'گزارش دیدگاه',
                       operation: 'report',
                   }]"
-                  :shift="false"
-                  placement="right-start"
+                :shift="false"
+                placement="right-start"
               >
                 <template #button>
                   <button
@@ -175,7 +174,7 @@
                 <template #item="{item, hide}">
                   <button
                     type="button"
-                      class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
+                    class="flex items-center w-full p-2 text-sm transition hover:bg-gray-100 rounded-md"
                     @click="reportCommentHandler(comment, item, hide)"
                   >
                     <FlagIcon class="w-5 h-5 text-rose-500 ml-2"/>
@@ -202,15 +201,15 @@
 
             <div
               v-if="comment?.pros?.length"
-                class="text-sm mt-3"
+              class="text-sm mt-3"
             >
               <h2 class="mb-2 text-emerald-600">
                 نکات مثبت
               </h2>
               <ul>
                 <li
-                    v-for="advantage in comment.pros"
-                    class="flex items-end space-y-1"
+                  v-for="advantage in comment.pros"
+                  class="flex items-end space-y-1"
                 >
                   <PlusIcon class="w-5 h-5 text-emerald-500 ml-1"/>
                   <span>{{ advantage }}</span>
@@ -220,15 +219,15 @@
 
             <div
               v-if="comment?.cons?.length"
-                class="text-sm mt-3"
+              class="text-sm mt-3"
             >
               <h2 class="mb-2 text-rose-600">
                 نکات منفی
               </h2>
               <ul>
                 <li
-                    v-for="disadvantage in comment.cons"
-                    class="flex items-end space-y-1"
+                  v-for="disadvantage in comment.cons"
+                  class="flex items-end space-y-1"
                 >
                   <MinusIcon class="w-5 h-5 text-rose-500 ml-1"/>
                   <span>{{ disadvantage }}</span>
@@ -287,7 +286,7 @@ import BaseFloatingDropDown from "@/components/base/BaseFloatingDropDown.vue";
 import {HomeCommentAPI} from "@/service/APIHomePages.js";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import BasePaginator from "@/components/base/BasePaginator.vue";
-import {apiRoutes} from "@/router/api-routes.js";
+import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useToast} from "vue-toastification";
 import {COMMENT_VOTED_TYPES, COMMENT_VOTING_TYPES} from "@/composables/constants.js";
@@ -310,7 +309,7 @@ const toast = useToast()
 const userStore = useUserAuthStore()
 
 const comments = ref([])
-const getPath = apiRoutes.comments.index
+const getPath = apiReplaceParams(apiRoutes.comments.index, {product: props.productSlug})
 
 function reportCommentHandler(comment, item, hide) {
   if (!item?.operation || !comment?.id) {

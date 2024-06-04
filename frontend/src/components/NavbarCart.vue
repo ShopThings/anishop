@@ -153,7 +153,7 @@
 </template>
 
 <script setup>
-import {inject, onMounted, ref} from "vue"
+import {onMounted, ref} from "vue"
 import {MenuItems} from '@headlessui/vue'
 import {ChevronDownIcon, ShoppingBagIcon} from '@heroicons/vue/24/solid'
 import {CheckCircleIcon, ShoppingBagIcon as ShoppingBagIconOutline} from '@heroicons/vue/24/outline'
@@ -167,6 +167,7 @@ import BaseLazyImage from "./base/BaseLazyImage.vue";
 import {numberFormat} from "@/composables/helper.js";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 defineProps({
   open: {
@@ -183,7 +184,7 @@ defineProps({
 })
 const emit = defineEmits(['open'])
 
-const cartStore = inject('cartStore')
+const cartStore = useCartStore()
 const isLoading = ref(false)
 
 function removeItemHandler(item) {

@@ -69,7 +69,7 @@ class SendMethodSeeder extends Seeder
             ],
         ];
 
-        $files = FileManager::query()->whereLike('full_path', 'send_methods', '{value}%')->get();
+        $files = FileManager::query()->whereLike('full_path', 'send_methods/', '{value}%')->get();
         foreach ($files as $file) {
             if (str_starts_with($file->full_path, 'send_methods/')) {
                 $indexName = null;

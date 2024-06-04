@@ -34,7 +34,7 @@ class ProductProperty extends Model implements Buyable
         'updated_at' => 'datetime',
     ];
 
-    public function nanoIdColumn()
+    public static function nanoIdColumn(): string
     {
         return 'code';
     }
@@ -66,7 +66,7 @@ class ProductProperty extends Model implements Buyable
      */
     public function hasFestivalDiscount(): bool
     {
-        return $this->product()->whereHas('festivals', function (Builder $query) {
+        return $this->product()->whereHas('festivals.festival', function (Builder $query) {
             $query->published()->activated();
         })->exists();
     }
@@ -103,10 +103,10 @@ class ProductProperty extends Model implements Buyable
         $price = $this->price;
 
         // check product if it's in festival or not and if so, apply festival discount percentage to it
-        $festivalProduct = $this->product()->with('festivals', function (Builder $query) {
+        $festivalProduct = $this->product()->withWhereHas('festivals.festival', function ($query) {
             $query->published()->activated();
         })->first();
-        $record = $festivalProduct->festivals->first(['discount_percentage']);
+        $record = $festivalProduct?->product?->festivals?->first(['discount_percentage']);
 
         if (!is_null($record)) {
             $off = $this->price * $record->discount_percentage / 100.00;

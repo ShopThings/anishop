@@ -6,27 +6,38 @@ use App\Enums\Gates\RolesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Services\Contracts\ReportServiceInterface;
 use App\Support\Export\ExcelExport;
+use App\Support\Filter;
 use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 
-class UserExport extends ExcelExport
+class UserExport extends ExcelExport implements WithEvents
 {
     protected array $dateColumnsNames = ['K', 'N'];
 
     /**
-     * @return Collection
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
+     * @var Collection
      */
-    public function collection()
+    protected Collection $users;
+
+    public function __construct(array $query, Filter $filter)
     {
+        parent::__construct($query, $filter);
+
         /**
          * @var ReportServiceInterface $service
          */
         $service = app()->get(ReportServiceInterface::class);
-        return $service->getUsersForReport($this->filter, $this->query);
+        $this->users = $service->getUsersForReport($this->filter, $this->query);
+    }
+
+    /**
+     * @return Collection
+     */
+    public function collection()
+    {
+        return $this->users;
     }
 
     /**
@@ -52,7 +63,7 @@ class UserExport extends ExcelExport
             $row->last_name,
             $row->national_code,
             $row->sheba_number ?? '-',
-            implode('-', array_values($roles)),
+            implode('-', array_values($roles ?? ['فاقد نقش'])),
             (bool)$row->is_admin,
             (bool)$row->is_banned,
             $row->ban_desc ?? '-',
@@ -112,6 +123,61 @@ class UserExport extends ExcelExport
                 'Created At',
                 'Created At (Asia/Tehran)',
             ],
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet;
+                $lastRow = $sheet->getHighestRow();
+
+                // Calculate totals
+                $totalCount = 0;
+                $totalAdminCount = 0;
+                $totalUserCount = 0;
+                $totalNotVerifiedCount = 0;
+                foreach ($this->users as $user) {
+                    if ($user->is_admin) {
+                        $totalAdminCount += 1;
+                    } else {
+                        $totalUserCount += 1;
+                    }
+
+                    if (empty($user->verified_at)) {
+                        $totalNotVerifiedCount += 1;
+                    }
+
+                    $totalCount += 1;
+                }
+
+                // Add total row
+                $totalRow = $lastRow + 1;
+
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'B' => 'تعداد کل کاربران',
+                    'C' => $totalCount,
+                ]);
+
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'D' => 'تعداد کاربران ادمین',
+                    'E' => $totalAdminCount,
+                ]);
+
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'F' => 'تعداد کاربران معمولی',
+                    'G' => $totalUserCount,
+                ]);
+
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'H' => 'تعداد کاربران تایید نشده',
+                    'I' => $totalNotVerifiedCount,
+                ]);
+            },
         ];
     }
 }

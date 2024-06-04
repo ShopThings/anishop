@@ -23,7 +23,7 @@
             </div>
 
             <div class="flex flex-wrap">
-              <div class="w-full p-2 sm:w-1/2 xl:w-5/12">
+              <div class="w-full p-2 sm:w-1/2">
                 <base-input
                   :value="info?.title"
                   label-title="نام محصول"
@@ -36,8 +36,22 @@
                 </base-input>
               </div>
 
-              <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
-                <partial-input-label title="واحد محصول"/>
+              <div class="w-full p-2 sm:w-1/2">
+                <partial-input-label>
+                  <template #label>
+                    <div class="flex items-center gap-2">
+                      <span>واحد محصول</span>
+                      <div class="text-xs text-slate-500 flex items-center gap-1">
+                        (
+                        <span class="">واحد قبلی</span>
+                        <span class="text-xs bg-blue-100 border border-blue-200 rounded py-0.5 px-1.5 text-blue-700">{{
+                            info?.unit_name
+                          }}</span>
+                        )
+                      </div>
+                    </div>
+                  </template>
+                </partial-input-label>
                 <base-select-searchable
                   :current-page="unitSelectConfig.currentPage.value"
                   :has-pagination="true"
@@ -58,7 +72,7 @@
                 <partial-input-error-message :error-message="errors.unit"/>
               </div>
 
-              <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
+              <div class="w-full p-2 sm:w-1/2">
                 <partial-input-label title="برند"/>
                 <base-select-searchable
                   :current-page="brandSelectConfig.currentPage.value"
@@ -101,7 +115,7 @@
                 <partial-input-error-message :error-message="errors.brand"/>
               </div>
 
-              <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+              <div class="w-full p-2 sm:w-1/2">
                 <partial-input-label title="دسته‌بندی"/>
                 <base-select-searchable
                   :current-page="categorySelectConfig.currentPage.value"
@@ -123,6 +137,8 @@
                 <partial-input-error-message :error-message="errors.category"/>
               </div>
             </div>
+
+            <hr class="my-3">
 
             <div class="flex flex-wrap">
               <div class="p-2 w-full sm:w-auto sm:grow">
@@ -153,6 +169,8 @@
                 />
               </div>
             </div>
+
+            <hr class="my-3">
 
             <div class="p-2">
               <partial-input-label title="کلمات کلیدی"/>
@@ -363,13 +381,25 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     is_commenting_allowed: yup.boolean().required('وضعیت ارسال نظر را مشخص کنید.'),
   }),
 }, (values, actions) => {
+  let data = {
+    brand: selectedBrand.value?.id,
+    category: selectedCategory.value?.id,
+    title: values.title,
+    image: productImage.value?.full_path,
+    quick_properties: getDefinedProperties(),
+    unit: selectedUnit.value?.id,
+    keywords: tags.value,
+    is_available: availableStatus.value,
+    is_commenting_allowed: allowCommentingStatus.value,
+    is_published: publishStatus.value,
+  }
+
   if (!productImage.value) {
     actions.setFieldError('image', 'تصویر را انتخاب نمایید.')
     return
   }
   if (!selectedUnit.value?.id) {
-    actions.setFieldError('unit', 'واحد محصول را انتخاب نمایید.')
-    return
+    delete data.unit
   }
   if (!selectedBrand.value?.id) {
     actions.setFieldError('brand', 'برند را انتخاب نمایید.')
@@ -387,18 +417,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   canSubmit.value = false
 
-  ProductAPI.updateById(slugParam.value, {
-    brand: selectedBrand.value?.id,
-    category: selectedCategory.value?.id,
-    title: values.title,
-    image: productImage.value.full_path,
-    quick_properties: getDefinedProperties(),
-    unit: selectedUnit.value?.id,
-    keywords: tags.value,
-    is_available: availableStatus.value,
-    is_commenting_allowed: allowCommentingStatus.value,
-    is_published: publishStatus.value,
-  }, {
+  ProductAPI.updateById(slugParam.value, data, {
     success(response) {
       setFormFields(response.data)
 
@@ -442,7 +461,7 @@ function getDefinedProperties() {
 
 function setFormFields(item) {
   info.value = item
-  productImage.value = item.image.full_path
+  productImage.value = item.image
   tags.value = item.keywords
   babyProps.value = item.quick_properties
 

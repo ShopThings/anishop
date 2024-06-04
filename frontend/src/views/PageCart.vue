@@ -237,7 +237,7 @@
 </template>
 
 <script setup>
-import {inject, ref} from "vue";
+import {ref} from "vue";
 import {ShoppingCartIcon, XMarkIcon,} from "@heroicons/vue/24/outline/index.js";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -251,8 +251,9 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import BaseSpinner from "@/components/base/BaseSpinner.vue";
 import {getPercentageOfPortion, numberFormat} from "@/composables/helper.js";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
-const cartStore = inject('cartStore')
+const cartStore = useCartStore()
 
 const isLoading = ref(false)
 const items = cartStore.getCartItems

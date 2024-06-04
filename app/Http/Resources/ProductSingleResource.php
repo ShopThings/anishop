@@ -6,8 +6,8 @@ use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\BrandShowResource;
 use App\Http\Resources\Showing\CategoryShowResource;
 use App\Http\Resources\Showing\FestivalShowResource;
+use App\Http\Resources\Showing\ImageShowInfoResource;
 use App\Http\Resources\Showing\ImageShowResource;
-use App\Http\Resources\Showing\ProductShowResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -30,9 +30,10 @@ class ProductSingleResource extends JsonResource
         $this->resource->load('creator');
         $this->resource->load('updater');
         $this->resource->load('deleter');
+        $this->resource->load('festivals.festival');
 
         $user = auth()->user();
-        $festival = $this->festivals()->published()->activated()->first();
+        $festival = $this->festivals->first()?->festival()->published()->activated()->first();
 
         return [
             'id' => $this->id,
@@ -42,7 +43,7 @@ class ProductSingleResource extends JsonResource
             'category' => new CategoryShowResource($this->category),
             'title' => $this->title,
             'slug' => $this->slug,
-            'image' => new ImageShowResource($this->image),
+            'image' => new ImageShowInfoResource($this->image),
             'gallery_images' => ImageShowResource::collection($this->images),
             'description' => $this->description,
             'properties' => $this->properties,
@@ -51,7 +52,7 @@ class ProductSingleResource extends JsonResource
             'keywords' => $this->keywords,
             'items' => ProductPropertyResource::collection($this->items),
             'festival' => $festival ? new FestivalShowResource($festival) : null,
-            'related_products' => ProductShowResource::collection($this->relatedProducts->product),
+            'related_products' => ProductRelatedProductResource::collection($this->relatedProducts),
             'is_favorited' => $this->isFavoritedByUser($user),
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,
