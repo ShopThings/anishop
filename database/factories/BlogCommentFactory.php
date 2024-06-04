@@ -53,10 +53,20 @@ class BlogCommentFactory extends Factory
             'status' => $condition == CommentConditionsEnum::UNSET->value
                 ? $this->faker->randomElement(array_map(fn($item) => $item->value, CommentStatusesEnum::cases()))
                 : CommentStatusesEnum::READ->value,
-            'description' => $this->faker->text(1000),
+            'description' => $this->faker->realText(1000),
             'created_at' => now(),
             'created_by' => $this->faker->randomElement($this->usersIds),
         ];
+    }
+
+    /**
+     * For nesting comments
+     */
+    public function forBlog(Blog $blog): static
+    {
+        return $this->state(fn(array $attributes) => [
+            'blog_id' => $blog->id,
+        ]);
     }
 
     /**

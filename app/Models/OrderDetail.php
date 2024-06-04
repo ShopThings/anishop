@@ -38,7 +38,7 @@ class OrderDetail extends Model
         'ordered_at' => 'datetime',
     ];
 
-    public function nanoIdColumn(): string
+    public static function nanoIdColumn(): string
     {
         return 'code';
     }

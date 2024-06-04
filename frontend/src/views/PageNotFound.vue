@@ -1,6 +1,6 @@
 <template>
   <section class="bg-indigo-500 relative z-10 py-[120px] min-h-screen">
-    <div class="md:container md:mx-auto">
+    <div class="max-w-7xl mx-auto w-full">
       <div class="flex">
         <div class="w-full px-4">
           <div class="mx-auto max-w-[400px] text-center">

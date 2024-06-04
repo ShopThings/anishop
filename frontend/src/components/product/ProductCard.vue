@@ -22,7 +22,7 @@
         <router-link
           :title="product.title"
           :to="{name: 'product.detail', params: {slug: product.slug}}"
-          class="text-sm leading-loose h-[52px] ellipsis-2 hover:text-indigo-600 transition"
+          class="text-sm leading-loose h-[52px] line-clamp-2 hover:text-indigo-600 transition"
           target="_blank"
         >
           <h1>

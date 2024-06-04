@@ -49,7 +49,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {ChatBubbleLeftEllipsisIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, ChatBubbleLeftEllipsisIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCommentBlogSingle from "@/components/partials/PartialCommentBlogSingle.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {HomeBlogCommentAPI} from "@/service/APIHomePages.js";
@@ -87,7 +87,7 @@ function loadComments() {
   }, {
     success(response) {
       if (response.data?.length) {
-        for (let c in response.data) {
+        for (let c of response.data) {
           comments.value.push(c)
         }
         config.lastPage = response.meta.last_page || 1

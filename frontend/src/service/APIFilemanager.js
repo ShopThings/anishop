@@ -69,7 +69,10 @@ export const FilemanagerAPI = {
   downloadFile(fileId, params, callbacks) {
     return useRequest(
       apiReplaceParams(apiRoutes.admin.files.download, {file: fileId}),
-      {params},
+      {
+        responseType: 'arraybuffer',
+        params
+      },
       callbacks
     )
   },

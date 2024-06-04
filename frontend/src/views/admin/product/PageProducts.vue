@@ -143,11 +143,13 @@ const table = reactive({
     {
       label: "برند",
       field: "brand",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -200,11 +202,13 @@ const table = reactive({
     {
       label: "برند",
       field: "brand",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -353,7 +357,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          ProductAPI.deleteById(data.id, {
+          ProductAPI.deleteById(data.slug, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()

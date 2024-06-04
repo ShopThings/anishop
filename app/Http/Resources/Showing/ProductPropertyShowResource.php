@@ -16,17 +16,17 @@ class ProductPropertyShowResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $productFestival = $this->product()->whereHas('festivals', function ($query) {
+        $productFestival = $this->product()->withWhereHas('festivals.festival', function ($query) {
             $query->published()->activated();
-        })->fisrt();
+        })->first();
 
         $festivalDiscountedFrom = null;
         $festivalDiscountedUntil = null;
 
         if (!is_null($productFestival)) {
-            $festival = $productFestival->festivals()->first();
-            $festivalDiscountedFrom = $festival->start_at;
-            $festivalDiscountedUntil = $festival->end_at;
+            $festival = $productFestival->festivals->first()?->festival;
+            $festivalDiscountedFrom = $festival?->start_at;
+            $festivalDiscountedUntil = $festival?->end_at;
         }
 
         return [
@@ -37,6 +37,7 @@ class ProductPropertyShowResource extends JsonResource
             'color_hex' => $this->color_hex,
             'size' => $this->size,
             'guarantee' => $this->guarantee,
+            'buyable_price' => $this->getBuyablePrice(),
             'price' => $this->price,
             'discounted_price' => $this->discounted_price,
             'discounted_from_in_seconds' => $this->discounted_from

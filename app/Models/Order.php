@@ -33,6 +33,14 @@ class Order extends Model
     ];
 
     /**
+     * @inheritDoc
+     */
+    public function getRouteKeyName()
+    {
+        return 'code';
+    }
+
+    /**
      * @return BelongsTo
      */
     public function paymentStatusChanger(): BelongsTo

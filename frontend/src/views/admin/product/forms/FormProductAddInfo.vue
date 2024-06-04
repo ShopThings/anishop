@@ -18,7 +18,7 @@
         </div>
 
         <div class="flex flex-wrap">
-          <div class="w-full p-2 sm:w-1/2 xl:w-5/12">
+          <div class="w-full p-2 sm:w-1/2">
             <base-input
               label-title="نام محصول"
               name="title"
@@ -30,7 +30,7 @@
             </base-input>
           </div>
 
-          <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
+          <div class="w-full p-2 sm:w-1/2">
             <partial-input-label title="واحد محصول"/>
             <base-select-searchable
               :current-page="unitSelectConfig.currentPage.value"
@@ -51,7 +51,7 @@
             <partial-input-error-message :error-message="errors.unit"/>
           </div>
 
-          <div class="w-full p-2 sm:w-1/2 xl:w-2/12">
+          <div class="w-full p-2 sm:w-1/2">
             <partial-input-label title="برند"/>
             <base-select-searchable
               :current-page="brandSelectConfig.currentPage.value"
@@ -93,7 +93,7 @@
             <partial-input-error-message :error-message="errors.brand"/>
           </div>
 
-          <div class="w-full p-2 sm:w-1/2 xl:w-3/12">
+          <div class="w-full p-2 sm:w-1/2">
             <partial-input-label title="دسته‌بندی"/>
             <base-select-searchable
               :current-page="categorySelectConfig.currentPage.value"
@@ -114,6 +114,8 @@
             <partial-input-error-message :error-message="errors.category"/>
           </div>
         </div>
+
+        <hr class="my-3">
 
         <div class="flex flex-wrap">
           <div class="p-2 w-full sm:w-auto sm:grow">
@@ -144,6 +146,8 @@
             />
           </div>
         </div>
+
+        <hr class="my-3">
 
         <div class="p-2">
           <partial-input-label title="کلمات کلیدی"/>

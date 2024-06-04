@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "dev": "vite --port=3000",
+        "dev-expose": "vite --port=3000 --host",
         "build": "vite build",
         "build-routes-json": "node src/service/extra/index.js",
         "preview": "vite preview",
@@ -35,7 +36,7 @@
         "pinia": "^2.1.4",
         "swiper": "^11.0.4",
         "uuid": "^9.0.0",
-        "v-money": "^0.8.1",
+        "v-money3": "^3.24.1",
         "vee-validate": "^4.10.7",
         "vue": "^3.2.47",
         "vue-chartjs": "^5.3.1",

@@ -146,8 +146,12 @@ export function escapeMoneyCharacter(input, only) {
   }
 
   // '-' character in regex is not a hyphen, it's for negative numbers
-  const rawInput = parseFloat(input.replace(/[^\d.-]/g, ''))
-  return isNaN(rawInput) ? input : rawInput
+  try {
+    const rawInput = parseFloat(input.replace(/[^\d.-]/g, ''))
+    return isNaN(rawInput) ? input : rawInput
+  } catch (e) {
+    return input
+  }
 }
 
 export const getTextColor = (backgroundColor) => {

@@ -13,7 +13,10 @@
                 <template #body>
                   <div class="flex flex-wrap flex-col sm:flex-row gap-3">
                     <div class="flex gap-5 items-center">
-                      <div class="flex gap-2 items-center">
+                      <div
+                        v-if="blog.creator"
+                        class="flex gap-2 items-center"
+                      >
                         <UserCircleIcon class="w-8 h-8 text-slate-300 shrink-0"/>
                         <span class="text-xs text-slate-500">{{
                             (blog.creator.first_name + ' ' + blog.creator.last_name).trim() || 'ادمین'
@@ -96,10 +99,11 @@
 
                     <ul class="flex flex-wrap items-center justify-end gap-4 mr-auto">
                       <li class="pl-4 border-l-2 border-slate-200">
-                        <a
+                        <button
                           v-tooltip.bottom="'دیدگاه‌ها'"
+                          type="button"
                           class="text-slate-400 hover:text-black transition flex items-center gap-2"
-                          href="#"
+                          @click="scrollToCommentSection"
                         >
                           <div class="flex items-center gap-0.5">
                             <span class="text-xs">(</span>
@@ -107,13 +111,14 @@
                             <span class="text-xs">)</span>
                           </div>
                           <ChatBubbleLeftIcon class="w-6 h-6"/>
-                        </a>
+                        </button>
                       </li>
 
                       <li>
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.EMAIL.text"
                           :href="emailSharingLink"
+                          target="_blank"
                           class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.EMAIL.icon"
                         ></a>
@@ -122,6 +127,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.TELEGRAM.text"
                           :href="telegramSharingLink"
+                          target="_blank"
                           class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.TELEGRAM.icon"
                         ></a>
@@ -130,6 +136,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.X.text"
                           :href="twitterSharingLink"
+                          target="_blank"
                           class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.X.icon"
                         ></a>
@@ -138,6 +145,7 @@
                         <a
                           v-tooltip.bottom="'اشتراک گذاری در ' + SOCIAL_NETWORKS.WHATSAPP.text"
                           :href="whatsappSharingLink"
+                          target="_blank"
                           class="text-slate-400 hover:text-black transition"
                           v-html="SOCIAL_NETWORKS.WHATSAPP.icon"
                         ></a>
@@ -182,14 +190,17 @@
                 </template>
               </partial-card>
 
-              <partial-card class="border-0 p-6">
+              <partial-card
+                ref="commentSectionRef"
+                class="border-0 p-6"
+              >
                 <template #body>
                   <partial-general-title
                     container-class="mb-5"
                     title="دیدگاه‌ها"
                   />
 
-                  <div class="mb-12">
+                  <div class="mb-12 relative">
                     <blog-comments :blog-slug="blog.slug"/>
                   </div>
 
@@ -301,6 +312,19 @@ const hasPopularCategories = ref(true)
 const hasBlogArchives = ref(true)
 const hasMostViewsBlogs = ref(true)
 
+const commentSectionRef = ref(null)
+
+function scrollToCommentSection() {
+  if (commentSectionRef.value.card) {
+    const scrollToY = commentSectionRef.value.card.getBoundingClientRect().top + window.scrollY - 60;
+
+    window.scrollTo({
+      top: scrollToY,
+      behavior: 'smooth'
+    })
+  }
+}
+
 //-----------------------------------------
 // Voting operation
 //-----------------------------------------
@@ -365,7 +389,7 @@ const telegramSharingLink = computed(() => {
   return `https://telegram.me/share/url?url=${encodeURIComponent(blogShortUrl.value)}&text=${encodeURIComponent(blog.value?.title || '')}`
 })
 const whatsappSharingLink = computed(() => {
-  return `whatsapp://send?text=${encodeURIComponent(blog.value?.title || '')}%3A%20${encodeURIComponent(blogShortUrl.value)}`
+  return `https://wa.me/?text=${encodeURIComponent(blog.value?.title || '')}%3A%20${encodeURIComponent(blogShortUrl.value)}`
 })
 
 //-----------------------------------------
@@ -374,12 +398,12 @@ const settingStore = useHomeSettingNoTimerStore()
 const localDescription = ref(settingStore.getDescription)
 const localKeywords = ref(settingStore.getKeywords)
 const title = ref(null)
-const briefDescription = ref(null)
+const briefDescription = ref('')
 const keywords = ref([])
 
 useSeoMeta({
   title: title,
-  description: [localDescription, briefDescription],
+  description: briefDescription.value.trim() !== '' ? [localDescription, briefDescription] : localDescription,
   keywords: keywords.value.length
     ? [
       Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,

@@ -280,7 +280,7 @@ const routes = [
     component: () => import('@/views/PageMaintenance.vue'),
     meta: {
       title: 'در دست تعمیر',
-      layout: 'layout-empty-guest',
+      layout: 'layout-empty-free-guest',
       appearance: {
         name: TransitionPresets.flipY,
         overlayBgClassName: '!bg-cool',
@@ -292,6 +292,10 @@ const routes = [
     path: "/:pathMatch(.*)*",
     name: "not-found",
     component: PageNotFound,
+    meta: {
+      title: 'صفحه مورد نظر پیدا نشد!',
+      layout: 'layout-empty-free-guest',
+    },
   },
 ];
 

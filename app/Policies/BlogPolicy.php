@@ -17,7 +17,7 @@ class BlogPolicy
 
     protected PermissionPlacesEnum $permissionPlace = PermissionPlacesEnum::BLOG;
 
-    public function __construcy()
+    public function __construct()
     {
         $this->checkIsDeletable = false;
     }
@@ -25,6 +25,7 @@ class BlogPolicy
     /**
      * @param User $user
      * @param Blog $model
+     * @param BlogComment $comment
      * @return bool
      */
     public function reportComment(User $user, Blog $model, BlogComment $comment): bool
@@ -35,11 +36,11 @@ class BlogPolicy
     }
 
     /**
-     * @param User $user
+     * @param User|null $user
      * @param Blog $model
      * @return mixed
      */
-    public function isPubliclyAccessible(User $user, Blog $model): bool
+    public function isPubliclyAccessible(?User $user, Blog $model): bool
     {
         return $model->is_published;
     }

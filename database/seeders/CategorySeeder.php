@@ -388,9 +388,9 @@ class CategorySeeder extends Seeder
         ],
         [
             'parent_id' => 15,
-            'name' => 'بتلت شیائومی',
-            'escaped_name' => 'بتلت شیائومی',
-            'slug' => 'بتلت-شیائومی',
+            'name' => 'تبلت شیائومی',
+            'escaped_name' => 'تبلت شیائومی',
+            'slug' => 'تبلت-شیائومی',
             'ancestry' => '15|2',
             'level' => 2,
             'priority' => 2,

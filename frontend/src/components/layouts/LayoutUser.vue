@@ -40,7 +40,6 @@ import AppSidebarUser from "@/components/user/AppSidebarUser.vue";
 import {PageTransition} from "vue3-page-transition";
 import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPanel.js";
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
-import {useCartStore} from "@/store/StoreUserCart.js";
 import {usePageTransition} from "@/composables/page-transition.js";
 import {useHead, useSeoMeta} from "@unhead/vue";
 import {titleOperations} from "@/composables/helper.js";
@@ -57,9 +56,6 @@ provide('notificationStore', notificationStore);
 
 const homeSettingStore = useHomeSettingsStore()
 provide('homeSettingStore', homeSettingStore);
-
-const cartStore = useCartStore()
-provide('cartStore', cartStore)
 
 //--------------------------------------
 const headTitle = ref(null)

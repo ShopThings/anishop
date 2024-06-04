@@ -5,11 +5,13 @@
       :id="id || labelId"
       :is-optional="isOptional"
       :title="labelTitle"
+      :extra-class="labelClass"
     />
     <partial-input-label
       v-else-if="hasLabelSlot"
       :id="id || labelId"
       :is-optional="isOptional"
+      :extra-class="labelClass"
     >
       <template #label>
         <slot name="label"></slot>
@@ -31,7 +33,7 @@
             ref="inp"
             v-model="value"
             v-mask="mask"
-            v-money="localMoneyMask"
+            v-money3="localMoneyMask"
             :class="[
                 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
                 'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6',
@@ -59,7 +61,7 @@
             :id="id || labelId"
             ref="inp"
             v-model="value"
-            v-money="localMoneyMask"
+            v-money3="localMoneyMask"
             :class="[
                 'block w-full rounded-md border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300',
                 'placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 text-sm sm:leading-6',
@@ -150,7 +152,7 @@ import {useField} from "vee-validate";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import isObject from "lodash.isobject";
-import {escapeMoneyCharacter} from "@/composables/helper.js";
+import {unformat} from "v-money3";
 
 const props = defineProps({
   id: String,
@@ -164,9 +166,17 @@ const props = defineProps({
     default: 'text',
   },
   placeholder: String,
+
   containerClass: String,
   klass: [String, Array],
+
+  labelClass: [String, Array],
   labelTitle: String,
+  useDynamicLabelId: {
+    type: Boolean,
+    default: true,
+  },
+
   isOptional: {
     type: Boolean,
     default: false,
@@ -190,14 +200,22 @@ const props = defineProps({
   },
 
   // mask options
+  hasFloatingPoint: Boolean,
   moneyMask: {
     // {
-    //   decimal: '.',
-    //   thousands: ',',
     //   prefix: '',
     //   suffix: '',
-    //   precision: 0,
-    //   masked: false
+    //   thousands: ',',
+    //   decimal: '.',
+    //   precision: 2,
+    //   disableNegative: false,
+    //   disabled: false,
+    //   min: null,
+    //   max: null,
+    //   allowBlank: false,
+    //   minimumNumberOfCharacters: 0,
+    //   shouldRound: true,
+    //   focusOnRight: false,
     // }
     type: [Boolean, Object],
     default: false,
@@ -221,9 +239,38 @@ const emit = defineEmits([
 const slots = useSlots()
 
 const localMoneyMask = computed(() => {
-  if (!isObject(props.moneyMask) && props.moneyMask === true) {
-    return {}
+  let obj = {
+    decimal: '.',
+    thousands: ',',
+    prefix: '',
+    suffix: '',
+    disableNegative: true,
+    masked: false /* doesn't work with directive */,
   }
+
+  if (props.min !== null && props.min !== undefined) {
+    obj.min = props.min
+  }
+  if (props.max !== null && props.max !== undefined) {
+    obj.max = props.max
+  }
+
+  if (isObject(props.moneyMask)) {
+    return Object.assign(obj, props.moneyMask)
+  }
+
+  if (props.moneyMask === true) {
+    if (props.hasFloatingPoint && !('precision' in obj)) {
+      obj.precision = 2
+    }
+
+    if (!('precision' in obj)) {
+      obj.precision = 0
+    }
+
+    return obj
+  }
+
   return false
 })
 
@@ -290,11 +337,17 @@ function clearInputHandler() {
 
 function getEscapedMoneyValue(value) {
   if (localMoneyMask.value === false) return value
-  return escapeMoneyCharacter(value)
+
+  // This is internal escaping of v-money3
+  return unformat(value, localMoneyMask.value)
 }
 
 onMounted(() => {
-  labelId.value = uniqueId(props.name)
+  if (props.useDynamicLabelId) {
+    labelId.value = uniqueId(props.name)
+  } else {
+    labelId.value = props.name
+  }
   emit('mount', inp.value)
 });
 

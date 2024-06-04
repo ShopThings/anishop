@@ -46,7 +46,7 @@
                     <li class="my-1 relative">
                       <VTransitionFade>
                         <loader-circle
-                          v-if="waitListLoading"
+                          v-if="table.isLoading"
                           big-circle-color="border-transparent"
                           main-container-klass="absolute w-[calc(100%+.5rem)] h-[calc(100%+.5rem)] -top-1 -left-1"
                           spinner-klass="!w-5 !h-5"
@@ -118,7 +118,7 @@
                    @click="() => {changeHash(value.full_path)}">
                 {{ value.full_name }}
               </div>
-              <div v-else-if="isImageExt(value.extension)"
+              <div v-else
                    class="hover:text-black transition">
                 {{ value.full_name }}
               </div>
@@ -216,7 +216,7 @@ import BaseFileManagerUploader from "./filemanager/BaseFileManagerUploader.vue";
 import BaseFileManagerFolderCreator from "./filemanager/BaseFileManagerFolderCreator.vue";
 import BaseDatatable from "./BaseDatatable.vue";
 import {TYPE, useToast} from "vue-toastification";
-import {reactive, ref, watchEffect} from "vue";
+import {onBeforeMount, reactive, ref, watchEffect} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import ContextMenu from '@imengyu/vue3-context-menu'
 import BaseFileManagerContextMenu from "./filemanager/BaseFileManagerContextMenu.vue";
@@ -238,6 +238,7 @@ import {apiRoutes} from "@/router/api-routes.js";
 import {trimChar} from "@/composables/helper.js";
 import {watchImmediate} from "@vueuse/core";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
+import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 
 const props = defineProps({
   hasCreateFolder: {
@@ -276,6 +277,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  saveStorage: Boolean,
   storages: {
     type: [Array, String],
     default: () => [Storages.public, Storages.local],
@@ -304,14 +306,14 @@ const toast = useToast()
 const router = useRouter()
 const route = useRoute()
 
-const {isImageExt} = useFileList()
+const savingStorage = useSafeLocalStorage
+
+const {isImageExt, isSizedImageExt} = useFileList()
 
 const currentStorage = ref({
   path: Storages.public,
   text: Storages.public,
 })
-
-const waitListLoading = ref(false)
 
 const currentPath = ref('/')
 const pathBreadcrumb = ref([])
@@ -420,7 +422,6 @@ const table = reactive({
 
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
-  waitListLoading.value = true
 
   table.searchText = text
 
@@ -462,8 +463,6 @@ const doSearch = (offset, limit, order, sort, text) => {
       table.isLoading = false
       table.sortable.order = order
       table.sortable.sort = sort
-
-      waitListLoading.value = false
 
       if (tableContainer.value && tableContainer.value.card)
         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
@@ -795,6 +794,23 @@ function downloadClicked(item) {
   FilemanagerAPI.downloadFile(item.name, {
     path: currentPath.value,
     disk: currentStorage.value.path,
+  }, {
+    success(data, total, response) {
+      // Create a new Blob object using the response data
+      const blob = new Blob([data], {type: response.headers['content-type']});
+
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = item.name; // Set the file name
+      link.click(); // Trigger the download
+
+      // For Firefox it is necessary to delay revoking the ObjectURL
+      setTimeout(function () {
+        // Clean up the URL object
+        window.URL.revokeObjectURL(link.href)
+      }, 100)
+    },
   })
 }
 
@@ -881,9 +897,7 @@ function pasteClicked(item) {
 
 // -----------------------------------
 function storageChange(storage, hide) {
-  if (waitListLoading.value) return
-
-  waitListLoading.value = true
+  if (table.isLoading) return
 
   // hide the dropdown
   hide()
@@ -892,7 +906,13 @@ function storageChange(storage, hide) {
     currentStorage.value.path = storage
     currentStorage.value.text = storage
 
-    datatable.value?.refresh()
+    if (route.hash.substring(1).trim() !== '') {
+      changeHash('')
+    } else {
+      gotToPath('')
+    }
+
+    savingStorage.setItem('file_manager_storage', storage)
   }
 }
 
@@ -905,25 +925,25 @@ function resetPathBreadcrumb() {
   ]
 }
 
-function checkHash() {
+function gotToPath(path) {
   resetPathBreadcrumb()
 
-  currentPath.value = route.hash.substring(1)
+  currentPath.value = path
 
-  if (currentPath.value.trim() === '') {
+  if (trimChar(currentPath.value.trim(), '/') === '') {
     currentPath.value = '/'
     pathBreadcrumb.value = []
   }
 
   const pathArr = currentPath.value.split('/')
 
-  let path = ''
+  let tmpPath = ''
   for (let i of pathArr) {
     if (['', '.', '..'].indexOf(i.trim()) === -1) {
-      path += i.trim() + '/'
+      tmpPath += i.trim() + '/'
       pathBreadcrumb.value.push({
         text: i,
-        path: trimChar(path, '/'),
+        path: trimChar(tmpPath, '/'),
       })
     }
   }
@@ -932,15 +952,35 @@ function checkHash() {
 }
 
 watchImmediate(() => route.hash, () => {
-  checkHash()
+  gotToPath(route.hash.substring(1))
 })
 
 function changeHash(to) {
-  router.push({hash: '#' + trimChar(to.replace(/[\\]*/, '/'), '/')})
+  router.push({hash: '#' + trimChar(to.replace(/\\*/, '/'), '/')})
 }
 
 // -----------------------------------
-doSearch(0, -1, 'id', 'desc')
+onBeforeMount(() => {
+  let storage = savingStorage.getItem('file_manager_storage')
+
+  if (
+    (
+      !storage ||
+      [Storages.public, Storages.local].indexOf(storage?.toLowerCase()) === -1
+    ) &&
+    route.hash.substring(1).trim() !== ''
+  ) {
+    changeHash('')
+    savingStorage.setItem('file_manager_storage', Storages.public)
+  }
+
+  if (storage) {
+    currentStorage.value.path = storage
+    currentStorage.value.text = storage
+  }
+
+  doSearch(0, -1, 'id', 'desc')
+})
 
 function handleFileSelection(file, row) {
   if (datatable.value && props.selectableFiles && !file.is_dir && row) {

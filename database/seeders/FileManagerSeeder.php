@@ -3,10 +3,13 @@
 namespace Database\Seeders;
 
 use App\Models\FileManager;
+use App\Support\Traits\FilenameTrait;
 use Illuminate\Database\Seeder;
 
 class FileManagerSeeder extends Seeder
 {
+    use FilenameTrait;
+
     /**
      * Run the database seeds.
      */
@@ -49,556 +52,488 @@ class FileManagerSeeder extends Seeder
          */
         $files = [
             [
-                'name' => 'b4',
+                'name' => $this->getEscapedFilename('b4'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
             ],
             [
-                'name' => 'b5',
+                'name' => $this->getEscapedFilename('b5'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b6',
+                'name' => $this->getEscapedFilename('b6'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b7',
+                'name' => $this->getEscapedFilename('b7'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b8',
+                'name' => $this->getEscapedFilename('b8'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b9',
+                'name' => $this->getEscapedFilename('b9'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b2',
+                'name' => $this->getEscapedFilename('b2'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b1',
+                'name' => $this->getEscapedFilename('b1'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b3',
+                'name' => $this->getEscapedFilename('b3'),
                 'extension' => 'jpg',
-                'path' => 'blogs',
+                'path' => $this->convertInvalidPathCharacters('blogs', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b2',
+                'name' => $this->getEscapedFilename('b2'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b4',
+                'name' => $this->getEscapedFilename('b4'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b3',
+                'name' => $this->getEscapedFilename('b3'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b5',
+                'name' => $this->getEscapedFilename('b5'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b6',
+                'name' => $this->getEscapedFilename('b6'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm1',
+                'name' => $this->getEscapedFilename('m1'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm2-1',
+                'name' => $this->getEscapedFilename('m2_1'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm2-2',
+                'name' => $this->getEscapedFilename('m2_2'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm3-1',
+                'name' => $this->getEscapedFilename('m3_1'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm3-3',
+                'name' => $this->getEscapedFilename('m3_3'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm3-4',
+                'name' => $this->getEscapedFilename('m3_4'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b1',
+                'name' => $this->getEscapedFilename('b1'),
                 'extension' => 'jpg',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'm3-2',
+                'name' => $this->getEscapedFilename('m3_2'),
                 'extension' => 'gif',
-                'path' => 'banners',
+                'path' => $this->convertInvalidPathCharacters('banners', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b2',
+                'name' => $this->getEscapedFilename('b2'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b3',
+                'name' => $this->getEscapedFilename('b3'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b4',
+                'name' => $this->getEscapedFilename('b4'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b1',
+                'name' => $this->getEscapedFilename('b1'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b5',
+                'name' => $this->getEscapedFilename('b5'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b6',
+                'name' => $this->getEscapedFilename('b6'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b8',
+                'name' => $this->getEscapedFilename('b8'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b7',
+                'name' => $this->getEscapedFilename('b7'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b10',
+                'name' => $this->getEscapedFilename('b10'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b9',
+                'name' => $this->getEscapedFilename('b9'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'b11',
+                'name' => $this->getEscapedFilename('b11'),
                 'extension' => 'png',
-                'path' => 'brands',
+                'path' => $this->convertInvalidPathCharacters('brands', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'c3',
+                'name' => $this->getEscapedFilename('c3'),
                 'extension' => 'png',
-                'path' => 'categories',
+                'path' => $this->convertInvalidPathCharacters('categories', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'c6',
+                'name' => $this->getEscapedFilename('c6'),
                 'extension' => 'png',
-                'path' => 'categories',
+                'path' => $this->convertInvalidPathCharacters('categories', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'c4',
+                'name' => $this->getEscapedFilename('c4'),
                 'extension' => 'png',
-                'path' => 'categories',
+                'path' => $this->convertInvalidPathCharacters('categories', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'c5',
+                'name' => $this->getEscapedFilename('c5'),
                 'extension' => 'png',
-                'path' => 'categories',
+                'path' => $this->convertInvalidPathCharacters('categories', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'c1',
+                'name' => $this->getEscapedFilename('c1'),
                 'extension' => 'png',
-                'path' => 'categories',
+                'path' => $this->convertInvalidPathCharacters('categories', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'c2',
+                'name' => $this->getEscapedFilename('c2'),
                 'extension' => 'png',
-                'path' => 'categories',
+                'path' => $this->convertInvalidPathCharacters('categories', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'Idpay',
+                'name' => $this->getEscapedFilename('Idpay'),
                 'extension' => 'png',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'beh-pardakht',
+                'name' => $this->getEscapedFilename('beh_pardakht'),
                 'extension' => 'png',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'irankish',
+                'name' => $this->getEscapedFilename('irankish'),
                 'extension' => 'jpg',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'sadad',
+                'name' => $this->getEscapedFilename('sadad'),
                 'extension' => 'jpg',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'tap',
+                'name' => $this->getEscapedFilename('tap'),
                 'extension' => 'jpg',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'zarinpal',
+                'name' => $this->getEscapedFilename('zarinpal'),
                 'extension' => 'png',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'mabna',
+                'name' => $this->getEscapedFilename('mabna'),
                 'extension' => 'png',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'wallet',
+                'name' => $this->getEscapedFilename('wallet'),
                 'extension' => 'png',
-                'path' => 'gateways',
+                'path' => $this->convertInvalidPathCharacters('gateways', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => '3',
+                'name' => $this->getEscapedFilename('3'),
                 'extension' => 'jpg',
-                'path' => 'namad',
+                'path' => $this->convertInvalidPathCharacters('namad', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => '1',
+                'name' => $this->getEscapedFilename('1'),
                 'extension' => 'jpg',
-                'path' => 'namad',
+                'path' => $this->convertInvalidPathCharacters('namad', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => '2',
+                'name' => $this->getEscapedFilename('2'),
                 'extension' => 'jpg',
-                'path' => 'namad',
+                'path' => $this->convertInvalidPathCharacters('namad', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'p5',
+                'name' => $this->getEscapedFilename('p5'),
                 'extension' => 'jpg',
-                'path' => 'products',
+                'path' => $this->convertInvalidPathCharacters('products', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'p2',
+                'name' => $this->getEscapedFilename('p2'),
                 'extension' => 'jpg',
-                'path' => 'products',
+                'path' => $this->convertInvalidPathCharacters('products', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'p1',
+                'name' => $this->getEscapedFilename('p1'),
                 'extension' => 'jpg',
-                'path' => 'products',
+                'path' => $this->convertInvalidPathCharacters('products', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'p3',
+                'name' => $this->getEscapedFilename('p3'),
                 'extension' => 'jpg',
-                'path' => 'products',
+                'path' => $this->convertInvalidPathCharacters('products', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'p4',
+                'name' => $this->getEscapedFilename('p4'),
                 'extension' => 'jpg',
-                'path' => 'products',
+                'path' => $this->convertInvalidPathCharacters('products', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g6',
+                'name' => $this->getEscapedFilename('g6'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g8',
+                'name' => $this->getEscapedFilename('g8'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g7',
+                'name' => $this->getEscapedFilename('g7'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g9',
+                'name' => $this->getEscapedFilename('g9'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g10',
+                'name' => $this->getEscapedFilename('g10'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g1',
+                'name' => $this->getEscapedFilename('g1'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g2',
+                'name' => $this->getEscapedFilename('g2'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g3',
+                'name' => $this->getEscapedFilename('g3'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g4',
+                'name' => $this->getEscapedFilename('g4'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'g5',
+                'name' => $this->getEscapedFilename('g5'),
                 'extension' => 'jpg',
-                'path' => 'products/single_product',
+                'path' => $this->convertInvalidPathCharacters('products/single_product', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'barbari',
+                'name' => $this->getEscapedFilename('barbari'),
                 'extension' => 'png',
-                'path' => 'send_methods',
+                'path' => $this->convertInvalidPathCharacters('send_methods', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'chapar',
+                'name' => $this->getEscapedFilename('chapar'),
                 'extension' => 'png',
-                'path' => 'send_methods',
+                'path' => $this->convertInvalidPathCharacters('send_methods', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'post',
+                'name' => $this->getEscapedFilename('post'),
                 'extension' => 'png',
-                'path' => 'send_methods',
+                'path' => $this->convertInvalidPathCharacters('send_methods', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
             ],
             [
-                'name' => 'motori',
+                'name' => $this->getEscapedFilename('motori'),
                 'extension' => 'png',
-                'path' => 'send_methods',
+                'path' => $this->convertInvalidPathCharacters('send_methods', true),
                 'is_deletable' => 1,
                 'created_at' => now(),
-
-            ]
+            ],
         ];
 
         foreach ($files as $file) {

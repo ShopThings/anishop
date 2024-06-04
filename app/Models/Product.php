@@ -44,6 +44,14 @@ class Product extends Model
     protected $sluggableField = 'escaped_title';
 
     /**
+     * @inheritDoc
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
      * @return BelongsTo
      */
     public function brand(): BelongsTo
@@ -72,7 +80,7 @@ class Product extends Model
      */
     public function festivals(): HasMany
     {
-        return $this->hasMany(Festival::class);
+        return $this->hasMany(ProductFestival::class);
     }
 
     /**

@@ -9,6 +9,7 @@
       :has-create-folder="true"
       :has-search="true"
       :has-uploader="true"
+      :save-storage="true"
   >
   </base-file-manager>
 </template>

@@ -54,19 +54,12 @@
         </PopoverPanel>
       </TransitionChild>
     </template>
-
   </Popover>
 </template>
 
 <script setup>
 import {ref, watchEffect} from "vue";
-import {
-  Popover,
-  PopoverButton,
-  PopoverOverlay,
-  PopoverPanel,
-  TransitionChild,
-} from "@headlessui/vue";
+import {Popover, PopoverButton, PopoverOverlay, PopoverPanel, TransitionChild,} from "@headlessui/vue";
 
 const props = defineProps({
   open: {

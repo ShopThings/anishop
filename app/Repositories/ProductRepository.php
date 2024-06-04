@@ -232,7 +232,11 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         $search = $filter->getSearchText();
         $limit = $filter->getLimit();
         $page = $filter->getPage();
-        $order = $filter->getOrder();
+
+        $order = [];
+        if (!$filter instanceof HomeProductFilter) {
+            $order = $filter->getOrder();
+        }
 
         $query = $this->model->newQuery();
         $query
@@ -307,6 +311,15 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
             $priceRange = $filter->getPriceRange();
 
             $query
+                ->whereHas('items', function ($q) {
+                    $q
+                        ->orWhereNotNull('color_name')
+                        ->orWhereNotNull('size')
+                        ->orWhereNotNull('guarantee')
+                        ->orWhere('color_name', '<>', '')
+                        ->orWhere('size', '<>', '')
+                        ->orWhere('guarantee', '<>', '');
+                })
                 ->when($brand, function (Builder $query, int $brand) {
                     $query->where('brand_id', $brand);
                 })
@@ -505,14 +518,10 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         DB::beginTransaction();
 
         // first delete all images that not exists in $images variable from db
-        $res = (bool)$this->productGalleryModel->newQuery()
+        $this->productGalleryModel->newQuery()
             ->where('product_id', $productId)
             ->whereNotIn('image_id', $images)
             ->delete();
-        if (!$res) {
-            DB::rollBack();
-            return false;
-        }
 
         // then update/create provided images
         foreach ($images as $image) {
@@ -539,14 +548,10 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         DB::beginTransaction();
 
         // first delete all related products that not exists in $products variable from db
-        $res = (bool)$this->relatedProductModel->newQuery()
+        $this->relatedProductModel->newQuery()
             ->where('product_id', $productId)
             ->whereNotIn('related_id', $products)
             ->delete();
-        if (!$res) {
-            DB::rollBack();
-            return false;
-        }
 
         // then update/create provided related products
         foreach ($products as $product) {
@@ -658,10 +663,11 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 });
             })
             ->when($festival, function (Builder $query, $festival) {
-                $query->whereHas('product.festivals', function ($q) use ($festival) {
+                $query->whereHas('product.festivals.festival', function ($q) use ($festival) {
                     $q
                         ->where('id', $festival)
-                        ->published();
+                        ->published()
+                        ->activated();
                 });
             });
     }

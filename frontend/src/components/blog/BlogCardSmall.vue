@@ -23,7 +23,7 @@
           <router-link
               :title="blog.title"
               :to="{name: 'blog.detail', params: {slug: blog.slug}}"
-              class="text-sm leading-loose h-[40px] ellipsis-2 hover:text-indigo-600 transition"
+              class="text-sm leading-loose h-[40px] line-clamp-2 hover:text-indigo-600 transition"
               target="_blank"
           >
             <h1 class="font-iranyekan-bold text-sm">

@@ -13,9 +13,6 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
-use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Fill;
 
 class OrderExport extends ExcelExport implements WithEvents
 {
@@ -263,58 +260,26 @@ class OrderExport extends ExcelExport implements WithEvents
                 // Add total row
                 $totalRow = $lastRow + 1;
 
-                $sheet->setCellValue('A' . $totalRow, 'مجموع پرداخت‌های موفق (' . $totalPaidCount . ')');
-                $sheet->setCellValue('B' . $totalRow, $totalPaid . ' تومان');
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'B' => 'مجموع پرداخت‌های موفق (' . $totalPaidCount . ')',
+                    'C' => $totalPaid . ' تومان',
+                ]);
 
-                $this->addStyleToTotalColumns($sheet, 'A', 'B', $totalRow);
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'D' => 'مجموع هزینه‌های ارسال',
+                    'E' => $totalShipping . ' تومان',
+                ]);
 
-                //
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'F' => 'مجموع پرداخت‌های موفق بدون هزینه ارسال',
+                    'G' => $totalWithoutShipping . ' تومان',
+                ]);
 
-                $sheet->setCellValue('D' . $totalRow, 'مجموع هزینه‌های ارسال');
-                $sheet->setCellValue('E' . $totalRow, $totalShipping . ' تومان');
-
-                $this->addStyleToTotalColumns($sheet, 'D', 'E', $totalRow);
-
-                //
-
-                $sheet->setCellValue('G' . $totalRow, 'مجموع پرداخت‌های موفق بدون هزینه ارسال');
-                $sheet->setCellValue('H' . $totalRow, $totalWithoutShipping . ' تومان');
-
-                $this->addStyleToTotalColumns($sheet, 'G', 'H', $totalRow);
-
-                //
-
-                $sheet->setCellValue('J' . $totalRow, 'مجموع تمامی پرداخت‌ها (' . $totalCount . ')');
-                $sheet->setCellValue('K' . $totalRow, $total . ' تومان');
-
-                $this->addStyleToTotalColumns($sheet, 'J', 'K', $totalRow);
+                $this->addContentToSpecificRow($sheet, $totalRow, [
+                    'H' => 'مجموع تمامی پرداخت‌ها (' . $totalCount . ')',
+                    'I' => $total . ' تومان',
+                ]);
             },
         ];
-    }
-
-    /**
-     * @param $sheet
-     * @param string $from
-     * @param string $to
-     * @param $totalRow
-     * @return void
-     */
-    private function addStyleToTotalColumns($sheet, string $from, string $to, $totalRow): void
-    {
-        $sheet->getStyle($from . $totalRow . ':' . $to . $totalRow)->applyFromArray([
-            'font' => ['bold' => true],
-            'fill' => [
-                'fillType' => Fill::FILL_SOLID,
-                'startColor' => ['argb' => 'DDDDDD'],
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => Border::BORDER_THIN,
-                ],
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-            ],
-        ]);
     }
 }

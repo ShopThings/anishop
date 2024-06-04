@@ -2,7 +2,6 @@
 
 namespace App\Support\Traits;
 
-use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Exceptions\NotDeletableException;
 use App\Models\User;
@@ -33,16 +32,6 @@ trait PolicyTrait
      * @var array|string[]
      */
     protected array $except;
-
-    /**
-     * @var string
-     */
-    protected string $modelClass;
-
-    /**
-     * @var PermissionPlacesEnum
-     */
-    protected PermissionPlacesEnum $permissionPlace;
 
     /**
      * @var bool

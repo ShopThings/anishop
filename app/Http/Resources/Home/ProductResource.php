@@ -19,8 +19,9 @@ class ProductResource extends JsonResource
     {
         $this->resource->load('image');
         $this->resource->load('items');
+        $this->resource->load('festivals.festival');
 
-        $festival = $this->festivals()->published()->activated()->first();
+        $festival = $this->festivals->first()?->festival()->published()->activated()->first();
 
         return [
             'id' => $this->id,

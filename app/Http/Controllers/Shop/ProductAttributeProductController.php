@@ -10,7 +10,6 @@ use App\Models\Product;
 use App\Models\ProductAttributeProduct;
 use App\Services\Contracts\ProductAttributeProductServiceInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
@@ -29,7 +28,7 @@ class ProductAttributeProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreProductAttributeProductRequest $request
      * @param Product $product
      * @return JsonResponse
      */
@@ -43,11 +42,10 @@ class ProductAttributeProductController extends Controller
             attributeValues: array_column($validated['values'], 'id')
         );
 
-        if (!is_null($model)) {
+        if (!$model) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'تغییر مقدار ویژگی محصول با موفقیت انجام شد.',
-                'data' => $model,
             ]);
         }
         return response()->json([

@@ -23,12 +23,13 @@ class ProductSingleResource extends JsonResource
         $this->resource->load('brand');
         $this->resource->load('category');
         $this->resource->load('image');
-        $this->resource->load('images');
+        $this->resource->load('images.image');
         $this->resource->load('items');
         $this->resource->load('relatedProducts.product');
+        $this->resource->load('festivals.festival');
 
         $user = auth()->user();
-        $festival = $this->festivals()->published()->activated()->first();
+        $festival = $this->festivals->first()?->festival()->published()->activated()->first();
 
         return [
             'id' => $this->id,
@@ -39,7 +40,9 @@ class ProductSingleResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => new ImageShowResource($this->image),
-            'gallery_images' => ImageShowResource::collection($this->images),
+            'gallery_images' => $this->images
+                ? ImageShowResource::collection($this->images->map(fn($item) => $item->image))
+                : null,
             'description' => $this->description,
             'properties' => $this->properties,
             'quick_properties' => $this->quick_properties,
@@ -47,7 +50,9 @@ class ProductSingleResource extends JsonResource
             'keywords' => $this->keywords,
             'items' => ProductPropertyResource::collection($this->items),
             'festival' => $festival ? new FestivalShowResource($festival) : null,
-            'related_products' => ProductResource::collection($this->related_products->product),
+            'related_products' => $this->related_products?->product
+                ? ProductResource::collection($this->related_products?->product)
+                : null,
             'is_favorited' => $this->isFavoritedByUser($user),
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,

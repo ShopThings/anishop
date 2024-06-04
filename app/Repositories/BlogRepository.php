@@ -34,7 +34,7 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
      * @inheritDoc
      */
     public function getBlogsSearchFilterPaginated(
-        array  $columns = ['*'],
+        array $columns = ['*'],
         Filter                    $filter = null,
         GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator
@@ -42,7 +42,11 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
         $search = $filter->getSearchText();
         $limit = $filter->getLimit();
         $page = $filter->getPage();
-        $order = $filter->getOrder();
+
+        $order = [];
+        if (!$filter instanceof HomeBlogFilter) {
+            $order = $filter->getOrder();
+        }
 
         $query = $this->model->newQuery();
         $query

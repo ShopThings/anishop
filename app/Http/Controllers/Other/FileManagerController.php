@@ -6,7 +6,6 @@ use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Enums\Gates\RolesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
-use App\Exceptions\FileDuplicationException;
 use App\Exceptions\InvalidDiskException;
 use App\Exceptions\InvalidFileException;
 use App\Exceptions\InvalidPathException;
@@ -16,7 +15,7 @@ use App\Http\Requests\Filters\FileListFilter;
 use App\Http\Requests\StoreFileRequest;
 use App\Models\FileManager;
 use App\Repositories\Contracts\FileRepositoryInterface;
-use App\Services\FileService;
+use App\Services\Contracts\FileServiceInterface;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,15 +25,13 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class FileManagerController extends Controller
 {
-    public function __construct(protected FileService $service)
+    public function __construct(protected FileServiceInterface $service)
     {
     }
 
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function index(FileRequest $request): JsonResponse
     {
@@ -53,8 +50,6 @@ class FileManagerController extends Controller
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function treeList(FileRequest $request): JsonResponse
     {
@@ -105,9 +100,6 @@ class FileManagerController extends Controller
     /**
      * @param StoreFileRequest $request
      * @return JsonResponse
-     * @throws FileDuplicationException
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function store(StoreFileRequest $request): JsonResponse
     {
@@ -172,8 +164,6 @@ class FileManagerController extends Controller
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function createDirectory(FileRequest $request): JsonResponse
     {
@@ -201,9 +191,6 @@ class FileManagerController extends Controller
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
-     * @throws FileDuplicationException
      */
     public function rename(FileRequest $request): JsonResponse
     {
@@ -232,8 +219,6 @@ class FileManagerController extends Controller
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function move(FileRequest $request): JsonResponse
     {
@@ -261,8 +246,6 @@ class FileManagerController extends Controller
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function copy(FileRequest $request): JsonResponse
     {
@@ -341,8 +324,6 @@ class FileManagerController extends Controller
     /**
      * @param FileRequest $request
      * @return JsonResponse
-     * @throws InvalidDiskException
-     * @throws InvalidPathException
      */
     public function batchDestroy(FileRequest $request): JsonResponse
     {
@@ -371,8 +352,6 @@ class FileManagerController extends Controller
      * @param $file
      * @param FileRequest $request
      * @return mixed
-     * @throws InvalidDiskException
-     * @throws InvalidFileException
      */
     public function download($file, FileRequest $request): mixed
     {

@@ -8,7 +8,7 @@ import Vue3ColorPicker from "vue3-colorpicker";
 import Vue3PersianDatetimePicker from "vue3-persian-datetime-picker";
 import VueEasyLightbox from "vue-easy-lightbox";
 import VueTheMask from "vue-the-mask";
-import money from "v-money";
+import money from "v-money3";
 import {InferSeoMetaPlugin} from '@unhead/addons'
 
 // import function to register Swiper custom elements
@@ -32,6 +32,7 @@ import LayoutAdmin from './components/layouts/LayoutAdmin.vue';
 import LayoutEmpty from "./components/layouts/LayoutEmpty.vue";
 import LayoutBlog from "./components/layouts/LayoutBlog.vue";
 import LayoutEmptyGuest from "@/components/layouts/LayoutEmptyGuest.vue";
+import LayoutEmptyFreeGuest from "@/components/layouts/LayoutEmptyFreeGuest.vue";
 
 const head = createHead({
   plugins: [
@@ -153,4 +154,5 @@ createApp(App)
   .component('layout-admin', LayoutAdmin)
   .component('layout-empty', LayoutEmpty)
   .component('layout-empty-guest', LayoutEmptyGuest)
+  .component('layout-empty-free-guest', LayoutEmptyFreeGuest)
   .mount('#app')

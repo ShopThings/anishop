@@ -973,13 +973,14 @@ import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
 import {useCountdown} from "@/composables/countdown-timer.js";
 import PartialPayCard from "@/components/partials/pages/PartialPayCard.vue";
 import RedirectionGatewayForm from "@/components/RedirectionGatewayForm.vue";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const toast = useToast()
 
 const store = useUserAuthStore()
 const user = store.getUser
 const homeSettingStore = inject('homeSettingStore')
-const cartStore = inject('cartStore')
+const cartStore = useCartStore()
 
 const items = cartStore.getCartItems
 

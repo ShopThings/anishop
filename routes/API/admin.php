@@ -204,7 +204,7 @@ Route::prefix('admin')
                     ->name('products.destroy.batch');
                 Route::post('products/{product}/modify', [ProductController::class, 'modifyProducts'])
                     ->where(['product' => $codeRegex])->name('products.modify-products');
-                Route::post('products/{product}/variants', [ProductController::class, 'showVariants'])
+                Route::get('products/{product}/variants', [ProductController::class, 'showVariants'])
                     ->where(['product' => $codeRegex])->name('products.show.variants');
                 Route::post('products/{product}/gallery', [ProductController::class, 'storeGalleryImages'])
                     ->where(['product' => $codeRegex])->name('products.store.gallery');

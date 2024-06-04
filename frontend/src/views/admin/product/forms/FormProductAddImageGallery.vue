@@ -9,7 +9,7 @@
         />
 
         <div class="flex items-end">
-          <div class="grow flex flex-wrap">
+          <div class="flex flex-wrap">
             <TransitionGroup name="fade-group">
               <div
                   v-for="(image, idx) in images"
@@ -34,7 +34,7 @@
             </TransitionGroup>
           </div>
 
-          <div class="shrink-0">
+          <div class="shrink-0 p-4">
             <base-button
                 v-tooltip.top-end="'افزودن تصویر جدید'"
                 class="!rounded-full border-2 border-dashed p-4 w-16 h-16 flex items-center justify-center border-orange-400"
@@ -150,7 +150,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, () => {
   const definedImages = []
   for (let i of images.value) {
     if (i && i.image?.full_name) {
-      definedImages.push(i.image.full_name)
+      definedImages.push(i.image.full_path)
     }
   }
 

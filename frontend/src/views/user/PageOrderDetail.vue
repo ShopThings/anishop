@@ -686,7 +686,7 @@
 </template>
 
 <script setup>
-import {inject, onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import {CheckIcon, EllipsisVerticalIcon, MinusIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
@@ -715,12 +715,13 @@ import {useCountdown} from "@/composables/countdown-timer.js";
 import PartialPayCard from "@/components/partials/pages/PartialPayCard.vue";
 import {HomeCheckoutAPI} from "@/service/APIHomePages.js";
 import RedirectionGatewayForm from "@/components/RedirectionGatewayForm.vue";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const router = useRouter()
 const toast = useToast()
 const codeParam = getRouteParamByKey('code')
 
-const cartStore = inject('cartStore')
+const cartStore = useCartStore()
 
 const info = ref(null)
 const loadingInfo = ref(true)

@@ -36,8 +36,8 @@ class BlogFactory extends Factory
      */
     public function definition(): array
     {
-        $title = rtrim($this->faker->text(150), '.');
-        $keywords = explode(' ', rtrim($this->faker->text(300), '.'));
+        $title = rtrim($this->faker->realText(150), '.');
+        $keywords = explode(' ', rtrim($this->faker->realText(300), '.'));
 
         return [
             'category_id' => BlogCategory::factory(),
@@ -45,8 +45,8 @@ class BlogFactory extends Factory
             'escaped_title' => NumberConverter::toEnglish(CharacterConverter::toPersian($title)),
             'slug' => str_slug_persian($title),
             'image_id' => $this->faker->randomElement($this->blogImages),
-            'brief_description' => $this->faker->text(150),
-            'description' => $this->faker->text(1000),
+            'brief_description' => $this->faker->realText(150),
+            'description' => $this->faker->realText(1000),
             'keywords' => $this->faker->randomElements($keywords, $this->faker->numberBetween(0, count($keywords))),
             'is_commenting_allowed' => $this->faker->randomElement([true, false]),
             'is_published' => $this->faker->randomElement([true, false]),

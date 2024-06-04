@@ -37,6 +37,7 @@
               :loading="!canSubmit"
               :show-prev-step-button="canSubmit"
               @next="handleNextClick(options.next)"
+              @prev="options.prev"
             />
 
             <div

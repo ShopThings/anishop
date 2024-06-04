@@ -58,6 +58,7 @@ abstract class ExcelExport implements
 
     public function __construct(protected array $query, protected Filter $filter)
     {
+        $this->filter->setOrder(['id' => 'asc']);
         $this->numberOfHeadingColumns = count($this->headings()[0]);
     }
 

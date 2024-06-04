@@ -50,11 +50,11 @@
 
                 <span
                   v-if="value.is_starting_badge"
-                  class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs"
+                  class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs whitespace-nowrap"
                 >پیش فرض</span>
                 <span
                   v-if="value.is_end_badge"
-                  class="rounded mr-2 bg-orange-600 text-white px-2 py-0.5 text-xs"
+                  class="rounded mr-2 bg-orange-600 text-white px-2 py-0.5 text-xs whitespace-nowrap"
                 >وضعیت پایانی</span>
               </div>
             </template>

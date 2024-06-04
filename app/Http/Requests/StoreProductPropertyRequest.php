@@ -36,18 +36,15 @@ class StoreProductPropertyRequest extends FormRequest
                 'array',
                 'min:1',
             ],
-            'products.*.color' => [
-                'required',
+            'products.*.color.id' => [
                 'nullable',
                 'exists:' . Color::class . ',id',
             ],
             'products.*.size' => [
-                'required',
                 'nullable',
                 'max:250',
             ],
             'products.*.guarantee' => [
-                'required',
                 'nullable',
             ],
             'products.*.weight' => [
@@ -59,19 +56,16 @@ class StoreProductPropertyRequest extends FormRequest
                 'numeric',
             ],
             'products.*.discounted_price' => [
-                'required',
                 'nullable',
                 'numeric',
                 'lt:products.*.price'
             ],
             'products.*.discounted_from' => [
-                'required',
                 'nullable',
                 'date-format:Y-m-d H:i',
                 'before:end_at',
             ],
             'products.*.discounted_until' => [
-                'required',
                 'nullable',
                 'date-format:Y-m-d H:i',
             ],
@@ -118,6 +112,13 @@ class StoreProductPropertyRequest extends FormRequest
         return [
             'products' => 'محصول/محصولات',
             'products.*.weight' => 'وزن با بسته‌بندی',
+            'products.*.color' => 'رنگ محصول',
+            'products.*.color.id' => 'رنگ محصول',
+            'products.*.size' => 'سایز محصول',
+            'products.*.guarantee' => 'گارانتی محصول',
+            'products.*.price' => 'قیمت محصول',
+            'products.*.is_available' => 'وضعیت موجودی محصول',
+            'products.*.is_published' => 'وضعیت نمایش محصول',
             'products.*.discounted_price' => 'قیمت با تخفیف',
             'products.*.discounted_from' => 'تخفیف از تاریخ',
             'products.*.discounted_until' => 'تخفیف تا تاریخ',
