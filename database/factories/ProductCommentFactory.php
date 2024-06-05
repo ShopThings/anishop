@@ -6,6 +6,7 @@ use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Models\Comment;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Collection;
 
@@ -21,11 +22,17 @@ class ProductCommentFactory extends Factory
      */
     private array $productIds;
 
+    /**
+     * @var array
+     */
+    private array $userIds;
+
     public function __construct($count = null, ?Collection $states = null, ?Collection $has = null, ?Collection $for = null, ?Collection $afterMaking = null, ?Collection $afterCreating = null, $connection = null, ?Collection $recycle = null)
     {
         parent::__construct($count, $states, $has, $for, $afterMaking, $afterCreating, $connection, $recycle);
 
         $this->productIds = Product::all()->pluck('id')->toArray();
+        $this->userIds = User::all()->pluck('id')->toArray();
     }
 
     /**
@@ -62,6 +69,7 @@ class ProductCommentFactory extends Factory
             'up_vote_count' => $this->faker->optional(0.75, 0)->numberBetween(5, 16),
             'down_vote_count' => $this->faker->optional(0.2, 0)->numberBetween(1, 7),
             'created_at' => now(),
+            'created_by' => $this->faker->randomElement($this->userIds),
         ];
     }
 }
