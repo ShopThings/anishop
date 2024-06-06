@@ -18,6 +18,22 @@ if (!function_exists('to_boolean')) {
     }
 }
 
+if (!function_exists('filter_validated_data')) {
+    /**
+     * Filter the validated data to include only specified fields.
+     *
+     * @param array|null $validated
+     * @param array $fields
+     * @return array
+     */
+    function filter_validated_data(?array $validated, array $fields): array
+    {
+        if (empty($validated)) return [];
+
+        return array_intersect_key($validated, array_flip($fields));
+    }
+}
+
 if (!function_exists('get_random_verification_code')) {
     /**
      * @param int $length

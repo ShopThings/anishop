@@ -50,7 +50,11 @@ class UserBlogCommentController extends Controller
      */
     public function store(StoreUserBlogCommentRequest $request): JsonResponse
     {
-        $validated = $request->validated(['blog', 'comment', 'description']);
+        $validated = filter_validated_data($request->validated(), [
+            'blog',
+            'comment',
+            'description',
+        ]);
         $model = $this->service->create($validated);
 
         if (!is_null($model)) {
@@ -89,7 +93,7 @@ class UserBlogCommentController extends Controller
         BlogComment $comment
     ): UserBlogCommentSingleResource|JsonResponse
     {
-        $validated = $request->validated(['description']);
+        $validated = $request->validated('description');
         $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {

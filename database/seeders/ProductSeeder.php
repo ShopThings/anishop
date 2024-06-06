@@ -42,7 +42,6 @@ class ProductSeeder extends Seeder
             'Cooler Master' => 'cooler_master',
             'seagate' => 'seagate',
         ];
-        $colors = Color::all();
         $products = [
             [
                 'title' => 'ماوس پد آئولا مدل AULA MP-W',
@@ -1390,15 +1389,17 @@ class ProductSeeder extends Seeder
                 ],
             ],
         ];
+        $colors = Color::all();
+        $images = FileManager::query()->where('path', 'products')->get()->pluck('id')->toArray();
 
-        foreach ($products as $product) {
+        foreach ($products as $k => $product) {
             $p = Product::create([
                 'brand_id' => Brand::query()->where('latin_name', $product['brand'])->first()->id,
                 'category_id' => Category::query()->where('name', $product['category'])->first()->id,
                 'title' => $product['title'],
                 'escaped_title' => NumberConverter::toEnglish($product['title']),
                 'slug' => str_slug_persian($product['title']),
-                'image_id' => FileManager::query()->where('name', $mappedImages[$product['brand']])->first()->id,
+                'image_id' => $images[$k % count($images)],
                 'description' => '',
                 'unit_name' => $product['unit_name'],
                 'keywords' => $product['keywords'],
@@ -1424,6 +1425,8 @@ class ProductSeeder extends Seeder
                 'max_cart_count' => 1,
                 'is_special' => $product['variants']['is_special'],
                 'is_available' => 1,
+                'show_coming_soon' => 0,
+                'show_call_for_more' => 0,
                 'is_published' => $product['variants']['is_published'],
             ]);
         }

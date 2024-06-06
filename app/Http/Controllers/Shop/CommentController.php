@@ -61,12 +61,13 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      *
+     * @param Product $product
      * @param Comment $comment
      * @return ProductCommentSingleResource
      */
-    public function show(Comment $comment): ProductCommentSingleResource
+    public function show(Product $product, Comment $comment): ProductCommentSingleResource
     {
-        Gate::authorize('view', $comment);
+        Gate::authorize('view', [$comment, $product]);
         return new ProductCommentSingleResource($comment);
     }
 
@@ -74,14 +75,23 @@ class CommentController extends Controller
      * Update the specified resource in storage.
      *
      * @param UpdateProductCommentRequest $request
+     * @param Product $product
      * @param Comment $comment
      * @return ProductCommentResource|JsonResponse
      */
-    public function update(UpdateProductCommentRequest $request, Comment $comment): ProductCommentResource|JsonResponse
+    public function update(
+        UpdateProductCommentRequest $request,
+        Product                     $product,
+        Comment                     $comment
+    ): ProductCommentResource|JsonResponse
     {
-        Gate::authorize('update', $comment);
+        Gate::authorize('update', [$comment, $product]);
 
-        $validated = $request->validated(['answer', 'condition', 'status']);
+        $validated = filter_validated_data($request->validated(), [
+            'answer',
+            'condition',
+            'status',
+        ]);
         $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {
@@ -97,15 +107,37 @@ class CommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
+     * @param Product $product
      * @param Comment $comment
      * @return JsonResponse
      */
-    public function destroy(Request $request, Comment $comment): JsonResponse
+    public function destroy(Request $request, Product $product, Comment $comment): JsonResponse
     {
-        Gate::authorize('delete', $comment);
+        Gate::authorize('delete', [$comment, $product]);
 
         $permanent = $request->user()->id === $comment->creator?->id;
         $res = $this->service->deleteById($comment->id, $permanent);
+        if ($res) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @param Request $request
+     * @param Product $product
+     * @return JsonResponse
+     */
+    public function batchDestroy(Request $request, Product $product): JsonResponse
+    {
+        $ids = $request->input('ids', []);
+
+        Gate::authorize('batchDelete', [Comment::class, $product, $ids]);
+
+        $res = $this->service->batchDeleteByIds($ids, considerDeletable: $this->considerDeletable);
         if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         }

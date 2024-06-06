@@ -68,7 +68,7 @@ class BlogCommentController extends Controller
     {
         Gate::authorize('create', BlogComment::class);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'blog',
             'badge',
             'comment',
@@ -114,7 +114,7 @@ class BlogCommentController extends Controller
     {
         Gate::authorize('update', $blogComment);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'badge',
             'condition',
             'status',

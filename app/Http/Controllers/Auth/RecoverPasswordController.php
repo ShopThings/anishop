@@ -35,7 +35,7 @@ class RecoverPasswordController extends Controller
     {
         $this->checkLogin();
 
-        $username = $request->validated(['username']);
+        $username = $request->validated('username');
         return $this->sendVerificationCode($username);
     }
 
@@ -77,7 +77,7 @@ class RecoverPasswordController extends Controller
     {
         $this->checkLogin();
 
-        $username = $request->validated(['username']);
+        $username = $request->validated('username');
         return $this->sendVerificationCode($username);
     }
 
@@ -90,8 +90,8 @@ class RecoverPasswordController extends Controller
     {
         $this->checkLogin();
 
-        $code = $request->validated(['code']);
-        $username = $request->validated(['username']);
+        $code = $request->validated('code');
+        $username = $request->validated('username');
         $status = $this->service->verifyForgetPasswordCode($username, $code);
 
         if ($status) {
@@ -112,8 +112,8 @@ class RecoverPasswordController extends Controller
     {
         $this->checkLogin();
 
-        $password = $request->validated(['password']);
-        $username = $request->validated(['username']);
+        $password = $request->validated('password');
+        $username = $request->validated('username');
         $user = $this->service->getUserByUsername($username);
 
         if (!$user instanceof User) {

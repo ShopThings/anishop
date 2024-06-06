@@ -95,7 +95,7 @@ class SliderController extends Controller
     {
         Gate::authorize('update', $slider);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'slider_place',
             'title',
             'priority',

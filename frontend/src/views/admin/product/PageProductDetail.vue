@@ -1,5 +1,6 @@
 <template>
   <product-detail
+      :allow-comment-operations="false"
       :show-add-comment="false"
       :show-add-to-cart="false"
       :show-product-extra-option="false"

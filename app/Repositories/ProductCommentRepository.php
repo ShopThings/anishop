@@ -44,7 +44,7 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
                 'product',
                 'product.image',
                 'answeredBy',
-                'statusChanger',
+                'conditionChanger',
                 'creator',
                 'updater',
                 'deleter',

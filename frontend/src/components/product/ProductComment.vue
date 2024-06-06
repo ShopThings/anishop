@@ -153,7 +153,10 @@
 
         <template #item="{item: comment}">
           <div class="py-2 text-sm flex flex-wrap items-center gap-3 pl-10 relative">
-            <div class="absolute left-0 top-0">
+            <div
+              v-if="allowCommentOperations"
+              class="absolute left-0 top-0"
+            >
               <base-floating-drop-down
                 :items="[{
                       text: 'گزارش دیدگاه',
@@ -299,6 +302,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  allowCommentOperations: {
+    type: Boolean,
+    default: true,
+  },
   showAddComment: {
     type: Boolean,
     default: true,
@@ -312,7 +319,7 @@ const comments = ref([])
 const getPath = apiReplaceParams(apiRoutes.comments.index, {product: props.productSlug})
 
 function reportCommentHandler(comment, item, hide) {
-  if (!item?.operation || !comment?.id) {
+  if (!item?.operation || !comment?.id || !props.allowCommentOperations) {
     hide()
     return
   }
@@ -338,11 +345,11 @@ function reportCommentHandler(comment, item, hide) {
 
 function upVoteHandler(comment) {
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
     return
   }
 
-  if (!comment?.id || comment?.voting_operation_loading) return
+  if (!comment?.id || comment?.voting_operation_loading || !props.allowCommentOperations) return
 
   comment.voting_operation_loading = true
 
@@ -379,7 +386,7 @@ function downVoteHandler(comment) {
     return
   }
 
-  if (!comment?.id || comment?.voting_operation_loading) return
+  if (!comment?.id || comment?.voting_operation_loading || !props.allowCommentOperations) return
 
   comment.voting_operation_loading = true
 

@@ -51,7 +51,7 @@ class Comment extends Model
      */
     public function answeredBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'answered_by');
     }
 
     /**
@@ -59,6 +59,6 @@ class Comment extends Model
      */
     public function conditionChanger(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'changed_condition_by');
     }
 }

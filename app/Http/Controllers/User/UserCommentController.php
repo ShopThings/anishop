@@ -51,7 +51,11 @@ class UserCommentController extends Controller
      */
     public function store(StoreProductCommentRequest $request, Product $product): JsonResponse
     {
-        $validated = $request->validated(['pros', 'cons', 'description']);
+        $validated = filter_validated_data($request->validated(), [
+            'pros',
+            'cons',
+            'description',
+        ]);
         $model = $this->service->create(['product' => $product->id] + $validated);
 
         if (!is_null($model)) {
@@ -90,7 +94,12 @@ class UserCommentController extends Controller
         Comment                         $comment
     ): UserProductCommentSingleResource|JsonResponse
     {
-        $validated = $request->validated(['product', 'pros', 'const', 'description']);
+        $validated = filter_validated_data($request->validated(), [
+            'product',
+            'pros',
+            'const',
+            'description',
+        ]);
         $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {

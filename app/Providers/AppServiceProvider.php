@@ -114,6 +114,23 @@ class AppServiceProvider extends ServiceProvider
 
             return $this;
         });
+        Builder::macro('whereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%', string $operator = 'and') {
+            $this->where(function (Builder $query) use ($columns, $search, $operator, $replacement) {
+                $columns = Arr::wrap($columns);
+                foreach ($columns as $column) {
+                    $query->where($column, 'not like', str_replace('{value}', $search, $replacement), mb_strtolower($operator));
+                }
+            });
+
+            return $this;
+        });
+        Builder::macro('orWhereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
+            $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
+                $query->whereNotLike($columns, $search, 'or', $replacement);
+            });
+
+            return $this;
+        });
 
         /*
          * where regexp expression

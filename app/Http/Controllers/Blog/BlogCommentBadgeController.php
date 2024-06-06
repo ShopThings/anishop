@@ -93,7 +93,7 @@ class BlogCommentBadgeController extends Controller
     {
         Gate::authorize('update', $blogBadge);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'title',
             'color_hex',
             'is_published',

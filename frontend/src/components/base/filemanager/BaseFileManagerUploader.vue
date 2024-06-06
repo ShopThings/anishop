@@ -81,7 +81,7 @@
   </div>
 
   <div v-show="files.length > 0">
-    <div class="block md:grid md:grid-cols-2 gap-3 mb-3">
+    <div class="block md:grid md:grid-cols-2 gap-3 mb-3 max-h-[32rem] overflow-auto my-custom-scrollbar">
       <div
           v-for="file of files"
           :key="file.id"
@@ -181,11 +181,17 @@
 
 <script setup>
 import {
-  InboxArrowDownIcon, DocumentTextIcon, GifIcon, MusicalNoteIcon, PhotoIcon,
-  CheckCircleIcon, XCircleIcon, FilmIcon
+  CheckCircleIcon,
+  DocumentTextIcon,
+  FilmIcon,
+  GifIcon,
+  InboxArrowDownIcon,
+  MusicalNoteIcon,
+  PhotoIcon,
+  XCircleIcon
 } from '@heroicons/vue/24/outline';
 import {onMounted, onUnmounted, ref} from "vue";
-import {useFileList, UploadTypes} from "@/composables/file-list.js";
+import {UploadTypes, useFileList} from "@/composables/file-list.js";
 import BaseButtonClose from "../BaseButtonClose.vue";
 import BaseMessage from "../BaseMessage.vue";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";

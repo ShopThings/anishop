@@ -44,8 +44,8 @@ class ProductCommentFactory extends Factory
     {
         $condition = $this->faker->randomElement(array_map(fn($item) => $item->value, CommentConditionsEnum::cases()));
         $answer = $this->faker->randomElement([null, $this->faker->realText()]);
-        $pros = explode(' ', rtrim($this->faker->optional(0.4, '')->realText(300), '.'));
-        $cons = explode(' ', rtrim($this->faker->optional(0.2, '')->realText(300), '.'));
+        $pros = explode(' ', rtrim($this->faker->optional(0.4, '')->realText(100), '.'));
+        $cons = explode(' ', rtrim($this->faker->optional(0.2, '')->realText(100), '.'));
 
         return [
             'product_id' => $this->faker->randomElement($this->productIds),

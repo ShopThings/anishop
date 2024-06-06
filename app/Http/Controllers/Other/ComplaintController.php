@@ -68,7 +68,7 @@ class ComplaintController extends Controller
     {
         Gate::authorize('update', $complaint);
 
-        $validated = $request->validated(['is_seen']);
+        $validated = $request->validated('is_seen');
         $model = $this->service->updateById($complaint->id, $validated);
 
         if (!is_null($model)) {

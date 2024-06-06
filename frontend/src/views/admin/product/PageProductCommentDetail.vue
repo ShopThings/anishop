@@ -6,11 +6,7 @@
     <template #content>
       <partial-card class="border-0 mb-3">
         <template #header>
-          دیدگاه کاربر درباره بلاگ
-          <span
-            v-if="product?.slug"
-            class="text-slate-400 text-base"
-          >{{ product?.title }}</span>
+          دیدگاه کاربر درباره محصول
         </template>
         <template #body>
           <div class="py-3 px-4">
@@ -45,11 +41,7 @@
 
   <partial-card>
     <template #header>
-      جزئیات دیدگاه برای محصول -
-      <span
-        v-if="product?.id"
-        class="text-slate-400 text-base"
-      >{{ product?.title }}</span>
+      جزئیات دیدگاه
     </template>
     <template #body>
       <div class="p-3">
@@ -149,7 +141,6 @@ import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {CommentAPI} from "@/service/APIProduct.js";
 import {COMMENT_SEEN_STATUSES, COMMENT_STATUSES} from "@/composables/constants.js";
-import {BlogCommentAPI} from "@/service/APIBlog.js";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
@@ -242,8 +233,8 @@ function changeUserCommentCondition() {
 onMounted(() => {
   CommentAPI.fetchById(slugParam.value, commentId.value, {
     success: (response) => {
-      comment.value = item
-      product.value = item.product
+      comment.value = response.data
+      product.value = response.data.product
 
       // set current condition
       selectedUserCommentCondition.value = conditions.value.filter((item) => {
@@ -251,7 +242,7 @@ onMounted(() => {
       }).shift()
 
       if (response.data.status.value === COMMENT_SEEN_STATUSES.UNREAD.value) {
-        BlogCommentAPI.updateById(slugParam, commentId.value, {
+        CommentAPI.updateById(slugParam.value, commentId.value, {
           status: COMMENT_SEEN_STATUSES.READ.value,
         }, {
           success(response2) {

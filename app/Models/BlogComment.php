@@ -122,7 +122,7 @@ class BlogComment extends Model
     }
 
     /**
-     * @return bool
+     * @return int
      */
     public function acceptedChildrenCount(): int
     {

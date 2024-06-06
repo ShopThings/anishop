@@ -28,7 +28,13 @@ class UserSpecificationController extends Controller
      */
     public function updateInfo(UpdateUserInfoRequest $request): JsonResponse
     {
-        $validated = $request->validated(['first_name', 'last_name', 'national_code', 'sheba_number']);
+        $validated = filter_validated_data($request->validated(), [
+                'first_name',
+                'last_name',
+                'national_code',
+                'sheba_number',
+            ]
+        );
 
         $user = $request->user();
 
@@ -69,7 +75,7 @@ class UserSpecificationController extends Controller
      */
     public function updatePassword(UpdateUserPasswordRequest $request): JsonResponse
     {
-        $validated = $request->validated(['password']);
+        $validated = $request->validated('password');
 
         $user = $request->user();
 
