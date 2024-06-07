@@ -21,7 +21,7 @@
             @do-search="doSearch"
           >
             <template v-slot:product="{value}">
-              <div class="flex flex-col gap-3">
+              <div class="flex flex-col gap-3 items-start">
                 <base-lazy-image
                   :alt="value.product.title"
                   :lazy-src="value.product.image.path"
@@ -128,10 +128,12 @@ const table = reactive({
     {
       label: "محصول",
       field: "product",
+      columnClasses: 'line-clamp-2 min-w-56',
     },
     {
       label: "ارسال توسط",
       field: "sender",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت",

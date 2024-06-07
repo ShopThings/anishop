@@ -111,7 +111,7 @@ export function numberFormat(value, separator) {
   })
 }
 
-export const getPercentageOfPortion = (portion, total) => {
+export const getPercentageOfPortion = (portion, total, roundUp = false) => {
   // Explicit type conversion to handle string inputs
   portion = +portion;
   total = +total;
@@ -119,7 +119,13 @@ export const getPercentageOfPortion = (portion, total) => {
   if (isNaN(portion) || isNaN(total) || portion < 0 || total <= 0) return 0
   if (portion > total) return 100
 
-  return parseFloat((total - portion) * 100 / total).toFixed(2)
+  let value = parseFloat((total - portion) * 100 / total).toFixed(2)
+
+  if (roundUp) {
+    value = Math.ceil(value)
+  }
+
+  return value
 }
 
 export function escapeMoneyCharacter(input, only) {

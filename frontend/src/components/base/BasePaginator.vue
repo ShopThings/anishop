@@ -65,7 +65,6 @@
     <partial-paginator-pagniation-info
       v-if="showPaginationDetail"
       :current-page="currentPage"
-      :items-length="items?.length || 0"
       :max-page="maxPage"
       :offset="offset"
       :per-page="props.perPage"
@@ -160,6 +159,7 @@ const props = defineProps({
       return true
     },
   },
+  justNoticeOrderChanged: Boolean,
   searchText: String,
   localSearchFilterHandler: Function,
   showSearch: Boolean,
@@ -290,9 +290,13 @@ function refreshSearchHandler() {
 function changeOrderHandler(selected) {
   if (selected.id === selectedOrder.value.id) return
 
-  emit('order-changed', selected)
   selectedOrder.value = selected
-  goToPage(currentPage.value)
+
+  emit('order-changed', selected)
+
+  if (!props.justNoticeOrderChanged) {
+    goToPage(currentPage.value)
+  }
 }
 
 //-------------------------------

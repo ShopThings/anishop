@@ -9,6 +9,7 @@
           v-model:items="products"
           :extra-search-params="filterParamStore.searchParams"
           :order="productOrder"
+          :just-notice-order-changed="true"
           :path="getSearchPath"
           :per-page="productPerPage"
           :scroll-to-element-on-appearance="true"
@@ -70,7 +71,6 @@
 
               <partial-paginator-pagniation-info
                 :current-page="page"
-                :items-length="products?.length || 0"
                 :max-page="maxPage"
                 :offset="offset"
                 :per-page="perPage"

@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +50,6 @@ class AppServiceProvider extends ServiceProvider
         $isProd = $this->app->isProduction();
 
         // set carbon locale from application global localization
-        Carbon::setLocale($locale);
         Verta::setLocale($locale);
         // set current money unit considering localization
         config([

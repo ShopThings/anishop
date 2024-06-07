@@ -33,12 +33,12 @@
       :wrap-around="carouselSettings.wrapAround"
     >
       <div class="p-3 h-36 flex items-center justify-center bg-white">
-        <router-link :to="{name: 'search', query: {brand: slide.id}}">
+        <router-link :to="{name: 'search', query: {brand: slide.slide.id}}">
           <base-lazy-image
-            v-if="slide.image?.path"
+            v-if="slide.slide.image?.path"
             :alt="slide?.name"
             :is-local="false"
-            :lazy-src="slide.image?.path"
+            :lazy-src="slide.slide.image?.path"
           />
           <img
             v-else

@@ -293,7 +293,7 @@ import {PRODUCT_ATTRIBUTE_TYPES} from "@/composables/constants.js";
 import isObject from "lodash.isobject";
 import Loader3Dot from "@/components/base/loader/Loader3Dot.vue";
 import {useRoute} from "vue-router";
-import {watchImmediate} from "@vueuse/core";
+import {watchDeep, watchImmediate} from "@vueuse/core";
 import {useProductFilterParamStore, useProductFilterStore} from "@/store/StoreProductFilter.js";
 
 const route = useRoute()
@@ -445,8 +445,26 @@ function fetchFilters() {
 }
 
 function checkSelectedFilters() {
-  if (Object.keys(selectedBrands.value).length) {
-    filterParamStore.setBrands(Object.keys(selectedBrands.value))
+  if (Object.keys(selectedColors.value).length) {
+    filterParamStore.setColors(Object.values(selectedColors.value).map(item => item.name))
+  } else {
+    filterParamStore.removeColors()
+  }
+
+  if (Object.keys(selectedSizes.value).length) {
+    filterParamStore.setSizes(Object.values(selectedSizes.value).map(item => item.size))
+  } else {
+    filterParamStore.removeSizes()
+  }
+
+  let allowedBrands = []
+  for (let b in selectedBrands.value) {
+    if (selectedBrands.value.hasOwnProperty(b) && !!selectedBrands.value[b]) {
+      allowedBrands.push(b)
+    }
+  }
+  if (allowedBrands.length) {
+    filterParamStore.setBrands(allowedBrands)
   } else {
     filterParamStore.removeBrands()
   }
@@ -482,7 +500,13 @@ function checkSelectedFilters() {
 function checkSearchParams() {
   isLocallyChange.value = true
 
-  selectedBrands.value = filterParamStore.getBrands || {}
+  selectedBrands.value = {}
+  for (let b of filterParamStore.getBrands || []) {
+    let parsedB = parseInt(b, 10);
+    if (!isNaN(parsedB)) {
+      selectedBrands.value[parsedB] = true
+    }
+  }
 
   let priceRange = filterParamStore.getPriceRange
   selectedMinmaxPrice.value = priceRange && priceRange[0] && priceRange[1] ? filterParamStore.getPriceRange : []
@@ -493,9 +517,7 @@ function checkSearchParams() {
   selectedAttributes.value = filterParamStore.getDynamicFilters || {}
 }
 
-checkSearchParams()
-
-watch([
+watchDeep([
   selectedBrands,
   selectedColors,
   selectedSizes,

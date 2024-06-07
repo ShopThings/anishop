@@ -7,8 +7,8 @@ use App\Models\Slider;
 use App\Models\SliderItem;
 use App\Repositories\Contracts\SliderRepositoryInterface;
 use App\Support\Repository;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class SliderRepository extends Repository implements SLiderRepositoryInterface
 {
@@ -57,7 +57,7 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
         // if there is no placement specified, empty collection is enough though
         if (!count($place)) return collect();
 
-        return $this->model::published()
+        return $this->model->published()
             ->whereIn('place_in', $place)
             ->whereHas('items', function ($query) use ($withUnpublished) {
                 if (!$withUnpublished) {

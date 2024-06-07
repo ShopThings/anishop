@@ -44,6 +44,6 @@ trait ModelScopeTrait
     {
         if (!array_key_exists('is_published', $this->getCasts())) return $query;
 
-        return $query->where('is_published', DatabaseEnum::DB_YES);
+        return $query->where($this->getTable() . '.is_published', DatabaseEnum::DB_YES);
     }
 }

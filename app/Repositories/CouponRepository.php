@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Enums\DatabaseEnum;
 use App\Enums\Results\CouponResultEnum;
 use App\Models\Coupon;
 use App\Models\OrderDetail;
@@ -26,7 +25,7 @@ class CouponRepository extends Repository implements CouponRepositoryInterface
      */
     public function checkCoupon(string $code, User $user): Model|CouponResultEnum
     {
-        $coupon = $this->model::published()
+        $coupon = $this->model->published()
             ->where('start_at', '>=', now())
             ->where('end_at', '<=', now())
             ->where('use_count', '>', 0)

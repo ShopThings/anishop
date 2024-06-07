@@ -21,7 +21,7 @@
                     title="انتخاب تصویر"
                   />
                   <base-media-placeholder
-                    :selected="methodImage"
+                    v-model:selected="methodImage"
                     type="image"
                   />
                   <partial-input-error-message :error-message="errors.image"/>

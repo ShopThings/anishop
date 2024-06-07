@@ -29,10 +29,6 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
 
   const route = useRoute()
 
-  function setBrands(items) {
-    brands.value = items
-  }
-
   function setColors(items) {
     colors.value = items
   }
@@ -41,29 +37,16 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     sizes.value = items
   }
 
+  function setBrands(items) {
+    brands.value = items
+  }
+
   function setPriceRange(range) {
     priceRange.value = range
   }
 
   function setDynamicFilters(filters) {
     attributes.value = filters
-  }
-
-  function fetchBrands() {
-    return HomeProductAPI.fetchBrandsFilter({
-      category: route.query?.category,
-      festival: route.query?.festival,
-    }, {
-      success(response) {
-        setBrands(response.data)
-      },
-      error() {
-        return false
-      },
-      finally() {
-        isBrandsLoading.value = false
-      },
-    })
   }
 
   function fetchColorsAndSizes() {
@@ -79,7 +62,7 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
 
         let counter = 1;
         for (let i of data) {
-          if (i.name && i.name?.toString() !== '') {
+          if (i.name && i.name?.toString() !== '' && colors.findIndex(item => item.name === i.name) === -1) {
             colors.push({
               id: counter,
               name: i.name,
@@ -87,7 +70,7 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
             })
           }
 
-          if (i.size?.toString() !== '') {
+          if (i.size && i.size?.toString() !== '' && sizes.findIndex(item => item.name === i.size) === -1) {
             sizes.push({
               id: counter,
               size: i.size,
@@ -105,6 +88,23 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
       },
       finally() {
         isColorAndSizeLoading.value = false
+      },
+    })
+  }
+
+  function fetchBrands() {
+    return HomeProductAPI.fetchBrandsFilter({
+      category: route.query?.category,
+      festival: route.query?.festival,
+    }, {
+      success(response) {
+        setBrands(response.data)
+      },
+      error() {
+        return false
+      },
+      finally() {
+        isBrandsLoading.value = false
       },
     })
   }
@@ -159,9 +159,9 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
   }
 
   function $reset() {
-    brands.value = []
     colors.value = []
     sizes.value = []
+    brands.value = []
     priceRange.value = [0, 0]
     attributes.value = []
     //
@@ -171,21 +171,21 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     isAttributesLoading.value = true
   }
 
-  fetchBrands()
   fetchColorsAndSizes()
+  fetchBrands()
   fetchPriceRange()
   fetchDynamicFilters()
 
   return {
-    brands, getBrands, setBrands,
     colors, getColors, setColors,
     sizes, getSizes, setSizes,
+    brands, getBrands, setBrands,
     priceRange, getPriceRange, setPriceRange,
     attributes, getDynamicFilters, setDynamicFilters,
     //
-    brandsLoading, colorAndSizeLoading, priceRangeLoading, attributesLoading,
+    colorAndSizeLoading, brandsLoading, priceRangeLoading, attributesLoading,
     //
-    fetchBrands, fetchColorsAndSizes, fetchPriceRange, fetchDynamicFilters,
+    fetchColorsAndSizes, fetchBrands, fetchPriceRange, fetchDynamicFilters,
     //
     $reset,
   }
@@ -197,6 +197,8 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
 
   const getSearchParams = computed(() => searchParams.value)
 
+  const getColors = computed(() => searchParams.value?.colors)
+  const getSizes = computed(() => searchParams.value?.sizes)
   const getBrands = computed(() => searchParams.value?.brands)
   const getPriceRange = computed(() => searchParams.value?.price_range)
   const getOnlyAvailable = computed(() => searchParams.value?.only_available)
@@ -207,14 +209,34 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
   const getFestival = computed(() => searchParams.value?.festival)
   const getCategory = computed(() => searchParams.value?.category)
 
-  function setBrands(value = null, removeFalseValues = true) {
+  function setArraySearchParam(key, value, removeFalseValues) {
     if (value) {
       value = Array.isArray(value) ? value : [value]
     }
 
-    searchParams.value.brands = value
+    searchParams.value[key] = value
 
     clearSearchParams(removeFalseValues)
+  }
+
+  function setColors(value = null, removeFalseValues = true) {
+    setArraySearchParam('colors', value, removeFalseValues)
+  }
+
+  function removeColors() {
+    delete searchParams.value.colors
+  }
+
+  function setSizes(value = null, removeFalseValues = true) {
+    setArraySearchParam('sizes', value, removeFalseValues)
+  }
+
+  function removeSizes() {
+    delete searchParams.value.sizes
+  }
+
+  function setBrands(value = null, removeFalseValues = true) {
+    setArraySearchParam('brands', value, removeFalseValues)
   }
 
   function removeBrands() {
@@ -315,6 +337,20 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
     setFestival(route.query?.festival)
     setOrder(route.query?.order)
 
+    // handle colors array or a single color
+    if (route.query?.colors && Array.isArray(route.query.colors) && route.query.colors.length) {
+      setColors(route.query.colors)
+    } else if (route.query?.color) {
+      setColors(route.query.color)
+    }
+
+    // handle sizes array or a single size
+    if (route.query?.sizes && Array.isArray(route.query.sizes) && route.query.sizes.length) {
+      setSizes(route.query.sizes)
+    } else if (route.query?.size) {
+      setSizes(route.query.size)
+    }
+
     // handle brands array or a single brand
     if (route.query?.brands && Array.isArray(route.query.brands) && route.query.brands.length) {
       setBrands(route.query.brands)
@@ -328,6 +364,8 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
   function getRouteQueryObject() {
     let queryObj = {
       query: {
+        colors: getColors.value,
+        sizes: getSizes.value,
         brands: getBrands.value,
         only_available: getOnlyAvailable.value,
         is_special: getIsSpecial.value,
@@ -394,6 +432,8 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
 
   return {
     getSearchParams, searchParams,
+    getColors, setColors, removeColors,
+    getSizes, setSizes, removeSizes,
     getBrands, setBrands, removeBrands,
     getPriceRange, setPriceRange, removePriceRange,
     getOnlyAvailable, setOnlyAvailable, removeOnlyAvailable,

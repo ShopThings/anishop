@@ -89,9 +89,7 @@ class BrandService extends Service implements BrandServiceInterface
 
         return $this->repository
             ->newWith('image')
-            ->all(
-                columns: ['id', 'name', 'latin_name', 'slug'],
-                where: $where->build());
+            ->all(where: $where->build());
     }
 
     /**

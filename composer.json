@@ -30,7 +30,8 @@
         "spatie/laravel-image-optimizer": "^1.7",
         "spatie/laravel-permission": "^6.0",
         "spatie/laravel-sitemap": "^7.2",
-        "tzsk/sms": "^7.0"
+        "tzsk/sms": "^7.0",
+        "ext-pdo": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

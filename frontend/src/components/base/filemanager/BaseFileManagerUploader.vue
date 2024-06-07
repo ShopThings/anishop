@@ -81,7 +81,7 @@
   </div>
 
   <div v-show="files.length > 0">
-    <div class="block md:grid md:grid-cols-2 gap-3 mb-3 max-h-[32rem] overflow-auto my-custom-scrollbar">
+    <div class="block md:grid md:grid-cols-2 gap-3 mb-3 max-h-[32rem] my-custom-scrollbar">
       <div
           v-for="file of files"
           :key="file.id"

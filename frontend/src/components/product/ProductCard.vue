@@ -32,7 +32,7 @@
 
         <div class="mt-2">
           <base-carousel
-            v-slot="{slide, index}"
+            v-slot="{slide}"
             v-model="productProperties"
             v-model:current="currentProductItem"
             :breakpoints="productItemsCarouselSetting.breakpoints"
@@ -84,11 +84,12 @@
 
                   <div class="flex items-center justify-between">
                     <template
-                      v-if="getPercentageOfPortion(getBuyablePrice(slide), slide.price) > 0"
+                      v-if="getPercentageOfPortion(getBuyablePrice(slide), slide.price, true) > 0"
                     >
-                      <div class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1">
+                      <div class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1 flex gap-0.5 items-center">
+                        {{ getPercentageOfPortion(getBuyablePrice(slide), slide.price, true) }}
                         <span class="text-xs">%</span>
-                        {{ getPercentageOfPortion(getBuyablePrice(slide), slide.price) }}
+                        <span class="text-xs text-white mr-0.5">تخفیف</span>
                       </div>
                     </template>
 
@@ -268,7 +269,7 @@ function getDiscountTimer(item) {
 function getBuyablePrice(item) {
   let price = +item.buyable_price
 
-  if (getDiscountTimer.value !== null) {
+  if (getDiscountTimer(item)) {
     price = +item.price
   }
 

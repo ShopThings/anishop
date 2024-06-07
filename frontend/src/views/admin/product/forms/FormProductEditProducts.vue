@@ -632,7 +632,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   canSubmit.value = false
 
-  ProductAPI.modifyProducts(productStore.getProductSlug, {
+  ProductAPI.modifyProducts(slugParam.value, {
     products: definedProducts,
   }, {
     success() {
@@ -655,11 +655,7 @@ onMounted(() => {
     success: (response) => {
       if (response.data?.length) {
         products.value = response.data.map((item) => {
-          if (item.discounted_price === null) {
-            item['dont_consider_discounted_price'] = true
-          } else {
-            item['dont_consider_discounted_price'] = false
-          }
+          item['dont_consider_discounted_price'] = item.discounted_price === null;
 
           item['discounted_from'] = item['normal_discounted_from']
           item['discounted_until'] = item['normal_discounted_until']

@@ -159,9 +159,9 @@
             >
               <base-floating-drop-down
                 :items="[{
-                      text: 'گزارش دیدگاه',
-                      operation: 'report',
-                  }]"
+                    text: 'گزارش دیدگاه',
+                    operation: 'report',
+                }]"
                 :shift="false"
                 placement="right-start"
               >

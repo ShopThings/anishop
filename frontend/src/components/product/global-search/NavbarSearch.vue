@@ -22,7 +22,7 @@
     <VTransitionFade>
       <div
         v-if="searchResultsShowing && enteredSearching"
-        class="absolute top-full translate-y-1.5 bg-white rounded-lg shadow-lg p-4 w-full max-h-96 overflow-auto my-custom-scrollbar"
+        class="absolute top-full translate-y-1.5 bg-white rounded-lg shadow-lg p-4 w-full max-h-96 my-custom-scrollbar"
       >
         <VTransitionFade>
           <loader-circle

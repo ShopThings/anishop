@@ -112,7 +112,6 @@
                     </div>
                   </template>
                 </base-dialog>
-
               </div>
             </div>
           </div>
@@ -340,12 +339,12 @@
                     </div>
                   </div>
                   <div
-                    v-if="getPercentageOfPortion(getBuyablePrice, selectedProduct.price) > 0"
-                    class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1"
+                    v-if="getPercentageOfPortion(getBuyablePrice, selectedProduct.price, true) > 0"
+                    class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1 flex items-center gap-0.5"
                   >
+                    {{ getPercentageOfPortion(getBuyablePrice, selectedProduct.price, true) }}
                     <span class="text-xs">%</span>
-                    {{ getPercentageOfPortion(getBuyablePrice, selectedProduct.price) }}
-                    <span class="text-xs mr-1">تخفیف</span>
+                    <span class="text-xs mr-0.5">تخفیف</span>
                   </div>
                 </template>
               </div>
@@ -890,7 +889,7 @@ const getDiscountTimer = computed(() => {
 const getBuyablePrice = computed(() => {
   let price = +selectedProduct.value.buyable_price
 
-  if (getDiscountTimer.value !== null) {
+  if (getDiscountTimer.value) {
     price = +selectedProduct.value.price
   }
 
@@ -1243,7 +1242,7 @@ const telegramSharingLink = computed(() => {
   return `https://telegram.me/share/url?url=${encodeURIComponent(productShortUrl.value)}&text=${encodeURIComponent(currentMainProduct.value?.title || '')}`
 })
 const whatsappSharingLink = computed(() => {
-  return `whatsapp://send?text=${encodeURIComponent(currentMainProduct.value?.title || '')}%3A%20${encodeURIComponent(productShortUrl.value)}`
+  return `https://wa.me/?text=${encodeURIComponent(currentMainProduct.value?.title || '')}%3A%20${encodeURIComponent(productShortUrl.value)}`
 })
 
 function copyHandler() {
