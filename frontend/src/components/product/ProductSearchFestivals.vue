@@ -13,7 +13,7 @@
     <loader3-dot/>
   </div>
   <div
-      v-else-if="festivals?.length || 1"
+    v-else-if="festivals?.length"
       class="divide-y divide-slate-200 p-2.5"
   >
     <button
@@ -31,7 +31,7 @@
 
 <script setup>
 import {onMounted, ref} from "vue";
-import {ArrowLeftIcon, SparklesIcon, GiftIcon} from "@heroicons/vue/24/outline/index.js"
+import {ArrowLeftIcon, GiftIcon, SparklesIcon} from "@heroicons/vue/24/outline/index.js"
 import {HomeFestivalAPI} from "@/service/APIHomePages.js";
 import Loader3Dot from "@/components/base/loader/Loader3Dot.vue";
 

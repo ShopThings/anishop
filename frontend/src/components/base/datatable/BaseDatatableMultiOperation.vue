@@ -16,7 +16,7 @@
         <outline.BackspaceIcon class="h-6 w-6"/>
       </base-button>
 
-      <base-dialog container-klass="max-w-7xl overflow-hidden">
+      <base-dialog container-klass="layout-max-w overflow-hidden">
         <template #button="{open}">
           <base-button
             v-tooltip.top="'مشاهده موارد انتخاب شده'"

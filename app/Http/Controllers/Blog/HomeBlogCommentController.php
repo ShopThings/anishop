@@ -31,11 +31,17 @@ class HomeBlogCommentController extends Controller
     /**
      * @param HomeBlogCommentFilter $filter
      * @param Blog $blog
-     * @return AnonymousResourceCollection
+     * @return JsonResponse|AnonymousResourceCollection
      */
-    public function index(HomeBlogCommentFilter $filter, Blog $blog): AnonymousResourceCollection
+    public function index(HomeBlogCommentFilter $filter, Blog $blog): JsonResponse|AnonymousResourceCollection
     {
-        Gate::authorize('isPubliclyAccessible', $blog);
+        if (Gate::denies('isPubliclyAccessible', $blog)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'امکان مشاهده کامنت‌ها وجود ندارد.',
+            ]);
+        }
+
         return BlogCommentResource::collection($this->service->getComments(
             blogId: $blog->id,
             filter: $filter
@@ -57,7 +63,7 @@ class HomeBlogCommentController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        Gate::authorize('reportComment', [$blog, $comment]);
+        Gate::authorize('reportComment', [$comment, $blog]);
 
         // check for previous report footprint
         $cookieName = 'blog_comment_report_' . $comment->id;

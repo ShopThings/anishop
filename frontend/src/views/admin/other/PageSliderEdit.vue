@@ -30,6 +30,7 @@
                     :options="sliderPlaces"
                     options-key="value"
                     options-text="text"
+                    :selected="selectedSliderPlace"
                     @change="(selected) => {selectedSliderPlace = selected}"
                   />
                 </div>
@@ -37,7 +38,7 @@
                   <base-input
                     :min="0"
                     :money-mask="true"
-                    :value="slider?.priority"
+                    :value="slider?.priority.toString()"
                     label-title="اولویت"
                     name="priority"
                     placeholder="وارد نمایید"
@@ -50,7 +51,7 @@
                 </div>
                 <div class="p-2 w-full sm:w-auto">
                   <base-switch
-                    :enabled="true"
+                    :enabled="publishStatus"
                     label="نمایش اسلایدر"
                     name="is_published"
                     sr-text="نمایش/عدم نمایش اسلایدر"
@@ -68,7 +69,7 @@
                       :max="4"
                       :min="1"
                       :money-mask="true"
-                      :value="slider?.options?.beside_images"
+                      :value="slider?.options?.beside_images.toString()"
                       label-title="تعداد تصاویر کنار هم"
                       name="beside_images"
                       placeholder="بین ۱ تا ۴ تصویر کنار هم"
@@ -154,6 +155,7 @@
                         :options="orderBy"
                         options-key="value"
                         options-text="text"
+                        :selected="selectedOrderBy"
                         @change="(selected) => {selectedOrderBy = selected}"
                       />
                     </div>
@@ -186,7 +188,7 @@
                     </div>
                     <div class="p-2 w-full md:w-auto shrink-0">
                       <base-switch
-                        :enabled="false"
+                        :enabled="isSpecialStatus"
                         label="نمایش محصولات ویژه"
                         name="is_special"
                         sr-text="نمایش/عدم نمایش محصولات ویژه"
@@ -258,24 +260,20 @@ import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMes
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
 import BaseRangeSlider from "@/components/base/BaseRangeSlider.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
-import {useToast} from "vue-toastification";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import {SliderAPI} from "@/service/APIConfig.js";
 import {BrandAPI, CategoryAPI} from "@/service/APIProduct.js";
 import {useSelectSearching} from "@/composables/select-searching.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
+import {useRouter} from "vue-router";
 
-const toast = useToast()
+const router = useRouter()
 const idParam = getRouteParamByKey('id')
 
 const loading = ref(true)
 const slider = ref(null)
 
-const sliderPlaces = [
-  {
-    value: SLIDER_PLACES.MAIN.value,
-    text: SLIDER_PLACES.MAIN.text,
-  },
+let sliderPlaces = [
   {
     value: SLIDER_PLACES.MAIN_SLIDERS.value,
     text: SLIDER_PLACES.MAIN_SLIDERS.text,
@@ -435,9 +433,40 @@ onMounted(() => {
     success: (response) => {
       slider.value = response.data
       publishStatus.value = response.data.is_published
+
       selectedSliderPlace.value = {
         value: response.data.place_in.value,
         text: response.data.place_in.text,
+      }
+
+      if (response.data.place_in.value === SLIDER_PLACES.MAIN.value) {
+        sliderPlaces = [
+          {
+            value: SLIDER_PLACES.MAIN.value,
+            text: SLIDER_PLACES.MAIN.text,
+          },
+        ]
+      } else if (response.data.place_in.value === SLIDER_PLACES.MAIN_BLOG.value) {
+        sliderPlaces = [
+          {
+            value: SLIDER_PLACES.MAIN_BLOG.value,
+            text: SLIDER_PLACES.MAIN_BLOG.text,
+          },
+        ]
+      } else if (response.data.place_in.value === SLIDER_PLACES.MAIN_BLOG_SIDE.value) {
+        sliderPlaces = [
+          {
+            value: SLIDER_PLACES.MAIN_BLOG_SIDE.value,
+            text: SLIDER_PLACES.MAIN_BLOG_SIDE.text,
+          },
+        ]
+      } else if (response.data.place_in.value === SLIDER_PLACES.AMAZING_OFFER.value) {
+        sliderPlaces = [
+          {
+            value: SLIDER_PLACES.AMAZING_OFFER.value,
+            text: SLIDER_PLACES.AMAZING_OFFER.text,
+          },
+        ]
       }
 
       if (response.data.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value) {

@@ -18,7 +18,7 @@
           :show-search="true"
           :search-text="route.query?.q || ''"
           container-class="flex flex-wrap"
-          item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 ml-[-1px] mt-[-1px]"
+          item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 ml-[-1px] mt-[-1px]"
           pagination-theme="modern"
           @order-changed="orderChangeHandler"
         >
@@ -82,7 +82,7 @@
           <template #empty>
             <partial-empty-rows
               image="/images/empty-statuses/empty-product.svg"
-              image-class="!w-80"
+              image-class="!w-[22rem]"
               message="هیچ محصولی پیدا نشد!"
             />
           </template>

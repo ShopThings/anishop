@@ -76,22 +76,25 @@ const carouselSettings = {
   freeMode: true,
   breakpoints: {
     0: {
-      slidesPerView: 1.25,
+      slidesPerView: 1.15,
+    },
+    300: {
+      slidesPerView: 2.5,
     },
     400: {
-      slidesPerView: 2,
+      slidesPerView: 3.4,
     },
     576: {
-      slidesPerView: 3,
+      slidesPerView: 4.25,
     },
     768: {
-      slidesPerView: 4.85,
+      slidesPerView: 5.5,
     },
     991: {
-      slidesPerView: 5.35,
+      slidesPerView: 6.5,
     },
     1280: {
-      slidesPerView: 6,
+      slidesPerView: 7.25,
     },
   },
 }

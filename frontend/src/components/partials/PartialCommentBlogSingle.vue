@@ -35,7 +35,7 @@
           />
         </li>
       </ul>
-      <p class="text-sm">
+      <p class="text-sm leading-relaxed">
         {{ comment?.description || '-' }}
       </p>
     </template>

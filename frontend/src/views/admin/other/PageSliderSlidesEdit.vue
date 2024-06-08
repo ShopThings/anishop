@@ -14,6 +14,20 @@
           type="form"
         >
           <template #content>
+            <base-message
+              v-if="errors && Object.keys(errors).length"
+              type="error"
+            >
+              <ul>
+                <li
+                  v-for="(err, idx) in errors"
+                  :key="idx"
+                >
+                  {{ err }}
+                </li>
+              </ul>
+            </base-message>
+
             <form @submit.prevent="onSubmit">
               <div class="p-2">
                 <draggable
@@ -23,7 +37,7 @@
                   :list="slides"
                   ghost-class="ghost"
                   handle=".handle"
-                  item-key="id"
+                  item-key="tmpId"
                   tag="ul"
                 >
                   <template #item="{ element, index }">
@@ -58,16 +72,38 @@
                                 :is-loading="blogLoading"
                                 :is-local-search="false"
                                 :last-page="blogSelectConfig.lastPage.value"
-                                :name="'blog' + element.id"
+                                :name="'blog' + element.tmpId"
                                 :options="blogs"
                                 options-key="id"
                                 options-text="title"
                                 placeholder="جستجوی بلاگ..."
+                                :selected="element?.blog"
                                 @change="(selected) => {element.blog = selected}"
                                 @query="searchBlog"
                                 @click-next-page="searchBlogNextPage"
                                 @click-prev-page="searchBlogPrevPage"
-                              />
+                              >
+                                <template #item="{item}">
+                                  <div class="flex items-center gap-3">
+                                    <base-lazy-image
+                                      v-if="item?.image?.full_path"
+                                      :alt="item.title"
+                                      :is-local="false"
+                                      :lazy-src="item?.image?.full_path"
+                                      :size="FileSizes.SMALL"
+                                      class="!w-16 !h-auto object-cover rounded"
+                                    />
+                                    <img
+                                      v-else
+                                      :alt="item.title"
+                                      class="w-16 h-auto object-cover rounded"
+                                      src="/image-placeholder.jpg"
+                                    >
+
+                                    <span class="text-sm">{{ item.title }}</span>
+                                  </div>
+                                </template>
+                              </base-select-searchable>
                               <partial-input-error-message :error-message="errors.blog"/>
                             </div>
                           </div>
@@ -82,16 +118,38 @@
                                 :is-loading="productLoading"
                                 :is-local-search="false"
                                 :last-page="productSelectConfig.lastPage.value"
-                                :name="'product' + element.id"
+                                :name="'product' + element.tmpId"
                                 :options="products"
                                 options-key="id"
                                 options-text="title"
                                 placeholder="جستجوی محصول..."
+                                :selected="element?.product"
                                 @change="(selected) => {element.product = selected}"
                                 @query="searchProduct"
                                 @click-next-page="searchProductNextPage"
                                 @click-prev-page="searchProductPrevPage"
-                              />
+                              >
+                                <template #item="{item}">
+                                  <div class="flex items-center gap-3">
+                                    <base-lazy-image
+                                      v-if="item?.image?.path"
+                                      :alt="item.title"
+                                      :is-local="false"
+                                      :lazy-src="item?.image?.path"
+                                      :size="FileSizes.SMALL"
+                                      class="!w-16 !h-auto object-cover rounded"
+                                    />
+                                    <img
+                                      v-else
+                                      :alt="item.title"
+                                      class="w-16 h-auto object-cover rounded"
+                                      src="/image-placeholder.jpg"
+                                    >
+
+                                    <span class="text-sm">{{ item.title }}</span>
+                                  </div>
+                                </template>
+                              </base-select-searchable>
                               <partial-input-error-message :error-message="errors.product"/>
                             </div>
                           </div>
@@ -107,7 +165,7 @@
                             </div>
                             <div class="p-2 w-full md:w-2/3">
                               <base-input
-                                :name="'link' + element.id"
+                                :name="'link' + element.tmpId"
                                 :value="element?.link"
                                 label-title="لینک"
                                 placeholder="وارد نمایید"
@@ -183,7 +241,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import draggable from "vuedraggable";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -206,6 +264,9 @@ import {ProductAPI} from "@/service/APIProduct.js";
 import {useSelectSearching} from "@/composables/select-searching.js";
 import {BlogAPI} from "@/service/APIBlog.js";
 import {SliderAPI} from "@/service/APIConfig.js";
+import BaseMessage from "@/components/base/BaseMessage.vue";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
@@ -213,16 +274,34 @@ const idParam = getRouteParamByKey('id')
 const loading = ref(true)
 
 const slider = ref(null)
-const slides = reactive([])
+const slides = ref([])
 
+//-----------------------------
+const isBlogPlace = computed(() => {
+  return slider.value?.place_in?.value === SLIDER_PLACES.MAIN_BLOG.value
+})
+const isBlogSidePlace = computed(() => {
+  return slider.value?.place_in?.value === SLIDER_PLACES.MAIN_BLOG_SIDE.value
+})
+const isAmazingOfferPlace = computed(() => {
+  return slider.value?.place_in?.value === SLIDER_PLACES.AMAZING_OFFER.value
+})
+
+//-----------------------------
 function removeSlideHandler(idx) {
-  if (slides[idx])
-    slides.splice(idx, 1)
+  if (isBlogSidePlace.value) return
+
+  if (slides.value[idx]) {
+    slides.value.splice(idx, 1)
+  }
 }
 
 function handleNewSlideClick() {
-  slides.push({
-    id: parseInt(uniqueId()),
+  if (isBlogSidePlace.value) return
+
+  slides.value.push({
+    id: null,
+    tmpId: parseInt(uniqueId()),
     link: '',
     image: null,
     blog: null,
@@ -231,23 +310,13 @@ function handleNewSlideClick() {
 }
 
 //-----------------------------
-const isBlogPlace = computed(() => {
-  return slider?.place_in?.value === SLIDER_PLACES.MAIN_BLOG.value
-})
-const isBlogSidePlace = computed(() => {
-  return slider?.place_in?.value === SLIDER_PLACES.MAIN_BLOG_SIDE.value
-})
-const isAmazingOfferPlace = computed(() => {
-  return slider?.place_in?.value === SLIDER_PLACES.AMAZING_OFFER.value
-})
-
-//-----------------------------
 // Search in blog
 //-----------------------------
 const blogs = ref([])
 const blogSelectConfig = useSelectSearching({
   searchFn(query) {
     BlogAPI.fetchAll({
+      only_published: true,
       limit: blogSelectConfig.limit.value,
       offset: blogSelectConfig.offset(),
       text: query
@@ -276,6 +345,7 @@ const products = ref([])
 const productSelectConfig = useSelectSearching({
   searchFn(query) {
     ProductAPI.fetchAll({
+      only_published: true,
       limit: productSelectConfig.limit.value,
       offset: productSelectConfig.offset(),
       text: query
@@ -320,7 +390,7 @@ const hasItemsProductSelected = computed(() => {
 })
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
-  if (isBlogSidePlace.value && slides.length !== 2) {
+  if (isBlogSidePlace.value && slides.value.length !== 2) {
     toast.error('بایستی ۲ اسلاید وارد نمایید!')
     return
   }
@@ -341,7 +411,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
     slides: slides.value,
   }, {
     success(response) {
+      toast.success('اسلایدها با موفقیت بروزرسانی شدند.')
+
       setFormFields(response.data)
+    },
+    error(error) {
+      actions.setErrors(error.errors)
     },
     finally() {
       canSubmit.value = true
@@ -350,6 +425,21 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
 })
 
 //-----------------------------
+watch([slider, slides], () => {
+  if (!slides.value.length && isBlogSidePlace.value) {
+    for (let i = 0; i < 2; ++i) {
+      slides.value.push({
+        id: null,
+        tmpId: parseInt(uniqueId()),
+        link: '',
+        image: null,
+        blog: null,
+        product: null,
+      })
+    }
+  }
+})
+
 onMounted(() => {
   SliderAPI.fetchById(idParam.value, {
     success(response) {
@@ -374,16 +464,17 @@ function setFormFields(item) {
   slides.value = []
 
   for (let i of item) {
-    if (!i?.id) continue
-
-    let options = i.options
-    slides.value.push({
-      id: i.id,
-      link: options[SLIDER_ITEM_OPTIONS.IMAGE.value] ?? '',
-      image: options[SLIDER_ITEM_OPTIONS.LINK.value] ?? null,
-      blog: options[SLIDER_ITEM_OPTIONS.PRODUCT_ID.value] ?? null,
-      product: options[SLIDER_ITEM_OPTIONS.BLOG_ID.value] ?? null,
-    })
+    if (i?.id) {
+      let options = i.options
+      slides.value.push({
+        id: i.id,
+        tmpId: parseInt(uniqueId()),
+        link: options[SLIDER_ITEM_OPTIONS.LINK.value] ?? '',
+        image: options[SLIDER_ITEM_OPTIONS.IMAGE.value] ?? null,
+        blog: options[SLIDER_ITEM_OPTIONS.BLOG_ID.value] ?? null,
+        product: options[SLIDER_ITEM_OPTIONS.PRODUCT_ID.value] ?? null,
+      })
+    }
   }
 }
 </script>

@@ -105,7 +105,7 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
                 }
 
                 if ($isUpdated)
-                    $modified->add($this->returnOrderRequestItemModel::first($item['id']));
+                    $modified->add($this->returnOrderRequestItemModel::query()->find($item['id']));
             } else {
                 $created = $this->returnOrderRequestItemModel::create($item + ['return_code' => $returnCode]);
 

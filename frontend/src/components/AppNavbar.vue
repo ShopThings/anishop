@@ -1,7 +1,7 @@
 <template>
   <div class="h-[94px]">
     <div class="flex flex-col fixed bg-white w-full shadow-md z-10">
-      <div class="h-[64px] max-w-7xl mx-auto w-full">
+      <div class="h-[64px] layout-max-w mx-auto w-full">
         <nav>
           <div class="h-[64px] py-2 px-6 flex">
             <div class="h-full shrink-0">
@@ -43,7 +43,7 @@
         </nav>
       </div>
 
-      <div class="h-[30px] max-w-7xl mx-auto w-full">
+      <div class="h-[30px] layout-max-w mx-auto w-full">
         <div class="flex gap-3 px-6 relative h-[24px]">
           <div class="ml-6">
             <navbar-categories/>

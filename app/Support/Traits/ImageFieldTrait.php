@@ -33,4 +33,24 @@ trait ImageFieldTrait
 
         return $model instanceof Model ? $model->id : null;
     }
+
+    /**
+     * @param int|null $imageId
+     * @return Model|null
+     */
+    protected function getImageFromId(?int $imageId): ?Model
+    {
+        if (is_null($imageId)) return null;
+
+        /**
+         * @var FileServiceInterface $service
+         */
+        try {
+            $service = app()->get(FileServiceInterface::class);
+        } catch (NotFoundExceptionInterface|ContainerExceptionInterface) {
+            return null;
+        }
+
+        return $service->find($imageId, true);
+    }
 }

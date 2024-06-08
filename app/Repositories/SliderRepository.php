@@ -23,9 +23,15 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function updateOrCreateItems(array $items): Collection
+    public function updateOrCreateItems(array $items, int $sliderId): Collection
     {
         $modified = collect();
+
+        $ids = array_filter(array_map(fn($item) => $item['id'], $items), fn($item) => !empty($item));
+        $this->sliderItemModel->newQuery()
+            ->where('slider_id', $sliderId)
+            ->whereNotIn('id', $ids)
+            ->delete();
 
         foreach ($items as $item) {
             if (
@@ -35,7 +41,7 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
                 $isUpdated = $founded->update($item);
 
                 if ($isUpdated)
-                    $modified->add($this->sliderItemModel::first($item['id']));
+                    $modified->add($this->sliderItemModel::query()->find($item['id']));
             } else {
                 $created = $this->sliderItemModel::create($item);
 

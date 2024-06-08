@@ -504,7 +504,7 @@ trait FileTrait
      */
     protected function isSupportedImage(string $extension): bool
     {
-        $arr = ['jpeg', 'png', 'jpg'];
+        $arr = ['jpeg', 'png', 'jpg', 'webp'];
         return in_array($extension, $arr);
     }
 

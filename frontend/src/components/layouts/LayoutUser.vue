@@ -7,13 +7,13 @@
     <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-user ref="navbarCom"/>
 
-      <div v-if="title" ref="extra" class="p-3 max-w-7xl mx-auto w-full">
+      <div v-if="title" ref="extra" class="p-3 layout-max-w mx-auto w-full">
         <h1 class="flex items-center text-indigo-700">
           {{ title }}
         </h1>
       </div>
 
-      <div ref="page" class="px-3 pb-3 max-w-7xl mx-auto w-full">
+      <div ref="page" class="px-3 pb-3 layout-max-w mx-auto w-full">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">

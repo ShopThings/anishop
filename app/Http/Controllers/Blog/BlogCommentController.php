@@ -62,11 +62,12 @@ class BlogCommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreBlogCommentRequest $request
+     * @param Blog $blog
      * @return JsonResponse
      */
-    public function store(StoreBlogCommentRequest $request): JsonResponse
+    public function store(StoreBlogCommentRequest $request, Blog $blog): JsonResponse
     {
-        Gate::authorize('create', BlogComment::class);
+        Gate::authorize('create', [BlogComment::class, $blog]);
 
         $validated = filter_validated_data($request->validated(), [
             'blog',
@@ -94,32 +95,38 @@ class BlogCommentController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param BlogComment $blogComment
+     * @param Blog $blog
+     * @param BlogComment $comment
      * @return BlogCommentSingleResource
      */
-    public function show(BlogComment $blogComment): BlogCommentSingleResource
+    public function show(Blog $blog, BlogComment $comment): BlogCommentSingleResource
     {
-        Gate::authorize('view', $blogComment);
-        return new BlogCommentSingleResource($blogComment);
+        Gate::authorize('view', [$comment, $blog]);
+        return new BlogCommentSingleResource($comment);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateBlogCommentRequest $request
-     * @param BlogComment $blogComment
+     * @param Blog $blog
+     * @param BlogComment $comment
      * @return BlogCommentResource|JsonResponse
      */
-    public function update(UpdateBlogCommentRequest $request, BlogComment $blogComment): BlogCommentResource|JsonResponse
+    public function update(
+        UpdateBlogCommentRequest $request,
+        Blog                     $blog,
+        BlogComment              $comment
+    ): BlogCommentResource|JsonResponse
     {
-        Gate::authorize('update', $blogComment);
+        Gate::authorize('update', [$comment, $blog]);
 
         $validated = filter_validated_data($request->validated(), [
             'badge',
             'condition',
             'status',
         ]);
-        $model = $this->service->updateById($blogComment->id, $validated);
+        $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {
             return new BlogCommentResource($model);
@@ -134,15 +141,16 @@ class BlogCommentController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param BlogComment $blogComment
+     * @param Blog $blog
+     * @param BlogComment $comment
      * @return JsonResponse
      */
-    public function destroy(Request $request, BlogComment $blogComment): JsonResponse
+    public function destroy(Request $request, Blog $blog, BlogComment $comment): JsonResponse
     {
-        Gate::authorize('delete', $blogComment);
+        Gate::authorize('delete', [$comment, $blog]);
 
-        $permanent = $request->user()->id === $blogComment->creator?->id;
-        $res = $this->service->deleteById($blogComment->id, $permanent);
+        $permanent = $request->user()->id === $comment->creator?->id;
+        $res = $this->service->deleteById($comment->id, $permanent);
         if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         }

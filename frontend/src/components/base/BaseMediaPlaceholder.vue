@@ -1,5 +1,5 @@
 <template>
-  <base-dialog container-klass="max-w-7xl w-full">
+  <base-dialog container-klass="layout-max-w w-full">
     <template #button="{open}">
       <div
           v-if="!selectedFile"
@@ -171,7 +171,7 @@ function validExtensions() {
   extensions.value = []
 
   if (props.type === 'image')
-    extensions.value = ['jpeg', 'png', 'jpg', 'gif', 'svg']
+    extensions.value = ['jpeg', 'png', 'jpg', 'webp', 'gif', 'svg']
   else if (props.type === 'video')
     extensions.value = ['mp4']
   else if (props.type === 'audio')

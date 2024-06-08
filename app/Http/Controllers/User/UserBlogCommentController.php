@@ -8,12 +8,14 @@ use App\Http\Requests\StoreUserBlogCommentRequest;
 use App\Http\Requests\UpdateUserBlogCommentRequest;
 use App\Http\Resources\User\UserBlogCommentResource;
 use App\Http\Resources\User\UserBlogCommentSingleResource;
+use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserBlogCommentController extends Controller
@@ -46,10 +48,13 @@ class UserBlogCommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreUserBlogCommentRequest $request
+     * @param Blog $blog
      * @return JsonResponse
      */
-    public function store(StoreUserBlogCommentRequest $request): JsonResponse
+    public function store(StoreUserBlogCommentRequest $request, Blog $blog): JsonResponse
     {
+        Gate::authorize('create', [BlogComment::class, $blog]);
+
         $validated = filter_validated_data($request->validated(), [
             'blog',
             'comment',
@@ -78,6 +83,7 @@ class UserBlogCommentController extends Controller
      */
     public function show(BlogComment $comment): UserBlogCommentSingleResource
     {
+        Gate::authorize('canDoOperation', $comment);
         return new UserBlogCommentSingleResource($comment);
     }
 
@@ -93,6 +99,8 @@ class UserBlogCommentController extends Controller
         BlogComment $comment
     ): UserBlogCommentSingleResource|JsonResponse
     {
+        Gate::authorize('canDoOperation', [$comment, true]);
+
         $validated = $request->validated('description');
         $model = $this->service->updateById($comment->id, $validated);
 
@@ -114,6 +122,8 @@ class UserBlogCommentController extends Controller
      */
     public function destroy(Request $request, BlogComment $comment): JsonResponse
     {
+        Gate::authorize('canDoOperation', $comment);
+
         $res = $this->service->deleteUserCommentById($request->user()->id, $comment->id);
 
         if ($res) {

@@ -79,6 +79,7 @@ function loadMore() {
 
 function loadComments() {
   HomeBlogCommentAPI.fetchAll(props.blogSlug, {
+    parent_id: props.parentId,
     limit: limit,
     page: config.page,
     sort: 'asc',

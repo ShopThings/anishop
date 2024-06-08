@@ -224,6 +224,7 @@ class BlogService extends Service implements BlogServiceInterface
         $where = new WhereBuilder('blogs');
         $where->whereIn('id', $ids->toArray())
             ->whereEqual('is_published', DatabaseEnum::DB_YES);
+
         return $this->repository->all(where: $where->build());
     }
 }

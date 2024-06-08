@@ -23,7 +23,7 @@ export const UploadTypes = {
 export function useFileList() {
   const files = ref([])
   const allowedExt = [
-    'jpeg', 'png', 'jpg', 'gif', 'svg', 'csv', 'txt', 'xlx', 'xlsx',
+    'jpeg', 'png', 'jpg', 'webp', 'gif', 'svg', 'csv', 'txt', 'xlx', 'xlsx',
     'xls', 'pdf', 'docx', 'doc', 'mp4', 'mp3',
   ]
 
@@ -53,13 +53,13 @@ export function useFileList() {
   function isImageExt(ext) {
     if (!ext) return false
 
-    return ['jpeg', 'png', 'jpg', 'gif', 'svg'].indexOf(ext.toLowerCase()) !== -1
+    return ['jpeg', 'png', 'jpg', 'webp', 'gif', 'svg'].indexOf(ext.toLowerCase()) !== -1
   }
 
   function isSizedImageExt(ext) {
     if (!ext) return false
 
-    return ['jpeg', 'png', 'jpg'].indexOf(ext.toLowerCase()) !== -1
+    return ['jpeg', 'png', 'jpg', 'webp'].indexOf(ext.toLowerCase()) !== -1
   }
 
   function isAudioExt(ext) {

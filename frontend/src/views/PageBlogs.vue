@@ -73,7 +73,7 @@
         </div>
         <base-carousel
             v-else
-            v-slot="{slide, index}"
+            v-slot="{slide}"
             v-model="slides"
             v-model:current="currentSlide"
             :autoplay="carouselSettings.autoplay"
@@ -89,7 +89,7 @@
           <div class="bg-white rounded-lg relative">
             <base-lazy-image
                 :alt="slide.title"
-                :lazy-src="slide.path"
+                :lazy-src="slide.image.path"
                 :size="FileSizes.LARGE"
                 :is-local="false"
                 class="rounded-lg h-[30rem] w-full !object-cover"

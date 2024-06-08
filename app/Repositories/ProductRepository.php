@@ -234,6 +234,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
         $search = $filter->getSearchText();
         $limit = $filter->getLimit();
         $page = $filter->getPage();
+        $onlyPublished = $filter->getOnlyPublished();
 
         $order = [];
         if (!$filter instanceof HomeProductFilter) {
@@ -284,6 +285,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                         'escaped_title',
                         'keywords',
                     ], $search);
+            })
+            ->when($onlyPublished && !$filter instanceof HomeProductFilter, function (Builder $query) use ($onlyPublished) {
+                $query->published();
             })
             ->when($where, function ($q, $where) {
                 if (trim($where->getStatement()) !== '') {

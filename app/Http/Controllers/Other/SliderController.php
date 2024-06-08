@@ -142,12 +142,7 @@ class SliderController extends Controller
     public function showSlides(Slider $slider): AnonymousResourceCollection
     {
         Gate::authorize('view', $slider);
-        return SliderItemResource::collection(
-            $slider->items()
-                ->orderBy('priority')
-                ->orderBy('id')
-                ->get()
-        );
+        return SliderItemResource::collection($this->service->getSliderItems($slider));
     }
 
     /**
@@ -160,6 +155,6 @@ class SliderController extends Controller
         Gate::authorize('create', Slider::class);
 
         $validated = $request->validated();
-        return SliderItemResource::collection($this->service->modifySliderItems($slider->id, $validated['items']));
+        return SliderItemResource::collection($this->service->modifySliderItems($slider->id, $validated['slides']));
     }
 }

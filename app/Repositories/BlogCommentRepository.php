@@ -96,8 +96,10 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
             $parentId = $filter->getParentId();
 
             $query
-                ->when($parentId > 0, function ($q) use ($parentId) {
+                ->when(!empty($parentId), function ($q) use ($parentId) {
                     $q->where('comment_id', $parentId);
+                }, function ($q) {
+                    $q->whereNull('comment_id');
                 })
                 ->accepted();
         }

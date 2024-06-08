@@ -15,6 +15,7 @@ use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserCommentController extends Controller
@@ -47,16 +48,19 @@ class UserCommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreProductCommentRequest $request
+     * @param Product $product
      * @return JsonResponse
      */
     public function store(StoreProductCommentRequest $request, Product $product): JsonResponse
     {
+        Gate::authorize('create', [Comment::class, $product]);
+
         $validated = filter_validated_data($request->validated(), [
             'pros',
             'cons',
             'description',
         ]);
-        $model = $this->service->create(['product' => $product->id] + $validated);
+        $model = $this->service->create($validated + ['product' => $product->id]);
 
         if (!is_null($model)) {
             return response()->json([
@@ -79,6 +83,7 @@ class UserCommentController extends Controller
      */
     public function show(Comment $comment): UserProductCommentSingleResource
     {
+        Gate::authorize('canDoOperation', $comment);
         return new UserProductCommentSingleResource($comment);
     }
 
@@ -94,6 +99,8 @@ class UserCommentController extends Controller
         Comment                         $comment
     ): UserProductCommentSingleResource|JsonResponse
     {
+        Gate::authorize('canDoOperation', [$comment, true]);
+
         $validated = filter_validated_data($request->validated(), [
             'product',
             'pros',
@@ -120,6 +127,8 @@ class UserCommentController extends Controller
      */
     public function destroy(Request $request, Comment $comment): JsonResponse
     {
+        Gate::authorize('canDoOperation', $comment);
+
         $res = $this->service->deleteUserCommentById($request->user()->id, $comment->id);
 
         if ($res) {

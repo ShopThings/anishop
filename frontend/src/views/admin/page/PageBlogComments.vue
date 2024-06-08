@@ -7,10 +7,6 @@
       <partial-card class="border-0 mb-3">
         <template #header>
           دیدگاه کاربر درباره بلاگ
-          <span
-            v-if="blog?.slug"
-            class="text-slate-400 text-base"
-          >{{ blog?.title }}</span>
         </template>
         <template #body>
           <div class="py-3 px-4">
@@ -19,7 +15,7 @@
                 <base-lazy-image
                   :alt="blog?.title"
                   :is-local="false"
-                  :lazy-src="blog?.image.path"
+                  :lazy-src="blog?.image.full_path"
                   :size="FileSizes.SMALL"
                   class="!h-28 sm:!h-20 w-auto rounded"
                 />
@@ -29,7 +25,7 @@
               </div>
               <div class="text-sm shrink-0">
                 <router-link
-                  :to="{name: 'blog.detail', params: {slug: blog?.slug}}"
+                  :to="{name: 'admin.blog.edit', params: {slug: blog?.slug}}"
                   class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                 >
                   <span class="mx-auto">مشاهده بلاگ</span>

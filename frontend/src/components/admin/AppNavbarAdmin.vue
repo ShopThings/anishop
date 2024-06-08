@@ -1,7 +1,7 @@
 <template>
   <div ref="navbar" class="h-[60px] relative">
     <nav class="bg-white w-full shadow-md">
-      <div class="h-[60px] py-1.5 px-4 flex max-w-7xl mx-auto w-full">
+      <div class="h-[60px] py-1.5 px-4 flex layout-max-w mx-auto w-full">
         <div class="h-full grow flex justify-between">
           <ul class="flex mt-[4px] space-x-reverse">
             <li class="px-1 xl:hidden">

@@ -58,7 +58,7 @@ class HomeCommentController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        Gate::authorize('reportComment', [$product, $comment]);
+        Gate::authorize('reportComment', [$comment, $product]);
 
         // check for previous report footprint
         $cookieName = 'comment_report_' . $comment->id;

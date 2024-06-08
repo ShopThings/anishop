@@ -8,6 +8,11 @@ use App\Enums\Sliders\SliderItemOptionsEnum;
 use App\Enums\Sliders\SliderOptionsEnum;
 use App\Enums\Sliders\SliderPlacesEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
+use App\Http\Resources\BlogResource;
+use App\Http\Resources\ProductResource;
+use App\Models\Slider;
+use App\Repositories\Contracts\BlogRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\SliderRepositoryInterface;
 use App\Services\Contracts\BrandServiceInterface;
 use App\Services\Contracts\CategoryServiceInterface;
@@ -16,17 +21,24 @@ use App\Services\Contracts\ProductServiceInterface;
 use App\Services\Contracts\SliderServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class SliderService extends Service implements SliderServiceInterface
 {
+    use ImageFieldTrait;
+
     public function __construct(
-        protected SliderRepositoryInterface $repository
+        protected SliderRepositoryInterface  $repository,
+        protected BlogRepositoryInterface    $blogRepository,
+        protected ProductRepositoryInterface $productRepository,
     )
     {
     }
@@ -89,7 +101,7 @@ class SliderService extends Service implements SliderServiceInterface
          */
         $slides = $slider->items->pluck('options');
         return $slides->map(function ($item) use ($fileService) {
-            $file = $fileService->find($item[SliderItemOptionsEnum::IMAGE->value]);
+            $file = $fileService->find($item[SliderItemOptionsEnum::IMAGE->value], true);
 
             return [
                 'image' => $file->full_path ?? null,
@@ -157,7 +169,7 @@ class SliderService extends Service implements SliderServiceInterface
                             ];
                         });
                 } else {
-                    $options = $this->_validateSliderOptions($item->options);
+                    $options = $this->validateSliderOptions($item->options);
 
                     $filter = new HomeProductFilter();
                     $filter->reset();
@@ -256,6 +268,14 @@ class SliderService extends Service implements SliderServiceInterface
     /**
      * @inheritDoc
      */
+    public function getSliderItems(Slider $slider): Collection
+    {
+        return $this->prepareSliderItems($slider->items()->orderBy('priority')->orderBy('id')->get());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function modifySliderItems(int $sliderId, array $slides): Collection
     {
         if (!count($slides))
@@ -275,25 +295,39 @@ class SliderService extends Service implements SliderServiceInterface
                 if (isset($newItem[SliderItemOptionsEnum::IMAGE->value]['id'])) {
                     $newItem[SliderItemOptionsEnum::IMAGE->value] = $newItem[SliderItemOptionsEnum::IMAGE->value]['id'];
                 }
+                if (isset($newItem['blog']['id'])) {
+                    $newItem[SliderItemOptionsEnum::BLOG_ID->value] = $newItem['blog']['id'];
+
+                    unset($newItem[SliderItemOptionsEnum::IMAGE->value]);
+                    unset($newItem[SliderItemOptionsEnum::LINK->value]);
+                    unset($newItem['blog']);
+                }
+                if (isset($newItem['product']['id'])) {
+                    $newItem[SliderItemOptionsEnum::PRODUCT_ID->value] = $newItem['product']['id'];
+
+                    unset($newItem[SliderItemOptionsEnum::IMAGE->value]);
+                    unset($newItem[SliderItemOptionsEnum::LINK->value]);
+                    unset($newItem['product']);
+                }
 
                 $newSlides[] = [
-                    'id' => $item['id'],
+                    'id' => isset($item['id']) && !empty($item['id']) ? $item['id'] : null,
                     'slider_id' => $sliderId,
                     'priority' => $counter++,
                     'options' => $newItem,
                 ];
             });
 
-        return $this->repository->updateOrCreateItems($newSlides);
+        return $this->prepareSliderItems($this->repository->updateOrCreateItems($newSlides, $sliderId));
     }
 
     /**
      * @param array $options
      * @return array
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
-    public function _validateSliderOptions(array $options): array
+    protected function validateSliderOptions(array $options): array
     {
         /**
          * @var BrandServiceInterface $brandService
@@ -320,5 +354,37 @@ class SliderService extends Service implements SliderServiceInterface
             'is_special' => !!$options[SliderOptionsEnum::IS_SPECIAL->value],
             'count' => $count,
         ];
+    }
+
+    /**
+     * @param Collection $items
+     * @return Collection
+     */
+    protected function prepareSliderItems(Collection $items): Collection
+    {
+        return $items->map(function ($item) {
+            // Get the options array, modify it, and set it back
+            $options = $item->options; // This should give you the array from the accessor
+            if (is_array($options)) {
+                if (isset($options[SliderItemOptionsEnum::IMAGE->value])) {
+                    $options[SliderItemOptionsEnum::IMAGE->value] = $this->getImageFromId($options[SliderItemOptionsEnum::IMAGE->value]);
+                }
+                if (
+                    isset($options[SliderItemOptionsEnum::BLOG_ID->value]) &&
+                    is_numeric($options[SliderItemOptionsEnum::BLOG_ID->value])
+                ) {
+                    $options[SliderItemOptionsEnum::BLOG_ID->value] = new BlogResource($this->blogRepository->find($options[SliderItemOptionsEnum::BLOG_ID->value]));
+                }
+                if (
+                    isset($options[SliderItemOptionsEnum::PRODUCT_ID->value]) &&
+                    is_numeric($options[SliderItemOptionsEnum::PRODUCT_ID->value])
+                ) {
+                    $options[SliderItemOptionsEnum::PRODUCT_ID->value] = new ProductResource($this->productRepository->find($options[SliderItemOptionsEnum::PRODUCT_ID->value]));
+                }
+            }
+            $item->options = $options; // Set the modified options back to the item
+
+            return $item;
+        })->sortBy('id');
     }
 }

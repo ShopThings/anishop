@@ -42,6 +42,7 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
         $search = $filter->getSearchText();
         $limit = $filter->getLimit();
         $page = $filter->getPage();
+        $onlyPublished = $filter->getOnlyPublished();
 
         $order = [];
         if (!$filter instanceof HomeBlogFilter) {
@@ -71,6 +72,9 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
                         'blogs.escaped_title',
                         'blogs.keywords',
                     ], $search);
+            })
+            ->when($onlyPublished && !$filter instanceof HomeBlogFilter, function (Builder $query) use ($onlyPublished) {
+                $query->published();
             })
             ->when($where, function ($q, $where) {
                 if (trim($where->getStatement()) !== '') {

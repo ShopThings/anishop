@@ -227,8 +227,6 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
     return notifications.value?.length ?? 0
   })
 
-  checkNewNotifications()
-
   function checkNewNotifications() {
     if (!online.value || isLoading.value) return
 
@@ -253,6 +251,8 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
       },
     })
   }
+
+  checkNewNotifications()
 
   function $reset() {
     countdown.stop()

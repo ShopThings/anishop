@@ -63,11 +63,17 @@ class HomeBlogController extends Controller
      * This will use 'log_visit' to log too
      *
      * @param Blog $blog
-     * @return HomeBlogSingleResource
+     * @return JsonResponse|HomeBlogSingleResource
      */
-    public function show(Blog $blog): HomeBlogSingleResource
+    public function show(Blog $blog): JsonResponse|HomeBlogSingleResource
     {
-        Gate::authorize('isPubliclyAccessible', $blog);
+        if (Gate::denies('isPubliclyAccessible', $blog)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'امکان مشاهده یلاگ وجود ندارد.',
+            ]);
+        }
+
         return new HomeBlogSingleResource($blog);
     }
 
