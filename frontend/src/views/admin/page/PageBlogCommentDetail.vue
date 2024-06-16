@@ -105,7 +105,7 @@
               v-if="comment?.parent"
               class="mt-3"
             >
-              <partial-input-label title="پاسخ کاربر به دیدگاه"/>
+              <partial-input-label title="پاسخ کاربر به این دیدگاه"/>
               <partial-comment-blog-single
                 :comment="comment?.parent || {}"
                 :show-answer-button="false"

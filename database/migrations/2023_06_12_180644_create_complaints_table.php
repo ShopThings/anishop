@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('mobile', 11);
             $table->text('description');
-            $table->boolean('is_seen')->default(true);
+            $table->boolean('is_seen')->default(false);
             $table->timestamp('changed_status_at')->nullable();
             $table->foreignId('changed_status_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

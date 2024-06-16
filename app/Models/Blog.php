@@ -114,7 +114,17 @@ class Blog extends Model
      */
     public function commentsCount(): int
     {
-        return $this->comments()->where('condition', CommentConditionsEnum::ACCEPTED->value)->count();
+        // We didn't consider "read" status because later on it can just set condition without reading
+        return $this->comments()
+            ->where(function ($q) {
+                $q
+                    ->orWhereHas('parent', function ($q) {
+                        $q->accepted();
+                    })
+                    ->orWhereNull('comment_id');
+            })
+            ->where('condition', CommentConditionsEnum::ACCEPTED->value)
+            ->count();
     }
 
     /**

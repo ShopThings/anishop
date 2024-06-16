@@ -142,7 +142,6 @@
               </thead>
 
               <template v-if="rows.length > 0">
-
                 <tbody
                   v-if="isStaticMode"
                   :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
@@ -156,25 +155,23 @@
                     class="border-b transition"
                   >
                     <td
-                      :colspan="hasCheckbox ? columns.length + 1 : columns.length"
+                      :colspan="setting.columnsLength"
                       class="px-6 py-4"
                     >
-                      <div class="flex">
-                        <div v-if="hasGroupToggle">
-                          <a
-                            :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                            class="cursor-pointer"
-                            @click.prevent="toggleGroup(groupingIndex)"
-                          >
-                            <ChevronDownIcon class="w-4 h-4"/>
-                          </a>
-                        </div>
+                      <div class="flex gap-2.5 items-center">
+                        <a
+                          v-if="hasGroupToggle"
+                          :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                          class="flex items-center justify-center cursor-pointer rounded-md size-8 border border-blue-200 hover:bg-blue-100 transition"
+                          @click.prevent="toggleGroup(groupingIndex)"
+                        >
+                          <ChevronDownIcon class="w-4 h-4 transition"/>
+                        </a>
                         <div
-                          class="ml-2"
                           v-html="
                               groupingDisplay
                                 ? groupingDisplay(groupingIndex)
-                                : groupingIndex
+                                : groupingIndex + '<span class=\'mr-1.5 rounded-full py-0.5 px-0.5 min-w-6 h-6 text-center bg-green-100 border border-green-300 inline-block\'>' + (rows?.length || 0) + '</span>'
                             "
                         ></div>
                       </div>
@@ -260,25 +257,23 @@
                   <tr v-if="groupingKey !== ''"
                       class="border-b transition">
                     <td
-                      :colspan="hasCheckbox ? columns.length + 1 : columns.length"
+                      :colspan="setting.columnsLength"
                       class="px-6 py-4"
                     >
-                      <div class="flex">
-                        <div v-if="hasGroupToggle">
-                          <a
-                            :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                            class="cursor-pointer"
-                            @click.prevent="toggleGroup(groupingIndex)"
-                          >
-                            <ChevronDownIcon class="w-4 h-4"/>
-                          </a>
-                        </div>
+                      <div class="flex gap-2.5 items-center">
+                        <a
+                          v-if="hasGroupToggle"
+                          :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                          class="flex items-center justify-center cursor-pointer rounded-md size-8 border border-blue-200 hover:bg-blue-100 transition"
+                          @click.prevent="toggleGroup(groupingIndex)"
+                        >
+                          <ChevronDownIcon class="w-4 h-4 transition"/>
+                        </a>
                         <div
-                          class="ml-2"
                           v-html="
                               groupingDisplay
                                 ? groupingDisplay(groupingIndex)
-                                : groupingIndex
+                                : groupingIndex + '<span class=\'mr-1.5 rounded-full py-0.5 px-0.5 min-w-6 h-6 text-center bg-green-100 border border-green-300 inline-block\'>' + (rows?.length || 0) + '</span>'
                             "
                         ></div>
                       </div>
@@ -506,6 +501,7 @@ import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseDatatableMultiOperation from "./datatable/BaseDatatableMultiOperation.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
 import BasePagination from "./BasePagination.vue";
+import {nestedArray} from "@/composables/helper.js";
 
 const props = defineProps({
   isLoading: {
@@ -1147,10 +1143,10 @@ const groupingToggleStatus = ref({});
 const groupingRows = computed(() => {
   let result = {};
   props.rows.forEach((v) => {
-    if (!result[v[props.groupingKey]]) {
-      result[v[props.groupingKey]] = [];
+    if (!result[nestedArray.get(v, props.groupingKey)]) {
+      result[nestedArray.get(v, props.groupingKey)] = [];
     }
-    result[v[props.groupingKey]].push(v);
+    result[nestedArray.get(v, props.groupingKey)].push(v);
   });
 
   nextTick(function () {
@@ -1165,11 +1161,11 @@ const groupingRows = computed(() => {
             isOpen = !groupingToggleStatus.value[groupIndex];
           }
           if (
-            (isOpen && el.parentElement.classList.contains("__group-open")) ||
-            (!isOpen && !el.parentElement.classList.contains("__group-open"))
+            (isOpen && el.classList.contains("__group-open")) ||
+            (!isOpen && !el.classList.contains("__group-open"))
           ) {
-            el.parentElement.classList.toggle("__group-open");
-            el.parentElement.classList.toggle("rotate-90 transition");
+            el.classList.toggle("__group-open");
+            el.children[0].classList.toggle("rotate-90");
           }
           if (!isOpen) {
             groupingRowsRefs.value[groupIndex].forEach((element) => {
@@ -1190,9 +1186,9 @@ const groupingRows = computed(() => {
 const toggleGroup = (groupIndex) => {
   let targetEl = toggleButtonRefs.value[groupIndex];
   if (targetEl) {
-    targetEl.parentElement.classList.toggle("__group-open");
-    targetEl.parentElement.classList.toggle("rotate-90 transition");
-    const isClose = targetEl.parentElement.classList.contains("__group-open");
+    targetEl.classList.toggle("__group-open");
+    targetEl.children[0].classList.toggle("rotate-90");
+    const isClose = targetEl.classList.contains("__group-open");
     groupingRowsRefs.value[groupIndex].forEach((element) => {
       if (element) {
         if (isClose) {
@@ -1247,7 +1243,7 @@ function getColumn(tab, col) {
   if (!tab) return [];
 
   var n = tab.rows.length;
-  var i, cols = [], tr, td;
+  var i, cols = [];
 
   if (col < 0) {
     return [];

@@ -177,8 +177,8 @@ export const useRequest = async (url, config, resultConfig) => {
     axiosClient(url, config)
       .then((response) => {
         const data = response.data || []
-        const type = response.data?.data?.type || data?.type
-        const msg = response.data?.data?.message || response.data?.message
+        const type = data?.type || data.data?.type
+        const msg = data?.message || data.data?.message
 
         let total = 0
         if (data?.meta?.total) {
@@ -196,24 +196,17 @@ export const useRequest = async (url, config, resultConfig) => {
 
         // if returned value is false, overwrite functionality
         if (!silent && ans !== false && msg && response.status !== responseStatuses.HTTP_NO_CONTENT) {
-          if (type && type === responseTypes.info) {
-            toast.info(msg)
-          } else if (type && type === responseTypes.warning) {
-            toast.warning(msg)
-          } else {
-            toast.success(msg)
+          if (type && toast[type]) {
+            toast[type](msg)
           }
         }
 
         resolve(data) // Resolve with data
       })
       .catch((error) => {
-        const data = error?.response?.data?.data || error?.response?.data || []
-        const type = error?.response?.data?.data?.type
-        const msg = error?.response?.data?.data?.message ||
-          error?.response?.data.message ||
-          error?.response?.statusText ||
-          error.message
+        const data = error?.response?.data || error?.response?.data?.data || []
+        const type = data?.type
+        const msg = data?.message || data?.data?.message || error?.response?.statusText || error.message
 
         // mostly it has debugging purposes
         if ((isObject(data) && !Object.keys(data).length) ||
@@ -254,12 +247,8 @@ export const useRequest = async (url, config, resultConfig) => {
 
         // if returned value is false, overwrite functionality
         if (!silent && ans !== false && msg) {
-          if (type && type === responseTypes.error) {
-            toast.error(msg)
-          } else if (type && type === responseTypes.info) {
-            toast.info(msg)
-          } else if (type && type === responseTypes.warning) {
-            toast.warning(msg)
+          if (type && toast[type]) {
+            toast[type](msg)
           } else {
             toast.error(msg)
           }

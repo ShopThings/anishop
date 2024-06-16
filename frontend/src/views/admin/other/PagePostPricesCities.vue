@@ -178,14 +178,14 @@ const table = reactive({
   hasGroupToggle: true,
 })
 
-function calcRemovals(row) {
+function calcRemovals() {
   let removals = []
 
   if (!userStore.hasPermission(PERMISSION_PLACES.CITY_POST_PRICE, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.CITY_POST_PRICE, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
+    removals.push('edit')
   }
 
   return removals

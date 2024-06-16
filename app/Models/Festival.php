@@ -11,6 +11,9 @@ use App\Traits\HasUpdatedRelationTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method Builder activated()
+ */
 class Festival extends Model
 {
     use SoftDeletesTrait,
@@ -46,8 +49,24 @@ class Festival extends Model
     public function scopeActivated(Builder $query): Builder
     {
         return $query
-            ->where('start_at', '>=', now())
-            ->where('end_at', '<=', now())
+            ->where(function ($query) {
+                $query
+                    ->orWhereNotNull('start_at')
+                    ->orWhereNotNull('end_at');
+            })
+            ->where(function ($query) {
+                $query
+                    ->orWhere(function ($query) {
+                        $query
+                            ->whereNotNull('start_at')
+                            ->where('start_at', '<=', now());
+                    })
+                    ->orWhere(function ($query) {
+                        $query
+                            ->whereNotNull('end_at')
+                            ->where('end_at', '>=', now());
+                    });
+            })
             ->orderByDesc('created_at');
     }
 }

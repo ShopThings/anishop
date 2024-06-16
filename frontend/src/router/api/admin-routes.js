@@ -104,7 +104,7 @@ export default {
       products: 'api/admin/festivals/{festival}/products',
       storeProduct: 'api/admin/festivals/{festival}/product',
       storeCategoryProducts: 'api/admin/festivals/{festival}/category',
-      destroyProduct: 'api/admin/festivals/{festival}/{product}',
+      destroyProduct: 'api/admin/festivals/{festival}/product/{product}',
       batchDestroyCategory: 'api/admin/festivals/{festival}/category/{category}',
       batchDestroyProduct: 'api/admin/festivals/{festival}/products',
     },

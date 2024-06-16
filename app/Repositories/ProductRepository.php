@@ -10,6 +10,7 @@ use App\Http\Requests\Filters\HomeProductSideFilter;
 use App\Http\Requests\Filters\ProductFilter;
 use App\Models\Brand;
 use App\Models\Product;
+use App\Models\ProductAttributeCategory;
 use App\Models\ProductGallery;
 use App\Models\ProductProperty;
 use App\Models\RelatedProduct;
@@ -212,11 +213,12 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     }
 
     public function __construct(
-        Product                   $model,
-        protected ProductProperty $productPropertyModel,
-        protected ProductGallery  $productGalleryModel,
-        protected RelatedProduct $relatedProductModel,
-        protected Brand          $brandModel
+        Product                            $model,
+        protected ProductProperty          $productPropertyModel,
+        protected ProductGallery           $productGalleryModel,
+        protected RelatedProduct           $relatedProductModel,
+        protected Brand                    $brandModel,
+        protected ProductAttributeCategory $productAttributeCategoryModel
     )
     {
         parent::__construct($model);
@@ -259,10 +261,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                             })
                             ->orWhereHas('category', function ($q) use ($search) {
                                 $q->where(function ($q) use ($search) {
-                                    $q->orWhereLike([
-                                        'latin_name',
-                                        'escaped_name',
-                                    ], $search);
+                                    $q->orWhereLike('escaped_name', $search);
                                 });
                             })
                             ->orWhereHas('items', function ($q) use ($search) {
@@ -274,15 +273,16 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                                     ], $search);
                                 });
                             })
-                            ->orWhereHas('productAttrValues.attrValues', function ($q) use ($search) {
+                            ->orWhereHas('productAttrValues.attrValue', function ($q) use ($search) {
                                 $q->whereLike('attribute_value', $search);
                             })
-                            ->orWhereHas('productAttrValues.attrValues.productAttr', function ($q) use ($search) {
+                            ->orWhereHas('productAttrValues.attrValue.productAttr', function ($q) use ($search) {
                                 $q->whereLike('title', $search);
                             });
                     })
                     ->orWhereLike([
                         'escaped_title',
+                        'slug',
                         'keywords',
                     ], $search);
             })
@@ -318,7 +318,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
             $category = $filter->getCategory();
             $isSpecial = $filter->getIsSpecial();
             $isAvailable = $filter->getIsAvailable();
+            $onlyAvailable = $filter->getOnlyAvailable();
             $priceRange = $filter->getPriceRange();
+            $festival = $filter->getFestival();
 
             $query
                 ->whereHas('items', function ($q) {
@@ -333,6 +335,14 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                                 ->orWhere('size', '<>', '')
                                 ->orWhere('guarantee', '<>', '');
                         });
+                })
+                ->when($festival, function (Builder $query, int $festival) {
+                    $query->whereHas('festivals.festival', function ($q) use ($festival) {
+                        $q
+                            ->published()
+                            ->activated()
+                            ->where('id', $festival);
+                    });
                 })
                 ->when($color, function (Builder $query, string $color) {
                     $query->whereHas('items', function ($q) use ($color) {
@@ -373,6 +383,9 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                         $q->where('is_available', DatabaseEnum::DB_YES);
                     });
                 })
+                ->when($onlyAvailable, function (Builder $query) {
+                    $query->where('is_available', DatabaseEnum::DB_YES);
+                })
                 ->when(count($priceRange) == 2, function (Builder $query) use ($priceRange) {
                     $query->whereHas('items', function ($q) use ($priceRange) {
                         $q
@@ -398,29 +411,29 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                                     // If discounted conditions are not met, check the regular price
                                     ->else('price <= ?', [$priceRange[1]], 'where');
                             });
-
                     });
                 });
 
             // dynamic filters
             $dynamicFilters = $filter->getDynamicFilters();
 
+//            dd($dynamicFilters);
+
             if ($dynamicFilters) {
                 // iterate to dynamic filter and check 'attribute_id' from attributes
                 // and 'attribute_value' from attribute_values tables
                 foreach ($dynamicFilters as $attribute => $values) {
-                    $query->orWhereHas('productAttrValues.attrValues', function ($q) use ($attribute, $values) {
-                        $q->where(function () use ($q, $attribute, $values) {
-                            $q->orWhereHas(
-                                'productAttrValues.attrValues.productAttr',
-                                function ($q2) use ($q, $attribute, $values) {
-                                    $q2->where(function () use ($q, $q2, $attribute, $values) {
-                                        $q->where('id', $attribute);
-                                        $q2->orWhereIn('attribute_value', $values);
-                                    });
-                                }
-                            );
-                        });
+                    $query->whereHas('productAttrValues.attrValue', function ($q) use ($attribute, $values) {
+                        $q->where('id', $attribute);
+
+                        if (is_array($values)) {
+                            $vals = array_filter($values, fn($item) => $item !== false);
+                            if (count($vals)) {
+                                $q->whereIn('id', array_keys($values));
+                            }
+                        } elseif (is_string($values)) {
+                            $q->whereIn('attribute_value', $values);
+                        }
                     });
                 }
             }
@@ -491,7 +504,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 $query->whereHas('products.category', function ($q) use ($category) {
                     $q
                         ->where('id', $category)
-                        ->whereRegex('ancestry', get_db_ancestry_regex_string($category));
+                        ->orWhereRegex('ancestry', get_db_ancestry_regex_string($category));
                 });
             })
             ->when($festival, function (Builder $query, $festival) {
@@ -550,25 +563,19 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
 
         // dynamic filter MUST be on a specific category,
         // otherwise there is no good reason to have any extra filters
-        if (!$category) return collect();
+        if (empty($category)) return collect();
 
-        $query = $this->model->published()
-            // -productAttrValues is "product_attribute_products" table relation
-            // -attrValues is "product_attribute_values" table relation
-            ->withWhereHas('productAttrValues.attrValue', function ($q) use ($category) {
-                $q
-                    // we go nested inside relations to get product attributes for a specific category.
-                    //   -productAttr is "product_attributes" table relation
-                    //   -productAttrs is "product_attribute_categories" table relation
-                    ->whereHas('productAttr.productAttrs', function ($q) use ($category) {
-                        $q->where('category_id', $category);
-                    })
-                    ->orderBy('priority');
+        $query = $this->productAttributeCategoryModel->newQuery()
+            ->whereHas('category', function ($q) use ($category) {
+                $q->where('id', $category);
             })
-            // -productAttrValues is "product_attribute_products" table relation
-            // -attrValues is "product_attribute_values" table relation
-            // -productAttr is "product_attributes" table relation
-            ->with('productAttrValues.attrValue.productAttr');
+            ->has('productAttr.attrValues')
+            ->with([
+                'productAttr',
+                'productAttr.attrValues' => function ($q) {
+                    $q->orderBy('priority');
+                }
+            ]);
 
         return $query->get();
     }
@@ -703,7 +710,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                 $query->whereHas('product.category', function ($q) use ($category) {
                     $q
                         ->where('id', $category)
-                        ->whereRegex('ancestry', get_db_ancestry_regex_string($category));
+                        ->orWhereRegex('ancestry', get_db_ancestry_regex_string($category));
                 });
             })
             ->when($festival, function (Builder $query, $festival) {

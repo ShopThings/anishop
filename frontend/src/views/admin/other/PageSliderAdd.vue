@@ -251,6 +251,9 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {SliderAPI} from "@/service/APIConfig.js";
 import {useSelectSearching} from "@/composables/select-searching.js";
 import {BrandAPI, CategoryAPI} from "@/service/APIProduct.js";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 const sliderPlaces = []
 for (const p in SLIDER_PLACES) {
@@ -345,7 +348,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     priority: yup.number()
       .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
       .required('اولویت را وارد نمایید.'),
-    beside_images: yup.string()
+    beside_images: yup.number()
       .when([], (inputValue, schema) => {
         return selectedSliderPlace.value?.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value
           ? schema

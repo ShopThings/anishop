@@ -2,7 +2,10 @@
   <VTransitionSlideFadeUpY mode="out-in">
     <div
       v-if="product && product?.slug"
-      :class="containerClass"
+      :class="[
+        containerWidth,
+        containerClass,
+      ]"
       class="min-h-[400px] w-full h-full p-3 border bg-white"
     >
       <router-link
@@ -90,6 +93,7 @@
                         {{ getPercentageOfPortion(getBuyablePrice(slide), slide.price, true) }}
                         <span class="text-xs">%</span>
                         <span class="text-xs text-white mr-0.5">تخفیف</span>
+                        <span v-if="hasFestivalDiscount(slide)" class="text-xs">جشنواره</span>
                       </div>
                     </template>
 
@@ -163,7 +167,7 @@
       </div>
     </div>
     <template v-else>
-      <loader-card/>
+      <loader-card :class="containerWidth"/>
     </template>
   </VTransitionSlideFadeUpY>
 </template>
@@ -180,6 +184,10 @@ import {watchImmediate} from "@vueuse/core";
 import PartialCountdownShow from "@/components/partials/PartialCountdownShow.vue";
 
 const props = defineProps({
+  containerWidth: {
+    type: String,
+    default: 'w-full',
+  },
   containerClass: {
     type: String,
     default: 'rounded-lg shadow-lg',
@@ -206,40 +214,11 @@ watchImmediate(() => props.product, () => {
   productProperties.value = props?.product?.items
 })
 
-//------------------------------------------------------------
-// Discount timer operations
-//------------------------------------------------------------
-function getDiscountTimer(item) {
+function hasGeneralDiscount(item) {
   const currentDate = new Date()
   const seconds = currentDate.getTime() / 1000
 
-  // Check if product have festival discount
-  if (
-    (
-      !item.festival_discounted_from_in_seconds &&
-      item.festival_discounted_until_in_seconds &&
-      item.festival_discounted_until_in_seconds >= seconds
-    ) ||
-    (
-      item.festival_discounted_from_in_seconds &&
-      !item.festival_discounted_until_in_seconds &&
-      item.festival_discounted_from_in_seconds <= seconds
-    ) ||
-    (
-      item.festival_discounted_from_in_seconds &&
-      item.festival_discounted_until_in_seconds &&
-      item.festival_discounted_until_in_seconds >= seconds &&
-      item.festival_discounted_from_in_seconds <= seconds
-    )
-  ) {
-    if (item.festival_discounted_until_in_seconds !== null) {
-      return item.festival_discounted_until_in_seconds
-    }
-    return 0
-  }
-
-  // Check if product have general discount
-  if (
+  return (
     (
       !item.discounted_from_in_seconds &&
       item.discounted_until_in_seconds &&
@@ -256,7 +235,47 @@ function getDiscountTimer(item) {
       item.discounted_until_in_seconds >= seconds &&
       item.discounted_from_in_seconds <= seconds
     )
-  ) {
+  )
+}
+
+function hasFestivalDiscount(item) {
+  const currentDate = new Date()
+  const seconds = currentDate.getTime() / 1000
+
+  return (
+    (
+      !item.festival_discounted_from_in_seconds &&
+      item.festival_discounted_until_in_seconds &&
+      item.festival_discounted_until_in_seconds >= seconds
+    ) ||
+    (
+      item.festival_discounted_from_in_seconds &&
+      !item.festival_discounted_until_in_seconds &&
+      item.festival_discounted_from_in_seconds <= seconds
+    ) ||
+    (
+      item.festival_discounted_from_in_seconds &&
+      item.festival_discounted_until_in_seconds &&
+      item.festival_discounted_until_in_seconds >= seconds &&
+      item.festival_discounted_from_in_seconds <= seconds
+    )
+  )
+}
+
+//------------------------------------------------------------
+// Discount timer operations
+//------------------------------------------------------------
+function getDiscountTimer(item) {
+  // Check if product have festival discount
+  if (hasFestivalDiscount(item)) {
+    if (item.festival_discounted_until_in_seconds !== null) {
+      return item.festival_discounted_until_in_seconds
+    }
+    return 0
+  }
+
+  // Check if product have general discount
+  if (hasGeneralDiscount(item)) {
     if (item.discounted_until_in_seconds !== null) {
       return item.discounted_until_in_seconds
     }

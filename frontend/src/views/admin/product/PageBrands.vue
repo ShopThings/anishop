@@ -186,10 +186,10 @@ function calcRemovals(row) {
   let removals = []
 
   if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.BRAND, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.BRAND, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
+    removals.push('edit')
   }
 
   return removals

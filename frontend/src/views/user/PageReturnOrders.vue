@@ -4,7 +4,7 @@
     class="rounded-lg"
     type="info"
   >
-    <h3 class="font-iranyekan-bold text-base mb-1.5">
+    <h3 class="font-iranyekan-bold text-base mb-3">
       نکات قابل توجه
     </h3>
     <ul class="leading-relaxed flex flex-col gap-3 list-inside list-disc">

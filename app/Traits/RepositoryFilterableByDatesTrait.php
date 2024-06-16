@@ -10,7 +10,8 @@ use Illuminate\Support\Carbon;
 
 trait RepositoryFilterableByDatesTrait
 {
-    use CompanyTimezoneDetectorTrait;
+    use CompanyTimezoneDetectorTrait,
+        AppTimezoneTrait;
 
     /**
      * Returns an array with following structure:
@@ -270,13 +271,5 @@ trait RepositoryFilterableByDatesTrait
         return (mb_strlen($hour) == 1 ? '0' : '') . $hour .
             trans('periodic.labels.daily') .
             (mb_strlen($hour + 1) == 1 ? '0' : '') . ($hour + 1);
-    }
-
-    /**
-     * @return string
-     */
-    private function getAppTimezone(): string
-    {
-        return config('app.timezone');
     }
 }

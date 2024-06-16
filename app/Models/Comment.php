@@ -4,15 +4,20 @@ namespace App\Models;
 
 use App\Casts\CleanHtmlCast;
 use App\Casts\StringToArray;
+use App\Enums\Comments\CommentConditionsEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
 use Database\Factories\ProductCommentFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @method Builder accepted()
+ */
 class Comment extends Model
 {
     use SoftDeletesTrait,
@@ -36,6 +41,15 @@ class Comment extends Model
     protected static function newFactory()
     {
         return ProductCommentFactory::new();
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAccepted(Builder $query): Builder
+    {
+        return $query->where('condition', CommentConditionsEnum::ACCEPTED->value);
     }
 
     /**

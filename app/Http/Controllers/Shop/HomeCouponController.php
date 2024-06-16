@@ -69,7 +69,13 @@ class HomeCouponController extends Controller
         $coupon = $this->service->checkCoupon($code, $user);
 
         if ($coupon instanceof Model) {
-            if ($coupon->canApplyOn($cart->totalDiscountedPrice())) {
+            $discountedPrice = $cart->totalDiscountedPrice();
+            if ($discountedPrice < $coupon->price) {
+                return response()->json([
+                    'type' => ResponseTypesEnum::WARNING->value,
+                    'message' => 'مبلغ نخفیف بیشتر از مبلغ خرید می‌باشد و امکان اعمال کد وجود ندارد.',
+                ]);
+            } elseif ($coupon->canApplyOn($discountedPrice)) {
                 return new HomeCouponResource($coupon);
             } else {
                 $msg = 'کد تخفیف وارد شده قابل اعمال بر روی محدوده قیمت ';

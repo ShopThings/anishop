@@ -71,7 +71,7 @@ class HomeBlogController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'امکان مشاهده یلاگ وجود ندارد.',
-            ]);
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return new HomeBlogSingleResource($blog);

@@ -4,6 +4,7 @@
       <div class="w-full p-2 md:w-2/3">
         <partial-input-label title="دسته‌بندی"/>
         <base-select-searchable
+          ref="categorySelectRef"
           :current-page="categorySelectConfig.currentPage.value"
           :has-pagination="true"
           :is-loading="loadingGetCategories"
@@ -122,6 +123,8 @@ const emit = defineEmits(['added', 'removed'])
 const slugParam = getRouteParamByKey('slug', null, false)
 const submitOperation = ref(null)
 
+const categorySelectRef = ref(null)
+
 //---------------------------------------------------------
 // Category operation
 //---------------------------------------------------------
@@ -159,7 +162,11 @@ function submitAdd(values, actions) {
   }, {
     success() {
       emit('added', selectedCategory.value)
+
       actions.resetForm()
+      if (categorySelectRef.value) {
+        categorySelectRef.value.removeSelectedItems()
+      }
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {
@@ -176,7 +183,11 @@ function submitRemove(values, actions) {
   FestivalAPI.removeCategoryProducts(slugParam.value, selectedCategory.value.id, {
     success() {
       emit('removed', selectedCategory.value)
+
       actions.resetForm()
+      if (categorySelectRef.value) {
+        categorySelectRef.value.removeSelectedItems()
+      }
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

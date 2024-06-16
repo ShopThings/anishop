@@ -60,9 +60,9 @@
     :page="currentPage"
     :perPage="+props.perPage"
     :total="total"
-    name="BeforeItemsPanel"
+    name="beforeItemsPanel"
   >
-    <partial-paginator-pagniation-info
+    <partial-paginator-pagination-info
       v-if="showPaginationDetail"
       :current-page="currentPage"
       :max-page="maxPage"
@@ -128,12 +128,19 @@ import BasePagination from "./BasePagination.vue";
 import {apiReplaceParams} from "@/router/api-routes.js";
 import isObject from "lodash.isobject";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
-import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
+import PartialPaginatorPaginationInfo from "@/components/partials/PartialPaginatorPaginationInfo.vue";
 
 const props = defineProps({
   containerClass: String,
   itemContainerClass: String,
-  items: Array,
+  items: {
+    type: Array,
+    default: [],
+  },
+  total: {
+    type: Number,
+    default: 0,
+  },
   path: String,
   pathReplacementParams: Object,
   extraSearchParams: Object,
@@ -182,6 +189,7 @@ const props = defineProps({
 })
 const emit = defineEmits([
   'update:items',
+  'update:total',
   'update:searchText',
   'order-changed',
   'items-loaded'
@@ -190,8 +198,24 @@ const emit = defineEmits([
 const itemsContainerRef = ref(null)
 const loading = ref(true)
 
+const items = computed({
+  get() {
+    return props.items
+  },
+  set(value) {
+    emit('update:items', value)
+  },
+})
+const total = computed({
+  get() {
+    return props.total || items.value.length || 0
+  },
+  set(value) {
+    emit('update:total', value)
+  },
+})
+
 const actualItems = ref([])
-const total = ref(props.items?.length || 0)
 
 const currentPage = ref(1)
 const maxPage = computed(() => {
@@ -255,7 +279,7 @@ watch(() => props.order, () => {
 })
 
 //-------------------------------
-watch([() => props.extraSearchParams, () => props.path, () => props.items], () => {
+watch([() => props.extraSearchParams, () => props.path], () => {
   goToPage(1)
 })
 
@@ -310,7 +334,10 @@ function goToPage(page, scrollToTop) {
   let params = {
     limit: props.perPage,
     offset: (page - 1) * props.perPage,
-    text: query.value || ''
+  }
+
+  if (query.value) {
+    params.text = query.value
   }
 
   if (selectedOrder.value) {
@@ -320,16 +347,15 @@ function goToPage(page, scrollToTop) {
 
   if (isObject(props.extraSearchParams)) {
     params = Object.assign({}, props.extraSearchParams, params)
-    props.extraSearchParams.order = params.order
   }
 
   loading.value = true
 
-  if (props.items?.length) {
+  if (items.value?.length) {
     clearTimeout(localLoadingTimeout)
 
     new Promise((resolve) => {
-      let rows = props.items
+      let rows = items.value
 
       if (isFunction(props.localSearchFilterHandler)) {
         rows = rows.filter((item) => {
@@ -350,7 +376,7 @@ function goToPage(page, scrollToTop) {
       }
 
       actualItems.value = [];
-      for (let index = params.offset; index < (params.limit * page) && index < props.items.length; index++) {
+      for (let index = params.offset; index < (params.limit * page) && index < items.value.length; index++) {
         if (rows[index])
           actualItems.value.push(rows[index]);
       }
@@ -391,6 +417,7 @@ function goToPage(page, scrollToTop) {
     })
   } else {
     actualItems.value = []
+    total.value = 0
     loading.value = false
   }
 }

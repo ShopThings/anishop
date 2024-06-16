@@ -1,33 +1,36 @@
 <template>
   <base-accordion
-      :open="false"
-      btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
-      open-btn-class="!bg-teal-500 !text-white"
-      open-btn-icon-class="!text-white"
-      panel-class="bg-white rounded-lg border mb-3"
+    :open="false"
+    btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
+    open-btn-class="!bg-teal-500 !text-white"
+    open-btn-icon-class="!text-white"
+    panel-class="bg-white rounded-lg border mb-3"
   >
     <template #button>
       <span class="font-iranyekan-bold">افزودن محصول به جشنواره</span>
     </template>
 
     <template #panel>
-      <form-festival-add-product/>
+      <form-festival-add-product @added="datatable.reload()"/>
     </template>
   </base-accordion>
 
   <base-accordion
-      :open="false"
-      btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
-      open-btn-class="!bg-teal-500 !text-white"
-      open-btn-icon-class="!text-white"
-      panel-class="bg-white rounded-lg border mb-3"
+    :open="false"
+    btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
+    open-btn-class="!bg-teal-500 !text-white"
+    open-btn-icon-class="!text-white"
+    panel-class="bg-white rounded-lg border mb-3"
   >
     <template #button>
-      <span class="font-iranyekan-bold">افزودن محصولات دسته‌بندی به جشنواره</span>
+      <span class="font-iranyekan-bold">افزودن/حذف محصولات دسته‌بندی به/از جشنواره</span>
     </template>
 
     <template #panel>
-      <form-festival-add-category-products/>
+      <form-festival-add-category-products
+        @added="datatable.reload()"
+        @removed="datatable.reload()"
+      />
     </template>
   </base-accordion>
 
@@ -35,8 +38,8 @@
     <template #header>
       لیست محصولات جشنواره -
       <span
-          v-if="festival?.id"
-          class="text-slate-400 text-base"
+        v-if="festival?.id"
+        class="text-slate-400 text-base"
       >{{ festival?.title }}</span>
     </template>
 
@@ -44,41 +47,46 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template #product="{value}">
               <base-lazy-image
-                  :alt="value.product.title"
-                  :lazy-src="value.product.image.path"
-                  :size="FileSizes.SMALL"
-                  :is-local="false"
-                  class="!h-28 sm:!h-20 w-auto rounded"
+                :alt="value.product.title"
+                :is-local="false"
+                :lazy-src="value.product.image.path"
+                :size="FileSizes.SMALL"
+                class="!h-28 sm:!h-20 w-auto rounded"
               />
             </template>
 
+            <template #title="{value}">
+              {{ value.product.title }}
+            </template>
+
             <template #discount_percentage="{value}">
-              <span class="font-iranyekan-bold rounded py-0.5 px-1.5 bg-violet-200">{{
-                  value.discount_percentage
-                }}%</span>
+              <span class="font-iranyekan-bold rounded py-0.5 px-1.5 bg-violet-200">
+                {{ value.discount_percentage }}
+                <span class="mr-0.5">%</span>
+              </span>
             </template>
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
               />
             </template>
           </base-datatable>
@@ -104,7 +112,9 @@ import {FestivalAPI} from "@/service/APIShop.js";
 import {FileSizes} from "@/composables/file-list.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import BaseAccordion from "@/components/base/BaseAccordion.vue";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
 const toast = useToast()
 const slugParam = getRouteParamByKey('slug', null, false)
 
@@ -179,6 +189,22 @@ const getMenuContainer = computed(() => {
 const operations = [
   {
     link: {
+      text: 'مشاهده جزئیات محصول',
+      icon: 'EyeIcon',
+    },
+    event: {
+      click: (data) => {
+        window.open(router.resolve({
+          name: 'admin.product.detail',
+          params: {
+            slug: data.product.slug,
+          }
+        }).href, '_blank')
+      },
+    },
+  },
+  {
+    link: {
       text: 'حذف',
       icon: 'TrashIcon',
       class: 'text-rose-500',
@@ -189,7 +215,7 @@ const operations = [
         toast.clear()
 
         useConfirmToast(() => {
-          FestivalAPI.removeProduct(slugParam.value, data.product_id, {
+          FestivalAPI.removeProduct(slugParam.value, data.product.slug, {
             success: () => {
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()

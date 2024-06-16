@@ -10,6 +10,7 @@ use App\Support\QB\ItemActions\IsMultipleItemAction;
 use App\Support\QB\ItemActions\NullableItemAction;
 use App\Support\QB\QueryItemActions;
 use App\Support\WhereBuilder\WhereBuilderInterface;
+use App\Traits\CompanyTimezoneDetectorTrait;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -17,6 +18,8 @@ use Illuminate\Support\Str;
 
 class QBHelper
 {
+    use CompanyTimezoneDetectorTrait;
+
     /**
      * @var array|array[]
      */
@@ -652,7 +655,7 @@ class QBHelper
                 return to_boolean($value);
             case TypesEnum::DATE_OR_TIME_OR_BOTH->value:
                 try {
-                    return Carbon::parse($value);
+                    return Carbon::parse($value)->timezone(self::companyTimezone());
                 } catch (InvalidFormatException) {
                     return null;
                 }

@@ -165,7 +165,7 @@
                     <base-input
                       :value="slider?.options?.show_all_link"
                       label-title="لینک مشاهده همه"
-                      name="link"
+                      name="link_all"
                       placeholder="وارد نمایید"
                     >
                       <template #icon>
@@ -367,7 +367,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     priority: yup.number()
       .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
       .required('اولویت را وارد نمایید.'),
-    beside_images: yup.string()
+    beside_images: yup.number()
       .when([], (inputValue, schema) => {
         return selectedSliderPlace.value?.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value
           ? schema
@@ -499,7 +499,7 @@ onMounted(() => {
           selectedOrderBy.value = orderBy[orderByIdx]
         }
         slideCount.value = response.data.options?.count ?? 10
-        isSpecialStatus.value = response.data.options?.is_special ?? false
+        isSpecialStatus.value = response.data.options?.is_special || false
       }
 
       loading.value = false

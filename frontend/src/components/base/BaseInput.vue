@@ -248,13 +248,6 @@ const localMoneyMask = computed(() => {
     masked: false /* doesn't work with directive */,
   }
 
-  if (props.min !== null && props.min !== undefined) {
-    obj.min = props.min
-  }
-  if (props.max !== null && props.max !== undefined) {
-    obj.max = props.max
-  }
-
   if (isObject(props.moneyMask)) {
     return Object.assign(obj, props.moneyMask)
   }
@@ -275,8 +268,8 @@ const localMoneyMask = computed(() => {
 })
 
 const canUseLocalMask = computed(() => {
-  if (isObject(props.mask) && 'mask' in props.mask) {
-    return true
+  if (isObject(props.mask)) {
+    return 'mask' in props.mask
   }
   if (Array.isArray(props.mask) && props.mask.filter((item) => item.trim() !== '').length) {
     return true

@@ -89,19 +89,19 @@ class BlogCommentRepository extends Repository implements BlogCommentRepositoryI
                     ->orWhereLike('blog_comments.description', $search);
             })
             ->when($blogId, function ($q, $blogId) {
-                $q->where('blog_comments.blog_id', $blogId);
+                $q->where('blog_id', $blogId);
             });
 
         if ($filter instanceof HomeBlogCommentFilter) {
             $parentId = $filter->getParentId();
 
             $query
+                ->accepted()
                 ->when(!empty($parentId), function ($q) use ($parentId) {
                     $q->where('comment_id', $parentId);
                 }, function ($q) {
                     $q->whereNull('comment_id');
-                })
-                ->accepted();
+                });
         }
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);

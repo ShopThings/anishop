@@ -36,7 +36,7 @@
               v-if="slider?.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value] &&
                slider?.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value].trim() !== ''"
               :to="slider.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value]"
-              class="text-sm text-blue-600 hover:opacity-80 transition border-2 rounded py-1.5 px-2 bg-white flex gap-2 item-center"
+              class="text-sm transition border-2 border-black rounded py-1.5 px-2 bg-white flex gap-2 item-center hover:bg-slate-50"
           >
             <span>مشاهده همه</span>
             <ArrowLeftIcon class="h-5 w-5"/>
@@ -62,10 +62,11 @@
               :to="item?.link"
               class="block rounded-lg shadow"
           >
-            <img
-                :alt="'تصویر ' + idx"
-                :src="item?.image.path"
-                class="w-full h-auto object-contain rounded-lg"
+            <base-lazy-image
+              :alt="'تصویر ' + idx"
+              :is-local="false"
+              :lazy-src="item?.image"
+              class="!w-full !h-auto object-contain rounded-lg"
             />
           </router-link>
         </div>
@@ -82,6 +83,7 @@ import ProductCarousel from "@/components/product/ProductCarousel.vue";
 import {SLIDER_OPTIONS, SLIDER_PLACES} from "@/composables/constants.js";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import LoaderCard from "@/components/base/loader/LoaderCard.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const emit = defineEmits(['loaded'])
 

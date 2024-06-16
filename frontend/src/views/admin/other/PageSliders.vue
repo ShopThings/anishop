@@ -21,19 +21,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:place_in="{value}">
               {{ value.place_in.text }}
@@ -45,10 +45,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
-                  :removals="calcRemovals(value)"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -159,16 +159,15 @@ function calcRemovals(row) {
   let removals = []
 
   if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
+    removals.push('edit')
+    removals.push('edit_slides')
   }
-  if (
-    row.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value &&
-    !userStore.hasPermission(PERMISSION_PLACES.SLIDER, PERMISSIONS.UPDATE)
-  ) {
-    removals.push(['edit_slides'])
+
+  if (row.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value) {
+    removals.push('edit_slides')
   }
 
   return removals

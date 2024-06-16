@@ -293,7 +293,9 @@ import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMes
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import {findItemByKey, obfuscateEmail, obfuscateNumber} from "@/composables/helper.js";
 import {SOCIAL_NETWORKS} from "@/composables/constants.js";
+import {useToast} from "vue-toastification";
 
+const toast = useToast()
 const homeSettingStore = inject('homeSettingStore')
 
 //----------------------------------
@@ -433,8 +435,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   if (selectedContactType.value.type === 'contact') {
     HomeMainPageAPI.createContactUs(data, {
-      success() {
+      success(response) {
+        toast.success(response.data)
         actions.resetForm()
+
+        return false
       },
       error(error) {
         if (error?.errors && Object.keys(error.errors).length >= 1) {
@@ -442,18 +447,31 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         }
       },
       finally() {
-        if (captchaCom.value)
+        canSubmit.value = true
+
+        if (captchaCom.value) {
           captchaCom.value.getCaptcha()
+        }
       },
     })
   } else if (selectedContactType.value.type === 'complaint') {
     HomeMainPageAPI.createComplaint(data, {
-      success() {
+      success(response) {
+        toast.success(response.data)
         actions.resetForm()
+
+        return false
       },
       error(error) {
         if (error?.errors && Object.keys(error.errors).length >= 1) {
           actions.setErrors(error.errors)
+        }
+      },
+      finally() {
+        canSubmit.value = true
+
+        if (captchaCom.value) {
+          captchaCom.value.getCaptcha()
         }
       },
     })

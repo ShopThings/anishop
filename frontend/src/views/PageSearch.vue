@@ -6,8 +6,8 @@
       <div class="grow">
         <base-paginator
           ref="productPaginatorRef"
-          v-model:items="products"
-          :extra-search-params="filterParamStore.searchParams"
+          v-model:total="totalProducts"
+          :extra-search-params="extraSearchParams"
           :order="productOrder"
           :just-notice-order-changed="true"
           :path="getSearchPath"
@@ -22,7 +22,7 @@
           pagination-theme="modern"
           @order-changed="orderChangeHandler"
         >
-          <template #BeforeItemsPanel="{offset, page, perPage, maxPage, total}">
+          <template #beforeItemsPanel="{offset, page, perPage, maxPage, total}">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3">
               <div class="lg:hidden">
                 <base-popover-side panel-class="">
@@ -69,7 +69,7 @@
                 </base-popover-side>
               </div>
 
-              <partial-paginator-pagniation-info
+              <partial-paginator-pagination-info
                 :current-page="page"
                 :max-page="maxPage"
                 :offset="offset"
@@ -162,7 +162,7 @@ import ProductSearchFiltersContainer from "@/components/product/ProductSearchFil
 import {apiRoutes} from "@/router/api-routes.js";
 import {useRoute, useRouter} from "vue-router";
 import ProductSearchFestivals from "@/components/product/ProductSearchFestivals.vue";
-import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
+import PartialPaginatorPaginationInfo from "@/components/partials/PartialPaginatorPaginationInfo.vue";
 import {watchImmediate} from "@vueuse/core";
 import {useProductFilterParamStore} from "@/store/StoreProductFilter.js";
 
@@ -185,10 +185,11 @@ const showFestivals = ref(true)
 const router = useRouter()
 const route = useRoute()
 
-const products = ref([])
+const totalProducts = ref(0)
 const productOrder = []
 
 const filterParamStore = useProductFilterParamStore()
+const extraSearchParams = filterParamStore.routeKeys
 
 // create orders
 let counter = 1
@@ -205,11 +206,12 @@ for (const t in PRODUCT_ORDER_TYPES) {
 
 function festivalChangeHandler(selected) {
   filterParamStore.setFestival(selected.id)
+  filterHandler()
 }
 
 function orderChangeHandler(selected) {
   filterParamStore.setOrder(selected.key)
-  router.push({query: Object.assign({}, route.query, filterParamStore.getSearchParams)})
+  router.push({query: Object.assign({}, route.query, filterParamStore.getRouteQueryObject())})
 }
 
 const isLocallyQueryChange = shallowRef(false)
@@ -217,7 +219,7 @@ const isLocallyQueryChange = shallowRef(false)
 function triggerRouteOnSearchParams() {
   isLocallyQueryChange.value = true
 
-  router.push(filterParamStore.getRouteQueryObject())
+  router.push({query: filterParamStore.getRouteQueryObject()})
 
   nextTick(() => {
     if (productPaginatorRef.value) {

@@ -17,9 +17,11 @@
       </div>
       <partial-comment-blog-nested
         v-if="comment.children_count > 0"
+        :blog-slug="blogSlug"
         :parent-id="comment.id"
       />
     </template>
+
     <div
       v-if="config.page !== config.lastPage"
       class="mb-3"
@@ -29,11 +31,21 @@
         type="button"
         @click="loadMore"
       >
-        <span class="flex items-center justify-center gap-1">
-          <span class="font-iranyekan-bold">مشاهده نظرات بیشتر</span>
-          <span class="font-iranyekan-bold py-0.5 px-1">( {{ config.total - (comments?.length || 0) }} )</span>
-        </span>
-        <ArrowLeftCircleIcon class="size-6"/>
+        <VTransitionFade v-if="commentsLoading">
+          <loader-circle
+            big-circle-color="border-transparent"
+            container-bg-color=""
+            main-container-klass="relative h-6 w-44 flex items-center justify-center"
+            spinner-klass="!h-6 !w-6"
+          />
+        </VTransitionFade>
+        <template v-else>
+          <span class="flex items-center justify-center gap-1">
+            <span class="font-iranyekan-bold">مشاهده دیدگاه‌های بیشتر</span>
+            <span class="font-iranyekan-bold py-0.5 px-1">( {{ config.total - (comments?.length || 0) }} )</span>
+          </span>
+          <ArrowLeftCircleIcon class="size-6"/>
+        </template>
       </button>
     </div>
   </template>
@@ -54,6 +66,7 @@ import PartialCommentBlogSingle from "@/components/partials/PartialCommentBlogSi
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {HomeBlogCommentAPI} from "@/service/APIHomePages.js";
 import PartialCommentBlogNested from "@/components/partials/PartialCommentBlogNested.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 const props = defineProps({
   blogSlug: {
@@ -80,6 +93,8 @@ function loadMore() {
 }
 
 function loadComments() {
+  commentsLoading.value = true
+
   HomeBlogCommentAPI.fetchAll(props.blogSlug, {
     limit: limit,
     page: config.page,

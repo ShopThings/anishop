@@ -8,6 +8,7 @@ use App\Models\SliderItem;
 use App\Repositories\Contracts\SliderRepositoryInterface;
 use App\Support\Repository;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 class SliderRepository extends Repository implements SLiderRepositoryInterface
@@ -58,18 +59,22 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
      */
     public function getSlider(SliderPlacesEnum|array $place, bool $withUnpublished = false): Collection
     {
-        if (!is_array($place)) $place = [$place];
+        $place = Arr::wrap($place);
 
         // if there is no placement specified, empty collection is enough though
         if (!count($place)) return collect();
 
-        return $this->model->published()
-            ->whereIn('place_in', $place)
-            ->whereHas('items', function ($query) use ($withUnpublished) {
-                if (!$withUnpublished) {
-                    $query->published()->orderBy('priority');
-                }
-            })
+        $query = $this->model->newQuery();
+
+        if (!$withUnpublished) {
+            $query->published();
+        }
+
+        return $query
+            ->whereIn('place_in', array_map(fn($item) => $item->value, $place))
+            ->with(['items' => function ($query) use ($withUnpublished) {
+                $query->orderBy('priority');
+            }])
             ->orderBy('priority')
             ->get();
     }

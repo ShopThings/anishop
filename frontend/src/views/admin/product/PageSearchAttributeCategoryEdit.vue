@@ -218,7 +218,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   ProductAttributeCategoryAPI.updateById(idParam.value, {
     attribute: selectedAttribute.value.id,
-    product: selectedCategory.value.id,
+    category: selectedCategory.value.id,
     priority: values.priority,
   }, {
     success(response) {

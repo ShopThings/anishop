@@ -1,4 +1,4 @@
-@import "../styles/fonts.scss";
+@import "../styles/fonts.css";
 
 @tailwind base;
 @tailwind components;
@@ -17,7 +17,7 @@
 }
 
 .layout-max-w {
-  max-width: 98rem;
+  max-width: 96rem; /* "1536px" or "2xl" in tailwind */
 }
 
 /* VueRouter active link */

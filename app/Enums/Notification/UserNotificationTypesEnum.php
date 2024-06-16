@@ -33,7 +33,7 @@ enum UserNotificationTypesEnum: string
         return [
             self::SIGNUP->value => 'ثبت نام',
             self::UPDATE_INFO->value => 'بروزرسانی اطلاعات',
-            self::COMMENTED->value => 'ثبت نظر',
+            self::COMMENTED->value => 'ثبت دیدگاه',
             self::RECOVER_PASS->value => 'بازگردانی کلمه عبور',
             self::BUY->value => 'خرید',
             self::ORDER_STATUS->value => 'وضعیت سفارش',

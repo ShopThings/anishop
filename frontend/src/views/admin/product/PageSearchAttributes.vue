@@ -93,6 +93,12 @@ const table = reactive({
       sortable: true,
     },
     {
+      label: "عنوان",
+      field: "title",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
+    },
+    {
       label: "نوع",
       field: "type",
     },
@@ -110,6 +116,12 @@ const table = reactive({
       columnStyles: "width: 3%;",
       sortable: true,
       isKey: true,
+    },
+    {
+      label: "عنوان",
+      field: "title",
+      columnClasses: 'whitespace-nowrap',
+      sortable: true,
     },
     {
       label: "نوع",
@@ -137,15 +149,15 @@ const table = reactive({
   },
 })
 
-function calcRemovals(row) {
+function calcRemovals() {
   let removals = []
 
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
-    removals.push(['editValues'])
+    removals.push('edit')
+    removals.push('editValues')
   }
 
   return removals

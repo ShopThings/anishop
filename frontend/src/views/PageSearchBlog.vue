@@ -6,7 +6,7 @@
       <div class="grow">
         <base-paginator
             ref="blogPaginatorRef"
-            v-model:items="blogs"
+            v-model:total="totalBlogs"
             :path="getSearchPath"
             :order="blogOrder"
             :per-page="blogPerPage"
@@ -140,7 +140,7 @@ for (const t in BLOG_ORDER_TYPES) {
 }
 //
 
-const blogs = ref([])
+const totalBlogs = ref(0)
 
 function orderChangeHandler(selected) {
   searchParams.value.order = selected.key

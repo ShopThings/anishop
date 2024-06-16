@@ -345,6 +345,7 @@
                     {{ getPercentageOfPortion(getBuyablePrice, selectedProduct.price, true) }}
                     <span class="text-xs">%</span>
                     <span class="text-xs mr-0.5">تخفیف</span>
+                    <span v-if="hasFestivalDiscount" class="text-xs">جشنواره</span>
                   </div>
                 </template>
               </div>
@@ -627,7 +628,7 @@
     class="mt-12"
   >
     <base-tab-panel
-      :tabs="tabs"
+      v-model:tabs="tabs"
       tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
     >
       <template #description>
@@ -685,6 +686,7 @@
           :product-title="currentMainProduct.title"
           :allow-comment-operations="allowCommentOperations"
           :show-add-comment="showAddComment"
+          @totalCommentChanged="(total) => {tabs.comments.button.badgeCount = total}"
         />
       </template>
     </base-tab-panel>
@@ -827,39 +829,13 @@ watchEffect(() => {
 })
 
 //------------------------------------------------------------
-// Discount timer operations
+// Discount checking
 //------------------------------------------------------------
-const getDiscountTimer = computed(() => {
+const hasGeneralDiscount = computed(() => {
   const currentDate = new Date()
   const seconds = currentDate.getTime() / 1000
 
-  // Check if product have festival discount
-  if (
-    (
-      !selectedProduct.value.festival_discounted_from_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds >= seconds
-    ) ||
-    (
-      selectedProduct.value.festival_discounted_from_in_seconds &&
-      !selectedProduct.value.festival_discounted_until_in_seconds &&
-      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
-    ) ||
-    (
-      selectedProduct.value.festival_discounted_from_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds >= seconds &&
-      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
-    )
-  ) {
-    if (selectedProduct.value.festival_discounted_until_in_seconds !== null) {
-      return selectedProduct.value.festival_discounted_until_in_seconds
-    }
-    return 0
-  }
-
-  // Check if product have general discount
-  if (
+  return (
     (
       !selectedProduct.value.discounted_from_in_seconds &&
       selectedProduct.value.discounted_until_in_seconds &&
@@ -876,7 +852,46 @@ const getDiscountTimer = computed(() => {
       selectedProduct.value.discounted_until_in_seconds >= seconds &&
       selectedProduct.value.discounted_from_in_seconds <= seconds
     )
-  ) {
+  )
+})
+
+const hasFestivalDiscount = computed(() => {
+  const currentDate = new Date()
+  const seconds = currentDate.getTime() / 1000
+
+  return (
+    (
+      !selectedProduct.value.festival_discounted_from_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds >= seconds
+    ) ||
+    (
+      selectedProduct.value.festival_discounted_from_in_seconds &&
+      !selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
+    ) ||
+    (
+      selectedProduct.value.festival_discounted_from_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds >= seconds &&
+      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
+    )
+  )
+})
+
+//------------------------------------------------------------
+// Discount timer operations
+//------------------------------------------------------------
+const getDiscountTimer = computed(() => {
+  if (hasFestivalDiscount.value) {
+    if (selectedProduct.value.festival_discounted_until_in_seconds !== null) {
+      return selectedProduct.value.festival_discounted_until_in_seconds
+    }
+    return 0
+  }
+
+  // Check if product have general discount
+  if (hasGeneralDiscount.value) {
     if (selectedProduct.value.discounted_until_in_seconds !== null) {
       return selectedProduct.value.discounted_until_in_seconds
     }

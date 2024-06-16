@@ -225,17 +225,17 @@ const table = reactive({
   },
 })
 
-function calcRemovals(row) {
+function calcRemovals() {
   let removals = []
 
   if (!userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
+    removals.push('edit')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.FESTIVAL, PERMISSIONS.CREATE)) {
-    removals.push(['editProducts'])
+    removals.push('editProducts')
   }
 
   return removals

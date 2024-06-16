@@ -4,6 +4,7 @@
       <div class="w-full p-2 md:w-2/3">
         <partial-input-label title="انتخاب محصول"/>
         <base-select-searchable
+          ref="productSelectRef"
           :current-page="productSelectConfig.currentPage.value"
           :has-pagination="true"
           :is-loading="productLoading"
@@ -106,6 +107,8 @@ const emit = defineEmits(['added'])
 
 const slugParam = getRouteParamByKey('slug', null, false)
 
+const productSelectRef = ref(null)
+
 //----------------------
 // Product search
 //----------------------
@@ -157,7 +160,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }, {
     success() {
       emit('added', selectedProduct.value)
+
       actions.resetForm()
+      if (productSelectRef.value) {
+        productSelectRef.value.removeSelectedItems()
+      }
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

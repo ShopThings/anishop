@@ -18,7 +18,7 @@
               v-if="errors && Object.keys(errors).length"
               type="error"
             >
-              <ul>
+              <ul class="leading-relaxed flex flex-col gap-3 list-inside list-disc">
                 <li
                   v-for="(err, idx) in errors"
                   :key="idx"
@@ -267,7 +267,9 @@ import {SliderAPI} from "@/service/APIConfig.js";
 import BaseMessage from "@/components/base/BaseMessage.vue";
 import {FileSizes} from "@/composables/file-list.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
 
@@ -277,6 +279,9 @@ const slider = ref(null)
 const slides = ref([])
 
 //-----------------------------
+const isMainSlidersPlace = computed(() => {
+  return slider.value?.place_in?.value === SLIDER_PLACES.MAIN_SLIDERS.value
+})
 const isBlogPlace = computed(() => {
   return slider.value?.place_in?.value === SLIDER_PLACES.MAIN_BLOG.value
 })
@@ -444,18 +449,28 @@ onMounted(() => {
   SliderAPI.fetchById(idParam.value, {
     success(response) {
       slider.value = response.data
+
+      if (isMainSlidersPlace.value) {
+        router.push({name: 'admin.sliders'})
+        return
+      }
+
+      SliderAPI.fetchSliderItems(idParam.value, {
+        success: (response) => {
+          setFormFields(response.data)
+
+          if (isBlogPlace || isBlogSidePlace) {
+            searchBlog()
+          }
+          if (isAmazingOfferPlace) {
+            searchProduct()
+          }
+
+          loading.value = false
+        },
+      })
     },
   })
-
-  SliderAPI.fetchSliderItems(idParam.value, {
-    success: (response) => {
-      setFormFields(response.data)
-      loading.value = false
-    },
-  })
-
-  searchBlog()
-  searchProduct()
 })
 
 function setFormFields(item) {

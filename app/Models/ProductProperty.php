@@ -106,7 +106,8 @@ class ProductProperty extends Model implements Buyable
         $festivalProduct = $this->product()->withWhereHas('festivals.festival', function ($query) {
             $query->published()->activated();
         })->first();
-        $record = $festivalProduct?->product?->festivals?->first(['discount_percentage']);
+
+        $record = $festivalProduct?->festivals?->first();
 
         if (!is_null($record)) {
             $off = $this->price * $record->discount_percentage / 100.00;

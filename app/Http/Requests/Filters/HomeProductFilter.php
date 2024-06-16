@@ -75,6 +75,11 @@ class HomeProductFilter extends Filter
     protected ?array $dynamicFilters = null;
 
     /**
+     * @var int|null
+     */
+    protected ?int $festival = null;
+
+    /**
      * @return string|null
      */
     public function getColor(): ?string
@@ -338,12 +343,32 @@ class HomeProductFilter extends Filter
     }
 
     /**
-     * @param array|null $filters
+     * @param string|null $filters
      * @return static
      */
-    public function setDynamicFilters(?array $filters): static
+    public function setDynamicFilters(?string $filters): static
     {
-        $this->dynamicFilters = $filters;
+        $this->dynamicFilters = json_decode($filters, true);
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFestival(): ?int
+    {
+        return $this->festival;
+    }
+
+    /**
+     * @param int $festival
+     * @return static
+     */
+    public function setFestival(int $festival): static
+    {
+        if ($festival > 0) {
+            $this->festival = $festival;
+        }
         return $this;
     }
 
@@ -367,6 +392,7 @@ class HomeProductFilter extends Filter
         $this->onlyAvailable = false;
         $this->isAvailable = true;
         $this->dynamicFilters = null;
+        $this->festival = null;
 
         return $this;
     }
@@ -386,6 +412,7 @@ class HomeProductFilter extends Filter
         $this->setIsSpecial($request->boolean('is_special'));
         $this->setOnlyAvailable($request->boolean('only_available'));
         $this->setDynamicFilters($request->input('dynamic_filters'));
+        $this->setFestival($request->integer('festival'));
 
         // set colors
         $colors = $request->input('colors', []);

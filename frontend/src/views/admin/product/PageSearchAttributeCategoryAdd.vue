@@ -6,7 +6,7 @@
     <template #body>
       <div class="p-3">
         <form @submit.prevent="onSubmit">
-          <div class="flex flex-wrap items-end">
+          <div class="flex flex-wrap items-start">
             <div class="w-full p-2 sm:w-1/2 lg:w-5/12 xl:w-5/12">
               <partial-input-label title="انتخاب ویژگی"/>
               <base-select-searchable
@@ -200,7 +200,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   ProductAttributeCategoryAPI.create({
     attribute: selectedAttribute.value.id,
-    product: selectedCategory.value.id,
+    category: selectedCategory.value.id,
     priority: values.priority,
   }, {
     success() {

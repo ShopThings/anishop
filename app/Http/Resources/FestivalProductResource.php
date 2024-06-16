@@ -22,6 +22,7 @@ class FestivalProductResource extends JsonResource
             'product' => new ProductShowResource($this->whenLoaded('product')),
             'festival_id' => $this->festival_id,
             'festival' => new FestivalShowResource($this->whenLoaded('festival')),
+            'discount_percentage' => $this->discount_percentage,
         ];
     }
 }

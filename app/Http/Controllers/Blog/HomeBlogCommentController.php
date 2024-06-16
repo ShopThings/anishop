@@ -39,7 +39,7 @@ class HomeBlogCommentController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'امکان مشاهده کامنت‌ها وجود ندارد.',
-            ]);
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return BlogCommentResource::collection($this->service->getComments(

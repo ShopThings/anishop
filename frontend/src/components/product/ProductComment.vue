@@ -1,7 +1,17 @@
 <template>
+  <div class="text-gray-500 mb-3">دیدگاه برای محصول</div>
+  <div
+    v-if="productTitle?.length"
+    class="leading-loose iranyekan-bold text-lg"
+  >
+    {{ productTitle }}
+  </div>
+
+  <hr class="my-6">
+
   <div class="comment-sticky-container flex flex-col lg:flex-row gap-6">
     <Vue3StickySidebar
-      v-if="showAddComment && comments?.length"
+      v-if="showAddComment && totalComments > 0"
       :bottom-spacing="20"
       :min-width="1024"
       :top-spacing="114"
@@ -27,25 +37,29 @@
             ثبت دیدگاه
           </base-button>
 
-          <div class="text-rose-500 text-xs">
-            با دیدگاه خود به سایر کاربران در یک خرید بهتر کمک نمایید
+          <div class="text-pink-500 text-xs">
+            با دیدگاه خود به سایر کاربران در یک خرید بهتر کمک نمایید.
           </div>
         </div>
       </div>
     </Vue3StickySidebar>
 
     <div class="grow">
-      <div class="flex items-center my-4">
+      <div
+        v-if="totalComments > 0"
+        class="flex items-center my-4"
+      >
         <div class="grow h-0.5 bg-teal-500 rounded-full"></div>
         <span class="shrink-0 rounded-full bg-teal-100 px-4 py-1">دیدگاه کاربران</span>
         <div class="grow h-0.5 bg-teal-500 rounded-full"></div>
       </div>
 
       <base-paginator
-        v-model:items="comments"
+        v-model:total="totalComments"
         :number-of-loaders="3"
         :path="getPath"
         :per-page="20"
+        :scroll-to-element-on-appearance="false"
         container-class="divide-y divide-orange-300"
         item-container-class="divide-y divide-gray-100 space-y-3 pt-3"
         pagination-theme="modern"
@@ -108,16 +122,6 @@
         </template>
 
         <template #empty>
-          <div class="mb-3">
-            <div class="text-lg text-gray-500 mb-3">دیدگاه برای محصول</div>
-            <div
-              v-if="productTitle?.length"
-              class="leading-loose iranyekan-bold"
-            >
-              {{ productTitle }}
-            </div>
-          </div>
-
           <div
             v-if="showAddComment"
             class="flex justify-start flex-col sm:justify-between sm:flex-row gap-3 border border-slate-100 shadow-md rounded-lg p-3"
@@ -138,8 +142,8 @@
                 ثبت دیدگاه
               </base-button>
 
-              <div class="text-rose-500 text-xs">
-                با دیدگاه خود به سایر کاربران در یک خرید بهتر کمک نمایید
+              <div class="text-pink-500 text-xs">
+                با دیدگاه خود به سایر کاربران در یک خرید بهتر کمک نمایید.
               </div>
             </div>
           </div>
@@ -194,7 +198,7 @@
             <div class="w-2 h-2 rounded-full bg-gray-200"></div>
             <div class="text-gray-700">
               {{
-                (comment?.creator?.first_name ?? 'کاربر سایت').trim()
+                (comment?.created_by?.first_name ?? 'کاربر سایت').trim()
               }}
             </div>
           </div>
@@ -273,7 +277,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {
   ChatBubbleBottomCenterIcon,
   EllipsisVerticalIcon,
@@ -311,12 +315,17 @@ const props = defineProps({
     default: true,
   },
 })
+const emit = defineEmits(['totalCommentChanged'])
 
 const toast = useToast()
 const userStore = useUserAuthStore()
 
-const comments = ref([])
+const totalComments = ref(0)
 const getPath = apiReplaceParams(apiRoutes.comments.index, {product: props.productSlug})
+
+watch(totalComments, () => {
+  emit('totalCommentChanged', totalComments.value)
+})
 
 function reportCommentHandler(comment, item, hide) {
   if (!item?.operation || !comment?.id || !props.allowCommentOperations) {
@@ -339,7 +348,7 @@ function reportCommentHandler(comment, item, hide) {
           comment.reporting_operation_loading = false
         },
       })
-    }, 'گزارش دادن نظر؟')
+    }, 'گزارش دادن دیدگاه؟')
   }
 }
 

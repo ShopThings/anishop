@@ -21,6 +21,7 @@
         :key="festival.id"
         type="button"
         class="flex items-center justify-between gap-3 w-full p-3 hover:bg-slate-100 transition"
+        :class="filterParamsStore.getFestival && filterParamsStore.getFestival === festival.id ? '!bg-cyan-200' : ''"
         @click="emit('select', festival)"
     >
       <span class="font-iranyekan-bold">{{ festival.title }}</span>
@@ -34,11 +35,14 @@ import {onMounted, ref} from "vue";
 import {ArrowLeftIcon, GiftIcon, SparklesIcon} from "@heroicons/vue/24/outline/index.js"
 import {HomeFestivalAPI} from "@/service/APIHomePages.js";
 import Loader3Dot from "@/components/base/loader/Loader3Dot.vue";
+import {useProductFilterParamStore} from "@/store/StoreProductFilter.js";
 
 const emit = defineEmits(['loaded', 'select'])
 
 const festivals = ref(null)
 const festivalsLoading = ref(true)
+
+const filterParamsStore = useProductFilterParamStore()
 
 onMounted(() => {
   HomeFestivalAPI.fetchAll({

@@ -136,6 +136,7 @@ const table = reactive({
     {
       label: "ارسال توسط",
       field: "sender",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت",
@@ -170,6 +171,7 @@ const table = reactive({
     {
       label: "ارسال توسط",
       field: "sender",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت",

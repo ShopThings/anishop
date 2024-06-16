@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\DatabaseEnum;
 use App\Enums\Products\ProductOrderTypesEnum;
 use App\Enums\Sliders\SliderItemOptionsEnum;
 use App\Enums\Sliders\SliderOptionsEnum;
@@ -141,6 +140,7 @@ class SliderService extends Service implements SliderServiceInterface
     public function getAllMainSliders(): Collection
     {
         $sliders = $this->getSlider([SliderPlacesEnum::MAIN_SLIDERS, SliderPlacesEnum::MAIN_SLIDER_IMAGES]);
+
         if ($sliders->isEmpty()) return collect();
 
         /**
@@ -155,17 +155,17 @@ class SliderService extends Service implements SliderServiceInterface
         return $sliders
             ->sortBy('priority', SORT_ASC)
             ->map(function ($item) use ($productService, $fileService) {
-                if ($item->place_in === SliderPlacesEnum::MAIN_SLIDER_IMAGES->value) {
+                if ($item->place_in->value === SliderPlacesEnum::MAIN_SLIDER_IMAGES->value) {
                     $slides = $item->items
                         ->sortBy('priority', SORT_ASC)
                         ->map(function ($slide) use ($fileService) {
                             // second parameter will search on id of an image too
-                            $file = $fileService->find($slide[SliderItemOptionsEnum::IMAGE->value], true);
+                            $file = $fileService->find($slide->options[SliderItemOptionsEnum::IMAGE->value], true);
 
                             return [
                                 'id' => $slide->id,
                                 'image' => $file?->full_path,
-                                'link' => $slide[SliderItemOptionsEnum::LINK->value],
+                                'link' => $slide->options[SliderItemOptionsEnum::LINK->value],
                             ];
                         });
                 } else {
@@ -185,16 +185,7 @@ class SliderService extends Service implements SliderServiceInterface
                     $filter->setLimit($options['count']);
                     $filter->setIsAvailable(true);
 
-                    $where = new WhereBuilder('products');
-                    $where->whereEqual('is_published', DatabaseEnum::DB_YES)
-                        ->whereEqual('is_available', DatabaseEnum::DB_YES);
-
-                    $slides = collect(
-                        $productService->getProducts(
-                            filter: $filter,
-                            where: $where->build()
-                        )->items()
-                    );
+                    $slides = collect($productService->getProducts(filter: $filter)->items());
                 }
 
                 // make options
@@ -202,7 +193,7 @@ class SliderService extends Service implements SliderServiceInterface
                 if (isset($item->options[SliderOptionsEnum::SHOW_ALL_LINK->value])) {
                     $options[SliderOptionsEnum::SHOW_ALL_LINK->value] = $item->options[SliderOptionsEnum::SHOW_ALL_LINK->value] ?? null;
                 }
-                if ($item->place_in === SliderPlacesEnum::MAIN_SLIDER_IMAGES->value) {
+                if ($item->place_in->value === SliderPlacesEnum::MAIN_SLIDER_IMAGES->value) {
                     $options[SliderOptionsEnum::BESIDE_IMAGES->value] = $item->options[SliderOptionsEnum::BESIDE_IMAGES->value] ?? 1;
                 }
 
@@ -338,10 +329,17 @@ class SliderService extends Service implements SliderServiceInterface
          */
         $categoryService = app()->get(CategoryServiceInterface::class);
 
-        $hasBrand = $brandService->exists($options[SliderOptionsEnum::BRAND_ID->value]);
-        $hasCategory = $categoryService->exists($options[SliderOptionsEnum::CATEGORY_ID->value]);
+        $hasBrand = false;
+        $hasCategory = false;
 
-        $sort = $options[SliderOptionsEnum::ORDER_BY->value];
+        if (isset($options[SliderOptionsEnum::BRAND_ID->value])) {
+            $hasBrand = $brandService->exists($options[SliderOptionsEnum::BRAND_ID->value]);
+        }
+        if (isset($options[SliderOptionsEnum::CATEGORY_ID->value])) {
+            $hasCategory = $categoryService->exists($options[SliderOptionsEnum::CATEGORY_ID->value]);
+        }
+
+        $sort = $options[SliderOptionsEnum::ORDER_BY->value] ?? 'asc';
         $sort = !in_array($sort, ['asc', 'desc']) ? 'desc' : $sort;
 
         $count = $options[SliderOptionsEnum::COUNT->value];

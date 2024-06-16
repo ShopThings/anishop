@@ -34,7 +34,7 @@ class StoreFileRequest extends FormRequest
         return [
             'file' => [
                 'required',
-                'mimes:jpeg,png,jpg,gif,svg,csv,txt,xlx,xlsx,xls,pdf,docx,doc,mp4,mp3',
+                'mimes:jpeg,png,jpg,webp,gif,svg,csv,txt,xlx,xlsx,xls,pdf,docx,doc,mp4,mp3',
                 'max:512000'
             ],
             'disk' => [

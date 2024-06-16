@@ -70,6 +70,7 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
                     })
                     ->orWhereLike([
                         'blogs.escaped_title',
+                        'blogs.slug',
                         'blogs.keywords',
                     ], $search);
             })

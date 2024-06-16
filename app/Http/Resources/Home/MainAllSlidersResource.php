@@ -18,19 +18,19 @@ class MainAllSlidersResource extends JsonResource
         $self = $this;
 
         return [
-            'id' => $this->id,
-            'title' => $this->title,
+            'id' => $this['id'],
+            'title' => $this['title'],
             'place_in' => [
-                'text' => SliderPlacesEnum::getTranslations($this->place_in, 'نامشخص'),
-                'value' => $this->place_in,
+                'text' => SliderPlacesEnum::getTranslations($this['place'], 'نامشخص'),
+                'value' => $this['place'],
             ],
-            'items' => $this->when($this->items, function () use ($self) {
-                if ($self->place_in == SliderPlacesEnum::MAIN_SLIDERS->value) {
-                    return ProductResource::collection($self->items);
+            'items' => $this->when($this['items'], function () use ($self) {
+                if ($self['place']?->value === SliderPlacesEnum::MAIN_SLIDERS->value) {
+                    return ProductResource::collection($self['items']);
                 }
-                return $self->items;
+                return $self['items'];
             }),
-            'options' => $this->options,
+            'options' => $this['options'],
         ];
     }
 }

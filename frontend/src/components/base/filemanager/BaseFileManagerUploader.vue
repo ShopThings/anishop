@@ -33,12 +33,12 @@
   </base-message>
 
   <div
-      :class="{'border-blue-500': active}"
-      class="bg-slate-200 py-6 px-4 rounded-lg mb-3 border-4 border-dashed border-slate-300 bg-opacity-60 relative overflow-hidden"
-      @dragenter.prevent="setActive"
-      @dragover.prevent="setActive"
-      @dragleave.prevent="setInactive"
-      @drop.prevent="onDrop"
+    :class="{'border-blue-500': active}"
+    class="bg-slate-200 py-6 px-4 rounded-lg mb-3 border-4 border-dashed border-slate-300 bg-opacity-60 relative overflow-hidden"
+    @dragenter.prevent="setActive"
+    @dragover.prevent="setActive"
+    @dragleave.prevent="setInactive"
+    @drop.prevent="onDrop"
   >
     <VTransitionSlideFadeDownY>
       <div v-if="active"
@@ -63,15 +63,15 @@
         <span class="text-gray-400 block sm:inline-block my-3 sm:mx-3 sm:my-0">یا</span>
         <div class="block sm:inline-block">
           <input
-              id="fileUpload"
-              class="hidden"
-              multiple
-              type="file"
-              @change="onChange"
+            id="fileUpload"
+            class="hidden"
+            multiple
+            type="file"
+            @change="onChange"
           >
           <label
-              class="inline-block rounded-md border-2 border-pink-600 bg-pink-200 bg-opacity-30 py-2 px-4 cursor-pointer hover:bg-opacity-50 transition"
-              for="fileUpload"
+            class="inline-block rounded-md border-2 border-pink-600 bg-pink-200 bg-opacity-30 py-2 px-4 cursor-pointer hover:bg-opacity-50 transition"
+            for="fileUpload"
           >
             انتخاب فایل
           </label>
@@ -83,45 +83,45 @@
   <div v-show="files.length > 0">
     <div class="block md:grid md:grid-cols-2 gap-3 mb-3 max-h-[32rem] my-custom-scrollbar">
       <div
-          v-for="file of files"
-          :key="file.id"
-          class="flex p-3 bg-white mb-3 md:mb-0 rounded-lg shadow-md items-center relative"
+        v-for="file of files"
+        :key="file.id"
+        class="flex p-3 bg-white mb-3 md:mb-0 rounded-lg shadow-md items-center relative"
       >
         <img
-            v-if="isImageExt(file.extension)"
-            :alt="file.file.name"
-            :src="file.url"
-            :title="file.file.name"
-            class="w-20 h-20 object-contain shrink-0 border rounded-lg"
+          v-if="isImageExt(file.extension)"
+          :alt="file.file.name"
+          :src="file.url"
+          :title="file.file.name"
+          class="w-20 h-20 object-contain shrink-0 border rounded-lg"
         />
         <MusicalNoteIcon
-            v-else-if="isAudioExt(file.extension)"
-            class="w-16 h-16 text-cyan-600 shrink-0"
+          v-else-if="isAudioExt(file.extension)"
+          class="w-16 h-16 text-cyan-600 shrink-0"
         />
         <FilmIcon
-            v-else-if="isVideoExt(file.extension)"
-            class="w-16 h-16 text-rose-600 shrink-0"
+          v-else-if="isVideoExt(file.extension)"
+          class="w-16 h-16 text-rose-600 shrink-0"
         />
         <DocumentTextIcon
-            v-else
-            class="w-16 h-16 text-gray-700 shrink-0"
+          v-else
+          class="w-16 h-16 text-gray-700 shrink-0"
         />
 
         <span class="grow mx-3 overflow-hidden text-ellipsis text-gray-600">{{ file.file.name }}</span>
         <base-button-close
-            v-tooltip.right="'حذف فایل'"
-            class="shrink-0 px-1 h-full"
-            @click="removeFile(file)"
+          v-tooltip.right="'حذف فایل'"
+          class="shrink-0 px-1 h-full"
+          @click="removeFile(file)"
         ></base-button-close>
 
         <div
-            v-if="file.status !== UploadTypes.NOT_SET"
-            :class="{
+          v-if="file.status !== UploadTypes.NOT_SET"
+          :class="{
               'bg-sky-400': file.status === UploadTypes.UPLOADING,
               'bg-green-400': file.status === UploadTypes.SUCCESS,
               'bg-rose-400': file.status === UploadTypes.FAILED
             }"
-            class="absolute w-full h-full top-0 left-0 bg-opacity-90 rounded-lg z-[1] flex flex-col items-center justify-center p-5"
+          class="absolute w-full h-full top-0 left-0 bg-opacity-90 rounded-lg z-[1] flex flex-col items-center justify-center p-5"
         >
           <span v-if="file.status === UploadTypes.UPLOADING">در حال بارگذاری فایل...</span>
           <span v-else-if="file.status === UploadTypes.SUCCESS" class="text-lg flex items-center">
@@ -134,23 +134,23 @@
               خطا در بارگذاری
             </div>
             <div
-                v-if="file.errorMessage"
-                class="text-xs text-black mt-2"
+              v-if="file.errorMessage"
+              class="text-xs text-black mt-2"
             >
               {{ file.errorMessage }}
             </div>
           </div>
           <div
-              v-if="file.status === UploadTypes.UPLOADING"
-              class="flex flex-row-reverse grow items-center w-full"
+            v-if="file.status === UploadTypes.UPLOADING"
+            class="flex flex-row-reverse grow items-center w-full"
           >
             <div class="h-2 w-full grow rounded-full bg-white bg-opacity-80 shadow-md">
               <div :style="'width:' + file.progress + '%'" class="bg-blue-700 h-full rounded-full"></div>
             </div>
             <base-button-close
-                v-tooltip.top="'لغو بارگذاری'"
-                class="shrink-0 ml-3 bg-white rounded bg-opacity-70 shadow-md"
-                @click="cancelUpload(file)"
+              v-tooltip.top="'لغو بارگذاری'"
+              class="shrink-0 ml-3 bg-white rounded bg-opacity-70 shadow-md"
+              @click="cancelUpload(file)"
             ></base-button-close>
           </div>
         </div>
@@ -158,20 +158,20 @@
     </div>
 
     <div
-        v-if="canUpload"
-        class="mt-3 flex flex-col sm:flex-row md:block md:mt-0 text-left"
+      v-if="canUpload"
+      class="mt-3 flex flex-col sm:flex-row md:block md:mt-0 text-left"
     >
       <base-button
-          :disabled="!canUpload"
-          class="text-sm bg-emerald-500 border-emerald-600 border-2 grow mb-3"
-          @click="startUploadFiles"
+        :disabled="!canUpload"
+        class="text-sm bg-emerald-500 border-emerald-600 border-2 grow mb-3"
+        @click="startUploadFiles"
       >
         آپلود تمامی فایل‌ها
       </base-button>
       <base-button
-          :disabled="!canUpload"
-          class="!text-black text-sm rounded-md border-2 border-rose-600 bg-rose-300 bg-opacity-20 py-2 px-4 mb-3 hover:bg-opacity-30 transition grow sm:mr-2"
-          @click="clearUploadItems"
+        :disabled="!canUpload"
+        class="!text-black text-sm rounded-md border-2 border-rose-600 bg-rose-300 bg-opacity-20 py-2 px-4 mb-3 hover:bg-opacity-30 transition grow sm:mr-2"
+        @click="clearUploadItems"
       >
         حذف تمامی فایل‌های آپلود
       </base-button>
@@ -285,7 +285,9 @@ function startUploadFiles() {
         })
       }, 3000)
 
-      emit('upload-complete')
+      emit('upload-complete', files.value.filter((file) => {
+        return file.status !== UploadTypes.SUCCESS
+      }).length > 0)
     }
   }, 1000)
 }

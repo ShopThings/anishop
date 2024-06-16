@@ -19,4 +19,10 @@ interface ProductAttributeCategoryServiceInterface extends ServiceInterface
      * @return int
      */
     public function getAttributeCategoriesCount(): int;
+
+    /**
+     * @param int $productId
+     * @return Collection|null
+     */
+    public function getProductAttributeCategories(int $productId): Collection|null;
 }

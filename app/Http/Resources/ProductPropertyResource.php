@@ -4,12 +4,15 @@ namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\ProductShowResource;
+use App\Traits\CompanyTimezoneDetectorTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductPropertyResource extends JsonResource
 {
+    use CompanyTimezoneDetectorTrait;
+
     /**
      * Transform the resource into an array.
      *
@@ -44,10 +47,14 @@ class ProductPropertyResource extends JsonResource
             'price' => $this->price,
             'discounted_price' => $this->discounted_price,
             'normal_discounted_from' => $this->discounted_from
-                ? Carbon::parse($this->discounted_from)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                ? Carbon::parse($this->discounted_from)
+                    ->timezone($this->getCompanyTimezone())
+                    ->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'normal_discounted_until' => $this->discounted_until
-                ? Carbon::parse($this->discounted_until)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                ? Carbon::parse($this->discounted_until)
+                    ->timezone($this->getCompanyTimezone())
+                    ->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'discounted_from_in_seconds' => $this->discounted_from
                 ? vertaTz($this->discounted_from)->diffSeconds(now())

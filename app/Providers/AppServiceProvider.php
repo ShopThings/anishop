@@ -107,7 +107,7 @@ class AppServiceProvider extends ServiceProvider
         });
         Builder::macro('orWhereLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
             $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
-                $query->whereLike($columns, $search, 'or', $replacement);
+                $query->whereLike($columns, $search, $replacement, 'or');
             });
 
             return $this;
@@ -124,7 +124,7 @@ class AppServiceProvider extends ServiceProvider
         });
         Builder::macro('orWhereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
             $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
-                $query->whereNotLike($columns, $search, 'or', $replacement);
+                $query->whereNotLike($columns, $search, $replacement, 'or');
             });
 
             return $this;
