@@ -5,7 +5,7 @@
         :style="'background-color: ' + hex + ';'"
         class="inline-block w-5 h-5 rounded-full border"
     ></span>
-    <span>{{ title }}</span>
+    <span class="whitespace-nowrap">{{ title }}</span>
   </div>
 </template>
 

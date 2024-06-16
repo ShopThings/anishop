@@ -2,20 +2,23 @@
 
 namespace App\Services;
 
-use App\Enums\Times\TimeFormatsEnum;
+use App\Enums\Results\CouponResultEnum;
+use App\Models\User;
 use App\Repositories\Contracts\CouponRepositoryInterface;
 use App\Services\Contracts\CouponServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Carbon\Carbon;
+use App\Traits\DatabaseDateTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class CouponService extends Service implements CouponServiceInterface
 {
+    use DatabaseDateTrait;
+
     public function __construct(
         protected CouponRepositoryInterface $repository
     )
@@ -45,6 +48,22 @@ class CouponService extends Service implements CouponServiceInterface
     /**
      * @inheritDoc
      */
+    public function getCouponsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkCoupon(string $code, User $user): Model|CouponResultEnum
+    {
+        return $this->repository->checkCoupon($code, $user);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function create(array $attributes): ?Model
     {
         $attrs = [
@@ -54,10 +73,10 @@ class CouponService extends Service implements CouponServiceInterface
             'apply_min_price' => $attributes['apply_min_price'] ?? null,
             'apply_max_price' => $attributes['apply_max_price'] ?? null,
             'start_at' => isset($attributes['start_at']) && !empty($attributes['start_at'])
-                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['start_at'])
+                ? $this->getValidDatabaseDate($attributes['start_at'])
                 : null,
             'end_at' => isset($attributes['end_at']) && !empty($attributes['end_at'])
-                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['end_at'])
+                ? $this->getValidDatabaseDate($attributes['end_at'])
                 : null,
             'use_count' => $attributes['use_count'],
             'reusable_after' => $attributes['reusable_after'],
@@ -92,26 +111,18 @@ class CouponService extends Service implements CouponServiceInterface
 
         if (isset($attributes['start_at'])) {
             if (!empty($attributes['start_at'])) {
-                $updateAttributes['start_at'] = Carbon::createFromFormat(
-                    TimeFormatsEnum::NORMAL_DATETIME->value,
-                    $attributes['start_at']
-                );
+                $updateAttributes['start_at'] = $this->getValidDatabaseDate($attributes['start_at']);
             } else {
                 $updateAttributes['start_at'] = null;
             }
         }
 
-        if (isset($attributes['end_at']) && !empty($attributes['end_at'])) {
+        if (isset($attributes['end_at'])) {
             if (!empty($attributes['end_at'])) {
-                $updateAttributes['end_at'] = Carbon::createFromFormat(
-                    TimeFormatsEnum::NORMAL_DATETIME->value,
-                    $attributes['end_at']
-                );
+                $updateAttributes['end_at'] = $this->getValidDatabaseDate($attributes['end_at']);
             } else {
                 $updateAttributes['end_at'] = null;
             }
-        } elseif (empty($attributes['end_at'])) {
-            $updateAttributes['end_at'] = null;
         }
 
         if (isset($attributes['use_count'])) {

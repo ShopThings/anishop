@@ -22,12 +22,13 @@
           :is-loading="table.isLoading"
           :rows="table.rows"
           :total="table.total"
+          :sortable="table.sortable"
           pagination-theme="modern"
           @do-search="doSearch"
       >
         <template #emptyTableRows>
           <partial-empty-rows
-              image="/empty-statuses/empty-order.svg"
+            image="/images/empty-statuses/empty-order.svg"
               image-class="w-64"
               message="هیچ سفارشی ثبت نشده است"
           />
@@ -58,7 +59,7 @@
 
         <template #total_price="{value}">
           <div class="text-lg font-iranyekan-bold">
-            {{ formatPriceLikeNumber(value.total_price) }}
+            {{ numberFormat(value.total_price) }}
             <span class="text-xs text-gray-400">تومان</span>
           </div>
         </template>
@@ -84,7 +85,7 @@ import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {MinusIcon, StarIcon} from "@heroicons/vue/24/outline/index.js";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
 import {UserPanelOrderAPI} from "@/service/APIUserPanel.js";
 
 const loading = ref(true)

@@ -36,7 +36,7 @@ class StoreProductGalleryRequest extends FormRequest
                 'array',
                 'min:1',
             ],
-            'images.*.image' => [
+            'images.*' => [
                 'required',
                 new FileExistsRule(),
             ],

@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class NewPasswordRequest extends FormRequest
@@ -28,6 +31,27 @@ class NewPasswordRequest extends FormRequest
                 (new Password(9))->numbers()->letters(),
                 'confirmed',
             ],
+            'username' => [
+                'required',
+                Rule::exists(User::class, 'username')->where(function ($query) {
+                    $query->whereNull('verified_at');
+                }),
+                new PersianMobileRule,
+            ],
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'username' => 'شماره موبایل',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'username.exists' => 'شماره موبایل وارد شده وجود ندارد/قبلا تایید شده است.',
         ];
     }
 }

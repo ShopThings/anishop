@@ -36,11 +36,13 @@ class StoreFestivalRequest extends FormRequest
             ],
             'start_at' => [
                 'sometimes',
+                'nullable',
                 'date-format:Y-m-d H:i',
                 'before:end_at',
             ],
             'end_at' => [
                 'sometimes',
+                'nullable',
                 'date-format:Y-m-d H:i',
                 'after:start_at',
             ],

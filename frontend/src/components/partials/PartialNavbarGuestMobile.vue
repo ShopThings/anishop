@@ -27,20 +27,39 @@
           ref="sidebarExtraContainerTop"
           class="flex mb-3 border-y py-3"
       >
-        <router-link
+        <template v-if="userStore.getUser">
+          <router-link
+            :to="{name: 'user.home'}"
+            class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white transition"
+          >
+            <WindowIcon class="h-6 w-6 text-sky-400 ml-2"/>
+            پیشخوان
+          </router-link>
+          <button
+            class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white mr-2 transition"
+            type="button"
+            @click="() => {close(); router.push({name: 'user.logout'})}"
+          >
+            <PowerIcon class="h-6 w-6 text-sky-400 ml-2"/>
+            خروج
+          </button>
+        </template>
+        <template v-else>
+          <router-link
             :to="{name: 'login'}"
             class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white transition"
-        >
-          <ArrowLeftEndOnRectangleIcon class="h-6 w-6 text-sky-400 ml-2"/>
-          ورود
-        </router-link>
-        <router-link
+          >
+            <ArrowLeftEndOnRectangleIcon class="h-6 w-6 text-sky-400 ml-2"/>
+            ورود
+          </router-link>
+          <router-link
             :to="{name: 'signup'}"
             class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white mr-2 transition"
-        >
-          <UserPlusIcon class="h-6 w-6 text-sky-400 ml-2"/>
-          ثبت نام
-        </router-link>
+          >
+            <UserPlusIcon class="h-6 w-6 text-sky-400 ml-2"/>
+            ثبت نام
+          </router-link>
+        </template>
       </div>
 
       <base-switcher-panel
@@ -88,11 +107,11 @@
                       :to="menu?.link || ''"
                       class="w-full px-3 py-3.5 text-sm cursor-pointer flex items-center gap-3 justify-between hover:bg-slate-100 transition rounded-md"
                       @click="(e) => {
-                                          if(menu?.children?.length)
-                                              mobilePanelChangeClickHandler(menu, goTo, e)
-                                          else
-                                              close()
-                                      }"
+                          if(menu?.children?.length)
+                              mobilePanelChangeClickHandler(menu, goTo, e)
+                          else
+                              close()
+                      }"
                   >
                     <span>{{ menu?.title }}</span>
                     <ChevronLeftIcon
@@ -123,18 +142,21 @@
 
 <script setup>
 import {computed, nextTick, reactive, ref} from "vue";
-import {ArrowLeftEndOnRectangleIcon, UserPlusIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftEndOnRectangleIcon, PowerIcon, UserPlusIcon, WindowIcon} from "@heroicons/vue/24/outline/index.js";
 import {ArrowTopRightOnSquareIcon, Bars3Icon, ChevronLeftIcon, XMarkIcon} from "@heroicons/vue/24/solid/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import BaseSwitcherPanel from "@/components/base/BaseSwitcherPanel.vue";
 import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {useSwitcherPanel} from "@/composables/switcher-panel.js";
 import {watchImmediate} from "@vueuse/core";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 
 const props = defineProps({
   menu: Object,
   isLoading: Boolean,
 })
+
+const userStore = useUserAuthStore()
 
 //------------------------------------
 // Mobile Menu Panel Operations

@@ -42,7 +42,7 @@ class UserNotificationController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        $res = $this->service->makeAllNotificationAsRead(user: $request->user());
+        $res = $this->service->makeAllNotificationAsRead($request->user());
 
         if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
@@ -51,7 +51,7 @@ class UserNotificationController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در تغییر وضعیت اعلان',
-        ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -61,7 +61,7 @@ class UserNotificationController extends Controller
     public function newNotifications(Request $request): AnonymousResourceCollection
     {
         return UserNotificationResource::collection(
-            $this->service->getUnreadNotifications(user: $request->user())
+            $this->service->getUnreadNotifications($request->user())
         );
     }
 }

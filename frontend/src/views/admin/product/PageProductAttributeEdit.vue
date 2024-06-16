@@ -1,55 +1,94 @@
 <template>
+  <base-loading-panel
+    :loading="productLoading"
+    type="list-single"
+  >
+    <template #content>
+      <partial-card class="border-0 mb-3">
+        <template #header>
+          دیدگاه کاربر درباره محصول
+        </template>
+        <template #body>
+          <div class="py-3 px-4">
+            <div class="flex flex-col sm:flex-row gap-3 items-center">
+              <div class="shrink-0">
+                <base-lazy-image
+                  :alt="product?.title"
+                  :is-local="false"
+                  :lazy-src="product?.image.full_path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
+                />
+              </div>
+              <div class="grow text-sm">
+                {{ product?.title }}
+              </div>
+              <div class="text-sm shrink-0">
+                <router-link
+                  :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
+                  class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                >
+                  <span class="mx-auto">مشاهده محصول</span>
+                  <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </template>
+      </partial-card>
+    </template>
+  </base-loading-panel>
+
   <partial-card>
     <template #header>
       ویرایش ویژگی جستجوی
-      <span
-          v-if="product?.id"
-          class="text-slate-400 text-base"
-      >{{ product?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
         <base-loading-panel
-            :loading="loading"
-            type="form"
+          :loading="loading"
+          type="form"
         >
           <template #content>
-            <form @submit.prevent="onSubmit">
+            <form
+              v-if="categoryAttributes?.length"
+              @submit.prevent="onSubmit"
+            >
               <partial-error-message
-                  v-if="errors.values"
-                  :has-close="false"
+                v-if="errors.values"
+                :has-close="false"
               >
                 {{ errors.values }}
               </partial-error-message>
 
               <div class="flex flex-wrap">
                 <div
-                    v-for="(attr) in productAttributes"
-                    class="w-full p-2 sm:w-1/2 xl:w-1/3"
+                  v-for="(attr) in categoryAttributes"
+                  class="w-full p-2 sm:w-1/2 xl:w-1/3"
                 >
-                  <partial-input-label :title="attr.title"/>
+                  <partial-input-label :title="attr.product_attribute.title"/>
                   <base-select
-                      :name="'attr' + attr.id"
-                      :options="attr.attr_values"
-                      :selected="attr.product_attr_value[attr.id]"
-                      options-key="id"
-                      options-text="product_attribute_value.attribute_value"
-                      @change="(t) => {attr.product_attr_value[attr.id] = t}"
+                    :name="'attr' + attr.id"
+                    :options="attr.product_attribute.values"
+                    :selected="selectedAttrValues[attr.product_attribute.id]"
+                    options-key="id"
+                    options-text="attribute_value"
+                    @change="(t) => {selectedAttrValues[attr.product_attribute.id] = t}"
                   />
                 </div>
               </div>
 
               <div class="px-2 py-3">
                 <base-animated-button
-                    :disabled="!canSubmit"
-                    class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                    type="submit"
+                  :disabled="!canSubmit"
+                  class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+                  type="submit"
                 >
                   <VTransitionFade>
                     <loader-circle
-                        v-if="!canSubmit"
-                        big-circle-color="border-transparent"
-                        main-container-klass="absolute w-full h-full top-0 left-0"
+                      v-if="!canSubmit"
+                      big-circle-color="border-transparent"
+                      main-container-klass="absolute w-full h-full top-0 left-0"
                     />
                   </VTransitionFade>
 
@@ -61,11 +100,11 @@
                 </base-animated-button>
 
                 <div
-                    v-if="Object.keys(errors)?.length"
-                    class="text-left"
+                  v-if="Object.keys(errors)?.length"
+                  class="text-left"
                 >
                   <div
-                      class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                    class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
                   >
                     (
                     <span>{{ Object.keys(errors)?.length }}</span>
@@ -75,6 +114,51 @@
                 </div>
               </div>
             </form>
+
+            <div v-else>
+              <partial-empty-rows
+                image="/images/empty-statuses/knowledge.svg"
+                imageClass="!w-60"
+                message="هیچ ویژگی جستجویی پیدا نشد!"
+              />
+
+              <span class="text-lg text-slate-400 mt-4">برای تغییر ویژگی‌های جستجوی محصول</span>
+              <ul class="flex flex-col gap-4 my-6 pr-3">
+                <li class="flex gap-2">
+                  <span class="rounded-full bg-slate-200 h-7 min-w-7 text-center text-lg">1</span>
+                  <div>
+                    <router-link
+                      :to="{name: 'admin.search.attrs'}"
+                      class="text-blue-600 hover:text-opacity-90"
+                    >
+                      ویژگی‌های جستجوی
+                    </router-link>
+                    دلخواه را اضافه نمایید.
+                  </div>
+                </li>
+
+                <li class="flex gap-2">
+                  <span class="rounded-full bg-slate-200 h-7 min-w-7 text-center text-lg">2</span>
+                  <div>
+                    به ازای هر ویژگی جستجو، مقادیر مورد نظر خود را برای آن وارد کنید.
+                  </div>
+                </li>
+
+                <li class="flex gap-2">
+                  <span class="rounded-full bg-slate-200 h-7 min-w-7 text-center text-lg">3</span>
+                  <div>
+                    سپس
+                    <router-link
+                      :to="{name: 'admin.search.attrs.categories'}"
+                      class="text-blue-600 hover:text-opacity-90"
+                    >
+                      ویژگی‌های جستجو را به دسته‌بندی
+                    </router-link>
+                    مورد نظر متصل کنید.
+                  </div>
+                </li>
+              </ul>
+            </div>
           </template>
         </base-loading-panel>
       </div>
@@ -87,7 +171,7 @@ import {onMounted, ref} from "vue";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {CheckIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongLeftIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -99,28 +183,34 @@ import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {ProductAPI, ProductAttributeProductAPI} from "@/service/APIProduct.js";
 import PartialErrorMessage from "@/components/partials/message/PartialErrorMessage.vue";
+import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const router = useRouter()
 const toast = useToast()
 const slugParam = getRouteParamByKey('slug', null, false)
 
-const loading = ref(true)
-
 const product = ref(null)
+const productLoading = ref(true)
+
+const categoryAttributes = ref(null)
 const productAttributes = ref(null)
-const selectedAttrValues = ref([])
+const loading = ref(true)
+const selectedAttrValues = ref({})
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({}),
 }, (values, actions) => {
   canSubmit.value = false
 
-  ProductAttributeProductAPI.create({
+  ProductAttributeProductAPI.create(slugParam.value, {
     values: selectedAttrValues.value,
   }, {
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true
@@ -131,16 +221,26 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 onMounted(() => {
   ProductAttributeProductAPI.fetchById(slugParam.value, {
     success(response) {
-      console.log(response.data)
+      categoryAttributes.value = response.data.category_attributes
+      productAttributes.value = response.data.product_attributes
 
-      // productAttributes.value = response.data
-      // loading.value = false
+      if (productAttributes.value.length) {
+        for (let c of categoryAttributes.value) {
+          let attributeIdx = productAttributes.value.findIndex(item => item.product_attribute_value.product_attribute_id === c.product_attribute.id)
+          if (attributeIdx !== -1) {
+            selectedAttrValues.value[c.product_attribute.id] = productAttributes.value[attributeIdx].product_attribute_value
+          }
+        }
+      }
+
+      loading.value = false
     },
   })
 
   ProductAPI.fetchById(slugParam.value, {
     success: (response) => {
       product.value = response.data
+      productLoading.value = false
     },
   })
 })

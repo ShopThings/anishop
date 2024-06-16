@@ -25,9 +25,20 @@
               :total="table.totalRecordCount"
               @do-search="doSearch"
           >
-            <template v-slot:code="{value}">
+            <template #code="{value}">
+              <span class="tracking-widest text-lg">{{ value.code }}</span>
+            </template>
+
+            <template v-slot:user="{value}">
+              <router-link
+                :to="{name: 'admin.user.profile', params: {id: value.user.id}}"
+                class="text-blue-600 hover:text-opacity-80"
+              >
+                <partial-username-label :user="value.user"/>
+              </router-link>
 
             </template>
+
             <template v-slot:receiver_info="{value}">
               <base-button
                   class="text-white bg-black text-sm !py-1"
@@ -36,16 +47,75 @@
                 مشاهده
               </base-button>
             </template>
-            <template v-slot:order_status="{value}">
 
+            <template #payment_status="{value}">
+              <partial-badge-status-payment
+                :color-hex="value.payment_status.color_hex"
+                :text="value.payment_status.text"
+              />
             </template>
+
             <template v-slot:send_status="{value}">
-
+              <partial-badge-status-send
+                :color-hex="value.send_status_color_hex"
+                :text="value.send_status_title"
+              />
             </template>
+
+            <template v-slot:ordered_at="{value}">
+              <span v-if="value.ordered_at" class="text-xs">{{ value.ordered_at }}</span>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
+            </template>
+
             <template v-slot:op="{value}">
-              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
+              <base-datatable-menu
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="!store.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]) ? ['delete'] : []"
+              />
             </template>
           </base-datatable>
+
+          <partial-dialog v-model:open="isDetailOpen">
+            <template #title>
+              اطلاعات گیرنده
+            </template>
+
+            <template #body>
+              <ul class="divide-y">
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">نام گیرنده:</span>
+                  <span class="grow">{{ receiverInfo?.receiver_name || '-' }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">شماره تماس:</span>
+                  <span class="grow tracking-widest">{{ receiverInfo?.receiver_mobile || '-' }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">استان:</span>
+                  <span class="grow">{{ receiverInfo?.province || '-' }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">شهر:</span>
+                  <span class="grow">{{ receiverInfo?.city || '-' }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">آدرس:</span>
+                  <span class="grow">{{ receiverInfo?.address || '-' }}</span>
+                </li>
+                <li class="flex items-center gap-2 py-1.5">
+                  <span class="text-slate-400 text-sm shrink-0">کد پستی:</span>
+                  <span class="grow">{{ receiverInfo?.postal_code || '-' }}</span>
+                </li>
+
+                <li class="flex items-center gap-2 py-1.5 border-amber-300">
+                  <span class="text-slate-400 text-sm shrink-0">توضیحات سفارش:</span>
+                  <span class="grow">{{ receiverInfo?.description || '-' }}</span>
+                </li>
+              </ul>
+            </template>
+          </partial-dialog>
         </template>
       </base-loading-panel>
     </template>
@@ -53,26 +123,29 @@
 </template>
 
 <script setup>
+import {computed, onMounted, reactive, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
-import {useRoute, useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, onMounted, reactive, ref} from "vue";
-import {useRequest} from "@/composables/api-request.js";
-import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import {UserAPI, UserPurchaseAPI} from "@/service/APIUser.js";
+import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialDialog from "@/components/partials/PartialDialog.vue";
+import {ROLES} from "@/store/StoreUserAuth.js";
+import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
+import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
+import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
+import {hideAllPoppers} from "floating-vue";
+import {useConfirmToast} from "@/composables/toast-helper.js";
+import {OrderAPI} from "@/service/APIOrder.js";
 
 const router = useRouter()
-const route = useRoute()
 const toast = useToast()
-const idParam = computed(() => {
-  const id = parseInt(route.params.id, 10)
-  if (isNaN(id)) return route.params.id
-  return id
-})
+const idParam = getRouteParamByKey('id')
 
 const user = ref(null)
 
@@ -138,6 +211,7 @@ const getMenuContainer = computed(() => {
 
 const operations = [
   {
+    id: 'detail',
     link: {
       text: 'مشاهده جزئیات',
       icon: 'EyeIcon',
@@ -153,45 +227,73 @@ const operations = [
       },
     },
   },
+  {
+    id: 'delete',
+    link: {
+      text: 'حذف',
+      icon: 'TrashIcon',
+      class: 'text-rose-500',
+    },
+    event: {
+      click: (data) => {
+        hideAllPoppers()
+        toast.clear()
+
+        useConfirmToast(() => {
+          OrderAPI.deleteById(data.id, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
+
+              return false
+            },
+          })
+        })
+      },
+    },
+  },
 ]
-
-function showReceiverDetails(value) {
-  // show details of receiver detail
-  // ...
-}
-
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
 
-  // useRequest(apiReplaceParams(apiRoutes.admin.orders.index, {user: idParam.value}), {
-  //     params: {limit, offset, order, sort, text},
-  // }, {
-  //     success: (response) => {
-  //         table.rows = response.data
-  //         table.totalRecordCount = response.meta.total
-  //
-  //         return false
-  //     },
-  //     error: () => {
-  //         table.rows = []
-  //         table.totalRecordCount = 0
-  //     },
-  //     finally: () => {
-  loading.value = false
-  table.isLoading = false
-  //         table.sortable.order = order
-  //         table.sortable.sort = sort
-  //
-  //         if (tableContainer.value && tableContainer.value.card)
-  //             tableContainer.value.card.scrollIntoView({behavior: "smooth"})
-  //     },
-  // })
+  UserPurchaseAPI.fetchAll(idParam.value, {limit, offset, order, sort, text}, {
+    success: (response) => {
+      table.rows = response.data
+      table.totalRecordCount = response.meta.total
+
+      return false
+    },
+    error: () => {
+      table.rows = []
+      table.totalRecordCount = 0
+    },
+    finally: () => {
+      loading.value = false
+      table.isLoading = false
+      table.sortable.order = order
+      table.sortable.sort = sort
+
+      if (tableContainer.value && tableContainer.value.card)
+        tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+    },
+  })
 }
 
 doSearch(0, 15, 'id', 'desc')
 
+//---------------------------------------------
+// Receiver detail operations
+//---------------------------------------------
+const receiverInfo = ref(null)
+const isDetailOpen = ref(false)
+
+function showReceiverDetails(value) {
+  receiverInfo.value = value
+}
+
 onMounted(() => {
-  useRequest(apiReplaceParams(apiRoutes.admin.users.show, {user: idParam.value}), null, {
+  UserAPI.fetchById(idParam.value, {
     success: (response) => {
       user.value = response.data
     },

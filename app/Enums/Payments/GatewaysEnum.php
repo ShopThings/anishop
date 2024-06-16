@@ -83,4 +83,20 @@ enum GatewaysEnum: string
             self::PAYFA->value => 'پی‌فا',
         ];
     }
+
+    /**
+     * @return GatewaysEnum[]
+     */
+    public static function supportedGateways(): array
+    {
+        return [
+            self::BEHPARDAKHT,
+            self::IDPAY,
+            self::IRANKISH,
+            self::PARSIAN,
+            self::SADAD,
+            self::SEPEHR,
+            self::ZARINPAL,
+        ];
+    }
 }

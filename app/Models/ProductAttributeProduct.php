@@ -35,6 +35,6 @@ class ProductAttributeProduct extends Model
      */
     public function attrValue(): BelongsTo
     {
-        return $this->belongsTo(ProductAttributeValue::class);
+        return $this->belongsTo(ProductAttributeValue::class, 'product_attribute_value_id');
     }
 }

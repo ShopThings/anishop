@@ -1,56 +1,58 @@
 <template>
-  <template v-if="comments.length">
-    <div class="mb-3">
-      <partial-comment-blog-single
-          :comment="{}"
-          container-class="rounded-none"
-      />
-    </div>
+  <loader-circle v-if="commentsLoading" main-container-klass="h-8 my-4"/>
 
-    <div class="mb-3">
-      <partial-comment-blog-single
-          :comment="{}"
-          container-class="rounded-none"
+  <template v-else-if="comments?.length">
+    <template
+      v-for="comment in comments"
+      :key="comment.id"
+    >
+      <div class="mb-3">
+        <partial-comment-blog-single
+          :comment="comment"
+          :container-class="[
+            '!rounded-none',
+            comment.is_for_current_user ? '!bg-emerald-50' : '',
+          ]"
+        />
+      </div>
+      <partial-comment-blog-nested
+        v-if="comment.children_count > 0"
+        :blog-slug="blogSlug"
+        :parent-id="comment.id"
       />
-    </div>
-    <div class="mb-3">
-      <base-feed-list>
-        <template #item>
-          <partial-comment-blog-single
-              :comment="{}"
-              container-class="rounded-none"
-          />
-        </template>
-      </base-feed-list>
-      <base-feed-list bullet-class="border-emerald-300 !bg-emerald-200">
-        <template #item>
-          <partial-comment-blog-single
-              :comment="{}"
-              container-class="rounded-none !bg-emerald-50"
-          />
-        </template>
-      </base-feed-list>
-      <base-feed-list :is-last="true">
-        <template #item>
-          <partial-comment-blog-single
-              :comment="{}"
-              container-class="rounded-none"
-          />
-        </template>
-      </base-feed-list>
-    </div>
+    </template>
 
-    <div class="mb-3">
-      <partial-comment-blog-single
-          :comment="{}"
-          container-class="rounded-none"
-      />
+    <div
+      v-if="config.page !== config.lastPage"
+      class="mb-3"
+    >
+      <button
+        class="rounded-full mx-auto py-2 px-3 flex items-center justify-center gap-2.5 text-blue-500 bg-blue-100 border-2 border-transparent hover:border-blue-500 transition"
+        type="button"
+        @click="loadMore"
+      >
+        <VTransitionFade v-if="commentsLoading">
+          <loader-circle
+            big-circle-color="border-transparent"
+            container-bg-color=""
+            main-container-klass="relative h-6 w-44 flex items-center justify-center"
+            spinner-klass="!h-6 !w-6"
+          />
+        </VTransitionFade>
+        <template v-else>
+          <span class="flex items-center justify-center gap-1">
+            <span class="font-iranyekan-bold">مشاهده دیدگاه‌های بیشتر</span>
+            <span class="font-iranyekan-bold py-0.5 px-1">( {{ config.total - (comments?.length || 0) }} )</span>
+          </span>
+          <ArrowLeftCircleIcon class="size-6"/>
+        </template>
+      </button>
     </div>
   </template>
 
   <div
-      v-else
-      class="mb-3 flex flex-col items-center justify-center gap-3"
+    v-else
+    class="mb-3 flex flex-col items-center justify-center gap-3"
   >
     <ChatBubbleLeftEllipsisIcon class="w-20 h-20 text-slate-300"/>
     <span class="text-blue-300">هیچ دیدگاهی ثبت نشده است</span>
@@ -58,12 +60,65 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {ChatBubbleLeftEllipsisIcon} from "@heroicons/vue/24/outline/index.js";
-import PartialCommentBlogSingle from "@/partials/PartialCommentBlogSingle.vue";
-import BaseFeedList from "@/base/BaseFeedList.vue";
+import {onMounted, reactive, ref} from "vue";
+import {ArrowLeftCircleIcon, ChatBubbleLeftEllipsisIcon} from "@heroicons/vue/24/outline/index.js";
+import PartialCommentBlogSingle from "@/components/partials/PartialCommentBlogSingle.vue";
+import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {HomeBlogCommentAPI} from "@/service/APIHomePages.js";
+import PartialCommentBlogNested from "@/components/partials/PartialCommentBlogNested.vue";
+import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
-const comments = ref([
-  {},
-])
+const props = defineProps({
+  blogSlug: {
+    type: String,
+    required: true,
+  },
+})
+
+const limit = 20
+const config = reactive({
+  page: 1,
+  lastPage: 1,
+  total: 0,
+})
+
+const comments = ref([])
+const commentsLoading = ref(true)
+
+function loadMore() {
+  if (config.page === config.lastPage) return
+
+  config.page++
+  loadComments()
+}
+
+function loadComments() {
+  commentsLoading.value = true
+
+  HomeBlogCommentAPI.fetchAll(props.blogSlug, {
+    limit: limit,
+    page: config.page,
+    sort: 'asc',
+  }, {
+    success(response) {
+      if (response.data?.length) {
+        for (let c of response.data) {
+          comments.value.push(c)
+        }
+        config.lastPage = response.meta.last_page || 1
+        config.total = response.meta.total
+      }
+    },
+    error() {
+      return false
+    },
+    finally() {
+      commentsLoading.value = false
+    },
+  })
+}
+
+onMounted(() => {
+  loadComments()
+})
 </script>

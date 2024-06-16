@@ -10,6 +10,7 @@ use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class FestivalRepository extends Repository implements FestivalRepositoryInterface
@@ -72,5 +73,40 @@ class FestivalRepository extends Repository implements FestivalRepositoryInterfa
             });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addProductToFestival(int $productId, int $festivalId, $discountPercentage): Builder|Model
+    {
+        return $this->productFestivalModel->newQuery()
+            ->updateOrCreate([
+                'product_id' => $productId,
+                'festival_id' => $festivalId,
+            ], [
+                'discount_percentage' => $discountPercentage,
+            ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeProductFromFestival(int $productId, int $festivalId): bool
+    {
+        return $this->productFestivalModel->newQuery()
+            ->where('product_id', $productId)
+            ->where('festival_id', $festivalId)
+            ->delete();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function removeProductsFromFestival(int $festivalId, array $ids): bool
+    {
+        return $this->productFestivalModel->newQuery()
+            ->whereIn('product_id', $ids)
+            ->delete();
     }
 }

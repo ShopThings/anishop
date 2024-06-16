@@ -1,6 +1,6 @@
 <template>
   <VTransitionSlideFadeDownY mode="out-in">
-    <div v-if="loading">
+    <div v-if="loading" class="w-full">
       <template v-if="slots['loader']">
         <slot name="loader"></slot>
       </template>
@@ -14,7 +14,7 @@
       </template>
     </div>
 
-    <div v-else>
+    <div v-else class="w-full">
       <slot name="content"></slot>
     </div>
   </VTransitionSlideFadeDownY>

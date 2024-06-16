@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\ProductAttributeValue;
+use App\Models\ProductAttribute;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -33,7 +33,7 @@ class StoreProductAttributeValueRequest extends FormRequest
         return [
             'product_attribute' => [
                 'required',
-                'exists:' . ProductAttributeValue::class . ',id',
+                'exists:' . ProductAttribute::class . ',id',
             ],
             'attribute_value' => [
                 'required',

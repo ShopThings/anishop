@@ -8,19 +8,40 @@ use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
 use App\Traits\HasDeletedRelationTrait;
 use App\Traits\HasUpdatedRelationTrait;
+use Database\Factories\BlogCommentFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @method Builder accepted()
+ */
 class BlogComment extends Model
 {
     use SoftDeletesTrait,
         HasCreatedRelationTrait,
         HasUpdatedRelationTrait,
-        HasDeletedRelationTrait;
+        HasDeletedRelationTrait,
+        HasFactory;
 
     protected $guarded = [
         'id',
     ];
+
+    protected static function newFactory()
+    {
+        return BlogCommentFactory::new();
+    }
+
+    /**
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeAccepted(Builder $query): Builder
+    {
+        return $query->where('condition', CommentConditionsEnum::ACCEPTED->value);
+    }
 
     /**
      * @return BelongsTo
@@ -97,6 +118,14 @@ class BlogComment extends Model
      */
     public function hasAcceptedChildren(): bool
     {
-        return $this->children()->where('condition', CommentConditionsEnum::ACCEPTED->name)->count() > 0;
+        return $this->acceptedChildrenCount() > 0;
+    }
+
+    /**
+     * @return int
+     */
+    public function acceptedChildrenCount(): int
+    {
+        return $this->children()->accepted()->count();
     }
 }

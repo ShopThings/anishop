@@ -10,37 +10,37 @@
             <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
               <partial-input-label title="انتخاب استان"/>
               <base-select-searchable
-                  :is-loading="provinceLoading"
-                  :options="provinces"
-                  :selected="selectedProvince"
-                  name="province"
-                  options-key="id"
-                  options-text="name"
-                  @change="handleProvinceChange"
+                :is-loading="provinceLoading"
+                :options="provinces"
+                :selected="selectedProvince"
+                name="province"
+                options-key="id"
+                options-text="name"
+                @change="handleProvinceChange"
               />
               <partial-input-error-message :error-message="errors.province"/>
             </div>
             <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
               <partial-input-label title="انتخاب شهرستان"/>
               <base-select-searchable
-                  ref="citySelectRef"
-                  :is-loading="cityLoading"
-                  :options="cities"
-                  :selected="selectedCity"
-                  name="city"
-                  options-key="id"
-                  options-text="name"
-                  @change="(selected) => {selectedCity = selected}"
+                ref="citySelectRef"
+                :is-loading="cityLoading"
+                :options="cities"
+                :selected="selectedCity"
+                name="city"
+                options-key="id"
+                options-text="name"
+                @change="(selected) => {selectedCity = selected}"
               />
               <partial-input-error-message :error-message="errors.city"/>
             </div>
             <div class="p-2 w-full sm:w-1/2 lg:w-1/3">
               <base-input
-                  :min="0"
-                  :money-mask="true"
-                  name="post_price"
-                  placeholder="وارد نمایید"
-                  type="text"
+                :min="0"
+                :money-mask="true"
+                name="post_price"
+                placeholder="وارد نمایید"
+                type="text"
               >
                 <template #label>
                   <div class="flex items-center gap-1.5 text-sm">
@@ -57,15 +57,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                :disabled="!canSubmit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                type="submit"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="!canSubmit"
-                    big-circle-color="border-transparent"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -77,11 +77,11 @@
             </base-animated-button>
 
             <div
-                v-if="Object.keys(errors)?.length"
-                class="text-left"
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
             >
               <div
-                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
               >
                 (
                 <span>{{ Object.keys(errors)?.length }}</span>
@@ -151,9 +151,9 @@ function handleProvinceChange(selected) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     post_price: yup.string()
-        .transform(transformNumbersToEnglish)
-        .positiveNumber('هزیته ارسال باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
-        .required('هزینه ارسال را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .positiveNumber('هزیته ارسال باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
+      .required('هزینه ارسال را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (!selectedProvince.value || !selectedProvince.value?.id) {
@@ -178,8 +178,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'admin.post_prices.cities'})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

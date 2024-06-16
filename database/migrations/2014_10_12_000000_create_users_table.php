@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('first_name', 30);
             $table->string('last_name', 30);
             $table->string('national_code', 10);
-            $table->string('shaba_number', 30)->nullable();
+            $table->string('sheba_number', 30)->nullable();
             $table->rememberToken();
             $table->boolean('is_admin')->default(false)
                 ->comment('for convenience to check if a user has an admin role and consider an admin or not');

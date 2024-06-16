@@ -12,8 +12,8 @@ use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class BrandService extends Service implements BrandServiceInterface
 {
@@ -52,6 +52,14 @@ class BrandService extends Service implements BrandServiceInterface
     /**
      * @inheritDoc
      */
+    public function getBrandsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getPublishedBrands(Filter $filter): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('brands');
@@ -81,9 +89,7 @@ class BrandService extends Service implements BrandServiceInterface
 
         return $this->repository
             ->newWith('image')
-            ->all(
-                columns: ['id', 'name', 'latin_name', 'slug'],
-                where: $where->build());
+            ->all(where: $where->build());
     }
 
     /**

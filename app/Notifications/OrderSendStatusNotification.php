@@ -19,6 +19,11 @@ class OrderSendStatusNotification extends Notification implements ShouldQueue
     use Queueable;
 
     /**
+     * @var SettingServiceInterface
+     */
+    protected SettingServiceInterface $settingService;
+
+    /**
      * Create a new notification instance.
      */
     public function __construct(
@@ -46,24 +51,22 @@ class OrderSendStatusNotification extends Notification implements ShouldQueue
     {
         $msg = $this->smsSetting->setting_value ?: $this->smsSetting->default_value;
 
-        $titleSetting = $this->settingService->getSetting(SettingsEnum::SMS_ORDER_STATUS->value);
+        $titleSetting = $this->settingService->getSetting(SettingsEnum::TITLE->value);
         $title = $titleSetting->setting_value ?: $titleSetting->default_value;
 
         $mobile = $this->user->username;
         $replacements = [
             'username' => $mobile,
+            'first_name' => $this->user->first_name ?: 'کاربر',
             'shop' => $title,
             'order_code' => $this->orderCode,
             'status' => $this->sendStatus,
         ];
 
-        if (!empty($this->user->first_name)) {
-            $replacements['first_name'] = $this->user->first_name;
-        }
-
         return new SMSMessage(
             $mobile,
-            replace_sms_variables($msg, $this->smsType, $replacements)
+            replace_sms_variables($msg, $this->smsType, $replacements),
+            $this->smsType
         );
     }
 

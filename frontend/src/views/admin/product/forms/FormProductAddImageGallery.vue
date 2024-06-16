@@ -9,7 +9,7 @@
         />
 
         <div class="flex items-end">
-          <div class="grow flex flex-wrap">
+          <div class="flex flex-wrap">
             <TransitionGroup name="fade-group">
               <div
                   v-for="(image, idx) in images"
@@ -26,7 +26,7 @@
                       title="انتخاب تصویر"
                   />
                   <base-media-placeholder
-                      v-model:selected="image.image"
+                    :selected="image.image"
                       type="image"
                   />
                 </div>
@@ -34,7 +34,7 @@
             </TransitionGroup>
           </div>
 
-          <div class="shrink-0">
+          <div class="shrink-0 p-4">
             <base-button
                 v-tooltip.top-end="'افزودن تصویر جدید'"
                 class="!rounded-full border-2 border-dashed p-4 w-16 h-16 flex items-center justify-center border-orange-400"
@@ -64,6 +64,20 @@
             }
           }"
         />
+
+        <div
+          v-if="Object.keys(errors)?.length"
+          class="text-left px-3.5 mb-3"
+        >
+          <div
+            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          >
+            (
+            <span>{{ Object.keys(errors)?.length }}</span>
+            )
+            خطا، لطفا بررسی کنید
+          </div>
+        </div>
       </template>
     </partial-card>
   </form>
@@ -136,7 +150,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, () => {
   const definedImages = []
   for (let i of images.value) {
     if (i && i.image?.full_name) {
-      definedImages.push(i.image.full_name)
+      definedImages.push(i.image.full_path)
     }
   }
 

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Products\ChangeMultipleProductPriceTypesEnum;
 use App\Enums\Settings\SettingsEnum;
 use App\Http\Requests\Filters\HomeProductFilter;
@@ -16,14 +17,17 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
+use App\Support\WhereBuilder\WhereBuilder;
+use App\Traits\DatabaseDateTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 
 class ProductService extends Service implements ProductServiceInterface
 {
-    use ImageFieldTrait;
+    use ImageFieldTrait,
+        DatabaseDateTrait;
 
     public function __construct(
         protected ProductRepositoryInterface $repository,
@@ -37,6 +41,26 @@ class ProductService extends Service implements ProductServiceInterface
     /**
      * @inheritDoc
      */
+    public function getDataForSitemap(Filter $filter, ?array $condition = null): Collection|LengthAwarePaginator
+    {
+        if (!empty($condition)) {
+            $this->repository->resetWithWhereHas();
+            foreach ($condition as $item) {
+                if (is_array($item)) {
+                    $this->repository->withWhereHas($item['relation'], $item['callback']);
+                }
+            }
+        }
+
+        $where = new WhereBuilder('products');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->getProductsSearchFilterPaginated(filter: $filter, where: $where->build());
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getProducts(
         Filter                    $filter,
         GetterExpressionInterface $where = null
@@ -45,6 +69,39 @@ class ProductService extends Service implements ProductServiceInterface
         return $this->repository
             ->newWith(['creator', 'updater', 'deleter'])
             ->getProductsSearchFilterPaginated(filter: $filter, where: $where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSingleProduct(GetterExpressionInterface $where): ?Model
+    {
+        if (trim($where->getStatement()) === '') return null;
+        return $this->repository->findWhere($where);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantByCode(string $code): ?Model
+    {
+        return $this->repository->getProductVariantByCode($code);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductVariantsByCodes(array $codes): Collection
+    {
+        return $this->repository->getProductVariantsByCodes($codes);
     }
 
     /**
@@ -89,49 +146,7 @@ class ProductService extends Service implements ProductServiceInterface
      */
     public function getDynamicFilters(HomeProductSideFilter $filter): Collection
     {
-        // after getting filter, it might have duplicates for specific id,
-        // and from below structure:
-        // [
-        //   [
-        //     'id' => value...,
-        //     'title' => value...,
-        //     'type' => value...,
-        //     'attribute_value_id' => value...,
-        //     'attribute_value' => value...,
-        //   ],
-        //   ...
-        // ]
-        // we want to get following structure instead:
-        // [
-        //   [
-        //     'id' => value...,
-        //     'title' => value...,
-        //     'type' => value...,
-        //     'values' => [
-        //       'id' => value..., // alias of 'attribute_value_id'
-        //       'value' => value..., // alias of 'attribute_value'
-        //     ],
-        //   ],
-        //   ...
-        // ]
-        // and below codes will do that
-        return $this->repository->getDynamicFilters($filter)
-            // 'id' is important, so preserve keys in collection
-            ->groupBy('id')->map(function ($groupedItems) {
-                return [
-                    'id' => $groupedItems->first()['id'],
-                    'title' => $groupedItems->first()['title'],
-                    'type' => $groupedItems->first()['type'],
-                    'values' => $groupedItems->pluck(['attribute_value_id', 'attribute_value'])
-                        ->map(function ($item) {
-                            return [
-                                'id' => $item['attribute_value_id'],
-                                'value' => $item['attribute_value'],
-                            ];
-                        })
-                        ->toArray(),
-                ];
-            });
+        return $this->repository->getDynamicFilters($filter);
     }
 
     /**
@@ -227,6 +242,7 @@ class ProductService extends Service implements ProductServiceInterface
      */
     public function createRelatedProducts(int $productId, array $products): bool
     {
+        $products = array_filter($products, fn($item) => !empty($item));
         return $this->repository->createRelatedProducts($productId, $products);
     }
 
@@ -316,19 +332,48 @@ class ProductService extends Service implements ProductServiceInterface
     {
         $refined = [];
         foreach ($products as $product) {
-            if ($product['color'] || $product['size'] || $product['guarantee']) {
+            if (
+                isset($product['color']['id']) ||
+                isset($product['size']) ||
+                isset($product['guarantee']) ||
+                isset($product['color_name'], $product['color_hex'])
+            ) {
                 $tmp = $product;
-                unset($tmp['color']);
 
-                $color = $this->colorRepository->find($product['color']);
-                $tmp['color_name'] = $color->name;
-                $tmp['color_hex'] = $color->hex;
+                unset($tmp['color']);
+                unset($tmp['color_name']);
+                unset($tmp['color_hex']);
+
+                if (isset($product['color']['id'])) {
+                    $color = $this->colorRepository->find($product['color']['id']);
+                    $tmp['color_name'] = $color->name;
+                    $tmp['color_hex'] = $color->hex;
+                }
+
+                if (
+                    (empty($product['discounted_price']) && $product['discounted_price'] != 0) ||
+                    $product['discounted_price'] < 0
+                ) {
+                    $tmp['discounted_price'] = null;
+                }
+
+                if (!empty($product['discounted_from'])) {
+                    $tmp['discounted_from'] = $this->getValidDatabaseDate($product['discounted_from']);
+                } else {
+                    $tmp['discounted_from'] = null;
+                }
+                if (!empty($product['discounted_until'])) {
+                    $tmp['discounted_until'] = $this->getValidDatabaseDate($product['discounted_until']);
+                } else {
+                    $tmp['discounted_until'] = null;
+                }
 
                 $tmp['is_special'] = to_boolean($product['is_special']);
                 $tmp['is_available'] = to_boolean($product['is_available']);
                 $tmp['show_coming_soon'] = to_boolean($product['show_coming_soon']);
                 $tmp['show_call_for_more'] = to_boolean($product['show_call_for_more']);
                 $tmp['is_published'] = to_boolean($product['is_published']);
+                $tmp['has_separate_shipment'] = to_boolean($product['has_separate_shipment']);
 
                 $refined[] = $tmp;
             }

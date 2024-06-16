@@ -1,0 +1,795 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\FileManager;
+use App\Support\Traits\FilenameTrait;
+use Illuminate\Database\Seeder;
+
+class FileManagerSeeder extends Seeder
+{
+    use FilenameTrait;
+
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        /**
+         * 📍[ATTENTION]
+         *   For this to be working fine, you need to have follow below directory structure:
+         *   (in "storage/public")
+         *
+         * <code>
+         *   /
+         *   ├── banners
+         *   ├── blogs
+         *   ├── brands
+         *   ├── categories
+         *   ├── gateways
+         *   ├── namad
+         *   ├── products
+         *   │   └── single_product
+         *   └── send_methods
+         * </code>
+         *
+         * And for files you should look at "full_path" and have each of them inside corresponding directory.
+         * Each file should have 4 types that filemanager follows:
+         *  - original (the file without any extra name to it)
+         *  - large (should have "-large" at the end of filename)
+         *  - medium (should have "-medium" at the end of filename)
+         *  - small (should have "-small" at the end of filename)
+         *
+         * As an example for "banners/b1.jpg"
+         * <code>
+         *   - original -> b1-1716491587.jpg
+         *   - large -> b1-1716491587-large.jpg
+         *   - medium -> b1-1716491587-medium.jpg
+         *   - small -> b1-1716491587-small.jpg
+         * </code>
+         *
+         * "1716491587" is a timestamp that show upload time (it is not important in seeding phase)
+         */
+        $files = [
+            [
+                'name' => $this->getEscapedFilename('b4'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b5'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b6'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b7'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b8'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b9'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b2'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b3'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('blogs'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b2'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b4'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b3'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b5'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b6'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m2_1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m2_2'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m3_1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m3_3'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m3_4'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('b1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m3_2'),
+                'extension' => 'gif',
+                'path' => $this->getEscapedFilename('banners'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('a4tech'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('adata'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('addlink'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('aula'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('awest'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('belden'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('cooler_master'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('dahua'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('deepcool'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('enzo'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('intel'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('lexar'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('logitech'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('m_s'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('microsoft'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('rapoo'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('sandisk'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('seagate'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('ebox'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('kingmax'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('tp_link'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('tenda'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('brands'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('c3'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('categories'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('c6'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('categories'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('c4'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('categories'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('c5'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('categories'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('c1'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('categories'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('c2'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('categories'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('Idpay'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('beh_pardakht'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('irankish'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('sadad'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('tap'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('zarinpal'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('mabna'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('wallet'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('gateways'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('3'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('namad'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('namad'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('2'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('namad'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p2'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p3'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p4'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p5'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p6'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p7'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p8'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p9'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p10'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p11'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p12'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p13'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p14'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p15'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p16'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p17'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p18'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p19'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p20'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p21'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p22'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p23'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p24'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p25'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p26'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p27'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p28'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p29'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('p30'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g6'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g8'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g7'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g9'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g10'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g1'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g2'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g3'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g4'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('g5'),
+                'extension' => 'jpg',
+                'path' => $this->getEscapedFilename('products/single_product'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('barbari'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('send_methods'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('chapar'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('send_methods'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('post'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('send_methods'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+            [
+                'name' => $this->getEscapedFilename('motori'),
+                'extension' => 'png',
+                'path' => $this->getEscapedFilename('send_methods'),
+                'is_deletable' => 1,
+                'created_at' => now(),
+            ],
+        ];
+
+        foreach ($files as $file) {
+            FileManager::create($file);
+        }
+    }
+}

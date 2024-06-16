@@ -16,7 +16,7 @@ class CategoryImagePolicy
 
     protected array $except = ['batchDelete'];
 
-    public function __construcy()
+    public function __construct()
     {
         $this->checkIsDeletable = false;
     }

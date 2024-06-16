@@ -56,31 +56,31 @@
               <ul class="divide-y">
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">نام:</span>
-                  <span class="grow">{{ detailItem.full_name }}</span>
+                  <span class="grow text-sm">{{ detailItem.full_name }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">موبایل:</span>
-                  <span class="grow">{{ detailItem.mobile }}</span>
+                  <span class="grow text-sm">{{ detailItem.mobile }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">کد پستی:</span>
-                  <span class="grow">{{ detailItem.postal_code }}</span>
+                  <span class="grow text-sm">{{ detailItem.postal_code }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">آدرس:</span>
-                  <span class="grow">{{ detailItem.address }}</span>
+                  <span class="grow text-sm">{{ detailItem.address }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">شهر:</span>
-                  <span class="grow">{{ detailItem.city.name }}</span>
+                  <span class="grow text-sm">{{ detailItem.city.name }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">استان:</span>
-                  <span class="grow">{{ detailItem.province.name }}</span>
+                  <span class="grow text-sm">{{ detailItem.province.name }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">ایجاد شده در تاریخ:</span>
-                  <span class="grow">{{ detailItem.created_at }}</span>
+                  <span class="grow text-sm">{{ detailItem.created_at }}</span>
                 </li>
               </ul>
             </template>

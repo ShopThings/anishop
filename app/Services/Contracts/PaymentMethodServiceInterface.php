@@ -14,4 +14,14 @@ interface PaymentMethodServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getMethods(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getMethodsCount(): int;
+
+    /**
+     * @return Collection
+     */
+    public function getHomeMethods(): Collection;
 }

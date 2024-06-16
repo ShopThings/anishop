@@ -1,13 +1,15 @@
 <template>
   <base-carousel
-      v-slot="{slide, index}"
-      v-model="relatedProducts"
-      v-model:current="currentSlide"
-      :breakpoints="carouselSettings.breakpoints"
-      :free-mode="carouselSettings.freeMode"
-      :has-navigation="carouselSettings.hasNavigation"
-      :has-pagination="carouselSettings.hasPagination"
-      :navigation-display="carouselSettings.navigationDisplay"
+    v-slot="{slide, index}"
+    v-model="relatedProducts"
+    v-model:current="currentSlide"
+    :breakpoints="carouselSettings.breakpoints"
+    :free-mode="carouselSettings.freeMode"
+    :has-navigation="carouselSettings.hasNavigation"
+    :has-pagination="carouselSettings.hasPagination"
+    :navigation-display="carouselSettings.navigationDisplay"
+    :slides-per-view="1"
+    slide-class="w-80"
   >
     <slot :index="index" :slide="slide" name="slide">
       <div class="w-full h-full">
@@ -38,24 +40,8 @@ const carouselSettings = {
   hasPagination: false,
   freeMode: true,
   breakpoints: {
-    0: {
-      slidesPerView: 1,
-    },
-    450: {
-      slidesPerView: 1.5,
-    },
-    576: {
-      slidesPerView: 2,
-    },
-    768: {
-      slidesPerView: 2.85,
-    },
-    991: {
-      slidesPerView: 3.35,
-      spaceBetween: 20,
-    },
-    1280: {
-      slidesPerView: 4.15,
+    360: {
+      slidesPerView: 'auto',
     },
   },
 }

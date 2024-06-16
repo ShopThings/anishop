@@ -27,6 +27,7 @@
         <ul class="mt-2">
           <li
               v-for="i in 2"
+              :key="i"
               class="flex items-center space-y-1"
           >
             <PlusIcon class="w-5 h-5 text-emerald-500 ml-1"/>
@@ -37,6 +38,7 @@
         <ul class="mt-2">
           <li
               v-for="i in 2"
+              :key="i"
               class="flex items-center space-y-1"
           >
             <MinusIcon class="w-5 h-5 text-rose-500 ml-1"/>
@@ -61,7 +63,7 @@
     <template v-else>
       <ul class="flex flex-wrap gap-4 items-center">
         <li class="text-sm text-slate-500">
-          {{ comment?.createt_by?.first_name || 'کاربر سایت' }}
+          {{ comment?.created_by?.first_name || 'کاربر سایت' }}
         </li>
         <li class="flex justify-center items-center">
           <span class="w-1.5 h-1.5 rounded-full bg-slate-200 inline-block"></span>
@@ -76,12 +78,12 @@
       </ul>
 
       <div>
-        <p class="text-sm">
+        <p class="text-sm leading-relaxed">
           {{ comment?.description || '-' }}
         </p>
 
         <div
-            v-if="comment?.pros && comment.pros.length"
+          v-if="comment?.pros?.length"
             class="text-sm mt-3"
         >
           <h2 class="mb-2 text-emerald-600">
@@ -99,7 +101,7 @@
         </div>
 
         <div
-            v-if="comment?.cons && comment.cons.length"
+          v-if="comment?.cons?.length"
             class="text-sm mt-3"
         >
           <h2 class="mb-2 text-rose-600">
@@ -139,13 +141,7 @@
 <script setup>
 import {computed} from "vue";
 import isObject from "lodash.isobject";
-import {
-  FlagIcon,
-  HandThumbDownIcon,
-  HandThumbUpIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/vue/24/outline/index.js";
+import {FlagIcon, HandThumbDownIcon, HandThumbUpIcon, MinusIcon, PlusIcon,} from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({
   containerClass: String,

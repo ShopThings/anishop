@@ -55,28 +55,6 @@ class UserContactUsController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param Request $request
-     * @param ContactUs $contact
-     * @return JsonResponse
-     */
-    public function destroy(Request $request, ContactUs $contact): JsonResponse
-    {
-        if ($check = $this->_checkAuthorization($request->user(), $contact)) return $check;
-
-        $res = $this->service->deleteUserContactById($contact->id, false);
-
-        if ($res)
-            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
-    }
-
-    /**
      * @param $user
      * @param ContactUs $contact
      * @return JsonResponse|null
@@ -90,5 +68,27 @@ class UserContactUsController extends Controller
             ], ResponseCodes::HTTP_UNAUTHORIZED);
         }
         return null;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param Request $request
+     * @param ContactUs $contact
+     * @return JsonResponse
+     */
+    public function destroy(Request $request, ContactUs $contact): JsonResponse
+    {
+        if ($check = $this->_checkAuthorization($request->user(), $contact)) return $check;
+
+        $res = $this->service->deleteUserContactById($contact->id, false);
+
+        if ($res) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

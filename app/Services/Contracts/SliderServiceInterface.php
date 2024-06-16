@@ -4,6 +4,7 @@ namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
 use App\Enums\Sliders\SliderPlacesEnum;
+use App\Models\Slider;
 use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -15,6 +16,11 @@ interface SliderServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getSliders(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getSlidersCount(): int;
 
     /**
      * @param SliderPlacesEnum|array $place
@@ -37,6 +43,12 @@ interface SliderServiceInterface extends ServiceInterface
      * @return Collection
      */
     public function getAllMainSliders(): Collection;
+
+    /**
+     * @param Slider $slider
+     * @return Collection
+     */
+    public function getSliderItems(Slider $slider): Collection;
 
     /**
      * @param int $sliderId

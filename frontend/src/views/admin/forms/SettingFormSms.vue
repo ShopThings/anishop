@@ -1,20 +1,20 @@
 <template>
   <form
-      class="relative"
-      @submit.prevent="onSubmit"
+    class="relative"
+    @submit.prevent="onSubmit"
   >
     <loader-dot-orbit
-        v-if="isFetching"
-        container-bg-color="bg-blue-50 opacity-40"
-        loading-text="در حال بارگذاری تنظیمات"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      v-if="isFetching"
+      container-bg-color="bg-blue-50 opacity-40"
+      loading-text="در حال بارگذاری تنظیمات"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_SIGNUP]"
-          label-title="پیامک خوش آمد گویی پس از ثبت نام"
-          name="sms_signup"
+        :value="settingValues[SETTING_KEYS.SMS_SIGNUP]"
+        label-title="پیامک خوش آمد گویی پس از ثبت نام"
+        name="sms_signup"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -24,19 +24,19 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه و از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری استفاده نمایید.
         </template>
@@ -47,9 +47,9 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_ACTIVATION]"
-          label-title="پیامک فعالسازی حساب"
-          name="sms_activation"
+        :value="settingValues[SETTING_KEYS.SMS_ACTIVATION]"
+        label-title="پیامک فعالسازی حساب"
+        name="sms_activation"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -59,28 +59,28 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه،
           از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری و از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{code}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{code}}`"
           ></button>
           برای قرار دادن کد فعالسازی استفاده نمایید.
         </template>
@@ -91,9 +91,9 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_RECOVER_PASS]"
-          label-title="پیامک بازگردانی کلمه عبور"
-          name="sms_recover_pass"
+        :value="settingValues[SETTING_KEYS.SMS_RECOVER_PASS]"
+        label-title="پیامک بازگردانی کلمه عبور"
+        name="sms_recover_pass"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -103,35 +103,35 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{first_name}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{first_name}}`"
           ></button>
           برای قرار دادن نام کاربر و از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{code}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{code}}`"
           ></button>
           برای قرار دادن کد بازگردانی استفاده نمایید.
         </template>
@@ -142,9 +142,9 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_BUY]"
-          label-title="پیامک ثبت سفارش"
-          name="sms_buy"
+        :value="settingValues[SETTING_KEYS.SMS_BUY]"
+        label-title="پیامک ثبت سفارش"
+        name="sms_buy"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -154,35 +154,35 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{first_name}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{first_name}}`"
           ></button>
           برای قرار دادن نام کاربر و از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{order_code}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{order_code}}`"
           ></button>
           برای قرار دادن کد سفارش استفاده نمایید.
         </template>
@@ -193,9 +193,9 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_ORDER_STATUS]"
-          label-title="پیامک تغییر وضعیت سفارش"
-          name="sms_order_status"
+        :value="settingValues[SETTING_KEYS.SMS_ORDER_STATUS]"
+        label-title="پیامک تغییر وضعیت سفارش"
+        name="sms_order_status"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -205,43 +205,43 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{first_name}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{first_name}}`"
           ></button>
           برای قرار دادن نام کاربر، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{order_code}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{order_code}}`"
           ></button>
           برای قرار دادن کد سفارش و از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{status}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{status}}`"
           ></button>
           برای قرار دادن وضعیت سفارش استفاده نمایید.
         </template>
@@ -252,9 +252,9 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_RETURN_ORDER]"
-          label-title="پیامک مرجوع نمودن کالا"
-          name="sms_return_order"
+        :value="settingValues[SETTING_KEYS.SMS_RETURN_ORDER]"
+        label-title="پیامک مرجوع نمودن کالا"
+        name="sms_return_order"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -264,37 +264,45 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{first_name}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{first_name}}`"
           ></button>
-          برای قرار دادن نام کاربر و از
+          برای قرار دادن نام کاربر، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{order_code}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{order_code}}`"
           ></button>
-          برای قرار دادن کد سفارش استفاده نمایید.
+          برای قرار دادن کد سفارش و از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{return_code}}`"
+          ></button>
+          برای قرار دادن کد مرجوع استفاده نمایید.
         </template>
       </partial-input-lead>
     </div>
@@ -303,9 +311,9 @@
 
     <div class="p-2">
       <base-textarea
-          :value="settingValues[SETTING_KEYS.SMS_RETURN_ORDER_STATUS]"
-          label-title="پیامک تغییر وضعیت سفارش مرجوعی"
-          name="sms_return_order_status"
+        :value="settingValues[SETTING_KEYS.SMS_RETURN_ORDER_STATUS]"
+        label-title="پیامک تغییر وضعیت سفارش مرجوعی"
+        name="sms_return_order_status"
       >
         <template #icon>
           <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -315,43 +323,51 @@
         <template #text>
           می‌توانید از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{shop}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
           ></button>
           برای قرار دادن نام فروشگاه، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{username}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
           ></button>
           برای قرار دادن نام کاربری، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{first_name}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{first_name}}`"
           ></button>
           برای قرار دادن نام کاربر، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{order_code}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{order_code}}`"
           ></button>
-          برای قرار دادن کد سفارش مرجوعی و از
+          برای قرار دادن کد سفارش، از
           <button
-              v-tooltip.top="'کپی کردن'"
-              class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
-              type="button"
-              @click="copyHandler"
-              v-text="`{{status}}`"
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{return_code}}`"
+          ></button>
+          برای قرار دادن کد مرجوع و از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{status}}`"
           ></button>
           برای قرار دادن وضعیت سفارش مرجوعی استفاده نمایید.
         </template>
@@ -360,15 +376,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit || isFetching"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit || isFetching"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit || isFetching"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit || isFetching"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -380,11 +396,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -482,8 +498,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       emit('updated', updateArr)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

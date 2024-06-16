@@ -1,4 +1,4 @@
-@import "../styles/fonts.scss";
+@import "../styles/fonts.css";
 
 @tailwind base;
 @tailwind components;
@@ -16,18 +16,15 @@
   }
 }
 
+.layout-max-w {
+  max-width: 96rem; /* "1536px" or "2xl" in tailwind */
+}
+
 /* VueRouter active link */
 /*.router-link-active,*/
 /*.router-link-exact-active {*/
 /*    color: #3057d3;*/
 /*}*/
-
-.ellipsis-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 
 /* Define Custom Scrollbar */
 
@@ -138,6 +135,22 @@
 
 .Vue-Toastification__toast--default .Vue-Toastification__close-button {
   color: #000;
+}
+
+.Vue-Toastification__toast--success {
+  background-color: #22c55e;
+}
+
+.Vue-Toastification__toast--info {
+  background-color: #2563eb;
+}
+
+.Vue-Toastification__toast--warning {
+  background-color: #f59e0b;
+}
+
+.Vue-Toastification__toast--error {
+  background-color: #F43F5E;
 }
 
 .confirmation-toast {

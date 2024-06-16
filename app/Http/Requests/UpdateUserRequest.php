@@ -76,7 +76,7 @@ class UpdateUserRequest extends FormRequest
                 'sometimes',
                 new PersianNationalCodeRule(),
             ],
-            'shaba_number' => [
+            'sheba_number' => [
                 'sometimes',
                 'nullable',
                 'max:30'
@@ -97,7 +97,7 @@ class UpdateUserRequest extends FormRequest
     public function attributes()
     {
         return [
-            'shaba_number' => 'شماره شبا',
+            'sheba_number' => 'شماره شبا',
             'is_banned' => 'وضعیت عدم فعالیت',
             'ban_desc' => 'علت عدم فعالیت',
         ];

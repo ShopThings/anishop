@@ -1,7 +1,7 @@
 <template>
   <section class="bg-indigo-500 relative z-10 py-[120px] min-h-screen">
-    <div class="md:container md:mx-auto">
-      <div class="-mx-4 flex">
+    <div class="max-w-7xl mx-auto w-full">
+      <div class="flex">
         <div class="w-full px-4">
           <div class="mx-auto max-w-[400px] text-center">
             <h2 class="mb-2 text-[50px] font-bold leading-none text-white sm:text-[80px] md:text-[100px]">
@@ -49,10 +49,15 @@
 import {useRouter} from "vue-router";
 import {computed} from "vue";
 import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {useSeoMeta} from "@unhead/vue";
 
 const router = useRouter()
 const adminStore = useAdminAuthStore()
 const homeRoute = computed(() => {
   return adminStore.getUser ? {name: 'admin.home'} : {name: 'home'}
+})
+
+useSeoMeta({
+  title: 'صفحه مورد نظر پیدا نشد!'
 })
 </script>

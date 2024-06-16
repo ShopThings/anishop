@@ -18,6 +18,11 @@ interface MenuServiceInterface extends ServiceInterface
     public function getMenus(Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getMenusCount(): int;
+
+    /**
      * @param MenuPlacesEnum $placeIn
      * @return Collection
      */

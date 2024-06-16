@@ -30,11 +30,11 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Shetabit\Visitor\Middlewares\LogVisits;
 use Spatie\LaravelImageOptimizer\Middlewares\OptimizeImages;
 use Spatie\Permission\Middleware\PermissionMiddleware;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
-use Shetabit\Visitor\Middlewares\LogVisits;
 
 class Kernel extends HttpKernel
 {
@@ -115,5 +115,6 @@ class Kernel extends HttpKernel
         // Custom middleware aliasing
         'admin' => AdminCheck::class,
         'xss' => XSS::class,
+        'maintenance' => PreventRequestsDuringMaintenance::class,
     ];
 }

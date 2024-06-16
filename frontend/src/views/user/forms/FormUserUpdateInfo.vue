@@ -3,11 +3,11 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :is-editable="false"
-            :value="user?.username"
-            name="username"
-            placeholder="(معمولا شماره تلفن همراه می‌باشد)"
+          :in-edit-mode="false"
+          :is-editable="false"
+          :value="user?.username"
+          name="username"
+          placeholder="(معمولا شماره تلفن همراه می‌باشد)"
         >
           <template #icon>
             <UserIcon class="h-6 w-6 text-gray-400"/>
@@ -28,12 +28,12 @@
     <div class="flex flex-wrap">
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :is-editable="!(!!user?.first_name)"
-            :value="user?.first_name"
-            label-title="نام"
-            name="first_name"
-            placeholder="حروف فارسی"
+          :in-edit-mode="false"
+          :is-editable="!(!!user?.first_name)"
+          :value="user?.first_name"
+          label-title="نام"
+          name="first_name"
+          placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -42,12 +42,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :is-editable="!(!!user?.last_name)"
-            :value="user?.last_name"
-            label-title="نام خانوادگی"
-            name="last_name"
-            placeholder="حروف فارسی"
+          :in-edit-mode="false"
+          :is-editable="!(!!user?.last_name)"
+          :value="user?.last_name"
+          label-title="نام خانوادگی"
+          name="last_name"
+          placeholder="حروف فارسی"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -56,12 +56,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :is-editable="!(!!user?.national_code)"
-            :value="user?.national_code"
-            label-title="کد ملی"
-            name="national_code"
-            placeholder="فقط شامل اعداد"
+          :in-edit-mode="false"
+          :is-editable="!(!!user?.national_code)"
+          :value="user?.national_code"
+          label-title="کد ملی"
+          name="national_code"
+          placeholder="فقط شامل اعداد"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -70,12 +70,12 @@
       </div>
       <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
         <base-input
-            :has-edit-mode="false"
-            :value="user?.shaba_number"
-            is-optional
-            label-title="شماره شبا"
-            name="shaba_number"
-            placeholder="xxxxxxxxxxxxxxxx"
+          :in-edit-mode="false"
+          :is-optional="true"
+          :value="user?.sheba_number"
+          label-title="شماره شبا"
+          name="sheba_number"
+          placeholder="xxxxxxxxxxxxxxxx"
         >
           <template #icon>
             <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -86,15 +86,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -125,18 +125,18 @@ const user = store.getUser
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     first_name: yup.string()
-        .persian('نام باید از حروف فارسی باشد.')
-        .required('نام را وارد نمایید.'),
+      .persian('نام باید از حروف فارسی باشد.')
+      .required('نام را وارد نمایید.'),
     last_name: yup.string()
-        .persian('نام خانوادگی باید از حروف فارسی باشد.')
-        .required('نام خانوادگی را وارد نمایید.'),
+      .persian('نام خانوادگی باید از حروف فارسی باشد.')
+      .required('نام خانوادگی را وارد نمایید.'),
     national_code: yup.string()
-        .transform(transformNumbersToEnglish)
-        .persianNationalCode('کد ملی نامعتبر است.')
-        .required('کد ملی را وارد نمایید.'),
-    shaba_number: yup.string()
-        .transform(transformNumbersToEnglish)
-        .optional().nullable(),
+      .transform(transformNumbersToEnglish)
+      .persianNationalCode('کد ملی نامعتبر است.')
+      .required('کد ملی را وارد نمایید.'),
+    sheba_number: yup.string()
+      .transform(transformNumbersToEnglish)
+      .optional().nullable(),
   }),
   keepValuesOnUnmount: true,
 }, (values, actions) => {
@@ -150,8 +150,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       return false
     },
     error: (error) => {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
       return false
     },

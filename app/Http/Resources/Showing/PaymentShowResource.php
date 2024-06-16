@@ -24,8 +24,8 @@ class PaymentShowResource extends JsonResource
                 'text' => $this->gateway_type,
                 'value' => GatewaysEnum::getTranslations($this->gateway_type, 'نامشخص'),
             ],
-            'payed_at' => $this->payed_at
-                ? vertaTz($this->payed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
+            'paid_at' => $this->paid_at
+                ? vertaTz($this->paid_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

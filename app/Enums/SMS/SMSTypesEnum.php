@@ -29,7 +29,7 @@ enum SMSTypesEnum: string
             self::BUY->value => 'خرید',
             self::ORDER_STATUS->value => 'وضعیت سفارش',
             self::RETURN_ORDER->value => 'مرجوع کالا',
-            self::ORDER_STATUS->value => 'وضعیت مرجوع سفارش',
+            self::RETURN_ORDER_STATUS->value => 'وضعیت مرجوع سفارش',
             self::OTHERS->value => 'متفرقه',
         ];
     }
@@ -46,11 +46,17 @@ enum SMSTypesEnum: string
             self::RECOVER_PASS => [
                 'shop', 'username', 'first_name', 'code',
             ],
-            self::BUY, self::RETURN_ORDER => [
+            self::BUY => [
                 'shop', 'username', 'first_name', 'order_code',
             ],
-            self::ORDER_STATUS, self::RETURN_ORDER_STATUS => [
+            self::RETURN_ORDER => [
+                'shop', 'username', 'first_name', 'return_code', 'order_code',
+            ],
+            self::ORDER_STATUS => [
                 'shop', 'username', 'first_name', 'order_code', 'status',
+            ],
+            self::RETURN_ORDER_STATUS => [
+                'shop', 'username', 'first_name', 'return_code', 'order_code', 'status',
             ],
         };
     }

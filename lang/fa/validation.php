@@ -39,7 +39,7 @@ return [
     'email' => ':attribute ایمیل آدرس معتبر نیست.',
     'ends_with' => ':attribute آخرین مقدار باید شامل این موارد باشد: :values',
     'enum' => 'فیلد :attribute انتخاب شده نامعتبر است.',
-    'exists' => ':attribute مورد انتخاب شده معتبر نیست.',
+    'exists' => ':attribute انتخاب شده معتبر نیست.',
     'file' => ':attribute باید یک فایل انتخاب شود.',
     'filled' => ':attribute باید یک مقدار وارد شود.',
     'gt' => [
@@ -141,6 +141,7 @@ return [
     'uuid' => ':attribute باید مقدار UUID معتبر باشد',
 
     'captcha_api' => 'کد تصویر به درستی وارد نشده است.',
+    'captcha' => 'کد تصویر به درستی وارد نشده است.',
 
     // verta validations
     'jdate' => ':attribute معتبر نمی باشد.',
@@ -194,6 +195,7 @@ return [
     */
 
     'attributes' => [
+        'captcha' => 'کد تصویر',
         "name" => "نام",
         "latin_name" => "نام لاتین",
         "username" => "نام کاربری",

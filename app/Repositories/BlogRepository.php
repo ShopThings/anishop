@@ -11,7 +11,7 @@ use App\Repositories\Contracts\BlogRepositoryInterface;
 use App\Support\Filter;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
-use Hekmatinasser\Verta\Facades\Verta;
+use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
@@ -34,14 +34,20 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
      * @inheritDoc
      */
     public function getBlogsSearchFilterPaginated(
-        array  $columns = ['*'],
-        Filter $filter = null
+        array $columns = ['*'],
+        Filter                    $filter = null,
+        GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator
     {
         $search = $filter->getSearchText();
         $limit = $filter->getLimit();
         $page = $filter->getPage();
-        $order = $filter->getOrder();
+        $onlyPublished = $filter->getOnlyPublished();
+
+        $order = [];
+        if (!$filter instanceof HomeBlogFilter) {
+            $order = $filter->getOrder();
+        }
 
         $query = $this->model->newQuery();
         $query
@@ -64,8 +70,17 @@ class BlogRepository extends Repository implements BlogRepositoryInterface
                     })
                     ->orWhereLike([
                         'blogs.escaped_title',
+                        'blogs.slug',
                         'blogs.keywords',
                     ], $search);
+            })
+            ->when($onlyPublished && !$filter instanceof HomeBlogFilter, function (Builder $query) use ($onlyPublished) {
+                $query->published();
+            })
+            ->when($where, function ($q, $where) {
+                if (trim($where->getStatement()) !== '') {
+                    $q->whereRaw($where->getStatement(), $where->getBindings());
+                }
             });
 
         if ($filter instanceof HomeBlogFilter) {

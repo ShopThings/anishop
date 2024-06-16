@@ -38,7 +38,7 @@ class ReturnOrderRequest extends Model
         'requested_at' => 'datetime',
     ];
 
-    public function nanoIdColumn()
+    public static function nanoIdColumn(): string
     {
         return 'code';
     }

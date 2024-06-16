@@ -19,6 +19,11 @@ class UserRegisteredNotification extends Notification implements ShouldQueue
     use Queueable;
 
     /**
+     * @var SettingServiceInterface
+     */
+    protected SettingServiceInterface $settingService;
+
+    /**
      * Create a new notification instance.
      */
     public function __construct(
@@ -55,7 +60,8 @@ class UserRegisteredNotification extends Notification implements ShouldQueue
 
         return new SMSMessage(
             $mobile,
-            replace_sms_variables($msg, $this->smsType, $replacements)
+            replace_sms_variables($msg, $this->smsType, $replacements),
+            $this->smsType
         );
     }
 

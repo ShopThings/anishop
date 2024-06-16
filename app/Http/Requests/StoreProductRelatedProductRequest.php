@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
+use App\Models\Product;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +34,9 @@ class StoreProductRelatedProductRequest extends FormRequest
             'products' => [
                 'array',
             ],
+            'products.*' => [
+                'exists:' . Product::class . ',id',
+            ],
         ];
     }
 
@@ -40,6 +44,7 @@ class StoreProductRelatedProductRequest extends FormRequest
     {
         return [
             'products' => 'محصولات مرتبط',
+            'products.*' => 'محصول مرتبط',
         ];
     }
 }

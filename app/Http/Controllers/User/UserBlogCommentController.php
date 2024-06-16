@@ -8,12 +8,14 @@ use App\Http\Requests\StoreUserBlogCommentRequest;
 use App\Http\Requests\UpdateUserBlogCommentRequest;
 use App\Http\Resources\User\UserBlogCommentResource;
 use App\Http\Resources\User\UserBlogCommentSingleResource;
+use App\Models\Blog;
 use App\Models\BlogComment;
 use App\Services\Contracts\BlogCommentServiceInterface;
 use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserBlogCommentController extends Controller
@@ -46,11 +48,18 @@ class UserBlogCommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreUserBlogCommentRequest $request
+     * @param Blog $blog
      * @return JsonResponse
      */
-    public function store(StoreUserBlogCommentRequest $request): JsonResponse
+    public function store(StoreUserBlogCommentRequest $request, Blog $blog): JsonResponse
     {
-        $validated = $request->validated(['blog', 'comment', 'description']);
+        Gate::authorize('create', [BlogComment::class, $blog]);
+
+        $validated = filter_validated_data($request->validated(), [
+            'blog',
+            'comment',
+            'description',
+        ]);
         $model = $this->service->create($validated);
 
         if (!is_null($model)) {
@@ -59,67 +68,70 @@ class UserBlogCommentController extends Controller
                 'message' => 'دیدگاه شما با موفقیت ثبت شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ثبت دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ثبت دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param BlogComment $blogComment
+     * @param BlogComment $comment
      * @return UserBlogCommentSingleResource
      */
-    public function show(BlogComment $blogComment): UserBlogCommentSingleResource
+    public function show(BlogComment $comment): UserBlogCommentSingleResource
     {
-        return new UserBlogCommentSingleResource($blogComment);
+        Gate::authorize('canDoOperation', $comment);
+        return new UserBlogCommentSingleResource($comment);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateUserBlogCommentRequest $request
-     * @param BlogComment $blogComment
+     * @param BlogComment $comment
      * @return UserBlogCommentSingleResource|JsonResponse
      */
     public function update(
         UpdateUserBlogCommentRequest $request,
-        BlogComment                  $blogComment
+        BlogComment $comment
     ): UserBlogCommentSingleResource|JsonResponse
     {
-        $validated = $request->validated(['blog', 'description']);
-        $model = $this->service->updateById($blogComment->id, $validated);
+        Gate::authorize('canDoOperation', [$comment, true]);
+
+        $validated = $request->validated('description');
+        $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {
             return new UserBlogCommentSingleResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param BlogComment $blogComment
+     * @param BlogComment $comment
      * @return JsonResponse
      */
-    public function destroy(Request $request, BlogComment $blogComment): JsonResponse
+    public function destroy(Request $request, BlogComment $comment): JsonResponse
     {
-        $res = $this->service->deleteUserCommentById($request->user()->id, $blogComment->id);
+        Gate::authorize('canDoOperation', $comment);
 
-        if ($res)
+        $res = $this->service->deleteUserCommentById($request->user()->id, $comment->id);
+
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

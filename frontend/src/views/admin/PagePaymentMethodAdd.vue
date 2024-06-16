@@ -10,20 +10,20 @@
             <div class="p-2">
               <partial-input-label title="انتخاب تصویر"/>
               <base-media-placeholder
-                  v-model:selected="methodImage"
-                  type="image"
+                v-model:selected="methodImage"
+                type="image"
               />
               <partial-input-error-message :error-message="errors.image"/>
             </div>
 
             <div class="p-2">
               <base-switch
-                  :enabled="true"
-                  label="عدم نمایش روش پرداخت"
-                  name="is_published"
-                  on-label="نمایش روش پرداخت"
-                  sr-text="نمایش/عدم نمایش روش پرداخت"
-                  @change="(status) => {publishStatus=status}"
+                :enabled="true"
+                label="عدم نمایش روش پرداخت"
+                name="is_published"
+                on-label="نمایش روش پرداخت"
+                sr-text="نمایش/عدم نمایش روش پرداخت"
+                @change="(status) => {publishStatus=status}"
               />
             </div>
           </div>
@@ -31,9 +31,9 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <base-input
-                  label-title="عنوان روش پرداخت"
-                  name="title"
-                  placeholder="عنوان را وارد نمایید"
+                label-title="عنوان روش پرداخت"
+                name="title"
+                placeholder="عنوان را وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -43,18 +43,19 @@
             <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
               <partial-input-label title="نوع روش پرداخت"/>
               <base-select
-                  :options="paymentTypes"
-                  name="type"
-                  options-key="value"
-                  options-text="name"
-                  @change="paymentTypeChange"
+                :options="paymentTypes"
+                name="type"
+                options-key="value"
+                options-text="name"
+                @change="paymentTypeChange"
               >
                 <template #item="{item, selected}">
                   <div class="flex items-center">
                     <base-lazy-image
-                        :alt="item.name"
-                        :lazy-src="item.image"
-                        class="!w-14 h-auto ml-3"
+                      :alt="item.name"
+                      :lazy-src="item.image"
+                      :is-local="false"
+                      class="!w-14 h-auto ml-3"
                     />
                     <span :class="{'text-primary': selected}">{{ item.name }}</span>
                   </div>
@@ -65,20 +66,20 @@
           </div>
 
           <template
-              v-if="selectedPaymentType"
+            v-if="selectedPaymentType"
           >
             <hr class="my-3">
 
             <VTransitionSlideFadeDownY mode="out-in">
               <div
-                  v-if="selectedPaymentType.value === 'behpardakht'"
-                  class="flex flex-wrap"
+                v-if="selectedPaymentType.value === 'behpardakht'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="شماره ترمینال"
-                      name="terminal_id"
-                      placeholder="وارد نمایید"
+                    label-title="شماره ترمینال"
+                    name="terminal_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -86,9 +87,11 @@
                   </base-input>
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-                  <base-input label-title="نام کاربری"
-                              name="username"
-                              placeholder="وارد نمایید">
+                  <base-input
+                    label-title="نام کاربری"
+                    name="username"
+                    placeholder="وارد نمایید"
+                  >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
                     </template>
@@ -96,10 +99,10 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="کلمه عبور"
-                      name="password"
-                      placeholder="وارد نمایید"
-                      type="password"
+                    label-title="کلمه عبور"
+                    name="password"
+                    placeholder="وارد نمایید"
+                    type="password"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -108,14 +111,14 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'idpay'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'idpay'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="کلید API"
-                      name="api_key"
-                      placeholder="وارد نمایید"
+                    label-title="کلید API"
+                    name="api_key"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -124,14 +127,14 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'irankish'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'irankish'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="شماره ترمینال"
-                      name="terminal_id"
-                      placeholder="وارد نمایید"
+                    label-title="شماره ترمینال"
+                    name="terminal_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -140,10 +143,10 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="کلمه عبور"
-                      name="password"
-                      placeholder="وارد نمایید"
-                      type="password"
+                    label-title="کلمه عبور"
+                    name="password"
+                    placeholder="وارد نمایید"
+                    type="password"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -152,9 +155,9 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="شناسه پذیرنده"
-                      name="acceptor_id"
-                      placeholder="وارد نمایید"
+                    label-title="شناسه پذیرنده"
+                    name="acceptor_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -163,9 +166,9 @@
                 </div>
                 <div class="w-full p-2">
                   <base-textarea
-                      label-title="کلید عمومی"
-                      name="public_key"
-                      placeholder="وارد نمایید"
+                    label-title="کلید عمومی"
+                    name="public_key"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
@@ -174,15 +177,15 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'parsian'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'parsian'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="رمز پذیرنده"
-                      name="password"
-                      placeholder="وارد نمایید"
-                      type="password"
+                    label-title="رمز پذیرنده"
+                    name="password"
+                    placeholder="وارد نمایید"
+                    type="password"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -191,15 +194,15 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'sadad'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'sadad'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="کلید"
-                      name="password"
-                      placeholder="وارد نمایید"
-                      type="password"
+                    label-title="کلید"
+                    name="password"
+                    placeholder="وارد نمایید"
+                    type="password"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -208,9 +211,9 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="شماره ترمینال"
-                      name="terminal_id"
-                      placeholder="وارد نمایید"
+                    label-title="شماره ترمینال"
+                    name="terminal_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -219,9 +222,9 @@
                 </div>
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
-                      label-title="شماره مرچنت"
-                      name="merchant_id"
-                      placeholder="وارد نمایید"
+                    label-title="شماره مرچنت"
+                    name="merchant_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -230,14 +233,14 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'sepehr'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'sepehr'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="شماره ترمینال"
-                      name="terminal_id"
-                      placeholder="وارد نمایید"
+                    label-title="شماره ترمینال"
+                    name="terminal_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -246,14 +249,14 @@
                 </div>
               </div>
               <div
-                  v-else-if="selectedPaymentType.value === 'zarinpal'"
-                  class="flex flex-wrap"
+                v-else-if="selectedPaymentType.value === 'zarinpal'"
+                class="flex flex-wrap"
               >
                 <div class="w-full p-2 sm:w-1/2">
                   <base-input
-                      label-title="شماره مرچنت"
-                      name="merchant_id"
-                      placeholder="وارد نمایید"
+                    label-title="شماره مرچنت"
+                    name="merchant_id"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -266,15 +269,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                :disabled="!canSubmit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                type="submit"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="!canSubmit"
-                    big-circle-color="border-transparent"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -286,11 +289,11 @@
             </base-animated-button>
 
             <div
-                v-if="Object.keys(errors)?.length"
-                class="text-left"
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
             >
               <div
-                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
               >
                 (
                 <span>{{ Object.keys(errors)?.length }}</span>
@@ -335,43 +338,43 @@ const paymentTypes = [
   {
     value: PAYMENT_METHOD_TYPES.BEHPARDAKHT.value,
     name: PAYMENT_METHOD_TYPES.BEHPARDAKHT.text,
-    image: '/gateways/beh-pardakht.png',
+    image: '/images/gateways/beh-pardakht.png',
     type: PAYMENT_METHOD_TYPES.BEHPARDAKHT.type,
   },
   {
     value: PAYMENT_METHOD_TYPES.IDPAY.value,
     name: PAYMENT_METHOD_TYPES.IDPAY.text,
-    image: '/gateways/idpay.png',
+    image: '/images/gateways/idpay.png',
     type: PAYMENT_METHOD_TYPES.IDPAY.type,
   },
   {
     value: PAYMENT_METHOD_TYPES.IRANKISH.value,
     name: PAYMENT_METHOD_TYPES.IRANKISH.text,
-    image: '/gateways/irankish.jpg',
+    image: '/images/gateways/irankish.jpg',
     type: PAYMENT_METHOD_TYPES.IRANKISH.type,
   },
   {
     value: PAYMENT_METHOD_TYPES.PARSIAN.value,
     name: PAYMENT_METHOD_TYPES.PARSIAN.text,
-    image: '/gateways/tap.jpg',
+    image: '/images/gateways/tap.jpg',
     type: PAYMENT_METHOD_TYPES.PARSIAN.type,
   },
   {
     value: PAYMENT_METHOD_TYPES.SADAD.value,
     name: PAYMENT_METHOD_TYPES.SADAD.text,
-    image: '/gateways/sadad.jpg',
+    image: '/images/gateways/sadad.jpg',
     type: PAYMENT_METHOD_TYPES.SADAD.type,
   },
   {
     value: PAYMENT_METHOD_TYPES.SEPEHR.value,
     name: PAYMENT_METHOD_TYPES.SEPEHR.text,
-    image: '/gateways/mabna.png',
+    image: '/images/gateways/mabna.png',
     type: PAYMENT_METHOD_TYPES.SEPEHR.type,
   },
   {
     value: PAYMENT_METHOD_TYPES.ZARINPAL.value,
     name: PAYMENT_METHOD_TYPES.ZARINPAL.text,
-    image: '/gateways/zarinpal.png',
+    image: '/images/gateways/zarinpal.png',
     type: PAYMENT_METHOD_TYPES.ZARINPAL.type,
   },
 ]
@@ -417,7 +420,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }
 
   if (PAYMENT_METHOD_TYPES.BEHPARDAKHT.value === selectedPaymentType.value.value &&
-      (!values.username || values.username.trim() === '')) {
+    (!values.username || values.username.trim() === '')) {
     actions.setFieldError('username', 'نام کاربری را وارد نمایید.')
     return
   }
@@ -433,7 +436,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }
 
   if (PAYMENT_METHOD_TYPES.IDPAY.value === selectedPaymentType.value.value &&
-      (!values.api_key || values.api_key.trim() === '')) {
+    (!values.api_key || values.api_key.trim() === '')) {
     actions.setFieldError('api_key', 'کلید API را وارد نمایید.')
     return
   }
@@ -512,8 +515,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'admin.payment_methods'})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

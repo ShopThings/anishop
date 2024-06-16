@@ -22,7 +22,7 @@ trait ModifierBootTrait
      */
     protected function addCreatedBy($model): void
     {
-        if ($this->hasCreatedBy) {
+        if ($this->hasCreatedBy && !array_key_exists('created_by', $model->attributes)) {
             $model->created_by = Auth::user()?->id;
         }
     }
@@ -33,7 +33,7 @@ trait ModifierBootTrait
      */
     protected function addUpdatedBy($model): void
     {
-        if ($this->hasUpdatedBy) {
+        if ($this->hasUpdatedBy && !array_key_exists('updated_by', $model->attributes)) {
             $model->updated_by = Auth::user()?->id;
         }
     }

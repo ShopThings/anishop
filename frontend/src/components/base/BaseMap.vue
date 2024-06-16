@@ -52,7 +52,7 @@ const props = defineProps({
     default: false,
   },
 })
-const slot = useSlots()
+const slots = useSlots()
 const emit = defineEmits(['update:center', 'update:zoom', 'loaded'])
 
 const toast = useToast()
@@ -131,7 +131,7 @@ onMounted(() => {
 
   marker = L.marker(center.value, opts).addTo(map.value)
 
-  if (slot['markerPopup'] && popupDialogElement.value) {
+  if (slots['markerPopup'] && popupDialogElement.value) {
     const content = popupDialogElement.value.innerHTML
     marker.bindPopup(content).openPopup();
   }

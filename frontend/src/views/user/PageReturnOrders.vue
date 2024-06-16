@@ -1,10 +1,10 @@
 <template>
   <base-message
-      :has-close="false"
-      class="rounded-lg"
-      type="info"
+    :has-close="false"
+    class="rounded-lg"
+    type="info"
   >
-    <h3 class="font-iranyekan-bold text-base mb-1.5">
+    <h3 class="font-iranyekan-bold text-base mb-3">
       نکات قابل توجه
     </h3>
     <ul class="leading-relaxed flex flex-col gap-3 list-inside list-disc">
@@ -22,11 +22,11 @@
       <div class="w-full sm:w-[28rem]">
         <partial-input-label title="انتخاب سفارش جهت مرجوع نمودن"/>
         <base-select-searchable
-            :is-loading="ordersLoading"
-            :options="orders"
-            options-key="id"
-            options-text="code"
-            @change="(selected) => {selectedOrder=selected}"
+          :is-loading="ordersLoading"
+          :options="orders"
+          options-key="id"
+          options-text="code"
+          @change="(selected) => {selectedOrder=selected}"
         >
           <template #item="{item}">
             <span class="tracking-widest">{{ item.code }}</span>
@@ -36,15 +36,15 @@
       </div>
 
       <base-button
-          :disabled="!canSubmit"
-          class="flex items-center justify-center gap-2 bg-primary group text-sm shrink-0 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="flex items-center justify-center gap-2 bg-primary group text-sm shrink-0 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -59,12 +59,13 @@
       <partial-general-title title="درخواست‌های ثبت شده"/>
 
       <base-semi-datatable
-          :columns="returnOrdersTableSetting.columns"
-          :is-loading="returnOrdersTableSetting.isLoading"
-          :rows="returnOrdersTableSetting.rows"
-          :total="returnOrdersTableSetting.total"
-          pagination-theme="modern"
-          @do-search="getReturnOrders"
+        :columns="returnOrdersTableSetting.columns"
+        :is-loading="returnOrdersTableSetting.isLoading"
+        :rows="returnOrdersTableSetting.rows"
+        :total="returnOrdersTableSetting.total"
+        :sortable="returnOrdersTableSetting.sortable"
+        pagination-theme="modern"
+        @do-search="getReturnOrders"
       >
         <template #code="{value}">
           <span class="tracking-widest text-lg">{{ value.code }}</span>
@@ -72,9 +73,9 @@
 
         <template #order_code="{value}">
           <router-link
-              :to="{name: 'user.order.detail', params: {code: value.order_code}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
-              target="_blank"
+            :to="{name: 'user.order.detail', params: {code: value.order_code}}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
+            target="_blank"
           >
             <span class="tracking-widest text-lg">{{ value.order_code }}</span>
           </router-link>
@@ -82,8 +83,8 @@
 
         <template #status="{value}">
           <partial-badge-status-return-order
-              :color-hex="value.status.color_hex"
-              :text="value.status.text"
+            :color-hex="value.status.color_hex"
+            :text="value.status.text"
           />
         </template>
 
@@ -94,8 +95,8 @@
 
         <template #op="{value}">
           <router-link
-              :to="{name: 'user.return_order.detail', params: {code: 12345}}"
-              class="text-blue-600 hover:text-opacity-80 text-sm"
+            :to="{name: 'user.return_order.detail', params: {code: 12345}}"
+            class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             مشاهده جزئیات
           </router-link>
@@ -203,8 +204,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
       getReturnOrders(0, 15)
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

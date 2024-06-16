@@ -40,7 +40,7 @@
 
             <template v-slot:is_seen="{value}">
               <partial-badge-publish
-                  :publish="value.is_seen"
+                :publish="!!value.is_seen"
                   publish-text="خوانده شده"
                   unpublish-text="خوانده نشده"
               />

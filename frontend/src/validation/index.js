@@ -48,10 +48,27 @@ function persianNationalCode(message) {
 }
 
 function percentage(message) {
-  const msg = message ?? 'Percentage should be between 0 and 100'
-  return this
-    .min(0, msg)
-    .max(100, msg)
+  return this.test('percentage', message, function (value) {
+    const {path, createError, originalValue} = this;
+
+    // If value is undefined, consider it as valid
+    if (originalValue === undefined || parseFloat(originalValue) === 0) {
+      return true;
+    }
+
+    if (value) {
+      value = parseFloat(value)
+
+      if (isNaN(value) || value > 100 || value < 0) {
+        return createError({
+          path,
+          message: message ?? 'Percentage should be between 0 and 100',
+        });
+      }
+    }
+
+    return true;
+  });
 }
 
 function folderName(message) {
@@ -275,7 +292,8 @@ export function isValidPersianNationalCode(value) {
 export function isValidPercentage(value) {
   if (!value) return false
 
-  value = +value
+  value = parseFloat(value)
+  if (isNaN(value)) return false
 
   return 0 <= value && value <= 100
 }

@@ -1,56 +1,59 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <base-switch
+    <div class="mb-3">
+      <base-switch
         v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
         :enabled="!user?.is_deletable"
-        class="mb-3"
         disabled-color="bg-pink-300"
         enabled-color="bg-pink-600"
         label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
         name="is_deletable"
         sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
         @change="(status) => {deletableStatus=status}"
-    />
+      />
+    </div>
 
-    <base-switch
+    <template v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.BAN)">
+      <base-switch
         :enabled="!user?.is_banned"
         label="عدم اجازه فعالیت کاربر"
         name="is_banned"
         on-label="اجازه فعالیت کاربر"
         sr-text="اجازه یا جلوگیری از فعالیت کاربر"
         @change="(status) => {banStatus=status}"
-    />
+      />
 
-    <VTransitionSlideFadeDownY>
-      <div
+      <VTransitionSlideFadeDownY>
+        <div
           v-if="!banStatus"
           class="mt-3"
-      >
-        <base-textarea
-            :has-edit-mode="!user?.ban_desc"
+        >
+          <base-textarea
+            :in-edit-mode="!user?.ban_desc"
             :value="user?.ban_desc"
             label-title="علت عدم اجازه فعالیت به کاربر"
             name="ban_desc"
             placeholder="توضیحات خود را وارد کنید..."
-        >
-          <template #icon>
-            <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
-          </template>
-        </base-textarea>
-      </div>
-    </VTransitionSlideFadeDownY>
+          >
+            <template #icon>
+              <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
+            </template>
+          </base-textarea>
+        </div>
+      </VTransitionSlideFadeDownY>
+    </template>
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit"
-          class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -62,11 +65,11 @@
       </base-animated-button>
 
       <div
-          v-if="Object.keys(errors)?.length"
-          class="text-left"
+        v-if="Object.keys(errors)?.length"
+        class="text-left"
       >
         <div
-            class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+          class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
         >
           (
           <span>{{ Object.keys(errors)?.length }}</span>
@@ -92,7 +95,7 @@ import {useRequest} from "@/composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
 import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
-import {useAdminAuthStore, ROLES} from "@/store/StoreUserAuth.js";
+import {PERMISSION_PLACES, PERMISSIONS, ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 
 const props = defineProps({
@@ -123,13 +126,16 @@ const idParam = computed(() => {
 const banStatus = ref(!user.value?.is_banned ?? false)
 const deletableStatus = ref(!user.value?.is_deletable ?? false)
 
-const {canSubmit, onSubmit} = useFormSubmit({
+const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     is_banned: yup.boolean(),
     ban_desc: yup.string().when('is_banned', {
       is: false,
       then: (schema) => {
-        return schema.required('وارد نمودن توضیحات عدم اجازه فعالیت ضروری می‌باشد.')
+        if (userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.BAN)) {
+          return schema.required('وارد نمودن توضیحات عدم اجازه فعالیت ضروری می‌باشد.')
+        }
+        return schema
       },
       otherwise: (schema) => schema.optional().nullable(),
     }),
@@ -161,8 +167,9 @@ const {canSubmit, onSubmit} = useFormSubmit({
       return false
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
 
       return false
     },

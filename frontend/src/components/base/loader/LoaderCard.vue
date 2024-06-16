@@ -14,7 +14,7 @@
     <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-48 mb-6"></div>
     <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700 mb-3"></div>
     <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700 mb-3"></div>
-    <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
+    <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700 w-5/6"></div>
     <div class="flex items-center justify-between mt-6 space-x-3 space-x-reverse">
       <div class="grow">
         <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-1/2 mb-2"></div>

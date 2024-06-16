@@ -41,7 +41,7 @@ enum RolesEnum: string
     {
         return [
             self::DEVELOPER, self::SUPER_ADMIN, self::ADMIN, self::USER_MANAGER,
-            self::ORDER_MANAGER, self::PRODUCT_MANAGER, self::WRITER,
+            self::PRODUCT_MANAGER, self::ORDER_MANAGER, self::WRITER,
         ];
     }
 
@@ -50,9 +50,17 @@ enum RolesEnum: string
      */
     public static function getAssignableRoles(): array
     {
+        return array_merge(self::getAssignableAdminRoles(), [self::USER]);
+    }
+
+    /**
+     * @return RolesEnum[]
+     */
+    public static function getAssignableAdminRoles(): array
+    {
         return [
             self::ADMIN, self::USER_MANAGER, self::PRODUCT_MANAGER,
-            self::ORDER_MANAGER, self::WRITER, self::USER,
+            self::ORDER_MANAGER, self::WRITER,
         ];
     }
 

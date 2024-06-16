@@ -6,22 +6,23 @@
       <div class="grow">
         <base-paginator
             ref="blogPaginatorRef"
-            v-model:items="blogs"
+            v-model:total="totalBlogs"
             :path="getSearchPath"
             :order="blogOrder"
             :per-page="blogPerPage"
             :extra-search-params="searchParams"
             :show-pagination-detail="true"
             :show-search="true"
+            :search-text="route.query?.q || ''"
+            :scroll-to-element-on-appearance="true"
             :scroll-margin-top="-130"
-            container-class="flex flex-wrap"
-            item-container-class="w-full xl:w-1/2 ml-[-1px] mt-[-1px]"
+            container-class="grid grid-cols-1 xl:grid-cols-2 gap-3"
             pagination-theme="modern"
             @order-changed="orderChangeHandler"
         >
           <template #empty>
             <partial-empty-rows
-                image="/empty-statuses/empty-blog.svg"
+              image="/images/empty-statuses/empty-blog.svg"
                 image-class="w-60"
                 message="هیچ نوشته‌ای پیدا نشد!"
             />
@@ -30,7 +31,7 @@
           <template #item="{item}">
             <blog-card
                 :blog="item"
-                container-class=""
+                container-class="rounded-lg"
             />
           </template>
 
@@ -46,7 +47,7 @@
           v-if="hasPopularCategories || hasBlogArchives"
           :bottom-spacing="20"
           :min-width="1024"
-          :top-spacing="114"
+          :top-spacing="79"
           class="shrink-0 lg:w-80"
           containerSelector=".sticky-container"
           innerWrapperSelector='.sidebar__inner'
@@ -139,7 +140,7 @@ for (const t in BLOG_ORDER_TYPES) {
 }
 //
 
-const blogs = ref([])
+const totalBlogs = ref(0)
 
 function orderChangeHandler(selected) {
   searchParams.value.order = selected.key

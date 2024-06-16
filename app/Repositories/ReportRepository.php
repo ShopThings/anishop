@@ -7,16 +7,126 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Enums\QB\InputTypesEnum;
 use App\Enums\QB\TypesEnum;
+use App\Repositories\Contracts\OrderRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Repositories\Contracts\ReportRepositoryInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Support\Filter;
+use App\Support\Helper\QBHelper;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ReportRepository implements ReportRepositoryInterface
 {
     /**
+     * @var array|string[]
+     */
+    private array $allowedUsersColumns = [
+        'username', 'first_name', 'last_name',
+        'national_code', 'sheba_number', 'is_admin',
+        'is_banned', 'is_verified', 'is_deleted',
+    ];
+
+    /**
+     * @var array|string[]
+     */
+    private array $allowedProductsColumns = [
+        'brand', 'category', 'title', 'unit_name', 'color_name', 'size',
+        'guarantee', 'is_spacial', 'is_available', 'is_each_available',
+        'is_commenting_allowed', 'is_published', 'is_each_published',
+        'is_each_show_coming_soon', 'is_each_show_call_for_more',
+        'is_deleted', 'price', 'discounted_price', 'tax_rate', 'stock_count',
+        'max_cart_count', 'weight', 'discounted_from', 'discounted_until',
+        'has_separate_shipment',
+    ];
+
+    /**
+     * @var array|string[]
+     */
+    private array $allowedOrdersColumns = [
+        'user', 'code', 'first_name', 'last_name', 'national_code',
+        'mobile', 'province', 'city', 'postal_code', 'receiver_name',
+        'receiver_mobile', 'coupon_code', 'send_status_title',
+        'payment_method_title', 'send_method_title', 'product_title',
+        'color_name', 'size', 'guarantee', 'address', 'description',
+        'coupon_price', 'shipping_price', 'discount_price', 'final_price',
+        'total_price', 'weight', 'unit_price', 'quantity', 'send_status_changed_at',
+        'ordered_at', 'is_needed_factor', 'is_returned', 'payment_method_type',
+        'payment_status', 'has_full_payment',
+    ];
+
+    public function __construct(
+        protected UserRepositoryInterface    $userRepository,
+        protected ProductRepositoryInterface $productRepository,
+        protected OrderRepositoryInterface   $orderRepository
+    )
+    {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsersForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        if (is_array($reportQuery)) {
+            $parsedReportQuery = QBHelper::refineQuery($reportQuery, $this->allowedUsersColumns);
+        } else {
+            $parsedReportQuery = null;
+        }
+
+        return $this->userRepository->getUsersFilterPaginatedForReport(
+            filter: $filter, reportQuery: $parsedReportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductsForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        if (is_array($reportQuery)) {
+            $parsedReportQuery = QBHelper::refineQuery($reportQuery, $this->allowedProductsColumns);
+        } else {
+            $parsedReportQuery = null;
+        }
+
+        return $this->productRepository->getProductsFilterPaginatedForReport(
+            filter: $filter, reportQuery: $parsedReportQuery
+        );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOrdersForReport(
+        Filter $filter,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator
+    {
+        if (is_array($reportQuery)) {
+            $parsedReportQuery = QBHelper::refineQuery($reportQuery, $this->allowedOrdersColumns);
+        } else {
+            $parsedReportQuery = null;
+        }
+
+        return $this->orderRepository->getOrdersFilterPaginatedForReport(
+            filter: $filter, reportQuery: $parsedReportQuery
+        );
+    }
+
+    /**
      * It'll return an array with below format: <br>
-     *   <pre>
+     *   <code>
      *     [
      *       [
      *         value: '', // name of column (required)
+     *         name: '', // displaying name for user (required)
      *         type: 'string', // valid type from defined types in "TypesEnum" enum class
      *         input: [
      *           text: 'username', // text of input's label (optional)
@@ -37,33 +147,35 @@ class ReportRepository implements ReportRepositoryInterface
      *       ],
      *       ...
      *     ]
-     *   </pre>
+     *   </code>
      *
      * @template Sample You can copy sample code to use:
-     * <pre>
-     * [
-     *   [
-     *     'value' => '',
-     *     'type' => '',
-     *     'input' => [
-     *       'text' => '',
-     *       'placeholder' => '',
-     *       'type' => '',
-     *       'value' => '',
-     *       'value2' => '',
-     *       'initialValue' => '',
-     *       'initialValue2' => '',
-     *       'min' => 0,
-     *       'max' => 0,
-     *       'textKey' => '',
-     *       'key' => '',
-     *       'options' => [],
-     *       'loading' => false,
-     *       'remoteUrl' => '',
-     *     ]
-     *   ],
-     * ]
-     * </pre>
+     *                  <code>
+     *                  [
+     *                    [
+     *                      'value' => '',
+     *                      'name' => '',
+     *                      'type' => '',
+     *                      'input' => [
+     *                        'text' => '',
+     *                        'placeholder' => '',
+     *                        'type' => '',
+     *                        'value' => '',
+     *                        'value2' => '',
+     *                        'initialValue' => '',
+     *                        'initialValue2' => '',
+     *                        'min' => 0,
+     *                        'max' => 0,
+     *                        'textKey' => '',
+     *                        'key' => '',
+     *                        'options' => [],
+     *                        'loading' => false,
+     *                        'remoteUrl' => '',
+     *                      ]
+     *                    ],
+     *                    ...,
+     *                  ]
+     *                  </code>
      *
      * @inheritDoc
      */
@@ -77,10 +189,11 @@ class ReportRepository implements ReportRepositoryInterface
                 'first_name' => 'نام',
                 'last_name' => 'نام خانوادگی',
                 'national_code' => 'کد ملی',
-                'shaba_number' => 'شماره شبا',
+                'sheba_number' => 'شماره شبا',
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => $text,
@@ -98,6 +211,8 @@ class ReportRepository implements ReportRepositoryInterface
                 'is_deleted' => 'کاربر حذف شده',
             ] as $value => $text) {
             $info[] = [
+                'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::BOOLEAN->value,
                 'input' => [
                     'value' => $value,
@@ -108,12 +223,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'value',
                     'options' => [
                         [
-                            'text' => 'خیر',
-                            'value' => DatabaseEnum::DB_NO,
-                        ],
-                        [
                             'text' => 'بله',
                             'value' => DatabaseEnum::DB_YES,
+                        ],
+                        [
+                            'text' => 'خیر',
+                            'value' => DatabaseEnum::DB_NO,
                         ],
                     ],
                 ],
@@ -132,6 +247,7 @@ class ReportRepository implements ReportRepositoryInterface
         $info = [
             [
                 'value' => 'brand',
+                'name' => 'برند',
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => 'برند',
@@ -141,11 +257,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'id',
                     'options' => [],
                     'loading' => true,
-                    'remoteUrl' => route('admin.brands.index'),
+                    'remoteUrl' => route('api.admin.brands.index'),
                 ],
             ],
             [
                 'value' => 'category',
+                'name' => 'دسته‌بندی',
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => 'دسته‌بندی',
@@ -155,7 +272,7 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'id',
                     'options' => [],
                     'loading' => true,
-                    'remoteUrl' => route('admin.categories.index'),
+                    'remoteUrl' => route('api.admin.categories.index'),
                 ],
             ],
         ];
@@ -166,10 +283,11 @@ class ReportRepository implements ReportRepositoryInterface
                 'unit_name' => 'واحد شمارش',
                 'color_name' => 'رنگ',
                 'size' => 'سایز',
-                'gurantee' => 'گارانتی',
+                'guarantee' => 'گارانتی',
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => $text,
@@ -184,14 +302,17 @@ class ReportRepository implements ReportRepositoryInterface
                 'is_spacial' => 'محصول ویژه',
                 'is_available' => 'موجود بودن محصول',
                 'is_each_available' => 'موجود بودن هر محصول',
-                'is_commenting_allowed' => 'دارای اجازه ارسال نظر',
+                'is_commenting_allowed' => 'دارای اجازه ارسال دیدگاه',
                 'is_published' => 'وضعیت انتشار',
                 'is_each_published' => 'وضعیت انتشار هر محصول',
                 'is_each_show_coming_soon' => 'نمایش بزودی در هر محصول',
                 'is_each_show_call_for_more' => 'نمایش اطلاعات بیشتر در هر محصول',
+                'has_separate_shipment' => 'دارای مرسوله مجزا',
                 'is_deleted' => 'محصول حذف شده',
             ] as $value => $text) {
             $info[] = [
+                'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::BOOLEAN->value,
                 'input' => [
                     'value' => $value,
@@ -202,12 +323,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'value',
                     'options' => [
                         [
-                            'text' => 'خیر',
-                            'value' => DatabaseEnum::DB_NO,
-                        ],
-                        [
                             'text' => 'بله',
                             'value' => DatabaseEnum::DB_YES,
+                        ],
+                        [
+                            'text' => 'خیر',
+                            'value' => DatabaseEnum::DB_NO,
                         ],
                     ],
                 ],
@@ -225,6 +346,7 @@ class ReportRepository implements ReportRepositoryInterface
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::NUMBER->value,
                 'input' => [
                     'text' => $text,
@@ -235,15 +357,22 @@ class ReportRepository implements ReportRepositoryInterface
             ];
         }
 
-        $info[] = [
-            'value' => 'discounted_until',
-            'type' => TypesEnum::DATE_OR_TIME_OR_BOTH->value,
-            'input' => [
-                'text' => 'تخفیف تا تاریخ',
-                'placeholder' => 'انتخاب نمایید',
-                'type' => InputTypesEnum::DATETIME->value,
-            ],
-        ];
+        foreach (
+            [
+                'discounted_from' => 'تخفیف از تاریخ',
+                'discounted_until' => 'تخفیف تا تاریخ',
+            ] as $value => $text) {
+            $info[] = [
+                'value' => $value,
+                'name' => $text,
+                'type' => TypesEnum::DATE_OR_TIME_OR_BOTH->value,
+                'input' => [
+                    'text' => $text,
+                    'placeholder' => 'انتخاب نمایید',
+                    'type' => InputTypesEnum::DATETIME->value,
+                ],
+            ];
+        }
 
         return $info;
     }
@@ -257,6 +386,7 @@ class ReportRepository implements ReportRepositoryInterface
         $info = [
             [
                 'value' => 'user',
+                'name' => 'کاربر',
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => 'کاربر',
@@ -266,7 +396,7 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'id',
                     'options' => [],
                     'loading' => true,
-                    'remoteUrl' => route('admin.users.index'),
+                    'remoteUrl' => route('api.admin.users.index'),
                 ],
             ],
         ];
@@ -283,7 +413,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'postal_code' => 'کد پستی',
                 'receiver_name' => 'نام گیرنده',
                 'receiver_mobile' => 'شماره تماس گیرنده',
-                'coupon_code' => 'کد کوپن',
+                'coupon_code' => 'کد تخفیف',
                 'send_status_title' => 'وضعیت سفارش',
                 'payment_method_title' => 'عنوان روش پرداخت',
                 'send_method_title' => 'عنوان روش ارسال',
@@ -294,6 +424,7 @@ class ReportRepository implements ReportRepositoryInterface
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => $text,
@@ -310,6 +441,7 @@ class ReportRepository implements ReportRepositoryInterface
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::STRING->value,
                 'input' => [
                     'text' => $text,
@@ -321,7 +453,7 @@ class ReportRepository implements ReportRepositoryInterface
 
         foreach (
             [
-                'coupon_price' => 'قیمت کوپن',
+                'coupon_price' => 'قیمت کد تخفیف',
                 'shipping_price' => 'هزینه ارسال',
                 'discount_price' => 'مبلغ تخفیف',
                 'final_price' => 'مبلغ نهایی',
@@ -332,6 +464,7 @@ class ReportRepository implements ReportRepositoryInterface
             ] as $value => $text) {
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::NUMBER->value,
                 'input' => [
                     'text' => $text,
@@ -350,6 +483,7 @@ class ReportRepository implements ReportRepositoryInterface
 
             $info[] = [
                 'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::DATE_OR_TIME_OR_BOTH->value,
                 'input' => [
                     'text' => $text,
@@ -365,6 +499,8 @@ class ReportRepository implements ReportRepositoryInterface
                 'is_returned' => 'محصول بازگشتی',
             ] as $value => $text) {
             $info[] = [
+                'value' => $value,
+                'name' => $text,
                 'type' => TypesEnum::BOOLEAN->value,
                 'input' => [
                     'value' => $value,
@@ -375,12 +511,12 @@ class ReportRepository implements ReportRepositoryInterface
                     'key' => 'value',
                     'options' => [
                         [
-                            'text' => 'خیر',
-                            'value' => DatabaseEnum::DB_NO,
-                        ],
-                        [
                             'text' => 'بله',
                             'value' => DatabaseEnum::DB_YES,
+                        ],
+                        [
+                            'text' => 'خیر',
+                            'value' => DatabaseEnum::DB_NO,
                         ],
                     ],
                 ],
@@ -389,6 +525,7 @@ class ReportRepository implements ReportRepositoryInterface
 
         $info[] = [
             'value' => 'payment_method_type',
+            'name' => 'نوع روش پرداخت',
             'type' => TypesEnum::STRING->value,
             'input' => [
                 'text' => 'نوع روش پرداخت',
@@ -405,6 +542,7 @@ class ReportRepository implements ReportRepositoryInterface
 
         $info[] = [
             'value' => 'payment_status',
+            'name' => 'وضعیت پرداخت',
             'type' => TypesEnum::STRING->value,
             'input' => [
                 'text' => 'وضعیت پرداخت',
@@ -422,6 +560,8 @@ class ReportRepository implements ReportRepositoryInterface
         // because of multiple payments, it's good to have a filter to get
         // all orders that has been fully paid.
         $info[] = [
+            'value' => 'has_full_payment',
+            'name' => 'پرداخت کامل انجام شده',
             'type' => TypesEnum::BOOLEAN->value,
             'input' => [
                 'value' => 'has_full_payment',
@@ -432,12 +572,12 @@ class ReportRepository implements ReportRepositoryInterface
                 'key' => 'value',
                 'options' => [
                     [
-                        'text' => 'خیر',
-                        'value' => DatabaseEnum::DB_NO,
-                    ],
-                    [
                         'text' => 'بله',
                         'value' => DatabaseEnum::DB_YES,
+                    ],
+                    [
+                        'text' => 'خیر',
+                        'value' => DatabaseEnum::DB_NO,
                     ],
                 ],
             ],

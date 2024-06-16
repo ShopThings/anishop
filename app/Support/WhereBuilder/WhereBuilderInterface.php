@@ -10,125 +10,10 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $value
+     * @param string $boolean
      * @return static
      */
-    public function whereEqual($column, $value): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @return static
-     */
-    public function whereNotEqual($column, $value): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @return static
-     */
-    public function whereGreaterThan($column, $value): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @return static
-     */
-    public function whereGreaterThanEqual($column, $value): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @return static
-     */
-    public function whereLessThan($column, $value): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @return static
-     */
-    public function whereLessThanEqual($column, $value): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @param string $operand
-     * @return static
-     */
-    public function whereLike($column, $value, string $operand = '%{value}%'): static;
-
-    /**
-     * @param $column
-     * @param $value
-     * @param string $operand
-     * @return static
-     */
-    public function whereNotLike($column, $value, string $operand = '%{value}%'): static;
-
-    /**
-     * @param $column
-     * @param array $value
-     * @return static
-     */
-    public function whereIn($column, array $value): static;
-
-    /**
-     * @param $column
-     * @param array $value
-     * @return static
-     */
-    public function whereNotIn($column, array $value): static;
-
-    /**
-     * @param $column
-     * @return static
-     */
-    public function whereNull($column): static;
-
-    /**
-     * @param $column
-     * @return static
-     */
-    public function whereNotNull($column): static;
-
-    /**
-     * @param $column
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function whereBetween($column, $first, $second): static;
-
-    /**
-     * @param $column
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function whereNotBetween($column, $first, $second): static;
-
-    /**
-     * @param $column
-     * @param $pattern
-     * @return static
-     */
-    public function whereRegexp($column, $pattern): static;
-
-    /**
-     * @param string $expression
-     * @param array $bindings
-     * @return $this
-     */
-    public function whereRaw(string $expression, array $bindings): static;
-
-    /**
-     * Send NULL if you don't need any prefix in group
-     *
-     * @param Closure $callback
-     * @param string|null $prefix
-     * @return static
-     */
-    public function group(Closure $callback, ?string $prefix = ''): static;
+    public function whereEqual($column, $value, string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -140,9 +25,25 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $value
+     * @param string $boolean
+     * @return static
+     */
+    public function whereNotEqual($column, $value, string $boolean = 'and'): static;
+
+    /**
+     * @param $column
+     * @param $value
      * @return static
      */
     public function orWhereNotEqual($column, $value): static;
+
+    /**
+     * @param $column
+     * @param $value
+     * @param string $boolean
+     * @return static
+     */
+    public function whereGreaterThan($column, $value, string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -154,6 +55,14 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $value
+     * @param string $boolean
+     * @return static
+     */
+    public function whereGreaterThanEqual($column, $value, string $boolean = 'and'): static;
+
+    /**
+     * @param $column
+     * @param $value
      * @return static
      */
     public function orWhereGreaterThanEqual($column, $value): static;
@@ -161,9 +70,25 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $value
+     * @param string $boolean
+     * @return static
+     */
+    public function whereLessThan($column, $value, string $boolean = 'and'): static;
+
+    /**
+     * @param $column
+     * @param $value
      * @return static
      */
     public function orWhereLessThan($column, $value): static;
+
+    /**
+     * @param $column
+     * @param $value
+     * @param string $boolean
+     * @return static
+     */
+    public function whereLessThanEqual($column, $value, string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -176,9 +101,35 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $column
      * @param $value
      * @param string $operand
-     * @return $this
+     * @param string $boolean
+     * @param bool $not
+     * @return static
      */
-    public function orWhereLike($column, $value, string $operand = '%{value}%'): static;
+    public function whereLike(
+        $column,
+        $value,
+        string $operand = '%{value}%',
+        string $boolean = 'and',
+        bool $not = false
+    ): static;
+
+    /**
+     * @param $column
+     * @param $value
+     * @param string $operand
+     * @param bool $not
+     * @return static
+     */
+    public function orWhereLike($column, $value, string $operand = '%{value}%', bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param $value
+     * @param string $operand
+     * @param string $boolean
+     * @return static
+     */
+    public function whereNotLike($column, $value, string $operand = '%{value}%', string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -191,9 +142,27 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param array $value
+     * @param string $boolean
+     * @param bool $not
      * @return static
      */
-    public function orWhereIn($column, array $value): static;
+    public function whereIn($column, array $value, string $boolean = 'and', bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param array $value
+     * @param bool $not
+     * @return static
+     */
+    public function orWhereIn($column, array $value, bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param array $value
+     * @param string $boolean
+     * @return static
+     */
+    public function whereNotIn($column, array $value, string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -204,9 +173,25 @@ interface WhereBuilderInterface extends BuildExpressionInterface
 
     /**
      * @param $column
+     * @param string $boolean
+     * @param bool $not
      * @return static
      */
-    public function orWhereNull($column): static;
+    public function whereNull($column, string $boolean = 'and', bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param bool $not
+     * @return static
+     */
+    public function orWhereNull($column, bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param string $boolean
+     * @return static
+     */
+    public function whereNotNull($column, string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -218,9 +203,29 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $column
      * @param $first
      * @param $second
+     * @param string $boolean
+     * @param bool $not
      * @return static
      */
-    public function orWhereBetween($column, $first, $second): static;
+    public function whereBetween($column, $first, $second, string $boolean = 'and', bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param $first
+     * @param $second
+     * @param bool $not
+     * @return static
+     */
+    public function orWhereBetween($column, $first, $second, bool $not = false): static;
+
+    /**
+     * @param $column
+     * @param $first
+     * @param $second
+     * @param string $boolean
+     * @return static
+     */
+    public function whereNotBetween($column, $first, $second, string $boolean = 'and'): static;
 
     /**
      * @param $column
@@ -233,16 +238,57 @@ interface WhereBuilderInterface extends BuildExpressionInterface
     /**
      * @param $column
      * @param $pattern
-     * @return $this
+     * @param string $boolean
+     * @return static
+     */
+    public function whereRegexp($column, $pattern, string $boolean = 'and'): static;
+
+    /**
+     * @param $column
+     * @param $pattern
+     * @return static
      */
     public function orWhereRegexp($column, $pattern): static;
 
     /**
      * @param string $expression
      * @param array $bindings
-     * @return $this
+     * @return static
+     */
+    public function whereRaw(string $expression, array $bindings): static;
+
+    /**
+     * @param string $expression
+     * @param array $bindings
+     * @return static
      */
     public function orWhereRaw(string $expression, array $bindings): static;
+
+    /**
+     * @param $column
+     * @param $operator
+     * @param $value
+     * @param string $boolean
+     * @return static
+     */
+    public function where($column, $operator = null, $value = null, string $boolean = 'and'): static;
+
+    /**
+     * @param $column
+     * @param $operator
+     * @param $value
+     * @return static
+     */
+    public function orWhere($column, $operator, $value = null): static;
+
+    /**
+     * Send NULL if you don't need any prefix in group
+     *
+     * @param Closure $callback
+     * @param string|null $prefix
+     * @return static
+     */
+    public function group(Closure $callback, ?string $prefix = ''): static;
 
     /**
      * Send NULL if you don't need any prefix in group
@@ -265,7 +311,21 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $second
      * @return static
      */
+    public function orWhereEqualColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
     public function whereNotEqualColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
+    public function orWhereNotEqualColumn($first, $second): static;
 
     /**
      * @param $first
@@ -279,7 +339,21 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $second
      * @return static
      */
+    public function orWhereGreaterThanColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
     public function whereGreaterThanEqualColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
+    public function orWhereGreaterThanEqualColumn($first, $second): static;
 
     /**
      * @param $first
@@ -293,7 +367,21 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $second
      * @return static
      */
+    public function orWhereLessThanColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
     public function whereLessThanEqualColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
+    public function orWhereLessThanEqualColumn($first, $second): static;
 
     /**
      * @param $first
@@ -307,7 +395,21 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $second
      * @return static
      */
+    public function orWhereLikeColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
     public function whereNotLikeColumn($first, $second): static;
+
+    /**
+     * @param $first
+     * @param $second
+     * @return static
+     */
+    public function orWhereNotLikeColumn($first, $second): static;
 
     /**
      * @param $column
@@ -323,63 +425,7 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $second
      * @return static
      */
-    public function whereNotBetweenColumn($column, $first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function orWhereEqualColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function orWhereNotEqualColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function orWhereGreaterThanColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return $this
-     */
-    public function orWhereGreaterThanEqualColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function orWhereLessThanColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return $this
-     */
-    public function orWhereLessThanEqualColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return $this
-     */
-    public function orWhereLikeColumn($first, $second): static;
-
-    /**
-     * @param $first
-     * @param $second
-     * @return static
-     */
-    public function orWhereNotLikeColumn($first, $second): static;
+    public function orWhereBetweenColumn($column, $first, $second): static;
 
     /**
      * @param $column
@@ -387,7 +433,7 @@ interface WhereBuilderInterface extends BuildExpressionInterface
      * @param $second
      * @return static
      */
-    public function orWhereBetweenColumn($column, $first, $second): static;
+    public function whereNotBetweenColumn($column, $first, $second): static;
 
     /**
      * @param $column

@@ -1,30 +1,22 @@
 <template>
   <div class="h-[94px]">
     <div class="flex flex-col fixed bg-white w-full shadow-md z-10">
-      <div class="h-[64px]">
+      <div class="h-[64px] layout-max-w mx-auto w-full">
         <nav>
           <div class="h-[64px] py-2 px-6 flex">
             <div class="h-full shrink-0">
               <router-link :to="{name: 'home'}">
                 <img
-                    alt="لوگو"
-                    class="h-[30px] sm:h-[36px] mt-[7px]"
-                    src="/logo-with-type.png"
+                  alt="لوگو"
+                  class="h-[30px] sm:h-[36px] mt-[7px]"
+                  src="/logo-with-type.png"
                 >
               </router-link>
             </div>
 
             <div class="h-full grow">
               <div class="px-6 max-w-lg xl:max-w-2xl hidden md:block">
-                <base-input
-                    klass="bg-slate-100 focus:bg-white !ring-0 focus:!ring-2 rounded-xl"
-                    name="search"
-                    placeholder="جستجو..."
-                >
-                  <template #icon>
-                    <MagnifyingGlassIcon class="w-6 h-6 text-slate-400"/>
-                  </template>
-                </base-input>
+                <navbar-search/>
               </div>
             </div>
 
@@ -41,8 +33,8 @@
                 </li>
                 <li class="px-1 sm:px-2 block lg:hidden">
                   <partial-navbar-guest-mobile
-                      :is-loading="menuLoading"
-                      :menu="localMenu"
+                    :is-loading="menuLoading"
+                    :menu="localMenu"
                   />
                 </li>
               </ul>
@@ -51,26 +43,34 @@
         </nav>
       </div>
 
-      <div class="h-[30px]">
+      <div class="h-[30px] layout-max-w mx-auto w-full">
         <div class="flex gap-3 px-6 relative h-[24px]">
           <div class="ml-6">
             <navbar-categories/>
           </div>
 
           <partial-navbar-guest
-              :is-loading="menuLoading"
-              :menu="localMenu"
-              class="hidden space-x-10 space-x-reverse lg:flex"
+            :is-loading="menuLoading"
+            :menu="localMenu"
+            class="hidden space-x-10 space-x-reverse lg:flex"
           />
 
-          <div class="mr-auto flex items-center gap-2 bg-indigo-50 px-3 rounded-full">
+          <div
+            v-if="getSiteFirstPhone"
+            class="mr-auto bg-teal-100 px-2 rounded-full"
+          >
             <div class="flex items-center gap-2">
-              <span class="text-slate-400 text-xs hidden sm:inline-block">قیمت</span>
-              <span class="iranyekan-bold text-sm">دلار</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-iranyekan-bold">52,000</span>
-              <span class="text-xs text-slate-400">تومان</span>
+              <DevicePhoneMobileIcon class="size-6 text-emerald-500 animate-bounce"/>
+
+              <div class="flex justify-center items-center gap-3">
+                <a
+                  :href="'tel:' + (getSiteFirstPhone?.phone)"
+                  class="tracking-widest font-iranyekan-light"
+                  v-html="obfuscateNumber(getSiteFirstPhone?.phone)"
+                ></a>
+                <span v-if="getSiteFirstPhone?.name"
+                      class="text-emerald-500 text-xs whitespace-nowrap">{{ getSiteFirstPhone?.name }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -80,20 +80,43 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
-import {MagnifyingGlassIcon} from '@heroicons/vue/24/outline'
+import {computed, inject, onMounted, ref} from "vue";
+import {DevicePhoneMobileIcon} from '@heroicons/vue/24/outline'
 import NavbarCart from "./NavbarCart.vue"
 import NavbarUserAction from "./NavbarUserAction.vue"
 import PartialNavbarGuest from "./partials/PartialNavbarGuest.vue"
-import DialogSearch from "./DialogSearch.vue";
-import BaseInput from "./base/BaseInput.vue";
+import DialogSearch from "./product/global-search/DialogSearch.vue";
 import NavbarCategories from "./NavbarCategories.vue";
 import PartialNavbarGuestMobile from "@/components/partials/PartialNavbarGuestMobile.vue";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import {MENU_PLACES} from "@/composables/constants.js";
+import {obfuscateNumber} from "@/composables/helper.js";
+import NavbarSearch from "@/components/product/global-search/NavbarSearch.vue";
+
+const homeSettingStore = inject('homeSettingStore')
 
 const menuLoading = ref(true)
 const localMenu = ref(null)
+
+const getSiteFirstPhone = computed(() => {
+  let phones = homeSettingStore.getPhones
+
+  if (!Array.isArray(phones) || !phones.length) return null
+
+  let first = phones[0]
+  let splatted = first.split(' ')
+
+  if (splatted?.length < 2) {
+    return {
+      phone: first
+    }
+  }
+
+  return {
+    phone: splatted[0],
+    name: splatted.slice(1).join(' '),
+  }
+})
 
 onMounted(() => {
   HomeMainPageAPI.fetchMenu(MENU_PLACES.TOP_MENU.value, {

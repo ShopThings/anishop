@@ -8,8 +8,8 @@ use App\Http\Requests\Filters\HomeProductSideFilter;
 use App\Support\Filter;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface ProductRepositoryInterface extends RepositoryInterface
 {
@@ -24,6 +24,28 @@ interface ProductRepositoryInterface extends RepositoryInterface
         Filter                    $filter = null,
         GetterExpressionInterface $where = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param Filter|null $filter
+     * @param array|null $reportQuery
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getProductsFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param string $code
+     * @return Model|null
+     */
+    public function getProductVariantByCode(string $code): ?Model;
+
+    /**
+     * @param array $codes
+     * @return Collection
+     */
+    public function getProductVariantsByCodes(array $codes): Collection;
 
     /**
      * @param HomeProductSideFilter $filter

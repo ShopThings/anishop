@@ -39,6 +39,11 @@ class Filter
      */
     protected ?string $searchText = null;
 
+    /**
+     * @var bool
+     */
+    protected bool $onlyPublished = false;
+
     public function __construct(?Request $request = null)
     {
         if (!is_null($request)) {
@@ -58,6 +63,8 @@ class Filter
         $orderSort = $request->string('sort', 'desc')->toString();
 
         //
+
+        $this->setOnlyPublished($request->boolean('only_published'));
 
         $this->setLimit($request->integer('limit'));
 
@@ -166,7 +173,7 @@ class Filter
      *  [
      *    'id' => 'desc',
      *    'name' => 'asc',
-     *    ...
+     *    ...,
      *  ]
      * </code>
      */
@@ -214,6 +221,24 @@ class Filter
     }
 
     /**
+     * @return bool
+     */
+    public function getOnlyPublished(): bool
+    {
+        return $this->onlyPublished;
+    }
+
+    /**
+     * @param bool $onlyPublished
+     * @return static
+     */
+    public function setOnlyPublished(bool $onlyPublished): static
+    {
+        $this->onlyPublished = $onlyPublished;
+        return $this;
+    }
+
+    /**
      * @return static
      */
     public function reset(): static
@@ -224,6 +249,7 @@ class Filter
         $this->order = ['id' => 'desc'];
         $this->searchText = null;
         $this->relationSearch = true;
+        $this->onlyPublished = false;
 
         return $this;
     }

@@ -6,9 +6,10 @@ use App\Repositories\Contracts\CityPostPriceRepositoryInterface;
 use App\Services\Contracts\CityPostPriceServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
+use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class CityPostPriceService extends Service implements CityPostPriceServiceInterface
 {
@@ -24,6 +25,25 @@ class CityPostPriceService extends Service implements CityPostPriceServiceInterf
     public function getPostPrices(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository->getPostPricesSearchFilterPaginated(filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPostPricesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPostPriceByCityId(int $cityId): ?Model
+    {
+        $where = new WhereBuilder();
+        $where->whereEqual('city_id', $cityId);
+
+        return $this->repository->findWhere($where->build());
     }
 
     /**

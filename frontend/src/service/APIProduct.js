@@ -44,7 +44,7 @@ export const ProductAPI = Object.assign(
   GenericAPI(apiRoutes.admin.products, {replacement: 'product'}),
   {
     fetchVariants(productId, callback) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.products.showVariants, {product: productId}),
         null,
         callback
@@ -52,7 +52,7 @@ export const ProductAPI = Object.assign(
     },
 
     createGallery(productId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.products.galleyStore, {product: productId}),
         {
           method: 'POST',
@@ -63,7 +63,7 @@ export const ProductAPI = Object.assign(
     },
 
     fetchGallery(productId, callback) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.products.galleyShow, {product: productId}),
         null,
         callback
@@ -71,7 +71,7 @@ export const ProductAPI = Object.assign(
     },
 
     createRelativeProducts(productId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.products.relatedProductsStore, {product: productId}),
         {
           method: 'POST',
@@ -82,7 +82,7 @@ export const ProductAPI = Object.assign(
     },
 
     fetchRelativeProducts(productId, callback) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.products.relatedProductsShow, {product: productId}),
         null,
         callback
@@ -90,7 +90,7 @@ export const ProductAPI = Object.assign(
     },
 
     modifyProducts(productId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.products.modifyProducts, {product: productId}),
         {
           method: 'POST',
@@ -101,7 +101,7 @@ export const ProductAPI = Object.assign(
     },
 
     modifyBatchInfo(data, callbacks) {
-      useRequest(
+      return useRequest(
         apiRoutes.admin.products.batchEditInfo,
         {
           method: 'PUT',
@@ -112,7 +112,7 @@ export const ProductAPI = Object.assign(
     },
 
     modifyBatchPrice(data, callbacks) {
-      useRequest(
+      return useRequest(
         apiRoutes.admin.products.batchEditPrice,
         {
           method: 'PUT',
@@ -147,17 +147,26 @@ export const ProductAttributeCategoryAPI = Object.assign(
 
 export const ProductAttributeProductAPI = Object.assign(
   GenericAPI(apiRoutes.admin.productAttributeProducts, {
-    only: ['show', 'store'],
+    only: ['show'],
     replacement: 'product',
   }),
   {
-    // extra functionality goes here
+    create(productId, data, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.admin.productAttributeProducts.store, {product: productId,}),
+        {
+          method: 'POST',
+          data,
+        },
+        callbacks
+      )
+    },
   }
 )
 
 export const CommentAPI = {
   fetchById(productId, commentId, callback) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.comments.show, {
         product: productId,
         comment: commentId,
@@ -168,15 +177,23 @@ export const CommentAPI = {
   },
 
   fetchAll(productId, params, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.comments.index, {product: productId}),
       {params},
       callbacks
     )
   },
 
+  fetchAllComments(params, callbacks) {
+    return useRequest(
+      apiRoutes.admin.comments.all,
+      {params},
+      callbacks
+    )
+  },
+
   updateById(productId, commentId, data, callback) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.comments.update, {
         product: productId,
         comment: commentId,
@@ -190,7 +207,7 @@ export const CommentAPI = {
   },
 
   deleteById(productId, commentId, callback) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.comments.destroy, {
         product: productId,
         comment: commentId,
@@ -201,7 +218,7 @@ export const CommentAPI = {
   },
 
   deleteByIds(productId, ids, callback) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.comments.batchDestroy, {product: productId}),
       {
         method: 'DELETE',

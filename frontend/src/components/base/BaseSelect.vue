@@ -1,13 +1,13 @@
 <template>
   <template v-if="editMode">
     <Listbox
-        v-model="selectedItems"
-        :by="optionsKey"
-        :multiple="multiple"
-        :name="name"
+      v-model="selectedItems"
+      :by="optionsKey"
+      :multiple="multiple"
+      :name="name"
     >
       <div class="relative">
-        <ListboxButton :class="btnClass" class="relative">
+        <ListboxButton :class="[btnClass, btnSpaceClass]" class="relative">
           <slot name="button">
             <span class="block truncate text-right pr-6">{{ selectText || 'انتخاب کنید' }}</span>
 
@@ -18,25 +18,25 @@
 
         <VTransitionSlideFadeUpY>
           <ListboxOptions
-              ref="optionsContainerRef"
-              :class="optionsClass"
-              class="absolute min-w-[12rem] z-[5] max-h-60 w-full my-custom-scrollbar rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
+            ref="optionsContainerRef"
+            :class="optionsClass"
+            class="absolute min-w-[12rem] z-[5] max-h-60 w-full my-custom-scrollbar rounded-md bg-white py-1 text-base shadow-md ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm"
           >
             <loader-progress v-if="isLoading"/>
 
             <div
-                v-if="!isLoading && options && Object.keys(options).length === 0"
-                class="relative cursor-default select-none py-2 px-4 text-gray-700"
+              v-if="!isLoading && options && Object.keys(options).length === 0"
+              class="relative cursor-default select-none py-2 px-4 text-gray-700"
             >
               هیچ موردی پیدا نشد.
             </div>
 
             <ListboxOption
-                v-for="item in options"
-                :key="item[optionsKey]"
-                v-slot="{ active, selected }"
-                :value="item"
-                as="template"
+              v-for="item in options"
+              :key="item[optionsKey]"
+              v-slot="{ active, selected }"
+              :value="item"
+              as="template"
             >
               <li :class="[
                 active ? 'bg-violet-100 text-primary' : 'text-gray-900',
@@ -44,7 +44,7 @@
               ]"
               >
                 <span
-                    :class="[
+                  :class="[
                     selected ? 'font-medium' : 'font-normal',
                     'block truncate',
                   ]"
@@ -54,8 +54,8 @@
                     </slot>
                 </span>
                 <span
-                    v-if="selected"
-                    class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
+                  v-if="selected"
+                  class="absolute inset-y-0 left-0 flex items-center pl-3 text-primary">
                     <CheckIcon aria-hidden="true" class="h-5 w-5"/>
                 </span>
               </li>
@@ -66,18 +66,18 @@
     </Listbox>
   </template>
   <div
-      v-else
-      class="flex items-center"
+    v-else
+    class="flex items-center"
   >
     <span class="grow text-gray-500 text-sm">{{ fullTextOfSelectedItems || '-' }}</span>
     <button
-        v-if="isEditable"
-        class="shrink-0 mr-2"
-        type="button"
+      v-if="isEditable"
+      class="shrink-0 mr-2"
+      type="button"
     >
       <PencilSquareIcon
-          class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
-          @click="toggleEditMode"
+        class="h-6 w-6 text-gray-400 hover:text-gray-600 transition"
+        @click="toggleEditMode"
       />
     </button>
   </div>
@@ -86,7 +86,7 @@
 <script setup>
 import {computed, nextTick, ref, watch} from "vue"
 import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue"
-import {ChevronUpDownIcon, CheckIcon} from '@heroicons/vue/24/outline'
+import {CheckIcon, ChevronUpDownIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeUpY from "@/transitions/VTransitionSlideFadeUpY.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import isObject from "lodash.isobject";
@@ -125,9 +125,13 @@ const props = defineProps({
   },
   btnClass: {
     type: String,
-    default: 'block w-full rounded-md bg-white border-0 py-3 px-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
+    default: 'block w-full rounded-md bg-white border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6',
   },
-  hasEditMode: {
+  btnSpaceClass: {
+    type: String,
+    default: 'p-3',
+  },
+  inEditMode: {
     type: Boolean,
     default: true,
   },
@@ -143,10 +147,10 @@ const props = defineProps({
 })
 const emit = defineEmits(['change', 'before-change'])
 
-const editMode = ref(props.hasEditMode)
+const editMode = ref(props.inEditMode)
 
-watch(() => props.hasEditMode, () => {
-  editMode.value = props.hasEditMode
+watch(() => props.inEditMode, () => {
+  editMode.value = props.inEditMode
 })
 
 function toggleEditMode() {
@@ -165,8 +169,8 @@ function resetSelectedItems() {
 
 function setToSelectedItems(value) {
   if (
-      (Array.isArray(value) && value.length === 0) ||
-      (isObject(value) && Object.keys(value).length === 0)
+    (Array.isArray(value) && value.length === 0) ||
+    (isObject(value) && Object.keys(value).length === 0)
   ) return
 
   if (props.multiple) {
@@ -268,10 +272,10 @@ watch(() => optionsContainerRef.value?.$el?.classList, () => {
     const {top, right, bottom, left} = useElementBounding(optionsContainerRef.value.$el)
 
     const isVisible = (
-        top.value >= 0 &&
-        left.value >= 0 &&
-        bottom.value <= window.innerHeight &&
-        right.value <= window.innerWidth
+      top.value >= 0 &&
+      left.value >= 0 &&
+      bottom.value <= window.innerHeight &&
+      right.value <= window.innerWidth
     );
 
     if (!isVisible) {

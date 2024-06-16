@@ -9,9 +9,9 @@
           <div class="flex flex-wrap items-end">
             <div class="p-2 w-full sm:w-1/2 lg:w-5/12">
               <base-input
-                  label-title="عنوان"
-                  name="title"
-                  placeholder="وارد نمایید"
+                label-title="عنوان"
+                name="title"
+                placeholder="وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -21,21 +21,21 @@
             <div class="p-2 w-full sm:w-1/2 lg:w-4/12">
               <partial-input-label title="محل قرارگیری"/>
               <base-select
-                  :options="sliderPlaces"
-                  options-key="value"
-                  options-text="text"
-                  @change="(selected) => {selectedSliderPlace = selected}"
+                :options="sliderPlaces"
+                options-key="value"
+                options-text="text"
+                @change="(selected) => {selectedSliderPlace = selected}"
               />
               <partial-input-error-message :error-message="errors.slider_place"/>
             </div>
             <div class="p-2 w-full sm:w-1/2 lg:w-3/12">
               <base-input
-                  :min="0"
-                  :money-mask="true"
-                  label-title="اولویت"
-                  name="priority"
-                  placeholder="وارد نمایید"
-                  type="text"
+                :min="0"
+                :money-mask="true"
+                label-title="اولویت"
+                name="priority"
+                placeholder="وارد نمایید"
+                type="text"
               >
                 <template #icon>
                   <HashtagIcon class="h-6 w-6 text-gray-400"/>
@@ -44,30 +44,30 @@
             </div>
             <div class="p-2 w-full sm:w-auto">
               <base-switch
-                  :enabled="true"
-                  label="نمایش اسلایدر"
-                  name="is_published"
-                  sr-text="نمایش/عدم نمایش اسلایدر"
-                  @change="(status) => {publishStatus=status}"
+                :enabled="true"
+                label="نمایش اسلایدر"
+                name="is_published"
+                sr-text="نمایش/عدم نمایش اسلایدر"
+                @change="(status) => {publishStatus=status}"
               />
             </div>
           </div>
 
           <VTransitionSlideFadeDownY mode="out-in">
             <div
-                v-if="selectedSliderPlace?.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value"
+              v-if="selectedSliderPlace?.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value"
             >
               <hr class="my-3">
 
               <div class="p-2 w-full sm:w-1/2">
                 <base-input
-                    :max="4"
-                    :min="1"
-                    :money-mask="true"
-                    label-title="تعداد تصاویر کنار هم"
-                    name="beside_images"
-                    placeholder="بین ۱ تا ۴ تصویر کنار هم"
-                    type="text"
+                  :max="4"
+                  :min="1"
+                  :money-mask="true"
+                  label-title="تعداد تصاویر کنار هم"
+                  name="beside_images"
+                  placeholder="بین ۱ تا ۴ تصویر کنار هم"
+                  type="text"
                 >
                   <template #icon>
                     <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -77,7 +77,7 @@
             </div>
 
             <div
-                v-else-if="selectedSliderPlace?.value === SLIDER_PLACES.MAIN_SLIDERS.value"
+              v-else-if="selectedSliderPlace?.value === SLIDER_PLACES.MAIN_SLIDERS.value"
             >
               <hr class="my-3">
 
@@ -85,20 +85,20 @@
                 <div class="p-2 w-full sm:w-1/3 lg:w-4/12">
                   <partial-input-label title="برند"/>
                   <base-select-searchable
-                      :current-page="brandSelectConfig.currentPage.value"
-                      :has-pagination="true"
-                      :is-loading="loadingGetBrands"
-                      :is-local-search="false"
-                      :last-page="brandSelectConfig.lastPage.value"
-                      :options="brands"
-                      name="brand"
-                      options-key="id"
-                      options-text="name"
-                      placeholder="جستجوی برند..."
-                      @change="(selected) => {selectedBrand = selected}"
-                      @query="searchBrand"
-                      @click-next-page="searchBrandNextPage"
-                      @click-prev-page="searchBrandPrevPage"
+                    :current-page="brandSelectConfig.currentPage.value"
+                    :has-pagination="true"
+                    :is-loading="loadingGetBrands"
+                    :is-local-search="false"
+                    :last-page="brandSelectConfig.lastPage.value"
+                    :options="brands"
+                    name="brand"
+                    options-key="id"
+                    options-text="name"
+                    placeholder="جستجوی برند..."
+                    @change="(selected) => {selectedBrand = selected}"
+                    @query="searchBrand"
+                    @click-next-page="searchBrandNextPage"
+                    @click-prev-page="searchBrandPrevPage"
                   >
                     <template #item="{item}">
                       <div class="flex items-center gap-2">
@@ -114,20 +114,20 @@
                 <div class="p-2 w-full sm:w-1/3 lg:w-5/12">
                   <partial-input-label title="دسته‌بندی"/>
                   <base-select-searchable
-                      :current-page="categorySelectConfig.currentPage.value"
-                      :has-pagination="true"
-                      :is-loading="loadingGetCategories"
-                      :is-local-search="false"
-                      :last-page="categorySelectConfig.lastPage.value"
-                      :options="categories"
-                      name="category"
-                      options-key="id"
-                      options-text="name"
-                      placeholder="جستجوی دسته‌بندی..."
-                      @change="(selected) => {selectedCategory = selected}"
-                      @query="searchCategory"
-                      @click-next-page="searchCategoryNextPage"
-                      @click-prev-page="searchCategoryPrevPage"
+                    :current-page="categorySelectConfig.currentPage.value"
+                    :has-pagination="true"
+                    :is-loading="loadingGetCategories"
+                    :is-local-search="false"
+                    :last-page="categorySelectConfig.lastPage.value"
+                    :options="categories"
+                    name="category"
+                    options-key="id"
+                    options-text="name"
+                    placeholder="جستجوی دسته‌بندی..."
+                    @change="(selected) => {selectedCategory = selected}"
+                    @query="searchCategory"
+                    @click-next-page="searchCategoryNextPage"
+                    @click-prev-page="searchCategoryPrevPage"
                   >
                     <template #item="{item}">
                       <div class="flex items-center gap-2">
@@ -144,19 +144,19 @@
                 <div class="p-2 w-full sm:w-1/3 lg:w-3/12">
                   <partial-input-label title="نوع مرتب سازی"/>
                   <base-select
-                      :options="orderBy"
-                      options-key="value"
-                      options-text="text"
-                      @change="(selected) => {selectedOrderBy = selected}"
+                    :options="orderBy"
+                    options-key="value"
+                    options-text="text"
+                    @change="(selected) => {selectedOrderBy = selected}"
                   />
                 </div>
               </div>
 
               <div class="p-2">
                 <base-input
-                    label-title="لینک مشاهده همه"
-                    name="link_all"
-                    placeholder="وارد نمایید"
+                  label-title="لینک مشاهده همه"
+                  name="link_all"
+                  placeholder="وارد نمایید"
                 >
                   <template #icon>
                     <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -169,20 +169,20 @@
                   <partial-input-label class="shrink-0 ml-3" title="تعداد اسلایدها"/>
                   <div class="grow">
                     <base-range-slider
-                        v-model="slideCount"
-                        :max="20"
-                        :min="0"
-                        show-tooltip="always"
+                      v-model="slideCount"
+                      :max="20"
+                      :min="0"
+                      show-tooltip="always"
                     />
                   </div>
                 </div>
                 <div class="p-2 w-full md:w-auto shrink-0">
                   <base-switch
-                      :enabled="false"
-                      label="نمایش محصولات ویژه"
-                      name="is_special"
-                      sr-text="نمایش/عدم نمایش محصولات ویژه"
-                      @change="(status) => {isSpecialStatus=status}"
+                    :enabled="false"
+                    label="نمایش محصولات ویژه"
+                    name="is_special"
+                    sr-text="نمایش/عدم نمایش محصولات ویژه"
+                    @change="(status) => {isSpecialStatus=status}"
                   />
                 </div>
               </div>
@@ -191,15 +191,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                :disabled="!canSubmit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                type="submit"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="!canSubmit"
-                    big-circle-color="border-transparent"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -211,11 +211,11 @@
             </base-animated-button>
 
             <div
-                v-if="Object.keys(errors)?.length"
-                class="text-left"
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
             >
               <div
-                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
               >
                 (
                 <span>{{ Object.keys(errors)?.length }}</span>
@@ -251,6 +251,9 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {SliderAPI} from "@/service/APIConfig.js";
 import {useSelectSearching} from "@/composables/select-searching.js";
 import {BrandAPI, CategoryAPI} from "@/service/APIProduct.js";
+import {useRouter} from "vue-router";
+
+const router = useRouter()
 
 const sliderPlaces = []
 for (const p in SLIDER_PLACES) {
@@ -343,17 +346,17 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('عنوان اسلایدر را وارد نمایید.'),
     priority: yup.number()
-        .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
-        .required('اولویت را وارد نمایید.'),
-    beside_images: yup.string()
-        .when([], (inputValue, schema) => {
-          return selectedSliderPlace.value?.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value
-              ? schema
-                  .min(1, 'حداقل تعداد تصاویر کنار هم، ۱ عدد می‌باشد.')
-                  .max(4, 'حداکثر تعداد تصاویر کنار هم، ۴ عدد می‌باشد.')
-                  .required('تعداد تصاویر کنار هم را وارد نمایید.')
-              : schema.optional()
-        }),
+      .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
+      .required('اولویت را وارد نمایید.'),
+    beside_images: yup.number()
+      .when([], (inputValue, schema) => {
+        return selectedSliderPlace.value?.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value
+          ? schema
+            .min(1, 'حداقل تعداد تصاویر کنار هم، ۱ عدد می‌باشد.')
+            .max(4, 'حداکثر تعداد تصاویر کنار هم، ۴ عدد می‌باشد.')
+            .required('تعداد تصاویر کنار هم را وارد نمایید.')
+          : schema.optional()
+      }),
     link_all: yup.string().optional(),
   }),
 }, (values, actions) => {
@@ -396,8 +399,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'admin.sliders'})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

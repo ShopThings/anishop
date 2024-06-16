@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\Gates\RolesEnum;
+use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Models\BlogComment;
 use App\Models\BlogCommentBadge;
@@ -43,6 +44,7 @@ use App\Models\WeightPostPrice;
 use App\Policies\BlogBadgePolicy;
 use App\Policies\BlogCategoryPolicy;
 use App\Policies\BlogCommentPolicy;
+use App\Policies\BlogPolicy;
 use App\Policies\BrandPolicy;
 use App\Policies\CategoryImagePolicy;
 use App\Policies\CategoryPolicy;
@@ -109,6 +111,7 @@ class AuthServiceProvider extends ServiceProvider
         Order::class => OrderPolicy::class,
         OrderBadge::class => OrderBadgePolicy::class,
         ReturnOrderRequest::class => ReturnOrderPolicy::class,
+        Blog::class => BlogPolicy::class,
         BlogCommentBadge::class => BlogBadgePolicy::class,
         BlogComment::class => BlogCommentPolicy::class,
         BlogCategory::class => BlogCategoryPolicy::class,

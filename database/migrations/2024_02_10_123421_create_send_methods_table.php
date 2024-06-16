@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('send_methods', function (Blueprint $table) {
             $table->id();
-            $table->string('code', 25)->unique();
             $table->string('title');
             $table->text('description');
             $table->foreignId('image_id')->nullable()
@@ -23,6 +22,8 @@ return new class extends Migration {
                 ->comment('method price will calculate only if this flag is false');
             $table->boolean('only_for_shop_location')->default(true)
                 ->comment('other places than store location can\'t use this method');
+            $table->boolean('apply_number_of_shipments_on_price')->default(true)
+                ->comment('if this is true, price of method will determine for every shipment like if you have 2 shipments, price will consider 2 times');
             $table->boolean('is_published')->default(true);
             $table->boolean('is_deletable')->default(true);
             $table->softDeletes();
@@ -33,6 +34,11 @@ return new class extends Migration {
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('updated_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
+
+            $table->index('title');
+            $table->index('price');
+            $table->index('is_published');
+            $table->index('deleted_at');
         });
     }
 

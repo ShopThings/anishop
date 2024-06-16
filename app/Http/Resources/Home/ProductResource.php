@@ -19,7 +19,9 @@ class ProductResource extends JsonResource
     {
         $this->resource->load('image');
         $this->resource->load('items');
-        $this->resource->load('festivals');
+        $this->resource->load('festivals.festival');
+
+        $festival = $this->festivals->first()?->festival()->published()->activated()->first();
 
         return [
             'id' => $this->id,
@@ -29,7 +31,7 @@ class ProductResource extends JsonResource
             'unit_name' => $this->unit_name,
             'keywords' => $this->keywords,
             'items' => ProductPropertyShowResource::collection($this->items),
-            'festivals' => FestivalShowResource::collection($this->festivals),
+            'festival' => $festival ? new FestivalShowResource($festival) : null,
             'is_available' => $this->is_available,
         ];
     }

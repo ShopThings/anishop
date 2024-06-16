@@ -38,6 +38,10 @@ class StoreSliderItemRequest extends FormRequest
                 'array',
                 'min:1',
             ],
+            'slides.*.id' => [
+                'sometimes',
+                'numeric',
+            ],
             // instead of using 'slides.*.image.full_path', this way is more reliable
             'slides.*.image' => [
                 'sometimes',
@@ -53,11 +57,11 @@ class StoreSliderItemRequest extends FormRequest
                 'sometimes',
                 'url:http,https',
             ],
-            'slides.*.product_id' => [
+            'slides.*.product.id' => [
                 'sometimes',
                 'exists:' . Product::class . ',id',
             ],
-            'slides.*.blog_id' => [
+            'slides.*.blog.id' => [
                 'sometimes',
                 'exists:' . Blog::class . ',id',
             ],

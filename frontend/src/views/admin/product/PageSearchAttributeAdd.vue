@@ -9,9 +9,9 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2">
               <base-input
-                  label-title="عنوان"
-                  name="title"
-                  placeholder="وارد نمایید"
+                label-title="عنوان"
+                name="title"
+                placeholder="وارد نمایید"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -21,11 +21,11 @@
             <div class="w-full p-2 sm:w-1/2">
               <partial-input-label title="نوع ویژگی"/>
               <base-select
-                  :options="types"
-                  name="type"
-                  options-key="value"
-                  options-text="name"
-                  @change="(t) => {selectedType = t}"
+                :options="types"
+                name="type"
+                options-key="value"
+                options-text="name"
+                @change="(t) => {selectedType = t}"
               />
               <partial-input-error-message :error-message="errors.type"/>
             </div>
@@ -33,15 +33,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                :disabled="!canSubmit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                type="submit"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="!canSubmit"
-                    big-circle-color="border-transparent"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -53,11 +53,11 @@
             </base-animated-button>
 
             <div
-                v-if="Object.keys(errors)?.length"
-                class="text-left"
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
             >
               <div
-                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
               >
                 (
                 <span>{{ Object.keys(errors)?.length }}</span>
@@ -108,7 +108,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     title: yup.string().required('عنوان ویژگی را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!selectedType.value || !types.includes(selectedType.value)) {
+  if (!selectedType.value || types.findIndex(item => item.value === selectedType.value?.value) === -1) {
     actions.setFieldError('type', 'نوع ویژگی را انتخاب نمایید.')
     return
   }
@@ -124,8 +124,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       router.push({name: 'admin.search.attrs'})
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

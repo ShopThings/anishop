@@ -13,6 +13,7 @@ use App\Traits\HasUpdatedRelationTrait;
 use App\Traits\VisitorViewTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Mews\Purifier\Casts\CleanHtml;
 use Shetabit\Visitor\Traits\Visitable;
 
 class Product extends Model
@@ -30,7 +31,10 @@ class Product extends Model
     ];
 
     protected $casts = [
+        'quick_properties' => 'array',
+        'properties' => 'array',
         'keywords' => StringToArray::class,
+        'brief_description' => CleanHtml::class,
         'description' => CleanHtmlCast::class,
         'is_available' => 'boolean',
         'is_commenting_allowed' => 'boolean',
@@ -38,6 +42,22 @@ class Product extends Model
     ];
 
     protected $sluggableField = 'escaped_title';
+
+    /**
+     * @inheritDoc
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     /**
      * @return BelongsTo
@@ -68,7 +88,7 @@ class Product extends Model
      */
     public function festivals(): HasMany
     {
-        return $this->hasMany(Festival::class);
+        return $this->hasMany(ProductFestival::class);
     }
 
     /**

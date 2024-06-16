@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Orders\ReturnOrderStatusesEnum;
+use App\Enums\Results\ChangeRequestStatusResult;
+use App\Enums\Results\ReturnOrderToStockResult;
+use App\Events\ReturnOrderRequestedEvent;
+use App\Events\ReturnOrderStatusChangedEvent;
 use App\Models\OrderDetail;
 use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
+use App\Models\User;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
 use App\Services\Contracts\ReturnOrderServiceInterface;
@@ -38,6 +44,25 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         return $this->repository
             ->newWith(['user', 'statusChangedBy'])
             ->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRequestsCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getNotSeenRequestsCount(): int
+    {
+        $where = new WhereBuilder('return_order_requests');
+        $where->whereEqual('seen_status', DatabaseEnum::DB_NO);
+
+        return $this->repository->count($where->build());
     }
 
     /**
@@ -93,21 +118,21 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function canCancelOrder(ReturnOrderRequest $orderRequest): bool
+    public function canCancelRequest(ReturnOrderRequest $request): bool
     {
-        return $this->orderRepository->isReturnOrderCancelable($orderRequest);
+        return $this->repository->isRequestCancelable($request);
     }
 
     /**
      * @inheritDoc
      */
-    public function createUserRequest(int $userId, int $orderDetailId): ?Model
+    public function createUserRequest(User $user, int $orderDetailId): ?Model
     {
         DB::beginTransaction();
 
         $request = $this->repository->create([
             'order_detail_id' => $orderDetailId,
-            'user_id' => $userId,
+            'user_id' => $user->id,
             'code' => get_nanoid(),
             'status' => ReturnOrderStatusesEnum::CHECKING,
             'requested_at' => now(),
@@ -124,6 +149,9 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
             $inserted = $this->repository->updateOrCreateItems($request->code, $items);
 
             if ($inserted->count()) {
+                $orderCode = $this->orderRepository->find(id: $orderDetailId, columns: ['code'])?->code;
+                ReturnOrderRequestedEvent::dispatch($user, $request->code, $orderCode, $request);
+
                 DB::commit();
             } else {
                 DB::rollBack();
@@ -131,6 +159,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
             }
         } else {
             DB::rollBack();
+            return null;
         }
 
         return $request;
@@ -139,30 +168,50 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateById($id, array $attributes): ?Model
+    public function updateByCode($code, array $attributes, bool $silence = false): ?Model
     {
         $updateAttributes = [];
+
+        $hasStatusUpdate = isset($attributes['status']) &&
+            !is_null(ReturnOrderStatusesEnum::tryFrom($attributes['status']));
 
         if (isset($attributes['not_accepted_description'])) {
             $updateAttributes['not_accepted_description'] = $attributes['not_accepted_description'];
         }
-        if (isset($attributes['status'])) {
-            $updateAttributes['status'] = $attributes['status'];
+        if ($hasStatusUpdate) {
+            $updateAttributes['status'] = ReturnOrderStatusesEnum::tryFrom($attributes['status'])->value;
+            $updateAttributes['status_changed_at'] = now();
+            $updateAttributes['status_changed_by'] = Auth::user()?->id;
         }
         if (isset($attributes['seen_status'])) {
             $updateAttributes['seen_status'] = to_boolean($attributes['seen_status']);
         }
 
-        $res = $this->repository->update($id, $updateAttributes);
+        $where = new WhereBuilder();
+        $where->whereEqual('code', $code);
+
+        $res = $this->repository->updateWhere($updateAttributes, $where->build());
+        $model = $this->repository->findWhere($where->build());
 
         if (!$res) return null;
 
-        return $this->getById($id);
+        if (!$silence && $hasStatusUpdate) {
+            $orderCode = $this->orderRepository->find(id: $model->order_detail_id, columns: ['code'])->code;
+
+            ReturnOrderStatusChangedEvent::dispatch(
+                $model->user,
+                $model->code,
+                $orderCode,
+                ReturnOrderStatusesEnum::getTranslations($updateAttributes['status'], 'نامشخص'),
+            );
+        }
+
+        return $model;
     }
 
     /**
-     * It'll return <b>false</b> if there is no valid item,
-     * otherwise return <b>null</b> if it can't insert or
+     * It'll return <strong>false</strong> if there is no valid item,
+     * otherwise return <strong>null</strong> if it can't insert or
      * return inserted request model
      *
      * @inheritDoc
@@ -220,6 +269,14 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
+    public function returnItemsToStock(ReturnOrderRequest $request): ReturnOrderToStockResult
+    {
+        return $this->repository->returnItemsToStock($request);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function modifyItem(int $itemId, array $attributes): ?Model
     {
         $updateAttributes = [];
@@ -241,14 +298,70 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     /**
      * @inheritDoc
      */
-    public function getStatuses(): array
+    public function changeUserRequestStatus(
+        ReturnOrderRequest      $request,
+        ReturnOrderStatusesEnum $toStatus
+    ): ChangeRequestStatusResult
+    {
+        // Check previous step and changing step to be valid changing step
+        if (
+            (
+                $request->status === ReturnOrderStatusesEnum::ACCEPT->value &&
+                $toStatus->value !== ReturnOrderStatusesEnum::SENDING->value
+            ) ||
+            (
+                $request->status === ReturnOrderStatusesEnum::RETURN_TO_USER->value &&
+                $toStatus->value !== ReturnOrderStatusesEnum::RECEIVED_BY_USER->value
+            )
+        ) {
+            return ChangeRequestStatusResult::NOT_POSSIBLE;
+        }
+
+        $res = $this->updateByCode($request->code, [
+            'status' => $toStatus->value
+        ]);
+
+        if (is_null($res)) return ChangeRequestStatusResult::ERROR;
+
+        return ChangeRequestStatusResult::SUCCESS;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getAllStatuses(): array
     {
         $statuses = ReturnOrderStatusesEnum::translationArray();
-        $userStatuses = $this->getUserStatuses();
 
-        return array_filter($statuses, function ($item, $key) use ($userStatuses) {
-            return !in_array($key, array_keys($userStatuses));
-        }, ARRAY_FILTER_USE_BOTH);
+        $arrStatuses = [];
+        foreach ($statuses as $status => $title) {
+            $arrStatuses[] = [
+                'code' => $status,
+                'title' => $title,
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
+            ];
+        }
+
+        return $arrStatuses;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getStatuses(): array
+    {
+        $statuses = ReturnOrderStatusesEnum::getAdminStatuses();
+
+        $arrStatuses = [];
+        foreach ($statuses as $status) {
+            $arrStatuses[] = [
+                'code' => $status,
+                'title' => ReturnOrderStatusesEnum::getSimilarValuesFromString($status),
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
+            ];
+        }
+
+        return $arrStatuses;
     }
 
     /**
@@ -260,7 +373,11 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
 
         $arrStatuses = [];
         foreach ($statuses as $status) {
-            $arrStatuses[$status] = ReturnOrderStatusesEnum::getSimilarValuesFromString($status);
+            $arrStatuses[] = [
+                'code' => $status,
+                'title' => ReturnOrderStatusesEnum::getSimilarValuesFromString($status),
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
+            ];
         }
 
         return $arrStatuses;

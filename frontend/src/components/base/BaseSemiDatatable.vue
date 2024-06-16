@@ -133,7 +133,7 @@
     <partial-empty-rows
         v-else
         :message="emptyMessage"
-        image="/empty-statuses/empty-data.svg"
+        image="/images/empty-statuses/empty-data.svg"
     />
   </template>
 </template>
@@ -144,7 +144,7 @@ import LoaderCircle from "./loader/LoaderCircle.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import BasePagination from "./BasePagination.vue";
 import BaseDatatableSearch from "@/components/base/datatable/BaseDatatableSearch.vue";
-import {ArrowDownIcon, ArrowUpIcon, ArrowsUpDownIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowDownIcon, ArrowsUpDownIcon, ArrowUpIcon} from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({
   isLoading: {

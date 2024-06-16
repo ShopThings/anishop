@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <div class="text-left sm:flex sm:items-start">
-      <base-input class="grow mb-2" name="folder" placeholder="نام پوشه را وارد کنید...">
+    <div class="text-left sm:flex sm:items-start justify-end">
+      <base-input class="grow mb-2 sm:max-w-96" name="folder" placeholder="نام پوشه را وارد کنید...">
         <template #icon>
           <FolderPlusIcon class="h-6 w-6 text-gray-400"/>
         </template>

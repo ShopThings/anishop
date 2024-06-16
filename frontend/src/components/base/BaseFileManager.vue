@@ -1,60 +1,11 @@
 <template>
   <template v-if="hasUploader">
     <base-file-manager-uploader
-        :disk="currentStorage.path"
-        :path="currentPath"
-        @upload-complete="() => {doSearch(null, null, table.sortable.order, table.sortable.sort)}"
+      :disk="currentStorage.path"
+      :path="currentPath"
+      @upload-complete="uploadCompletedHandler"
     ></base-file-manager-uploader>
   </template>
-
-  <div class="flex flex-wrap rounded-lg bg-emerald-300 border mb-3 px-3 py-1 bg-opacity-80">
-    <ul class="text-sm flex flex-wrap">
-      <li class="my-1 relative">
-        <VTransitionFade>
-          <loader-circle
-              v-if="waitListLoading"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-[calc(100%+.5rem)] h-[calc(100%+.5rem)] -top-1 -left-1"
-              spinner-klass="!w-5 !h-5"
-          />
-        </VTransitionFade>
-
-        <base-floating-drop-down
-            :items="Array.isArray(storages) ? storages : [storages]"
-            placement="bottom-start"
-        >
-          <template #button>
-            <button v-tooltip.top="'فضای ذخیره سازی'" class="text-black flex items-center cursor-pointer"
-                    type="button">
-              <ServerStackIcon class="h-5 w-5 inline-block ml-2"/>
-              <span class="inline-block">{{ currentStorage.text }}</span>
-              <ChevronDownIcon class="h-4 w-4 inline-block mr-2 text-emerald-700"/>
-            </button>
-          </template>
-
-          <template #item="{item, hide}">
-            <div
-                class="text-black p-1 rounded-md hover:bg-blue-700 hover:text-white transition cursor-pointer"
-                @click="storageChange(item, hide)"
-            >
-              <ServerIcon class="h-5 w-5 inline-block ml-2"/>
-              {{ item }}
-            </div>
-          </template>
-        </base-floating-drop-down>
-      </li>
-      <li v-for="(p, idx) in pathBreadcrumb" :key="idx"
-          class="my-1">
-        <div class="flex items-center">
-          <ChevronLeftIcon class="w-5 h-5 p-1 text-gray-700"/>
-          <a :class="idx <= Object.keys(pathBreadcrumb).length - 1 ? 'text-black' : 'text-emerald-700'"
-             :href="`#${p.path}`">
-            {{ p.text }}
-          </a>
-        </div>
-      </li>
-    </ul>
-  </div>
 
   <partial-card ref="tableContainer">
     <template #body>
@@ -63,39 +14,101 @@
           <div v-if="hasCreateFolder"
                class="p-3">
             <base-file-manager-folder-creator
-                :disk="currentStorage.path"
-                :path="currentPath"
-                @created="() => {doSearch(null, null, table.sortable.order, table.sortable.sort)}"
+              :disk="currentStorage.path"
+              :path="currentPath"
+              @created="() => {doSearch(null, null, table.sortable.order, table.sortable.sort)}"
             />
           </div>
 
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="allowMultiOperation"
-              :enable-search-box="hasSearch"
-              :has-checkbox="allowMultiOperation"
-              :is-hide-paging="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :messages="table.messages"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
-              @row-context-menu="onContextMenu"
-              @row-clicked="handleFileSelection"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="allowMultiOperation"
+            :enable-search-box="hasSearch"
+            :has-checkbox="allowMultiOperation"
+            :is-hide-paging="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :messages="table.messages"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
+            @row-context-menu="onContextMenu"
+            @row-clicked="handleFileSelection"
           >
+            <template #beforeItemsTable>
+              <div class="mb-3 px-3">
+                <div class="flex flex-wrap rounded-lg bg-emerald-300 border px-3 py-1 bg-opacity-80">
+                  <ul class="text-sm flex flex-wrap">
+                    <li class="my-1 relative">
+                      <VTransitionFade>
+                        <loader-circle
+                          v-if="table.isLoading"
+                          big-circle-color="border-transparent"
+                          main-container-klass="absolute w-[calc(100%+.5rem)] h-[calc(100%+.5rem)] -top-1 -left-1"
+                          spinner-klass="!w-5 !h-5"
+                        />
+                      </VTransitionFade>
+
+                      <base-floating-drop-down
+                        :items="Array.isArray(storages) ? storages : [storages]"
+                        placement="bottom-start"
+                      >
+                        <template #button>
+                          <button
+                            v-tooltip.top="'فضای ذخیره سازی'"
+                            class="text-black flex items-center cursor-pointer"
+                            type="button"
+                          >
+                            <ServerStackIcon class="h-5 w-5 inline-block ml-2"/>
+                            <span class="inline-block">{{ currentStorage.text }}</span>
+                            <ChevronDownIcon class="h-4 w-4 inline-block mr-2 text-emerald-700"/>
+                          </button>
+                        </template>
+
+                        <template #item="{item, hide}">
+                          <button
+                            class="flex gap-2 items-center w-full text-right text-black p-1 rounded-md hover:bg-blue-700 hover:text-white transition"
+                            type="button"
+                            @click="storageChange(item, hide)"
+                          >
+                            <ServerIcon class="h-5 w-5 inline-block"/>
+                            {{ item }}
+                          </button>
+                        </template>
+                      </base-floating-drop-down>
+                    </li>
+                    <li
+                      v-for="(p, idx) in pathBreadcrumb"
+                      :key="idx"
+                      class="my-1"
+                    >
+                      <div class="flex items-center">
+                        <ChevronLeftIcon class="w-5 h-5 p-1 text-gray-700"/>
+                        <a
+                          :href="`#${p.path}`"
+                          class="text-black hover:text-black/75"
+                        >
+                          {{ p.text }}
+                        </a>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </template>
+
             <template #image="{value}">
               <partial-show-image
-                  :item="value"
-                  @click-dir="() => {changeHash(value.full_path)}"
-                  @click-image="() => {
-                  currentPreviewSlide = previewingItemsIndex.findIndex(item => value.full_path === item)
-                  onLightboxShow()
-                }"
+                :item="value"
+                @click-dir="() => {changeHash(value.full_path)}"
+                @click-image="() => {
+                    currentPreviewSlide = previewingItemsIndex.findIndex(item => value.full_path === item)
+                    onLightboxShow()
+                  }"
               />
             </template>
 
@@ -105,7 +118,7 @@
                    @click="() => {changeHash(value.full_path)}">
                 {{ value.full_name }}
               </div>
-              <div v-else-if="isImageExt(value.extension)"
+              <div v-else
                    class="hover:text-black transition">
                 {{ value.full_name }}
               </div>
@@ -118,48 +131,48 @@
           </base-datatable>
 
           <base-file-manager-context-menu
-              v-model:show="menuShow"
-              :data="menuData"
-              :operations="menuOperations"
-              :options="menuOptions"
-              @copy-click="copyClicked"
-              @cut-click="cutClicked"
-              @delete-click="deleteClicked"
-              @download-click="downloadClicked"
-              @rename-click="renameClicked"
-              @paste-click="pasteClicked"
+            v-model:show="menuShow"
+            :data="menuData"
+            :operations="menuOperations"
+            :options="menuOptions"
+            @copy-click="copyClicked"
+            @cut-click="cutClicked"
+            @delete-click="deleteClicked"
+            @download-click="downloadClicked"
+            @rename-click="renameClicked"
+            @paste-click="pasteClicked"
           />
 
           <base-file-manager-tree-directory
-              :disk="currentStorage.path"
-              :open="treeOpen"
-              @close="treeClose"
-              @select-change="treeDirectoryChange"
+            :disk="currentStorage.path"
+            :open="treeOpen"
+            @close="treeClose"
+            @select-change="treeDirectoryChange"
           >
             <template v-if="copiedPath.items.length" #extra>
               <base-animated-button
-                  :disabled="batchOperationLoading"
-                  class="bg-slate-600 px-5 w-full"
-                  @click="doBatchCopyOrMove"
+                :disabled="batchOperationLoading"
+                class="bg-slate-600 px-5 w-full"
+                @click="doBatchCopyOrMove"
               >
                 <VTransitionFade>
                   <loader-circle
-                      v-if="batchOperationLoading"
-                      big-circle-color="border-transparent"
-                      main-container-klass="absolute w-full h-full top-0 left-0"
+                    v-if="batchOperationLoading"
+                    big-circle-color="border-transparent"
+                    main-container-klass="absolute w-full h-full top-0 left-0"
                   />
                 </VTransitionFade>
 
                 <template #icon="{klass}">
                   <ScissorsIcon
-                      v-if="copiedPath.action === 'move'"
-                      :class="klass"
-                      class="w-6 h-6 ml-auto"
+                    v-if="copiedPath.action === 'move'"
+                    :class="klass"
+                    class="w-6 h-6 ml-auto"
                   />
                   <DocumentDuplicateIcon
-                      v-else-if="copiedPath.action === 'copy'"
-                      :class="klass"
-                      class="w-6 h-6 ml-auto"
+                    v-else-if="copiedPath.action === 'copy'"
+                    :class="klass"
+                    class="w-6 h-6 ml-auto"
                   />
                 </template>
                 <span v-if="copiedPath.action === 'move'" class="ml-auto">انجام جابجایی</span>
@@ -169,12 +182,12 @@
           </base-file-manager-tree-directory>
 
           <base-file-manager-rename
-              v-if="renameItem && Object.keys(renameItem).length"
-              v-model:open="renameOpen"
-              :disk="currentStorage.path"
-              :item="renameItem"
-              :path="currentPath"
-              @success="renameSucceed"
+            v-if="renameItem && Object.keys(renameItem).length"
+            v-model:open="renameOpen"
+            :disk="currentStorage.path"
+            :item="renameItem"
+            :path="currentPath"
+            @success="renameSucceed"
           />
         </template>
       </base-loading-panel>
@@ -182,31 +195,35 @@
   </partial-card>
 
   <vue-easy-lightbox
-      :imgs="itemsRef"
-      :index="currentPreviewSlide"
-      :rtl="true"
-      :visible="visibleRef"
-      @hide="onLightboxHide"
+    :imgs="itemsRef"
+    :index="currentPreviewSlide"
+    :rtl="true"
+    :visible="visibleRef"
+    @hide="onLightboxHide"
   ></vue-easy-lightbox>
 </template>
 
 <script setup>
 import {
-  ChevronLeftIcon, ServerIcon, ChevronDownIcon, ServerStackIcon,
-  ScissorsIcon, DocumentDuplicateIcon,
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  DocumentDuplicateIcon,
+  ScissorsIcon,
+  ServerIcon,
+  ServerStackIcon,
 } from '@heroicons/vue/24/outline/index.js';
 import BaseFileManagerUploader from "./filemanager/BaseFileManagerUploader.vue";
 import BaseFileManagerFolderCreator from "./filemanager/BaseFileManagerFolderCreator.vue";
 import BaseDatatable from "./BaseDatatable.vue";
-import {useToast, TYPE} from "vue-toastification";
-import {reactive, ref, watchEffect} from "vue";
+import {TYPE, useToast} from "vue-toastification";
+import {onBeforeMount, reactive, ref, watchEffect} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import ContextMenu from '@imengyu/vue3-context-menu'
 import BaseFileManagerContextMenu from "./filemanager/BaseFileManagerContextMenu.vue";
 import BaseLoadingPanel from "./BaseLoadingPanel.vue";
 import {useRoute, useRouter} from "vue-router";
 import BaseFloatingDropDown from "./BaseFloatingDropDown.vue";
-import {useFileList} from "@/composables/file-list.js";
+import {Storages, useFileList} from "@/composables/file-list.js";
 import {useConfirmToast, useLoadingToast} from "@/composables/toast-helper.js";
 import BaseFileManagerTreeDirectory from "./filemanager/BaseFileManagerTreeDirectory.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
@@ -221,6 +238,7 @@ import {apiRoutes} from "@/router/api-routes.js";
 import {trimChar} from "@/composables/helper.js";
 import {watchImmediate} from "@vueuse/core";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
+import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 
 const props = defineProps({
   hasCreateFolder: {
@@ -259,18 +277,19 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  saveStorage: Boolean,
   storages: {
     type: [Array, String],
-    default: () => ['public', 'local'],
+    default: () => [Storages.public, Storages.local],
     validator(value) {
       if (Array.isArray(value)) {
         for (const v of value) {
-          if (['public', 'local'].indexOf(v.toLowerCase()) === -1)
+          if ([Storages.public, Storages.local].indexOf(v.toLowerCase()) === -1)
             return false
         }
         return true
       } else {
-        return ['public', 'local'].indexOf(value.toLowerCase()) !== -1
+        return [Storages.public, Storages.local].indexOf(value.toLowerCase()) !== -1
       }
     },
   },
@@ -287,14 +306,14 @@ const toast = useToast()
 const router = useRouter()
 const route = useRoute()
 
-const {isImageExt} = useFileList()
+const savingStorage = useSafeLocalStorage
+
+const {isImageExt, isSizedImageExt} = useFileList()
 
 const currentStorage = ref({
-  path: 'public',
-  text: 'public',
+  path: Storages.public,
+  text: Storages.public,
 })
-
-const waitListLoading = ref(false)
 
 const currentPath = ref('/')
 const pathBreadcrumb = ref([])
@@ -314,6 +333,7 @@ const tableContainer = ref(null)
 const loading = ref(true)
 const table = reactive({
   isLoading: false,
+  shouldScrollToTop: true,
   selectionColumns: [
     {
       label: "",
@@ -392,8 +412,8 @@ const table = reactive({
   searchText: '',
   messages: {
     pagingInfo: 'نمایش' + " <span class=\"text-blue-500\">" + "{0}" + "</span>"
-        + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
-        + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
+      + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
+      + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
     pageSizeChangeLabel: "تعداد نمایش در هر صفحه:",
     gotoPageLabel: "رفتن به صفحه:",
     noDataAvailable: "هیچ فایلی وجود ندارد.",
@@ -403,7 +423,6 @@ const table = reactive({
 
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true
-  waitListLoading.value = true
 
   table.searchText = text
 
@@ -446,12 +465,23 @@ const doSearch = (offset, limit, order, sort, text) => {
       table.sortable.order = order
       table.sortable.sort = sort
 
-      waitListLoading.value = false
-
-      if (tableContainer.value && tableContainer.value.card)
+      if (table.shouldScrollToTop && tableContainer.value && tableContainer.value.card) {
         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+      }
+
+      setTimeout(() => {
+        table.shouldScrollToTop = true
+      }, 500)
     },
   })
+}
+
+function uploadCompletedHandler(hasError) {
+  if (hasError) {
+    table.shouldScrollToTop = false
+  }
+
+  doSearch(null, null, table.sortable.order, table.sortable.sort)
 }
 
 const batchOperationLoading = ref(false)
@@ -563,16 +593,18 @@ function doBatchCopyOrMove() {
 
 function getSelectedItemsProperty(items, property) {
   const properties = []
-  for (const item in items) {
-    if (items.hasOwnProperty(item)) {
-      if (items[item][property])
-        properties.push(items[item][property])
+
+  if (items?.length) {
+    for (const item in items) {
+      if (items.hasOwnProperty(item)) {
+        if (items[item][property])
+          properties.push(items[item][property])
+      }
     }
   }
 
   if (!properties.length) {
     toast.info('ابتدا آیتم‌های مورد نیاز را انتخاب کنید و سپس دوباره تلاش نمایید.')
-    return
   }
 
   return properties
@@ -591,11 +623,14 @@ if (props.allowCopy) {
 
         copiedPath.value.action = 'copy'
         copiedPath.value.items = []
-        for (const i of paths) {
-          copiedPath.value.items.push(i)
-        }
 
-        treeOpen.value = true
+        if (paths.length) {
+          for (const i of paths) {
+            copiedPath.value.items.push(i)
+          }
+
+          treeOpen.value = true
+        }
       },
     },
   })
@@ -612,11 +647,14 @@ if (props.allowMove) {
 
         copiedPath.value.action = 'move'
         copiedPath.value.items = []
-        for (const i of paths) {
-          copiedPath.value.items.push(i)
-        }
 
-        treeOpen.value = true
+        if (paths.length) {
+          for (const i of paths) {
+            copiedPath.value.items.push(i)
+          }
+
+          treeOpen.value = true
+        }
       },
     },
   })
@@ -631,6 +669,8 @@ if (props.allowDelete) {
     event: {
       click: (items) => {
         const names = getSelectedItemsProperty(items, 'full_name')
+
+        if (!names.length) return
 
         let subtitle = ''
         if (items.some((item) => item.is_dir)) {
@@ -660,14 +700,14 @@ if (props.allowDelete) {
 const selectionOperations = []
 if (selectedOperationChildren.length) {
   selectionOperations.push(
-      {
-        btn: {
-          tooltip: 'نمایش عملیات قابل انجام',
-          icon: 'EllipsisVerticalIcon',
-          class: 'bg-slate-600 border-slate-700',
-        },
-        children: selectedOperationChildren,
-      }
+    {
+      btn: {
+        tooltip: 'نمایش عملیات قابل انجام',
+        icon: 'EllipsisVerticalIcon',
+        class: 'bg-slate-600 border-slate-700',
+      },
+      children: selectedOperationChildren,
+    }
   )
 }
 
@@ -725,7 +765,6 @@ const onContextMenu = (e, data) => {
 // -----------------------------------
 // context menu events
 // -----------------------------------
-
 function copyClicked(item) {
   copiedPath.value.action = 'copy'
   copiedPath.value.items = []
@@ -768,6 +807,23 @@ function downloadClicked(item) {
   FilemanagerAPI.downloadFile(item.name, {
     path: currentPath.value,
     disk: currentStorage.value.path,
+  }, {
+    success(data, total, response) {
+      // Create a new Blob object using the response data
+      const blob = new Blob([data], {type: response.headers['content-type']});
+
+      // Create a link element
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.download = item.name; // Set the file name
+      link.click(); // Trigger the download
+
+      // For Firefox it is necessary to delay revoking the ObjectURL
+      setTimeout(function () {
+        // Clean up the URL object
+        window.URL.revokeObjectURL(link.href)
+      }, 100)
+    },
   })
 }
 
@@ -854,9 +910,7 @@ function pasteClicked(item) {
 
 // -----------------------------------
 function storageChange(storage, hide) {
-  if (waitListLoading.value) return
-
-  waitListLoading.value = true
+  if (table.isLoading) return
 
   // hide the dropdown
   hide()
@@ -865,7 +919,13 @@ function storageChange(storage, hide) {
     currentStorage.value.path = storage
     currentStorage.value.text = storage
 
-    datatable.value?.refresh()
+    if (route.hash.substring(1).trim() !== '') {
+      changeHash('')
+    } else {
+      gotToPath('')
+    }
+
+    savingStorage.setItem('file_manager_storage', storage)
   }
 }
 
@@ -878,25 +938,25 @@ function resetPathBreadcrumb() {
   ]
 }
 
-function checkHash() {
+function gotToPath(path) {
   resetPathBreadcrumb()
 
-  currentPath.value = route.hash.substring(1)
+  currentPath.value = path
 
-  if (currentPath.value.trim() === '') {
+  if (trimChar(currentPath.value.trim(), '/') === '') {
     currentPath.value = '/'
     pathBreadcrumb.value = []
   }
 
   const pathArr = currentPath.value.split('/')
 
-  let path = ''
+  let tmpPath = ''
   for (let i of pathArr) {
     if (['', '.', '..'].indexOf(i.trim()) === -1) {
-      path += i.trim() + '/'
+      tmpPath += i.trim() + '/'
       pathBreadcrumb.value.push({
         text: i,
-        path: trimChar(path, '/'),
+        path: trimChar(tmpPath, '/'),
       })
     }
   }
@@ -905,16 +965,35 @@ function checkHash() {
 }
 
 watchImmediate(() => route.hash, () => {
-  checkHash()
+  gotToPath(route.hash.substring(1))
 })
 
 function changeHash(to) {
-  router.push({hash: '#' + trimChar(to.replace(/[\\]*/, '/'), '/')})
+  router.push({hash: '#' + trimChar(to.replace(/\\*/, '/'), '/')})
 }
 
 // -----------------------------------
+onBeforeMount(() => {
+  let storage = savingStorage.getItem('file_manager_storage')
 
-doSearch(0, -1, 'id', 'desc')
+  if (
+    (
+      !storage ||
+      [Storages.public, Storages.local].indexOf(storage?.toLowerCase()) === -1
+    ) &&
+    route.hash.substring(1).trim() !== ''
+  ) {
+    changeHash('')
+    savingStorage.setItem('file_manager_storage', Storages.public)
+  }
+
+  if (storage) {
+    currentStorage.value.path = storage
+    currentStorage.value.text = storage
+  }
+
+  doSearch(0, -1, 'id', 'desc')
+})
 
 function handleFileSelection(file, row) {
   if (datatable.value && props.selectableFiles && !file.is_dir && row) {

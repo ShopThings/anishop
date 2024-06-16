@@ -6,22 +6,24 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductAttributeProductRequest;
 use App\Http\Resources\ProductAttributeProductResource;
+use App\Http\Resources\Showing\ProductAttributeCategoryShowResource;
 use App\Models\Product;
-use App\Models\User;
+use App\Models\ProductAttributeProduct;
+use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
 use App\Services\Contracts\ProductAttributeProductServiceInterface;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class ProductAttributeProductController extends Controller
 {
     /**
      * @param ProductAttributeProductServiceInterface $service
+     * @param ProductAttributeCategoryServiceInterface $productAttributeCategoryService
      */
     public function __construct(
-        protected ProductAttributeProductServiceInterface $service
+        protected ProductAttributeProductServiceInterface  $service,
+        protected ProductAttributeCategoryServiceInterface $productAttributeCategoryService
     )
     {
     }
@@ -29,45 +31,52 @@ class ProductAttributeProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreProductAttributeProductRequest $request
      * @param Product $product
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreProductAttributeProductRequest $request, Product $product): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', ProductAttributeProduct::class);
 
         $validated = $request->validated();
         $model = $this->service->modifyProductAttributes(
-            productId: $product->id,
-            attributeValues: array_column($validated['values'], 'id')
+            product: $product,
+            attributeValues: $validated['values']
         );
 
-        if (!is_null($model)) {
+        if ($model) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'تغییر مقدار ویژگی محصول با موفقیت انجام شد.',
-                'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در تغییر مقدار ویژگی محصول',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در تغییر مقدار ویژگی محصول',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * Display the specified resource.
      *
      * @param Product $product
-     * @return AnonymousResourceCollection
-     * @throws AuthorizationException
+     * @return JsonResponse
      */
-    public function show(Product $product): AnonymousResourceCollection
+    public function show(Product $product): JsonResponse
     {
-        $this->authorize('view', $product);
-        return ProductAttributeProductResource::collection($this->service->getProductAttributes($product->id));
+        Gate::authorize('view', $product);
+
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => [
+                'category_attributes' => ProductAttributeCategoryShowResource::collection(
+                    $this->productAttributeCategoryService->getProductAttributeCategories($product->id)
+                ),
+                'product_attributes' => ProductAttributeProductResource::collection(
+                    $this->service->getProductAttributes($product->id)
+                ),
+            ],
+        ]);
     }
 }

@@ -2,27 +2,14 @@
 
 namespace App\Providers;
 
-use App\Repositories\AuthRepository;
-use App\Repositories\Contracts\AuthRepositoryInterface;
-use App\Repositories\Contracts\FileRepositoryInterface;
-use App\Repositories\Contracts\UserRepositoryInterface;
-use App\Repositories\FileRepository;
-use App\Repositories\UserRepository;
-use App\Services\AuthService;
-use App\Services\Contracts\AuthServiceInterface;
-use App\Services\Contracts\FileServiceInterface;
-use App\Services\Contracts\RoleServiceInterface;
-use App\Services\Contracts\UserServiceInterface;
-use App\Services\FileService;
-use App\Services\RoleService;
-use App\Services\UserService;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
@@ -63,7 +50,6 @@ class AppServiceProvider extends ServiceProvider
         $isProd = $this->app->isProduction();
 
         // set carbon locale from application global localization
-        Carbon::setLocale($locale);
         Verta::setLocale($locale);
         // set current money unit considering localization
         config([
@@ -91,34 +77,54 @@ class AppServiceProvider extends ServiceProvider
      */
     public function bootMacros(): void
     {
+        /*
+         * blade directives
+         */
+        Blade::if('notproduction', function () {
+            return !app()->isProduction();
+        });
+
+        //
+
         Collection::macro('pluckMultiple', function ($keys) {
             return $this->map(function ($item) use ($keys) {
                 return collect($item)->only($keys)->all();
             });
         });
 
-        //
-
         /*
          * where like expression
          */
-        Builder::macro('whereLike', function (string|array $columns, string $search, string $operator = 'or') {
-            $this->where(function (Builder $query) use ($columns, $search, $operator) {
-                $columns = !is_array($columns) ? [$columns] : $columns;
+        Builder::macro('whereLike', function (string|array $columns, string $search, $replacement = '%{value}%', string $operator = 'and') {
+            $this->where(function (Builder $query) use ($columns, $search, $operator, $replacement) {
+                $columns = Arr::wrap($columns);
                 foreach ($columns as $column) {
-                    if (mb_strtolower($operator) == 'and') {
-                        $query->where($column, 'like', '%' . $search . '%');
-                    } else {
-                        $query->orWhere($column, 'like', '%' . $search . '%');
-                    }
+                    $query->where($column, 'like', str_replace('{value}', $search, $replacement), mb_strtolower($operator));
                 }
             });
 
             return $this;
         });
-        Builder::macro('orWhereLike', function (string|array $columns, string $search, string $operator = 'or') {
-            $this->orWhere(function (Builder $query) use ($columns, $search, $operator) {
-                $query->whereLike($columns, $search, $operator);
+        Builder::macro('orWhereLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
+            $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
+                $query->whereLike($columns, $search, $replacement, 'or');
+            });
+
+            return $this;
+        });
+        Builder::macro('whereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%', string $operator = 'and') {
+            $this->where(function (Builder $query) use ($columns, $search, $operator, $replacement) {
+                $columns = Arr::wrap($columns);
+                foreach ($columns as $column) {
+                    $query->where($column, 'not like', str_replace('{value}', $search, $replacement), mb_strtolower($operator));
+                }
+            });
+
+            return $this;
+        });
+        Builder::macro('orWhereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
+            $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
+                $query->whereNotLike($columns, $search, $replacement, 'or');
             });
 
             return $this;
@@ -127,23 +133,19 @@ class AppServiceProvider extends ServiceProvider
         /*
          * where regexp expression
          */
-        Builder::macro('whereRegex', function (string|array $columns, string $search, string $operator = 'or') {
+        Builder::macro('whereRegex', function (string|array $columns, string $search, string $operator = 'and') {
             $this->where(function (Builder $query) use ($columns, $search, $operator) {
-                $columns = !is_array($columns) ? [$columns] : $columns;
+                $columns = Arr::wrap($columns);
                 foreach ($columns as $column) {
-                    if (mb_strtolower($operator) == 'and') {
-                        $query->where($column, 'REGEXP', $search);
-                    } else {
-                        $query->orWhere($column, 'REGEXP', $search);
-                    }
+                    $query->where($column, 'REGEXP', $search, mb_strtolower($operator));
                 }
             });
 
             return $this;
         });
-        Builder::macro('orWhereRegex', function (string|array $columns, string $search, string $operator = 'or') {
-            $this->orWhere(function (Builder $query) use ($columns, $search, $operator) {
-                $query->whereRegex($columns, $search, $operator);
+        Builder::macro('orWhereRegex', function (string|array $columns, string $search) {
+            $this->orWhere(function (Builder $query) use ($columns, $search) {
+                $query->whereRegex($columns, $search, 'or');
             });
 
             return $this;

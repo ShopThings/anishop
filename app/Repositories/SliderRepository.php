@@ -7,8 +7,9 @@ use App\Models\Slider;
 use App\Models\SliderItem;
 use App\Repositories\Contracts\SliderRepositoryInterface;
 use App\Support\Repository;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class SliderRepository extends Repository implements SLiderRepositoryInterface
 {
@@ -23,9 +24,15 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function updateOrCreateItems(array $items): Collection
+    public function updateOrCreateItems(array $items, int $sliderId): Collection
     {
         $modified = collect();
+
+        $ids = array_filter(array_map(fn($item) => $item['id'], $items), fn($item) => !empty($item));
+        $this->sliderItemModel->newQuery()
+            ->where('slider_id', $sliderId)
+            ->whereNotIn('id', $ids)
+            ->delete();
 
         foreach ($items as $item) {
             if (
@@ -35,7 +42,7 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
                 $isUpdated = $founded->update($item);
 
                 if ($isUpdated)
-                    $modified->add($this->sliderItemModel::first($item['id']));
+                    $modified->add($this->sliderItemModel::query()->find($item['id']));
             } else {
                 $created = $this->sliderItemModel::create($item);
 
@@ -52,18 +59,22 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
      */
     public function getSlider(SliderPlacesEnum|array $place, bool $withUnpublished = false): Collection
     {
-        if (!is_array($place)) $place = [$place];
+        $place = Arr::wrap($place);
 
         // if there is no placement specified, empty collection is enough though
         if (!count($place)) return collect();
 
-        return $this->model::published()
-            ->whereIn('place_in', $place)
-            ->whereHas('items', function ($query) use ($withUnpublished) {
-                if (!$withUnpublished) {
-                    $query->published()->orderBy('priority');
-                }
-            })
+        $query = $this->model->newQuery();
+
+        if (!$withUnpublished) {
+            $query->published();
+        }
+
+        return $query
+            ->whereIn('place_in', array_map(fn($item) => $item->value, $place))
+            ->with(['items' => function ($query) use ($withUnpublished) {
+                $query->orderBy('priority');
+            }])
             ->orderBy('priority')
             ->get();
     }

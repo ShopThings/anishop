@@ -8,8 +8,6 @@ use App\Http\Resources\Showing\BrandShowResource;
 use App\Http\Resources\Showing\CategoryShowResource;
 use App\Http\Resources\Showing\FestivalShowResource;
 use App\Http\Resources\Showing\ImageShowResource;
-use App\Http\Resources\Showing\ProductAttributeValueShowResource;
-use App\Http\Resources\Showing\ProductShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -25,14 +23,16 @@ class ProductSingleResource extends JsonResource
         $this->resource->load('brand');
         $this->resource->load('category');
         $this->resource->load('image');
-        $this->resource->load('images');
+        $this->resource->load('images.image');
         $this->resource->load('items');
-        $this->resource->load('festivals');
         $this->resource->load('relatedProducts.product');
-        $this->resource->load('productAttrValues');
-        $this->resource->load('favoriteProducts.product');
+        $this->resource->load('festivals.festival');
+
+        $user = auth()->user();
+        $festival = $this->festivals->first()?->festival()->published()->activated()->first();
 
         return [
+            'id' => $this->id,
             'brand_id' => $this->brand_id,
             'brand' => new BrandShowResource($this->brand),
             'category_id' => $this->category_id,
@@ -40,17 +40,20 @@ class ProductSingleResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'image' => new ImageShowResource($this->image),
-            'gallery_images' => ImageShowResource::collection($this->images),
+            'gallery_images' => $this->images
+                ? ImageShowResource::collection($this->images->map(fn($item) => $item->image))
+                : null,
             'description' => $this->description,
             'properties' => $this->properties,
             'quick_properties' => $this->quick_properties,
             'unit_name' => $this->unit_name,
             'keywords' => $this->keywords,
             'items' => ProductPropertyResource::collection($this->items),
-            'festivals' => FestivalShowResource::collection($this->festivals),
-            'related_products' => ProductShowResource::collection($this->related_products->product),
-            'product_attr_values' => ProductAttributeValueShowResource::collection($this->product_attr_values),
-            'favorite_products' => ProductShowResource::collection($this->favorite_products->product),
+            'festival' => $festival ? new FestivalShowResource($festival) : null,
+            'related_products' => $this->related_products?->product
+                ? ProductResource::collection($this->related_products?->product)
+                : null,
+            'is_favorited' => $this->isFavoritedByUser($user),
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'updated_at' => $this->when(
@@ -58,5 +61,20 @@ class ProductSingleResource extends JsonResource
                 vertaTz($this->updated_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
         ];
+    }
+
+    /**
+     * @param $user
+     * @return bool
+     */
+    protected function isFavoritedByUser($user): bool
+    {
+        // If user is not authenticated or the product does not have a favoriteProducts relation, return false
+        if (!$user || !method_exists($this, 'favoriteProducts')) {
+            return false;
+        }
+
+        // Check if there is a favorite product record for the current user and this product
+        return $this->favoriteProducts()->where('user_id', $user->id)->isNotEmpty();
     }
 }

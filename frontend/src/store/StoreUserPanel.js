@@ -2,11 +2,13 @@ import {computed, onBeforeMount, onBeforeUnmount, reactive, ref} from "vue"
 import {defineStore} from "pinia"
 import {useCountdown} from "@/composables/countdown-timer.js";
 import {UserPanelDashboardAPI} from "@/service/APIUserPanel.js";
-import {NotificationAPI} from "@/service/APINotification.js";
+import {UserNotificationAPI} from "@/service/APINotification.js";
+import {useOnline} from "@vueuse/core";
 
 export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   let counts = reactive({})
   const countdown = useCountdown(600)
+  const online = useOnline()
 
   fetchCounting()
 
@@ -43,9 +45,12 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   })
 
   function fetchCounting() {
+    if (!online.value) return
+
     countdown.pause()
 
     UserPanelDashboardAPI.getCountOfStuffs({
+      silent: true,
       success(response) {
         for (const key in response.data) {
           counts[key] = response.data[key];
@@ -74,14 +79,14 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted()) {
+    if (!countdown.isStarted.value) {
       countdown.start(fetchCounting)
     }
-  });
+  })
 
   onBeforeUnmount(() => {
     countdown.stop()
-  });
+  })
 
   return {
     counts,
@@ -95,7 +100,10 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
 
 export const useNotificationStore = defineStore('userPanelNotifications', () => {
   let notifications = ref([])
-  const countdown = useCountdown(600)
+  const countdown = useCountdown(300)
+  const online = useOnline()
+
+  if (!online.value) return
 
   checkNewNotifications()
 
@@ -108,9 +116,12 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
   })
 
   function checkNewNotifications() {
+    if (!online.value) return
+
     countdown.pause()
 
-    NotificationAPI.checkNotifications({
+    UserNotificationAPI.checkNotifications({
+      silent: true,
       success(response) {
         notifications.value = response.data
 
@@ -135,14 +146,14 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
   }
 
   onBeforeMount(() => {
-    if (!countdown.isStarted()) {
+    if (!countdown.isStarted.value) {
       countdown.start(checkNewNotifications)
     }
-  });
+  })
 
   onBeforeUnmount(() => {
     countdown.stop()
-  });
+  })
 
   return {
     notifications,

@@ -9,8 +9,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class WeightPostPriceService extends Service implements WeightPostPriceServiceInterface
 {
@@ -40,6 +40,27 @@ class WeightPostPriceService extends Service implements WeightPostPriceServiceIn
             page: $filter->getPage(),
             order: $filter->getOrder()
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPostPricesCount(): int
+    {
+        return $this->repository->count();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPostPriceByWeight(int $weight): ?Model
+    {
+        $where = new WhereBuilder();
+        $where
+            ->whereGreaterThanEqual('min_weight', $weight)
+            ->whereGreaterThanEqual('max_weight', $weight);
+
+        return $this->repository->findWhere(where: $where->build(), order: ['post_price' => 'desc']);
     }
 
     /**

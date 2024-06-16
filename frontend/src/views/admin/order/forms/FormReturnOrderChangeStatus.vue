@@ -3,37 +3,37 @@
     <div class="p-2">
       <partial-input-label title="وضعیت ارجاع"/>
       <base-select
-          :is-loading="loading"
-          :options="statuses"
-          :selected="selectedStatus"
-          name="return_status"
-          options-key="value"
-          options-text="text"
-          @change="paymentStatusChange"
+        :is-loading="loading"
+        :options="statuses"
+        :selected="selectedStatus"
+        name="return_status"
+        options-key="code"
+        options-text="title"
+        @change="statusChange"
       />
       <partial-input-error-message :error-message="errors.status"/>
     </div>
     <div class="p-2">
       <base-textarea
-          :has-edit-mode="!(!!yourDescription)"
-          :value="yourDescription"
-          label-title="علت تغییر وضعیت جهت نمایش به کاربر"
-          name="description"
-          placeholder="توضیحات خود را وارد نمایید"
+        :in-edit-mode="!(!!yourDescription)"
+        :value="yourDescription"
+        label-title="علت تغییر وضعیت جهت نمایش به کاربر"
+        name="description"
+        placeholder="توضیحات خود را وارد نمایید"
       />
     </div>
 
     <div class="px-2 py-3 text-left">
       <base-button
-          :disabled="!canSubmit"
-          class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -78,7 +78,7 @@ watch(() => props.selected, () => {
   selectedStatus.value = props.selected
 })
 
-function paymentStatusChange(selected) {
+function statusChange(selected) {
   selectedStatus.value = selected
 }
 
@@ -87,7 +87,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     description: yup.string().optional(),
   }),
 }, (values, actions) => {
-  if (!selectedStatus.value || !selectedStatus.value.value) {
+  if (!selectedStatus.value?.value) {
     actions.setFieldError('status', 'وضعیت مرجوع را انتخاب کنید.')
     return
   }
@@ -103,11 +103,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       emit('updated', selectedStatus.value, values.description)
     },
     error(error) {
-      if (error?.description) {
-        actions.setFieldError('description', error.description)
-      }
-      if (error?.status) {
-        actions.setFieldError('status', error.status)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
+        actions.setErrors(error.errors)
       }
     },
     finally() {
@@ -119,17 +116,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 onMounted(() => {
   ReturnOrderAPI.fetchStatuses({
     success: (response) => {
-      statuses.value = []
-      let res = response.data
-      for (let i in res) {
-        if (res.hasOwnProperty(i)) {
-          statuses.value.push({
-            text: res[i],
-            value: i,
-          })
-        }
-      }
-
+      statuses.value = response.data
       loading.value = false
     },
   })

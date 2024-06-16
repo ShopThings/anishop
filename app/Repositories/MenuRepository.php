@@ -8,8 +8,8 @@ use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Repositories\Contracts\MenuRepositoryInterface;
 use App\Support\Repository;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class MenuRepository extends Repository implements MenuRepositoryInterface
 {
@@ -95,7 +95,7 @@ class MenuRepository extends Repository implements MenuRepositoryInterface
         if (isset($item['id'])) {
             $isUpdated = $this->menuItemModel->findOrFail($item['id'])->update($item);
             if ($isUpdated)
-                $createdOrUpdated = $this->menuItemModel::first($item['id']);
+                $createdOrUpdated = $this->menuItemModel::query()->find($item['id']);
         } else {
             $createdOrUpdated = $this->menuItemModel::create($item);
         }

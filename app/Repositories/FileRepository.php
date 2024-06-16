@@ -15,10 +15,10 @@ use App\Support\Traits\FileTrait;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
@@ -37,6 +37,40 @@ class FileRepository extends Repository implements FileRepositoryInterface
 
     /**
      * @inheritDoc
+     * @throws InvalidFileException
+     * @throws InvalidDiskException
+     */
+    public function savePath(
+        string $fullPath,
+        array  $attributes = [],
+        string $disk = self::STORAGE_DISK_PUBLIC
+    ): ?Model
+    {
+        $fullPath = $this->getNormalizedPath($fullPath);
+
+        $this->checkDiskValidation($disk);
+
+        $info = pathinfo($fullPath);
+        $dirname = $info['dirname'];
+        $filename = $info['filename'];
+        $extension = $info['extension'] ?? null;
+
+        if (empty($extension)) {
+            throw new InvalidFileException('تنها فایل‌ها قابلیت ذخیره شدن در پایگاه داده را دارا می‌باشند.');
+        }
+
+        $attributes = $attributes + [
+                'name' => $filename,
+                'extension' => $extension,
+                'path' => $dirname,
+                'disk' => $disk,
+            ];
+
+        return $this->create($attributes);
+    }
+
+    /**
+     * @inheritDoc
      * @throws FileDuplicationException
      * @throws InvalidDiskException
      * @throws InvalidPathException
@@ -48,15 +82,16 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $this->checkDiskValidation($disk);
         $this->checkPathExists($path, $disk);
 
-        $name = $file->getClientOriginalName() ?: $file->hashName();
+        $name = $this->convertInvalidPathCharacters($file->getClientOriginalName() ?: $file->hashName());
         $name = pathinfo($name, PATHINFO_FILENAME);
         $extension = $file->guessExtension() ?: $file->getClientOriginalExtension();
 
         $origName = $this->getUploadingFileName($name);
         $uploadFilename = $origName . '.' . $extension;
 
-        if (!$overwrite && $this->fileExists($uploadFilename, $disk))
+        if (!$overwrite && $this->fileExists($uploadFilename, $disk)) {
             throw new FileDuplicationException();
+        }
 
         // it is a cleanup step if there is any file in storage but not in DB
         // to prevent showing multiple same name files in UI
@@ -84,6 +119,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
             'name' => $name,
             'extension' => $extension,
             'path' => $path,
+            'disk' => $disk,
         ]);
 
         $file->storeAs($path, $uploadFilename, $disk);
@@ -118,6 +154,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $this->checkPathExists($path, $disk);
 
         $where = new WhereBuilder('file_manager');
+        $where->whereEqual('disk', $disk);
 
         $hasSearch = !is_null($search) && trim($search) != '';
 
@@ -143,7 +180,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $listFiles = [];
         $this->chunk(function (
             Collection $files
-        ) use (&$dbFiles, &$listFiles, $hasSearch, $fileSize, $disk) {
+        ) use (&$listFiles, $hasSearch, $fileSize, $disk) {
             $files->groupBy('path')->each(function (
                 Collection $group,
                            $path
@@ -158,13 +195,29 @@ class FileRepository extends Repository implements FileRepositoryInterface
                     $hasSearch ? ['i'] : []
                 );
 
-                $tmpFiles = $this->getSpecificThumbnail($tmpFiles, $fileSize);
+                $tmpImageFiles = [];
+                $tmpOtherFiles = [];
+                foreach ($tmpFiles as $file) {
+                    $info = pathinfo($file);
+                    if ($this->isSupportedImage($info['extension'])) {
+                        $tmpImageFiles[] = $file;
+                    } else {
+                        $tmpOtherFiles[] = $file;
+                    }
+                }
+
+                $tmpImageFiles = $this->getSpecificThumbnail($tmpImageFiles, $fileSize);
+
+                $tmpFiles = array_merge($tmpImageFiles, $tmpOtherFiles);
 
                 // get file info of fetched files
                 foreach ($tmpFiles as $file) {
                     $fileInfo = $this->getFileInfo($file, $disk);
                     if (!empty($fileInfo)) {
+                        // 🤷‍♂️[Be Careful]
+                        // If file is not uploaded with file-manager, it'll fail to show existing files
                         $tmpName = explode('-', $file)[0];
+
                         $dbFile = $group->filter(function ($i) use ($tmpName) {
                             return trim($i->path . '/' . $i->name, '\\/') === $tmpName;
                         })->first();
@@ -304,6 +357,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
     /**
      * @inheritDoc
      * @throws InvalidPathException
+     * @throws InvalidDiskException
      */
     public function move(array $paths, string $destination, string $disk): bool
     {
@@ -321,6 +375,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
     /**
      * @inheritDoc
      * @throws InvalidPathException
+     * @throws InvalidDiskException
      */
     public function copy(array $paths, string $destination, string $disk): bool
     {
@@ -363,7 +418,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
      * @throws InvalidDiskException
      * @throws InvalidFileException
      */
-    public function download(string $path, string $disk)
+    public function download(string $path, string $disk): mixed
     {
         $path = $this->getNormalizedPath($path);
 
@@ -378,14 +433,15 @@ class FileRepository extends Repository implements FileRepositoryInterface
         $filename = null;
         foreach ($files as $file) {
             if (count($arr = explode('-', $file)) == 2) {
-                $filename = $arr[0];
+                $filename = pathinfo($arr[0], PATHINFO_FILENAME);
                 $downloadFile = $file;
                 break;
             }
         }
 
-        if (is_null($downloadFile) || is_null($filename))
+        if (is_null($downloadFile) || is_null($filename)) {
             throw new InvalidFileException('فایل انتخاب شده برای دانلود نامعتبر می‌باشد.');
+        }
 
         return Storage::disk($disk)->download($downloadFile, $filename);
     }
@@ -417,7 +473,8 @@ class FileRepository extends Repository implements FileRepositoryInterface
             $where = new WhereBuilder('file_manager');
             $where
                 ->whereEqual('path', $filePath)
-                ->whereEqual('name', $filename);
+                ->whereEqual('name', $filename)
+                ->whereEqual('disk', $disk);
             if (!empty($extension)) $where->whereEqual('extension', $extension);
 
             if (!$this->exists($where->build())) return $getFiles ? [] : false;
@@ -505,7 +562,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'last_modified' => isset($modifiedAt)
-                ? vertaTz(Carbon::createFromTimestamp(intval($modifiedAt)))
+                ? vertaTz(Carbon::createFromTimestamp($modifiedAt))
                     ->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];

@@ -51,7 +51,7 @@
 
             <template v-slot:seen_status="{value}">
               <partial-badge-publish
-                  :publish="value.seen_status"
+                :publish="!!value.seen_status"
                   publish-text="مشاهده شده"
                   unpublish-text="مشاهده نشده"
               />
@@ -97,7 +97,7 @@ import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
-import {useAdminAuthStore, ROLES} from "@/store/StoreUserAuth.js";
+import {ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {ReturnOrderAPI} from "@/service/APIOrder.js";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 import PartialBadgeStatusReturnOrder from "@/components/partials/PartialBadgeStatusReturnOrder.vue";

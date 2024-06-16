@@ -26,8 +26,8 @@ return new class extends Migration {
             $table->timestamp('answered_at')->nullable();
             $table->foreignId('answered_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->timestamp('changed_status_at')->nullable();
-            $table->foreignId('changed_status_by')->nullable()
+            $table->timestamp('changed_condition_at')->nullable();
+            $table->foreignId('changed_condition_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();
             $table->unsignedBigInteger('flag_count')->default(0);
             $table->unsignedBigInteger('up_vote_count')->default(0);

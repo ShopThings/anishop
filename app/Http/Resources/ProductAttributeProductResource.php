@@ -19,10 +19,7 @@ class ProductAttributeProductResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product_attribute_id' => $this->product_attribute_id,
-            'product_attribute' => new ProductAttributeValueShowResource($this->productAttr),
-            'product_attribute_values' => ProductAttributeValueShowResource::collection($this->productAttr->attrValues),
-            'product_attribute_product' => $this->productAttr->attrValues->productAttrValues,
+            'product_attribute_value' => new ProductAttributeValueShowResource($this->attrValue),
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

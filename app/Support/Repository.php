@@ -10,8 +10,8 @@ use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 abstract class Repository implements RepositoryInterface
 {
@@ -24,6 +24,11 @@ abstract class Repository implements RepositoryInterface
      * @var array
      */
     private array $withWhereHas = [];
+
+    /**
+     * @var array
+     */
+    private array $whereHas = [];
 
     /**
      * @var bool $useSoftDeletes
@@ -64,6 +69,15 @@ abstract class Repository implements RepositoryInterface
     public function resetWithWhereHas(): static
     {
         $this->withWhereHas = [];
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resetWhereHas(): static
+    {
+        $this->whereHas = [];
         return $this;
     }
 
@@ -126,14 +140,50 @@ abstract class Repository implements RepositoryInterface
     /**
      * @inheritDoc
      */
+    public function newWhereHas(
+        array|string        $relations,
+        Closure|null|string $callback = null,
+                            $operator = '>=',
+                            $count = 1
+    ): static
+    {
+        $this->resetWhereHas();
+        return $this->whereHas($relations, $callback);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function whereHas(
+        array|string        $relations,
+        Closure|null|string $callback = null,
+                            $operator = '>=',
+                            $count = 1
+    ): static
+    {
+        if (is_array($relations)) {
+            foreach ($relations as $relation) {
+                $this->whereHas[] = [
+                    'relations' => $relation,
+                    'callback' => $callback,
+                    'operator' => $operator,
+                    'count' => $count,
+                ];
+            }
+        } elseif (trim($relations) !== '') {
+            $this->whereHas[] = compact('relations', 'callback', 'operator', 'count');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function exists(?GetterExpressionInterface $where = null): bool
     {
-        return $this->model->when(
-            !is_null($where) && !empty($where->getStatement()),
-            function (Builder $query) use ($where) {
-                $query->whereRaw($where->getStatement(), $where->getBindings());
-            }
-        )->exists();
+        $query = $this->prepareGetQuery($where);
+        return $query->exists();
     }
 
     /**
@@ -141,20 +191,11 @@ abstract class Repository implements RepositoryInterface
      */
     public function count(
         ?GetterExpressionInterface $where = null,
-        bool                       $withTrashed = false
+        bool $withTrashed = false,
+        bool $onlyTrashed = false
     ): int
     {
-        $query = $this->model->when(
-            !is_null($where) && !empty($where->getStatement()),
-            function (Builder $query) use ($where) {
-                $query->whereRaw($where->getStatement(), $where->getBindings());
-            }
-        );
-
-        if ($withTrashed) {
-            $query->withTrashed();
-        }
-
+        $query = $this->prepareGetQuery($where, [], $withTrashed, $onlyTrashed);
         return $query->count();
     }
 
@@ -222,19 +263,13 @@ abstract class Repository implements RepositoryInterface
     public function find(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null
     {
-        $query = $this->model->newQuery();
-
-        if ($this->useSoftDeletes) {
-            if ($onlyTrashed) {
-                $query->onlyTrashed();
-            } elseif ($withTrashed) {
-                $query->withTrashed();
-            }
-        }
+        $query = $this->prepareGetQuery(null, [], $withTrashed, $onlyTrashed);
+        $query = $this->applyOrderToQuery($query, $order);
 
         return $query->find($id, $columns);
     }
@@ -245,19 +280,13 @@ abstract class Repository implements RepositoryInterface
     public function findOrFail(
         $id,
         array $columns = ['*'],
+        array $order = [],
         bool $withTrashed = false,
         bool $onlyTrashed = false
     ): Collection|Model|null
     {
-        $query = $this->model->newQuery();
-
-        if ($this->useSoftDeletes) {
-            if ($onlyTrashed) {
-                $query->onlyTrashed();
-            } elseif ($withTrashed) {
-                $query->withTrashed();
-            }
-        }
+        $query = $this->prepareGetQuery(null, [], $withTrashed, $onlyTrashed);
+        $query = $this->applyOrderToQuery($query, $order);
 
         return $query->findOrFail($id, $columns);
     }
@@ -266,11 +295,14 @@ abstract class Repository implements RepositoryInterface
     public function findWhere(
         GetterExpressionInterface $where,
         array                     $columns = ['*'],
+        array $order = [],
         bool                      $withTrashed = false,
         bool                      $onlyTrashed = false
     ): Model|null
     {
         $query = $this->prepareGetQuery($where, [], $withTrashed, $onlyTrashed);
+        $query = $this->applyOrderToQuery($query, $order);
+
         return $query->first($columns);
     }
 
@@ -371,6 +403,7 @@ abstract class Repository implements RepositoryInterface
         }
 
         $this->prepareWith($query);
+
         $query->when(
             !is_null($where) && !empty($where->getStatement()),
             function (Builder $query) use ($where) {
@@ -378,13 +411,7 @@ abstract class Repository implements RepositoryInterface
             }
         );
 
-        if (count($order)) {
-            foreach ($order as $column => $sort) {
-                $query->orderBy($column, $sort);
-            }
-        }
-
-        return $query;
+        return $this->applyOrderToQuery($query, $order);
     }
 
     /**
@@ -396,6 +423,8 @@ abstract class Repository implements RepositoryInterface
         $query
             ->when(count($this->with), function (Builder $query) {
                 foreach ($this->with as $item) {
+                    // It seems you can't pass a 'null' value as callback!
+                    // Therefore, we have if statement for that
                     if ($item['callback'] !== null) {
                         $query->with($item['relations'], $item['callback']);
                     } else {
@@ -405,10 +434,32 @@ abstract class Repository implements RepositoryInterface
             })
             ->when(count($this->withWhereHas), function (Builder $query) {
                 foreach ($this->withWhereHas as $item) {
+                    // It seems you can't pass a 'null' value as callback!
+                    // Therefore, we have if statement for that
                     if ($item['callback'] !== null) {
                         $query->withWhereHas($item['relations'], $item['callback']);
                     } else {
                         $query->withWhereHas($item['relations']);
+                    }
+                }
+            })
+            ->when(count($this->whereHas), function (Builder $query) {
+                foreach ($this->whereHas as $item) {
+                    // It seems you can't pass a 'null' value as callback!
+                    // Therefore, we have if statement for that
+                    if ($item['callback'] !== null) {
+                        $query->whereHas(
+                            relation: $item['relations'],
+                            callback: $item['callback'],
+                            operator: $item['operator'] ?? '>=',
+                            count: $item['count'] ?? 1
+                        );
+                    } else {
+                        $query->whereHas(
+                            relation: $item['relations'],
+                            operator: $item['operator'] ?? '>=',
+                            count: $item['count'] ?? 1
+                        );
                     }
                 }
             });
@@ -416,5 +467,22 @@ abstract class Repository implements RepositoryInterface
         // reset with array for further operation
         $this->resetWith();
         $this->resetWithWhereHas();
+        $this->resetWhereHas();
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $order
+     * @return Builder
+     */
+    protected function applyOrderToQuery(Builder $query, array $order): Builder
+    {
+        if (count($order)) {
+            foreach ($order as $column => $sort) {
+                $query->orderBy($column, $sort);
+            }
+        }
+
+        return $query;
     }
 }

@@ -33,11 +33,19 @@ class NewsletterService extends Service implements NewsletterServiceInterface
         return $this->repository
             ->newWith(['creator', 'updater', 'deleter'])
             ->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getMembersCount(): int
+    {
+        return $this->repository->count();
     }
 
     /**

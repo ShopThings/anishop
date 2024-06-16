@@ -103,7 +103,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  hasEditMode: {
+  inEditMode: {
     type: Boolean,
     default: true,
   },
@@ -129,10 +129,10 @@ const hasLabelSlot = !!slots['label']
 const inp = ref()
 const labelId = ref(null)
 
-const editMode = ref(props.hasEditMode)
+const editMode = ref(props.inEditMode)
 
-watch(() => props.hasEditMode, () => {
-  editMode.value = props.hasEditMode
+watch(() => props.inEditMode, () => {
+  editMode.value = props.inEditMode
 })
 
 const {value, errorMessage, handleChange} = useField(() => props.name, undefined)

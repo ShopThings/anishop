@@ -1,3 +1,5 @@
+export const MAX_RESERVED_TIME = 7200;
+
 export const PAYMENT_METHOD_TYPES = {
   BEHPARDAKHT: {
     value: 'behpardakht',
@@ -203,6 +205,21 @@ export const COMMENT_SEEN_STATUSES = {
   },
 }
 
+export const COMMENT_VOTED_TYPES = {
+  VOTED: 1,
+  NOT_VOTED: 2,
+  NOT_SET: 3,
+}
+
+export const COMMENT_VOTING_TYPES = {
+  LIKING: 1,
+  UNDO_LIKING: 2,
+  DISLIKING: 3,
+  UNDO_DISLIKING: 4,
+  FROM_LIKE_TO_DISLIKING: 5,
+  FROM_DISLIKING_TO_LIKE: 6,
+}
+
 export const BLOG_VOTING_TYPES = {
   VOTED: 1,
   NOT_VOTED: 2,
@@ -229,6 +246,7 @@ export const SETTING_KEYS = {
   STORE_PROVINCE: 'store_province',
   STORE_CITY: 'store_city',
   LAT_LNG: 'lat_lng',
+  DIVIDE_PAYMENT_PRICE: 'divide_payment_price',
   MIN_FREE_POST_PRICE: 'min_free_post_price',
   PRODUCT_EACH_PAGE: 'product_each_page',
   BLOG_EACH_PAGE: 'blog_each_page',
@@ -290,5 +308,32 @@ export const SOCIAL_NETWORKS = {
     value: 'linked_in',
     text: 'لینکدین',
     icon: '<svg class="fill-current w-auto h-4" viewBox="0 0 14 14"><path d="M13.0214 0H1.02084C0.453707 0 0 0.451613 0 1.01613V12.9839C0 13.5258 0.453707 14 1.02084 14H12.976C13.5432 14 13.9969 13.5484 13.9969 12.9839V0.993548C14.0422 0.451613 13.5885 0 13.0214 0ZM4.15142 11.9H2.08705V5.23871H4.15142V11.9ZM3.10789 4.3129C2.42733 4.3129 1.90557 3.77097 1.90557 3.11613C1.90557 2.46129 2.45002 1.91935 3.10789 1.91935C3.76577 1.91935 4.31022 2.46129 4.31022 3.11613C4.31022 3.77097 3.81114 4.3129 3.10789 4.3129ZM11.9779 11.9H9.9135V8.67097C9.9135 7.90323 9.89082 6.8871 8.82461 6.8871C7.73571 6.8871 7.57691 7.74516 7.57691 8.60323V11.9H5.51254V5.23871H7.53154V6.16452H7.55423C7.84914 5.62258 8.50701 5.08065 9.52785 5.08065C11.6376 5.08065 12.0232 6.43548 12.0232 8.2871V11.9H11.9779Z"></path></svg>',
+  },
+}
+
+export const REPORT_PERIODS = {
+  TODAY: {
+    value: 'today',
+    text: 'امروز',
+  },
+  WEEKLY: {
+    value: 'weekly',
+    text: 'این هفته',
+  },
+  MONTHLY: {
+    value: 'monthly',
+    text: 'این ماه',
+  },
+  MONTHS_3: {
+    value: 'months_3',
+    text: 'سه ماهه اخیر',
+  },
+  MONTHS_6: {
+    value: 'months_6',
+    text: 'شش ماهه اخیر',
+  },
+  YEARLY: {
+    value: 'yearly',
+    text: 'امسال',
   },
 }

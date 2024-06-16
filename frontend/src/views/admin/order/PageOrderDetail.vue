@@ -61,14 +61,14 @@
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-emerald-400 shrink-0">مبلغ قابل پرداخت:</span>
                   <div class="grow text-emerald-600">
-                    <span class="tracking-widest">{{ formatPriceLikeNumber(order?.final_price) }}</span>
+                    <span class="tracking-widest">{{ numberFormat(order?.final_price) }}</span>
                     <span class="text-xs mr-1">تومان</span>
                   </div>
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-emerald-400 shrink-0">پرداخت شده تاکنون:</span>
                   <div class="grow text-emerald-600">
-                    <span class="tracking-widest">{{ formatPriceLikeNumber(paymentUntilNow) }}</span>
+                    <span class="tracking-widest">{{ numberFormat(paymentUntilNow) }}</span>
                     <span class="text-xs mr-1">تومان</span>
                   </div>
                 </div>
@@ -92,6 +92,7 @@
                         :is-loading="false"
                         :rows="ordersTableSetting.rows"
                         :total="ordersTableSetting.total"
+                        :sortable="ordersTableSetting.sortable"
                     >
                       <template #payment_status="{value}">
                         <partial-badge-status-payment
@@ -100,18 +101,18 @@
                         />
                       </template>
 
-                      <template #payed_at="{value}">
-                        <span v-if="value.payed_at" class="text-xs">{{ value.payed_at }}</span>
+                      <template #paid_at="{value}">
+                        <span v-if="value.paid_at" class="text-xs">{{ value.paid_at }}</span>
                         <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #created_at="{value}">
-                        <span v-if="value.payed_at" class="text-xs">{{ value.payed_at }}</span>
+                        <span v-if="value.created_at" class="text-xs">{{ value.created_at }}</span>
                         <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #must_pay_price="{value}">
-                        <span class="tracking-widest">{{ formatPriceLikeNumber(value.must_pay_price) }}</span>
+                        <span class="tracking-widest">{{ numberFormat(value.must_pay_price) }}</span>
                         <span class="text-xs mr-1">تومان</span>
                       </template>
 
@@ -158,10 +159,7 @@
               </div>
             </div>
 
-            <partial-dialog
-                v-model:open="orderPaymentDetailOpen"
-                container-klass="overflow-auto"
-            >
+            <partial-dialog v-model:open="orderPaymentDetailOpen">
               <template #title>
                 جزئیات پرداخت
               </template>
@@ -183,7 +181,7 @@
 
                   <template #status="{value}">
                     <partial-badge-publish
-                        :publish="value.status"
+                      :publish="!!value.status"
                         publish-text="پرداخت شده"
                         unpublish-text="پرداخت نشده"
                     />
@@ -197,8 +195,8 @@
                     {{ value.gateway_type.text }}
                   </template>
 
-                  <template #payed_at="{value}">
-                    <span v-if="value.payed_at" class="text-xs">{{ value.payed_at }}</span>
+                  <template #paid_at="{value}">
+                    <span v-if="value.paid_at" class="text-xs">{{ value.paid_at }}</span>
                     <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                   </template>
 
@@ -317,7 +315,7 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">مبلغ قابل پرداخت:</span>
                     <div class="text-black">
-                      <span class="tracking-widest">{{ formatPriceLikeNumber(order?.final_price) }}</span>
+                      <span class="tracking-widest">{{ numberFormat(order?.final_price) }}</span>
                       <span class="text-xs mr-1">تومان</span>
                     </div>
                   </div>
@@ -359,7 +357,7 @@
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">هزینه ارسال:</span>
                     <div class="text-black">
-                      <span class="tracking-widest">{{ formatPriceLikeNumber(order?.shipping_price) }}</span>
+                      <span class="tracking-widest">{{ numberFormat(order?.shipping_price) }}</span>
                       <span class="text-xs mr-1">تومان</span>
                     </div>
                   </div>
@@ -379,7 +377,7 @@
               <partial-card class="p-3">
                 <template #body>
                   <div class="flex flex-col">
-                    <span class="text-xs text-gray-400 mb-1">کد کوپن:</span>
+                    <span class="text-xs text-gray-400 mb-1">کد تخفیف:</span>
                     <div class="text-black">
                       <span v-if="order?.coupon_code"
                             class="rounded border-2 py-1 px-2 bg-slate-50">{{ order?.coupon_code }}</span>
@@ -391,10 +389,10 @@
               <partial-card class="p-3">
                 <template #body>
                   <div class="flex flex-col">
-                    <span class="text-xs text-gray-400 mb-1">مبلغ کوپن:</span>
+                    <span class="text-xs text-gray-400 mb-1">مبلغ کوپن تخفیف:</span>
                     <div class="text-black">
                       <div v-if="order?.coupon_price">
-                        <span class="tracking-widest">{{ formatPriceLikeNumber(order?.coupon_price) }}</span>
+                        <span class="tracking-widest">{{ numberFormat(order?.coupon_price) }}</span>
                         <span class="text-xs mr-1">تومان</span>
                       </div>
                       <span v-else>-</span>
@@ -473,19 +471,19 @@
 
             <template v-slot:unit_price="{value}">
               <div class="text-lg font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.unit_price) }}
+                {{ numberFormat(value.unit_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
 
             <template v-slot:product_count="{value}">
-              <span class="py-1 px-1.5 rounded bg-violet-100">{{ formatPriceLikeNumber(value.quantity) }}</span>
+              <span class="py-1 px-1.5 rounded bg-violet-100">{{ numberFormat(value.quantity) }}</span>
               <span class="mr-2 text-sm">{{ value.unit_name }}</span>
             </template>
 
             <template v-slot:total_price="{value}">
               <div class="text-lg font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.price) }}
+                {{ numberFormat(value.price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
@@ -493,7 +491,7 @@
             <template v-slot:discount="{value}">
               <div v-if="(+value.price) - (+value.discounted_price) > 0">
                 <div class="text-lg font-iranyekan-bold">
-                  {{ formatPriceLikeNumber((+value.price) - (+value.discounted_price)) }}
+                  {{ numberFormat((+value.price) - (+value.discounted_price)) }}
                   <span class="text-xs text-gray-400">تومان</span>
                 </div>
               </div>
@@ -502,7 +500,7 @@
 
             <template v-slot:discounted_price="{value}">
               <div class="text-lg font-iranyekan-bold">
-                {{ formatPriceLikeNumber(value.discounted_price) }}
+                {{ numberFormat(value.discounted_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
@@ -530,7 +528,7 @@ import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
-import {formatPriceLikeNumber, getRouteParamByKey} from "@/composables/helper.js";
+import {getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {OrderAPI} from "@/service/APIOrder.js";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
@@ -576,7 +574,7 @@ const ordersTableSetting = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      field: 'payed_at',
+      field: 'paid_at',
       label: 'تاریخ پرداخت',
       columnClasses: 'whitespace-nowrap',
     },
@@ -649,7 +647,7 @@ const orderPaymentsTableSetting = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      field: 'payed_at',
+      field: 'paid_at',
       label: 'تاریخ پرداخت',
       columnClasses: 'whitespace-nowrap',
     },
@@ -686,6 +684,14 @@ const isDownloadFactor = ref(false)
 
 function factorDownloadHandler() {
   if (!isDownloadFactor.value) return
+
+  isDownloadFactor.value = true
+
+  OrderAPI.exportPdf(idParam.value, {
+    finally() {
+      isDownloadFactor.value = false
+    },
+  })
 }
 
 //-----------------------------------

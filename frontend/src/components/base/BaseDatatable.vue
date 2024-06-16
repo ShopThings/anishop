@@ -1,6 +1,5 @@
 <template>
-  <div class="vtl relative flex flex-col min-w-0">
-
+  <div class="vtl relative min-w-0">
     <slot v-if="title" name="title">
       <div class="mb-2">
         {{ title }}
@@ -9,35 +8,35 @@
 
     <div v-if="setting.enableMultiOperation && hasCheckbox">
       <base-datatable-multi-operation
-          :items="selectedItems"
-          :operations="setting.selectionOperations"
-          @clear-selected-items="clearSelectedItems"
+        :items="selectedItems"
+        :operations="setting.selectionOperations"
+        @clear-selected-items="clearSelectedItems"
       >
         <template #selectedItems="{items, close}">
-          <slot :close="close" name="beforeSelectedFilesTable"></slot>
+          <slot :close="close" name="beforeSelectedItemsTable"></slot>
 
           <base-datatable
-              :columns="setting.selectionColumns"
-              :is-slot-mode="setting.isSlotMode"
-              :is-static-mode="true"
-              :rows="items"
-              :total="items.length"
+            :columns="setting.selectionColumns"
+            :is-slot-mode="setting.isSlotMode"
+            :is-static-mode="true"
+            :rows="items"
+            :total="items.length"
           >
             <template v-for="(slot, index) of Object.keys(slots)" :key="index" v-slot:[slot]="data">
               <slot :index="index + setting.offset" :name="slot" :value="data.value"></slot>
             </template>
             <template v-slot:selection_remover="data">
               <BackspaceIcon
-                  v-tooltip.left="'حذف از انتخاب‌ها'"
-                  class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"
-                  @click="removeFromSelectedItem(data.value)"
+                v-tooltip.left="'حذف از انتخاب‌ها'"
+                class="w-6 h-6 text-rose-500 cursor-pointer hover:scale-125 transition"
+                @click="removeFromSelectedItem(data.value)"
               />
             </template>
           </base-datatable>
 
           <div class="mt-3">
-            <slot :close="close" name="afterSelectedFilesTable">
-              <base-animated-button class="bg-slate-600 px-5 mr-auto" @click="close">
+            <slot :close="close" name="afterSelectedItemsTable">
+              <base-animated-button class="bg-slate-600 !py-1 px-5 mr-auto" @click="close">
                 <template #icon="{klass}">
                   <XCircleIcon :class="klass" class="w-6 h-6 ml-2"/>
                 </template>
@@ -51,18 +50,20 @@
 
     <div v-if="setting.enableSearchBox">
       <base-datatable-search
-          @refresh="refresh"
-          @search="doSearchText"
-          @clear-filter="clearSearchFilter"
+        @refresh="refresh"
+        @search="doSearchText"
+        @clear-filter="clearSearchFilter"
       />
     </div>
 
+    <slot name="beforeItemsTable"></slot>
+
     <div
-        :class="{
-          '__fixed-first-column': isFixedFirstColumn,
-          '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
-        }"
-        class="flex flex-col relative"
+      :class="{
+        '__fixed-first-column': isFixedFirstColumn,
+        '__fixed-first-second-column': isFixedFirstColumn && hasCheckbox,
+      }"
+      class="flex flex-col relative"
     >
       <div v-show="isLoading"
            class="absolute z-[4] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/20 supports-[backdrop-filter]:backdrop-blur-sm flex flex-col transition">
@@ -70,8 +71,8 @@
           <div class="flex items-center justify-center flex-1">
             <span class="text-white text-shadow">{{ messages.loading }}</span>
             <loader-circle
-                container-bg-color=""
-                main-container-klass="h-6 w-6 relative mr-2.5"
+              container-bg-color=""
+              main-container-klass="h-6 w-6 relative mr-2.5"
             ></loader-circle>
           </div>
         </slot>
@@ -81,88 +82,96 @@
         <div class="inline-block min-w-full">
           <div ref="tableContainer" class="overflow-hidden">
             <table
-                ref="localTable"
-                :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
-                class="text-sm text-left text-gray-500 rtl:text-right w-full"
+              ref="localTable"
+              :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
+              class="text-sm text-left text-gray-500 rtl:text-right w-full"
             >
               <thead class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
               <tr>
-                <th v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5"
-                    scope="col">
+                <th
+                  v-if="hasCheckbox"
+                  class="w-[1%] min-w-[38px] px-5 py-2.5"
+                  scope="col"
+                >
                   <div class="flex items-center">
                     <input
-                        v-model="setting.isCheckAll"
-                        class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
-                        type="checkbox"
-                        @change="changeCheckAll"
+                      v-model="setting.isCheckAll"
+                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      type="checkbox"
+                      @change="changeCheckAll"
                     >
                   </div>
                 </th>
-                <th v-for="(col, index) in columns" :key="index"
+                <template
+                  v-for="(col, index) in columns"
+                  :key="index"
+                >
+                  <th
+                    v-if="col?.show !== false"
                     :class="[col.sortable ? 'cursor-pointer' : '', col.columnClasses]"
                     :style="[col.width ? 'width: ' + col.width : 'width: auto', col.columnStyles]"
                     class="px-1"
                     scope="col"
-                >
-                  <div
+                  >
+                    <div
                       :class="{
                         'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
                       }"
                       class="py-2.5 px-2"
                       @click.prevent="col.sortable ? doSort(col.field) : false"
-                  >
-                    <div
-                        class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
-                      <ArrowUpIcon
+                    >
+                      <div class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
+                        <ArrowUpIcon
                           v-if="setting.order === col.field && setting.sort === 'desc'"
                           class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
-                      />
-                      <ArrowDownIcon
+                        />
+                        <ArrowDownIcon
                           v-else-if="setting.order === col.field && setting.sort === 'asc'"
                           class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
-                      />
-                      <ArrowsUpDownIcon
+                        />
+                        <ArrowsUpDownIcon
                           v-else-if="col.sortable"
                           class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"
-                      />
-                      <span class="ml-2 leading-relaxed">{{ col.label }}</span>
+                        />
+                        <span class="ml-2 leading-relaxed">{{ col.label }}</span>
+                      </div>
                     </div>
-                  </div>
-                </th>
+                  </th>
+                </template>
               </tr>
               </thead>
 
               <template v-if="rows.length > 0">
                 <tbody
-                    v-if="isStaticMode"
-                    :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
+                  v-if="isStaticMode"
+                  :set="(templateRows = groupingKey === '' ? [localRows] : localRows)"
                 >
                 <template
-                    v-for="(rows, groupingIndex) in templateRows"
-                    :key="groupingIndex"
+                  v-for="(rows, groupingIndex) in templateRows"
+                  :key="groupingIndex"
                 >
-                  <tr v-if="groupingKey !== ''"
-                      class="border-b transition">
+                  <tr
+                    v-if="groupingKey !== ''"
+                    class="border-b transition"
+                  >
                     <td
-                        :colspan="hasCheckbox ? columns.length + 1 : columns.length"
-                        class="px-6 py-4"
+                      :colspan="setting.columnsLength"
+                      class="px-6 py-4"
                     >
-                      <div class="flex">
-                        <div v-if="hasGroupToggle">
-                          <a
-                              :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                              class="cursor-pointer"
-                              @click.prevent="toggleGroup(groupingIndex)"
-                          >
-                            <ChevronDownIcon class="w-4 h-4"/>
-                          </a>
-                        </div>
+                      <div class="flex gap-2.5 items-center">
+                        <a
+                          v-if="hasGroupToggle"
+                          :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                          class="flex items-center justify-center cursor-pointer rounded-md size-8 border border-blue-200 hover:bg-blue-100 transition"
+                          @click.prevent="toggleGroup(groupingIndex)"
+                        >
+                          <ChevronDownIcon class="w-4 h-4 transition"/>
+                        </a>
                         <div
-                            class="ml-2"
-                            v-html="
+                          v-html="
                               groupingDisplay
                                 ? groupingDisplay(groupingIndex)
-                                : groupingIndex
+                                : groupingIndex + '<span class=\'mr-1.5 rounded-full py-0.5 px-0.5 min-w-6 h-6 text-center bg-green-100 border border-green-300 inline-block\'>' + (rows?.length || 0) + '</span>'
                             "
                         ></div>
                       </div>
@@ -170,9 +179,9 @@
                   </tr>
 
                   <tr
-                      v-for="(row, i) in rows"
-                      :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
-                      :ref="
+                    v-for="(row, i) in rows"
+                    :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
+                    :ref="
                         (el) => {
                           if (!groupingRowsRefs[groupingIndex]) {
                             groupingRowsRefs[groupingIndex] = [];
@@ -180,16 +189,16 @@
                           groupingRowsRefs[groupingIndex][i] = el;
                         }
                       "
-                      :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                      :name="'vtl-group-' + groupingIndex"
-                      class="border-b transition"
-                      @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
-                      @contextmenu="emit('row-context-menu', $event, row)"
+                    :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+                    :name="'vtl-group-' + groupingIndex"
+                    class="border-b transition"
+                    @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
+                    @contextmenu="emit('row-context-menu', $event, row)"
                   >
                     <td v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5">
                       <div class="flex items-center">
                         <input
-                            :ref="
+                          :ref="
                             (el) => {
                               if(el && hasSelectedItemWithProperty(row)) {
                                 el.checked = true;
@@ -197,16 +206,20 @@
                               rowCheckbox.push(el);
                             }
                             "
-                            :value="row[setting.keyColumn]"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
-                            type="checkbox"
-                            @click="checked(row, $event)"
+                          :value="row[setting.keyColumn]"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
+                          type="checkbox"
+                          @click="checked(row, $event)"
                         >
                       </div>
                     </td>
-                    <td
-                        v-for="(col, j) in columns"
-                        :key="j"
+
+                    <template
+                      v-for="(col, j) in columns"
+                      :key="j"
+                    >
+                      <td
+                        v-if="col?.show !== false"
                         :class="[
                           typeof col.cellClasses === 'function' ? col.cellClasses(row) : col.cellClasses,
                            col.columnClasses
@@ -216,52 +229,51 @@
                         class="px-5 py-2.5"
                         @mouseenter="addHoverClassToTd"
                         @mouseleave="removeHoverClassFromTd"
-                    >
-                      <div v-if="col.display" v-html="col.display(row)"></div>
-                      <div v-else>
-                        <div v-if="setting.isSlotMode && slots[col.field]">
-                          <slot
+                      >
+                        <div v-if="col.display" v-html="col.display(row)"></div>
+                        <div v-else>
+                          <div v-if="setting.isSlotMode && slots[col.field]">
+                            <slot
                               :index="i + setting.offset"
                               :name="col.field"
                               :value="row"
-                          ></slot>
+                            ></slot>
+                          </div>
+                          <span v-else>{{ row[col.field] }}</span>
                         </div>
-                        <span v-else>{{ row[col.field] }}</span>
-                      </div>
-                    </td>
+                      </td>
+                    </template>
                   </tr>
                 </template>
                 </tbody>
                 <tbody
-                    v-else
-                    :set="(templateRows = groupingKey === '' ? [rows] : groupingRows)"
+                  v-else
+                  :set="(templateRows = groupingKey === '' ? [rows] : groupingRows)"
                 >
                 <template
-                    v-for="(rows, groupingIndex) in templateRows"
-                    :key="groupingIndex"
+                  v-for="(rows, groupingIndex) in templateRows"
+                  :key="groupingIndex"
                 >
                   <tr v-if="groupingKey !== ''"
                       class="border-b transition">
                     <td
-                        :colspan="hasCheckbox ? columns.length + 1 : columns.length"
-                        class="px-6 py-4"
+                      :colspan="setting.columnsLength"
+                      class="px-6 py-4"
                     >
-                      <div class="flex">
-                        <div v-if="hasGroupToggle">
-                          <a
-                              :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
-                              class="cursor-pointer"
-                              @click.prevent="toggleGroup(groupingIndex)"
-                          >
-                            <ChevronDownIcon class="w-4 h-4"/>
-                          </a>
-                        </div>
+                      <div class="flex gap-2.5 items-center">
+                        <a
+                          v-if="hasGroupToggle"
+                          :ref="(el) => (toggleButtonRefs[groupingIndex] = el)"
+                          class="flex items-center justify-center cursor-pointer rounded-md size-8 border border-blue-200 hover:bg-blue-100 transition"
+                          @click.prevent="toggleGroup(groupingIndex)"
+                        >
+                          <ChevronDownIcon class="w-4 h-4 transition"/>
+                        </a>
                         <div
-                            class="ml-2"
-                            v-html="
+                          v-html="
                               groupingDisplay
                                 ? groupingDisplay(groupingIndex)
-                                : groupingIndex
+                                : groupingIndex + '<span class=\'mr-1.5 rounded-full py-0.5 px-0.5 min-w-6 h-6 text-center bg-green-100 border border-green-300 inline-block\'>' + (rows?.length || 0) + '</span>'
                             "
                         ></div>
                       </div>
@@ -269,9 +281,9 @@
                   </tr>
 
                   <tr
-                      v-for="(row, i) in rows"
-                      :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
-                      :ref="
+                    v-for="(row, i) in rows"
+                    :key="row[setting.keyColumn] ? row[setting.keyColumn] : i"
+                    :ref="
                         (el) => {
                           if (!groupingRowsRefs[groupingIndex]) {
                             groupingRowsRefs[groupingIndex] = [];
@@ -279,16 +291,16 @@
                           groupingRowsRefs[groupingIndex][i] = el;
                         }
                       "
-                      :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-                      :name="'vtl-group-' + groupingIndex"
-                      class="border-b transition"
-                      @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
-                      @contextmenu="emit('row-context-menu', $event, row)"
+                    :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+                    :name="'vtl-group-' + groupingIndex"
+                    class="border-b transition"
+                    @click="(e) => {emit('row-clicked', row, e.target.closest('tr'))}"
+                    @contextmenu="emit('row-context-menu', $event, row)"
                   >
                     <td v-if="hasCheckbox" class="px-6 py-4">
                       <div class="flex items-center">
                         <input
-                            :ref="
+                          :ref="
                               (el) => {
                                 if(el && hasSelectedItemWithProperty(row)) {
                                   el.checked = true;
@@ -300,16 +312,20 @@
                                 rowCheckbox.push(el);
                               }
                             "
-                            :value="row[setting.keyColumn]"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
-                            type="checkbox"
-                            @click="checked(row, $event)"
+                          :value="row[setting.keyColumn]"
+                          class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-600 focus:ring-2"
+                          type="checkbox"
+                          @click="checked(row, $event)"
                         >
                       </div>
                     </td>
-                    <td
-                        v-for="(col, j) in columns"
-                        :key="j"
+
+                    <template
+                      v-for="(col, j) in columns"
+                      :key="j"
+                    >
+                      <td
+                        v-if="col?.show !== false"
                         :class="[
                           typeof col.cellClasses === 'function' ? col.cellClasses(row) : col.cellClasses,
                            col.columnClasses
@@ -319,66 +335,91 @@
                         class="px-6 py-4"
                         @mouseenter="addHoverClassToTd"
                         @mouseleave="removeHoverClassFromTd"
-                    >
-                      <div v-if="col.display" v-html="col.display(row)"></div>
-                      <div v-else>
-                        <div v-if="setting.isSlotMode && slots[col.field]">
-                          <slot
+                      >
+                        <div v-if="col.display" v-html="col.display(row)"></div>
+                        <div v-else>
+                          <div v-if="setting.isSlotMode && slots[col.field]">
+                            <slot
                               :index="i + setting.offset"
                               :name="col.field"
                               :value="row"
-                          ></slot>
+                            ></slot>
+                          </div>
+                          <span v-else>{{ row[col.field] }}</span>
                         </div>
-                        <span v-else>{{ row[col.field] }}</span>
-                      </div>
-                    </td>
+                      </td>
+                    </template>
                   </tr>
                 </template>
                 </tbody>
               </template>
 
+              <tbody v-else-if="!isLoading">
+              <tr>
+                <td :colspan="setting.columnsLength">
+                  <slot name="emptyTable">
+                    <div class="p-3">
+                      <div class="p-3 text-center text-rose-600 border rounded-md bg-gray-50 text-sm">
+                        {{ messages.noDataAvailable }}
+                      </div>
+                    </div>
+                  </slot>
+                </td>
+              </tr>
+              </tbody>
+
               <tfoot class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
               <tr>
-                <th v-if="hasCheckbox" class="w-[1%] min-w-[38px] px-5 py-2.5"
-                    scope="col">
+                <th
+                  v-if="hasCheckbox"
+                  class="w-[1%] min-w-[38px] px-5 py-2.5"
+                  scope="col"
+                >
                   <div class="flex items-center">
                     <input
-                        v-model="setting.isCheckAll"
-                        class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
-                        type="checkbox"
-                        @change="changeCheckAll"
+                      v-model="setting.isCheckAll"
+                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      type="checkbox"
+                      @change="changeCheckAll"
                     >
                   </div>
                 </th>
-                <th v-for="(col, index) in columns" :key="index"
+                <template
+                  v-for="(col, index) in columns"
+                  :key="index"
+                >
+                  <th
+                    v-if="col?.show !== false"
                     :class="[col.sortable ? 'cursor-pointer' : '', col.columnClasses]"
                     :style="[col.width ? 'width: ' + col.width : 'width: auto', col.columnStyles]"
                     class="px-1"
                     scope="col"
-                >
-                  <div
-                      :class="{
-                                            'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
-                                        }"
-                      class="py-2.5 px-2"
-                      @click.prevent="col.sortable ? doSort(col.field) : false"
                   >
                     <div
-                        class="flex rtl:flex-row-reverse items-center justify-between gap-2">
-                      <ArrowUpIcon
+                      :class="{
+                        'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
+                    }"
+                      class="py-2.5 px-2"
+                      @click.prevent="col.sortable ? doSort(col.field) : false"
+                    >
+                      <div class="flex rtl:flex-row-reverse items-center justify-start rtl:justify-end">
+                        <ArrowUpIcon
                           v-if="setting.order === col.field && setting.sort === 'desc'"
-                          class="w-4 h-4 shrink-0"/>
-                      <ArrowDownIcon
+                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
+                        />
+                        <ArrowDownIcon
                           v-else-if="setting.order === col.field && setting.sort === 'asc'"
-                          class="w-4 h-4 shrink-0"/>
-                      <ArrowsUpDownIcon
+                          class="ml-auto rtl:mr-auto rtl:ml-[unset] w-4 h-4 shrink-0"
+                        />
+                        <ArrowsUpDownIcon
                           v-else-if="col.sortable"
-                          class="text-white text-opacity-40 w-4 h-4 shrink-0"
-                      />
-                      <span class="leading-relaxed">{{ col.label }}</span>
+                          class="ml-auto rtl:mr-auto rtl:ml-[unset] text-white text-opacity-40 w-4 h-4 shrink-0"
+                        />
+                        <span class="leading-relaxed">{{ col.label }}</span>
+                      </div>
                     </div>
-                  </div>
-                </th>
+                  </th>
+                </template>
               </tr>
               </tfoot>
             </table>
@@ -391,7 +432,7 @@
       <template v-if="!setting.isHidePaging">
         <div class="sm:flex sm:justify-between sm:items-start sm:rtl:flex-row-reverse">
           <div aria-live="polite"
-               class="mb-3 text-sm text-gray-500 mb-3 sm:mb-0"
+               class="text-sm text-gray-500 mb-3 sm:mb-0"
                role="status"
                v-html="stringFormat(messages.pagingInfo, setting.offset, setting.limit, total)">
           </div>
@@ -399,12 +440,13 @@
           <div v-if="setting.maxPage > 1" class="flex rtl:flex-row-reverse">
             <div class="mx-2">
               <span class="text-sm text-gray-500">{{ messages.pageSizeChangeLabel }}</span>
-              <base-select :options="pageOptions"
-                           :selected="{value: setting.pageSize, text: setting.pageSize}"
-                           options-class="bottom-full mb-1"
-                           options-key="value"
-                           options-text="text"
-                           @change="(item) => {setting.pageSize = item.value}"
+              <base-select
+                :options="pageOptions"
+                :selected="{value: setting.pageSize, text: setting.pageSize}"
+                options-class="bottom-full mb-1"
+                options-key="value"
+                options-text="text"
+                @change="(item) => {setting.pageSize = item.value}"
               >
                 <template #item="{item}">
                   {{ item.text }}
@@ -414,12 +456,13 @@
 
             <div v-if="!setting.isHideSelectPaging" class="mx-2">
               <span class="text-sm text-gray-500">{{ messages.gotoPageLabel }}</span>
-              <base-select :options="pageNumberOptions"
-                           :selected="{value: setting.page, text: setting.page}"
-                           options-class="bottom-full mb-1"
-                           options-key="value"
-                           options-text="text"
-                           @change="(item) => {setting.page = item.value}"
+              <base-select
+                :options="pageNumberOptions"
+                :selected="{value: setting.page, text: setting.page}"
+                options-class="bottom-full mb-1"
+                options-key="value"
+                options-text="text"
+                @change="(item) => {setting.page = item.value}"
               >
               </base-select>
             </div>
@@ -428,33 +471,29 @@
 
         <div v-if="setting.maxPage > 1" class="mt-3">
           <base-pagination
-              v-model:current-page="setting.page"
-              v-model:max-page="setting.maxPage"
-              v-model:paging="setting.paging"
-              :move-page="movePage"
-              :next-page="nextPage"
-              :prev-page="prevPage"
-              :theme="paginationTheme"
+            v-model:current-page="setting.page"
+            v-model:max-page="setting.maxPage"
+            v-model:paging="setting.paging"
+            :move-page="movePage"
+            :next-page="nextPage"
+            :prev-page="prevPage"
+            :theme="paginationTheme"
           />
         </div>
       </template>
     </div>
-
-    <slot v-else-if="!isLoading" name="emptyTable">
-      <div class="p-3">
-        <div class="p-3 text-center text-rose-600 border rounded-md bg-gray-50 text-sm">
-          {{ messages.noDataAvailable }}
-        </div>
-      </div>
-    </slot>
   </div>
 </template>
 
 <script setup>
 import {computed, nextTick, onBeforeUpdate, onMounted, reactive, ref, useSlots, watch} from "vue"
 import {
-  ChevronDownIcon, ArrowUpIcon, ArrowDownIcon,
-  ArrowsUpDownIcon, XCircleIcon, BackspaceIcon,
+  ArrowDownIcon,
+  ArrowsUpDownIcon,
+  ArrowUpIcon,
+  BackspaceIcon,
+  ChevronDownIcon,
+  XCircleIcon,
 } from '@heroicons/vue/24/outline'
 import BaseSelect from "./BaseSelect.vue";
 import LoaderCircle from "./loader/LoaderCircle.vue";
@@ -462,6 +501,7 @@ import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseDatatableMultiOperation from "./datatable/BaseDatatableMultiOperation.vue";
 import BaseAnimatedButton from "./BaseAnimatedButton.vue";
 import BasePagination from "./BasePagination.vue";
+import {nestedArray} from "@/composables/helper.js";
 
 const props = defineProps({
   isLoading: {
@@ -532,8 +572,8 @@ const props = defineProps({
     default: () => {
       return {
         pagingInfo: 'نمایش' + " <span class=\"text-blue-500\">" + "{0}" + "</span>"
-            + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
-            + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
+          + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
+          + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
         pageSizeChangeLabel: "تعداد نمایش در هر صفحه:",
         gotoPageLabel: "رفتن به صفحه:",
         noDataAvailable: "هیچ داده‌ای وجود ندارد.",
@@ -636,15 +676,15 @@ const tableContainer = ref(null);
 let localTable = ref(null);
 
 let defaultPageSize =
-    props.pageOptions.length > 0
-        ? ref(props.pageOptions[0].value)
-        : ref(props.pageSize);
+  props.pageOptions.length > 0
+    ? ref(props.pageOptions[0].value)
+    : ref(props.pageSize);
 if (props.pageOptions.length > 0) {
   props.pageOptions.forEach((v) => {
     if (
-        Object.prototype.hasOwnProperty.call(v, "value") &&
-        Object.prototype.hasOwnProperty.call(v, "text") &&
-        props.pageSize === v.value
+      Object.prototype.hasOwnProperty.call(v, "value") &&
+      Object.prototype.hasOwnProperty.call(v, "text") &&
+      props.pageSize === v.value
     ) {
       defaultPageSize.value = v.value;
     }
@@ -667,9 +707,13 @@ const setting = reactive({
     cols.unshift({
       label: "",
       field: "selection_remover",
+      columnStyles: "width: 3%;",
       cellClasses: '!bg-rose-50',
     });
     return cols;
+  }),
+  columnsLength: computed(() => {
+    return props.columns.length + (props.hasCheckbox ? 1 : 0)
   }),
   keyColumn: computed(() => {
     let key = "";
@@ -788,37 +832,37 @@ onBeforeUpdate(() => {
  * Check all checkboxes for monitoring
  */
 watch(
-    () => setting.isCheckAll,
-    (state) => {
-      if (props.hasCheckbox) {
-        isChecked.value = [];
-        let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
-        if (state) {
-          if (props.checkedReturnType === "row") {
-            isChecked.value = tmpRows;
-          } else {
-            tmpRows.forEach((val) => {
-              isChecked.value.push(val[setting.keyColumn]);
-            });
-          }
+  () => setting.isCheckAll,
+  (state) => {
+    if (props.hasCheckbox) {
+      isChecked.value = [];
+      let tmpRows = (props.isStaticMode) ? props.rows.slice((setting.offset - 1), setting.limit) : props.rows;
+      if (state) {
+        if (props.checkedReturnType === "row") {
+          isChecked.value = tmpRows;
+        } else {
+          tmpRows.forEach((val) => {
+            isChecked.value.push(val[setting.keyColumn]);
+          });
         }
-
-        // Return the selected data on the screen
-        emit("return-checked-rows", isChecked.value);
       }
+
+      // Return the selected data on the screen
+      emit("return-checked-rows", isChecked.value);
     }
+  }
 );
 
 /**
  * hasCheckbox props for monitoring
  */
 watch(
-    () => props.hasCheckbox,
-    (v) => {
-      if (!v) {
-        setting.isCheckAll = false;
-      }
+  () => props.hasCheckbox,
+  (v) => {
+    if (!v) {
+      setting.isCheckAll = false;
     }
+  }
 );
 
 function changeCheckAll(e) {
@@ -933,13 +977,17 @@ const doSearchText = (text) => {
 
 const clearSearchFilter = (payload) => {
   searchText.value = '';
-  payload.resetField(payload.name)
+
+  if (payload?.name) {
+    payload.resetField(payload.name)
+  }
 
   let offset = 0;
   let limit = setting.pageSize;
   let order = setting.order;
   let sort = setting.sort;
 
+  emit('clear-search-filter')
   emit("do-search", offset, limit, order, sort, searchText.value);
 
   if (setting.isCheckAll) {
@@ -996,18 +1044,18 @@ const changePage = (page, prevPage) => {
 watch(() => setting.page, changePage);
 // Monitor manual page switching
 watch(
-    () => props.page,
-    (val) => {
-      if (val <= 1) {
-        setting.page = 1;
-        emit("get-now-page", setting.page);
-      } else if (val >= setting.maxPage) {
-        setting.page = setting.maxPage;
-        emit("get-now-page", setting.page);
-      } else {
-        setting.page = val;
-      }
+  () => props.page,
+  (val) => {
+    if (val <= 1) {
+      setting.page = 1;
+      emit("get-now-page", setting.page);
+    } else if (val >= setting.maxPage) {
+      setting.page = setting.maxPage;
+      emit("get-now-page", setting.page);
+    } else {
+      setting.page = val;
     }
+  }
 );
 
 const changePageSize = () => {
@@ -1024,10 +1072,10 @@ const changePageSize = () => {
 watch(() => setting.pageSize, changePageSize);
 // Monitor display number switch from prop
 watch(
-    () => props.pageSize,
-    (newPageSize) => {
-      setting.pageSize = newPageSize;
-    }
+  () => props.pageSize,
+  (newPageSize) => {
+    setting.pageSize = newPageSize;
+  }
 );
 
 const prevPage = () => {
@@ -1055,18 +1103,18 @@ const nextPage = () => {
 
 // Monitoring data changes
 watch(
-    () => props.rows,
-    () => {
-      if (props.isReSearch || props.isStaticMode) {
-        setting.page = 1;
-      }
-      nextTick(function () {
-        // 資料完成渲染後回傳私有元件 (Return the private components after the data is rendered)
-        if (!props.isStaticMode) {
-          callIsFinished();
-        }
-      });
+  () => props.rows,
+  () => {
+    if (props.isReSearch || props.isStaticMode) {
+      setting.page = 1;
     }
+    nextTick(function () {
+      // 資料完成渲染後回傳私有元件 (Return the private components after the data is rendered)
+      if (!props.isStaticMode) {
+        callIsFinished();
+      }
+    });
+  }
 );
 
 const stringFormat = (template, ...args) => {
@@ -1095,10 +1143,10 @@ const groupingToggleStatus = ref({});
 const groupingRows = computed(() => {
   let result = {};
   props.rows.forEach((v) => {
-    if (!result[v[props.groupingKey]]) {
-      result[v[props.groupingKey]] = [];
+    if (!result[nestedArray.get(v, props.groupingKey)]) {
+      result[nestedArray.get(v, props.groupingKey)] = [];
     }
-    result[v[props.groupingKey]].push(v);
+    result[nestedArray.get(v, props.groupingKey)].push(v);
   });
 
   nextTick(function () {
@@ -1107,17 +1155,17 @@ const groupingRows = computed(() => {
         if (el) {
           let isOpen = !props.startCollapsed;
           if (
-              props.isKeepCollapsed &&
-              groupingToggleStatus.value[groupIndex] !== undefined
+            props.isKeepCollapsed &&
+            groupingToggleStatus.value[groupIndex] !== undefined
           ) {
             isOpen = !groupingToggleStatus.value[groupIndex];
           }
           if (
-              (isOpen && el.parentElement.classList.contains("__group-open")) ||
-              (!isOpen && !el.parentElement.classList.contains("__group-open"))
+            (isOpen && el.classList.contains("__group-open")) ||
+            (!isOpen && !el.classList.contains("__group-open"))
           ) {
-            el.parentElement.classList.toggle("__group-open");
-            el.parentElement.classList.toggle("rotate-90 transition");
+            el.classList.toggle("__group-open");
+            el.children[0].classList.toggle("rotate-90");
           }
           if (!isOpen) {
             groupingRowsRefs.value[groupIndex].forEach((element) => {
@@ -1138,9 +1186,9 @@ const groupingRows = computed(() => {
 const toggleGroup = (groupIndex) => {
   let targetEl = toggleButtonRefs.value[groupIndex];
   if (targetEl) {
-    targetEl.parentElement.classList.toggle("__group-open");
-    targetEl.parentElement.classList.toggle("rotate-90 transition");
-    const isClose = targetEl.parentElement.classList.contains("__group-open");
+    targetEl.classList.toggle("__group-open");
+    targetEl.children[0].classList.toggle("rotate-90");
+    const isClose = targetEl.classList.contains("__group-open");
     groupingRowsRefs.value[groupIndex].forEach((element) => {
       if (element) {
         if (isClose) {
@@ -1195,7 +1243,7 @@ function getColumn(tab, col) {
   if (!tab) return [];
 
   var n = tab.rows.length;
-  var i, cols = [], tr, td;
+  var i, cols = [];
 
   if (col < 0) {
     return [];
@@ -1257,10 +1305,18 @@ const refresh = () => {
   emit("do-search", offset, limit, order, sort, text);
 }
 
+/**
+ * Different with "refresh" is reset offset and text of contents
+ */
+const reload = () => {
+  clearSearchFilter()
+}
+
 defineExpose({
   table: localTable,
   tableContainer,
   refresh,
+  reload,
   resetSelection: () => {
     clearSelectedItems()
   },

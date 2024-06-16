@@ -1,13 +1,13 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      loading-text="در حال بارگذاری محصولات"
-      type="circle"
+    :loading="loading"
+    loading-text="در حال بارگذاری محصولات"
+    type="circle"
   >
     <template #content>
       <base-accordion
-          btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
-          panel-class="max-h-96 overflow-auto"
+        btn-class="bg-white border-2 border-blue-400 hover:shadow-lg focus-visible:ring-blue-800"
+        panel-class="max-h-96 my-custom-scrollbar"
       >
         <template #button>
           محصولات انتخاب شده
@@ -15,40 +15,41 @@
 
         <template #panel>
           <div
-              v-if="products && products.length"
-              class="grid grid-cols-1 gap-3"
+            v-if="products && products.length"
+            class="grid grid-cols-1 gap-3"
           >
             <partial-card
-                v-for="(product, idx) in products"
-                :key="product.id"
+              v-for="(product, idx) in products"
+              :key="product.id"
             >
               <template #body>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {slug: product.slug}}"
-                        class="p-2 shrink-0"
-                        target="_blank"
+                      :to="{name: 'admin.product.detail', params: {slug: product.slug}}"
+                      class="p-2 shrink-0"
+                      target="_blank"
                     >
                       <base-lazy-image
-                          :alt="product.title"
-                          :lazy-src="product.image.path"
-                          :size="FileSizes.SMALL"
-                          class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
+                        :alt="product.title"
+                        :lazy-src="product.image.path"
+                        :size="FileSizes.SMALL"
+                        :is-local="false"
+                        class="!w-20 ml-3 mb-0 h-auto hover:scale-95 transition shrink-0"
                       />
                     </router-link>
                     <router-link
-                        :to="{name: 'admin.product.detail', params: {slug: product.slug}}"
-                        class="px-3 py-2 text-primary hover:text-opacity-90"
-                        target="_blank"
+                      :to="{name: 'admin.product.detail', params: {slug: product.slug}}"
+                      class="px-3 py-2 text-primary hover:text-opacity-90"
+                      target="_blank"
                     >
                       {{ product.title }}
                     </router-link>
                   </div>
                   <base-button-close
-                      v-tooltip.right="'حذف از لیست'"
-                      class="mx-3"
-                      @click="removeFromListHandler(idx)"
+                    v-tooltip.right="'حذف از لیست'"
+                    class="mx-3"
+                    @click="removeFromListHandler(idx)"
                   />
                 </div>
               </template>
@@ -56,8 +57,8 @@
           </div>
 
           <div
-              v-else
-              class="text-slate-400 text-center"
+            v-else
+            class="text-slate-400 text-center"
           >
             هیچ محصولی انتخاب نشده!
           </div>
@@ -76,13 +77,13 @@
           <div class="sm:flex sm:flex-wrap sm:items-end sm:justify-between">
             <div class="w-full p-2 sm:w-1/2">
               <base-input
-                  :max="100"
-                  :min="1"
-                  :money-mask="true"
-                  label-title="درصد تغییر قیمت"
-                  name="percentage"
-                  placeholder="وارد نمایید"
-                  type="text"
+                :max="100"
+                :min="1"
+                :money-mask="true"
+                label-title="درصد تغییر قیمت"
+                name="percentage"
+                placeholder="وارد نمایید"
+                type="text"
               >
                 <template #icon>
                   <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -93,16 +94,16 @@
               <div class="p-2">
                 <div class="flex items-center mb-4">
                   <base-radio
-                      id="increaseDecreaseRadio1"
-                      v-model="increaseDecreaseRadio"
-                      :show-label="false"
-                      checked
-                      name="increase_decrease_radio"
-                      value="increase"
+                    id="increaseDecreaseRadio1"
+                    v-model="increaseDecreaseRadio"
+                    :show-label="false"
+                    checked
+                    name="increase_decrease_radio"
+                    value="increase"
                   />
                   <label
-                      class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
-                      for="increaseDecreaseRadio1">
+                    class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                    for="increaseDecreaseRadio1">
                     افزایش قیمت
                   </label>
                 </div>
@@ -110,16 +111,16 @@
               <div class="p-2">
                 <div class="flex items-center mb-4">
                   <base-radio
-                      id="increaseDecreaseRadio2"
-                      v-model="increaseDecreaseRadio"
-                      :show-label="false"
-                      checked
-                      name="increase_decrease_radio"
-                      value="decrease"
+                    id="increaseDecreaseRadio2"
+                    v-model="increaseDecreaseRadio"
+                    :show-label="false"
+                    checked
+                    name="increase_decrease_radio"
+                    value="decrease"
                   />
                   <label
-                      class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
-                      for="increaseDecreaseRadio2">
+                    class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                    for="increaseDecreaseRadio2">
                     کاهش قیمت
                   </label>
                 </div>
@@ -130,15 +131,15 @@
 
           <div class="px-2 py-3">
             <base-animated-button
-                :disabled="!canSubmit"
-                class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-                type="submit"
+              :disabled="!canSubmit"
+              class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+              type="submit"
             >
               <VTransitionFade>
                 <loader-circle
-                    v-if="!canSubmit"
-                    big-circle-color="border-transparent"
-                    main-container-klass="absolute w-full h-full top-0 left-0"
+                  v-if="!canSubmit"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
                 />
               </VTransitionFade>
 
@@ -150,11 +151,11 @@
             </base-animated-button>
 
             <div
-                v-if="Object.keys(errors)?.length"
-                class="text-left"
+              v-if="Object.keys(errors)?.length"
+              class="text-left"
             >
               <div
-                  class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
+                class="w-full sm:w-auto sm:inline-block text-center text-sm border-2 border-rose-500 bg-rose-50 rounded-full py-1 px-3 mt-2"
               >
                 (
                 <span>{{ Object.keys(errors)?.length }}</span>
@@ -208,9 +209,9 @@ function removeFromListHandler(idx) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     percentage: yup.string()
-        .min(1, 'حداقل درصد تغییرات بایستی از عدد ۱ شروع شود.')
-        .percentage('درصد تغییر قیمت باید عددی بین ۰ و ۱۰۰ باشد.')
-        .required('درصد تغییر قیمت را وارد نمایید.')
+      .min(1, 'حداقل درصد تغییرات بایستی از عدد ۱ شروع شود.')
+      .percentage('درصد تغییر قیمت باید عددی بین ۰ و ۱۰۰ باشد.')
+      .required('درصد تغییر قیمت را وارد نمایید.')
   })
 }, (values, actions) => {
   if (!products.value || !products.value?.length) {
@@ -234,8 +235,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       actions.resetForm()
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

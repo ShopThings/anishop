@@ -1,21 +1,21 @@
 <template>
   <div
-      v-if="showSearch || (order && order.length)"
-      class="pb-3 flex flex-col"
+    v-if="showSearch || (order && order.length)"
+    class="pb-3 flex flex-col"
   >
     <div v-if="showSearch" class="grow">
       <base-datatable-search
-          :show-refresh-button="false"
-          :show-remove-filter-button-on-input="true"
-          class="!p-0"
-          @refresh="refreshSearchHandler"
-          @search="searchHandler"
-          @clear-filter="clearSearchHandler"
+        :show-refresh-button="false"
+        :show-remove-filter-button-on-input="true"
+        class="!p-0"
+        @refresh="refreshSearchHandler"
+        @search="searchHandler"
+        @clear-filter="clearSearchHandler"
       />
     </div>
     <div
-        v-if="order && order.length"
-        class="mt-3 w-full sm:mt-0"
+      v-if="order && order.length"
+      class="mt-3 w-full sm:mt-0"
     >
       <div class="hidden md:flex md:items-center md:gap-2">
         <div class="font-iranyekan-light text-sm">
@@ -24,16 +24,16 @@
 
         <ul class="flex items-center gap-2.5 grow">
           <li
-              v-for="o in order"
-              :key="o.id"
+            v-for="o in order"
+            :key="o.id"
           >
             <button
-                :class="[
-                    o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
-                ]"
-                class="border-b-2 border-transparent py-2 text-sm text-black"
-                type="button"
-                @click="changeOrderHandler(o)"
+              :class="[
+                  o.id === selectedOrder.id ? 'border-b-rose-500 font-iranyekan-bold cursor-default' : 'hover:text-opacity-80',
+              ]"
+              class="border-b-2 border-transparent py-2 text-sm text-black"
+              type="button"
+              @click="changeOrderHandler(o)"
             >
               {{ o.text }}
             </button>
@@ -43,33 +43,32 @@
 
       <div class="w-full sm:w-48 md:hidden mr-auto">
         <base-select
-            :options="order"
-            :selected="selectedOrder"
-            class="bg-white"
-            options-key="id"
-            options-text="text"
-            @change="changeOrderHandler"
+          :options="order"
+          :selected="selectedOrder"
+          class="bg-white"
+          options-key="id"
+          options-text="text"
+          @change="changeOrderHandler"
         />
       </div>
     </div>
   </div>
 
   <slot
-      :maxPage="maxPage"
-      :offset="offset"
-      :page="currentPage"
-      :perPage="+props.perPage"
-      :total="total"
-      name="BeforeItemsPanel"
+    :maxPage="maxPage"
+    :offset="offset"
+    :page="currentPage"
+    :perPage="+props.perPage"
+    :total="total"
+    name="beforeItemsPanel"
   >
-    <partial-paginator-pagniation-info
-        v-if="showPaginationDetail"
-        :offset="offset"
-        :per-page="props.perPage"
-        :current-page="currentPage"
-        :max-page="maxPage"
-        :total="total"
-        :items-length="items?.length || 0"
+    <partial-paginator-pagination-info
+      v-if="showPaginationDetail"
+      :current-page="currentPage"
+      :max-page="maxPage"
+      :offset="offset"
+      :per-page="props.perPage"
+      :total="total"
     />
   </slot>
 
@@ -79,22 +78,22 @@
         <slot name="empty"></slot>
       </div>
       <div
-          v-else
-          :class="containerClass"
+        v-else
+        :class="containerClass"
       >
         <div
-            v-for="(item, idx) of actualItems"
-            v-if="!loading && !isLoading"
-            :key="idx + '_1'"
-            :class="itemContainerClass"
+          v-for="(item, idx) of actualItems"
+          v-if="!loading && !isLoading"
+          :key="idx + '_1'"
+          :class="itemContainerClass"
         >
           <slot :item="item" name="item"></slot>
         </div>
         <div
-            v-for="idx in perPage"
-            v-else
-            :key="idx + '_2'"
-            :class="itemContainerClass"
+          v-for="idx in numberOfLoaders || perPage"
+          v-else
+          :key="idx + '_2'"
+          :class="itemContainerClass"
         >
           <slot :index="idx" name="loading"></slot>
         </div>
@@ -102,15 +101,19 @@
     </VTransitionSlideFadeDownY>
   </div>
 
-  <div v-if="showPagination && maxPage > 1" class="mt-3">
+  <div
+    v-if="showPagination && maxPage > 1"
+    :class="paginationContainerClass"
+    class="mt-3"
+  >
     <base-pagination
-        v-model:current-page="currentPage"
-        v-model:max-page="maxPage"
-        v-model:paging="paging"
-        :move-page="movePage"
-        :next-page="nextPage"
-        :prev-page="prevPage"
-        :theme="paginationTheme"
+      v-model:current-page="currentPage"
+      v-model:max-page="maxPage"
+      v-model:paging="paging"
+      :move-page="movePage"
+      :next-page="nextPage"
+      :prev-page="prevPage"
+      :theme="paginationTheme"
     />
   </div>
 </template>
@@ -122,16 +125,22 @@ import BaseDatatableSearch from "./datatable/BaseDatatableSearch.vue";
 import BaseSelect from "./BaseSelect.vue";
 import isFunction from "lodash.isfunction";
 import BasePagination from "./BasePagination.vue";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
 import {apiReplaceParams} from "@/router/api-routes.js";
 import isObject from "lodash.isobject";
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
-import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
+import PartialPaginatorPaginationInfo from "@/components/partials/PartialPaginatorPaginationInfo.vue";
 
 const props = defineProps({
   containerClass: String,
   itemContainerClass: String,
-  items: Array,
+  items: {
+    type: Array,
+    default: [],
+  },
+  total: {
+    type: Number,
+    default: 0,
+  },
   path: String,
   pathReplacementParams: Object,
   extraSearchParams: Object,
@@ -145,6 +154,7 @@ const props = defineProps({
   },
   // to control show loader from outside of component(local loading purposes)
   isLoading: Boolean,
+  numberOfLoaders: Number,
   order: {
     type: Array,
     default: () => [],
@@ -156,6 +166,7 @@ const props = defineProps({
       return true
     },
   },
+  justNoticeOrderChanged: Boolean,
   searchText: String,
   localSearchFilterHandler: Function,
   showSearch: Boolean,
@@ -165,19 +176,46 @@ const props = defineProps({
   },
   showPaginationDetail: Boolean,
   paginationTheme: String,
+  paginationContainerClass: String,
   //
+  scrollToElementOnAppearance: {
+    type: Boolean,
+    default: false,
+  },
   scrollMarginTop: {
     type: Number,
     default: 0,
   },
 })
-const emit = defineEmits(['update:items', 'update:searchText', 'order-changed'])
+const emit = defineEmits([
+  'update:items',
+  'update:total',
+  'update:searchText',
+  'order-changed',
+  'items-loaded'
+])
 
 const itemsContainerRef = ref(null)
 const loading = ref(true)
 
+const items = computed({
+  get() {
+    return props.items
+  },
+  set(value) {
+    emit('update:items', value)
+  },
+})
+const total = computed({
+  get() {
+    return props.total || items.value.length || 0
+  },
+  set(value) {
+    emit('update:total', value)
+  },
+})
+
 const actualItems = ref([])
-const total = ref(props.items?.length || 0)
 
 const currentPage = ref(1)
 const maxPage = computed(() => {
@@ -241,7 +279,7 @@ watch(() => props.order, () => {
 })
 
 //-------------------------------
-watch([() => props.extraSearchParams, () => props.path, () => props.items], () => {
+watch([() => props.extraSearchParams, () => props.path], () => {
   goToPage(1)
 })
 
@@ -276,9 +314,13 @@ function refreshSearchHandler() {
 function changeOrderHandler(selected) {
   if (selected.id === selectedOrder.value.id) return
 
-  emit('order-changed', selected)
   selectedOrder.value = selected
-  goToPage(currentPage.value)
+
+  emit('order-changed', selected)
+
+  if (!props.justNoticeOrderChanged) {
+    goToPage(currentPage.value)
+  }
 }
 
 //-------------------------------
@@ -288,11 +330,14 @@ watch(currentPage, () => {
 
 let localLoadingTimeout = null
 
-function goToPage(page) {
+function goToPage(page, scrollToTop) {
   let params = {
     limit: props.perPage,
     offset: (page - 1) * props.perPage,
-    text: query.value || ''
+  }
+
+  if (query.value) {
+    params.text = query.value
   }
 
   if (selectedOrder.value) {
@@ -300,18 +345,17 @@ function goToPage(page) {
     params.sort = selectedOrder.value.sort
   }
 
-  if (isObject(props.extraSearchParams) && Object.keys(props.extraSearchParams).length) {
+  if (isObject(props.extraSearchParams)) {
     params = Object.assign({}, props.extraSearchParams, params)
-    props.extraSearchParams.order = params.order
   }
 
   loading.value = true
 
-  if (props.items?.length) {
+  if (items.value?.length) {
     clearTimeout(localLoadingTimeout)
 
     new Promise((resolve) => {
-      let rows = props.items
+      let rows = items.value
 
       if (isFunction(props.localSearchFilterHandler)) {
         rows = rows.filter((item) => {
@@ -332,47 +376,53 @@ function goToPage(page) {
       }
 
       actualItems.value = [];
-      for (let index = params.offset; index < (params.limit * page) && index < props.items.length; index++) {
+      for (let index = params.offset; index < (params.limit * page) && index < items.value.length; index++) {
         if (rows[index])
           actualItems.value.push(rows[index]);
       }
 
       localLoadingTimeout = setTimeout(() => {
         loading.value = false
-        goToTop()
+
+        if (scrollToTop !== false) {
+          goToTop()
+        }
+
+        emit('items-loaded')
 
         resolve()
       }, 1000)
     })
   } else if (props.path && props.path.trim() !== '') {
+    let remotePath;
     if (isObject(props.pathReplacementParams)) {
-      useRequest(apiReplaceParams(props.path, props.pathReplacementParams), {params}, {
-        success: (response) => {
-          actualItems.value = response.data || []
-          total.value = response.meta.total || 0
-
-          loading.value = false
-          goToTop()
-        },
-      })
+      remotePath = apiReplaceParams(props.path, props.pathReplacementParams)
     } else {
-      useRequest(props.path, {params}, {
-        success: (response) => {
-          actualItems.value = response.data || []
-          total.value = response.meta.total || 0
-
-          loading.value = false
-          goToTop()
-        },
-      })
+      remotePath = props.path
     }
+
+    useRequest(remotePath, {params}, {
+      success: (response) => {
+        actualItems.value = response.data || []
+        total.value = response.meta.total || 0
+
+        loading.value = false
+
+        if (scrollToTop !== false) {
+          goToTop()
+        }
+
+        emit('items-loaded')
+      },
+    })
   } else {
     actualItems.value = []
+    total.value = 0
     loading.value = false
   }
 }
 
-goToPage(currentPage.value)
+goToPage(currentPage.value, props.scrollToElementOnAppearance)
 
 function prevPage() {
   if (currentPage.value - 1 > 0) {
@@ -395,11 +445,18 @@ function nextPage() {
 function goToTop() {
   if (!itemsContainerRef.value) return
 
+  // Get the closest scrolling container
+  // (this is just a hacky fix with overflow-hidden css class)
+  let scrollable = itemsContainerRef.value.closest('.overflow-hidden')
+  if (!scrollable) {
+    scrollable = window
+  }
+
   // Calculate the position to scroll to (slightly above the target element)
-  const scrollToY = itemsContainerRef.value.getBoundingClientRect().top + window.scrollY + props.scrollMarginTop;
+  const scrollToY = itemsContainerRef.value.getBoundingClientRect().top + scrollable.scrollY + props.scrollMarginTop;
 
   // Scroll to the calculated position
-  window.scrollTo({
+  scrollable.scrollTo({
     top: scrollToY,
     behavior: 'smooth'
   });
@@ -411,6 +468,7 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
+  isLoading: loading,
   goToPage,
   goToTop,
 })

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\Category;
+use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use App\Support\Gate\PermissionHelper;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,12 +33,19 @@ class StoreProductAttributeProductRequest extends FormRequest
     {
         return [
             'values' => [
-                'required',
+                'sometimes',
                 'array',
             ],
             'values.*.id' => [
-                'required',
+                'sometimes',
                 'exists:' . ProductAttributeValue::class . ',id',
+            ],
+            'values.*.product_attribute_id' => [
+                'sometimes',
+                'exists:' . ProductAttribute::class . ',id',
+            ],
+            'values.*.attribute_value' => [
+                'sometimes',
             ],
         ];
     }

@@ -15,7 +15,13 @@ interface ProductAttributeCategoryRepositoryInterface extends RepositoryInterfac
      * @return Collection|LengthAwarePaginator
      */
     public function getAttributeCategoriesSearchFilterPaginated(
-        array   $columns = ['*'],
+        array $columns = ['*'],
         Filter $filter = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param int $productId
+     * @return Collection|null
+     */
+    public function getProductAttributeCategories(int $productId): Collection|null;
 }

@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش هزینه ارسال نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.CITY_POST_PRICE, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن هزینه ارسال جدید
     </template>
@@ -18,21 +21,21 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :grouping-key="table.groupingKey"
-              :has-checkbox="true"
-              :has-group-toggle="table.hasGroupToggle"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :grouping-key="table.groupingKey"
+            :has-checkbox="true"
+            :has-group-toggle="table.hasGroupToggle"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:province="{value}">
               {{ valu.city.province.name }}
@@ -44,10 +47,10 @@
 
             <template v-slot:post_price="{value}">
               <div
-                  v-if="value.post_price > 0"
-                  class="font-iranyekan-bold"
+                v-if="value.post_price > 0"
+                class="font-iranyekan-bold"
               >
-                {{ formatPriceLikeNumber(value.post_price) }}
+                {{ numberFormat(value.post_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
               <MinusIcon v-else class="w-5 h-5 text-rose-500"/>
@@ -59,7 +62,12 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
+              <base-datatable-menu
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
+              />
             </template>
           </base-datatable>
         </template>
@@ -81,10 +89,13 @@ import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {CityPostPriceAPI} from "@/service/APIShop.js";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -154,6 +165,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.CITY_POST_PRICE, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -166,12 +178,26 @@ const table = reactive({
   hasGroupToggle: true,
 })
 
+function calcRemovals() {
+  let removals = []
+
+  if (!userStore.hasPermission(PERMISSION_PLACES.CITY_POST_PRICE, PERMISSIONS.DELETE)) {
+    removals.push('delete')
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.CITY_POST_PRICE, PERMISSIONS.UPDATE)) {
+    removals.push('edit')
+  }
+
+  return removals
+}
+
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
 })
 
 const operations = [
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -188,6 +214,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

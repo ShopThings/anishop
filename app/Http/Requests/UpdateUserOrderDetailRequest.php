@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Province;
-use App\Rules\CityInProvinceRule;
 use App\Rules\PersianMobileRule;
 use App\Rules\PersianNameRule;
 use Illuminate\Foundation\Http\FormRequest;

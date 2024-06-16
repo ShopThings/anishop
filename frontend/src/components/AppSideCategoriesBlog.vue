@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col divide-y">
+  <div class="flex flex-col divide-y [&>*:last-child]:rounded-b-lg">
     <div
         v-for="i in 5"
         v-if="isLoading || !categories?.length"
@@ -12,9 +12,9 @@
         v-for="item in categories"
         :key="item.id"
         :to="{name: 'blog.search', query: {category: item.id}}"
-        class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 transition gap-3 group"
+        class="text-sm font-iranyekan-light flex items-center px-3 py-3 hover:bg-slate-50 hover:shadow transition gap-3 group"
     >
-      <div class="w-3 h-3 border rounded-full border-slate-300 group-hover:border-rose-500"></div>
+      <div class="w-3 h-3 border rounded-full border-slate-300 group-hover:border-rose-500 shrink-0"></div>
       <span>{{ item.name }}</span>
     </router-link>
   </div>

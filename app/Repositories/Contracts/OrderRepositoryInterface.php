@@ -4,11 +4,10 @@ namespace App\Repositories\Contracts;
 
 use App\Contracts\RepositoryInterface;
 use App\Models\OrderDetail;
-use App\Models\ReturnOrderRequest;
 use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface OrderRepositoryInterface extends RepositoryInterface
 {
@@ -23,6 +22,21 @@ interface OrderRepositoryInterface extends RepositoryInterface
         array $columns = ['*'],
         Filter $filter = null
     ): Collection|LengthAwarePaginator;
+
+    /**
+     * @param Filter|null $filter
+     * @param array|null $reportQuery
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getOrdersFilterPaginatedForReport(
+        Filter $filter = null,
+        ?array $reportQuery = null
+    ): Collection|LengthAwarePaginator;
+
+    /**
+     * @return Collection
+     */
+    public function getOrdersCountWithBadges(): Collection;
 
     /**
      * @param int $orderId
@@ -44,21 +58,52 @@ interface OrderRepositoryInterface extends RepositoryInterface
     public function isOrderReturnable(OrderDetail $orderDetail): bool;
 
     /**
-     * @param OrderDetail $orderDetail
+     * It'll receive an array of payments (that is array too) and
+     * return a boolean that indicates if all the payments are created
+     *
+     * @param array<array> $chunks
      * @return bool
      */
-    public function isReturnOrderCancelable(ReturnOrderRequest $orderRequest): bool;
+    public function addPayments(array $chunks): bool;
 
     /**
      * @param int $orderId
      * @param array $attributes
-     * @return bool|int
+     * @return bool
      */
-    public function updatePayment(int $orderId, array $attributes): bool|int;
+    public function updatePayment(int $orderId, array $attributes): bool;
 
     /**
      * @param int $orderId
      * @return bool
      */
     public function returnOrderProductsToStock(int $orderId): bool;
+
+    /**
+     * It'll receive an array of items (that is array too) and
+     * return a boolean that indicates if all the items are created
+     *
+     * @param array<array> $items
+     * @return bool
+     */
+    public function addItemsToOrder(array $items): bool;
+
+    /**
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function createGatewayPayment(array $attributes): ?Model;
+
+    /**
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function createReserveOrder(array $attributes): ?Model;
+
+    /**
+     * @param string $code
+     * @param int|null $reservedId
+     * @return bool
+     */
+    public function rollbackReservedOrder(string $code, ?int $reservedId): bool;
 }

@@ -16,5 +16,9 @@ class UnitSeeder extends Seeder
             'name' => 'عدد',
             'is_deletable' => false,
         ]);
+        Unit::create([
+            'name' => 'دستگاه',
+            'is_deletable' => false,
+        ]);
     }
 }

@@ -9,13 +9,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSettingRequest;
 use App\Http\Resources\SettingResource;
 use App\Models\Setting;
-use App\Models\User;
 use App\Services\Contracts\SettingServiceInterface;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class SettingController extends Controller
@@ -34,11 +31,10 @@ class SettingController extends Controller
      *
      * @param string|null $group
      * @return JsonResponse|AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(?string $group = null): JsonResponse|AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Setting::class);
 
         $groupName = SettingGroupsEnum::tryFrom($group);
         if (!is_null($group) && is_null($groupName)) {
@@ -59,10 +55,13 @@ class SettingController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param UpdateSettingRequest $request
+     * @return JsonResponse
      */
     public function update(UpdateSettingRequest $request)
     {
-        $this->authorize('update', User::class);
+        Gate::authorize('update', Setting::class);
 
         $validated = $request->validated();
 
@@ -84,6 +83,7 @@ class SettingController extends Controller
                      SettingsEnum::PHONES,
                      SettingsEnum::STORE_PROVINCE,
                      SettingsEnum::STORE_CITY,
+                     SettingsEnum::DIVIDE_PAYMENT_PRICE,
                      SettingsEnum::MIN_FREE_POST_PRICE,
                      SettingsEnum::PRODUCT_EACH_PAGE,
                      SettingsEnum::BLOG_EACH_PAGE,

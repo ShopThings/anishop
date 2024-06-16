@@ -53,7 +53,7 @@ class CategoryRepository extends Repository implements CategoryRepositoryInterfa
      */
     public function getSliderCategories(): Collection
     {
-        return $this->model::published()
+        return $this->model->published()
             ->where('show_in_slider', DatabaseEnum::DB_YES)
             ->leftJoin(
                 'category_images',

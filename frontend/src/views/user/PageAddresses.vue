@@ -17,16 +17,16 @@
     </h2>
 
     <base-loading-panel
-        :loading="loading"
-        type="list"
+      :loading="loading"
+      type="list"
     >
       <template #content>
         <div class="flex flex-col gap-6">
           <div
-              v-for="(address, idx) in addresses"
-              v-if="addresses.length"
-              :key="idx"
-              class="grid grid-cols-1 sm:grid-cols-4 gap-3"
+            v-for="(address, idx) in addresses"
+            v-if="addresses.length"
+            :key="idx"
+            class="grid grid-cols-1 sm:grid-cols-4 gap-3"
           >
             <partial-card class="border-0 p-3 sm:col-span-2">
               <template #body>
@@ -91,18 +91,18 @@
 
             <div class="flex flex-col sm:flex-row justify-end gap-2 sm:col-span-4">
               <base-button
-                  :to="{name: 'user.address.edit', params: {id: address.id}}"
-                  class="text-sm !text-orange-500 border-2 border-orange-400 px-4 flex gap-2 items-center hover:bg-orange-50 !py-1"
-                  type="link"
+                :to="{name: 'user.address.edit', params: {id: address.id}}"
+                class="text-sm !text-orange-500 border-2 border-orange-400 px-4 flex gap-2 items-center hover:bg-orange-50 !py-1"
+                type="link"
               >
                 <span class="mx-auto">ویرایش</span>
                 <PencilIcon class="h-5 w-5"/>
               </base-button>
 
               <base-button
-                  class="text-sm bg-rose-500 border-2 border-rose-500 px-4 flex gap-2 items-center !py-1"
-                  type="button"
-                  @click="() => {removeAddressHandler(address)}"
+                class="text-sm bg-rose-500 border-2 border-rose-500 px-4 flex gap-2 items-center !py-1"
+                type="button"
+                @click="() => {removeAddressHandler(address)}"
               >
                 <span class="mx-auto">حذف</span>
                 <TrashIcon class="h-5 w-5"/>
@@ -110,16 +110,16 @@
             </div>
 
             <hr
-                v-if="idx !== (addresses.length - 1)"
-                class="w-48 h-1 mx-auto my-4 bg-slate-200 border-0 rounded md:my-10 dark:bg-gray-700 col-span-4"
+              v-if="idx !== (addresses.length - 1)"
+              class="w-48 h-1 mx-auto my-4 bg-slate-200 border-0 rounded md:my-10 dark:bg-gray-700 col-span-4"
             >
           </div>
 
           <partial-empty-rows
-              v-else
-              image="/empty-statuses/empty-address.svg"
-              image-class="w-60"
-              message="هیچ آدرسی ذخیره نشده است"
+            v-else
+            image="/images/empty-statuses/empty-address.svg"
+            image-class="w-60"
+            message="هیچ آدرسی ذخیره نشده است"
           />
         </div>
       </template>

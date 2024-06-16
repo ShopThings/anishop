@@ -5,7 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCommentRequest;
-use App\Http\Requests\UpdateProductCommentRequest;
+use App\Http\Requests\UpdateUserProductCommentRequest;
 use App\Http\Resources\User\UserProductCommentResource;
 use App\Http\Resources\User\UserProductCommentSingleResource;
 use App\Models\Comment;
@@ -15,6 +15,7 @@ use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserCommentController extends Controller
@@ -47,12 +48,19 @@ class UserCommentController extends Controller
      * Store a newly created resource in storage.
      *
      * @param StoreProductCommentRequest $request
+     * @param Product $product
      * @return JsonResponse
      */
     public function store(StoreProductCommentRequest $request, Product $product): JsonResponse
     {
-        $validated = $request->validated(['pros', 'cons', 'description']);
-        $model = $this->service->create(['product' => $product->id] + $validated);
+        Gate::authorize('create', [Comment::class, $product]);
+
+        $validated = filter_validated_data($request->validated(), [
+            'pros',
+            'cons',
+            'description',
+        ]);
+        $model = $this->service->create($validated + ['product' => $product->id]);
 
         if (!is_null($model)) {
             return response()->json([
@@ -60,12 +68,11 @@ class UserCommentController extends Controller
                 'message' => 'دیدگاه شما با موفقیت ثبت شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ثبت دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ثبت دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -76,32 +83,39 @@ class UserCommentController extends Controller
      */
     public function show(Comment $comment): UserProductCommentSingleResource
     {
+        Gate::authorize('canDoOperation', $comment);
         return new UserProductCommentSingleResource($comment);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdateProductCommentRequest $request
+     * @param UpdateUserProductCommentRequest $request
      * @param Comment $comment
      * @return UserProductCommentSingleResource|JsonResponse
      */
     public function update(
-        UpdateProductCommentRequest $request,
-        Comment                     $comment
+        UpdateUserProductCommentRequest $request,
+        Comment                         $comment
     ): UserProductCommentSingleResource|JsonResponse
     {
-        $validated = $request->validated(['product', 'pros', 'const', 'description']);
+        Gate::authorize('canDoOperation', [$comment, true]);
+
+        $validated = filter_validated_data($request->validated(), [
+            'product',
+            'pros',
+            'const',
+            'description',
+        ]);
         $model = $this->service->updateById($comment->id, $validated);
 
         if (!is_null($model)) {
             return new UserProductCommentSingleResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش دیدگاه',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش دیدگاه',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -113,14 +127,16 @@ class UserCommentController extends Controller
      */
     public function destroy(Request $request, Comment $comment): JsonResponse
     {
+        Gate::authorize('canDoOperation', $comment);
+
         $res = $this->service->deleteUserCommentById($request->user()->id, $comment->id);
 
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

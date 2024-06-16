@@ -2,7 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Orders\ReturnOrderStatusesEnum;
+use App\Enums\Results\ReturnOrderToStockResult;
+use App\Models\OrderDetail;
 use App\Models\ReturnOrderRequest;
 use App\Models\ReturnOrderRequestItem;
 use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
@@ -14,6 +17,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryInterface
 {
@@ -101,7 +105,7 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
                 }
 
                 if ($isUpdated)
-                    $modified->add($this->returnOrderRequestItemModel::first($item['id']));
+                    $modified->add($this->returnOrderRequestItemModel::query()->find($item['id']));
             } else {
                 $created = $this->returnOrderRequestItemModel::create($item + ['return_code' => $returnCode]);
 
@@ -111,6 +115,47 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
         }
 
         return $modified;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function returnItemsToStock(ReturnOrderRequest $request): ReturnOrderToStockResult
+    {
+        $items = $request->returnOrderItems()
+            ->whereNotNull('accepted_at')
+            ->get();
+
+        /**
+         * @var OrderDetail $orderDetail
+         */
+        $orderDetail = $request->order;
+        if ($orderDetail->is_product_returned_to_stock) {
+            return ReturnOrderToStockResult::ALREADY_RETURNED;
+        }
+
+        DB::beginTransaction();
+
+        $isOK = $orderDetail->update([
+            'is_product_returned_to_stock' => DatabaseEnum::DB_YES,
+        ]);
+
+        if ($isOK) {
+            /**
+             * @var ReturnOrderRequestItem $returnItem
+             */
+            foreach ($items as $returnItem) {
+                $isOK = $isOK && $returnItem->orderItem()->increment('quantity', $returnItem->quantity);
+            }
+        }
+
+        if (!$isOK) {
+            DB::rollBack();
+            return ReturnOrderToStockResult::ERROR;
+        }
+
+        DB::commit();
+        return ReturnOrderToStockResult::SUCCESS;
     }
 
     /**
@@ -129,5 +174,13 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
         return $this->returnOrderRequestItemModel->newQuery()
             ->whereRaw($where->getStatement(), $where->getBindings())
             ->first($columns);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isRequestCancelable(ReturnOrderRequest $orderRequest): bool
+    {
+        return $orderRequest->status === ReturnOrderStatusesEnum::CHECKING->value;
     }
 }

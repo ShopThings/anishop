@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VerifyCodeRequest extends FormRequest
 {
@@ -26,6 +29,13 @@ class VerifyCodeRequest extends FormRequest
                 'required',
                 'numeric',
             ],
+            'username' => [
+                'required',
+                Rule::exists(User::class, 'username')->where(function ($query) {
+                    $query->whereNull('verified_at');
+                }),
+                new PersianMobileRule,
+            ],
         ];
     }
 
@@ -33,6 +43,14 @@ class VerifyCodeRequest extends FormRequest
     {
         return [
             'code' => 'کد تایید',
+            'username' => 'شماره موبایل',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'username.exists' => 'شماره موبایل وارد شده وجود ندارد/قبلا تایید شده است.',
         ];
     }
 }

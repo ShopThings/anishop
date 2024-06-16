@@ -1,6 +1,11 @@
 import {ref} from 'vue'
 import mime from 'mime-types'
 
+export const Storages = {
+  public: 'public',
+  local: 'private',
+}
+
 export const FileSizes = {
   ORIGINAL: 'original',
   SMALL: 'small',
@@ -18,7 +23,7 @@ export const UploadTypes = {
 export function useFileList() {
   const files = ref([])
   const allowedExt = [
-    'jpeg', 'png', 'jpg', 'gif', 'svg', 'csv', 'txt', 'xlx', 'xlsx',
+    'jpeg', 'png', 'jpg', 'webp', 'gif', 'svg', 'csv', 'txt', 'xlx', 'xlsx',
     'xls', 'pdf', 'docx', 'doc', 'mp4', 'mp3',
   ]
 
@@ -48,7 +53,13 @@ export function useFileList() {
   function isImageExt(ext) {
     if (!ext) return false
 
-    return ['jpeg', 'png', 'jpg', 'gif', 'svg'].indexOf(ext.toLowerCase()) !== -1
+    return ['jpeg', 'png', 'jpg', 'webp', 'gif', 'svg'].indexOf(ext.toLowerCase()) !== -1
+  }
+
+  function isSizedImageExt(ext) {
+    if (!ext) return false
+
+    return ['jpeg', 'png', 'jpg', 'webp'].indexOf(ext.toLowerCase()) !== -1
   }
 
   function isAudioExt(ext) {
@@ -63,7 +74,7 @@ export function useFileList() {
     return ['mp4'].indexOf(ext.toLowerCase()) !== -1
   }
 
-  return {files, addFiles, removeFile, isImageExt, isAudioExt, isVideoExt}
+  return {files, addFiles, removeFile, isImageExt, isSizedImageExt, isAudioExt, isVideoExt}
 }
 
 class UploadableFile {

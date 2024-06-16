@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\DatabaseEnum;
 use App\Repositories\Contracts\StaticPageRepositoryInterface;
 use App\Services\Contracts\StaticPageServiceInterface;
 use App\Support\Filter;
@@ -9,8 +10,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class StaticPageService extends Service implements StaticPageServiceInterface
 {
@@ -18,6 +19,31 @@ class StaticPageService extends Service implements StaticPageServiceInterface
         protected StaticPageRepositoryInterface $repository
     )
     {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getDataForSitemap(Filter $filter, ?array $condition = null): Collection|LengthAwarePaginator
+    {
+        if (!empty($condition)) {
+            $this->repository->resetWithWhereHas();
+            foreach ($condition as $item) {
+                if (is_array($item)) {
+                    $this->repository->withWhereHas($item['relation'], $item['callback']);
+                }
+            }
+        }
+
+        $where = new WhereBuilder('static_pages');
+        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->paginate(
+            where: $where->build(),
+            limit: $filter->getLimit(),
+            page: $filter->getPage(),
+            order: $filter->getOrder()
+        );
     }
 
     /**
@@ -39,6 +65,14 @@ class StaticPageService extends Service implements StaticPageServiceInterface
             page: $filter->getPage(),
             order: $filter->getOrder()
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPagesCount(): int
+    {
+        return $this->repository->count();
     }
 
     /**

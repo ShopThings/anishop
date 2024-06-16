@@ -5,28 +5,31 @@
     <div class="flex flex-col lg:flex-row-reverse gap-6 sticky-container">
       <div class="grow">
         <base-paginator
-            ref="productPaginatorRef"
-            v-model:items="products"
-            :path="getSearchPath"
-            :order="productOrder"
-            :per-page="productPerPage"
-            :extra-search-params="searchParams"
-            :show-pagination-detail="true"
-            :show-search="true"
-            :scroll-margin-top="-160"
-            container-class="flex flex-wrap"
-            item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 ml-[-1px] mt-[-1px]"
-            pagination-theme="modern"
-            @order-changed="orderChangeHandler"
+          ref="productPaginatorRef"
+          v-model:total="totalProducts"
+          :extra-search-params="extraSearchParams"
+          :order="productOrder"
+          :just-notice-order-changed="true"
+          :path="getSearchPath"
+          :per-page="productPerPage"
+          :scroll-to-element-on-appearance="true"
+          :scroll-margin-top="-160"
+          :show-pagination-detail="true"
+          :show-search="true"
+          :search-text="route.query?.q || ''"
+          container-class="flex flex-wrap"
+          item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 ml-[-1px] mt-[-1px]"
+          pagination-theme="modern"
+          @order-changed="orderChangeHandler"
         >
-          <template #BeforeItemsPanel="{offset, page, perPage, maxPage, total}">
+          <template #beforeItemsPanel="{offset, page, perPage, maxPage, total}">
             <div class="flex flex-wrap items-center justify-between gap-3 pb-3">
               <div class="lg:hidden">
                 <base-popover-side panel-class="">
                   <template #button>
                     <base-button
-                        class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black hover:bg-white/40"
-                        type="button"
+                      class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black hover:bg-white/40"
+                      type="button"
                     >
                       <FunnelIcon class="w-6 h-6"/>
                       <span class="text-sm font-iranyekan-bold">نمایش فیلترها</span>
@@ -36,9 +39,9 @@
                   <template #panel="{close}">
                     <div class="mb-3 flex flex-row-reverse items-center p-3">
                       <button
-                          class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
-                          type="button"
-                          @click="close"
+                        class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
+                        type="button"
+                        @click="close"
                       >
                         <XMarkIcon class="h-6 w-6"/>
                       </button>
@@ -48,16 +51,16 @@
                       <div class="flex flex-col gap-3">
                         <div v-if="showFestivals">
                           <product-search-festivals
-                              @select="festivalChangeHandler"
-                              @loaded="(hasData) => {showFestivals = hasData}"
+                            @loaded="(hasData) => {showFestivals = hasData}"
+                            @select="festivalChangeHandler"
                           />
                         </div>
 
                         <div>
                           <product-search-filters-container
-                              :search-params="searchParams"
-                              filter-btn-class="sticky bottom-0 z-[1]"
-                              @filter="filterHandler"
+                            filter-btn-class="sticky bottom-0 z-[1]"
+                            @filter="filterHandler"
+                            @clear="clearHandler"
                           />
                         </div>
                       </div>
@@ -66,29 +69,28 @@
                 </base-popover-side>
               </div>
 
-              <partial-paginator-pagniation-info
-                  :offset="offset"
-                  :per-page="perPage"
-                  :current-page="page"
-                  :max-page="maxPage"
-                  :total="total"
-                  :items-length="products?.length || 0"
+              <partial-paginator-pagination-info
+                :current-page="page"
+                :max-page="maxPage"
+                :offset="offset"
+                :per-page="perPage"
+                :total="total"
               />
             </div>
           </template>
 
           <template #empty>
             <partial-empty-rows
-                image="/empty-statuses/empty-product.svg"
-                image-class="!w-80"
-                message="هیچ محصولی پیدا نشد!"
+              image="/images/empty-statuses/empty-product.svg"
+              image-class="!w-[22rem]"
+              message="هیچ محصولی پیدا نشد!"
             />
           </template>
 
           <template #item="{item}">
             <product-card
-                :product="item"
-                container-class="hover:shadow-lg w-full hover:z-[1] hover:relative transition"
+              :product="item"
+              container-class="hover:shadow-xl duration-500 w-full hover:z-[1] hover:relative transition"
             />
           </template>
 
@@ -101,26 +103,26 @@
       </div>
 
       <Vue3StickySidebar
-          :bottom-spacing="20"
-          :min-width="1024"
-          :top-spacing="114"
-          class="shrink-0 hidden lg:block lg:w-80"
-          containerSelector=".sticky-container"
-          innerWrapperSelector='.sidebar__inner'
+        :bottom-spacing="20"
+        :min-width="1024"
+        :top-spacing="114"
+        class="shrink-0 hidden lg:block lg:w-80"
+        containerSelector=".sticky-container"
+        innerWrapperSelector='.sidebar__inner'
       >
         <div class="flex flex-col gap-6">
           <partial-card
-              v-if="showFestivals"
-              class="border-0 flex flex-col relative"
+            v-if="showFestivals"
+            class="border-0 flex flex-col relative"
           >
             <template #body>
               <div
-                  class="absolute -top-[3px] -left-[3px] w-[calc(100%+6px)] h-[calc(100%+6px)] border-[3px] border-rose-600 rounded-lg animate-pulse -z-[1]"
+                class="absolute -top-[3px] -left-[3px] w-[calc(100%+6px)] h-[calc(100%+6px)] border-[3px] border-rose-600 rounded-lg animate-pulse -z-[1]"
               ></div>
 
               <product-search-festivals
-                  @select="festivalChangeHandler"
-                  @loaded="(hasData) => {showFestivals = hasData}"
+                @loaded="(hasData) => {showFestivals = hasData}"
+                @select="festivalChangeHandler"
               />
             </template>
           </partial-card>
@@ -128,8 +130,8 @@
           <partial-card class="border-0 flex flex-col pb-3">
             <template #body>
               <product-search-filters-container
-                  :search-params="searchParams"
-                  @filter="filterHandler"
+                @filter="filterHandler"
+                @clear="clearHandler"
               />
             </template>
           </partial-card>
@@ -142,7 +144,7 @@
 </template>
 
 <script setup>
-import {computed, inject, nextTick, onMounted, ref} from "vue";
+import {computed, inject, nextTick, ref, shallowRef} from "vue";
 import {FunnelIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import BasePaginator from "@/components/base/BasePaginator.vue";
@@ -153,7 +155,6 @@ import ProductCard from "@/components/product/ProductCard.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
 import AppNewsletter from "@/components/AppNewsletter.vue";
-import {formatPriceLikeNumber} from "@/composables/helper.js";
 import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {XMarkIcon} from "@heroicons/vue/24/solid/index.js";
 import {PRODUCT_ORDER_TYPES} from "@/composables/constants.js";
@@ -161,7 +162,9 @@ import ProductSearchFiltersContainer from "@/components/product/ProductSearchFil
 import {apiRoutes} from "@/router/api-routes.js";
 import {useRoute, useRouter} from "vue-router";
 import ProductSearchFestivals from "@/components/product/ProductSearchFestivals.vue";
-import PartialPaginatorPagniationInfo from "@/components/partials/PartialPaginatorPagniationInfo.vue";
+import PartialPaginatorPaginationInfo from "@/components/partials/PartialPaginatorPaginationInfo.vue";
+import {watchImmediate} from "@vueuse/core";
+import {useProductFilterParamStore} from "@/store/StoreProductFilter.js";
 
 const homeSettingStore = inject('homeSettingStore')
 
@@ -182,9 +185,11 @@ const showFestivals = ref(true)
 const router = useRouter()
 const route = useRoute()
 
-const products = ref([])
-const searchParams = ref({})
+const totalProducts = ref(0)
 const productOrder = []
+
+const filterParamStore = useProductFilterParamStore()
+const extraSearchParams = filterParamStore.routeKeys
 
 // create orders
 let counter = 1
@@ -195,42 +200,26 @@ for (const t in PRODUCT_ORDER_TYPES) {
       key: PRODUCT_ORDER_TYPES[t].value,
       text: PRODUCT_ORDER_TYPES[t].text,
     })
-    searchParams.value.order = PRODUCT_ORDER_TYPES[t].value
+    filterParamStore.setOrder(PRODUCT_ORDER_TYPES[t].value)
   }
 }
 
 function festivalChangeHandler(selected) {
-  searchParams.value.festival = selected.id
+  filterParamStore.setFestival(selected.id)
+  filterHandler()
 }
 
 function orderChangeHandler(selected) {
-  searchParams.value.order = selected.key
-  router.push({query: Object.assign({}, route.query, searchParams.value)})
+  filterParamStore.setOrder(selected.key)
+  router.push({query: Object.assign({}, route.query, filterParamStore.getRouteQueryObject())})
 }
 
-function filterHandler(params) {
-  Object.assign(searchParams.value, params)
+const isLocallyQueryChange = shallowRef(false)
 
-  let queryObj = {
-    query: {
-      brands: searchParams.value?.brands,
-      only_available: searchParams.value?.only_available,
-      is_special: searchParams.value?.is_special,
-      dynamic_filters: searchParams.value?.dynamic_filters,
-      order: searchParams.value?.order
-    }
-  }
+function triggerRouteOnSearchParams() {
+  isLocallyQueryChange.value = true
 
-  if (
-      searchParams.value?.price_range &&
-      searchParams.value.price_range[0] &&
-      searchParams.value.price_range[1]
-  ) {
-    queryObj.min_price = searchParams.value.price_range[0]
-    queryObj.max_price = searchParams.value.price_range[1]
-  }
-
-  router.push(queryObj)
+  router.push({query: filterParamStore.getRouteQueryObject()})
 
   nextTick(() => {
     if (productPaginatorRef.value) {
@@ -239,22 +228,26 @@ function filterHandler(params) {
   })
 }
 
-onMounted(() => {
-  if (route.query?.min_price && route.query?.max_price) {
-    searchParams.value.price_range = [route.query.min_price, route.query.max_price]
-  }
-  searchParams.value.only_available = route.query?.only_available
-  searchParams.value.is_special = route.query?.is_special
-  searchParams.value.dynamic_filters = route.query?.dynamic_filters
-  searchParams.value.category = route.query?.category
-  searchParams.value.festival = route.query?.festival
-  searchParams.value.order = route.query?.order
+function filterHandler() {
+  triggerRouteOnSearchParams()
+}
 
-  // handle brands array or a single brand
-  if (route.query?.brands && Array.isArray(route.query.brands) && route.query.brands.length) {
-    searchParams.value.brands = route.query.brands
-  } else if (route.query?.brand) {
-    searchParams.value.brands = Array.isArray(route.query.brand) ? route.query.brand : [route.query.brand]
+function clearHandler() {
+  filterParamStore.resetSearchParams(['category', 'festival', 'order'])
+  triggerRouteOnSearchParams()
+}
+
+watchImmediate(() => route.query, () => {
+  filterParamStore.readFiltersFromRoute()
+
+  if (!isLocallyQueryChange.value) {
+    nextTick(() => {
+      if (productPaginatorRef.value) {
+        productPaginatorRef.value.goToPage(1)
+      }
+    })
+  } else {
+    isLocallyQueryChange.value = false
   }
 })
 </script>

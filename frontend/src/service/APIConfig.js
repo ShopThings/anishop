@@ -6,7 +6,7 @@ export const SliderAPI = Object.assign(
   GenericAPI(apiRoutes.admin.sliders, {replacement: 'slider'}),
   {
     fetchSliderItems(sliderId, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.sliders.sliderItems, {slider: sliderId}),
         null,
         callbacks
@@ -14,7 +14,7 @@ export const SliderAPI = Object.assign(
     },
 
     modifySliderItems(sliderId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.sliders.modifySliderItem, {slider: sliderId}),
         {
           method: 'POST',
@@ -33,7 +33,7 @@ export const MenuAPI = Object.assign(
   }),
   {
     fetchMenuItems(menuId, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.menus.menuItems, {menu: menuId}),
         null,
         callbacks
@@ -41,7 +41,7 @@ export const MenuAPI = Object.assign(
     },
 
     modifyMenuItems(menuId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.menus.modifyMenuItem, {menu: menuId}),
         {
           method: 'POST',
@@ -55,7 +55,7 @@ export const MenuAPI = Object.assign(
 
 export const SettingAPI = {
   updateSetting(data, callbacks) {
-    useRequest(
+    return useRequest(
       apiRoutes.admin.settings.update,
       {
         method: 'PUT',
@@ -65,7 +65,7 @@ export const SettingAPI = {
     )
   },
   fetchAll(groupName, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.settings.index, {group: groupName}),
       null,
       callbacks

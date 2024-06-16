@@ -4,32 +4,54 @@
       <div class="w-full p-2 md:w-2/3">
         <partial-input-label title="انتخاب محصول"/>
         <base-select-searchable
-            :current-page="productSelectConfig.currentPage.value"
-            :has-pagination="true"
-            :is-loading="productLoading"
-            :is-local-search="false"
-            :last-page="productSelectConfig.lastPage.value"
-            :options="products"
-            name="products"
-            options-key="id"
-            options-text="title"
-            placeholder="جستجوی محصول..."
-            @change="(selected) => {selectedProduct = selected}"
-            @query="searchProduct"
-            @click-next-page="searchProductNextPage"
-            @click-prev-page="searchProductPrevPage"
-        />
+          ref="productSelectRef"
+          :current-page="productSelectConfig.currentPage.value"
+          :has-pagination="true"
+          :is-loading="productLoading"
+          :is-local-search="false"
+          :last-page="productSelectConfig.lastPage.value"
+          :options="products"
+          name="products"
+          options-key="id"
+          options-text="title"
+          placeholder="جستجوی محصول..."
+          @change="(selected) => {selectedProduct = selected}"
+          @query="searchProduct"
+          @click-next-page="searchProductNextPage"
+          @click-prev-page="searchProductPrevPage"
+        >
+          <template #item="{item}">
+            <div class="flex items-center gap-3">
+              <base-lazy-image
+                v-if="item?.image?.path"
+                :alt="item.title"
+                :is-local="false"
+                :lazy-src="item?.image?.path"
+                :size="FileSizes.SMALL"
+                class="!w-16 !h-auto object-cover rounded"
+              />
+              <img
+                v-else
+                :alt="item.title"
+                class="w-16 h-auto object-cover rounded"
+                src="/image-placeholder.jpg"
+              >
+
+              <span class="text-sm">{{ item.title }}</span>
+            </div>
+          </template>
+        </base-select-searchable>
         <partial-input-error-message :error-message="errors.product"/>
       </div>
       <div class="w-full p-2 md:w-1/3">
         <base-input
-            :max="100"
-            :min="1"
-            :money-mask="true"
-            label-title="درصد تخفیف"
-            name="discount_percentage"
-            placeholder="وارد نمایید"
-            type="text"
+          :max="100"
+          :min="1"
+          :money-mask="true"
+          label-title="درصد تخفیف"
+          name="discount_percentage"
+          placeholder="وارد نمایید"
+          type="text"
         >
           <template #icon>
             <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -40,15 +62,15 @@
 
     <div class="px-2 py-3">
       <base-animated-button
-          :disabled="!canSubmit"
-          class="bg-blue-500 border-blue-500 border-2 text-white mr-auto px-6 w-full sm:w-auto"
-          type="submit"
+        :disabled="!canSubmit"
+        class="bg-blue-500 border-blue-500 border-2 text-white mr-auto px-6 w-full sm:w-auto"
+        type="submit"
       >
         <VTransitionFade>
           <loader-circle
-              v-if="!canSubmit"
-              big-circle-color="border-transparent"
-              main-container-klass="absolute w-full h-full top-0 left-0"
+            v-if="!canSubmit"
+            big-circle-color="border-transparent"
+            main-container-klass="absolute w-full h-full top-0 left-0"
           />
         </VTransitionFade>
 
@@ -78,10 +100,14 @@ import {ProductAPI} from "@/service/APIProduct.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import {FestivalAPI} from "@/service/APIShop.js";
 import BaseInput from "@/components/base/BaseInput.vue";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const emit = defineEmits(['added'])
 
 const slugParam = getRouteParamByKey('slug', null, false)
+
+const productSelectRef = ref(null)
 
 //----------------------
 // Product search
@@ -116,9 +142,9 @@ const searchProductPrevPage = productSelectConfig.searchPrevPage
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     discount_percentage: yup.string()
-        .min(1, 'حداقل درصد تخفیف بایستی از عدد ۱ شروع شود.')
-        .percentage('درصد تخفیف باید عددی بین ۰ و ۱۰۰ باشد.')
-        .required('درصد تخفیف را وارد نمایید.'),
+      .min(1, 'حداقل درصد تخفیف بایستی از عدد ۱ شروع شود.')
+      .percentage('درصد تخفیف باید عددی بین ۰ و ۱۰۰ باشد.')
+      .required('درصد تخفیف را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (!selectedProduct.value?.id) {
@@ -134,11 +160,16 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }, {
     success() {
       emit('added', selectedProduct.value)
+
       actions.resetForm()
+      if (productSelectRef.value) {
+        productSelectRef.value.removeSelectedItems()
+      }
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

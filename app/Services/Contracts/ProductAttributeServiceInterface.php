@@ -14,4 +14,9 @@ interface ProductAttributeServiceInterface extends ServiceInterface
      * @return Collection|LengthAwarePaginator
      */
     public function getAttributes(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getAttributesCount(): int;
 }

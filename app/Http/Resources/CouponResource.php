@@ -4,12 +4,15 @@ namespace App\Http\Resources;
 
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\UserShowResource;
+use App\Traits\CompanyTimezoneDetectorTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CouponResource extends JsonResource
 {
+    use CompanyTimezoneDetectorTrait;
+
     /**
      * Transform the resource into an array.
      *
@@ -24,11 +27,15 @@ class CouponResource extends JsonResource
             'price' => $this->price,
             'apply_min_price' => $this->apply_min_price,
             'apply_max_price' => $this->apply_max_price,
-            'normal_start_at' => $this->start_at
-                ? Carbon::parse($this->start_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+            'actual_start_at' => $this->start_at
+                ? Carbon::parse($this->start_at)
+                    ->timezone($this->getCompanyTimezone())
+                    ->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
-            'normal_end_at' => $this->end_at
-                ? Carbon::parse($this->end_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+            'actual_end_at' => $this->end_at
+                ? Carbon::parse($this->end_at)
+                    ->timezone($this->getCompanyTimezone())
+                    ->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'start_at' => $this->start_at
                 ? vertaTz($this->start_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

@@ -11,8 +11,8 @@
             <base-dialog :open="openAddDialog">
               <template #button="{open}">
                 <base-animated-button
-                    class="w-full mr-auto bg-emerald-500 sm:w-auto"
-                    @click="open"
+                  class="w-full mr-auto bg-emerald-500 sm:w-auto"
+                  @click="open"
                 >
                   <template #icon="{klass}">
                     <DevicePhoneMobileIcon :class="klass" class="w-6 h-6 ml-auto sm:ml-2"/>
@@ -25,12 +25,13 @@
               <template #title>
                 افزودن شماره موبایل به خبرنامه
               </template>
+
               <template #body>
                 <form @submit.prevent="onSubmit">
                   <base-input
-                      label-title="شماره موبایل"
-                      name="mobile"
-                      placeholder="وارد نمایید"
+                    label-title="شماره موبایل"
+                    name="mobile"
+                    placeholder="وارد نمایید"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -39,15 +40,15 @@
 
                   <div class="py-3">
                     <base-button
-                        :disabled="!canSubmit"
-                        class="w-full sm:w-auto shrink-0 rounded bg-purple-500 text-white py-2 px-6 mx-auto mr-auto sm:ml-0 flex items-center justify-center hover:bg-opacity-90 transition group text-sm"
-                        type="submit"
+                      :disabled="!canSubmit"
+                      class="w-full sm:w-auto shrink-0 rounded bg-purple-500 text-white py-2 px-6 mx-auto mr-auto sm:ml-0 flex items-center justify-center hover:bg-opacity-90 transition group text-sm"
+                      type="submit"
                     >
                       <VTransitionFade>
                         <loader-circle
-                            v-if="!canSubmit"
-                            big-circle-color="border-transparent"
-                            main-container-klass="absolute w-full h-full top-0 left-0"
+                          v-if="!canSubmit"
+                          big-circle-color="border-transparent"
+                          main-container-klass="absolute w-full h-full top-0 left-0"
                         />
                       </VTransitionFade>
 
@@ -61,22 +62,22 @@
           </div>
 
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:mobile="{value}">
-              <span class="tracking-widest iranyekan-bold">{{ value.mobile }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.mobile }}</span>
             </template>
 
             <template v-slot:created_at="{value}">
@@ -100,12 +101,7 @@ import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
-import {
-  MinusIcon,
-  DevicePhoneMobileIcon,
-  PlusIcon,
-  ArrowLeftCircleIcon,
-} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, DevicePhoneMobileIcon, MinusIcon, PlusIcon,} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
@@ -291,9 +287,9 @@ const openAddDialog = ref(false)
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     mobile: yup.string()
-        .transform(transformNumbersToEnglish)
-        .persianMobile('شماره موبایل نامعتبر است.')
-        .required('موبایل را وارد نمایید.'),
+      .transform(transformNumbersToEnglish)
+      .persianMobile('شماره موبایل نامعتبر است.')
+      .required('موبایل را وارد نمایید.'),
   }),
 }, (values, actions) => {
   canSubmit.value = false
@@ -306,8 +302,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       actions.resetForm()
     },
     error(error) {
-      if (error.errors && Object.keys(error.errors).length >= 1)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
         actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

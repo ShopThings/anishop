@@ -1,7 +1,7 @@
 <template>
   <form class="px-3 pt-3" @submit.prevent="onSubmit">
     <div class="flex flex-col sm:flex-row sm:items-start gap-3 mb-3">
-      <div class="w-full sm:w-96 sm:ml-3 relative">
+      <div class="w-full sm:w-96 relative">
         <base-input
             :klass="showRemoveFilterButtonOnInput ? 'pl-10' : ''"
             name="search"
@@ -32,7 +32,7 @@
               :class="[
                 showRemoveFilterButtonOnInput ? 'rounded-lg' : 'rounded-r-lg rounded-l-none',
             ]"
-              class="grow bg-blue-100 border-blue-200 !text-primary text-sm hover:bg-primary hover:!text-white"
+              class="grow bg-primary border-blue-200 text-sm"
               type="submit"
           >
             <div class="flex items-center justify-center gap-2 sm:py-[3px]">
@@ -72,19 +72,19 @@
 </template>
 
 <script setup>
+import {ref} from "vue";
 import {
-  MagnifyingGlassIcon,
-  MagnifyingGlassCircleIcon,
   ArrowPathIcon,
-  XMarkIcon,
   FunnelIcon,
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline';
 import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";
 import BaseInput from "../BaseInput.vue";
 import BaseButton from "../BaseButton.vue";
 import BaseAnimatedButton from "../BaseAnimatedButton.vue";
-import {ref} from "vue";
 
 defineProps({
   showRemoveFilterButtonOnInput: Boolean,

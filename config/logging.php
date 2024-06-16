@@ -4,6 +4,7 @@ use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Processor\PsrLogMessageProcessor;
+use Psr\Log\LogLevel;
 
 return [
 
@@ -52,6 +53,14 @@ return [
     */
 
     'channels' => [
+        'reserve_daily' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/reservation.log'),
+            'level' => LogLevel::ERROR,
+            'days' => 14,
+            'replace_placeholders' => true,
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

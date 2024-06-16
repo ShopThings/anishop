@@ -54,4 +54,12 @@ class BlogCategory extends Model
     {
         return $this->hasMany(Blog::class, 'category_id');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRouteKeyName()
+    {
+        return parent::getRouteKeyName();
+    }
 }

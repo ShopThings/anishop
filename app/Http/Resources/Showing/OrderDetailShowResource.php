@@ -59,8 +59,8 @@ class OrderDetailShowResource extends JsonResource
                     ]
                     :
                     [
-                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAYED, 'نامشخص'),
-                        'value' => PaymentStatusesEnum::NOT_PAYED->value,
+                        'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::NOT_PAID, 'نامشخص'),
+                        'value' => PaymentStatusesEnum::NOT_PAID->value,
                     ]
                 ),
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Enums\DatabaseEnum;
 use App\Models\City;
 use App\Models\Province;
 use Closure;
@@ -37,6 +38,7 @@ class CityInProvinceRule implements DataAwareRule, ValidationRule
         if ($province) {
             $city = City::where('name', $value)
                 ->where('province_id', $province->id)
+                ->where('is_published', DatabaseEnum::DB_YES)
                 ->first();
         }
 

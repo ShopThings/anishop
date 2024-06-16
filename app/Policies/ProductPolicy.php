@@ -40,18 +40,18 @@ class ProductPolicy
      * @param Product $model
      * @return bool
      */
-    public function reportComment(User $user, Product $model): bool
-    {
-        return $model->is_published && $model->is_commenting_allowed;
-    }
-
-    /**
-     * @param User $user
-     * @param Product $model
-     * @return bool
-     */
     public function voteComment(User $user, Product $model): bool
     {
         return Auth::check() && $model->is_commenting_allowed;
+    }
+
+    /**
+     * @param User|null $user
+     * @param Product $model
+     * @return mixed
+     */
+    public function isPubliclyAccessible(?User $user, Product $model): bool
+    {
+        return $model->is_published;
     }
 }

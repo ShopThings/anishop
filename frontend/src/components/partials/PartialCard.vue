@@ -12,9 +12,9 @@
 <script setup>
 import {ref, useSlots} from "vue";
 
-const card = ref(null)
-
 const slots = useSlots()
+
+const card = ref(null)
 
 defineExpose({
   card,

@@ -18,7 +18,7 @@ export const BlogBadgeAPI = Object.assign(
 
 export const BlogCommentAPI = {
   fetchById(blogId, commentId, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.show, {
         blog: blogId,
         comment: commentId,
@@ -29,15 +29,23 @@ export const BlogCommentAPI = {
   },
 
   fetchAll(blogId, params, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.index, {blog: blogId}),
       {params},
       callbacks
     )
   },
 
+  fetchAllComments(params, callbacks) {
+    return useRequest(
+      apiRoutes.admin.blogComments.all,
+      {params},
+      callbacks
+    )
+  },
+
   create(blogId, data, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.store, {blog: blogId}),
       {
         method: 'POST',
@@ -48,7 +56,7 @@ export const BlogCommentAPI = {
   },
 
   updateById(blogId, commentId, data, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.update, {
         blog: blogId,
         comment: commentId,
@@ -62,7 +70,7 @@ export const BlogCommentAPI = {
   },
 
   deleteById(blogId, commentId, callbacks) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.destroy, {
         blog: blogId,
         comment: commentId,
@@ -73,7 +81,7 @@ export const BlogCommentAPI = {
   },
 
   deleteByIds(blogId, ids, callback) {
-    useRequest(
+    return useRequest(
       apiReplaceParams(apiRoutes.admin.blogComments.batchDestroy, {blog: blogId}),
       {
         method: 'DELETE',

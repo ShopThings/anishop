@@ -48,4 +48,12 @@ class Brand extends Model
     {
         return $this->hasMany(Product::class, 'brand_id');
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRouteKeyName()
+    {
+        return parent::getRouteKeyName();
+    }
 }

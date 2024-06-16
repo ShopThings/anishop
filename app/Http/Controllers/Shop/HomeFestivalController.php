@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Showing\FestivalShowResource;
 use App\Services\Contracts\FestivalServiceInterface;
-use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class HomeFestivalController extends Controller
@@ -26,9 +24,7 @@ class HomeFestivalController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(): AnonymousResourceCollection
     {

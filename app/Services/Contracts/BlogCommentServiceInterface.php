@@ -18,11 +18,27 @@ interface BlogCommentServiceInterface extends ServiceInterface
     public function getComments(int $blogId, Filter $filter): Collection|LengthAwarePaginator;
 
     /**
+     * @return int
+     */
+    public function getCommentsCount(): int;
+
+    /**
+     * @param Filter $filter
+     * @return Collection|LengthAwarePaginator
+     */
+    public function getAllComments(Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
      * @param $userId
      * @param Filter $filter
      * @return Collection|LengthAwarePaginator
      */
     public function getUserComments($userId, Filter $filter): Collection|LengthAwarePaginator;
+
+    /**
+     * @return int
+     */
+    public function getNotSeenCommentsCount(): int;
 
     /**
      * @inheritDoc

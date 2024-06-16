@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\Product;
 use App\Models\ProductAttributeCategory;
 use App\Repositories\Contracts\ProductAttributeCategoryRepositoryInterface;
 use App\Support\Filter;
@@ -17,7 +18,10 @@ class ProductAttributeCategoryRepository extends Repository implements ProductAt
 
     protected bool $useSoftDeletes = false;
 
-    public function __construct(ProductAttributeCategory $model)
+    public function __construct(
+        ProductAttributeCategory $model,
+        protected Product        $productModel
+    )
     {
         parent::__construct($model);
     }
@@ -57,5 +61,31 @@ class ProductAttributeCategoryRepository extends Repository implements ProductAt
             });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductAttributeCategories(int $productId): Collection|null
+    {
+        $productCategory = $this->productModel->newQuery()
+            ->where('id', $productId)
+            ->first('category_id')?->category_id;
+
+        if (!$productCategory) return null;
+
+        $query = $this->model->newQuery();
+        $query
+            ->with([
+                'productAttr.attrValues.productAttrValues.product' => function ($q) use ($productId) {
+                    $q
+                        ->with('productAttrValues.attrValue.productAttr.productAttrs')
+                        ->where('id', $productId);
+                },
+            ])
+            ->whereHas('productAttr.attrValues')
+            ->where('category_id', $productCategory);
+
+        return $query->get();
     }
 }

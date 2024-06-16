@@ -10,14 +10,13 @@ use App\Http\Requests\UpdateSliderRequest;
 use App\Http\Resources\SliderItemResource;
 use App\Http\Resources\SliderResource;
 use App\Models\Slider;
-use App\Models\User;
 use App\Services\Contracts\SliderServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerBatchDestroyTrait;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class SliderController extends Controller
@@ -32,6 +31,7 @@ class SliderController extends Controller
     )
     {
         $this->considerDeletable = true;
+        $this->policyModel = Slider::class;
     }
 
     /**
@@ -39,11 +39,10 @@ class SliderController extends Controller
      *
      * @param Filter $filter
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function index(Filter $filter): AnonymousResourceCollection
     {
-        $this->authorize('viewAny', User::class);
+        Gate::authorize('viewAny', Slider::class);
         return SliderResource::collection($this->service->getSliders($filter));
     }
 
@@ -52,11 +51,10 @@ class SliderController extends Controller
      *
      * @param StoreSliderRequest $request
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function store(StoreSliderRequest $request): JsonResponse
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Slider::class);
 
         $validated = $request->validated();
         $model = $this->service->create($validated);
@@ -67,12 +65,11 @@ class SliderController extends Controller
                 'message' => 'ایجاد اسلایدر با موفقیت انجام شد.',
                 'data' => $model,
             ]);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ایجاد اسلایدر',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ایجاد اسلایدر',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -80,11 +77,10 @@ class SliderController extends Controller
      *
      * @param Slider $slider
      * @return SliderResource
-     * @throws AuthorizationException
      */
     public function show(Slider $slider): SliderResource
     {
-        $this->authorize('view', $slider);
+        Gate::authorize('view', $slider);
         return new SliderResource($slider);
     }
 
@@ -94,13 +90,12 @@ class SliderController extends Controller
      * @param UpdateSliderRequest $request
      * @param Slider $slider
      * @return SliderResource|JsonResponse
-     * @throws AuthorizationException
      */
     public function update(UpdateSliderRequest $request, Slider $slider): SliderResource|JsonResponse
     {
-        $this->authorize('update', $slider);
+        Gate::authorize('update', $slider);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'slider_place',
             'title',
             'priority',
@@ -111,12 +106,11 @@ class SliderController extends Controller
 
         if (!is_null($model)) {
             return new SliderResource($model);
-        } else {
-            return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'خطا در ویرایش اسلایدر',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در ویرایش اسلایدر',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -125,50 +119,42 @@ class SliderController extends Controller
      * @param Request $request
      * @param Slider $slider
      * @return JsonResponse
-     * @throws AuthorizationException
      */
     public function destroy(Request $request, Slider $slider): JsonResponse
     {
-        $this->authorize('delete', $slider);
+        Gate::authorize('delete', $slider);
 
         $permanent = $request->user()->id === $slider->creator?->id;
         $res = $this->service->deleteById($slider->id, $permanent);
-        if ($res)
+        if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        else
-            return response()->json([
-                'type' => ResponseTypesEnum::WARNING->value,
-                'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
-            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::WARNING->value,
+            'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Slider $slider
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function showSlides(Slider $slider): AnonymousResourceCollection
     {
-        $this->authorize('view', $slider);
-        return SliderItemResource::collection(
-            $slider->items()
-                ->orderBy('priority')
-                ->orderBy('id')
-                ->get()
-        );
+        Gate::authorize('view', $slider);
+        return SliderItemResource::collection($this->service->getSliderItems($slider));
     }
 
     /**
      * @param StoreSliderItemRequest $request
      * @param Slider $slider
      * @return AnonymousResourceCollection
-     * @throws AuthorizationException
      */
     public function modifySlides(StoreSliderItemRequest $request, Slider $slider): AnonymousResourceCollection
     {
-        $this->authorize('create', User::class);
+        Gate::authorize('create', Slider::class);
 
         $validated = $request->validated();
-        return SliderItemResource::collection($this->service->modifySliderItems($slider->id, $validated['items']));
+        return SliderItemResource::collection($this->service->modifySliderItems($slider->id, $validated['slides']));
     }
 }

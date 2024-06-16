@@ -10,9 +10,10 @@ interface SliderRepositoryInterface extends RepositoryInterface
 {
     /**
      * @param array $items
+     * @param int $sliderId
      * @return Collection
      */
-    public function updateOrCreateItems(array $items): Collection;
+    public function updateOrCreateItems(array $items, int $sliderId): Collection;
 
     /**
      * @param SliderPlacesEnum|array $place

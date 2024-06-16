@@ -3,7 +3,10 @@
     <template #text>
       با استفاده از ستون عملیات می‌توانید اقدام به حذف و ویرایش ویژگی دسته‌بندی نمایید
     </template>
-    <template #buttonText>
+    <template
+      v-if="userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.CREATE)"
+      #buttonText
+    >
       <PlusIcon class="w-6 h-6 ml-2 group-hover:rotate-90 transition"/>
       افزودن ویژگی جدید به دسته‌بندی
     </template>
@@ -18,24 +21,24 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :grouping-key="table.groupingKey"
-              :has-checkbox="true"
-              :has-group-toggle="table.hasGroupToggle"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :grouping-key="table.groupingKey"
+            :has-group-toggle="table.hasGroupToggle"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template #attribute="{value}">
-              {{ value.attribute.title }}
+              {{ value.product_attribute.title }}
             </template>
 
             <template #category="{value}">
@@ -48,7 +51,12 @@
             </template>
 
             <template v-slot:op="{value}">
-              <base-datatable-menu :container="getMenuContainer" :data="value" :items="operations"/>
+              <base-datatable-menu
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
+              />
             </template>
           </base-datatable>
         </template>
@@ -59,7 +67,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue"
-import {PlusIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js"
+import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
@@ -70,9 +78,12 @@ import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {ProductAttributeCategoryAPI} from "@/service/APIProduct.js";
+import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
+
+const userStore = useAdminAuthStore()
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -90,12 +101,10 @@ const table = reactive({
     {
       label: "ویژگی",
       field: "attribute",
-      sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
-      sortable: true,
     },
     {
       label: "تاریخ ایجاد",
@@ -115,12 +124,10 @@ const table = reactive({
     {
       label: "ویژگی",
       field: "attribute",
-      sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
-      sortable: true,
     },
     {
       label: "تاریخ ایجاد",
@@ -132,6 +139,7 @@ const table = reactive({
       label: 'عملیات',
       field: 'op',
       width: '7%',
+      show: userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, [PERMISSIONS.UPDATE, PERMISSIONS.DELETE])
     },
   ],
   rows: [],
@@ -140,9 +148,22 @@ const table = reactive({
     order: "id",
     sort: "desc",
   },
-  groupingKey: 'category',
+  groupingKey: 'category.name',
   hasGroupToggle: true,
 })
+
+function calcRemovals() {
+  let removals = []
+
+  if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.DELETE)) {
+    removals.push('delete')
+  }
+  if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.UPDATE)) {
+    removals.push('edit')
+  }
+
+  return removals
+}
 
 const getMenuContainer = computed(() => {
   return datatable.value?.tableContainer ?? 'body'
@@ -150,6 +171,7 @@ const getMenuContainer = computed(() => {
 
 const operations = [
   {
+    id: 'edit',
     link: {
       text: 'ویرایش',
       icon: 'PencilIcon',
@@ -166,6 +188,7 @@ const operations = [
     },
   },
   {
+    id: 'delete',
     link: {
       text: 'حذف',
       icon: 'TrashIcon',

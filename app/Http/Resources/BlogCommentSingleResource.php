@@ -22,9 +22,9 @@ class BlogCommentSingleResource extends JsonResource
     public function toArray(Request $request): array
     {
         $this->resource->load('blog.image');
-        $this->resource->load('parent.blog');
-        $this->resource->load('parent.badge');
-        $this->resource->load('parent.creator');
+        $this->resource->parent->load('blog');
+        $this->resource->parent->load('badge');
+        $this->resource->parent->load('creator');
 
         return [
             'id' => $this->id,

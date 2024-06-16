@@ -28,19 +28,6 @@ class HomeCategoryFilter extends Filter
     protected bool $withChildren = false;
 
     /**
-     * @inheritDoc
-     */
-    protected function init(Request $request): void
-    {
-        parent::init($request);
-
-        $this->setParent($request->integer('parent'));
-        $this->setAncestry($request->integer('ancestry'));
-        $this->setLevel($request->integer('level'));
-        $this->setWithChildren($request->boolean('with_children'));
-    }
-
-    /**
      * @return int|null
      */
     public function getParent(): ?int
@@ -125,5 +112,18 @@ class HomeCategoryFilter extends Filter
         $this->withChildren = false;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function init(Request $request): void
+    {
+        parent::init($request);
+
+        $this->setParent($request->integer('parent'));
+        $this->setAncestry($request->integer('ancestry'));
+        $this->setLevel($request->integer('level'));
+        $this->setWithChildren($request->boolean('with_children'));
     }
 }

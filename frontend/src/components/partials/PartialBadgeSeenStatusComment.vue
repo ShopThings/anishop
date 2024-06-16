@@ -1,7 +1,7 @@
 <template>
   <div
       :style="{backgroundColor: bgColor, color: getTextColor(bgColor)}"
-      class="rounded py-1 px-3 text-white inline-block text-center text-xs"
+      class="rounded py-1 px-3 text-white inline-block text-center text-xs whitespace-nowrap"
   >
     {{ status.text }}
   </div>
@@ -22,8 +22,10 @@ const bgColor = computed(() => {
         COMMENT_SEEN_STATUSES.hasOwnProperty(s) &&
         COMMENT_SEEN_STATUSES[s].value === props.status.value
     ) {
-      COMMENT_SEEN_STATUSES[s].color_hex
+      return COMMENT_SEEN_STATUSES[s].color_hex
     }
   }
+
+  return '#000000'
 })
 </script>

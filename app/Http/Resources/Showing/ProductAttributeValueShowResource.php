@@ -16,7 +16,7 @@ class ProductAttributeValueShowResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product_attribute ' => new ProductAttributeShowResource($this->productAttr),
+            'product_attribute_id' => $this->product_attribute_id,
             'attribute_value' => $this->attribute_value,
         ];
     }

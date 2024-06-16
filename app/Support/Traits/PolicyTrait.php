@@ -2,7 +2,6 @@
 
 namespace App\Support\Traits;
 
-use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
 use App\Exceptions\NotDeletableException;
 use App\Models\User;
@@ -35,16 +34,6 @@ trait PolicyTrait
     protected array $except;
 
     /**
-     * @var string
-     */
-    protected string $modelClass;
-
-    /**
-     * @var PermissionPlacesEnum
-     */
-    protected PermissionPlacesEnum $permissionPlace;
-
-    /**
      * @var bool
      */
     protected bool $checkCreator = true;
@@ -62,6 +51,12 @@ trait PolicyTrait
         if (count($this->only)) $this->fn = $this->only;
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return bool|mixed|null
+     * @throws NotDeletableException
+     */
     public function __call(string $name, array $arguments)
     {
         if (method_exists(static::class, $name)) {

@@ -9,7 +9,7 @@ export const OrderAPI = Object.assign(
   }),
   {
     fetchUserOrders(userId, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.orders.index, {user: userId}),
         null,
         callbacks
@@ -17,7 +17,7 @@ export const OrderAPI = Object.assign(
     },
 
     fetchPaymentStatuses(callbacks) {
-      useRequest(
+      return useRequest(
         apiRoutes.admin.orders.paymentStatuses,
         null,
         callbacks
@@ -25,7 +25,7 @@ export const OrderAPI = Object.assign(
     },
 
     fetchSendStatuses(callbacks) {
-      useRequest(
+      return useRequest(
         apiRoutes.admin.orders.sendStatuses,
         null,
         callbacks
@@ -33,7 +33,7 @@ export const OrderAPI = Object.assign(
     },
 
     updateOrderPayment(orderId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.orders.updatePayment, {order: orderId}),
         {
           method: 'PUT',
@@ -42,6 +42,16 @@ export const OrderAPI = Object.assign(
         callbacks
       )
     },
+
+    exportPdf(orderId, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.admin.orders.exportPdf, {order: orderId}),
+        {
+          method: 'PUT',
+        },
+        callbacks
+      )
+    }
   }
 )
 
@@ -59,7 +69,7 @@ export const ReturnOrderAPI = Object.assign(
   }),
   {
     fetchUserReturnOrders(userId, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.returnOrders.index, {user: userId}),
         null,
         callbacks
@@ -67,7 +77,7 @@ export const ReturnOrderAPI = Object.assign(
     },
 
     modifyOrderItem(returnOrderId, returnOrderItemId, data, callbacks) {
-      useRequest(
+      return useRequest(
         apiReplaceParams(apiRoutes.admin.returnOrders.modifyOrderItem, {
           return_order: returnOrderId,
           return_order_item: returnOrderItemId,
@@ -80,8 +90,24 @@ export const ReturnOrderAPI = Object.assign(
       )
     },
 
+    returnOrderItemsToStock(returnOrderId, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.admin.returnOrders.returnOrderItems, {return_order: returnOrderId}),
+        {method: 'PUT'},
+        callbacks
+      )
+    },
+
+    fetchAllStatuses(callbacks) {
+      return useRequest(
+        apiRoutes.admin.returnOrders.allStatuses,
+        null,
+        callbacks
+      )
+    },
+
     fetchStatuses(callbacks) {
-      useRequest(
+      return useRequest(
         apiRoutes.admin.returnOrders.statuses,
         null,
         callbacks
