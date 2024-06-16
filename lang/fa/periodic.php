@@ -2,6 +2,7 @@
 
 return [
     'labels' => [
-        'daily' => ' تا '
+        'monthly' => ' تا ',
+        'daily' => ' تا ',
     ],
 ];

@@ -1,34 +1,38 @@
 <template>
   <div class="relative">
     <swiper-container
-        ref="carousel"
-        :class="className"
-        init="false"
+      ref="carousel"
+      :class="className"
+      init="false"
     >
-      <swiper-slide v-for="(slide, idx) in slides" :key="idx">
+      <swiper-slide
+        v-for="(slide, idx) in slides"
+        :key="idx"
+        :class="slideClass"
+      >
         <slot :index="idx" :slide="slide"></slot>
       </swiper-slide>
     </swiper-container>
 
     <partial-carousel-navigation
-        v-if="hasNavigation"
-        :dir="dir"
-        :display="navigationDisplay"
-        :next-class-name="className + '-next'"
-        :position="navigationPosition"
-        :prev-class-name="className + '-prev'"
-        :size="navigationSize"
+      v-if="hasNavigation"
+      :dir="dir"
+      :display="navigationDisplay"
+      :next-class-name="className + '-next'"
+      :position="navigationPosition"
+      :prev-class-name="className + '-prev'"
+      :size="navigationSize"
     />
   </div>
 
   <div
-      v-if="useThumbnail"
-      class="mt-3"
+    v-if="useThumbnail"
+    class="mt-3"
   >
     <swiper-container
-        ref="thumbsSwiper"
-        :a11y="a11y"
-        :breakpoints="{
+      ref="thumbsSwiper"
+      :a11y="a11y"
+      :breakpoints="{
             360: {
             slidesPerView: 3.5,
             },
@@ -42,15 +46,15 @@
             slidesPerView: 3.5,
             },
         }"
-        :class="className + '-thumbnail'"
-        :dir="dir"
-        :free-mode="true"
-        :initial-slide="currentSlide"
-        :loop="false"
-        :slides-per-view="4"
-        :space-between="10"
-        :speed="transition"
-        :watch-slides-progress="true"
+      :class="className + '-thumbnail'"
+      :dir="dir"
+      :free-mode="true"
+      :initial-slide="currentSlide"
+      :loop="false"
+      :slides-per-view="4"
+      :space-between="10"
+      :speed="transition"
+      :watch-slides-progress="true"
     >
       <swiper-slide v-for="(slide, idx) in slides" :key="idx">
         <slot :index="idx" :slide="slide" name="thumbSlide"></slot>
@@ -79,6 +83,7 @@ const props = defineProps({
     default: 0,
   },
   className: String,
+  slideClass: String,
   freeMode: [Boolean, Object],
   effect: {
     type: String,
@@ -93,7 +98,7 @@ const props = defineProps({
   navigationSize: String,
   hasPagination: [Boolean, Object],
   slidesPerView: {
-    type: [Function, Number],
+    type: [Function, Number, String],
     default: 1,
   },
   spaceBetween: {
@@ -267,6 +272,7 @@ watchEffect(() => {
         dir: props.dir,
         thumbs: thumbObject.value,
         direction: props.direction,
+        slidesPerView: props.slidesPerView,
         spaceBetween: props.spaceBetween,
         nested: props.nested,
         a11y,
@@ -280,6 +286,10 @@ watchEffect(() => {
           }
         },
       })
+
+      if (isObject(props.breakpoints) && Object.keys(props.breakpoints).length) {
+        Object.assign(carousel.value, {})
+      }
 
       carousel.value.initialize()
     } else {
@@ -295,6 +305,7 @@ watchEffect(() => {
       carousel.value.dir = props.dir
       carousel.value.thumbs = thumbObject.value
       carousel.value.direction = props.direction
+      carousel.value.slidesPerView = props.slidesPerView
       carousel.value.spaceBetween = props.spaceBetween
       carousel.value.nested = props.nested
     }

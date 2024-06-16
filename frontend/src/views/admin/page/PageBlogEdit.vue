@@ -34,7 +34,7 @@
               </div>
 
               <div class="flex flex-wrap">
-                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                <div class="w-full p-2 lg:w-1/2">
                   <base-input
                     :value="blog?.title"
                     label-title="عنوان بلاگ"
@@ -46,7 +46,7 @@
                     </template>
                   </base-input>
                 </div>
-                <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+                <div class="w-full p-2 lg:w-1/2">
                   <partial-input-label title="دسته‌بندی"/>
                   <base-select-searchable
                     :current-page="categorySelectConfig.currentPage.value"

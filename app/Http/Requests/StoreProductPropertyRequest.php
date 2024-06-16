@@ -36,6 +36,10 @@ class StoreProductPropertyRequest extends FormRequest
                 'array',
                 'min:1',
             ],
+            'products.*.id' => [
+                'sometimes',
+                'numeric',
+            ],
             'products.*.color.id' => [
                 'nullable',
                 'exists:' . Color::class . ',id',

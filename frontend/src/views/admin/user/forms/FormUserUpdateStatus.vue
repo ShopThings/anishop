@@ -1,16 +1,17 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <base-switch
-      v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
-      :enabled="!user?.is_deletable"
-      class="mb-3"
-      disabled-color="bg-pink-300"
-      enabled-color="bg-pink-600"
-      label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
-      name="is_deletable"
-      sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
-      @change="(status) => {deletableStatus=status}"
-    />
+    <div class="mb-3">
+      <base-switch
+        v-if="userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])"
+        :enabled="!user?.is_deletable"
+        disabled-color="bg-pink-300"
+        enabled-color="bg-pink-600"
+        label="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
+        name="is_deletable"
+        sr-text="غیر قابل حذف نمودن کاربر توسط سایر اعضاء"
+        @change="(status) => {deletableStatus=status}"
+      />
+    </div>
 
     <template v-if="userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.BAN)">
       <base-switch
@@ -125,7 +126,7 @@ const idParam = computed(() => {
 const banStatus = ref(!user.value?.is_banned ?? false)
 const deletableStatus = ref(!user.value?.is_deletable ?? false)
 
-const {canSubmit, onSubmit} = useFormSubmit({
+const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     is_banned: yup.boolean(),
     ban_desc: yup.string().when('is_banned', {

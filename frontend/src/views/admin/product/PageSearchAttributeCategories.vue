@@ -26,8 +26,8 @@
             :enable-multi-operation="true"
             :enable-search-box="true"
             :grouping-key="table.groupingKey"
-            :has-checkbox="true"
             :has-group-toggle="table.hasGroupToggle"
+            :has-checkbox="true"
             :is-loading="table.isLoading"
             :is-slot-mode="true"
             :rows="table.rows"
@@ -38,7 +38,7 @@
             @do-search="doSearch"
           >
             <template #attribute="{value}">
-              {{ value.attribute.title }}
+              {{ value.product_attribute.title }}
             </template>
 
             <template #category="{value}">
@@ -101,12 +101,10 @@ const table = reactive({
     {
       label: "ویژگی",
       field: "attribute",
-      sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
-      sortable: true,
     },
     {
       label: "تاریخ ایجاد",
@@ -126,12 +124,10 @@ const table = reactive({
     {
       label: "ویژگی",
       field: "attribute",
-      sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
-      sortable: true,
     },
     {
       label: "تاریخ ایجاد",
@@ -152,18 +148,18 @@ const table = reactive({
     order: "id",
     sort: "desc",
   },
-  groupingKey: 'category',
+  groupingKey: 'category.name',
   hasGroupToggle: true,
 })
 
-function calcRemovals(row) {
+function calcRemovals() {
   let removals = []
 
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
+    removals.push('edit')
   }
 
   return removals

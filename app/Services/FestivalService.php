@@ -3,22 +3,25 @@
 namespace App\Services;
 
 use App\Enums\DatabaseEnum;
-use App\Enums\Times\TimeFormatsEnum;
 use App\Repositories\Contracts\FestivalRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
 use App\Services\Contracts\FestivalServiceInterface;
 use App\Support\Filter;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Carbon\Carbon;
+use App\Traits\DatabaseDateTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class FestivalService extends Service implements FestivalServiceInterface
 {
+    use DatabaseDateTrait;
+
     public function __construct(
-        protected FestivalRepositoryInterface $repository
+        protected FestivalRepositoryInterface $repository,
+        protected ProductRepositoryInterface  $productRepository
     )
     {
     }
@@ -31,11 +34,13 @@ class FestivalService extends Service implements FestivalServiceInterface
         $where = new WhereBuilder();
         $where->when($filter->getSearchText(), function (WhereBuilderInterface $query, $search) {
             $query
-                ->when(Carbon::createFromFormat('Y-m-d', $search), function (WhereBuilderInterface $q, $date) {
-                    $q
-                        ->orWhereGreaterThanEqual('start_at', $date)
-                        ->orWhereLessThanEqual('end_at', $date);
-                })
+                ->when(
+                    $this->getValidDatabaseDate($search),
+                    function (WhereBuilderInterface $q, $date) {
+                        $q
+                            ->orWhereGreaterThanEqual('start_at', $date)
+                            ->orWhereLessThanEqual('end_at', $date);
+                    })
                 ->orWhereLike('title', $search);
         });
 
@@ -65,8 +70,24 @@ class FestivalService extends Service implements FestivalServiceInterface
         $where = new WhereBuilder();
         $where
             ->whereEqual('is_published', DatabaseEnum::DB_YES)
-            ->whereGreaterThanEqual('start_at', now())
-            ->whereLessThanEqual('end_at', now());
+            ->group(function (WhereBuilderInterface $where) {
+                $where
+                    ->orWhereNotNull('start_at')
+                    ->orWhereNotNull('end_at');
+            })
+            ->group(function (WhereBuilderInterface $where) {
+                $where
+                    ->orGroup(function (WhereBuilderInterface $builder) {
+                        $builder
+                            ->whereNotNull('start_at')
+                            ->whereLessThanEqual('start_at', now());
+                    })
+                    ->orGroup(function ($builder) {
+                        $builder
+                            ->whereNotNull('start_at')
+                            ->whereGreaterThanEqual('end_at', now());
+                    });
+            });
 
         return $this->repository->all([
             'id', 'title', 'slug',
@@ -82,10 +103,10 @@ class FestivalService extends Service implements FestivalServiceInterface
         $attrs = [
             'title' => $attributes['title'],
             'start_at' => isset($attributes['start_at']) && !empty($attributes['start_at'])
-                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['start_at'])
+                ? $this->getValidDatabaseDate($attributes['start_at'])
                 : null,
             'end_at' => isset($attributes['end_at']) && !empty($attributes['end_at'])
-                ? Carbon::createFromFormat(TimeFormatsEnum::NORMAL_DATETIME->value, $attributes['end_at'])
+                ? $this->getValidDatabaseDate($attributes['end_at'])
                 : null,
             'is_published' => to_boolean($attributes['is_published']),
         ];
@@ -106,10 +127,7 @@ class FestivalService extends Service implements FestivalServiceInterface
 
         if (isset($attributes['start_at'])) {
             if (!empty($attributes['start_at'])) {
-                $updateAttributes['start_at'] = Carbon::createFromFormat(
-                    TimeFormatsEnum::NORMAL_DATETIME->value,
-                    $attributes['start_at']
-                );
+                $updateAttributes['start_at'] = $this->getValidDatabaseDate($attributes['start_at']);
             } else {
                 $updateAttributes['start_at'] = null;
             }
@@ -117,10 +135,7 @@ class FestivalService extends Service implements FestivalServiceInterface
 
         if (isset($attributes['end_at'])) {
             if (!empty($attributes['end_at'])) {
-                $updateAttributes['end_at'] = Carbon::createFromFormat(
-                    TimeFormatsEnum::NORMAL_DATETIME->value,
-                    $attributes['end_at']
-                );
+                $updateAttributes['end_at'] = $this->getValidDatabaseDate($attributes['end_at']);
             } else {
                 $updateAttributes['end_at'] = null;
             }
@@ -156,11 +171,7 @@ class FestivalService extends Service implements FestivalServiceInterface
      */
     public function addProductToFestival($productId, $festivalId, $discountPercentage): ?Model
     {
-        return $this->repository->create([
-            'product_id' => $productId,
-            'festival_id' => $festivalId,
-            'discount_percentage' => $discountPercentage,
-        ]);
+        return $this->repository->addProductToFestival($productId, $festivalId, $discountPercentage);
     }
 
     /**
@@ -168,12 +179,7 @@ class FestivalService extends Service implements FestivalServiceInterface
      */
     public function removeProductFromFestival($productId, $festivalId): bool
     {
-        $where = new WhereBuilder('product_festivals');
-        $where
-            ->whereEqual('product_id', $productId)
-            ->whereEqual('festival_id', $festivalId);
-
-        return $this->repository->deleteWhere($where->build());
+        return $this->repository->removeProductFromFestival($productId, $festivalId);
     }
 
     /**
@@ -181,10 +187,7 @@ class FestivalService extends Service implements FestivalServiceInterface
      */
     public function removeProductsFromFestival($festivalId, array $ids): bool
     {
-        $where = new WhereBuilder('product_festivals');
-        $where->whereIn('product_id', $ids);
-
-        return $this->repository->deleteWhere($where->build());
+        return $this->repository->removeProductsFromFestival($festivalId, $ids);
     }
 
     /**
@@ -223,16 +226,11 @@ class FestivalService extends Service implements FestivalServiceInterface
         $where = new WhereBuilder('products');
         $where->whereEqual('category_id', $categoryId);
 
-        $products = $this->repository->all(
+        $products = $this->productRepository->all(
             columns: ['id'],
             where: $where->build()
         );
 
-        $ids = [];
-        $products->each(function ($item) use (&$ids) {
-            $ids[] = $item['id'];
-        });
-
-        return $ids;
+        return $products->pluck('id')->toArray();
     }
 }

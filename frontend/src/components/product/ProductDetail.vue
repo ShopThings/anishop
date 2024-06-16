@@ -112,7 +112,6 @@
                     </div>
                   </template>
                 </base-dialog>
-
               </div>
             </div>
           </div>
@@ -340,12 +339,13 @@
                     </div>
                   </div>
                   <div
-                    v-if="getPercentageOfPortion(getBuyablePrice, selectedProduct.price) > 0"
-                    class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1"
+                    v-if="getPercentageOfPortion(getBuyablePrice, selectedProduct.price, true) > 0"
+                    class="rounded-lg bg-rose-500 text-white text-sm py-1 px-2 my-1 flex items-center gap-0.5"
                   >
+                    {{ getPercentageOfPortion(getBuyablePrice, selectedProduct.price, true) }}
                     <span class="text-xs">%</span>
-                    {{ getPercentageOfPortion(getBuyablePrice, selectedProduct.price) }}
-                    <span class="text-xs mr-1">تخفیف</span>
+                    <span class="text-xs mr-0.5">تخفیف</span>
+                    <span v-if="hasFestivalDiscount" class="text-xs">جشنواره</span>
                   </div>
                 </template>
               </div>
@@ -410,50 +410,63 @@
 
           <hr class="h-0.5 mx-auto my-3 bg-slate-100 border-0 rounded">
 
-          <div v-if="colorFiltered.length">
+          <div v-if="colorFilteredLength">
             <h4 class="mb-2">
               رنگ:
               <span v-if="selectedColor">{{ selectedColor.color_name }}</span>
             </h4>
 
             <ul class="flex flex-wrap gap-2">
-              <li
+              <template
                 v-for="color in colorFiltered"
-                v-tooltip.top="'' + color.color_name + ''"
-                :class="[
-                    'relative rounded-full w-10 h-10 border-2 ring-4 ring-white ring-inset transition',
+                :key="color.id"
+              >
+                <li
+                  v-if="color.color_name && color.color_name?.toString() !== ''"
+                  v-tooltip.top="'' + color.color_name + ''"
+                  :class="[
+                    'relative rounded-full w-10 h-10 border-2 p-1.5 transition',
                     color.active === 'yes'
                     ? 'border-indigo-500 cursor-pointer shadow-lg'
                     : (
                         color.active === 'no'
                         ? 'cursor-default opacity-80'
-                        : 'hover:ring-8 cursor-pointer shadow-lg'
+                        : 'hover:ring-2 cursor-pointer shadow-lg'
                     ),
-                    selectedColor && selectedColor.color_name === color.color_name
-                    ? '!border-emerald-500 cursor-pointer shadow-lg ring-8 !ring-emerald-50'
+                    selectedColor?.color_name === color.color_name
+                    ? '!border-emerald-500 cursor-pointer shadow-lg !p-1 bg-emerald-50'
                     : ''
                 ]"
-                :style="'background-color:' + color.color_hex"
-                @click="handleColorChange(color)"
-              >
-                <div
-                  v-if="color.active === 'no'"
-                  class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
-                ></div>
-              </li>
+                  @click="handleColorChange(color)"
+                >
+                  <div
+                    v-if="color.active === 'no'"
+                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                  ></div>
+
+                  <div
+                    :style="'background-color:' + color.color_hex"
+                    class="w-full h-full shadow rounded-full border border-slate-200"
+                  ></div>
+                </li>
+              </template>
             </ul>
           </div>
 
-          <div v-if="sizeFiltered.length" class="mt-3">
+          <div v-if="sizeFilteredLength" class="mt-3">
             <h4 class="mb-2">
               سایز:
               <span v-if="selectedSize">{{ selectedSize.size }}</span>
             </h4>
 
             <ul class="flex flex-wrap gap-2">
-              <li
+              <template
                 v-for="size in sizeFiltered"
-                :class="[
+                :key="size.id"
+              >
+                <li
+                  v-if="size.size && size.size?.toString() !== ''"
+                  :class="[
                     'relative rounded-lg py-1 px-3 border-2 transition',
                     size.active === 'yes'
                     ? 'border-indigo-500 bg-indigo-50 cursor-pointer'
@@ -462,23 +475,24 @@
                         ? 'cursor-default opacity-60'
                         : 'hover:bg-gray-100 cursor-pointer'
                     ),
-                    selectedSize && selectedSize.size === size.size
+                    selectedSize?.size === size.size
                     ? '!border-emerald-500 !bg-emerald-50 cursor-pointer'
                     : ''
                 ]"
-                @click="handleSizeChange(size)"
-              >
-                <div
-                  v-if="size.active === 'no'"
-                  class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
-                ></div>
+                  @click="handleSizeChange(size)"
+                >
+                  <div
+                    v-if="size.active === 'no'"
+                    class="absolute top-1/2 -translate-y-1/2 left-0 w-full h-0.5 rounded-full bg-rose-400 z-[1] -rotate-45"
+                  ></div>
 
-                {{ size.size }}
-              </li>
+                  {{ size.size }}
+                </li>
+              </template>
             </ul>
           </div>
 
-          <div v-if="guaranteeFiltered.length" class="mt-3">
+          <div v-if="guaranteeFilteredLength" class="mt-3">
             <h4 class="mb-2">
               <span class="flex items-center">
                 <CheckBadgeIcon class="h-7 w-7 text-emerald-400 ml-1.5"/>
@@ -514,7 +528,7 @@
                                ? 'text-rose-400'
                                : 'text-gray-500 grow'
                           ),
-                          selectedGuarantee && selectedGuarantee.guarantee === item.guarantee
+                          selectedGuarantee?.guarantee === item.guarantee
                           ? 'bg-emerald-50 border border-emerald-500 rounded p-1 grow'
                           : ''
                       ]"
@@ -614,7 +628,7 @@
     class="mt-12"
   >
     <base-tab-panel
-      :tabs="tabs"
+      v-model:tabs="tabs"
       tab-button-extra-class="w-full sm:w-auto sm:grow-0 px-6"
     >
       <template #description>
@@ -670,7 +684,9 @@
         <product-comment
           :product-slug="currentMainProduct.slug"
           :product-title="currentMainProduct.title"
+          :allow-comment-operations="allowCommentOperations"
           :show-add-comment="showAddComment"
+          @totalCommentChanged="(total) => {tabs.comments.button.badgeCount = total}"
         />
       </template>
     </base-tab-panel>
@@ -729,6 +745,10 @@ defineProps({
     default: true,
   },
   showAddToCart: {
+    type: Boolean,
+    default: true,
+  },
+  allowCommentOperations: {
     type: Boolean,
     default: true,
   },
@@ -809,39 +829,13 @@ watchEffect(() => {
 })
 
 //------------------------------------------------------------
-// Discount timer operations
+// Discount checking
 //------------------------------------------------------------
-const getDiscountTimer = computed(() => {
+const hasGeneralDiscount = computed(() => {
   const currentDate = new Date()
   const seconds = currentDate.getTime() / 1000
 
-  // Check if product have festival discount
-  if (
-    (
-      !selectedProduct.value.festival_discounted_from_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds >= seconds
-    ) ||
-    (
-      selectedProduct.value.festival_discounted_from_in_seconds &&
-      !selectedProduct.value.festival_discounted_until_in_seconds &&
-      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
-    ) ||
-    (
-      selectedProduct.value.festival_discounted_from_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds &&
-      selectedProduct.value.festival_discounted_until_in_seconds >= seconds &&
-      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
-    )
-  ) {
-    if (selectedProduct.value.festival_discounted_until_in_seconds !== null) {
-      return selectedProduct.value.festival_discounted_until_in_seconds
-    }
-    return 0
-  }
-
-  // Check if product have general discount
-  if (
+  return (
     (
       !selectedProduct.value.discounted_from_in_seconds &&
       selectedProduct.value.discounted_until_in_seconds &&
@@ -858,7 +852,46 @@ const getDiscountTimer = computed(() => {
       selectedProduct.value.discounted_until_in_seconds >= seconds &&
       selectedProduct.value.discounted_from_in_seconds <= seconds
     )
-  ) {
+  )
+})
+
+const hasFestivalDiscount = computed(() => {
+  const currentDate = new Date()
+  const seconds = currentDate.getTime() / 1000
+
+  return (
+    (
+      !selectedProduct.value.festival_discounted_from_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds >= seconds
+    ) ||
+    (
+      selectedProduct.value.festival_discounted_from_in_seconds &&
+      !selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
+    ) ||
+    (
+      selectedProduct.value.festival_discounted_from_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds &&
+      selectedProduct.value.festival_discounted_until_in_seconds >= seconds &&
+      selectedProduct.value.festival_discounted_from_in_seconds <= seconds
+    )
+  )
+})
+
+//------------------------------------------------------------
+// Discount timer operations
+//------------------------------------------------------------
+const getDiscountTimer = computed(() => {
+  if (hasFestivalDiscount.value) {
+    if (selectedProduct.value.festival_discounted_until_in_seconds !== null) {
+      return selectedProduct.value.festival_discounted_until_in_seconds
+    }
+    return 0
+  }
+
+  // Check if product have general discount
+  if (hasGeneralDiscount.value) {
     if (selectedProduct.value.discounted_until_in_seconds !== null) {
       return selectedProduct.value.discounted_until_in_seconds
     }
@@ -871,7 +904,7 @@ const getDiscountTimer = computed(() => {
 const getBuyablePrice = computed(() => {
   let price = +selectedProduct.value.buyable_price
 
-  if (getDiscountTimer.value !== null) {
+  if (getDiscountTimer.value) {
     price = +selectedProduct.value.price
   }
 
@@ -1028,6 +1061,16 @@ const guaranteeFiltered = computed(() => {
     }
   }
   return filtered
+})
+
+const colorFilteredLength = computed(() => {
+  return colorFiltered.value.filter(item => item.color_name && item.color_name?.toString() !== '').length
+})
+const sizeFilteredLength = computed(() => {
+  return sizeFiltered.value.filter(item => item.size && item.size?.toString() !== '').length
+})
+const guaranteeFilteredLength = computed(() => {
+  return guaranteeFiltered.value.filter(item => item.guarantee && item.guarantee?.toString() !== '').length
 })
 
 function hasItemInArray(key, value, arr) {
@@ -1214,7 +1257,7 @@ const telegramSharingLink = computed(() => {
   return `https://telegram.me/share/url?url=${encodeURIComponent(productShortUrl.value)}&text=${encodeURIComponent(currentMainProduct.value?.title || '')}`
 })
 const whatsappSharingLink = computed(() => {
-  return `whatsapp://send?text=${encodeURIComponent(currentMainProduct.value?.title || '')}%3A%20${encodeURIComponent(productShortUrl.value)}`
+  return `https://wa.me/?text=${encodeURIComponent(currentMainProduct.value?.title || '')}%3A%20${encodeURIComponent(productShortUrl.value)}`
 })
 
 function copyHandler() {
@@ -1273,8 +1316,8 @@ onMounted(() => {
       slides.value = currentMainProduct.value.gallery_images
 
       if (!slides.value?.length) {
-        slides.push({
-          path: imageUrl.value + currentMainProduct.image.path,
+        slides.value.push({
+          path: currentMainProduct.value.image.path,
         })
       }
 

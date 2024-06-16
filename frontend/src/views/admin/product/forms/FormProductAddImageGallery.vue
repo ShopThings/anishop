@@ -26,7 +26,7 @@
                       title="انتخاب تصویر"
                   />
                   <base-media-placeholder
-                      v-model:selected="image.image"
+                    :selected="image.image"
                       type="image"
                   />
                 </div>

@@ -46,6 +46,8 @@ return new class extends Migration {
             $table->index('is_special');
             $table->index('is_available');
             $table->index('is_published');
+
+            $table->index(['color_name', 'size']);
         });
     }
 

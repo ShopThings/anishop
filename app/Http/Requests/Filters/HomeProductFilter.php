@@ -5,13 +5,34 @@ namespace App\Http\Requests\Filters;
 use App\Enums\Products\ProductOrderTypesEnum;
 use App\Support\Filter;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class HomeProductFilter extends Filter
 {
     /**
+     * @var string|null
+     */
+    protected ?string $color = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $size = null;
+
+    /**
      * @var int|null
      */
     protected ?int $brand = null;
+
+    /**
+     * @var array
+     */
+    protected array $colors = [];
+
+    /**
+     * @var array
+     */
+    protected array $sizes = [];
 
     /**
      * @var array
@@ -54,6 +75,47 @@ class HomeProductFilter extends Filter
     protected ?array $dynamicFilters = null;
 
     /**
+     * @var int|null
+     */
+    protected ?int $festival = null;
+
+    /**
+     * @return string|null
+     */
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param string|null $color
+     * @return static
+     */
+    public function setColor(?string $color): static
+    {
+        $this->color = $color && $color >= 1 ? $color : null;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSize(): ?string
+    {
+        return $this->size;
+    }
+
+    /**
+     * @param string|null $size
+     * @return static
+     */
+    public function setSize(?string $size): static
+    {
+        $this->size = $size && $size >= 1 ? $size : null;
+        return $this;
+    }
+
+    /**
      * @return int|null
      */
     public function getBrand(): ?int
@@ -72,7 +134,57 @@ class HomeProductFilter extends Filter
     }
 
     /**
-     * @return int|null
+     * @return array
+     */
+    public function getColors(): array
+    {
+        return $this->colors;
+    }
+
+    /**
+     * @param array $colors
+     * @return static
+     */
+    public function setColors(array $colors): static
+    {
+        $temp = [];
+        foreach ($colors as $color) {
+            if (is_string($color)) {
+                $temp[] = $color;
+            }
+        }
+        $this->colors = $temp;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSizes(): array
+    {
+        return $this->sizes;
+    }
+
+    /**
+     * @param array $sizes
+     * @return static
+     */
+    public function setSizes(array $sizes): static
+    {
+        $temp = [];
+        foreach ($sizes as $size) {
+            if (is_string($size)) {
+                $temp[] = $size;
+            }
+        }
+        $this->sizes = $temp;
+
+        return $this;
+    }
+
+    /**
+     * @return array
      */
     public function getBrands(): array
     {
@@ -231,12 +343,32 @@ class HomeProductFilter extends Filter
     }
 
     /**
-     * @param array|null $filters
+     * @param string|null $filters
      * @return static
      */
-    public function setDynamicFilters(?array $filters): static
+    public function setDynamicFilters(?string $filters): static
     {
-        $this->dynamicFilters = $filters;
+        $this->dynamicFilters = json_decode($filters, true);
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getFestival(): ?int
+    {
+        return $this->festival;
+    }
+
+    /**
+     * @param int $festival
+     * @return static
+     */
+    public function setFestival(int $festival): static
+    {
+        if ($festival > 0) {
+            $this->festival = $festival;
+        }
         return $this;
     }
 
@@ -247,7 +379,11 @@ class HomeProductFilter extends Filter
     {
         parent::reset();
 
+        $this->color = null;
+        $this->size = null;
         $this->brand = null;
+        $this->colors = [];
+        $this->sizes = [];
         $this->brands = [];
         $this->category = null;
         $this->priceRange = [];
@@ -256,6 +392,7 @@ class HomeProductFilter extends Filter
         $this->onlyAvailable = false;
         $this->isAvailable = true;
         $this->dynamicFilters = null;
+        $this->festival = null;
 
         return $this;
     }
@@ -267,17 +404,32 @@ class HomeProductFilter extends Filter
     {
         parent::init($request);
 
+        $this->setColor($request->string('color'));
+        $this->setSize($request->string('size'));
         $this->setBrand($request->integer('brand'));
         $this->setCategory($request->integer('category'));
         $this->setProductOrder($request->enum('order', ProductOrderTypesEnum::class));
         $this->setIsSpecial($request->boolean('is_special'));
         $this->setOnlyAvailable($request->boolean('only_available'));
         $this->setDynamicFilters($request->input('dynamic_filters'));
+        $this->setFestival($request->integer('festival'));
+
+        // set colors
+        $colors = $request->input('colors', []);
+        if (is_array($colors) || is_string($colors)) {
+            $this->setColors(Arr::wrap($colors));
+        }
+
+        // set sizes
+        $sizes = $request->input('sizes', []);
+        if (is_array($sizes) || is_string($sizes)) {
+            $this->setSizes(Arr::wrap($sizes));
+        }
 
         // set brands
         $brands = $request->input('brands', []);
         if (is_array($brands) || is_numeric($brands)) {
-            $this->setBrands(is_array($brands) ? $brands : [$brands]);
+            $this->setBrands(Arr::wrap($brands));
         }
 
         // set price range

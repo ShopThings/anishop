@@ -84,6 +84,7 @@
                 :container="getMenuContainer"
                 :data="value"
                 :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
@@ -144,13 +145,11 @@ const table = reactive({
       label: "برند",
       field: "brand",
       columnClasses: 'whitespace-nowrap',
-      sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
       columnClasses: 'whitespace-nowrap',
-      sortable: true,
     },
     {
       label: "واحد محصول",
@@ -203,13 +202,11 @@ const table = reactive({
       label: "برند",
       field: "brand",
       columnClasses: 'whitespace-nowrap',
-      sortable: true,
     },
     {
       label: "دسته‌بندی",
       field: "category",
       columnClasses: 'whitespace-nowrap',
-      sortable: true,
     },
     {
       label: "واحد محصول",
@@ -252,20 +249,20 @@ const table = reactive({
   },
 })
 
-function calcRemovals(row) {
+function calcRemovals() {
   let removals = []
 
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT, PERMISSIONS.DELETE)) {
-    removals.push(['delete'])
+    removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT, PERMISSIONS.UPDATE)) {
-    removals.push(['edit'])
+    removals.push('edit')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_ATTRIBUTE, PERMISSIONS.READ)) {
-    removals.push(['attributes'])
+    removals.push('attributes')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.PRODUCT_COMMENT, PERMISSIONS.READ)) {
-    removals.push(['showComments'])
+    removals.push('showComments')
   }
 
   return removals

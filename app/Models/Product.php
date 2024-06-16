@@ -52,6 +52,14 @@ class Product extends Model
     }
 
     /**
+     * @return HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    /**
      * @return BelongsTo
      */
     public function brand(): BelongsTo

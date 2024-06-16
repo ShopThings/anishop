@@ -5,12 +5,15 @@ namespace App\Http\Resources\Showing;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Enums\Times\TimeFormatsEnum;
+use App\Traits\CompanyTimezoneDetectorTrait;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class OrderShowResource extends JsonResource
 {
+    use CompanyTimezoneDetectorTrait;
+
     /**
      * Transform the resource into an array.
      *
@@ -41,7 +44,9 @@ class OrderShowResource extends JsonResource
                 ? vertaTz($this->paid_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'actual_created_at' => $this->created_at
-                ? Carbon::parse($this->created_at)->format(TimeFormatsEnum::NORMAL_DATETIME->value)
+                ? Carbon::parse($this->created_at)
+                    ->timezone($this->getCompanyTimezone())
+                    ->format(TimeFormatsEnum::NORMAL_DATETIME->value)
                 : null,
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

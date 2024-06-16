@@ -112,7 +112,7 @@ class ContactUsService extends Service implements ContactUsServiceInterface
             'title' => $attributes['title'],
             'name' => $attributes['name'],
             'mobile' => $attributes['mobile'],
-            'description' => $attributes['description'],
+            'message' => $attributes['description'],
         ];
 
         $model = $this->repository->create($attrs);

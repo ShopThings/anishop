@@ -29,6 +29,7 @@ class HomeBrandController extends Controller
     }
 
     /**
+     * @param Filter $filter
      * @return AnonymousResourceCollection
      */
     public function brands(Filter $filter): AnonymousResourceCollection

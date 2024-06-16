@@ -428,7 +428,9 @@ class OrderService extends Service implements OrderServiceInterface
         $totalPrice = $cartCalc->totalPrice();
 
         if ($coupon instanceof Model) {
-            $finalPrice -= $coupon->price;
+            if ($coupon->canApplyOn($finalPrice)) {
+                $finalPrice -= $coupon->price;
+            }
         }
         if ($shippingPrice > 0) {
             $finalPrice += $shippingPrice;

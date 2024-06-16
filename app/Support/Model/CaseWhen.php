@@ -35,7 +35,7 @@ class CaseWhen implements BuildExpressionInterface
      * @param callable|string $do
      * @param array $bindings
      * @param string|null $type
-     * @return CaseWhen|Builder
+     * @return CaseWhen|Builder|array
      */
     public function when(
         callable|string $condition,
@@ -62,7 +62,7 @@ class CaseWhen implements BuildExpressionInterface
      * @param callable|string $do
      * @param array $bindings
      * @param string|null $type
-     * @return CaseWhen|Builder
+     * @return CaseWhen|Builder|array
      */
     public function else(
         callable|string $do,
@@ -151,12 +151,12 @@ class CaseWhen implements BuildExpressionInterface
     {
         $statementNBindings = $this->getStatementAndBindings();
 
-        if (is_null($this->query) || !in_array($this, ['select', 'where'], true)) {
+        if (is_null($this->query) || !in_array($type, ['select', 'where'], true)) {
             return $statementNBindings;
         } else {
             if ($type === 'select') {
                 $this->query->selectRaw($statementNBindings['statement'], $statementNBindings['bindings']);
-            } elseif ($type === 'where') {
+            } else {
                 $this->query->whereRaw($statementNBindings['statement'], $statementNBindings['bindings']);
             }
         }

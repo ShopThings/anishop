@@ -14,7 +14,7 @@ export default {
       colors: {
         primary: '#3057D3',
         secondary: '#41475B',
-        cool: '#F4F7FF',
+        cool: '#EDF3FF',
         awesome: '#EBF2FC',
       },
       animation: {

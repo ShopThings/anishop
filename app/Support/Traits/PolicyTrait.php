@@ -51,6 +51,12 @@ trait PolicyTrait
         if (count($this->only)) $this->fn = $this->only;
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     * @return bool|mixed|null
+     * @throws NotDeletableException
+     */
     public function __call(string $name, array $arguments)
     {
         if (method_exists(static::class, $name)) {

@@ -88,7 +88,7 @@ class UserOrderController extends Controller
         OrderDetail $order
     ): UserOrderSingleResource|JsonResponse
     {
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'address',
             'postal_code',
             'receiver_name',

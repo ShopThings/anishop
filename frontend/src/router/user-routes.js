@@ -25,7 +25,7 @@ export const userRoutes = {
             success() {
               resolve()
             },
-            error(error) {
+            error() {
               reject(false)
             },
           })

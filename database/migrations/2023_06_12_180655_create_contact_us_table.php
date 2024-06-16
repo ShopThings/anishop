@@ -16,8 +16,9 @@ return new class extends Migration {
             $table->string('name');
             $table->string('mobile', 11);
             $table->text('message')->comment('message of user');
-            $table->text('answer')->comment('respond to user');
-            $table->boolean('is_seen')->default(true);
+            $table->text('answer')->nullable()
+                ->comment('respond to user');
+            $table->boolean('is_seen')->default(false);
             $table->timestamp('answered_at')->nullable();
             $table->foreignId('answered_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

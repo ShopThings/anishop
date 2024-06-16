@@ -6,11 +6,12 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductAttributeProductRequest;
 use App\Http\Resources\ProductAttributeProductResource;
+use App\Http\Resources\Showing\ProductAttributeCategoryShowResource;
 use App\Models\Product;
 use App\Models\ProductAttributeProduct;
+use App\Services\Contracts\ProductAttributeCategoryServiceInterface;
 use App\Services\Contracts\ProductAttributeProductServiceInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
@@ -18,9 +19,11 @@ class ProductAttributeProductController extends Controller
 {
     /**
      * @param ProductAttributeProductServiceInterface $service
+     * @param ProductAttributeCategoryServiceInterface $productAttributeCategoryService
      */
     public function __construct(
-        protected ProductAttributeProductServiceInterface $service
+        protected ProductAttributeProductServiceInterface  $service,
+        protected ProductAttributeCategoryServiceInterface $productAttributeCategoryService
     )
     {
     }
@@ -38,11 +41,11 @@ class ProductAttributeProductController extends Controller
 
         $validated = $request->validated();
         $model = $this->service->modifyProductAttributes(
-            productId: $product->id,
-            attributeValues: array_column($validated['values'], 'id')
+            product: $product,
+            attributeValues: $validated['values']
         );
 
-        if (!$model) {
+        if ($model) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'تغییر مقدار ویژگی محصول با موفقیت انجام شد.',
@@ -58,11 +61,22 @@ class ProductAttributeProductController extends Controller
      * Display the specified resource.
      *
      * @param Product $product
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function show(Product $product): AnonymousResourceCollection
+    public function show(Product $product): JsonResponse
     {
         Gate::authorize('view', $product);
-        return ProductAttributeProductResource::collection($this->service->getProductAttributes($product->id));
+
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => [
+                'category_attributes' => ProductAttributeCategoryShowResource::collection(
+                    $this->productAttributeCategoryService->getProductAttributeCategories($product->id)
+                ),
+                'product_attributes' => ProductAttributeProductResource::collection(
+                    $this->service->getProductAttributes($product->id)
+                ),
+            ],
+        ]);
     }
 }

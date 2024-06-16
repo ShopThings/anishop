@@ -46,7 +46,7 @@
     <template #body="{close}">
       <base-paginator
         ref="notificationPaginatorRef"
-        v-model:items="notifications"
+        v-model:total="totalNotifications"
         :path="getPath"
         :number-of-loaders="5"
         :per-page="50"
@@ -126,7 +126,7 @@ const notificationStore = inject('notificationStore')
 const notificationPaginatorRef = ref(null)
 const notificationOperationLoading = ref(false)
 const getPath = apiRoutes.admin.notification.index
-const notifications = ref([])
+const totalNotifications = ref(0)
 
 function loadNotificationsHandler() {
   if (notificationPaginatorRef.value) {

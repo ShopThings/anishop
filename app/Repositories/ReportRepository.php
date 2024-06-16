@@ -302,7 +302,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'is_spacial' => 'محصول ویژه',
                 'is_available' => 'موجود بودن محصول',
                 'is_each_available' => 'موجود بودن هر محصول',
-                'is_commenting_allowed' => 'دارای اجازه ارسال نظر',
+                'is_commenting_allowed' => 'دارای اجازه ارسال دیدگاه',
                 'is_published' => 'وضعیت انتشار',
                 'is_each_published' => 'وضعیت انتشار هر محصول',
                 'is_each_show_coming_soon' => 'نمایش بزودی در هر محصول',

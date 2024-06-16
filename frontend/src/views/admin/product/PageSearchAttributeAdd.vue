@@ -108,7 +108,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     title: yup.string().required('عنوان ویژگی را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!selectedType.value || !types.includes(selectedType.value)) {
+  if (!selectedType.value || types.findIndex(item => item.value === selectedType.value?.value) === -1) {
     actions.setFieldError('type', 'نوع ویژگی را انتخاب نمایید.')
     return
   }

@@ -112,7 +112,7 @@ export function useCountdown(duration = 0, elemRef = null, showFormat = 'm:s') {
     reset()
 
     // to show min number of duration(0)
-    assignDurationToValues(0, 0)
+    assignDurationToValues(0, 0, 0, 0)
   }
 
   function pause() {

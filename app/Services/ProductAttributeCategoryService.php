@@ -35,6 +35,15 @@ class ProductAttributeCategoryService extends Service implements ProductAttribut
     }
 
     /**
+     * @param int $productId
+     * @return Collection|null
+     */
+    public function getProductAttributeCategories(int $productId): Collection|null
+    {
+        return $this->repository->getProductAttributeCategories($productId);
+    }
+
+    /**
      * @inheritDoc
      */
     public function create(array $attributes): ?Model

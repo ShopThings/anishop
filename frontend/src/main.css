@@ -1,4 +1,4 @@
-@import "../styles/fonts.scss";
+@import "../styles/fonts.css";
 
 @tailwind base;
 @tailwind components;
@@ -14,6 +14,10 @@
     margin: 0;
     -moz-appearance: textfield !important;
   }
+}
+
+.layout-max-w {
+  max-width: 96rem; /* "1536px" or "2xl" in tailwind */
 }
 
 /* VueRouter active link */
@@ -131,6 +135,22 @@
 
 .Vue-Toastification__toast--default .Vue-Toastification__close-button {
   color: #000;
+}
+
+.Vue-Toastification__toast--success {
+  background-color: #22c55e;
+}
+
+.Vue-Toastification__toast--info {
+  background-color: #2563eb;
+}
+
+.Vue-Toastification__toast--warning {
+  background-color: #f59e0b;
+}
+
+.Vue-Toastification__toast--error {
+  background-color: #F43F5E;
 }
 
 .confirmation-toast {

@@ -1,27 +1,23 @@
 <template>
   <base-loading-panel
-      :loading="productLoading"
-      type="list-single"
+    :loading="productLoading"
+    type="list-single"
   >
     <template #content>
       <partial-card class="border-0 mb-3">
         <template #header>
           دیدگاه کاربر درباره محصول
-          <span
-              v-if="product?.slug"
-              class="text-slate-400 text-base"
-          >{{ product?.title }}</span>
         </template>
         <template #body>
           <div class="py-3 px-4">
             <div class="flex flex-col sm:flex-row gap-3 items-center">
               <div class="shrink-0">
                 <base-lazy-image
-                    :alt="product?.title"
-                    :lazy-src="product?.image.full_path"
-                    :size="FileSizes.SMALL"
-                    :is-local="false"
-                    class="!h-28 sm:!h-20 w-auto rounded"
+                  :alt="product?.title"
+                  :is-local="false"
+                  :lazy-src="product?.image.full_path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
                 />
               </div>
               <div class="grow text-sm">
@@ -29,8 +25,8 @@
               </div>
               <div class="text-sm shrink-0">
                 <router-link
-                    :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
-                    class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                  :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
+                  class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
                 >
                   <span class="mx-auto">مشاهده محصول</span>
                   <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
@@ -52,24 +48,24 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:sender="{value}">
               <router-link
-                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
-                  class="text-blue-600 hover:text-opacity-90"
+                :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
+                class="text-blue-600 hover:text-opacity-90"
               >
                 <partial-username-label :user="value.created_by"/>
               </router-link>
@@ -94,9 +90,9 @@
 
             <template v-slot:answered_by="{value}">
               <router-link
-                  v-if="value.answered_by"
-                  :to="{name: 'admin.user.profile', params: {id: value.answered_by.id}}"
-                  class="text-blue-600 hover:text-opacity-80"
+                v-if="value.answered_by"
+                :to="{name: 'admin.user.profile', params: {id: value.answered_by.id}}"
+                class="text-blue-600 hover:text-opacity-80"
               >
                 <partial-username-label :user="value.answered_by"/>
               </router-link>
@@ -160,6 +156,7 @@ const table = reactive({
     {
       label: "ارسال توسط",
       field: "sender",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت",
@@ -206,6 +203,7 @@ const table = reactive({
     {
       label: "ارسال توسط",
       field: "sender",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت",

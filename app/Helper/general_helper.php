@@ -18,6 +18,22 @@ if (!function_exists('to_boolean')) {
     }
 }
 
+if (!function_exists('filter_validated_data')) {
+    /**
+     * Filter the validated data to include only specified fields.
+     *
+     * @param array|null $validated
+     * @param array $fields
+     * @return array
+     */
+    function filter_validated_data(?array $validated, array $fields): array
+    {
+        if (empty($validated)) return [];
+
+        return array_intersect_key($validated, array_flip($fields));
+    }
+}
+
 if (!function_exists('get_random_verification_code')) {
     /**
      * @param int $length
@@ -32,9 +48,10 @@ if (!function_exists('get_random_verification_code')) {
 
 if (!function_exists('get_nanoid')) {
     /**
+     * @param string $alphabet
      * @return string
      */
-    function get_nanoid($alphabet = NanoIdInterface::ALPHABET_ALPHA_NUMERIC_READABLE): string
+    function get_nanoid(string $alphabet = NanoIdInterface::ALPHABET_ALPHA_NUMERIC_READABLE): string
     {
         return NanoId::nanoId(
             NanoIdInterface::SIZE_DEFAULT,

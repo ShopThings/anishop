@@ -34,7 +34,7 @@ class ProductCommentVoteRequest extends FormRequest
     public function attributes()
     {
         return [
-            'vote' => 'رأی برای نظر محصول',
+            'vote' => 'رأی برای دیدگاه محصول',
         ];
     }
 }

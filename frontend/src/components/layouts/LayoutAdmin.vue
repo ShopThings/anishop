@@ -7,7 +7,7 @@
     <div ref="pageContainer" class="grow flex flex-col overflow-auto">
       <app-navbar-admin ref="navbarCom"/>
 
-      <div v-if="title" ref="extra" class="p-3 max-w-7xl mx-auto w-full">
+      <div v-if="title" ref="extra" class="p-3 layout-max-w mx-auto w-full">
         <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
           <h1 class="flex items-center">
             <ArrowLeftCircleIcon class="h-5 w-5 ml-2 text-emerald-500"/>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div ref="page" class="px-3 pb-3 max-w-7xl mx-auto w-full">
+      <div ref="page" class="px-3 pb-3 layout-max-w mx-auto w-full">
         <router-view v-slot="{ Component, route }">
           <PageTransition v-bind='transitionProps'>
             <div :key="route.path">
@@ -51,7 +51,7 @@
       </div>
 
       <div class="bg-gradient-to-t from-indigo-200">
-        <div ref="footer" class="max-w-7xl mx-auto w-full">
+        <div ref="footer" class="layout-max-w mx-auto w-full">
           <app-footer-admin/>
         </div>
       </div>

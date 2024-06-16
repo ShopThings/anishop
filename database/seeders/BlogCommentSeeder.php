@@ -14,14 +14,14 @@ class BlogCommentSeeder extends Seeder
     public function run(): void
     {
         $blogIds = Blog::all();
-        $blogs = $blogIds->random(mt_rand(9, 14));
+        $blogs = $blogIds->random(mt_rand(10, 15));
 
         $blogs->each(function ($blog) {
-            $comments = BlogComment::factory()->count(15)->forBlog($blog)->create();
-            $comments->each(function (BlogComment $comment) {
-                $count = mt_rand(0, 8);
+            $comments = BlogComment::factory()->count(8)->forBlog($blog)->create();
+            $comments->each(function (BlogComment $comment) use ($blog) {
+                $count = mt_rand(0, 6);
                 if (0 !== $count) {
-                    BlogComment::factory()->count($count)->forComment($comment)->create();
+                    BlogComment::factory()->count($count)->forBlog($blog)->forComment($comment)->create();
                 }
             });
         });

@@ -47,7 +47,6 @@ class BlogCommentFactory extends Factory
 
         return [
             'user_id' => $this->faker->randomElement(array_merge($this->usersIds, [null])),
-            'blog_id' => Blog::factory(),
             'badge_id' => $this->faker->randomElement($this->badgeIds),
             'condition' => $condition,
             'status' => $condition == CommentConditionsEnum::UNSET->value

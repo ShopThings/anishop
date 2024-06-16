@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
-use Carbon\Carbon;
 use Hekmatinasser\Verta\Verta;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -51,7 +50,6 @@ class AppServiceProvider extends ServiceProvider
         $isProd = $this->app->isProduction();
 
         // set carbon locale from application global localization
-        Carbon::setLocale($locale);
         Verta::setLocale($locale);
         // set current money unit considering localization
         config([
@@ -109,7 +107,24 @@ class AppServiceProvider extends ServiceProvider
         });
         Builder::macro('orWhereLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
             $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
-                $query->whereLike($columns, $search, 'or', $replacement);
+                $query->whereLike($columns, $search, $replacement, 'or');
+            });
+
+            return $this;
+        });
+        Builder::macro('whereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%', string $operator = 'and') {
+            $this->where(function (Builder $query) use ($columns, $search, $operator, $replacement) {
+                $columns = Arr::wrap($columns);
+                foreach ($columns as $column) {
+                    $query->where($column, 'not like', str_replace('{value}', $search, $replacement), mb_strtolower($operator));
+                }
+            });
+
+            return $this;
+        });
+        Builder::macro('orWhereNotLike', function (string|array $columns, string $search, $replacement = '%{value}%') {
+            $this->orWhere(function (Builder $query) use ($columns, $search, $replacement) {
+                $query->whereNotLike($columns, $search, $replacement, 'or');
             });
 
             return $this;

@@ -13,7 +13,7 @@
       </div>
 
       <base-paginator
-          v-model:items="favoriteProducts"
+        v-model:total="totalFavoriteProducts"
           :path="getPath"
           :path-replacement-params="{user: user?.id}"
           :per-page="10"
@@ -73,7 +73,7 @@ const loading = ref(true)
 const user = ref(null)
 
 const getPath = apiRoutes.admin.users.favoriteProducts
-const favoriteProducts = ref([])
+const totalFavoriteProducts = ref(0)
 
 onMounted(() => {
   UserAPI.fetchById(idParam.value, {

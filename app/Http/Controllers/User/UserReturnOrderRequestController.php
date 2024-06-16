@@ -124,7 +124,10 @@ class UserReturnOrderRequestController extends Controller
         ReturnOrderRequest $returnOrder
     ): UserReturnOrderSingleResource|JsonResponse
     {
-        $validated = $request->validated(['description', 'items']);
+        $validated = filter_validated_data($request->validated(), [
+            'description',
+            'items',
+        ]);
 
         $model = $this->service->updateUserRequestByModel(
             userId: $request->user()->id,

@@ -117,6 +117,7 @@ const table = reactive({
     {
       label: "موضوع",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
@@ -160,6 +161,7 @@ const table = reactive({
     {
       label: "موضوع",
       field: "title",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {

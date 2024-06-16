@@ -13,6 +13,7 @@
       :tooltips="settings.tooltips"
       @change="onChange"
       @update="onUpdate"
+      @slide="onSlide"
   />
 </template>
 
@@ -59,7 +60,7 @@ const props = defineProps({
   },
   options: Object,
 })
-const emit = defineEmits(['update:modelValue', 'change', 'update'])
+const emit = defineEmits(['update:modelValue', 'change', 'update', 'slide'])
 
 const value = computed({
   get() {
@@ -88,6 +89,10 @@ function onChange(value) {
 
 function onUpdate(value) {
   emit('update', value)
+}
+
+function onSlide(value) {
+  emit('slide', value)
 }
 </script>
 

@@ -169,12 +169,12 @@ Route::prefix('admin')
                 Route::post('festivals/{festival}/category', [FestivalController::class, 'storeCategoryProducts'])
                     ->where(['festival' => $codeRegex])->name('festivals.category.store');
                 Route::delete('festivals/{festival}/product/{product}', [FestivalController::class, 'destroyProduct'])
-                    ->where(['festival' => $codeRegex])->whereNumber('product')
+                    ->where(['festival' => $codeRegex, 'product' => $codeRegex])
                     ->name('festivals.product.destroy');
                 Route::delete('festivals/{festival}/products', [FestivalController::class, 'batchDestroyProduct'])
                     ->where(['festival' => $codeRegex])->name('festivals.products.destroy.batch');
                 Route::delete('festivals/{festival}/category/{category}', [FestivalController::class, 'batchDestroyCategory'])
-                    ->where(['festival' => $codeRegex])->whereNumber('product')
+                    ->where(['festival' => $codeRegex])->whereNumber('category')
                     ->name('festivals.category.destroy');
 
                 /*

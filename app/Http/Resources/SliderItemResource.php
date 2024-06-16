@@ -25,7 +25,6 @@ class SliderItemResource extends JsonResource
             'slider' => new SliderShowResource($this->slider),
             'priority' => $this->priority,
             'options' => $this->options,
-            'is_published' => $this->is_published,
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

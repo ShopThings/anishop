@@ -32,7 +32,7 @@
               :class="[
                 showRemoveFilterButtonOnInput ? 'rounded-lg' : 'rounded-r-lg rounded-l-none',
             ]"
-              class="grow bg-blue-100 border-blue-200 !text-primary text-sm hover:bg-primary hover:!text-white"
+              class="grow bg-primary border-blue-200 text-sm"
               type="submit"
           >
             <div class="flex items-center justify-center gap-2 sm:py-[3px]">
@@ -74,11 +74,11 @@
 <script setup>
 import {ref} from "vue";
 import {
-  MagnifyingGlassIcon,
-  MagnifyingGlassCircleIcon,
   ArrowPathIcon,
-  XMarkIcon,
   FunnelIcon,
+  MagnifyingGlassCircleIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
 } from '@heroicons/vue/24/outline';
 import {useForm} from "vee-validate";
 import yup from "@/validation/index.js";

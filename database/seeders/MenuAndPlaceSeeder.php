@@ -41,25 +41,25 @@ class MenuAndPlaceSeeder extends Seeder
         MenuItem::create([
             'menu_id' => $topMenu->id,
             'title' => 'خانه',
-            'link' => '#',
+            'link' => '/',
             'can_have_children' => false,
         ]);
         MenuItem::create([
             'menu_id' => $topMenu->id,
             'title' => 'بلاگ',
-            'link' => '#',
+            'link' => '/blog/search',
         ]);
         MenuItem::create([
             'menu_id' => $topMenu->id,
             'title' => 'تماس با ما',
-            'link' => '#',
+            'link' => '/contact',
         ]);
 
         // -create top menu blog items
         MenuItem::create([
             'menu_id' => $topMenuBlog->id,
             'title' => 'بلاگ',
-            'link' => '#',
+            'link' => '/blog/search',
             'can_have_children' => false,
         ]);
         MenuItem::create([
@@ -72,33 +72,28 @@ class MenuAndPlaceSeeder extends Seeder
         MenuItem::create([
             'menu_id' => $footerMenu1->id,
             'title' => 'محصولات',
-            'link' => '#',
+            'link' => '/search',
         ]);
         MenuItem::create([
             'menu_id' => $footerMenu1->id,
             'title' => 'برندها',
-            'link' => '#',
+            'link' => '/brands',
         ]);
         MenuItem::create([
             'menu_id' => $footerMenu1->id,
             'title' => 'سؤالات متداول',
-            'link' => '#',
+            'link' => '/faq',
         ]);
         //
         MenuItem::create([
             'menu_id' => $footerMenu2->id,
-            'title' => 'درباره ما',
-            'link' => '#',
-        ]);
-        MenuItem::create([
-            'menu_id' => $footerMenu2->id,
             'title' => 'تماس با ما',
-            'link' => '#',
+            'link' => '/contact',
         ]);
         MenuItem::create([
             'menu_id' => $footerMenu2->id,
             'title' => 'ثبت شکایات',
-            'link' => '#',
+            'link' => '/contact',
         ]);
         MenuItem::create([
             'menu_id' => $footerMenu2->id,

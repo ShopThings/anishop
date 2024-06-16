@@ -26,7 +26,7 @@
                 />
               </div>
 
-              <div class="flex flex-wrap items-end">
+              <div class="flex flex-wrap items-start">
                 <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
                   <base-input
                     :value="festival?.title"
@@ -136,6 +136,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     title: yup.string().required('عنوان جشنواره را وارد نمایید.'),
   }),
 }, (values, actions) => {
+  if (!startDate.value && !endDate.value) {
+    actions.setFieldError('start_at', 'وارد نمودن یکی از تاریخ شروع یا تاریخ پایان اجیاری می‌باشد.')
+    return
+  }
+
   if (startDate.value && endDate.value) {
     const start = new Date(startDate.value)
     const end = new Date(endDate.value)
@@ -148,12 +153,19 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   canSubmit.value = false
 
-  FestivalAPI.updateById(idParam.value, {
+  let data = {
     title: values.title,
-    start_at: startDate.value,
-    end_at: endDate.value,
     is_published: publishStatus.value,
-  }, {
+  }
+
+  if (startDate.value) {
+    data.start_at = startDate.value
+  }
+  if (endDate.value) {
+    data.end_at = endDate.value
+  }
+
+  FestivalAPI.updateById(idParam.value, data, {
     success(response) {
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
 

@@ -1,8 +1,9 @@
-import {computed, ref} from "vue";
+import {computed, reactive, ref, toValue} from "vue";
 import {defineStore} from "pinia";
 import {HomeProductAPI} from "@/service/APIHomePages.js";
 import {useRoute} from "vue-router";
 import isFunction from "lodash.isfunction";
+import isObject from "lodash.isobject";
 
 export const useProductFilterStore = defineStore('product_search_filter', () => {
   const brands = ref([])
@@ -29,10 +30,6 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
 
   const route = useRoute()
 
-  function setBrands(items) {
-    brands.value = items
-  }
-
   function setColors(items) {
     colors.value = items
   }
@@ -41,12 +38,63 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     sizes.value = items
   }
 
+  function setBrands(items) {
+    brands.value = items
+  }
+
   function setPriceRange(range) {
     priceRange.value = range
   }
 
   function setDynamicFilters(filters) {
     attributes.value = filters
+  }
+
+  function fetchColorsAndSizes(onSuccess = null) {
+    return HomeProductAPI.fetchColorsAndSizesFilter({
+      category: route.query?.category,
+      festival: route.query?.festival,
+    }, {
+      success(response) {
+        let data = response.data
+
+        let colors = []
+        let sizes = []
+
+        let counter = 1;
+        for (let i of data) {
+          if (i.name && i.name?.toString() !== '' && colors.findIndex(item => item.name === i.name) === -1) {
+            colors.push({
+              id: counter,
+              name: i.name,
+              hex: i.hex,
+            })
+          }
+
+          if (i.size && i.size?.toString() !== '' && sizes.findIndex(item => item.name === i.size) === -1) {
+            sizes.push({
+              id: counter,
+              size: i.size,
+            })
+          }
+
+          counter++
+        }
+
+        setColors(colors)
+        setSizes(sizes)
+
+        if (onSuccess && isFunction(onSuccess)) {
+          onSuccess()
+        }
+
+        isColorAndSizeLoading.value = false
+      },
+      error() {
+        isColorAndSizeLoading.value = false
+        return false
+      },
+    })
   }
 
   function fetchBrands() {
@@ -62,49 +110,6 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
       },
       finally() {
         isBrandsLoading.value = false
-      },
-    })
-  }
-
-  function fetchColorsAndSizes() {
-    return HomeProductAPI.fetchColorsAndSizesFilter({
-      category: route.query?.category,
-      festival: route.query?.festival,
-    }, {
-      success(response) {
-        let data = response.data
-
-        let colors = []
-        let sizes = []
-
-        let counter = 1;
-        for (let i of data) {
-          if (i.name && i.name?.toString() !== '') {
-            colors.push({
-              id: counter,
-              name: i.name,
-              hex: i.hex,
-            })
-          }
-
-          if (i.size?.toString() !== '') {
-            sizes.push({
-              id: counter,
-              size: i.size,
-            })
-          }
-
-          counter++
-        }
-
-        setColors(colors)
-        setSizes(sizes)
-      },
-      error() {
-        return false
-      },
-      finally() {
-        isColorAndSizeLoading.value = false
       },
     })
   }
@@ -159,9 +164,9 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
   }
 
   function $reset() {
-    brands.value = []
     colors.value = []
     sizes.value = []
+    brands.value = []
     priceRange.value = [0, 0]
     attributes.value = []
     //
@@ -171,21 +176,21 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     isAttributesLoading.value = true
   }
 
-  fetchBrands()
   fetchColorsAndSizes()
+  fetchBrands()
   fetchPriceRange()
   fetchDynamicFilters()
 
   return {
-    brands, getBrands, setBrands,
     colors, getColors, setColors,
     sizes, getSizes, setSizes,
+    brands, getBrands, setBrands,
     priceRange, getPriceRange, setPriceRange,
     attributes, getDynamicFilters, setDynamicFilters,
     //
-    brandsLoading, colorAndSizeLoading, priceRangeLoading, attributesLoading,
+    colorAndSizeLoading, brandsLoading, priceRangeLoading, attributesLoading,
     //
-    fetchBrands, fetchColorsAndSizes, fetchPriceRange, fetchDynamicFilters,
+    fetchColorsAndSizes, fetchBrands, fetchPriceRange, fetchDynamicFilters,
     //
     $reset,
   }
@@ -193,156 +198,363 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
 
 export const useProductFilterParamStore = defineStore('product_search_filter_param', () => {
   const route = useRoute()
-  const searchParams = ref({})
+  const filterStore = useProductFilterStore()
 
-  const getSearchParams = computed(() => searchParams.value)
+  const brands = ref({})
+  const colors = ref({})
+  const sizes = ref({})
+  const priceRange = ref([])
+  const onlyAvailable = ref(false)
+  const isSpecial = ref(false)
+  const dynamicFilters = ref({})
 
-  const getBrands = computed(() => searchParams.value?.brands)
-  const getPriceRange = computed(() => searchParams.value?.price_range)
-  const getOnlyAvailable = computed(() => searchParams.value?.only_available)
-  const getIsSpecial = computed(() => searchParams.value?.is_special)
-  const getDynamicFilters = computed(() => searchParams.value?.dynamic_filters)
+  const order = ref(null)
+  const festival = ref(null)
+  const category = ref(null)
 
-  const getOrder = computed(() => searchParams.value?.order)
-  const getFestival = computed(() => searchParams.value?.festival)
-  const getCategory = computed(() => searchParams.value?.category)
-
-  function setBrands(value = null, removeFalseValues = true) {
-    if (value) {
-      value = Array.isArray(value) ? value : [value]
+  const getColors = computed(() => {
+    if (isObject(colors.value)) {
+      return Object.values(colors.value).map(item => item?.name)
+    } else {
+      removeColors()
     }
 
-    searchParams.value.brands = value
+    return []
+  })
 
-    clearSearchParams(removeFalseValues)
+  const getSizes = computed(() => {
+    if (isObject(sizes.value)) {
+      return Object.values(sizes.value).map(item => item?.size)
+    } else {
+      removeSizes()
+    }
+
+    return []
+  })
+
+  const getBrands = computed(() => {
+    let allowedBrands = []
+
+    if (isObject(brands.value)) {
+      for (let b in brands.value) {
+        if (brands.value.hasOwnProperty(b) && !!brands.value[b]) {
+          allowedBrands.push(b)
+        }
+      }
+    }
+
+    if (!allowedBrands.length) {
+      removeBrands()
+    }
+
+    return allowedBrands
+  })
+
+  const getPriceRange = computed(() => {
+    if (
+      priceRange.value && priceRange.value[0] && priceRange.value[1] &&
+      +priceRange.value[0] < +priceRange.value[1] &&
+      filterStore.getPriceRange && filterStore.getPriceRange[0] && filterStore.getPriceRange[1] &&
+      +priceRange.value[0] > +filterStore.getPriceRange[0] &&
+      +priceRange.value[1] < +filterStore.getPriceRange[1]
+    ) {
+      return [priceRange.value[0], priceRange.value[1]]
+    } else {
+      removePriceRange()
+    }
+
+    return null
+  })
+  const getMinPrice = computed(() => {
+    return getPriceRange && getPriceRange[0] ? getPriceRange[0] : null
+  })
+  const getMaxPrice = computed(() => {
+    return getPriceRange && getPriceRange[1] ? getPriceRange[1] : null
+  })
+
+  const getOnlyAvailable = computed(() => {
+    if (!onlyAvailable.value) {
+      removeOnlyAvailable()
+    }
+
+    return onlyAvailable.value
+  })
+
+  const getIsSpecial = computed(() => {
+    if (!isSpecial.value) {
+      removeIsSpecial()
+    }
+
+    return isSpecial.value
+  })
+
+  const getDynamicFilters = computed(() => {
+    try {
+      if (
+        !dynamicFilters.value ||
+        !isObject(dynamicFilters.value)
+      ) {
+        removeDynamicFilters()
+      } else if (Object.keys(dynamicFilters.value).length) {
+        return JSON.stringify(clearSearchParamsRecursively(dynamicFilters.value))
+      }
+    } catch (e) {
+      // Do nothing for now
+    }
+
+    return null
+  })
+
+  const getOrder = computed(() => order.value)
+  const getFestival = computed(() => festival.value)
+  const getCategory = computed(() => category.value)
+
+  const routeKeys = reactive({
+    min_price: getMinPrice,
+    max_price: getMaxPrice,
+    colors: getColors,
+    sizes: getSizes,
+    brands: getBrands,
+    only_available: getOnlyAvailable,
+    is_special: getIsSpecial,
+    dynamic_filters: getDynamicFilters,
+    order: getOrder,
+    festival: getFestival,
+    category: getCategory,
+  })
+
+  function clearSearchParamsRecursively(params) {
+    if (!isObject(params)) return params
+
+    for (let o in params) {
+      if (params.hasOwnProperty(o)) {
+        if (isObject(params[o]) && !Array.isArray(params[o])) {
+          if (Object.keys(params[o]).length) {
+            params[o] = clearSearchParamsRecursively(params[o])
+          } else {
+            delete params[o]
+          }
+        } else {
+          if (
+            params[o] === null ||
+            params[o] === undefined ||
+            (
+              Array.isArray(params[o]) &&
+              !params[o].map(item => item !== null && item !== undefined).length
+            ) ||
+            (
+              params[o] === false
+            )
+          ) {
+            delete params[o]
+          } else if (Array.isArray(params[o])) {
+            params[o] = params[o].filter(item => item !== null && item !== undefined)
+          }
+        }
+      }
+    }
+
+    return params
+  }
+
+  function setColors(value) {
+    if (isObject(value)) {
+      colors.value = value
+    }
+  }
+
+  function removeColors() {
+    colors.value = {}
+  }
+
+  function setSizes(value) {
+    if (isObject(value)) {
+      sizes.value = value
+    }
+  }
+
+  function removeSizes() {
+    sizes.value = {}
+  }
+
+  function setBrands(value) {
+    if (isObject(value)) {
+      brands.value = value
+    }
   }
 
   function removeBrands() {
-    delete searchParams.value.brands
+    brands.value = {}
   }
 
-  function setPriceRange(minPrice, maxPrice, removeFalseValues = true) {
+  function setPriceRange(minPrice, maxPrice) {
     minPrice = parseInt(minPrice, 10)
     maxPrice = parseInt(maxPrice, 10)
 
     if (!isNaN(minPrice) && !isNaN(maxPrice)) {
-      searchParams.value.price_range = [minPrice, maxPrice]
+      priceRange.value = [minPrice, maxPrice]
     }
-
-    clearSearchParams(removeFalseValues)
   }
 
   function removePriceRange() {
-    delete searchParams.value.price_range
+    priceRange.value = []
   }
 
-  function setOnlyAvailable(value, removeFalseValues = true) {
-    searchParams.value.only_available = value?.toString() === 'true'
-
-    if (!searchParams.value?.only_available) {
-      delete searchParams.value.only_available
-    }
-
-    clearSearchParams(removeFalseValues)
+  function setOnlyAvailable(value) {
+    onlyAvailable.value = value?.toString() === 'true'
   }
 
   function removeOnlyAvailable() {
-    delete searchParams.value.only_available
+    onlyAvailable.value = false
   }
 
-  function setIsSpecial(value, removeFalseValues = true) {
-    searchParams.value.is_special = value?.toString() === 'true'
-
-    if (!searchParams.value?.is_special) {
-      delete searchParams.value.is_special
-    }
-
-    clearSearchParams(removeFalseValues)
+  function setIsSpecial(value) {
+    isSpecial.value = value?.toString() === 'true'
   }
 
   function removeIsSpecial() {
-    delete searchParams.value.is_special
+    isSpecial.value = false
   }
 
-  function setDynamicFilters(value, removeFalseValues = true) {
-    searchParams.value.dynamic_filters = value
-
-    clearSearchParams(removeFalseValues)
+  function setDynamicFilters(filters) {
+    if (isObject(filters)) {
+      dynamicFilters.value = filters
+    }
   }
 
   function removeDynamicFilters() {
-    delete searchParams.value.dynamic_filters
+    dynamicFilters.value = {}
   }
 
-  function setOrder(value, removeFalseValues = true) {
-    searchParams.value.order = value
-
-    clearSearchParams(removeFalseValues)
+  function setOrder(value) {
+    order.value = value
   }
 
   function removeOrder() {
-    delete searchParams.value.order
+    order.value = null
   }
 
-  function setFestival(value, removeFalseValues = true) {
-    searchParams.value.festival = value
-
-    clearSearchParams(removeFalseValues)
+  function setFestival(value) {
+    festival.value = value
   }
 
   function removeFestival() {
-    delete searchParams.value.festival
+    festival.value = null
   }
 
-  function setCategory(value, removeFalseValues = true) {
-    searchParams.value.category = value
-
-    clearSearchParams(removeFalseValues)
+  function setCategory(value) {
+    category.value = value
   }
 
   function removeCategory() {
-    delete searchParams.value.category
+    category.value = null
   }
 
-  function readFiltersFromRoute(removeFalseValues = true) {
-    if (route.query?.min_price && route.query?.max_price) {
-      setPriceRange(route.query.min_price, route.query.max_price)
+  function readFiltersFromRoute() {
+    let params = route.query
+
+    // handle assigning color(s)
+    removeColors()
+    if (
+      (params.colors && Array.isArray(params.colors) && params.colors.length) ||
+      params.color
+    ) {
+      filterStore.getColors?.forEach(item => {
+        if (
+          params?.colors?.includes(item.name) ||
+          params?.color === item.name
+        ) {
+          colors.value[item.id] = item
+        }
+      })
     }
-    setOnlyAvailable(route.query?.only_available)
-    setIsSpecial(route.query?.is_special)
-    setDynamicFilters(route.query?.dynamic_filters)
-    setCategory(route.query?.category)
-    setFestival(route.query?.festival)
-    setOrder(route.query?.order)
 
-    // handle brands array or a single brand
-    if (route.query?.brands && Array.isArray(route.query.brands) && route.query.brands.length) {
-      setBrands(route.query.brands)
-    } else if (route.query?.brand) {
-      setBrands(route.query.brand)
+    // handle assigning size(s)
+    removeSizes()
+    if (
+      (params.sizes && Array.isArray(params.sizes) && params.sizes.length) ||
+      params.size
+    ) {
+      filterStore.getSizes?.forEach(item => {
+        if (
+          params?.sizes?.includes(item.size) ||
+          params?.size === item.size
+        ) {
+          colors.value[item.id] = item
+        }
+      })
     }
 
-    clearSearchParams(removeFalseValues)
-  }
+    // handle assigning brand(s)
+    removeBrands()
+    if (
+      (params.brands && Array.isArray(params.brands) && params.brands.length) ||
+      params.brand
+    ) {
+      filterStore.getBrands?.forEach(item => {
+        let parsedId = parseInt(item.id, 10);
 
-  function getRouteQueryObject() {
-    let queryObj = {
-      query: {
-        brands: getBrands.value,
-        only_available: getOnlyAvailable.value,
-        is_special: getIsSpecial.value,
-        dynamic_filters: getDynamicFilters.value,
-        order: getOrder.value,
+        if (!isNaN(parsedId)) {
+          if (params.brands && Array.isArray(params.brands) && params.brands.length) {
+            params.brands.forEach(brand => {
+              let parsedBrand = parseInt(brand, 10);
+              if (!isNaN(parsedBrand) && parsedId === parsedBrand) {
+                brands.value.push(item)
+              }
+            })
+          } else {
+            let parsedBrand = parseInt(params.brand, 10);
+            if (!isNaN(parsedBrand) && parsedId === parsedBrand) {
+              brands.value.push(item)
+            }
+          }
+        }
+      })
+    }
+
+    if (params.min_price && params.max_price) {
+      setPriceRange(params.min_price, params.max_price)
+    }
+    setOnlyAvailable(params.only_available)
+    setIsSpecial(params.is_special)
+
+    if (params.dynamic_filters) {
+      try {
+        setDynamicFilters(JSON.parse(params.dynamic_filters))
+      } catch (e) {
+        removeDynamicFilters()
       }
     }
 
-    let priceRange = getPriceRange.value
+    setOrder(params.order)
+
+    setCategory(params.category)
+    setFestival(params.festival)
+  }
+
+  function getRouteQueryObject() {
+    let queryObj = {};
+
+    let priceRange = getPriceRange.value;
     if (priceRange && priceRange[0] && priceRange[1]) {
-      queryObj.query.min_price = priceRange[0]
-      queryObj.query.max_price = priceRange[1]
+      queryObj.min_price = getMinPrice.value;
+      queryObj.max_price = getMaxPrice.value;
     }
 
-    return queryObj
+    queryObj = {
+      ...queryObj,
+      colors: getColors.value,
+      sizes: getSizes.value,
+      brands: getBrands.value,
+      only_available: getOnlyAvailable.value,
+      is_special: getIsSpecial.value,
+      dynamic_filters: getDynamicFilters.value,
+      order: getOrder.value,
+      festival: getFestival.value,
+      category: getCategory.value,
+    }
+
+    return clearSearchParamsRecursively(queryObj);
   }
 
   function resetSearchParams(except = []) {
@@ -350,8 +562,8 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
 
     if (except.length) {
       except.forEach(item => {
-        if (searchParams.value[item]) {
-          exceptions[item] = searchParams.value[item]
+        if (routeKeys[item]) {
+          exceptions[item] = routeKeys[item]
         }
       })
     }
@@ -361,50 +573,76 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
     if (Object.keys(exceptions).length) {
       for (let o in exceptions) {
         if (exceptions.hasOwnProperty(o)) {
-          searchParams.value[o] = exceptions[o]
-        }
-      }
-    }
-  }
+          let v = toValue(exceptions[o])
 
-  function clearSearchParams(removeFalseValues = true) {
-    for (let o in searchParams.value) {
-      if (searchParams.value.hasOwnProperty(o)) {
-        if (
-          searchParams.value[o] === null ||
-          searchParams.value[o] === undefined ||
-          (
-            Array.isArray(searchParams.value[o]) &&
-            !searchParams.value[o].map(item => item !== null && item !== undefined).length
-          ) ||
-          (
-            removeFalseValues &&
-            searchParams.value[o] === false
-          )
-        ) {
-          delete searchParams.value[o]
+          switch (o) {
+            case 'min_price':
+              setPriceRange(v, getMaxPrice.value)
+              break;
+            case 'max_price':
+              setPriceRange(getMinPrice.value, v)
+              break;
+            case 'colors':
+              setColors(v)
+              break;
+            case 'sizes':
+              setSizes(v)
+              break;
+            case 'brands':
+              setBrands(v)
+              break;
+            case 'only_available':
+              setOnlyAvailable(v)
+              break;
+            case 'is_special':
+              setIsSpecial(v)
+              break;
+            case 'dynamic_filters':
+              setDynamicFilters(v)
+              break;
+            case 'order':
+              setOrder(v)
+              break;
+            case 'festival':
+              setFestival(v)
+              break;
+            case 'category':
+              setCategory(v)
+              break;
+          }
         }
       }
     }
   }
 
   function $reset() {
-    searchParams.value = {}
+    removeColors()
+    removeSizes()
+    removeBrands()
+    removePriceRange()
+    removeOnlyAvailable()
+    removeIsSpecial()
+    removeDynamicFilters()
+    removeOrder()
+    removeFestival()
+    removeCategory()
   }
 
   return {
-    getSearchParams, searchParams,
-    getBrands, setBrands, removeBrands,
-    getPriceRange, setPriceRange, removePriceRange,
-    getOnlyAvailable, setOnlyAvailable, removeOnlyAvailable,
-    getIsSpecial, setIsSpecial, removeIsSpecial,
-    getDynamicFilters, setDynamicFilters, removeDynamicFilters,
-    getOrder, setOrder, removeOrder,
-    getFestival, setFestival, removeFestival,
-    getCategory, setCategory, removeCategory,
+    brands, getColors, setColors, removeColors,
+    colors, getSizes, setSizes, removeSizes,
+    sizes, getBrands, setBrands, removeBrands,
+    priceRange, getPriceRange, setPriceRange, removePriceRange,
+    onlyAvailable, getOnlyAvailable, setOnlyAvailable, removeOnlyAvailable,
+    isSpecial, getIsSpecial, setIsSpecial, removeIsSpecial,
+    dynamicFilters, getDynamicFilters, setDynamicFilters, removeDynamicFilters,
+    order, getOrder, setOrder, removeOrder,
+    festival, getFestival, setFestival, removeFestival,
+    category, getCategory, setCategory, removeCategory,
     //
     readFiltersFromRoute, getRouteQueryObject,
-    resetSearchParams, clearSearchParams,
+    resetSearchParams, clearSearchParams: clearSearchParamsRecursively,
+    routeKeys,
     //
     $reset,
   }

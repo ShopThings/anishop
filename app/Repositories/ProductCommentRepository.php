@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\Comments\CommentVotingTypesEnum;
+use App\Http\Requests\Filters\HomeCommentFilter;
 use App\Models\Comment;
 use App\Repositories\Contracts\ProductCommentRepositoryInterface;
 use App\Support\Filter;
@@ -44,7 +45,7 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
                 'product',
                 'product.image',
                 'answeredBy',
-                'statusChanger',
+                'conditionChanger',
                 'creator',
                 'updater',
                 'deleter',
@@ -78,6 +79,10 @@ class ProductCommentRepository extends Repository implements ProductCommentRepos
             ->when($productId, function ($q, $productId) {
                 $q->where('comments.product_id', $productId);
             });
+
+        if ($filter instanceof HomeCommentFilter) {
+            $query->accepted();
+        }
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);
     }

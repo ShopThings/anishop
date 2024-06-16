@@ -1,6 +1,6 @@
 <template>
   <base-paginator
-    v-model:items="notifications"
+    v-model:total="totalNotifications"
     :path="getPath"
     :per-page="10"
     container-class="flex flex-col gap-3"
@@ -62,7 +62,7 @@ import {apiRoutes} from "@/router/api-routes.js";
 import {UserNotificationAPI} from "@/service/APINotification.js";
 
 const getPath = apiRoutes.user.info.notification.index
-const notifications = ref([])
+const totalNotifications = ref(0)
 
 const priorityColors = {
   very_high: '#ef4444',

@@ -39,19 +39,13 @@ class Coupon extends Model
      */
     public function canApplyOn(float $price): bool
     {
-        if (
-            (
+        return (
                 !$this->apply_min_price ||
-                ($this->apply_min_price && $price >= $this->apply_min_price)
+                ($this->apply_min_price && $price >= $this->apply_min_price && $this->price < $price)
             ) &&
             (
                 !$this->apply_max_price ||
-                ($this->apply_max_price && $price <= $this->apply_max_price)
-            )
-        ) {
-            return true;
-        }
-
-        return false;
+                ($this->apply_max_price && $price <= $this->apply_max_price && $this->price < $price)
+            );
     }
 }

@@ -41,6 +41,7 @@
                   title="کلمات کلیدی"
                 />
                 <base-tags-input
+                  :add-tag-on-keys="[13, 190]"
                   :tags="tags"
                   placeholder="کلمات کلیدی خود را وارد نمایید"
                   @on-tags-changed="(t) => {tags = t}"

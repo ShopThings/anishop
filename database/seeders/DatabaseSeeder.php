@@ -30,13 +30,14 @@ class DatabaseSeeder extends Seeder
             BlogCommentSeeder::class,
             //
             MenuAndPlaceSeeder::class,
+            SliderSeeder::class,
             //
             ColorSeeder::class,
             BrandSeeder::class,
             CategorySeeder::class,
             UnitSeeder::class,
-//            ProductSeeder::class,
-//            ProductCommentSeeder::class,
+            ProductSeeder::class,
+            ProductCommentSeeder::class,
             //
             OrderBadgeSeeder::class,
         ]);

@@ -46,11 +46,17 @@ class HomeProductController extends Controller
      * This will use 'log_visit' to log too
      *
      * @param Product $product
-     * @return HomeProductSingleResource
+     * @return JsonResponse|HomeProductSingleResource
      */
-    public function show(Product $product): HomeProductSingleResource
+    public function show(Product $product): JsonResponse|HomeProductSingleResource
     {
-        Gate::authorize('isPubliclyAccessible', $product);
+        if (Gate::denies('isPubliclyAccessible', $product)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'امکان مشاهده محصول وجود ندارد.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         return new HomeProductSingleResource($product);
     }
 
@@ -84,12 +90,7 @@ class HomeProductController extends Controller
      */
     public function brandsFilter(HomeProductSideFilter $filter): AnonymousResourceCollection
     {
-        $products = $this->service->getFilterBrands($filter);
-        $brands = $products->map(function ($item) {
-            return $item->product->brand;
-        });
-
-        return BrandResource::collection($brands);
+        return BrandResource::collection($this->service->getFilterBrands($filter));
     }
 
     /**

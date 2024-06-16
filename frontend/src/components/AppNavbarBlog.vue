@@ -1,7 +1,7 @@
 <template>
   <div class="h-[64px]">
     <nav class="fixed bg-white w-full shadow-md z-10">
-      <div class="max-w-7xl mx-auto w-full">
+      <div class="layout-max-w mx-auto w-full">
         <div class="h-[64px] py-2 px-6 flex">
           <div class="h-full shrink-0">
             <router-link :to="{name: 'home'}">

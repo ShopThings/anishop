@@ -10,7 +10,8 @@ use Illuminate\Support\Carbon;
 
 trait RepositoryFilterableByDatesTrait
 {
-    use CompanyTimezoneDetectorTrait;
+    use CompanyTimezoneDetectorTrait,
+        AppTimezoneTrait;
 
     /**
      * Returns an array with following structure:
@@ -114,12 +115,13 @@ trait RepositoryFilterableByDatesTrait
         for ($i = 0; $i < 4; $i++) {
             $tmpQuery = clone $query;
             $startDate = $startingPoint->copy()->addWeeks($i);
-            $endDate = $startingPoint->copy()->addWeeks($i);
+            $endDate = $startingPoint->copy()->addWeeks($i + 1)->subDay();
+            $endDate = $endDate?->startDay() ?? $endDate->startOfDay();
             $data[] = [
                 'label' => $this->getMonthlyLabel($startDate),
                 'data' => $tmpQuery->whereBetween($dateColumn, [
-                    $startDate?->startWeek()->toCarbon()->timezone($this->getAppTimezone()) ?? $startDate->startOfWeek(),
-                    $endDate?->endWeek()->toCarbon()->timezone($this->getAppTimezone()) ?? $endDate->endOfWeek(),
+                    $startDate?->toCarbon()->timezone($this->getAppTimezone()) ?? $startDate,
+                    $endDate?->toCarbon()->timezone($this->getAppTimezone()) ?? $endDate,
                 ])->count(),
             ];
         }
@@ -136,7 +138,9 @@ trait RepositoryFilterableByDatesTrait
             $monthDate = vertaTz($monthDate);
         }
 
-        return $monthDate->format('j F');
+        return $monthDate->format('j F') .
+            trans('periodic.labels.monthly') .
+            $monthDate->addWeek()->subDay()->format('j F');
     }
 
     /**
@@ -267,13 +271,5 @@ trait RepositoryFilterableByDatesTrait
         return (mb_strlen($hour) == 1 ? '0' : '') . $hour .
             trans('periodic.labels.daily') .
             (mb_strlen($hour + 1) == 1 ? '0' : '') . ($hour + 1);
-    }
-
-    /**
-     * @return string
-     */
-    private function getAppTimezone(): string
-    {
-        return config('app.timezone');
     }
 }

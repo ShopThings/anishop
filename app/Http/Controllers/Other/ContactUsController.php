@@ -65,7 +65,7 @@ class ContactUsController extends Controller
     {
         Gate::authorize('update', $contact);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'answer',
             'is_seen',
         ]);

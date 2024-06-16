@@ -27,7 +27,7 @@
       >
         <router-link
           :to="{name: 'search', query: {category: category.id}}"
-          class="flex flex-col items-center gap-3"
+          class="flex flex-col items-center gap-3 hover:scale-105 transition"
         >
           <base-lazy-image
             :alt="category.name"

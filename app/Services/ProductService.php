@@ -18,6 +18,7 @@ use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
 use App\Support\WhereBuilder\GetterExpressionInterface;
 use App\Support\WhereBuilder\WhereBuilder;
+use App\Traits\DatabaseDateTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -25,7 +26,8 @@ use InvalidArgumentException;
 
 class ProductService extends Service implements ProductServiceInterface
 {
-    use ImageFieldTrait;
+    use ImageFieldTrait,
+        DatabaseDateTrait;
 
     public function __construct(
         protected ProductRepositoryInterface $repository,
@@ -144,49 +146,7 @@ class ProductService extends Service implements ProductServiceInterface
      */
     public function getDynamicFilters(HomeProductSideFilter $filter): Collection
     {
-        // after getting filter, it might have duplicates for specific id,
-        // and from below structure:
-        // [
-        //   [
-        //     'id' => value...,
-        //     'title' => value...,
-        //     'type' => value...,
-        //     'attribute_value_id' => value...,
-        //     'attribute_value' => value...,
-        //   ],
-        //   ...
-        // ]
-        // we want to get following structure instead:
-        // [
-        //   [
-        //     'id' => value...,
-        //     'title' => value...,
-        //     'type' => value...,
-        //     'values' => [
-        //       'id' => value..., // alias of 'attribute_value_id'
-        //       'value' => value..., // alias of 'attribute_value'
-        //     ],
-        //   ],
-        //   ...
-        // ]
-        // and below codes will do that
-        return $this->repository->getDynamicFilters($filter)
-            // 'id' is important, so preserve keys in collection
-            ->groupBy('id')->map(function ($groupedItems) {
-                return [
-                    'id' => $groupedItems->first()['id'],
-                    'title' => $groupedItems->first()['title'],
-                    'type' => $groupedItems->first()['type'],
-                    'values' => $groupedItems->pluck(['attribute_value_id', 'attribute_value'])
-                        ->map(function ($item) {
-                            return [
-                                'id' => $item['attribute_value_id'],
-                                'value' => $item['attribute_value'],
-                            ];
-                        })
-                        ->toArray(),
-                ];
-            });
+        return $this->repository->getDynamicFilters($filter);
     }
 
     /**
@@ -397,10 +357,14 @@ class ProductService extends Service implements ProductServiceInterface
                     $tmp['discounted_price'] = null;
                 }
 
-                if (empty($product['discounted_from'])) {
+                if (!empty($product['discounted_from'])) {
+                    $tmp['discounted_from'] = $this->getValidDatabaseDate($product['discounted_from']);
+                } else {
                     $tmp['discounted_from'] = null;
                 }
-                if (empty($product['discounted_until'])) {
+                if (!empty($product['discounted_until'])) {
+                    $tmp['discounted_until'] = $this->getValidDatabaseDate($product['discounted_until']);
+                } else {
                     $tmp['discounted_until'] = null;
                 }
 

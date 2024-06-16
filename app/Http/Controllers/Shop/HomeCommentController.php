@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Shop;
 use App\Enums\Comments\CommentVotingTypesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Filters\HomeCommentFilter;
 use App\Http\Requests\ProductCommentVoteRequest;
 use App\Http\Resources\Home\CommentResource;
 use App\Models\Comment;
 use App\Models\Product;
 use App\Services\Contracts\ProductCommentServiceInterface;
-use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -31,11 +31,11 @@ class HomeCommentController extends Controller
     }
 
     /**
-     * @param Filter $filter
+     * @param HomeCommentFilter $filter
      * @param Product $product
      * @return AnonymousResourceCollection
      */
-    public function index(Filter $filter, Product $product): AnonymousResourceCollection
+    public function index(HomeCommentFilter $filter, Product $product): AnonymousResourceCollection
     {
         return CommentResource::collection($this->service->getComments(
             productId: $product->id,
@@ -58,7 +58,7 @@ class HomeCommentController extends Controller
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        Gate::authorize('reportComment', [$product, $comment]);
+        Gate::authorize('reportComment', [$comment, $product]);
 
         // check for previous report footprint
         $cookieName = 'comment_report_' . $comment->id;

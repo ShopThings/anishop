@@ -26,7 +26,7 @@
             class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>دیدگاه محصول</span>
-            <span class="w-6 h-6 rounded bg-teal-500 text-white px-1 text-center mr-2">{{
+            <span class="min-w-6 h-6 rounded bg-teal-500 text-white px-1 text-center mr-2">{{
                 numberFormat(countingAlertStore.getProductCommentCount)
               }}</span>
           </router-link>
@@ -41,7 +41,7 @@
             class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>دیدگاه بلاگ</span>
-            <span class="w-6 h-6 rounded bg-green-500 text-white px-1 text-center mr-2">{{
+            <span class="min-w-6 h-6 rounded bg-green-500 text-white px-1 text-center mr-2">{{
                 numberFormat(countingAlertStore.getBlogCommentCount)
               }}</span>
           </router-link>
@@ -56,7 +56,7 @@
             class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>درخواست مرجوعی کالا</span>
-            <span class="w-6 h-6 rounded bg-pink-500 text-white px-1 text-center mr-2">{{
+            <span class="min-w-6 h-6 rounded bg-pink-500 text-white px-1 text-center mr-2">{{
                 numberFormat(countingAlertStore.getReturnOrderCount)
               }}</span>
           </router-link>
@@ -71,7 +71,7 @@
             class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>تماس با ما</span>
-            <span class="w-6 h-6 rounded bg-cyan-500 text-white px-1 text-center mr-2">{{
+            <span class="min-w-6 h-6 rounded bg-cyan-500 text-white px-1 text-center mr-2">{{
                 numberFormat(countingAlertStore.getContactCount)
               }}</span>
           </router-link>
@@ -86,7 +86,7 @@
             class="flex justify-between items-center group px-4 py-2.5 hover:bg-indigo-50 transition rounded-lg"
           >
             <span>شکایات</span>
-            <span class="w-6 h-6 rounded bg-rose-500 text-white px-1 text-center mr-2">{{
+            <span class="min-w-6 h-6 rounded bg-rose-500 text-white px-1 text-center mr-2">{{
                 numberFormat(countingAlertStore.getComplaintCount)
               }}</span>
           </router-link>

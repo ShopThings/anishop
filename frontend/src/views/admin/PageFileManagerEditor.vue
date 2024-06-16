@@ -52,7 +52,7 @@ function validExtensions() {
   extensions.value = []
 
   if (type === 'image')
-    extensions.value = ['jpeg', 'png', 'jpg', 'gif', 'svg']
+    extensions.value = ['jpeg', 'png', 'jpg', 'webp', 'gif', 'svg']
   else if (type === 'video')
     extensions.value = ['mp4']
   else if (type === 'audio')

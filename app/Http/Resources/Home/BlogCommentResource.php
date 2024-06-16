@@ -23,7 +23,7 @@ class BlogCommentResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'badge' => new BlogBadgeShowResource($this->whenLoaded('badge')),
+            'badge' => new BlogBadgeShowResource($this->badge),
             'comment_id' => $this->comment_id,
             'has_children' => $childrenCount > 0,
             'children_count' => $childrenCount,

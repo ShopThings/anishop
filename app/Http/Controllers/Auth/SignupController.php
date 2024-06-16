@@ -37,7 +37,7 @@ class SignupController extends Controller
      */
     public function store(SignupRequest $request): JsonResponse
     {
-        $username = $request->validated(['username']);
+        $username = $request->validated('username');
 
         // add user to database
         // username is either exists and not verified or not exists at all
@@ -83,7 +83,7 @@ class SignupController extends Controller
     {
         $this->checkLogin();
 
-        $username = $request->validated(['username']);
+        $username = $request->validated('username');
         return $this->sendVerificationCode($username);
     }
 
@@ -105,8 +105,8 @@ class SignupController extends Controller
     {
         $this->checkLogin();
 
-        $code = $request->validated(['code']);
-        $username = $request->validated(['username']);
+        $code = $request->validated('code');
+        $username = $request->validated('username');
         $status = $this->service->verifyActivationCode($username, $code);
 
         if ($status) {
@@ -127,8 +127,8 @@ class SignupController extends Controller
     {
         $this->checkLogin();
 
-        $password = $request->validated(['password']);
-        $username = $request->validated(['username']);
+        $password = $request->validated('password');
+        $username = $request->validated('username');
         $user = $this->service->getUserByUsername($username);
 
         if (!$user instanceof User) {

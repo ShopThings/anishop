@@ -7,11 +7,11 @@
         }}</span>
       <span class="text-sm font-iranyekan-light">تا</span>
       <div class="font-iranyekan-bold text-black bg-violet-200 rounded-md py-0.5 px-2">
-        <template v-if="!itemsLength">
+        <template v-if="total > offset + perPage">
           {{ numberFormat(offset + perPage) }}
         </template>
         <template v-else>
-          {{ numberFormat(offset + Math.min(itemsLength, perPage)) }}
+          {{ numberFormat(total) }}
         </template>
       </div>
     </div>
@@ -42,6 +42,5 @@ defineProps({
   currentPage: [Number, String],
   maxPage: [Number, String],
   total: [Number, String],
-  itemsLength: [Number, String],
 })
 </script>

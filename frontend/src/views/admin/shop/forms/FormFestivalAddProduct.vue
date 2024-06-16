@@ -4,6 +4,7 @@
       <div class="w-full p-2 md:w-2/3">
         <partial-input-label title="انتخاب محصول"/>
         <base-select-searchable
+          ref="productSelectRef"
           :current-page="productSelectConfig.currentPage.value"
           :has-pagination="true"
           :is-loading="productLoading"
@@ -18,7 +19,28 @@
           @query="searchProduct"
           @click-next-page="searchProductNextPage"
           @click-prev-page="searchProductPrevPage"
-        />
+        >
+          <template #item="{item}">
+            <div class="flex items-center gap-3">
+              <base-lazy-image
+                v-if="item?.image?.path"
+                :alt="item.title"
+                :is-local="false"
+                :lazy-src="item?.image?.path"
+                :size="FileSizes.SMALL"
+                class="!w-16 !h-auto object-cover rounded"
+              />
+              <img
+                v-else
+                :alt="item.title"
+                class="w-16 h-auto object-cover rounded"
+                src="/image-placeholder.jpg"
+              >
+
+              <span class="text-sm">{{ item.title }}</span>
+            </div>
+          </template>
+        </base-select-searchable>
         <partial-input-error-message :error-message="errors.product"/>
       </div>
       <div class="w-full p-2 md:w-1/3">
@@ -78,10 +100,14 @@ import {ProductAPI} from "@/service/APIProduct.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import {FestivalAPI} from "@/service/APIShop.js";
 import BaseInput from "@/components/base/BaseInput.vue";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const emit = defineEmits(['added'])
 
 const slugParam = getRouteParamByKey('slug', null, false)
+
+const productSelectRef = ref(null)
 
 //----------------------
 // Product search
@@ -134,7 +160,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }, {
     success() {
       emit('added', selectedProduct.value)
+
       actions.resetForm()
+      if (productSelectRef.value) {
+        productSelectRef.value.removeSelectedItems()
+      }
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

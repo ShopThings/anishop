@@ -4,7 +4,7 @@
       v-if="errors && Object.keys(errors).length"
       type="error"
     >
-      <ul>
+      <ul class="leading-relaxed flex flex-col gap-3 list-inside list-disc">
         <li
           v-for="(err, idx) in errors"
           :key="idx"

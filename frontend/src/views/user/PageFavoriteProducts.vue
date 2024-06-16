@@ -1,6 +1,6 @@
 <template>
   <base-paginator
-    v-model:items="favoriteProducts"
+    v-model:total="totalFavoriteProducts"
     :path="getPath"
     :per-page="10"
     container-class="flex flex-col gap-4"
@@ -69,7 +69,7 @@ import {useConfirmToast} from "@/composables/toast-helper.js";
 const toast = useToast()
 
 const getPath = apiRoutes.user.favoriteProducts.index
-const favoriteProducts = ref([])
+const totalFavoriteProducts = ref(0)
 
 function handleRemoveFavProduct(item) {
   useConfirmToast(() => {

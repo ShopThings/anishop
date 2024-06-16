@@ -93,7 +93,7 @@ class OrderBadgeController extends Controller
     {
         Gate::authorize('update', $orderBadge);
 
-        $validated = $request->validated([
+        $validated = filter_validated_data($request->validated(), [
             'title',
             'color_hex',
             'should_return_order_product',

@@ -147,11 +147,20 @@ export const ProductAttributeCategoryAPI = Object.assign(
 
 export const ProductAttributeProductAPI = Object.assign(
   GenericAPI(apiRoutes.admin.productAttributeProducts, {
-    only: ['show', 'store'],
+    only: ['show'],
     replacement: 'product',
   }),
   {
-    // extra functionality goes here
+    create(productId, data, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.admin.productAttributeProducts.store, {product: productId,}),
+        {
+          method: 'POST',
+          data,
+        },
+        callbacks
+      )
+    },
   }
 )
 

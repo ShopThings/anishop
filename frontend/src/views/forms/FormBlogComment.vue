@@ -46,7 +46,7 @@
 
       <div v-else>
         <p class="p-3 border-r-4 border-rose-500 bg-rose-50">
-          برای ارسال نظر لطفا ابتدا به سایت
+          برای ارسال دیدگاه لطفا ابتدا به سایت
           <router-link
             :to="{name: 'login', query: {redirect: route.fullPath}}"
             class="text-blue-600 hover:text-opacity-80 transition"
@@ -106,7 +106,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }),
 }, (values, actions) => {
   if (!user) {
-    toast.error('برای ارسال نظر لطفا ابتدا به سایت وارد شوید.')
+    toast.error('برای ارسال دیدگاه لطفا ابتدا به سایت وارد شوید.')
     return
   }
 

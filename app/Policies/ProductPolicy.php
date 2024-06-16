@@ -2,10 +2,8 @@
 
 namespace App\Policies;
 
-use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Enums\Gates\PermissionsEnum;
-use App\Models\Comment;
 use App\Models\Product;
 use App\Models\User;
 use App\Support\Gate\PermissionHelper;
@@ -35,19 +33,6 @@ class ProductPolicy
                 PermissionsEnum::UPDATE,
                 PermissionPlacesEnum::PRODUCT)
         );
-    }
-
-    /**
-     * @param User $user
-     * @param Product $model
-     * @param Comment $comment
-     * @return bool
-     */
-    public function reportComment(User $user, Product $model, Comment $comment): bool
-    {
-        return $model->is_published &&
-            $model->is_commenting_allowed &&
-            CommentConditionsEnum::ACCEPTED->value === $comment->condition;
     }
 
     /**

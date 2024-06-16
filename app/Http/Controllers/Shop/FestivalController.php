@@ -50,7 +50,7 @@ class FestivalController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param StoreFestivalRequest $request
      * @return JsonResponse
      */
     public function store(StoreFestivalRequest $request): JsonResponse
@@ -131,13 +131,13 @@ class FestivalController extends Controller
     /**
      * @param Filter $filter
      * @param Festival $festival
-     * @return FestivalProductResource
+     * @return AnonymousResourceCollection
      */
-    public function products(Filter $filter, Festival $festival): FestivalProductResource
+    public function products(Filter $filter, Festival $festival): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', Festival::class);
 
-        return new FestivalProductResource($this->service->getFestivalProducts(
+        return FestivalProductResource::collection($this->service->getFestivalProducts(
             festivalId: $festival->id,
             filter: $filter
         ));
@@ -153,6 +153,14 @@ class FestivalController extends Controller
         Gate::authorize('create', Festival::class);
 
         $validated = $request->validated();
+
+        if (!isset($validated['product'])) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'برای افزودن محصول به جشنواره، انتخاب محصول اجباری می‌باشد.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $model = $this->service->addProductToFestival(
             $validated['product'], $festival->id, $validated['discount_percentage']
         );
@@ -180,6 +188,14 @@ class FestivalController extends Controller
         Gate::authorize('create', Festival::class);
 
         $validated = $request->validated();
+
+        if (!isset($validated['category'])) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'برای افزودن دسته‌بندی به جشنواره، انتخاب دسته‌بندی اجباری می‌باشد.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         $model = $this->service->addCategoryToFestival(
             $validated['category'], $festival->id, $validated['discount_percentage']
         );

@@ -2,10 +2,8 @@
 
 namespace App\Policies;
 
-use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Gates\PermissionPlacesEnum;
 use App\Models\Blog;
-use App\Models\BlogComment;
 use App\Models\User;
 use App\Support\Traits\PolicyTrait;
 
@@ -20,19 +18,6 @@ class BlogPolicy
     public function __construct()
     {
         $this->checkIsDeletable = false;
-    }
-
-    /**
-     * @param User $user
-     * @param Blog $model
-     * @param BlogComment $comment
-     * @return bool
-     */
-    public function reportComment(User $user, Blog $model, BlogComment $comment): bool
-    {
-        return $model->is_published &&
-            $model->is_commenting_allowed &&
-            CommentConditionsEnum::ACCEPTED->value === $comment->condition;
     }
 
     /**

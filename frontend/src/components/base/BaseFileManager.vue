@@ -3,7 +3,7 @@
     <base-file-manager-uploader
       :disk="currentStorage.path"
       :path="currentPath"
-      @upload-complete="() => {doSearch(null, null, table.sortable.order, table.sortable.sort)}"
+      @upload-complete="uploadCompletedHandler"
     ></base-file-manager-uploader>
   </template>
 
@@ -333,6 +333,7 @@ const tableContainer = ref(null)
 const loading = ref(true)
 const table = reactive({
   isLoading: false,
+  shouldScrollToTop: true,
   selectionColumns: [
     {
       label: "",
@@ -464,10 +465,23 @@ const doSearch = (offset, limit, order, sort, text) => {
       table.sortable.order = order
       table.sortable.sort = sort
 
-      if (tableContainer.value && tableContainer.value.card)
+      if (table.shouldScrollToTop && tableContainer.value && tableContainer.value.card) {
         tableContainer.value.card.scrollIntoView({behavior: "smooth"})
+      }
+
+      setTimeout(() => {
+        table.shouldScrollToTop = true
+      }, 500)
     },
   })
+}
+
+function uploadCompletedHandler(hasError) {
+  if (hasError) {
+    table.shouldScrollToTop = false
+  }
+
+  doSearch(null, null, table.sortable.order, table.sortable.sort)
 }
 
 const batchOperationLoading = ref(false)
@@ -751,7 +765,6 @@ const onContextMenu = (e, data) => {
 // -----------------------------------
 // context menu events
 // -----------------------------------
-
 function copyClicked(item) {
   copiedPath.value.action = 'copy'
   copiedPath.value.items = []

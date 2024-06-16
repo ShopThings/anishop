@@ -1,11 +1,47 @@
 <template>
+  <base-loading-panel
+    :loading="productLoading"
+    type="list-single"
+  >
+    <template #content>
+      <partial-card class="border-0 mb-3">
+        <template #header>
+          دیدگاه کاربر درباره محصول
+        </template>
+        <template #body>
+          <div class="py-3 px-4">
+            <div class="flex flex-col sm:flex-row gap-3 items-center">
+              <div class="shrink-0">
+                <base-lazy-image
+                  :alt="product?.title"
+                  :is-local="false"
+                  :lazy-src="product?.image.full_path"
+                  :size="FileSizes.SMALL"
+                  class="!h-28 sm:!h-20 w-auto rounded"
+                />
+              </div>
+              <div class="grow text-sm">
+                {{ product?.title }}
+              </div>
+              <div class="text-sm shrink-0">
+                <router-link
+                  :to="{name: 'admin.product.detail', params: {slug: product?.slug}}"
+                  class="flex items-center gap-2 text-blue-600 hover:text-opacity-90 group"
+                >
+                  <span class="mx-auto">مشاهده محصول</span>
+                  <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1.5 transition"/>
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </template>
+      </partial-card>
+    </template>
+  </base-loading-panel>
+
   <partial-card>
     <template #header>
       ویرایش ویژگی جستجوی
-      <span
-        v-if="product?.id"
-        class="text-slate-400 text-base"
-      >{{ product?.title }}</span>
     </template>
     <template #body>
       <div class="p-3">
@@ -15,7 +51,7 @@
         >
           <template #content>
             <form
-              v-if="productAttributes?.length"
+              v-if="categoryAttributes?.length"
               @submit.prevent="onSubmit"
             >
               <partial-error-message
@@ -27,17 +63,17 @@
 
               <div class="flex flex-wrap">
                 <div
-                  v-for="(attr) in productAttributes"
+                  v-for="(attr) in categoryAttributes"
                   class="w-full p-2 sm:w-1/2 xl:w-1/3"
                 >
-                  <partial-input-label :title="attr.title"/>
+                  <partial-input-label :title="attr.product_attribute.title"/>
                   <base-select
                     :name="'attr' + attr.id"
-                    :options="attr.attr_values"
-                    :selected="attr.product_attr_value[attr.id]"
+                    :options="attr.product_attribute.values"
+                    :selected="selectedAttrValues[attr.product_attribute.id]"
                     options-key="id"
-                    options-text="product_attribute_value.attribute_value"
-                    @change="(t) => {attr.product_attr_value[attr.id] = t}"
+                    options-text="attribute_value"
+                    @change="(t) => {selectedAttrValues[attr.product_attribute.id] = t}"
                   />
                 </div>
               </div>
@@ -135,7 +171,7 @@ import {onMounted, ref} from "vue";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {CheckIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongLeftIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -148,23 +184,27 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {ProductAPI, ProductAttributeProductAPI} from "@/service/APIProduct.js";
 import PartialErrorMessage from "@/components/partials/message/PartialErrorMessage.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const router = useRouter()
 const toast = useToast()
 const slugParam = getRouteParamByKey('slug', null, false)
 
-const loading = ref(true)
-
 const product = ref(null)
+const productLoading = ref(true)
+
+const categoryAttributes = ref(null)
 const productAttributes = ref(null)
-const selectedAttrValues = ref([])
+const loading = ref(true)
+const selectedAttrValues = ref({})
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({}),
 }, (values, actions) => {
   canSubmit.value = false
 
-  ProductAttributeProductAPI.create({
+  ProductAttributeProductAPI.create(slugParam.value, {
     values: selectedAttrValues.value,
   }, {
     error(error) {
@@ -181,7 +221,18 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 onMounted(() => {
   ProductAttributeProductAPI.fetchById(slugParam.value, {
     success(response) {
-      productAttributes.value = response.data
+      categoryAttributes.value = response.data.category_attributes
+      productAttributes.value = response.data.product_attributes
+
+      if (productAttributes.value.length) {
+        for (let c of categoryAttributes.value) {
+          let attributeIdx = productAttributes.value.findIndex(item => item.product_attribute_value.product_attribute_id === c.product_attribute.id)
+          if (attributeIdx !== -1) {
+            selectedAttrValues.value[c.product_attribute.id] = productAttributes.value[attributeIdx].product_attribute_value
+          }
+        }
+      }
+
       loading.value = false
     },
   })
@@ -189,6 +240,7 @@ onMounted(() => {
   ProductAPI.fetchById(slugParam.value, {
     success: (response) => {
       product.value = response.data
+      productLoading.value = false
     },
   })
 })

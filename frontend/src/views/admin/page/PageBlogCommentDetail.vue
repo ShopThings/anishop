@@ -7,10 +7,6 @@
       <partial-card class="border-0 mb-3">
         <template #header>
           دیدگاه کاربر درباره بلاگ
-          <span
-            v-if="blog?.slug"
-            class="text-slate-400 text-base"
-          >{{ blog?.title }}</span>
         </template>
         <template #body>
           <div class="py-3 px-4">
@@ -55,7 +51,7 @@
         >
           <template #content>
             <div class="flex flex-wrap">
-              <div class="p-2 md:w-1/2 relative">
+              <div class="p-2 w-full sm:w-1/2 relative">
                 <VTransitionFade>
                   <loader-circle
                     v-if="badgeUpdateLoading"
@@ -80,7 +76,7 @@
                 </base-select>
               </div>
 
-              <div class="p-2 md:w-1/2 relative">
+              <div class="p-2 w-full sm:w-1/2 relative">
                 <VTransitionFade>
                   <loader-circle
                     v-if="conditionUpdateLoading"
@@ -106,10 +102,10 @@
             </div>
 
             <div
-              v-if="comment?.parent || 1"
+              v-if="comment?.parent"
               class="mt-3"
             >
-              <partial-input-label title="پاسخ کاربر به دیدگاه"/>
+              <partial-input-label title="پاسخ کاربر به این دیدگاه"/>
               <partial-comment-blog-single
                 :comment="comment?.parent || {}"
                 :show-answer-button="false"
@@ -203,7 +199,6 @@ import {getRouteParamByKey} from "@/composables/helper.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {BlogBadgeAPI, BlogCommentAPI} from "@/service/APIBlog.js";
 import PartialCommentBlogSingle from "@/components/partials/PartialCommentBlogSingle.vue";
-import {useToast} from "vue-toastification";
 import {COMMENT_SEEN_STATUSES, COMMENT_STATUSES} from "@/composables/constants.js";
 import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
@@ -214,7 +209,6 @@ import {useRouter} from "vue-router";
 import {FileSizes} from "@/composables/file-list.js";
 
 const router = useRouter()
-const toast = useToast()
 const slugParam = getRouteParamByKey('slug', null, false)
 const commentId = getRouteParamByKey('detail', null, false)
 
@@ -360,7 +354,7 @@ onMounted(() => {
       blog.value = response.data.blog
 
       // set current badge
-      selectedUserCommentBadge.value = comment.badge
+      selectedUserCommentBadge.value = comment.value.badge
 
       // set current condition
       selectedUserCommentCondition.value = conditions.value.filter((item) => {
@@ -368,7 +362,7 @@ onMounted(() => {
       }).shift()
 
       if (response.data.status.value === COMMENT_SEEN_STATUSES.UNREAD.value) {
-        BlogCommentAPI.updateById(slugParam, commentId.value, {
+        BlogCommentAPI.updateById(slugParam.value, commentId.value, {
           status: COMMENT_SEEN_STATUSES.READ.value,
         }, {
           success(response2) {

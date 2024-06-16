@@ -39,7 +39,7 @@ return [
     'email' => ':attribute ایمیل آدرس معتبر نیست.',
     'ends_with' => ':attribute آخرین مقدار باید شامل این موارد باشد: :values',
     'enum' => 'فیلد :attribute انتخاب شده نامعتبر است.',
-    'exists' => ':attribute مورد انتخاب شده معتبر نیست.',
+    'exists' => ':attribute انتخاب شده معتبر نیست.',
     'file' => ':attribute باید یک فایل انتخاب شود.',
     'filled' => ':attribute باید یک مقدار وارد شود.',
     'gt' => [

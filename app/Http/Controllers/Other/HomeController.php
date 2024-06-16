@@ -17,6 +17,7 @@ use App\Services\Contracts\SettingServiceInterface;
 use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class HomeController extends Controller
 {
@@ -51,7 +52,7 @@ class HomeController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'خطا در ثبت پیام',
-            ]);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -76,7 +77,7 @@ class HomeController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'خطا در ثبت شکایت',
-            ]);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -101,7 +102,7 @@ class HomeController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'خطا در ثبت شماره در خبرنامه',
-            ]);
+            ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
