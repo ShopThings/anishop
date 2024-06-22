@@ -327,10 +327,7 @@ async function checkMaintenanceGuard(to) {
   // If maintenance mode is active in frontend, just return true
   if (import.meta.env.VITE_IN_MAINTENANCE_MODE === 'true') {
     const bypassCode = import.meta.env.VITE_BYPASS_MAINTENANCE_MODE_CODE
-    if (secret && bypassCode && bypassCode === secret) {
-      return false;
-    }
-    return true;
+    return !(secret && bypassCode && bypassCode === secret);
   }
 
   try {
