@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Other;
 
 use App\Enums\Responses\ResponseTypesEnum;
+use App\Exceptions\LoginNeededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\Home\OrderDetailResource as HomeOrderDetailResource;
+use App\Models\OrderDetail;
 use App\Models\User;
 use App\Services\Contracts\OrderServiceInterface;
 use App\Support\Cart\Cart;
@@ -14,7 +16,6 @@ use App\Support\Helper\PaymentHelper;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\UnauthorizedException;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
@@ -31,12 +32,14 @@ class CheckoutController extends Controller
      * @param StoreOrderRequest $request
      * @return JsonResponse
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function placeOrder(StoreOrderRequest $request): JsonResponse
     {
         $validated = $request->validated();
+
         // authentication check is in request class
-        $user = $request->user();
+        $user = $this->getLoggedInUser($request);
         $cart = Cart::instance($validated['cart_name'])->ownedBy($user)
             ->validate($validated['items'] ?? [], true);
 
@@ -74,20 +77,26 @@ class CheckoutController extends Controller
      * @param $id
      * @return JsonResponse
      * @throws ContainerExceptionInterface
+     * @throws LoginNeededException
      * @throws NotFoundExceptionInterface
      */
     public function pay(Request $request, $id): JsonResponse
     {
         $user = $this->getLoggedInUser($request);
+
+        // This is not necessary but make order validation more reliable
         $orderCode = $request->input('order_code', '');
 
         // check order code
+        /**
+         * @var OrderDetail $detail
+         */
         $detail = $this->service->getUserOrderByCode($user->id, $orderCode);
 
         if (is_null($detail)) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
-                'message' => 'سفارش منتخب نامعتبر می‌باشد.',
+                'message' => 'سفارش انتخاب شده نامعتبر می‌باشد.',
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -102,8 +111,15 @@ class CheckoutController extends Controller
             ], ResponseCodes::HTTP_NOT_ACCEPTABLE);
         }
 
+        if (OrderHelper::calculateRemainedPayTime($detail) <= 0) {
+            return response()->json([
+                'type' => ResponseTypesEnum::ERROR->value,
+                'message' => 'زمان پرداخت سفارش به پایان رسیده است. در صورتی که پرداخت موفقی انجام داده‌اید، برای بازگشت وجه با پشتیبانی تماس حاصل نمایید.',
+            ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
+        }
+
         // check payment method
-        $paymentMethod = $orderPayment->paymentMethod()->first();
+        $paymentMethod = $orderPayment->paymentMethod;
 
         if (is_null($paymentMethod)) {
             return response()->json([
@@ -113,7 +129,7 @@ class CheckoutController extends Controller
         }
 
         // connect to gateway and get transaction id
-        $result = PaymentHelper::pay($detail->id, $detail->final_price, $paymentMethod);
+        $result = PaymentHelper::pay($orderPayment->id, $orderPayment->must_pay_price, $paymentMethod);
 
         // return needed gateway connection fields to user
         return response()->json([
@@ -125,12 +141,13 @@ class CheckoutController extends Controller
     /**
      * @param Request $request
      * @return User
+     * @throws LoginNeededException
      */
     private function getLoggedInUser(Request $request): User
     {
         $user = $request->user();
         if (is_null($user)) {
-            throw new UnauthorizedException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
+            throw new LoginNeededException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
         }
 
         return $user;
@@ -141,6 +158,7 @@ class CheckoutController extends Controller
      * @return JsonResponse
      * @throws BindingResolutionException
      * @throws ContainerExceptionInterface
+     * @throws LoginNeededException
      * @throws NotFoundExceptionInterface
      */
     public function calculateSendPrice(Request $request): JsonResponse

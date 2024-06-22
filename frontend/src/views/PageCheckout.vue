@@ -12,14 +12,14 @@
   <template v-else>
     <div
       v-if="!savedOrder"
-      class="px-3 py-5 flex gap-3 mb-6 border-t border-b bg-white"
+      class="p-4 flex gap-2.5 mb-6 border-t border-b bg-white"
     >
-      <StarIcon class="w-6 h-6 text-violet-600 shrink-0"/>
+      <ExclamationTriangleIcon class="size-7 text-amber-500 shrink-0"/>
       <div class="text-slate-600">
-        لطفا قبل از پرداخت، حتما صفحه
+        لطفا قبل از پرداخت، صفحه
         <router-link
           :to="{name: 'pages', params: {url: 'how-payment-works'}}"
-          class="mx-1.5 underline underline-offset-8 text-violet-700 hover:text-opacity-90"
+          class="mx-1.5 underline underline-offset-8 text-blue-700 hover:text-opacity-90"
           target="_blank"
         >
           نحوه پرداخت و پرداخت‌های چند مرحله‌ای
@@ -101,7 +101,7 @@
                   <span class="font-semibold tracking-wide font-sans">{{ savedOrder.coupon_code }}</span>
                   <span class="font-iranyekan-light">به مبلغ</span>
                   <div class="flex flex-wrap items-center gap-2">
-                    <span class="font-iranyekan-bold">{{ numberFormat(savedOrder.coupon_code) }}</span>
+                    <span class="font-iranyekan-bold">{{ numberFormat(savedOrder.coupon_price) }}</span>
                     <span class="text-xs text-gray-400">تومان</span>
                   </div>
                   <span class="font-iranyekan-light">اعمال شده است.</span>
@@ -190,7 +190,7 @@
         </div>
 
         <form
-          v-else-if="items?.length"
+          v-else-if="cartStore.getCartItems?.length"
           class="relative"
           @submit.prevent="onSubmit"
         >
@@ -220,6 +220,7 @@
                         placeholder="کد را وارد نمایید"
                         name="coupon_code"
                         @input="(code) => {couponCode = code}"
+                        @cleared="clearCouponHandler"
                       />
                     </div>
                     <div class="p-2 w-full sm:w-auto shrink-0">
@@ -244,18 +245,29 @@
 
                   <div
                     v-if="couponDetail"
-                    class="mt-4 text-sm"
+                    class="flex gap-4 mt-4 text-sm"
                   >
-                    اعمال کوپن تخفیف
-                    <span class="text-secondary">{{ couponDetail.title }}</span>
-                    با کد
-                    <code class="tracking-widest text-amber-600 mx-1">{{ couponDetail.code }}</code>
-                    به مبلغ
-                    <div class="flex flex-wrap items-center gap-2">
-                      <span class="font-iranyekan-bold">{{ numberFormat(couponDetail.price) }}</span>
-                      <span class="text-xs text-gray-400">تومان</span>
+                    <button
+                      v-tooltip.left="'عدم اعمال کد تخفیف'"
+                      class="rounded-md p-2 flex items-center justify-center bg-slate-200 hover:bg-slate-300 transition"
+                      type="button"
+                      @click="removeAppliedCouponHandler"
+                    >
+                      <TrashIcon class="size-5"/>
+                    </button>
+                    <div>
+                      اعمال کوپن تخفیف
+                      <span class="text-indigo-500">{{ couponDetail.title }}</span>
+                      با کد
+                      <code class="tracking-widest text-amber-600 mx-1">{{ couponDetail.code }}</code>
+                      به مبلغ
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-iranyekan-bold">{{ numberFormat(couponDetail.price) }}</span>
+                        <span class="text-xs text-gray-400">تومان</span>
+                      </div>
                     </div>
                   </div>
+
                 </template>
               </partial-card>
 
@@ -272,6 +284,7 @@
                     label="فاکتور برای من ارسال شود"
                     name="is_needed_factor"
                     sr-text="فاکتور برای من ارسال شود"
+                    @change="(status) => {isNeededFactorStatus = status}"
                   />
                 </template>
               </partial-card>
@@ -429,7 +442,7 @@
                                   <div class="flex flex-col">
                                     <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
                                     <div class="text-sm tracking-widest">
-                                      {{ address.postal_code }}
+                                      {{ address.postal_code || '-' }}
                                     </div>
                                   </div>
                                 </template>
@@ -506,11 +519,13 @@
                     </div>
                     <div class="p-2 w-full sm:w-1/2 lg:w-full">
                       <base-input
+                        :value="selectedAddress?.postal_code"
                         :is-optional="true"
+                        klass="no-spin-arrow"
                         label-title="کد پستی"
                         name="postal_code"
+                        type="number"
                         placeholder="وارد نمایید"
-                        :value="selectedAddress?.postal_code"
                       />
                     </div>
                     <div class="p-2 w-full">
@@ -533,7 +548,7 @@
                     class="flex flex-col divide-y divide-slate-200 max-h-[32rem] my-custom-scrollbar border border-slate-200 bg-slate-50 rounded-lg"
                   >
                     <li
-                      v-for="item in items"
+                      v-for="item in cartStore.getCartItems"
                       :key="item.id"
                       class="relative flex flex-col gap-3 py-6 pr-3 pl-10"
                     >
@@ -541,7 +556,7 @@
                         <div class="shrink-0">
                           <router-link
                             :to="{name: 'product.detail', params: {slug: item.product.slug}}"
-                            class="inline-block border rounded-lg"
+                            class="inline-block border rounded-lg bg-white"
                           >
                             <base-lazy-image
                               :alt="item.product.title"
@@ -567,7 +582,7 @@
                             >
                               <span class="text-xs">%</span>
                               <div class="mr-1 inline-block text-sm">
-                                {{ getPercentageOfPortion(+item.price, +item.actual_price) }}
+                                {{ getPercentageOfPortion(+item.price, +item.actual_price, true) }}
                               </div>
                             </div>
                             <div class="flex flex-wrap items-center gap-3">
@@ -610,7 +625,7 @@
                           {{ item.color_name }}
                           <span
                             v-tooltip.top="item.color_hex"
-                            class="inline-block w-5 h-5 rounded-full border mr-2"
+                            class="inline-block w-5 h-5 rounded-full border mr-2 shadow"
                             :style="'background-color:' + item.color_hex + ';'"
                           ></span>
                         </div>
@@ -665,7 +680,7 @@
                       </li>
                       <li class="flex flex-wrap justify-between gap-3 py-2 text-sm">
                         <div class="font-iranyekan-light leading-relaxed grow">
-                          قیمت محصولات
+                          قیمت محصولات (به همراه مالیات بر ارزش افزوده)
                         </div>
                         <div class="shrink-0 mr-auto">
                           <span class="font-iranyekan-bold">{{ numberFormat(cartStore.totalPrice) }}</span>
@@ -686,9 +701,9 @@
                           هزینه ارسال
                         </div>
                         <div class="shrink-0 mr-auto">
-                          <template v-if="sendPrice">{{ numberFormat(sendPrice) }}</template>
+                          <template v-if="sendPrice === null">محاسبه پس از انتخاب آدرس</template>
+                          <template v-else-if="sendPrice">{{ numberFormat(sendPrice) }}</template>
                           <template v-else-if="+sendPrice === 0">رایگان</template>
-                          <template v-else>محاسبه پس از انتخاب آدرس</template>
                         </div>
                       </li>
                       <li
@@ -718,7 +733,10 @@
                           </div>
                         </div>
                       </li>
-                      <li class="flex flex-wrap justify-between gap-3 py-2 text-sm">
+                      <li
+                        v-if="totalDiscount"
+                        class="flex flex-wrap justify-between gap-3 py-2 text-sm"
+                      >
                         <div class="font-iranyekan-bold leading-relaxed grow">
                           مجموع تخفیف
                         </div>
@@ -754,20 +772,21 @@
 
                       <li
                         v-else-if="!sendMethods?.length"
-                        class="text-orange-300"
+                        class="text-orange-400"
                       >
                         هیچ روش ارسالی وجود ندارد! برای اطلاعات بیشتر، با ما در ارتباط باشید.
                       </li>
 
                       <template
-                        v-for="method in sendMethods"
                         v-else
+                        v-for="method in sendMethods"
                         :key="method.id"
                       >
                         <li
-                          v-if="selectedCity.value?.id && method.only_for_shop_location &&
-                          +homeSettingStore.getStoreCity === selectedCity.value.id"
-                          class="border-2 rounded-md p-2 border-indigo-300"
+                          v-if="selectedCity?.id && method.only_for_shop_location &&
+                          +homeSettingStore.getStoreCity === selectedCity.id"
+                          :class="sendMethod === method.id ? '!border-indigo-500 bg-indigo-50' : ''"
+                          class="border-2 rounded-md p-2 border-indigo-300 hover:border-indigo-500 transition"
                         >
                           <base-radio
                             v-model="sendMethod"
@@ -779,9 +798,11 @@
                           >
                             <template #text="{title}">
                               <div class="flex items-center gap-3">
-                                <img
+                                <base-lazy-image
                                   :alt="method.title"
-                                  :src="method.image.path"
+                                  :is-local="false"
+                                  :lazy-src="method?.image?.path"
+                                  :size="FileSizes.SMALL"
                                   class="w-16 h-16 object-contain rounded-lg"
                                 />
                                 <span>{{ title }}</span>
@@ -797,7 +818,8 @@
                         </li>
                         <li
                           v-else-if="!method.only_for_shop_location"
-                          class="border-2 rounded-md p-2 border-indigo-300"
+                          :class="sendMethod === method.id ? '!border-indigo-500 bg-indigo-50' : ''"
+                          class="border-2 rounded-md p-2 border-indigo-300 hover:border-indigo-500 transition"
                         >
                           <base-radio
                             v-model="sendMethod"
@@ -809,9 +831,11 @@
                           >
                             <template #text="{title}">
                               <div class="flex items-center gap-3">
-                                <img
+                                <base-lazy-image
                                   :alt="method.title"
-                                  :src="method.image.path"
+                                  :is-local="false"
+                                  :lazy-src="method?.image?.path"
+                                  :size="FileSizes.SMALL"
                                   class="w-16 h-16 object-contain rounded-lg"
                                 />
                                 <span>{{ title }}</span>
@@ -844,16 +868,17 @@
 
                       <li
                         v-else-if="!paymentMethods?.length"
-                        class="text-orange-300"
+                        class="text-orange-400"
                       >
                         هیچ روش پرداختی وجود ندارد! برای اطلاعات بیشتر، با ما در ارتباط باشید.
                       </li>
 
                       <li
-                        v-for="method in paymentMethods"
                         v-else
+                        v-for="method in paymentMethods"
                         :key="method.id"
                         class="border-2 rounded-md p-2 border-indigo-300"
+                        :class="paymentMethod === method.id ? '!border-indigo-500 bg-indigo-50' : ''"
                       >
                         <base-radio
                           v-model="paymentMethod"
@@ -865,10 +890,12 @@
                         >
                           <template #text="{title}">
                             <div class="flex items-center gap-3">
-                              <img
+                              <base-lazy-image
                                 :alt="method.title"
+                                :is-local="false"
+                                :lazy-src="method?.image?.path"
+                                :size="FileSizes.SMALL"
                                 class="w-16 h-16 object-contain rounded-lg"
-                                :src="method.image.path"
                               />
                               <span>{{ title }}</span>
                             </div>
@@ -933,7 +960,7 @@
 </template>
 
 <script setup>
-import {computed, inject, onMounted, reactive, ref, watch} from "vue";
+import {computed, inject, nextTick, onMounted, reactive, ref, watch} from "vue";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -943,9 +970,10 @@ import {
   ArrowUpIcon,
   CheckCircleIcon,
   CreditCardIcon,
+  ExclamationTriangleIcon,
   InformationCircleIcon,
   PhotoIcon,
-  StarIcon,
+  TrashIcon,
 } from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "@/components/base/BaseButton.vue";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
@@ -974,15 +1002,17 @@ import {useCountdown} from "@/composables/countdown-timer.js";
 import PartialPayCard from "@/components/partials/pages/PartialPayCard.vue";
 import RedirectionGatewayForm from "@/components/RedirectionGatewayForm.vue";
 import {useCartStore} from "@/store/StoreUserCart.js";
+import {FileSizes} from "@/composables/file-list.js";
+import {useConfirmToast} from "@/composables/toast-helper.js";
 
 const toast = useToast()
 
 const store = useUserAuthStore()
 const user = store.getUser
 const homeSettingStore = inject('homeSettingStore')
-const cartStore = useCartStore()
 
-const items = cartStore.getCartItems
+const cartStore = useCartStore()
+cartStore.loadFromLocalStorage()
 
 const isNeededFactorStatus = ref(false)
 const provinces = ref([])
@@ -1096,6 +1126,11 @@ const couponCheckLoading = ref(false)
 function checkCouponHandler() {
   if (couponCheckLoading.value || !canSubmit.value) return
 
+  if (!couponCode.value || couponCode.value?.toString() === '') {
+    toast.info('کد تخفیف را جهت بررسی وارد نمایید.')
+    return
+  }
+
   couponCheckLoading.value = true
 
   HomeCouponAPI.checkCoupon(couponCode.value, {
@@ -1108,6 +1143,23 @@ function checkCouponHandler() {
     finally() {
       couponCheckLoading.value = false
     },
+  })
+}
+
+function clearCouponHandler() {
+  couponCode.value = null
+}
+
+function removeAppliedCouponHandler() {
+  if (!couponDetail.value) return
+
+  useConfirmToast(() => {
+    clearCouponHandler()
+    couponDetail.value = null
+  }, {
+    title: 'از اعمال این کد تخفیف منصرف شدید؟',
+    acceptText: 'بله، حذف شود',
+    declineText: 'خیر',
   })
 }
 
@@ -1134,11 +1186,15 @@ function loadUserAddresses() {
 }
 
 function chooseAddressHandler(close, item) {
-  selectedAddress.value = item
+  selectedAddress.value = null
 
-  selectedProvince.value = item.province
-  loadCities(true, () => {
-    selectedCity.value = item.city
+  nextTick(() => {
+    selectedAddress.value = item
+
+    selectedProvince.value = item.province
+    loadCities(true, () => {
+      selectedCity.value = item.city
+    })
   })
 
   close()
@@ -1172,7 +1228,7 @@ const totalDiscountPercentage = computed(() => {
     total += sendPrice.value
   }
 
-  return getPercentageOfPortion(total - totalDiscount.value, total)
+  return getPercentageOfPortion(total - totalDiscount.value, total, true)
 })
 
 //------------------------------------------
@@ -1214,8 +1270,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       .transform(transformNumbersToEnglish)
       .persianMobile('شماره موبایل گیرنده نامعتبر است.')
       .required('موبایل گیرنده را وارد نمایید.'),
-    postal_code: yup.number().optional(),
-    address: yup.string().required('آدرس خود را وارد نمایید.'),
+    postal_code: yup.string()
+      .optional()
+      .transform(transformNumbersToEnglish)
+      .justNumber('کدپستی باید از نوع عددی باشد.'),
+    address: yup.string().required('آدرس گیرنده را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (!selectedProvince.value?.id) {
@@ -1242,6 +1301,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   HomeCheckoutAPI.placeOrder({
     cart_name: cartStore.getActiveCart,
+    items: cartStore.getCartItems,
     //
     first_name: values.first_name,
     last_name: values.last_name,
@@ -1266,6 +1326,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       countdown.value.start(() => {
         countdown.value.stop()
       })
+
+      cartStore.empty()
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {
@@ -1281,6 +1343,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 //------------------------------------------
 onMounted(() => {
   cartStore.fetchAllLocal()
+
   loadUserAddresses()
 
   ProvinceAPI.fetchAll({

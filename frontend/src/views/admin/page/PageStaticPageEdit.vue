@@ -48,6 +48,7 @@
                     label-title="آدرس"
                     name="url"
                     placeholder="حروف لاتین"
+                    :readonly="!page?.is_deletable"
                   >
                     <template #icon>
                       <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
@@ -163,13 +164,18 @@ const {canSubmit, errors, onSubmit, values} = useFormSubmit({
 }, (values, actions) => {
   canSubmit.value = false
 
-  StaticPageAPI.updateById(idParam.value, {
+  let data = {
     title: values.title,
     description: values.description,
-    url: values.url,
     keywords: tags.value,
     is_published: publishStatus.value,
-  }, {
+  }
+
+  if (!page?.is_deletable) {
+    data.url = values.url
+  }
+
+  StaticPageAPI.updateById(idParam.value, , {
     success(response) {
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
 

@@ -60,7 +60,7 @@ const keywords = ref(null)
 
 useSeoMeta({
   title: title,
-  keywords: keywords.value.length
+  keywords: keywords.value?.length
     ? [
       Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,
       keywords.value.join(', '),

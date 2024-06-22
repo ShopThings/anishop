@@ -42,6 +42,7 @@
                 hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
                 hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
               ]"
+            :readonly="readonly"
             :max="max"
             :maxlength="maxLength"
             :min="min"
@@ -70,6 +71,7 @@
                 hasIconSlot ? 'rtl:pr-10 ltr:pl-10' : '',
                 hasClearButton ? 'rtl:pl-10 ltr:pr-10' : '',
               ]"
+            :readonly="readonly"
             :max="max"
             :maxlength="maxLength"
             :min="min"
@@ -189,6 +191,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  readonly: Boolean,
   min: Number,
   max: Number,
   minLength: Number,
@@ -325,7 +328,7 @@ function toggleEditMode() {
 function clearInputHandler() {
   value.value = ''
   inp.value.focus()
-  emit('cleared', inp.value)
+  emit('cleared')
 }
 
 function getEscapedMoneyValue(value) {

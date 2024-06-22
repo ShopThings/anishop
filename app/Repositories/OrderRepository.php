@@ -19,7 +19,6 @@ use App\Support\QB\QueryItemActions;
 use App\Support\QB\ReportQueryAppenderTrait;
 use App\Support\Repository;
 use App\Support\Traits\RepositoryTrait;
-use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -247,11 +246,11 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             ->when($userId, function (Builder $query, $uId) {
                 $query
                     ->with([
-                        'send_status_changer',
+                        'sendStatusChanger',
                         'orders',
                         'orders.payments',
                         'items',
-                        'return_order'
+                        'returnOrder'
                     ])
                     ->where('user_id', $uId);
             })
@@ -420,7 +419,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
         $insertCount = 0;
 
         foreach ($chunks as $chunk) {
-            $model = $this->orderModel->newQuery()->create($chunk);
+            $model = $this->orderModel::create($chunk);
 
             if ($model instanceof Model) {
                 $insertCount += 1;
@@ -446,28 +445,16 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
         $productItems = $this->orderItemModel->newQuery()
             ->where('order_key_id', $orderId)
             ->get(['product_id', 'quantity']);
-        $productRepo = $this->productRepository;
 
-        $res = true;
+        return $this->updateProductsStock($productItems);
+    }
 
-        DB::transaction(function () use (&$res, $productItems, $productRepo) {
-            $where = new WhereBuilder();
-            foreach ($productItems as $item) {
-                $where->reset()
-                    ->whereEqual('product_id', $item['product_id']);
-                $res = $res && $productRepo->updateWhere([
-                        'stock_count' => 'stock_count+' . (+$item['quantity']),
-                    ], $where->build());
-
-                if (!$res) break;
-            }
-
-            if (!$res) {
-                DB::rollBack();
-            }
-        });
-
-        return $res;
+    /**
+     * @inheritDoc
+     */
+    public function reduceOrderProductsFromStock(array $items): bool
+    {
+        return $this->updateProductsStock($items, false);
     }
 
     /**
@@ -515,7 +502,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
 
         if (is_null($detail)) return false;
 
-        $result = DB::transaction(function () use ($detail, $reservedId) {
+        return DB::transaction(function () use ($detail, $reservedId) {
             $isOK = true;
 
             // Phase1:
@@ -574,7 +561,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             // -make waited payments to not paid
             $waitedPayments = $this->orderModel->newQuery()
                 ->where('key_id', $detail->id)
-                ->where('payment_status', PaymentStatusesEnum::WAIT->value)
+                ->where('payment_status', PaymentStatusesEnum::PENDING->value)
                 ->get();
 
             /**
@@ -624,7 +611,34 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             // It'll be committed automatically
             return true;
         });
+    }
 
-        return $result;
+    /**
+     * @param array $items
+     * @param bool $increase
+     * @return bool
+     */
+    private function updateProductsStock(array $items, bool $increase = true): bool
+    {
+        $res = true;
+
+        DB::transaction(function () use (&$res, $items, $increase) {
+            foreach ($items as $item) {
+                $qty = abs(intval($item['quantity']));
+
+                $res = $res && $this->productRepository
+                        ->updateProductStockFor($item['product_id'], !$increase ? -$qty : $qty);
+
+                if (!$res) break;
+            }
+
+            if (!$res) {
+                DB::rollBack();
+                return false;
+            }
+            return true;
+        });
+
+        return $res;
     }
 }

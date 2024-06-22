@@ -33,7 +33,7 @@
               valueContainerClass,
               readonly ? 'rounded-md' : ''
             ]"
-          class="py-1.5 px-3 text-gray-900 border-y border-gray-200 grow text-center text-lg font-iranyekan-bold w-20"
+          class="py-2 px-3 text-gray-900 border-y border-gray-200 grow text-center text-lg font-iranyekan-bold w-20"
         >
           {{ value }}
         </div>

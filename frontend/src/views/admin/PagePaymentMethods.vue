@@ -86,7 +86,7 @@ import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {PaymentMethodAPI} from "@/service/APIPayment.js";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
-import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {PERMISSION_PLACES, PERMISSIONS, ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -202,10 +202,17 @@ const table = reactive({
 function calcRemovals(row) {
   let removals = []
 
-  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.PAYMENT_METHOD, PERMISSIONS.DELETE)) {
+  if (
+    (row.is_sealed && !userStore.hasRole(ROLES.DEVELOPER)) ||
+    (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.PAYMENT_METHOD, PERMISSIONS.DELETE))
+  ) {
     removals.push('delete')
   }
-  if (!userStore.hasPermission(PERMISSION_PLACES.PAYMENT_METHOD, PERMISSIONS.UPDATE)) {
+
+  if (
+    row.is_sealed ||
+    !userStore.hasPermission(PERMISSION_PLACES.PAYMENT_METHOD, PERMISSIONS.UPDATE)
+  ) {
     removals.push('edit')
   }
 

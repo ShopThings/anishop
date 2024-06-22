@@ -50,9 +50,13 @@ interface ProductServiceInterface extends ServiceInterface, SitemapFetchInterfac
 
     /**
      * @param HomeProductFilter $filter
+     * @param bool $applyFilterLimit
      * @return Collection|LengthAwarePaginator
      */
-    public function getFilteredProducts(HomeProductFilter $filter): Collection|LengthAwarePaginator;
+    public function getFilteredProducts(
+        HomeProductFilter $filter,
+        bool              $applyFilterLimit = false
+    ): Collection|LengthAwarePaginator;
 
     /**
      * @param HomeProductSideFilter $filter

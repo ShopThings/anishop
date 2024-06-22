@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\DatabaseEnum;
+use App\Enums\Gates\RolesEnum;
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Repositories\Contracts\PaymentMethodRepositoryInterface;
@@ -15,6 +16,7 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentMethodService extends Service implements PaymentMethodServiceInterface
 {
@@ -68,6 +70,10 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
     {
         $where = new WhereBuilder('payment_methods');
         $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        if (!Auth::user()->hasRole(RolesEnum::DEVELOPER->value)) {
+            $where->whereEqual('is_sealed', DatabaseEnum::DB_NO);
+        }
 
         return $this->repository
             ->newWith('image')

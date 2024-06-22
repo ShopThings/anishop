@@ -42,10 +42,12 @@ class HomeSearchController extends Controller
             ]);
         }
 
+        $limit = 9;
+
         $filter = new Filter();
         $filter
             ->setSearchText($searchText)
-            ->setLimit(5);
+            ->setLimit($limit);
 
         $brands = $brandService->getPublishedBrands($filter);
         $categories = $categoryService->getPublishedCategories($filter);
@@ -53,8 +55,8 @@ class HomeSearchController extends Controller
         $filter = new HomeProductFilter();
         $filter
             ->setSearchText($searchText)
-            ->setLimit(5);
-        $products = $productService->getFilteredProducts($filter);
+            ->setLimit($limit);
+        $products = $productService->getFilteredProducts($filter, true);
 
         return new SearchProductResource($products, $brands, $categories);
     }
@@ -80,14 +82,18 @@ class HomeSearchController extends Controller
             ]);
         }
 
+        $limit = 8;
+
         $filter = new Filter();
         $filter
             ->setSearchText($searchText)
-            ->setLimit(5);
+            ->setLimit($limit);
         $categories = $blogCategoryService->getPublishedHighPriorityCategories($filter);
         //
         $filter = new HomeBlogFilter();
-        $filter->setSearchText($searchText);
+        $filter
+            ->setSearchText($searchText)
+            ->setLimit($limit);
         $blogs = $blogService->getFilteredBlogs($filter, true);
 
         return new SearchBlogResource($blogs, $categories);

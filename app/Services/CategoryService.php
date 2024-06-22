@@ -77,18 +77,40 @@ class CategoryService extends Service implements CategoryServiceInterface
                 });
         }
 
+        $where->when($filter->getSearchText(), function (WhereBuilderInterface $where, $searchText) {
+            $where->group(function (WhereBuilderInterface $where) use ($searchText) {
+                $where->orWhereLike(['escaped_name', 'name'], $searchText);
+            });
+        });
+
         // I needed to add 'children' in the way shown and then add 'parent' relations
         $with[] = 'parent';
 
-        return $repo
-            ->newWith($with)
-            ->all(
-                where: $where->build(),
-                order: [
-                    'priority' => 'asc',
-                    'id' => 'asc',
-                ]
+        if ($filter->getLimit()) {
+            return collect(
+                $repo
+                    ->newWith($with)
+                    ->paginate(
+                        where: $where->build(),
+                        limit: $filter->getLimit(),
+                        order: [
+                            'priority' => 'asc',
+                            'id' => 'asc',
+                        ]
+                    )
+                    ->items()
             );
+        } else {
+            return $repo
+                ->newWith($with)
+                ->all(
+                    where: $where->build(),
+                    order: [
+                        'priority' => 'asc',
+                        'id' => 'asc',
+                    ]
+                );
+        }
     }
 
     /**

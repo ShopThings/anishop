@@ -133,7 +133,7 @@ class SettingSeeder extends Seeder
             'name' => SettingsEnum::DEFAULT_POST_PRICE->value,
             'setting_value' => '',
             'group_name' => SettingGroupsEnum::SHOP->value,
-            'min_value' => 1500000,
+            'default_value' => 50000,
         ]);
 
         // social group

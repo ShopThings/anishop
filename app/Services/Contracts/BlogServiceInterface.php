@@ -35,12 +35,12 @@ interface BlogServiceInterface extends ServiceInterface, SitemapFetchInterface
 
     /**
      * @param HomeBlogFilter $filter
-     * @param bool $enforceProvidedFilterLimit
+     * @param bool $applyFilterLimit
      * @return Collection|LengthAwarePaginator
      */
     public function getFilteredBlogs(
         HomeBlogFilter $filter,
-        bool           $enforceProvidedFilterLimit = false
+        bool $applyFilterLimit = false
     ): Collection|LengthAwarePaginator;
 
     /**

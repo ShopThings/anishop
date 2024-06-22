@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Exceptions\LoginNeededException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Home\GatewayPaymentResource;
 use App\Models\GatewayPayment;
@@ -10,7 +11,6 @@ use App\Support\Helper\PaymentHelper;
 use Exception;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PaymentController extends Controller
@@ -35,6 +35,7 @@ class PaymentController extends Controller
      * @param Request $request
      * @param GatewayPayment $id
      * @return GatewayPaymentResource
+     * @throws LoginNeededException
      */
     public function verificationResult(Request $request, GatewayPayment $id): GatewayPaymentResource
     {
@@ -51,12 +52,13 @@ class PaymentController extends Controller
     /**
      * @param Request $request
      * @return User
+     * @throws LoginNeededException
      */
     private function getLoggedInUser(Request $request): User
     {
         $user = $request->user();
         if (is_null($user)) {
-            throw new UnauthorizedException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
+            throw new LoginNeededException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
         }
 
         return $user;

@@ -17,7 +17,7 @@ class CartResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $product = Product::query()->where('product_id', $this->product_id)->first();
+        $product = Product::query()->where('id', $this->product_id)->first();
 
         if (!$product instanceof Model) {
             return [];
@@ -25,6 +25,7 @@ class CartResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'code' => $this->code,
             'name' => $this->name,
             'price' => $this->price,
             'tax_rate' => $this->tax_rate,

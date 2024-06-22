@@ -24,6 +24,8 @@ return new class extends Migration {
                 ->comment('for more options about the selected type for example credentials of bank gateway type');
             $table->boolean('is_published')->default(true);
             $table->boolean('is_deletable')->default(true);
+            $table->boolean('is_sealed')->default(false)
+                ->comment('this is for prevent any interaction with created method including: edit, delete or even show. It just exists and need to be exist(like testing methods)');
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()
                 ->constrained('users')->nullOnDelete()->cascadeOnUpdate();

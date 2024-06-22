@@ -102,16 +102,30 @@ export const WeightPostPriceAPI = Object.assign(
   }
 )
 
-export const ProvinceAPI = {
-  fetchAll(callbacks) {
-    return useRequest(apiRoutes.provinces, null, callbacks)
-  },
+export const ProvinceAPI = Object.assign(
+  GenericAPI(apiRoutes.admin.provinces, {
+    replacement: 'province',
+    only: ['show']
+  }),
+  {
+    fetchAll(callbacks) {
+      return useRequest(apiRoutes.provinces, null, callbacks)
+    },
 
-  fetchCities(provinceId, callbacks) {
-    return useRequest(
-      apiReplaceParams(apiRoutes.cities, {province: provinceId}),
-      null,
-      callbacks
-    )
-  },
-}
+    fetchCityByProvince(cityId, provinceId, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.admin.cities.show, {province: provinceId, city: cityId}),
+        null,
+        callbacks
+      )
+    },
+
+    fetchCities(provinceId, callbacks) {
+      return useRequest(
+        apiReplaceParams(apiRoutes.cities, {province: provinceId}),
+        null,
+        callbacks
+      )
+    },
+  }
+)

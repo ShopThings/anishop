@@ -24,8 +24,10 @@ class SMSChannel
 
         $numbers = Arr::wrap($smsObject->getNumber());
 
-        // Send notification to the $notifiable instance...
-        Sms::send($smsObject->getMessage())->to($numbers)->dispatch();
+        // Send notification to the $notifiable instance(only on production)
+        if (app()->isProduction()) {
+            Sms::send($smsObject->getMessage())->to($numbers)->dispatch();
+        }
 
         // log sms in sms_logs table too
         /**

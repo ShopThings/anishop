@@ -38,7 +38,7 @@ class OrderDetailSingleResource extends JsonResource
             'province' => $this->province,
             'city' => $this->city,
             'address' => $this->address,
-            'postal_code' => $this->postal_code,
+            'postal_code' => $this->postal_code ?? '',
             'receiver_name' => $this->receiver_name,
             'receiver_mobile' => $this->receiver_mobile,
             'description' => $this->description,
@@ -57,7 +57,7 @@ class OrderDetailSingleResource extends JsonResource
             'send_status_changed_at' => $this->send_status_changed_at
                 ? vertaTz($this->send_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
-            'send_status_changed_by' => new UserShowResource($this->send_status_changer),
+            'send_status_changed_by' => new UserShowResource($this->sendStatusChanger),
             'is_needed_factor' => $this->is_needed_factor,
             'is_product_returned_to_stock' => $this->is_product_returned_to_stock,
             'ordered_at' => $this->ordered_at

@@ -26,8 +26,16 @@ class CouponRepository extends Repository implements CouponRepositoryInterface
     public function checkCoupon(string $code, User $user): Model|CouponResultEnum
     {
         $coupon = $this->model->published()
-            ->where('start_at', '>=', now())
-            ->where('end_at', '<=', now())
+            ->where(function ($q) {
+                $q
+                    ->whereNull('start_at')
+                    ->orWhere('start_at', '<=', now());
+            })
+            ->where(function ($q) {
+                $q
+                    ->whereNull('end_at')
+                    ->orWhere('end_at', '>=', now());
+            })
             ->where('use_count', '>', 0)
             ->where('code', $code)
             ->first();

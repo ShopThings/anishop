@@ -276,7 +276,7 @@
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
-                    <div class="text-black tracking-widest">{{ order?.postal_code }}</div>
+                    <div class="text-black tracking-widest">{{ order?.postal_code || '-' }}</div>
                   </div>
                 </template>
               </partial-card>

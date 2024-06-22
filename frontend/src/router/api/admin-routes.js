@@ -11,6 +11,13 @@ export default {
       countOfOrders: 'api/admin/counting/orders',
     },
 
+    provinces: {
+      show: 'api/admin/provinces/{province}',
+    },
+    cities: {
+      show: 'api/admin/provinces/{province}/cities/{city}',
+    },
+
     notification: {
       index: 'api/admin/notifications',
       update: 'api/admin/notifications',

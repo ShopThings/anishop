@@ -166,7 +166,7 @@
                     ]"
                   >
                     <slot :item="item" :selected="selected" name="item">
-                        {{ nestedArray.get(item, optionsText) }}
+                      {{ nestedArray.get(item, optionsText) }}
                     </slot>
                   </div>
                   <span
@@ -345,6 +345,11 @@ const isHandlingChange = ref(false)
 
 watch(selectedItems, async (newValue, oldValue) => {
   if (!isHandlingChange.value) {
+    if (
+      newValue && oldValue &&
+      newValue[props.optionsKey] === oldValue[props.optionsKey]
+    ) return
+
     isHandlingChange.value = true;
 
     emit('change', newValue)

@@ -57,11 +57,7 @@ export const useCartStore = defineStore('userCart', () => {
     return getActiveCart.value === 'wishlist'
   })
 
-  function saveToLocalStorage() {
-    safeStorage.setItem(cartStorageKey, JSON.stringify(getLocalCarts.value))
-  }
-
-  function saveCurrentToLocalStorage() {
+  async function saveToLocalStorage() {
     if (isShoppingCartActivated.value) {
       cartsLocal.value = {
         shopping: cartItems.value,
@@ -74,15 +70,37 @@ export const useCartStore = defineStore('userCart', () => {
       }
     }
 
-    safeStorage.setItem(cartStorageKey, JSON.stringify(getLocalCarts.value))
+    await nextTick(() => {
+      safeStorage.setItem(cartStorageKey, getLocalCarts.value)
+      loadFromLocalStorage()
+    })
   }
 
-  function loadFromLocalStorage() {
+  async function loadFromLocalStorage() {
     const saved = safeStorage.getItem(cartStorageKey)
+
     cartsLocal.value = {
       shopping: saved?.shopping || getLocalCarts.value.shopping,
       wishlist: saved?.wishlist || getLocalCarts.value.wishlist,
     }
+
+    await nextTick(() => {
+      if (isShoppingCartActivated.value) {
+        cartItems.value = getLocalCarts.value?.shopping || []
+      } else if (isWishlistCartActivated.value) {
+        cartItems.value = getLocalCarts.value?.wishlist || []
+      }
+    })
+  }
+
+  function findItemFromLocalCart(code) {
+    if (code?.toString() === '') return null
+
+    let product = getCartItems.value.filter(item => {
+      return item?.code === code
+    })
+
+    return product.length && product[0] ? product[0] : null
   }
 
   const count = computed(() => {
@@ -173,20 +191,68 @@ export const useCartStore = defineStore('userCart', () => {
     }, 0)
   })
 
-  function changeToShoppingCart() {
+  function totalPriceFor(code) {
+    let item = findItemFromLocalCart(code)
+
+    if (!item) return 0
+
+    const quantity = parseInt(item.quantity, 10) || 0
+    const price = parseInt(item.actual_price, 10) || 0
+    const tax = parseInt(item.tax_rate, 10) || 0
+
+    return quantity * (price + (price * tax / 100))
+  }
+
+  function totalDiscountedPriceFor(code) {
+    let item = findItemFromLocalCart(code)
+
+    if (!item) return 0
+
+    const quantity = parseInt(item.quantity, 10) || 0
+    const price = parseInt(item.price, 10) || 0
+    const tax = parseInt(item.tax_rate, 10) || 0
+
+    return quantity * (price + (price * tax / 100))
+  }
+
+  function subtotalPriceFor(code) {
+    let item = findItemFromLocalCart(code)
+
+    if (!item) return 0
+
+    const quantity = parseInt(item.quantity, 10) || 0
+    const price = parseInt(item.actual_price, 10) || 0
+
+    return quantity * price
+  }
+
+  function subtotalDiscountedPriceFor(code) {
+    let item = findItemFromLocalCart(code)
+
+    if (!item) return 0
+
+    const quantity = parseInt(item.quantity, 10) || 0
+    const price = parseInt(item.price, 10) || 0
+
+    return quantity * price
+  }
+
+  async function changeToShoppingCart() {
     safeStorage.setItem(cartNameStorageKey, 'shopping')
     activeCart.value = 'shopping'
 
-    nextTick(() => {
+    await loadFromLocalStorage()
+    await nextTick(() => {
       cartItems.value = getLocalCarts.value[getActiveCart.value] || []
     })
   }
 
-  function changeToWishlistCart() {
+  async function changeToWishlistCart() {
     safeStorage.setItem(cartNameStorageKey, 'wishlist')
     activeCart.value = 'wishlist'
 
-    nextTick(() => {
+    await loadFromLocalStorage()
+    await nextTick(() => {
       cartItems.value = getLocalCarts.value[getActiveCart.value] || []
     })
   }
@@ -199,8 +265,11 @@ export const useCartStore = defineStore('userCart', () => {
     cartsLocal.value.wishlist = getSavedCarts.value.wishlist || []
   }
 
-  function addAllItems(codesQuantities = {}, callbacks = {}) {
+  async function addAllItems(codesQuantities = {}, callbacks = {}) {
     loading.value = true
+
+    await loadFromLocalStorage()
+
     useRequestWrapper(
       apiRoutes.cart.addAll,
       {
@@ -216,7 +285,7 @@ export const useCartStore = defineStore('userCart', () => {
           cartItems.value = response.data
           cartsLocal.value[getActiveCart.value] = response.data
 
-          saveCurrentToLocalStorage()
+          saveToLocalStorage()
         },
         finally() {
           loading.value = false
@@ -226,8 +295,11 @@ export const useCartStore = defineStore('userCart', () => {
     )
   }
 
-  function addItem(code, quantity = 1, callbacks = {}) {
+  async function addItem(code, quantity = 1, callbacks = {}) {
     loading.value = true
+
+    await loadFromLocalStorage()
+
     useRequestWrapper(
       apiReplaceParams(apiRoutes.cart.add, {code}),
       {
@@ -243,7 +315,7 @@ export const useCartStore = defineStore('userCart', () => {
           cartItems.value = response.data
           cartsLocal.value[getActiveCart.value] = response.data
 
-          saveCurrentToLocalStorage()
+          saveToLocalStorage()
         },
         finally() {
           loading.value = false
@@ -258,14 +330,14 @@ export const useCartStore = defineStore('userCart', () => {
       return item?.code !== code
     })
 
-    saveCurrentToLocalStorage()
+    saveToLocalStorage()
   }
 
-  function fetchAllLocal(callbacks = {}) {
+  async function fetchAllLocal(callbacks = {}) {
     if (isLoading.value) return
 
     loading.value = true
-    loadFromLocalStorage()
+    await loadFromLocalStorage()
 
     useRequestWrapper(
       apiRoutes.cart.sessionCarts,
@@ -296,9 +368,9 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   function empty() {
-    useConfirmToast(() => {
+    useConfirmToast(async () => {
       cartItems.value = []
-      saveCurrentToLocalStorage()
+      await saveToLocalStorage()
     }, 'خالی نمودن سبد خرید')
   }
 
@@ -358,13 +430,14 @@ export const useCartStore = defineStore('userCart', () => {
     fetchByName('wishlist', callbacks)
   }
 
-  function save(callbacks = {}) {
+  async function save(callbacks = {}) {
     if (!userStore.getUser) {
       toast.error('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
       return
     }
 
     if (isLoading.value) return
+    await loadFromLocalStorage()
 
     useConfirmToast(() => {
       loading.value = true
@@ -443,6 +516,7 @@ export const useCartStore = defineStore('userCart', () => {
     carts, cartsLocal, cartItems,
     activeCart,
     //
+    findItemFromLocalCart,
     getSavedCarts, getLocalCarts,
     getCartItems, getActiveCart,
     isShoppingCartActivated, isWishlistCartActivated,
@@ -452,12 +526,16 @@ export const useCartStore = defineStore('userCart', () => {
     subtotalPrice, subtotalDiscountedPrice,
     totalTaxPrice,
     //
+    totalPriceFor, totalDiscountedPriceFor,
+    subtotalPriceFor, subtotalDiscountedPriceFor,
+    //
     changeToShoppingCart, changeToWishlistCart,
     //
     addAllItems, addItem, removeItem,
     fetchAllLocal, empty,
     fetchShopping, fetchWishlist, fetchAll, save, remove,
     //
+    loadFromLocalStorage,
     loadToLocalShopping, loadToLocalWishlist,
     //
     $reset,

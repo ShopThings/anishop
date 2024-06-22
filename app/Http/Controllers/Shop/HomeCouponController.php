@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Shop;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Enums\Results\CouponResultEnum;
 use App\Exceptions\InvalidCartNameException;
+use App\Exceptions\LoginNeededException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Home\CouponResource as HomeCouponResource;
 use App\Services\Contracts\CouponServiceInterface;
@@ -13,7 +14,6 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class HomeCouponController extends Controller
@@ -33,17 +33,18 @@ class HomeCouponController extends Controller
      * @return HomeCouponResource|JsonResponse
      * @throws InvalidCartNameException
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function check(Request $request, string $code): HomeCouponResource|JsonResponse
     {
         $user = $request->user();
 
         if (is_null($user)) {
-            throw new UnauthorizedException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
+            throw new LoginNeededException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
         }
 
         $cartName = $request->string('cart_name', '');
-        $items = $request->string('items', '');
+        $items = $request->input('items', []);
 
         if (!is_array($items)) {
             return response()->json([
@@ -69,7 +70,7 @@ class HomeCouponController extends Controller
         $coupon = $this->service->checkCoupon($code, $user);
 
         if ($coupon instanceof Model) {
-            $discountedPrice = $cart->totalDiscountedPrice();
+            $discountedPrice = $cart->calculations()->totalDiscountedPrice();
             if ($discountedPrice < $coupon->price) {
                 return response()->json([
                     'type' => ResponseTypesEnum::WARNING->value,

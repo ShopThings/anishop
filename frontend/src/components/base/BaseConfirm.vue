@@ -3,7 +3,7 @@
     <div class="text-black p-5 flex items-baseline">
       <div>
         <QuestionMarkCircleIcon
-            class="w-10 h-10 ml-2 text-yellow-600 inline-block bg-yellow-100 rounded-full p-1 shrink-0"
+          class="w-10 h-10 ml-2 text-yellow-600 inline-block bg-yellow-100 rounded-full p-1 shrink-0"
         />
       </div>
 
@@ -11,8 +11,8 @@
         <span>{{ title || 'آیا از انجام عملیات مطمئن هستید؟' }}</span>
 
         <div
-            v-if="subTitle"
-            class="text-sm text-gray-500 mt-2 max-w-sm leading-relaxed"
+          v-if="subTitle"
+          class="text-sm text-gray-500 mt-2 max-w-sm leading-relaxed"
         >
           {{ subTitle }}
         </div>
@@ -21,18 +21,18 @@
 
     <div class="flex flex-wrap justify-start py-3 px-8 bg-slate-50 border-t-2 border-slate-100">
       <button
-          class="ml-3 border-gray-500 text-gray-500 px-6 py-2 hover:border-black hover:text-black bg-white text-sm rounded-md border transition"
-          type="button"
-          @click="close"
+        class="ml-3 border-gray-500 text-gray-500 px-6 py-2 hover:border-black hover:text-black bg-white text-sm rounded-md border transition"
+        type="button"
+        @click="close"
       >
-        <span>خیر</span>
+        <span>{{ btnDeclineText || 'خیر' }}</span>
       </button>
       <button
-          class="bg-primary text-white border-primary px-3 py-2 text-sm rounded-md border hover:bg-opacity-90 transition"
-          type="button"
-          @click="accept"
+        class="bg-primary text-white border-primary px-3 py-2 text-sm rounded-md border hover:bg-opacity-90 transition"
+        type="button"
+        @click="accept"
       >
-        <span>انجام عملیات</span>
+        <span>{{ btnAcceptText || 'انجام عملیات' }}</span>
       </button>
     </div>
 
@@ -40,7 +40,7 @@
       <Teleport to="body">
         <div
           class="slide-rotate-hor-t-fwd fixed z-10 w-[100vw] h-[100vh] bg-black/30 top-0 left-0"
-            @click="close"
+          @click="close"
         ></div>
       </Teleport>
     </template>
@@ -56,6 +56,14 @@ defineProps({
     default: 'آیا از انجام عملیات مطمئن هستید؟',
   },
   subTitle: String,
+  btnAcceptText: {
+    type: String,
+    default: 'انجام عملیات',
+  },
+  btnDeclineText: {
+    type: String,
+    default: 'خیر',
+  },
   showBackdrop: {
     type: Boolean,
     default: true,

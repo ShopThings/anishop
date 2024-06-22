@@ -2,6 +2,7 @@ import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
+const codeRegex = '([\\d\\w\-\_]+)'
 
 export const userRoutes = {
   path: '/user',
@@ -126,7 +127,7 @@ export const userRoutes = {
       },
     },
     {
-      path: 'comment/:id([\\d\\w]+)',
+      path: 'comment/:id' + codeRegex,
       children: [
         {
           path: '',
@@ -212,7 +213,7 @@ export const userRoutes = {
       },
     },
     {
-      path: 'order/:code([\\d\\w]+)',
+      path: 'order/:code' + codeRegex,
       name: 'user.order.detail',
       component: () => import('@/views/user/PageOrderDetail.vue'),
       meta: {
@@ -243,7 +244,7 @@ export const userRoutes = {
       },
     },
     {
-      path: 'return-order/:code([\\d\\w]+)',
+      path: 'return-order/:code' + codeRegex,
       name: 'user.return_order.detail',
       component: () => import('@/views/user/PageReturnOrderDetail.vue'),
       meta: {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Other;
 
 use App\Enums\Responses\ResponseTypesEnum;
+use App\Exceptions\LoginNeededException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Home\CartResource;
 use App\Models\User;
@@ -10,7 +11,6 @@ use App\Support\Cart\Cart;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class CartController extends Controller
@@ -18,6 +18,7 @@ class CartController extends Controller
     /**
      * @return JsonResponse
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function index(): JsonResponse
     {
@@ -36,13 +37,14 @@ class CartController extends Controller
 
     /**
      * @return User
+     * @throws LoginNeededException
      */
     protected function getCurrentUserWithAuthentication(): User
     {
         $user = request()->user();
 
         if (is_null($user)) {
-            throw new UnauthorizedException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
+            throw new LoginNeededException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
         }
 
         return $user;
@@ -52,6 +54,7 @@ class CartController extends Controller
      * @param string $cart
      * @return JsonResponse
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function show(string $cart): JsonResponse
     {
@@ -67,6 +70,7 @@ class CartController extends Controller
      * @param Request $request
      * @return JsonResponse|bool
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function destroy(Request $request): JsonResponse|bool
     {
@@ -90,6 +94,7 @@ class CartController extends Controller
      * @param Request $request
      * @return JsonResponse|bool
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function store(Request $request): JsonResponse|bool
     {

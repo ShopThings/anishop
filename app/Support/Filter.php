@@ -96,8 +96,7 @@ class Filter
      */
     public function setLimit(?int $limit): static
     {
-        if ($limit > 0) $this->limit = $limit;
-        else $this->limit = null;
+        $this->limit = is_numeric($limit) && $limit > 0 ? $limit : null;
         return $this;
     }
 
@@ -124,6 +123,7 @@ class Filter
                 $this->page = floor($offset / $this->limit) + 1;
             }
         }
+
         return $this;
     }
 
@@ -145,6 +145,7 @@ class Filter
             $this->page = $page;
             $this->offset = ($page - 1) * $this->limit;
         }
+
         return $this;
     }
 
@@ -188,7 +189,9 @@ class Filter
      */
     public function getSearchText(): ?string
     {
-        return $this->searchText;
+        return !is_null($this->searchText) && trim($this->searchText) !== ''
+            ? trim($this->searchText)
+            : null;
     }
 
     /**
@@ -197,8 +200,7 @@ class Filter
      */
     public function setSearchText(?string $searchText): static
     {
-        if (null !== $searchText) $this->searchText = trim($searchText);
-        else $this->searchText = null;
+        $this->searchText = null !== $searchText ? trim($searchText) : null;
         return $this;
     }
 

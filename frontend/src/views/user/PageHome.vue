@@ -11,14 +11,14 @@
     <div class="flex flex-wrap gap-3">
       <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
         <div class="flex gap-3 items-center justify-between">
-          <ShoppingBagIcon class="h-8 w-8 text-indigo-500"/>
+          <ShoppingBagIcon class="size-9 text-indigo-400"/>
           <router-link
             :to="{name: 'user.orders'}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             <div class="flex items-center">
               <span class="ml-2">مشاهده</span>
-              <div class="p-1 bg-slate-100 rounded-full">
+              <div class="p-1 bg-blue-100 rounded-full">
                 <ChevronLeftIcon class="w-4 h-4 text-black"/>
               </div>
             </div>
@@ -37,14 +37,14 @@
 
       <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
         <div class="flex gap-3 items-center justify-between">
-          <ArchiveBoxXMarkIcon class="h-8 w-8 text-teal-500"/>
+          <ArchiveBoxXMarkIcon class="size-9 text-teal-400"/>
           <router-link
             :to="{name: 'user.return_orders'}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             <div class="flex items-center">
               <span class="ml-2">مشاهده</span>
-              <div class="p-1 bg-slate-100 rounded-full">
+              <div class="p-1 bg-blue-100 rounded-full">
                 <ChevronLeftIcon class="w-4 h-4 text-black"/>
               </div>
             </div>
@@ -63,14 +63,14 @@
 
       <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
         <div class="flex gap-3 items-center justify-between">
-          <ChatBubbleLeftRightIcon class="h-8 w-8 text-yellow-400"/>
+          <ChatBubbleLeftRightIcon class="size-9 text-cyan-400"/>
           <router-link
             :to="{name: 'user.comments'}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             <div class="flex items-center">
               <span class="ml-2">مشاهده</span>
-              <div class="p-1 bg-slate-100 rounded-full">
+              <div class="p-1 bg-blue-100 rounded-full">
                 <ChevronLeftIcon class="w-4 h-4 text-black"/>
               </div>
             </div>
@@ -89,14 +89,14 @@
 
       <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
         <div class="flex gap-3 items-center justify-between">
-          <HeartIcon class="h-8 w-8 text-rose-400"/>
+          <HeartIcon class="size-9 text-rose-400"/>
           <router-link
             :to="{name: 'user.favorite_products'}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             <div class="flex items-center">
               <span class="ml-2">مشاهده</span>
-              <div class="p-1 bg-slate-100 rounded-full">
+              <div class="p-1 bg-blue-100 rounded-full">
                 <ChevronLeftIcon class="w-4 h-4 text-black"/>
               </div>
             </div>
@@ -115,14 +115,14 @@
 
       <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
         <div class="flex gap-3 items-center justify-between">
-          <BookOpenIcon class="h-8 w-8 text-blue-500"/>
+          <BookOpenIcon class="size-9 text-blue-400"/>
           <router-link
             :to="{name: 'user.addresses'}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             <div class="flex items-center">
               <span class="ml-2">مشاهده</span>
-              <div class="p-1 bg-slate-100 rounded-full">
+              <div class="p-1 bg-blue-100 rounded-full">
                 <ChevronLeftIcon class="w-4 h-4 text-black"/>
               </div>
             </div>
@@ -141,14 +141,14 @@
 
       <div class="rounded-2xl bg-white px-3 pt-4 pb-6 flex flex-col gap-3 relative grow sm:grow-0 min-w-[12rem]">
         <div class="flex gap-3 items-center justify-between">
-          <ChatBubbleLeftEllipsisIcon class="h-8 w-8 text-fuchsia-500"/>
+          <ChatBubbleLeftEllipsisIcon class="size-9 text-yellow-400"/>
           <router-link
             :to="{name: 'user.contacts'}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             <div class="flex items-center">
               <span class="ml-2">مشاهده</span>
-              <div class="p-1 bg-slate-100 rounded-full">
+              <div class="p-1 bg-blue-100 rounded-full">
                 <ChevronLeftIcon class="w-4 h-4 text-black"/>
               </div>
             </div>
@@ -261,7 +261,7 @@
             </template>
 
             <template #code="{value}">
-              <span class="tracking-widest text-lg">{{ value.code }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
             </template>
 
             <template #send_status="{value}">
@@ -284,8 +284,8 @@
             </template>
 
             <template #total_price="{value}">
-              <div class="text-lg font-iranyekan-bold">
-                {{ numberFormat(value.total_price) }}
+              <div class="font-iranyekan-bold">
+                {{ numberFormat(value.final_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
@@ -329,7 +329,7 @@
             @do-search="getLatestReturnOrders"
           >
             <template #code="{value}">
-              <span class="tracking-widest text-lg">{{ value.code }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
             </template>
 
             <template #order_code="{value}">
@@ -338,7 +338,7 @@
                 class="text-blue-600 hover:text-opacity-80 text-sm"
                 target="_blank"
               >
-                <span class="tracking-widest text-lg">{{ value.order_code }}</span>
+                <span class="tracking-widest font-iranyekan-bold">{{ value.order_code }}</span>
               </router-link>
             </template>
 
@@ -356,7 +356,7 @@
 
             <template #op="{value}">
               <router-link
-                :to="{name: 'user.return_order.detail', params: {code: 12345}}"
+                :to="{name: 'user.return_order.detail', params: {code: value.code}}"
                 class="text-blue-600 hover:text-opacity-80 text-sm"
               >
                 مشاهده جزئیات

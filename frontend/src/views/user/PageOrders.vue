@@ -35,7 +35,7 @@
         </template>
 
         <template #code="{value}">
-          <span class="tracking-widest text-lg">{{ value.code }}</span>
+          <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
         </template>
 
         <template #send_status="{value}">
@@ -58,8 +58,8 @@
         </template>
 
         <template #total_price="{value}">
-          <div class="text-lg font-iranyekan-bold">
-            {{ numberFormat(value.total_price) }}
+          <div class="font-iranyekan-bold">
+            {{ numberFormat(value.final_price) }}
             <span class="text-xs text-gray-400">تومان</span>
           </div>
         </template>

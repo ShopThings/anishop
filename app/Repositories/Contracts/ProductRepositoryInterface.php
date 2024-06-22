@@ -92,6 +92,13 @@ interface ProductRepositoryInterface extends RepositoryInterface
     public function updateOrCreateProducts(array $products): Model|Collection;
 
     /**
+     * @param int $productId
+     * @param int $stockCount
+     * @return bool
+     */
+    public function updateProductStockFor(int $productId, int $stockCount): bool;
+
+    /**
      * @param $id
      * @param int $percentage
      * @param ChangeMultipleProductPriceTypesEnum $changeType

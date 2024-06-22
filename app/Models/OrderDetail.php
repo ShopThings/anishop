@@ -15,7 +15,7 @@ use Parables\NanoId\GeneratesNanoId;
  * @method Builder withCompletePaidOrder(string $condition = 'and')
  * @method Builder withoutAnyPaidOrder(string $condition = 'and')
  * @method Builder withAnyPaidOrder(string $condition = 'and')
- * @method Builder withWaitingOrder(string $condition = 'and')
+ * @method Builder withPendingOrder(string $condition = 'and')
  */
 class OrderDetail extends Model
 {
@@ -61,7 +61,7 @@ class OrderDetail extends Model
      */
     public function user(): HasOne
     {
-        return $this->hasOne(User::class, 'user_id');
+        return $this->hasOne(User::class, 'id');
     }
 
     /**
@@ -104,7 +104,7 @@ class OrderDetail extends Model
     public function hasAnyPaid(): bool
     {
         return $this->orders()
-                ->where('payment_status', PaymentStatusesEnum::SUCCESS)
+                ->where('payment_status', PaymentStatusesEnum::SUCCESS->value)
                 ->count() > 0;
     }
 
@@ -120,7 +120,7 @@ class OrderDetail extends Model
             ->count();
         $allOrdersCount = $this->orders()->count();
 
-        return $successOrdersCount === $allOrdersCount;
+        return $successOrdersCount === $allOrdersCount && $allOrdersCount > 0;
     }
 
     /**
@@ -136,7 +136,7 @@ class OrderDetail extends Model
         }
 
         return $query->{$method}('orders', function ($query) {
-            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
+            $query->where('payment_status', PaymentStatusesEnum::SUCCESS->value);
         }, '=', $this->orders()->count());
     }
 
@@ -155,8 +155,8 @@ class OrderDetail extends Model
         return $query->{$method}('orders', function ($query) {
             $query->where(function ($q) {
                 $q
-                    ->where('payment_status', PaymentStatusesEnum::SUCCESS)
-                    ->orWhere('payment_status', PaymentStatusesEnum::PARTIAL_SUCCESS);
+                    ->where('payment_status', PaymentStatusesEnum::SUCCESS->value)
+                    ->orWhere('payment_status', PaymentStatusesEnum::PARTIAL_SUCCESS->value);
             });
         }, '=', 0);
     }
@@ -174,7 +174,7 @@ class OrderDetail extends Model
         }
 
         return $query->{$method}('orders', function ($query) {
-            $query->where('payment_status', PaymentStatusesEnum::SUCCESS);
+            $query->where('payment_status', PaymentStatusesEnum::SUCCESS->value);
         });
     }
 
@@ -183,7 +183,7 @@ class OrderDetail extends Model
      * @param string $condition
      * @return mixed
      */
-    public function scopeWithWaitingOrder(Builder $query, string $condition = 'and'): mixed
+    public function scopeWithPendingOrder(Builder $query, string $condition = 'and'): mixed
     {
         $method = 'whereHas';
         if ($condition == 'or') {
@@ -191,7 +191,7 @@ class OrderDetail extends Model
         }
 
         return $query->{$method}('orders', function ($query) {
-            $query->where('payment_status', PaymentStatusesEnum::WAIT);
+            $query->where('payment_status', PaymentStatusesEnum::PENDING->value);
         });
     }
 }

@@ -22,7 +22,7 @@ return new class extends Migration {
             $table->string('receipt')->nullable()
                 ->comment('it is reference_id to track payment');
             $table->enum('gateway_type', array_map(fn($item) => $item->value, GatewaysEnum::cases()))
-                ->comment('indicates which gateway is this');
+                ->nullable()->comment('indicates which gateway is this');
             $table->text('meta')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('created_at')->useCurrent()->nullable();

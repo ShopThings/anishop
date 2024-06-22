@@ -10,6 +10,7 @@ interface CartFilterInterface
     /**
      * @param Model $item
      * @param int $quantity
+     * @param Cart $cart
      * @return bool
      */
     public function validate(Model $item, int $quantity, Cart $cart): bool;

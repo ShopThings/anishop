@@ -191,7 +191,7 @@ class UserService extends Service implements UserServiceInterface
         $where->whereEqual('user_id', $userId);
 
         $max = config('market.user.max_address_count', 0);
-        return $this->repository->addressCount($where->build()) >= $max;
+        return $this->repository->addressCount($where->build()) < $max;
     }
 
     /**
@@ -287,7 +287,7 @@ class UserService extends Service implements UserServiceInterface
             'full_name' => $attributes['full_name'],
             'mobile' => $attributes['mobile'],
             'address' => $attributes['address'],
-            'postal_code' => $attributes['postal_code'],
+            'postal_code' => $attributes['postal_code'] ?? null,
             'province_id' => $attributes['province'],
             'city_id' => $attributes['city'],
         ];
