@@ -80,6 +80,12 @@ interface OrderRepositoryInterface extends RepositoryInterface
     public function returnOrderProductsToStock(int $orderId): bool;
 
     /**
+     * @param array<array> $items
+     * @return bool
+     */
+    public function reduceOrderProductsFromStock(array $items): bool;
+
+    /**
      * It'll receive an array of items (that is array too) and
      * return a boolean that indicates if all the items are created
      *

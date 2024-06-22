@@ -2,7 +2,6 @@
 
 namespace App\Support\Cart\Filters;
 
-use App\Exceptions\InvalidCartQuantityException;
 use App\Support\Cart\Cart;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,7 +9,6 @@ class CheckCountingFilter implements CartFilterInterface
 {
     /**
      * @inheritDoc
-     * @throws InvalidCartQuantityException
      */
     public function validate(Model $item, int $quantity, Cart $cart): bool
     {
@@ -20,7 +18,13 @@ class CheckCountingFilter implements CartFilterInterface
         }
 
         $prevQty = 0;
-        $prevItem = $cart->getContent()->firstWhere('code', $item->code);
+        $prevItem = null;
+        foreach ($cart->getContent() as $currentItem) {
+            if ($currentItem->code === $item->code) {
+                $prevItem = $currentItem;
+                break;
+            }
+        }
         // get previous item's quantity
         if (!is_null($prevItem)) {
             $prevQty = $prevItem->qty;

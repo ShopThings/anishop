@@ -221,8 +221,8 @@
       >
         <template #content>
           <form @submit.prevent="onSubmit">
-            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-              <partial-card class="border-0 p-3 sm:col-span-2">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <partial-card class="border-0 p-3">
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">نام:</span>
@@ -233,7 +233,6 @@
                         :value="info?.receiver_name"
                         name="receiver_name"
                       />
-                      <partial-input-error-message :error-message="errors?.receiver_name"/>
                     </template>
                     <div
                       v-else
@@ -255,7 +254,6 @@
                         :value="info?.receiver_mobile"
                         name="receiver_mobile"
                       />
-                      <partial-input-error-message :error-message="errors?.receiver_mobile"/>
                     </template>
                     <div
                       v-else
@@ -296,7 +294,7 @@
                   </div>
                 </template>
               </partial-card>
-              <partial-card class="border-0 p-3 sm:col-span-2">
+              <partial-card class="border-0 p-3">
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
@@ -306,8 +304,10 @@
                         :is-editable="true"
                         :value="info?.postal_code"
                         name="postal_code"
+                        klass="no-spin-arrow"
+                        placeholder="از نوع عددی"
+                        type="number"
                       />
-                      <partial-input-error-message :error-message="errors?.postal_code"/>
                     </template>
                     <div
                       v-else
@@ -318,7 +318,7 @@
                   </div>
                 </template>
               </partial-card>
-              <partial-card class="border-0 p-3 sm:col-span-4">
+              <partial-card class="border-0 p-3 sm:col-span-2">
                 <template #body>
                   <div class="flex flex-col">
                     <span class="text-xs text-gray-400 mb-1">آدرس:</span>
@@ -328,8 +328,8 @@
                         :is-editable="true"
                         :value="info?.address"
                         name="address"
+                        placeholder="وارد نمایید"
                       />
-                      <partial-input-error-message :error-message="errors?.address"/>
                     </template>
                     <div
                       v-else
@@ -427,7 +427,7 @@
             </template>
 
             <template #payment_method_title="{value}">
-              <div class="flex">
+              <div class="flex items-center">
                 <span class="text-sm">{{ value.payment_method_title }}</span>
                 <span class="mr-2 rounded bg-amber-200 py-0.5 px-2">{{ value.payment_method_type.text }}</span>
               </div>
@@ -443,14 +443,17 @@
               <a
                 class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
                 href="javascript:void(0)"
-                @click="() => {showOrderPaymentDetail(value)}"
+                @click="showOrderPaymentDetail(value)"
               >
                 مشاهده جزئیات پرداخت
               </a>
             </template>
           </base-semi-datatable>
 
-          <partial-dialog v-model:open="orderPaymentDetailOpen">
+          <partial-dialog
+            v-model:open="orderPaymentDetailOpen"
+            container-klass="max-w-7xl overflow-hidden"
+          >
             <template #title>
               جزئیات پرداخت
             </template>
@@ -462,6 +465,7 @@
                 :is-slot-mode="true"
                 :is-static-mode="true"
                 :rows="orderPaymentsTableSetting.rows"
+                :messages="orderPaymentsTableSetting.messages"
               >
                 <template #id="{value, index}">
                   {{ index }}
@@ -598,12 +602,12 @@
 
                     <div class="flex flex-wrap mb-2 items-center">
                       <div
-                        v-if="product.discounted_price && getPercentageOfPortion(product.discounted_price, product.price) > 0"
+                        v-if="product.discounted_price && getPercentageOfPortion(product.discounted_price, product.price, true) > 0"
                         class="rounded-lg bg-rose-500 text-white py-1 px-2 my-1 ml-3 flex items-center justify-center"
                       >
                         <span class="text-xs">%</span>
                         <div class="mr-1 inline-block text-sm">
-                          {{ getPercentageOfPortion(product.discounted_price, product.price) }}
+                          {{ getPercentageOfPortion(product.discounted_price, product.price, true) }}
                         </div>
                       </div>
 
@@ -709,7 +713,6 @@ import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
-import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {useToast} from "vue-toastification";
 import {useCountdown} from "@/composables/countdown-timer.js";
 import PartialPayCard from "@/components/partials/pages/PartialPayCard.vue";
@@ -719,7 +722,7 @@ import {useCartStore} from "@/store/StoreUserCart.js";
 
 const router = useRouter()
 const toast = useToast()
-const codeParam = getRouteParamByKey('code')
+const codeParam = getRouteParamByKey('code', null, false)
 
 const cartStore = useCartStore()
 
@@ -826,11 +829,20 @@ const orderPaymentsTableSetting = reactive({
     order: "created_at",
     sort: "desc",
   },
+  messages: {
+    pagingInfo: 'نمایش' + " <span class=\"text-blue-500\">" + "{0}" + "</span>"
+      + "-<span class=\"text-blue-500\">" + "{1}" + "</span> "
+      + 'از مجموع' + " <span class=\"text-blue-500\">" + "{2}" + "</span> " + 'رکورد',
+    pageSizeChangeLabel: "تعداد نمایش در هر صفحه:",
+    gotoPageLabel: "رفتن به صفحه:",
+    noDataAvailable: "هیچ پرداختی انجام نشده است.",
+    loading: "در حال بارگذاری",
+  },
 })
 
 function showOrderPaymentDetail(item) {
-  orderPaymentsTableSetting.rows = item.payments
-  orderPaymentsTableSetting.total = item.payments?.length || 0
+  orderPaymentsTableSetting.rows = item.orders?.payments || []
+  orderPaymentsTableSetting.total = item.orders?.payments?.length || 0
   orderPaymentDetailOpen.value = true
 }
 
@@ -856,7 +868,10 @@ function handleOrderItemOperation(product, item, hide) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     address: yup.string().required('آدرس خود را وارد نمایید.'),
-    postal_code: yup.number().required('کدپستی را وارد نمایید.'),
+    postal_code: yup.string()
+      .transform(transformNumbersToEnglish)
+      .justNumber('کدپستی باید از نوع عددی باشد.')
+      .optional(),
     receiver_name: yup.string()
       .persian('نام گیرنده باید از حروف فارسی باشد.')
       .required('نام گیرنده را وارد نمایید.'),
@@ -868,9 +883,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 }, (values, actions) => {
   if (!info.value?.send_status?.is_starting_badge) {
     toast.info('امکان تغییر وجود ندارد.')
+    return
   }
-
-  if (!info.value?.send_status?.is_starting_badge) return
 
   canSubmit.value = false
 

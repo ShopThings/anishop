@@ -6,9 +6,7 @@ use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Resources\Showing\OrderItemShowResource;
 use App\Http\Resources\Showing\OrderShowResource;
-use App\Http\Resources\Showing\PaymentShowResource;
 use App\Http\Resources\Showing\UserShowResource;
-use App\Models\OrderDetail;
 use App\Support\Helper\OrderHelper;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -41,7 +39,7 @@ class UserOrderSingleResource extends JsonResource
             'province' => $this->province,
             'city' => $this->city,
             'address' => $this->address,
-            'postal_code' => $this->postal_code,
+            'postal_code' => $this->postal_code ?? '',
             'receiver_name' => $this->receiver_name,
             'receiver_mobile' => $this->receiver_mobile,
             'description' => $this->description,
@@ -87,7 +85,6 @@ class UserOrderSingleResource extends JsonResource
                     ]
                 ),
             'orders' => OrderShowResource::collection($this->orders),
-            'payments' => PaymentShowResource::collection($this->orders->payments),
             'items' => OrderItemShowResource::collection($this->items),
             'remained_pay_time' => OrderHelper::calculateRemainedPayTime($this->resource),
         ];

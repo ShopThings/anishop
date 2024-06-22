@@ -314,21 +314,27 @@ const index = createRouter({
 
 //------------------------------------------------------------------------------
 async function checkMaintenanceGuard(to) {
+  let secret = null
+  if (to.query?.secret) {
+    secret = to.query.secret;
+  } else {
+    const storedSecret = useSafeLocalStorage.getItem('maintenance_secret');
+    if (storedSecret) {
+      secret = storedSecret;
+    }
+  }
+
   // If maintenance mode is active in frontend, just return true
   if (import.meta.env.VITE_IN_MAINTENANCE_MODE === 'true') {
-    return true;
+    const bypassCode = import.meta.env.VITE_BYPASS_MAINTENANCE_MODE_CODE
+    return !(secret && bypassCode && bypassCode === secret);
   }
 
   try {
     const data = {};
 
-    if (to.query?.secret) {
+    if (secret) {
       data.maintenance_secret = to.query.secret;
-    } else {
-      const secret = useSafeLocalStorage.getItem('maintenance_secret');
-      if (secret) {
-        data.maintenance_secret = secret;
-      }
     }
 
     const response = await useRequest(apiRoutes.maintenance, {

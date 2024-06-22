@@ -223,12 +223,12 @@
 
                     <div class="flex flex-wrap mb-2 items-center">
                       <div
-                        v-if="product.discounted_price && getPercentageOfPortion(product.discounted_price, product.price) > 0"
+                        v-if="product.discounted_price && getPercentageOfPortion(product.discounted_price, product.price, true) > 0"
                         class="rounded-lg bg-rose-500 text-white py-1 px-2 my-1 ml-3 flex items-center justify-center"
                       >
                         <span class="text-xs">%</span>
                         <div class="mr-1 inline-block text-sm">
-                          {{ getPercentageOfPortion(product.discounted_price, product.price) }}
+                          {{ getPercentageOfPortion(product.discounted_price, product.price, true) }}
                         </div>
                       </div>
 

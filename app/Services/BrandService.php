@@ -62,20 +62,10 @@ class BrandService extends Service implements BrandServiceInterface
      */
     public function getPublishedBrands(Filter $filter): Collection|LengthAwarePaginator
     {
-        $where = new WhereBuilder('brands');
-        $where
-            ->whereEqual('is_deletable', DatabaseEnum::DB_YES)
-            ->whereEqual('is_published', DatabaseEnum::DB_YES);
-
-        return $this->repository
-            ->newWith('image')
-            ->paginate(
-                columns: ['id', 'name', 'latin_name', 'slug'],
-                where: $where->build(),
-                limit: $filter->getLimit(),
-                page: $filter->getPage(),
-                order: $filter->getOrder()
-            );
+        return $this->repository->getPublishedFilteredBrands(
+            filter: $filter,
+            columns: ['id', 'name', 'latin_name', 'slug']
+        );
     }
 
     /**

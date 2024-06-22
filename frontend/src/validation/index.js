@@ -101,6 +101,21 @@ function colorHex(message) {
   })
 }
 
+function justNumber(message) {
+  return this.test("justNumber", message, function (value) {
+    const {path, createError} = this
+
+    if (value && !value.match(/^[0-9]+$/)) {
+      return createError({
+        path,
+        message: message ?? 'Invalid number provided'
+      })
+    }
+
+    return true
+  })
+}
+
 function positiveNumber(message, {gt = 0, optional = false} = {}) {
   return this.test('positiveNumber', message, function (value) {
     const {path, createError, originalValue} = this;
@@ -220,6 +235,7 @@ yup.addMethod(yup.string, "percentage", percentage)
 yup.addMethod(yup.string, "persianNationalCode", persianNationalCode)
 yup.addMethod(yup.string, "folderName", folderName)
 yup.addMethod(yup.string, "colorHex", colorHex)
+yup.addMethod(yup.string, "justNumber", justNumber)
 yup.addMethod(yup.string, "positiveNumber", positiveNumber)
 yup.addMethod(yup.string, "lessThanNumber", lessThanNumber)
 yup.addMethod(yup.string, "greaterThanNumber", greaterThanNumber)

@@ -28,7 +28,7 @@ class OrderDetailShowResource extends JsonResource
             'province' => $this->province,
             'city' => $this->city,
             'address' => $this->address,
-            'postal_code' => $this->postal_code,
+            'postal_code' => $this->postal_code ?? '',
             'receiver_name' => $this->receiver_name,
             'receiver_mobile' => $this->receiver_mobile,
             'description' => $this->description,

@@ -11,7 +11,7 @@
     />
 
     <div class="flex flex-wrap items-end">
-      <div class="p-2 w-full md:w-1/2 xl:w-1/3">
+      <div class="p-2 w-full md:w-1/2 2xl:w-1/3">
         <base-input
           :min="0"
           :money-mask="true"
@@ -35,7 +35,7 @@
           <span class="text-xs text-slate-400">تومان</span>
         </div>
       </div>
-      <div class="p-2 w-full md:w-1/2 xl:w-1/3">
+      <div class="p-2 w-full md:w-1/2 2xl:w-1/3">
         <base-input
           :min="0"
           :money-mask="true"
@@ -59,7 +59,7 @@
           <span class="text-xs text-slate-400">تومان</span>
         </div>
       </div>
-      <div class="p-2 w-full md:w-1/2 xl:w-1/3">
+      <div class="p-2 w-full md:w-1/2 2xl:w-1/3">
         <base-input
           :is-optional="true"
           :min="0"

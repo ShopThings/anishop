@@ -2,12 +2,13 @@
 
 namespace App\Rules;
 
-use App\Enums\DatabaseEnum;
-use App\Models\City;
 use App\Models\Province;
+use App\Services\Contracts\CityServiceInterface;
 use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class CityInProvinceRule implements DataAwareRule, ValidationRule
 {
@@ -33,16 +34,21 @@ class CityInProvinceRule implements DataAwareRule, ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $province = Province::find($this->data['province']);
-        $city = null;
+        $hasCity = false;
 
         if ($province) {
-            $city = City::where('name', $value)
-                ->where('province_id', $province->id)
-                ->where('is_published', DatabaseEnum::DB_YES)
-                ->first();
+
+            /**
+             * @var CityServiceInterface $service
+             */
+            try {
+                $service = app()->get(CityServiceInterface::class);
+                $hasCity = $service->isCityInProvince($this->data['city'], $province->id);
+            } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+            }
         }
 
-        if (!$province || !$city) {
+        if (!$province || !$hasCity) {
             $fail('شهر انتخاب شده داخل استان انتخاب شده نمی‌باشد!');
         }
     }

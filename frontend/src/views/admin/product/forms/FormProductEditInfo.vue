@@ -94,19 +94,12 @@
                   <template #item="{item}">
                     <div class="flex items-center gap-3">
                       <base-lazy-image
-                        v-if="item?.image?.full_path"
                         :alt="item.name"
                         :is-local="false"
                         :lazy-src="item?.image?.full_path"
                         :size="FileSizes.SMALL"
                         class="!w-16 !h-auto object-cover rounded"
                       />
-                      <img
-                        v-else
-                        :alt="item.name"
-                        class="w-16 h-auto object-cover rounded"
-                        src="/image-placeholder.jpg"
-                      >
 
                       <span class="text-sm">{{ item.name }}</span>
                     </div>

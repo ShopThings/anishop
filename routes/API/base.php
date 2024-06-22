@@ -53,15 +53,18 @@ Route::name('api.')
             Route::post('login', [AuthController::class, 'login'])
                 ->name('login');
 
-            /*
-             * checkout routes
-             */
-            Route::post('place-order', [CheckoutController::class, 'placeOrder'])
-                ->name('checkout.place-order');
-            Route::post('pay/{id}/result', [PaymentController::class, 'verificationResult'])
-                ->whereNumber('id')->name('pay-result');
-            Route::post('pay/{id}', [CheckoutController::class, 'pay'])
-                ->whereNumber('id')->name('checkout.pay');
+            Route::middleware('auth:sanctum')
+                ->group(function () {
+                    /*
+                     * checkout routes
+                     */
+                    Route::post('place-order', [CheckoutController::class, 'placeOrder'])
+                        ->name('checkout.place-order');
+                    Route::post('pay/{id}/result', [PaymentController::class, 'verificationResult'])
+                        ->whereNumber('id')->name('pay-result');
+                    Route::post('pay/{id}', [CheckoutController::class, 'pay'])
+                        ->whereNumber('id')->name('checkout.pay');
+                });
 
             /*
              * cart routes
@@ -75,13 +78,16 @@ Route::name('api.')
             Route::post('cart/addAll', [CartController::class, 'addAllToCart'])
                 ->where(['product' => $codeRegex])->name('cart.add');
 
-            // this is for signed_in users
-            Route::get('cart', [CartController::class, 'index'])->name('cart.index');
-            Route::post('cart/{cart}', [CartController::class, 'show'])
-                ->whereAlpha('cart')->name('cart.show');
-            Route::post('cart', [CartController::class, 'store'])->name('cart.store');
-            Route::delete('cart', [CartController::class, 'destroy'])
-                ->name('cart.destroy');
+            Route::middleware('auth:sanctum')
+                ->group(function () {
+                    // this is for signed_in users
+                    Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+                    Route::post('cart/{cart}', [CartController::class, 'show'])
+                        ->whereAlpha('cart')->name('cart.show');
+                    Route::post('cart', [CartController::class, 'store'])->name('cart.store');
+                    Route::delete('cart', [CartController::class, 'destroy'])
+                        ->name('cart.destroy');
+                });
 
             /*
              * city routes
@@ -119,29 +125,32 @@ Route::name('api.')
             Route::post('recover-password/resend-code', [RecoverPasswordController::class, 'resendCode'])
                 ->name('recover-password.resend-code');
 
-            /*
-             * payment method page routes
-             */
-            Route::get('payment-methods', [HomePaymentMethodController::class, 'index'])
-                ->name('payment-methods.index');
+            Route::middleware('auth:sanctum')
+                ->group(function () {
+                    /*
+                     * payment method page routes
+                     */
+                    Route::get('payment-methods', [HomePaymentMethodController::class, 'index'])
+                        ->name('payment-methods.index');
 
-            /*
-             * send method page routes
-             */
-            Route::get('send-methods', [HomeSendMethodController::class, 'index'])
-                ->name('send-methods.index');
+                    /*
+                     * send method page routes
+                     */
+                    Route::get('send-methods', [HomeSendMethodController::class, 'index'])
+                        ->name('send-methods.index');
 
-            /*
-             * coupon page routes
-             */
-            Route::post('coupons/{code}/check', [HomeCouponController::class, 'check'])
-                ->where(['code' => '[a-zA-Z\-_]+'])->name('coupon.check');
+                    /*
+                     * coupon page routes
+                     */
+                    Route::post('coupons/{code}/check', [HomeCouponController::class, 'check'])
+                        ->where(['code' => '[a-zA-Z\-_]+'])->name('coupon.check');
 
-            /*
-             * checkout page routes
-             */
-            Route::post('send-price', [CheckoutController::class, 'calculateSendPrice'])
-                ->name('checkout.send-price');
+                    /*
+                     * checkout page routes
+                     */
+                    Route::post('send-price', [CheckoutController::class, 'calculateSendPrice'])
+                        ->name('checkout.send-price');
+                });
 
             /*
              * main page routes
@@ -188,10 +197,13 @@ Route::name('api.')
              */
             Route::get('products/{product}/comments', [HomeCommentController::class, 'index'])
                 ->name('products.comments.index')->where(['product' => $codeRegex]);
-            Route::put('products/{product}/comments/{comment}/report', [HomeCommentController::class, 'report'])
-                ->name('products.comments.report')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
-            Route::put('products/{product}/comments/{comment}/vote', [HomeCommentController::class, 'vote'])
-                ->name('products.comments.vote')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+            Route::middleware('auth:sanctum')
+                ->group(function () use ($codeRegex) {
+                    Route::put('products/{product}/comments/{comment}/report', [HomeCommentController::class, 'report'])
+                        ->name('products.comments.report')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+                    Route::put('products/{product}/comments/{comment}/vote', [HomeCommentController::class, 'vote'])
+                        ->name('products.comments.vote')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+                });
 
             /*
              * festival routes
@@ -212,16 +224,22 @@ Route::name('api.')
                 ->middleware('log_visit')->where(['blog' => $codeRegex]);
             Route::get('blogs/{blog}/minified', [HomeBlogController::class, 'minifiedShow'])
                 ->name('blogs.minified-show')->where(['blog' => $codeRegex]);
-            Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
-                ->where(['blog' => $codeRegex]);
+            Route::middleware('auth:sanctum')
+                ->group(function () use ($codeRegex) {
+                    Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
+                        ->where(['blog' => $codeRegex]);
+                });
 
             /*
              * blog comment routes
              */
             Route::get('blogs/{blog}/comments', [HomeBlogCommentController::class, 'index'])->name('blogs.comments.index')
                 ->where(['blog' => $codeRegex]);
-            Route::put('blogs/{blog}/comments/{comment}/report', [HomeBlogCommentController::class, 'report'])->name('blogs.comments.report')
-                ->where(['blog' => $codeRegex, 'comment' => '[0-9]+']);
+            Route::middleware('auth:sanctum')
+                ->group(function () use ($codeRegex) {
+                    Route::put('blogs/{blog}/comments/{comment}/report', [HomeBlogCommentController::class, 'report'])->name('blogs.comments.report')
+                        ->where(['blog' => $codeRegex, 'comment' => '[0-9]+']);
+                });
 
             /*
              * static page routes
@@ -232,7 +250,10 @@ Route::name('api.')
             /*
              * other pages routes
              */
-            Route::post('contact-us', [HomeController::class, 'storeContactUs'])->name('contacts.store');
+            Route::middleware('auth:sanctum')
+                ->group(function () {
+                    Route::post('contact-us', [HomeController::class, 'storeContactUs'])->name('contacts.store');
+                });
             Route::post('complaints', [HomeController::class, 'storeComplaint'])->name('complaints.store');
             Route::post('newsletters', [HomeController::class, 'storeNewsletter'])->name('newsletters.store');
             Route::get('faqs', [HomeController::class, 'faqs'])->name('faqs.index');

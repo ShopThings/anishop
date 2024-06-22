@@ -41,7 +41,8 @@ class StoreAddressRequest extends FormRequest
                 'required',
             ],
             'postal_code' => [
-                'required',
+                'sometimes',
+                'nullable',
                 'numeric',
                 'min:1',
                 'max:15',

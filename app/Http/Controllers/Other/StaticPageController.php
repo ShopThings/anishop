@@ -92,7 +92,11 @@ class StaticPageController extends Controller
         Gate::authorize('update', $staticPage);
 
         $validated = $request->validated();
+        if (!$staticPage->is_deletable) {
+            unset($validated['url']);
+        }
         unset($validated['is_deletable']);
+
         $model = $this->service->updateById($staticPage->id, $validated);
 
         if (!is_null($model)) {
@@ -100,7 +104,7 @@ class StaticPageController extends Controller
         }
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
-            'message' => 'خطا در ویرایش رنگ',
+            'message' => 'خطا در ویرایش صفحه',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 

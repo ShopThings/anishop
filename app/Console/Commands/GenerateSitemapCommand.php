@@ -17,18 +17,21 @@ use Spatie\Sitemap\Tags\Url;
 class GenerateSitemapCommand extends Command
 {
     const CHUNK_SIZE = 1000;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'app:generate-sitemap';
+
     /**
      * The console command description.
      *
      * @var string
      */
     protected $description = 'Generate sitemap from routes.json of frontend for both frontend and backend';
+
     /**
      * A service should have followed structure:
      * <code>

@@ -16,15 +16,14 @@
         <base-lazy-image
           :alt="item.title"
           :lazy-src="item.image.path"
+          :is-local="false"
           :size="FileSizes.MEDIUM"
           class="w-full h-36 sm:h-32 bg-white !object-cover rounded-lg transition group-hover:scale-95"
         />
-
-        <h1
-          class="font-iranyekan-bold text-sm leading-relaxed mt-2 line-clamp-2 group-hover:text-blue-600 transition"
-        >
-          {{ item.title }}
-        </h1>
+        <span
+          class="font-iranyekan-bold text-sm leading-relaxed mt-2 line-clamp-2 group-hover:text-blue-600 transition">{{
+            item.title
+          }}</span>
       </router-link>
     </li>
   </ul>

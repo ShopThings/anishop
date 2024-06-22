@@ -404,7 +404,7 @@ const keywords = ref([])
 useSeoMeta({
   title: title,
   description: briefDescription.value.trim() !== '' ? [localDescription, briefDescription] : localDescription,
-  keywords: keywords.value.length
+  keywords: keywords.value?.length
     ? [
       Array.isArray(localKeywords) ? localKeywords.join(', ') : localKeywords,
       keywords.value.join(', ')

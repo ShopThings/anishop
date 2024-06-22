@@ -21,7 +21,7 @@ return new class extends Migration {
                 ->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('province_id')->constrained('provinces')
                 ->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('postal_code', 15);
+            $table->string('postal_code', 15)->nullable();
             $table->timestamps();
         });
     }

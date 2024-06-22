@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Enums\Orders\ReturnOrderStatusesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Enums\Results\ChangeRequestStatusResult;
+use App\Exceptions\LoginNeededException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserReturnOrderRequest;
 use App\Http\Resources\User\UserReturnableOrderResource;
@@ -17,7 +18,6 @@ use App\Support\Filter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Validation\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserReturnOrderRequestController extends Controller
@@ -190,11 +190,12 @@ class UserReturnOrderRequestController extends Controller
      * @param Request $request
      * @param ReturnOrderRequest $returnOrder
      * @return JsonResponse
+     * @throws LoginNeededException
      */
     public function changeStatus(Request $request, ReturnOrderRequest $returnOrder): JsonResponse
     {
         if ($request->user()->id !== $returnOrder->user_id) {
-            throw new UnauthorizedException();
+            throw new LoginNeededException();
         }
 
         $status = $request->enum('status', ReturnOrderStatusesEnum::class);

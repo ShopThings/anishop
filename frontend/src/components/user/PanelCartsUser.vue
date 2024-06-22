@@ -32,7 +32,7 @@
               ]"
             class="w-6 h-6 ml-2"
           />
-          <span :class="[cartStore.isShoppingCartActivated ? 'text-black' : 'text-gray-600']">سبد خرید پیش فرض</span>
+          <span :class="cartStore.isShoppingCartActivated ? 'text-black' : 'text-gray-500'">سبد خرید پیش فرض</span>
         </div>
 
         <div class="relative">
@@ -109,9 +109,9 @@
               :class="[
                     cartStore.isWishlistCartActivated ? 'text-emerald-400' : 'text-gray-400',
                 ]"
-              class="w-6 h-6 text-gray-400 ml-2"
+              class="w-6 h-6 ml-2"
             />
-            <span :class="[cartStore.isWishlistCartActivated ? 'text-black' : 'text-gray-600']">سبد خرید پشتیبان</span>
+            <span :class="cartStore.isWishlistCartActivated ? 'text-black' : 'text-gray-500'">سبد خرید پشتیبان</span>
           </div>
 
           <ul class="py-3 flex flex-col gap-2.5">

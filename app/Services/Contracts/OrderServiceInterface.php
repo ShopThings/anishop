@@ -90,6 +90,12 @@ interface OrderServiceInterface extends ServiceInterface
     public function rollbackReservedOrder(string $code, ?int $reservedId): bool;
 
     /**
+     * @param array $attributes
+     * @return Model|null
+     */
+    public function createGatewayPayment(array $attributes): ?Model;
+
+    /**
      * @param $code
      * @param array $attributes
      * @param bool $silence

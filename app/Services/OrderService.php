@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\DatabaseEnum;
+use App\Enums\Gates\RolesEnum;
 use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
@@ -144,7 +145,6 @@ class OrderService extends Service implements OrderServiceInterface
 
         return collect($this->repository->getOrdersSearchFilterPaginated(
             userId: $userId,
-            columns: ['code', 'send_status_title', 'send_status_color_hex', 'final_price', 'ordered_at'],
             filter: $filter
         )->items());
     }
@@ -155,9 +155,8 @@ class OrderService extends Service implements OrderServiceInterface
     public function getUserUnpaidOrderPayments(User $user): Collection
     {
         $orderPayments = $user->reservedOrders()
-            ->with('order')
-            ->whereHas('order', function ($q) {
-                $q->with('orders')->withWaitingOrder();
+            ->withWhereHas('order', function ($q) {
+                $q->with('orders')->withPendingOrder();
             })->get();
 
         return $orderPayments->pluck('order');
@@ -220,7 +219,7 @@ class OrderService extends Service implements OrderServiceInterface
             'order_id' => $attributes['order_id'],
             'message' => $attributes['message'] ?? '',
             'transaction' => $attributes['transaction'],
-            'gateway_type' => $attributes['gateway_type'],
+            'gateway_type' => $attributes['gateway_type'] ?? null,
             'meta' => $attributes['meta'] ?? null,
         ];
 
@@ -377,11 +376,10 @@ class OrderService extends Service implements OrderServiceInterface
          */
         $couponRepository = app()->get(CouponRepositoryInterface::class);
 
-        $cartCalc = $cart->calculations();
-
         // -Check for payment method, it MUST be specified
         //  and if it's a bank gateway, it MUST be in supported gateways
         // -Also it must be checked if it's published in previous steps
+        // -Don't forget about testing one
         $paymentMethod = $paymentMethodRepository->find($orderInfo['payment_method']);
         if (
             !$paymentMethod instanceof Model ||
@@ -391,6 +389,10 @@ class OrderService extends Service implements OrderServiceInterface
                     GatewaysEnum::tryFrom($paymentMethod->bank_gateway_type),
                     GatewaysEnum::supportedGateways()
                 )
+            ) ||
+            (
+                $paymentMethod->type === PaymentTypesEnum::TESTING->value &&
+                !Auth::user()?->hasRole(RolesEnum::DEVELOPER->value)
             )
         ) {
             return null;
@@ -423,6 +425,7 @@ class OrderService extends Service implements OrderServiceInterface
             $sendMethod->id
         )['data'] ?? 0;
 
+        $cartCalc = $cart->calculations();
         $totalDiscount = $cartCalc->totalPrice() - $cartCalc->totalDiscountedPrice();
         $finalPrice = $cartCalc->totalDiscountedPrice();
         $totalPrice = $cartCalc->totalPrice();
@@ -440,13 +443,28 @@ class OrderService extends Service implements OrderServiceInterface
         $code = get_nanoid(NanoIdInterface::ALPHABET_NUMBERS_READABLE . NanoIdInterface::ALPHABET_UPPERCASE_READABLE);
         $prefix = config('market.order.factor_prefix', '');
 
+        // Update user info from order info if needed
+        if (!$user->first_name) {
+            $user->first_name = $orderInfo['first_name'];
+        }
+        if (!$user->last_name) {
+            $user->last_name = $orderInfo['last_name'];
+        }
+        if (!$user->national_code) {
+            $user->national_code = $orderInfo['national_code'];
+        }
+        if (!$user->first_name || !$user->last_name || !$user->national_code) {
+            $user->save();
+            $user->fresh();
+        }
+
         // insert order info in details table
         $orderDetail = $this->repository->create([
             'user_id' => $user->id,
             'code' => $prefix . $code,
-            'first_name' => $user->first_name ?: $orderInfo['first_name'],
-            'last_name' => $user->last_name ?: $orderInfo['last_name'],
-            'national_code' => $user->national_code ?: $orderInfo['national_code'],
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'national_code' => $user->national_code,
             'mobile' => $user->username,
             'province' => $provinceName,
             'city' => $cityName,
@@ -468,7 +486,7 @@ class OrderService extends Service implements OrderServiceInterface
             'send_status_code' => $badge['code'],
             'send_status_title' => $badge['title'],
             'send_status_color_hex' => $badge['color_hex'],
-            'is_needed_factor' => $orderInfo['is_needed_factor'],
+            'is_needed_factor' => to_boolean($orderInfo['is_needed_factor']),
             'ordered_at' => now(),
         ]);
 
@@ -496,7 +514,7 @@ class OrderService extends Service implements OrderServiceInterface
          */
         $settingService = app()->get(SettingServiceInterface::class);
 
-        $dividePrice = $settingService->getSpecificSettings([SettingsEnum::DIVIDE_PAYMENT_PRICE])->first();
+        $dividePrice = $settingService->getSpecificSettings([SettingsEnum::DIVIDE_PAYMENT_PRICE])->first()['value'];
         $paymentChunks = [];
 
         if (!empty($dividePrice) && $dividePrice > 0) {
@@ -507,10 +525,11 @@ class OrderService extends Service implements OrderServiceInterface
                 $paymentChunks[] = [
                     'key_id' => $orderId,
                     'must_pay_price' => $mustPayPrice,
+                    'payment_method_id' => $method->id,
                     'payment_method_title' => $method->title,
                     'payment_method_type' => $method->type,
-                    'payment_method_gateway_type' => $method->bank_gateway_type,
-                    'payment_status' => PaymentStatusesEnum::WAIT,
+                    'payment_method_gateway_type' => $method->bank_gateway_type ?? null,
+                    'payment_status' => PaymentStatusesEnum::PENDING->value,
                 ];
 
                 $tmpTotalPrice -= $dividePrice;
@@ -519,10 +538,11 @@ class OrderService extends Service implements OrderServiceInterface
             $paymentChunks[] = [
                 'key_id' => $orderId,
                 'must_pay_price' => $totalPrice,
+                'payment_method_id' => $method->id,
                 'payment_method_title' => $method->title,
                 'payment_method_type' => $method->type,
-                'payment_method_gateway_type' => $method->bank_gateway_type,
-                'payment_status' => PaymentStatusesEnum::WAIT,
+                'payment_method_gateway_type' => $method->bank_gateway_type ?? null,
+                'payment_status' => PaymentStatusesEnum::PENDING->value,
             ];
         }
 
@@ -532,6 +552,8 @@ class OrderService extends Service implements OrderServiceInterface
     }
 
     /**
+     * This method add order items to database and reduce item quantity from products stock
+     *
      * @param int $orderId
      * @param Cart $cart
      * @return bool
@@ -549,32 +571,44 @@ class OrderService extends Service implements OrderServiceInterface
         $items = $cart->getContent();
 
         $where = new WhereBuilder();
-        $where->whereIn('product_id', $items->pluck('product_id')->toArray());
+        $where
+            ->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->whereIn('id', $items->map(fn($item) => $item->product_id)->toArray());
         $products = $productRepository->all(columns: ['id', 'unit_name'], where: $where->build());
 
         $refinedItems = $items->map(function ($item) use ($orderId, $cartCalc, $products) {
-            $product = $products->firstWhere('id', $item['product_id']);
+            $product = $products->firstWhere('id', $item->product_id);
 
             return [
                 'order_key_id' => $orderId,
-                'product_id' => $item['product_id'],
-                'product_code' => $item['code'],
-                'product_title' => $item['name'],
-                'color_name' => $item['color_name'],
-                'color_hex' => $item['color_hex'],
-                'size' => $item['size'],
-                'guarantee' => $item['guarantee'],
-                'weight' => $item['weight'],
-                'price' => $cartCalc->totalPrice(),
-                'discounted_price' => $cartCalc->totalDiscountedPrice(),
-                'unit_price' => $item['price'] + ($item['price'] * $item['tax_rate'] / 100),
-                'quantity' => $item['qty'],
+                'product_id' => $item->product_id,
+                'product_code' => $item->code,
+                'product_title' => $item->name,
+                'color_name' => $item->color_name,
+                'color_hex' => $item->color_hex,
+                'size' => $item->size,
+                'guarantee' => $item->guarantee,
+                'weight' => $item->weight,
+                'price' => $cartCalc->subtotalPriceFor($item->code),
+                'discounted_price' => $cartCalc->subtotalDiscountedPriceFor($item->code),
+                'unit_price' => $item->actual_price,
+                'quantity' => $item->qty,
                 'unit_name' => $product['unit_name'] ?? '',
-                'has_separate_shipment' => $item['has_separate_shipment'],
+                'has_separate_shipment' => $item->has_separate_shipment,
             ];
         });
 
-        return $this->repository->addItemsToOrder($refinedItems->toArray());
+        return $this->repository->addItemsToOrder($refinedItems->toArray()) &&
+            $this->reduceOrderItemsFromStock($refinedItems->toArray());
+    }
+
+    /**
+     * @param array $items
+     * @return bool
+     */
+    private function reduceOrderItemsFromStock(array $items): bool
+    {
+        return $this->repository->reduceOrderProductsFromStock($items);
     }
 
     /**
@@ -587,6 +621,7 @@ class OrderService extends Service implements OrderServiceInterface
         $time = OrderHelper::getReservationTime($paymentChunksCount);
         $expireSeconds = $time;
         $model = $this->repository->createReserveOrder([
+            'user_id' => Auth::user()?->id,
             'order_key_id' => $orderId,
             'expires_at' => now()->addSeconds($expireSeconds),
         ]);

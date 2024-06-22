@@ -16,6 +16,7 @@
         <base-lazy-image
           :alt="product.title"
           :lazy-src="product.image.path"
+          :size="FileSizes.MEDIUM"
           :is-local="false"
           class="w-full h-48 bg-white rounded-lg transition group-hover:scale-95"
         />
@@ -182,6 +183,7 @@ import BaseCarousel from "@/components/base/BaseCarousel.vue";
 import {getPercentageOfPortion, numberFormat} from "@/composables/helper.js";
 import {watchImmediate} from "@vueuse/core";
 import PartialCountdownShow from "@/components/partials/PartialCountdownShow.vue";
+import {FileSizes} from "@/composables/file-list.js";
 
 const props = defineProps({
   containerWidth: {

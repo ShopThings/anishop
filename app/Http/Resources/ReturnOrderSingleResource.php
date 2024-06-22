@@ -35,7 +35,7 @@ class ReturnOrderSingleResource extends JsonResource
             'status' => [
                 'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
-                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status] ?? '#000000',
+                'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status->value] ?? '#000000',
             ],
             'wait_for_user' => in_array($this->status, ReturnOrderStatusesEnum::getUserStatuses()),
             'is_in_end_status' => in_array($this->status, ReturnOrderStatusesEnum::getEndingStatuses()),

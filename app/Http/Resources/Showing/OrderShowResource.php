@@ -25,7 +25,7 @@ class OrderShowResource extends JsonResource
             'id' => $this->id,
             'payments' => PaymentShowResource::collection($this->whenLoaded('payments')),
             'has_paid' => $this->resource->hasPaid(),
-            'is_waited_for_pay' => $this->payment_status === PaymentStatusesEnum::WAIT->value,
+            'is_waited_for_pay' => $this->payment_status === PaymentStatusesEnum::PENDING->value,
             'must_pay_price' => $this->must_pay_price,
             'payment_method_title' => $this->payment_method_title,
             'payment_method_type' => [
@@ -35,7 +35,7 @@ class OrderShowResource extends JsonResource
             'payment_status' => [
                 'text' => PaymentStatusesEnum::getTranslations($this->payment_status, 'نامشخص'),
                 'value' => $this->payment_status,
-                'color_hex' => PaymentStatusesEnum::getStatusColor()[$this->payment_status] ?? '#000000',
+                'color_hex' => PaymentStatusesEnum::getStatusColor()[$this->payment_status->value] ?? '#000000',
             ],
             'payment_status_changed_at' => $this->payment_status_changed_at
                 ? vertaTz($this->payment_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

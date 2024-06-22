@@ -37,19 +37,12 @@
                 <template #item="{item}">
                   <div class="flex items-center gap-3">
                     <base-lazy-image
-                      v-if="item?.image?.path"
                       :alt="item.title"
                       :is-local="false"
                       :lazy-src="item?.image?.path"
                       :size="FileSizes.SMALL"
                       class="!w-16 !h-auto object-cover rounded"
                     />
-                    <img
-                      v-else
-                      :alt="item.title"
-                      class="w-16 h-auto object-cover rounded"
-                      src="/image-placeholder.jpg"
-                    >
 
                     <span class="text-sm">{{ item.title }}</span>
                   </div>

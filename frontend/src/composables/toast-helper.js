@@ -4,7 +4,14 @@ import isFunction from "lodash.isfunction";
 import BaseLoading from "@/components/base/toast/BaseLoading.vue";
 import isObject from "lodash.isobject";
 
-export const useConfirmToast = (onAccept, title, subTitle, showBackdrop) => {
+/**
+ * @param {function | Object} onAccept
+ * @param {null | Object | string} title
+ * @param {null | string} subTitle
+ * @param {boolean} showBackdrop
+ * @returns {string | number}
+ */
+export const useConfirmToast = (onAccept, title = null, subTitle = null, showBackdrop = true) => {
   const noop = () => {
   }
   let onDecline = noop
@@ -28,6 +35,16 @@ export const useConfirmToast = (onAccept, title, subTitle, showBackdrop) => {
     onDecline = noop
   }
 
+  let acceptText = ''
+  let declineText = ''
+  if (isObject(title)) {
+    acceptText = title.acceptText
+    declineText = title.declineText
+    subTitle = title.subTitle || subTitle
+    showBackdrop = title.showBackdrop || showBackdrop
+    title = title.title
+  }
+
   const toast = useToast()
 
   return toast({
@@ -35,6 +52,8 @@ export const useConfirmToast = (onAccept, title, subTitle, showBackdrop) => {
     props: {
       title,
       subTitle,
+      btnAcceptText: acceptText,
+      btnDeclineText: declineText,
       showBackdrop: showBackdrop ?? true,
     },
     listeners: {

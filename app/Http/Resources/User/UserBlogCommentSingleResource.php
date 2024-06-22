@@ -21,6 +21,7 @@ class UserBlogCommentSingleResource extends JsonResource
     {
         // preload needed relations
         $this->resource->load('blog');
+        $this->resource->load('blog.image');
         $this->resource->load('badge');
         $this->resource->load('parent');
 

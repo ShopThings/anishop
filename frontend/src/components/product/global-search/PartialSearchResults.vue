@@ -14,7 +14,14 @@
         class="w-full p-2 rounded text-sm flex items-center gap-1.5 group hover:bg-slate-100 transition"
         @click="emit('navigating')"
       >
-        <ArrowLeftCircleIcon class="size-5 shrink-0 text-slate-500 group-hover:text-blue-500 transition"/>
+        <base-lazy-image
+          v-if="item?.image?.path"
+          :alt="item.title"
+          :is-local="false"
+          :lazy-src="item?.image?.path"
+          :size="FileSizes.SMALL"
+          class="!w-16 !h-auto object-cover rounded shrink-0"
+        />
         <span class="leading-relaxed">{{ item.title }}</span>
       </router-link>
     </li>
@@ -32,8 +39,9 @@
 </template>
 
 <script setup>
-import {ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
 import {useProductSearchStore} from "@/store/StoreProductSearch.js";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const emit = defineEmits(['navigating'])
 

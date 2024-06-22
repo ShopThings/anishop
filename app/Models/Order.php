@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\DatabaseEnum;
+use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Support\Model\ExtendedModel as Model;
@@ -25,6 +26,7 @@ class Order extends Model
 
     protected $casts = [
         'payment_method_type' => PaymentTypesEnum::class,
+        'payment_method_gateway_type' => GatewaysEnum::class,
         'payment_status' => PaymentStatusesEnum::class,
         'payment_status_changed_at' => 'datetime',
         'paid_at' => 'datetime',
@@ -53,7 +55,7 @@ class Order extends Model
      */
     public function detail(): HasOne
     {
-        return $this->hasOne(OrderDetail::class, 'key_id');
+        return $this->hasOne(OrderDetail::class, 'id', 'key_id');
     }
 
     /**
@@ -61,7 +63,7 @@ class Order extends Model
      */
     public function paymentMethod(): HasOne
     {
-        return $this->hasOne(PaymentMethod::class, 'payment_method_id');
+        return $this->hasOne(PaymentMethod::class, 'id', 'payment_method_id');
     }
 
     /**
@@ -77,7 +79,7 @@ class Order extends Model
      */
     public function waitForPay(): bool
     {
-        return $this->payment_status === PaymentStatusesEnum::WAIT->value;
+        return $this->payment_status === PaymentStatusesEnum::PENDING->value;
     }
 
     /**

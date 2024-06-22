@@ -29,4 +29,18 @@ class CityService extends Service implements CityServiceInterface
 
         return $this->repository->all(where: $where->build());
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function isCityInProvince(int $cityId, int $provinceId): bool
+    {
+        $where = new WhereBuilder();
+        $where
+            ->whereEqual('id', $cityId)
+            ->whereEqual('province_id', $provinceId)
+            ->whereEqual('is_published', DatabaseEnum::DB_YES);
+
+        return $this->repository->exists(where: $where->build());
+    }
 }

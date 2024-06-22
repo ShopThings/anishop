@@ -11,7 +11,7 @@ import {isValidColorHex} from "@/validation/index.js";
 defineProps({
   bgColor: {
     type: String,
-    default: '#99aff4',
+    default: '#96affa',
     validator: (value) => {
       return isValidColorHex(value)
     },

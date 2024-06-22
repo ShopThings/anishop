@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\DatabaseEnum;
+use App\Enums\Gates\RolesEnum;
 use App\Models\PaymentMethod;
 use App\Models\Province;
 use App\Models\SendMethod;
@@ -37,6 +38,7 @@ class StoreOrderRequest extends FormRequest
                 'string',
             ],
             'items' => [
+                'required',
                 'array',
                 'min:1',
             ],
@@ -96,6 +98,10 @@ class StoreOrderRequest extends FormRequest
                 'required',
                 Rule::exists(PaymentMethod::class, 'id')->where(function ($query) {
                     $query->where('is_published', DatabaseEnum::DB_YES);
+
+                    if (!Auth::user()?->hasRole(RolesEnum::DEVELOPER->value)) {
+                        $query->where('is_sealed', DatabaseEnum::DB_NO);
+                    }
                 }),
             ],
             'coupon' => [
@@ -105,7 +111,6 @@ class StoreOrderRequest extends FormRequest
             ],
             //
             'is_needed_factor' => [
-                'required',
                 'boolean',
             ],
         ];

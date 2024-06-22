@@ -91,7 +91,6 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
 
         return collect($this->repository->getOrdersSearchFilterPaginated(
             userId: $userId,
-            columns: ['code', 'order_code', 'status', 'requested_at'],
             filter: $filter
         )->items());
     }

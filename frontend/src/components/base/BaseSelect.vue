@@ -230,6 +230,11 @@ const isHandlingChange = ref(false)
 
 watch(selectedItems, async (newValue, oldValue) => {
   if (!isHandlingChange.value) {
+    if (
+      newValue && oldValue &&
+      newValue[props.optionsKey] === oldValue[props.optionsKey]
+    ) return
+
     isHandlingChange.value = true;
 
     emit('change', newValue)

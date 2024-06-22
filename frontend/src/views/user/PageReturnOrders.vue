@@ -68,7 +68,7 @@
         @do-search="getReturnOrders"
       >
         <template #code="{value}">
-          <span class="tracking-widest text-lg">{{ value.code }}</span>
+          <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
         </template>
 
         <template #order_code="{value}">
@@ -77,7 +77,7 @@
             class="text-blue-600 hover:text-opacity-80 text-sm"
             target="_blank"
           >
-            <span class="tracking-widest text-lg">{{ value.order_code }}</span>
+            <span class="tracking-widest font-iranyekan-bold">{{ value.order_code }}</span>
           </router-link>
         </template>
 
@@ -95,7 +95,7 @@
 
         <template #op="{value}">
           <router-link
-            :to="{name: 'user.return_order.detail', params: {code: 12345}}"
+            :to="{name: 'user.return_order.detail', params: {code: value.code}}"
             class="text-blue-600 hover:text-opacity-80 text-sm"
           >
             مشاهده جزئیات

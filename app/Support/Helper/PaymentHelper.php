@@ -39,17 +39,40 @@ class PaymentHelper
 
         $payment = $orderService->createGatewayPayment([
             'order_id' => $orderId,
-            'gateway_type' => $method->bank_gatewat_type,
+            'gateway_type' => $method->bank_gatewat_type ?? null,
         ]);
+
+        // Payment should just work on production(not reasonable on development)
+        if (!app()->isProduction()) {
+            $payment->setTransaction('987654321');
+            $payment->setReceipt('123456789');
+            $payment->setStatus(true);
+            $payment->setAsPaid();
+
+            $payment->save();
+            $payment->refresh();
+
+            $frontendUrl = config(
+                'market.order.gateway_proxy_callback_url',
+                config('market.frontend_url', 'http://localhost')
+            );
+
+            return json_encode([
+                'action' => $frontendUrl . '?g=' . $payment->id,
+                'inputs' => [],
+                'method' => 'get',
+            ]);
+        }
 
         return Payment::via($method->bank_gateway_type)
             ->config(self::getPaymentDriverConfig($method))
             ->callbackUrl(route('payment.verify', [$payment]))
             ->amount($amount)
-            ->purchase(null, function ($driver, $transactionId) use ($orderId, $method, $payment) {
+            ->purchase(null, function ($driver, $transactionId) use ($payment) {
                 $payment->setTransaction($transactionId);
             })
-            ->pay()->toJson();
+            ->pay()
+            ->toJson();
     }
 
     /**
@@ -123,6 +146,11 @@ class PaymentHelper
             return compact('type', 'message', 'data', 'status');
         }
 
+        // Payment should just work on production(not reasonable on development)
+        if (!app()->isProduction()) {
+            return compact('type', 'message', 'data', 'status');
+        }
+
         try {
             /**
              * @var Order $order
@@ -145,7 +173,7 @@ class PaymentHelper
             // show payment referenceId to the user.
             $data = $receipt->getReferenceId();
 
-            $order->payment_status = PaymentStatusesEnum::SUCCESS;
+            $order->payment_status = PaymentStatusesEnum::SUCCESS->value;
             $order->payment_status_changed_at = now();
             $order->paid_at = now();
             $order->save();

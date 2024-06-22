@@ -219,7 +219,26 @@ class Cart implements Arrayable, Jsonable
         }
 
         if ($canAdd) {
-            $this->items->add(new CartItem($item, $quantity));
+            $existingItem = null;
+            foreach ($this->items as $currentItem) {
+                if ($currentItem->code === $item->code) {
+                    $existingItem = $currentItem;
+                    break;
+                }
+            }
+
+            if ($existingItem) {
+                $this->items = $this->items->map(function ($currentItem) use ($item, $quantity) {
+                    if ($currentItem->code === $item->code) {
+                        $currentItem->qty += $quantity;
+                    }
+                    return $currentItem;
+                });
+            } else {
+                $this->items->add(new CartItem($item, $quantity));
+            }
+
+            $this->items = $this->makeItemsUnique();
         }
 
         return $canAdd;
@@ -246,7 +265,7 @@ class Cart implements Arrayable, Jsonable
             return new Collection();
         }
 
-        $itemCodes = $items->pluck('code')->unique()->toArray();
+        $itemCodes = $items->pluckMultiple(['code', 'quantity'])->unique('code')->toArray();
         $validatedItems = $this->getValidatedItems($itemCodes);
 
         if ($loadInCurrentInstance) {
@@ -264,7 +283,7 @@ class Cart implements Arrayable, Jsonable
     {
         $items = $this->items->map(function ($item) {
             if (!$item instanceof CartItem) {
-                throw new CartException('خطا در بررسی محصولات وارده شده');
+                throw new CartException('خطا در بررسی محصولات انتخاب شده در سبد خرید');
             }
 
             return $item->toArray();
@@ -279,19 +298,16 @@ class Cart implements Arrayable, Jsonable
      */
     protected function getValidatedItems(array $codes): Collection
     {
-        $validatedItems = new Collection();
-        $productVariants = $this->productService->getProductVariantsByCodes($codes);
+        $justCodes = Arr::pluck($codes, 'code');
+        $productVariants = $this->productService->getProductVariantsByCodes($justCodes);
 
-        $productVariants = $productVariants->filter(function ($item) {
-            return $item->isAvailableForCart();
+        return $productVariants->filter(function ($item) use ($justCodes) {
+            return $item->isAvailableForCart() && in_array($item->code, $justCodes);
+        })->map(function ($item) use ($codes) {
+            return new CartItem($item, Arr::first($codes, function ($code) use ($item) {
+                return $code['code'] === $item->code;
+            })['quantity']);
         });
-
-        $productVariants->each(function ($product) use (&$validatedItems) {
-            // Add the product variant to array
-            $validatedItems->add($product);
-        });
-
-        return $validatedItems;
     }
 
     /**
@@ -445,11 +461,36 @@ class Cart implements Arrayable, Jsonable
     }
 
     /**
-     * @param $options
-     * @return false|string
+     * @inheritDoc
      */
     public function toJson($options = 0)
     {
         return json_encode($this->toArray(), $options);
+    }
+
+    /**
+     * @return Collection
+     */
+    private function makeItemsUnique(): Collection
+    {
+        $unique = new Collection();
+
+        $this->items->each(function ($item) use (&$unique,) {
+            $key = 'code';
+            $itemExists = false;
+
+            foreach ($unique as $value) {
+                if ($value->{$key} === $item->{$key}) {
+                    $itemExists = true;
+                    break;
+                }
+            }
+
+            if (!$itemExists) {
+                $unique->add($item);
+            }
+        });
+
+        return $unique;
     }
 }
