@@ -2,7 +2,7 @@ import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
-const codeRouteRegex = '([\\d\\w]+|\\d+)'
+const codeRouteRegex = '([\\d\\w\-\_]+|\\d+)'
 
 export const adminRoutes = {
   path: '/admin',
