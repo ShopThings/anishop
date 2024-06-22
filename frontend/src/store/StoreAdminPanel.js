@@ -128,10 +128,13 @@ export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () 
 })
 
 export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () => {
+  const loading = ref(false)
   let counts = ref([])
   let prevCounts = []
   const countdown = useCountdown(300)
   const online = useOnline()
+
+  const isLoading = computed(() => loading.value)
 
   const getCounts = computed(() => {
     return counts.value
@@ -151,7 +154,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
   })
 
   function fetchCounting() {
-    if (!online.value) return
+    if (!online.value || loading.value) return
 
     countdown.pause()
 
@@ -159,6 +162,8 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
       // Update prevCounts only if there's a change
       prevCounts = [...counts.value];
     }
+
+    loading.value = true
 
     AdminPanelDashboardAPI.getCountOrders({
       silent: true,
@@ -173,6 +178,8 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
       finally() {
         countdown.reset()
         countdown.resume()
+
+        loading.value = false
       },
     })
   }
@@ -199,10 +206,10 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
   })
 
   return {
-    counts,
+    isLoading,
+    counts, getCounts,
     //
-    getCounts,
-    //
+    fetchCounting,
     hasNewChange,
     //
     $reset,
