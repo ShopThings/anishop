@@ -340,8 +340,10 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     public function getOrdersCountWithBadges(): Collection
     {
         $orderQuery = $this->model->newQuery()
-            ->selectRaw('count(order_details.*) as count')
-            ->select('order_details.send_status_code')
+            ->select([
+                DB::raw('count(order_details.id) as count'),
+                'order_details.send_status_code',
+            ])
             ->leftJoin(
                 'order_badges',
                 function ($join) {
@@ -351,8 +353,10 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             ->groupBy('order_details.send_status_code');
 
         $badgeQuery = $this->model->newQuery()
-            ->selectRaw('count(order_badges.*) as count')
-            ->select(DB::raw('NULL as send_status_code'))
+            ->select([
+                DB::raw('count(order_badges.id) as count'),
+                DB::raw('NULL as send_status_code'),
+            ])
             ->rightJoin(
                 'order_badges',
                 function ($join) {
@@ -366,6 +370,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
 
         return $this->model->newQuery()
             ->select([
+                'subquery.count',
                 'order_details.send_status_code',
                 'order_details.send_status_title',
                 'order_details.send_status_color_hex',
