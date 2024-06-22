@@ -12,6 +12,7 @@ use App\Http\Controllers\Order\OrderController;
 use App\Http\Controllers\Order\ReturnOrderRequestController;
 use App\Http\Controllers\Other\AdminController;
 use App\Http\Controllers\Other\AdminDashboardController;
+use App\Http\Controllers\Other\CityController;
 use App\Http\Controllers\Other\CityPostPriceController;
 use App\Http\Controllers\Other\ComplaintController;
 use App\Http\Controllers\Other\ContactUsController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Other\FaqController;
 use App\Http\Controllers\Other\FileManagerController;
 use App\Http\Controllers\Other\MenuController;
 use App\Http\Controllers\Other\NewsletterController;
+use App\Http\Controllers\Other\ProvinceController;
 use App\Http\Controllers\Other\SettingController;
 use App\Http\Controllers\Other\SliderController;
 use App\Http\Controllers\Other\SmsLogController;
@@ -447,6 +449,14 @@ Route::prefix('admin')
                     ->whereAlpha('group')->name('settings.index');
                 Route::put('settings', [SettingController::class, 'update'])
                     ->name('settings.update');
+
+                /*
+                 * province & city routes
+                 */
+                Route::get('provinces/{province}/cities/{city}', [CityController::class, 'show'])
+                    ->whereNumber(['province', 'city'])->name('provinces.city.show');
+                Route::get('provinces/{province}', [ProvinceController::class, 'show'])
+                    ->whereNumber('province')->name('provinces.show');
             });
 
             /*
