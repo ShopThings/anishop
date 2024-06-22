@@ -67,7 +67,6 @@
                         <base-lazy-image
                           :alt="item.name"
                           :lazy-src="item.image"
-                          :is-local="false"
                           class="!w-14 h-auto ml-3"
                         />
                         <span

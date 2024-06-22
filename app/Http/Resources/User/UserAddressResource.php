@@ -26,7 +26,7 @@ class UserAddressResource extends JsonResource
             'address' => $this->address,
             'city' => new CityShowResource($this->city),
             'province' => new ProvinceShowResource($this->province),
-            'postal_code' => $this->postal_code,
+            'postal_code' => $this->postal_code ?? '',
         ];
     }
 }

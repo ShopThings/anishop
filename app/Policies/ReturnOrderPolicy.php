@@ -23,6 +23,7 @@ class ReturnOrderPolicy
 
     /**
      * Determine whether the user can delete the model.
+     * @throws NotDeletableException
      */
     public function delete(User $user, ReturnOrderRequest $model): bool
     {

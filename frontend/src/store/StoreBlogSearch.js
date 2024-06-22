@@ -12,12 +12,12 @@ export const useBlogSearchStore = defineStore('blog_search_result', () => {
     () => blogs.value
   )
 
-  function setCategories(categories) {
-    categories.value = categories
+  function setCategories(items) {
+    categories.value = items
   }
 
-  function setBlogs(blogs) {
-    blogs.value = blogs
+  function setBlogs(items) {
+    blogs.value = items
   }
 
   function $reset() {

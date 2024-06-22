@@ -12,4 +12,11 @@ interface CityServiceInterface extends ServiceInterface
      * @return Collection
      */
     public function getCities(int $provinceId): Collection;
+
+    /**
+     * @param int $cityId
+     * @param int $provinceId
+     * @return bool
+     */
+    public function isCityInProvince(int $cityId, int $provinceId): bool;
 }

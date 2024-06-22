@@ -63,7 +63,10 @@
                 <base-input
                   :value="address?.postal_code"
                   label-title="کدپستی"
+                  :is-optional="true"
+                  klass="no-spin-arrow"
                   name="postal_code"
+                  type="number"
                   placeholder="وارد نمایید"
                 >
                   <template #icon>
@@ -87,13 +90,13 @@
 
             <div class="px-2 py-3">
               <base-animated-button
-                :disabled="isSubmitting"
+                :disabled="!canSubmit"
                 class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
                 type="submit"
               >
                 <VTransitionFade>
                   <loader-circle
-                    v-if="isSubmitting"
+                    v-if="!canSubmit"
                     big-circle-color="border-transparent"
                     main-container-klass="absolute w-full h-full top-0 left-0"
                   />
@@ -176,7 +179,10 @@ function handleProvinceChange(selected) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     address: yup.string().required('آدرس خود را وارد نمایید.'),
-    postal_code: yup.number().required('کدپستی را وارد نمایید.'),
+    postal_code: yup.string()
+      .optional()
+      .transform(transformNumbersToEnglish)
+      .justNumber('کدپستی باید از نوع عددی باشد.'),
     full_name: yup.string()
       .persian('نام باید از حروف فارسی باشد.')
       .required('نام را وارد نمایید.'),
@@ -202,7 +208,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     full_name: values.full_name,
     mobile: values.mobile,
     address: values.address,
-    postal_code: values.postal_code,
+    postal_code: values?.postal_code,
     province: selectedProvince.value.id,
     city: selectedCity.value.id,
   }, {

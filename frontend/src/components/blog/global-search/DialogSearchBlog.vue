@@ -69,7 +69,7 @@
 
 <script setup>
 import {ref} from "vue";
-import {MagnifyingGlassIcon, MagnifyingGlassCircleIcon, ArrowLongLeftIcon} from '@heroicons/vue/24/outline';
+import {ArrowLongLeftIcon, MagnifyingGlassCircleIcon, MagnifyingGlassIcon} from '@heroicons/vue/24/outline';
 import BaseDialog from "../../base/BaseDialog.vue";
 import BaseInput from "../../base/BaseInput.vue";
 import PartialSearchResultCategories from "@/components/blog/global-search/PartialSearchResultCategories.vue";
@@ -98,9 +98,7 @@ const searchingText = ref('')
 const enteredSearching = ref(false)
 
 function searchForResult() {
-  if (searchingText.value.trim() === '') {
-    return
-  }
+  if (searchingText.value.trim() === '') return
 
   enteredSearching.value = true
   searchLoading.value = true

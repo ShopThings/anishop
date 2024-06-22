@@ -107,12 +107,17 @@ class ProductService extends Service implements ProductServiceInterface
     /**
      * @inheritDoc
      */
-    public function getFilteredProducts(HomeProductFilter $filter): Collection|LengthAwarePaginator
+    public function getFilteredProducts(
+        HomeProductFilter $filter,
+        bool              $applyFilterLimit = false
+    ): Collection|LengthAwarePaginator
     {
-        $settingModel = $this->settingService->getSetting(SettingsEnum::PRODUCT_EACH_PAGE->value);
-        $limit = $settingModel->setting_value ?: $settingModel->default_value;
+        if (!$applyFilterLimit) {
+            $settingModel = $this->settingService->getSetting(SettingsEnum::PRODUCT_EACH_PAGE->value);
+            $limit = $settingModel->setting_value ?: $settingModel->default_value;
 
-        $filter->setLimit($limit);
+            $filter->setLimit($limit);
+        }
 
         return $this->getProducts($filter);
     }

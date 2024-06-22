@@ -87,10 +87,10 @@ class BlogService extends Service implements BlogServiceInterface
      */
     public function getFilteredBlogs(
         HomeBlogFilter $filter,
-        bool           $enforceProvidedFilterLimit = false
+        bool $applyFilterLimit = false
     ): Collection|LengthAwarePaginator
     {
-        if (!$enforceProvidedFilterLimit) {
+        if (!$applyFilterLimit) {
             $settingModel = $this->settingService->getSetting(SettingsEnum::BLOG_EACH_PAGE->value);
             $limit = $settingModel->setting_value ?: $settingModel->default_value;
 

@@ -88,7 +88,7 @@
         placeholder="وارد نمایید"
         @on-tags-changed="(t) => {phones = t}"
       />
-      <partial-input-error-message :error-message="errors.phone"/>
+      <partial-input-error-message :error-message="errors.phones"/>
     </div>
 
     <div class="flex flex-wrap mt-6 border-2 rounded-md border-orange-500">
@@ -193,7 +193,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {onMounted, reactive, ref, watch} from "vue";
 import {SETTING_KEYS} from "@/composables/constants.js";
 import yup from "@/validation/index.js";
 import {ArrowLeftCircleIcon, CheckIcon, InformationCircleIcon, MapIcon} from "@heroicons/vue/24/outline/index.js";
@@ -208,7 +208,6 @@ import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
-import {watchImmediate} from "@vueuse/core";
 import {findItemByKey} from "@/composables/helper.js";
 import {SettingAPI} from "@/service/APIConfig.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
@@ -284,17 +283,39 @@ function loadCities(clearSelection) {
 }
 
 //------------------------------------------
+const shouldClearSelectedCity = ref(true)
+
 function handleProvinceChange(selected) {
   selectedProvince.value = selected
-  loadCities()
+  loadCities(shouldClearSelectedCity.value)
 }
 
 const settingValues = reactive({})
 
-watchImmediate(() => props.setting, () => {
-  selectedProvince.value = findItemByKey(props.setting, 'name', SETTING_KEYS.STORE_PROVINCE)?.value || null
-  selectedCity.value = findItemByKey(props.setting, 'name', SETTING_KEYS.STORE_CITY)?.value || null
-  loadCities(false)
+watch(() => props.setting, () => {
+  let province = findItemByKey(props.setting, 'name', SETTING_KEYS.STORE_PROVINCE)?.value || null
+  let city = findItemByKey(props.setting, 'name', SETTING_KEYS.STORE_CITY)?.value || null
+
+  provinceLoading.value = true
+  ProvinceAPI.fetchById(province, {
+    success(response) {
+      selectedProvince.value = response.data
+    },
+    finally() {
+      provinceLoading.value = false
+    },
+  })
+
+  cityLoading.value = true
+  ProvinceAPI.fetchCityByProvince(city, province, {
+    success(response) {
+      selectedCity.value = response.data
+      loadCities(false)
+    },
+    finally() {
+      cityLoading.value = false
+    },
+  })
 
   phones.value = findItemByKey(props.setting, 'name', SETTING_KEYS.PHONES)?.value || []
 
@@ -302,6 +323,9 @@ watchImmediate(() => props.setting, () => {
   if (latlng?.length) mapSettings.center = latlng
 
   settingValues[SETTING_KEYS.ADDRESS] = findItemByKey(props.setting, 'name', SETTING_KEYS.ADDRESS)?.value || ''
+}, {
+  immediate: true,
+  deep: true,
 })
 
 //------------------------------------------
@@ -334,6 +358,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   const updateArr = {
     [SETTING_KEYS.STORE_PROVINCE]: selectedProvince.value.id,
     [SETTING_KEYS.STORE_CITY]: selectedCity.value.id,
+    [SETTING_KEYS.ADDRESS]: values.address,
+    [SETTING_KEYS.LAT_LNG]: values.latitude && values.longitude ? [values.latitude, values.longitude] : null,
+    [SETTING_KEYS.PHONES]: phones.value,
   }
 
   SettingAPI.updateSetting(updateArr, {

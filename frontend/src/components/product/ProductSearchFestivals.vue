@@ -7,22 +7,22 @@
   </div>
 
   <div
-      v-if="festivalsLoading"
-      class="flex items-center justify-center my-3"
+    v-if="festivalsLoading"
+    class="flex items-center justify-center my-3"
   >
     <loader3-dot/>
   </div>
   <div
     v-else-if="festivals?.length"
-      class="divide-y divide-slate-200 p-2.5"
+    class="divide-y divide-slate-200 p-2.5"
   >
     <button
-        v-for="festival in festivals"
-        :key="festival.id"
-        type="button"
-        class="flex items-center justify-between gap-3 w-full p-3 hover:bg-slate-100 transition"
-        :class="filterParamsStore.getFestival && filterParamsStore.getFestival === festival.id ? '!bg-cyan-200' : ''"
-        @click="emit('select', festival)"
+      v-for="festival in festivals"
+      :key="festival.id"
+      :class="filterParamsStore.getFestival && +filterParamsStore.getFestival === +festival.id ? '!bg-cyan-100 border border-cyan-300' : ''"
+      class="flex items-center justify-between gap-3 w-full p-3 hover:bg-slate-100 transition"
+      type="button"
+      @click="emit('select', festival)"
     >
       <span class="font-iranyekan-bold">{{ festival.title }}</span>
       <ArrowLeftIcon class="size-6 text-cyan-600 shrink-0"/>

@@ -15,7 +15,7 @@ export default {
         primary: '#3057D3',
         secondary: '#41475B',
         cool: '#EDF3FF',
-        awesome: '#EBF2FC',
+        awesome: '#e1eefa',
       },
       animation: {
         wiggle: 'wiggle 1s ease-in-out infinite',

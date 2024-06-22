@@ -2,9 +2,15 @@
   <app-navigation-header title="سبد خرید"/>
 
   <div class="px-3 mb-12">
-    <div v-if="items?.length" class="flex flex-col lg:flex-row gap-6 cart-info-sticky-container">
+    <div v-if="cartStore.getCartItems?.length" class="flex flex-col lg:flex-row gap-6 cart-info-sticky-container">
       <partial-card class="border-0 p-4 w-full">
         <template #body>
+          <base-message :has-close="false" type="info">
+            برای اعمال تغییرات ایجاد شده در تعداد محصولات، بر روی
+            <span class="font-iranyekan-bold underline underline-offset-8">بروزرسانی سبد خرید</span>
+            در پایین صفحه کلیک کنید در غیر اینصورت تغییرات اعمال نمی‌شود.
+          </base-message>
+
           <div class="relative">
             <VTransitionFade>
               <loader-circle
@@ -15,7 +21,7 @@
 
             <ul class="flex flex-col divide-y divide-slate-200">
               <li
-                v-for="item in items"
+                v-for="item in cartStore.getCartItems"
                 :key="item.id"
                 class="relative flex flex-col gap-3 py-6 pr-3 pl-10"
               >
@@ -48,7 +54,7 @@
                   <div class="flex gap-3 flex-col justify-between">
                     <router-link
                       :to="{name: 'product.detail', params: {slug: item.product.slug}}"
-                      class="inline-block text-black hover:text-opacity-80 leading-relaxed text-sm"
+                      class="inline-block text-black hover:text-opacity-80 leading-relaxed font-iranyekan-bold"
                     >
                       {{ item.product.title }}
                     </router-link>
@@ -56,7 +62,7 @@
                     <base-spinner
                       v-model="item.quantity"
                       :max="Math.min(item.max_cart_count, item.stock_count)"
-                      :min="0"
+                      :min="1"
                     >
                       <template #afterValue>
                         <span class="text-sm text-gray-400">{{ item.product.unit_name }}</span>
@@ -70,7 +76,7 @@
                       >
                         <span class="text-xs">%</span>
                         <div class="mr-1 inline-block text-sm">
-                          {{ getPercentageOfPortion(+item.price, +item.actual_price) }}
+                          {{ getPercentageOfPortion(+item.price, +item.actual_price, true) }}
                         </div>
                       </div>
                       <div class="flex flex-wrap items-center gap-3">
@@ -157,12 +163,12 @@
       </div>
 
       <Vue3StickySidebar
-          :bottom-spacing="20"
-          :min-width="1024"
-          :top-spacing="114"
-          class="w-full shrink-0 md:w-1/2 lg:w-1/3 md:mr-auto lg:mr-0"
-          containerSelector=".cart-info-sticky-container"
-          innerWrapperSelector='.sidebar__inner'
+        :bottom-spacing="20"
+        :min-width="1024"
+        :top-spacing="114"
+        class="w-full shrink-0 md:w-1/2 lg:w-1/3 md:mr-auto lg:mr-0"
+        containerSelector=".cart-info-sticky-container"
+        innerWrapperSelector='.sidebar__inner'
       >
         <partial-card class="border-2 border-slate-300 p-8 w-full">
           <template #body>
@@ -182,7 +188,7 @@
               </li>
               <li class="flex flex-wrap justify-between gap-3 py-2 text-sm">
                 <div class="font-iranyekan-light leading-relaxed grow">
-                  قیمت محصولات
+                  قیمت محصولات (به همراه مالیات بر ارزش افزوده)
                 </div>
                 <div class="shrink-0 mr-auto">
                   <span class="font-iranyekan-bold">{{ numberFormat(cartStore.totalPrice) }}</span>
@@ -198,6 +204,19 @@
                 </div>
               </li>
 
+              <li
+                v-if="cartStore.totalPrice - cartStore.totalDiscountedPrice > 0"
+                class="flex flex-wrap justify-between gap-3 py-2 text-sm"
+              >
+                <div class="font-iranyekan-bold leading-relaxed grow">
+                  مجموع تخفیف
+                </div>
+                <div class="shrink-0 mr-auto">
+                  <span class="font-iranyekan-bold"
+                        dir="ltr">-{{ numberFormat(cartStore.totalPrice - cartStore.totalDiscountedPrice) }}</span>
+                  <span class="text-slate-400 text-xs mr-2">تومان</span>
+                </div>
+              </li>
               <li class="flex flex-wrap justify-between gap-3 py-2 text-sm">
                 <div class="font-iranyekan-bold leading-relaxed grow">
                   قیمت کل
@@ -211,9 +230,9 @@
 
             <base-button
               :disabled="isLoading"
-                :to="{name: 'checkout'}"
-                class="bg-primary w-full mt-6"
-                type="link"
+              :to="{name: 'checkout'}"
+              class="bg-primary w-full mt-6"
+              type="link"
             >
               <VTransitionFade>
                 <loader-circle
@@ -237,7 +256,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {ShoppingCartIcon, XMarkIcon,} from "@heroicons/vue/24/outline/index.js";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -252,11 +271,12 @@ import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import BaseSpinner from "@/components/base/BaseSpinner.vue";
 import {getPercentageOfPortion, numberFormat} from "@/composables/helper.js";
 import {useCartStore} from "@/store/StoreUserCart.js";
+import BaseMessage from "@/components/base/BaseMessage.vue";
 
 const cartStore = useCartStore()
+cartStore.loadFromLocalStorage()
 
 const isLoading = ref(false)
-const items = cartStore.getCartItems
 
 function removeItemHandler(code) {
   if (isLoading.value) return
@@ -275,17 +295,8 @@ function removeItemHandler(code) {
 function updateItemsHandler() {
   if (!cartStore.getCartItems?.length || isLoading.value) return
 
-  let codesQuantities = {}
-  for (let i of cartStore.getCartItems) {
-    if (i?.code && i?.quantity) {
-      codesQuantities[i.code] = i.quantity
-    }
-  }
-
-  if (!Object.keys(codesQuantities).length) return
-
   isLoading.value = true
-  cartStore.addAllItems(codesQuantities, {
+  cartStore.fetchAllLocal({
     finally() {
       isLoading.value = false
     },
@@ -295,10 +306,16 @@ function updateItemsHandler() {
 function cancelItemsUpdateHandler() {
   if (!cartStore.getCartItems?.length || isLoading.value) return
 
+  cartStore.loadFromLocalStorage()
+
   if (cartStore.isShoppingCartActivated) {
     cartStore.changeToShoppingCart()
   } else if (cartStore.isWishlistCartActivated) {
     cartStore.changeToWishlistCart()
   }
 }
+
+onMounted(() => {
+  cartStore.fetchAllLocal()
+})
 </script>

@@ -169,7 +169,7 @@ return [
         /**
          * Maximum time of reserving a partially paid order
          */
-        'max_reservation_time' => TimesEnum::HOURS_2,
+        'max_reservation_time' => TimesEnum::HOURS_2->value,
 
         /**
          * What type of reservation time should consider in order reservation

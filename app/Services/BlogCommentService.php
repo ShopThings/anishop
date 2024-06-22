@@ -58,7 +58,6 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
         return $this->repository->getUserCommentsFilterPaginated(
             userId: $userId,
             filter: $filter,
-            columns: ['id', 'condition', 'status', 'created_at']
         );
     }
 

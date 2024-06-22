@@ -31,7 +31,7 @@ class OrderResource extends JsonResource
             'payment_status' => [
                 'text' => PaymentStatusesEnum::getTranslations($this->payment_status, 'نامشخص'),
                 'value' => $this->payment_status,
-                'color_hex' => PaymentStatusesEnum::getStatusColor()[$this->payment_status] ?? '#000000',
+                'color_hex' => PaymentStatusesEnum::getStatusColor()[$this->payment_status->value] ?? '#000000',
             ],
             'payment_status_changed_at' => $this->payment_status_changed_at
                 ? vertaTz($this->payment_status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

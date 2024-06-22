@@ -539,15 +539,14 @@
             </div>
           </div>
 
-          <template v-if="showAddToCart">
+          <template v-if="showAddToCart && selectedProduct.stock_count && selectedProduct.max_cart_count">
             <hr class="h-0.5 mx-auto my-3 bg-slate-100 border-0 rounded">
 
             <div class="flex flex-wrap flex-row-reverse justify-end gap-3">
               <base-spinner
-                v-if="productCartCounting[selectedProduct?.id]?.quantity"
                 v-model="currentProductCartCounting"
-                :max="selectedProduct?.max_cart_count || 0"
-                :min="0"
+                :max="selectedProduct?.max_cart_count || 1"
+                :min="1"
                 class="grow sm:grow-0"
               />
 
@@ -570,6 +569,18 @@
 
                 <span class="ml-auto">افزودن به سبد خرید</span>
               </base-animated-button>
+            </div>
+
+            <div
+              v-if="currentProductInCart"
+              class="flex flex-wrap items-center gap-1 text-sm mt-3 text-amber-600"
+            >
+              تعداد
+              <span class="text-base underline text-black font-iranyekan-bold">{{
+                  currentProductInCart.quantity
+                }}</span>
+              <span class="text-slate-400">{{ currentProductInCart.product.unit_name }}</span>
+              از این محصول در سبد خرید شما موجود می‌باشد.
             </div>
           </template>
         </template>
@@ -739,7 +750,7 @@ import PartialCountdownShow from "@/components/partials/PartialCountdownShow.vue
 import {apiRoutes} from "@/router/api-routes.js";
 import {useCartStore} from "@/store/StoreUserCart.js";
 
-defineProps({
+const props = defineProps({
   showProductExtraOption: {
     type: Boolean,
     default: true,
@@ -769,15 +780,38 @@ const slugParam = getRouteParamByKey('slug', null, false)
 const productCartCounting = ref([])
 const currentProductCartCounting = computed({
   get() {
-    let idx = productCartCounting.findIndex(item => item.id === selectedProduct.value.id)
-    return productCartCounting[idx]?.quantity || 0
+    let idx = productCartCounting.value.findIndex(item => item.code === selectedProduct.value?.code)
+    return idx !== -1 ? productCartCounting.value[idx].quantity : 0
   },
   set(value) {
-    let idx = productCartCounting.findIndex(item => item.id === selectedProduct.value.id)
-    if (idx) {
-      productCartCounting[idx].quantity = !isNaN(+value) ? +value : 0
+    let idx = productCartCounting.value.findIndex(item => item.code === selectedProduct.value?.code)
+
+    if (idx !== -1) {
+      let v = parseInt(value, 10)
+      v = isNaN(v) || v <= 0 ? 1 : v
+
+      if (v > selectedProduct.value.max_cart_count) {
+        v = selectedProduct.value.max_cart_count
+      }
+
+      productCartCounting.value[idx].quantity = v
     }
   }
+})
+
+const currentProductInCart = computed(() => {
+  if (!selectedProduct.value?.code) return null
+
+  let idx = productCartCounting.value.findIndex(item => item.code === selectedProduct.value.code)
+  if (idx !== -1) {
+    let item = cartStore.findItemFromLocalCart(selectedProduct.value?.code)
+    return item && item.quantity > 0 ? item : 0
+  }
+  return null
+})
+const isExceedCurrentProductInCart = computed(() => {
+  let currentInCart = currentProductInCart.value
+  return currentInCart && currentInCart.quantity >= currentInCart.max_cart_count
 })
 
 const mainGallerySettings = {
@@ -1276,6 +1310,10 @@ function addToCartHandler() {
     toast.warning('ابتدا محصول را انتخاب نمایید سپس دوباره تلاش کنید.')
     return
   }
+  if (isExceedCurrentProductInCart.value) {
+    toast.warning('امکان افزودن بیشتر این محصول در یک خرید امکان‌پذیر نمی‌باشد.')
+    return
+  }
 
   cartStore.addItem(selectedProduct.value.code, currentProductCartCounting.value)
 }
@@ -1334,11 +1372,11 @@ onMounted(() => {
         selectedProduct.value = products.value[0]
         setCurrentProductProperties()
 
-        for (let p in products.value) {
+        for (let p of products.value) {
           productCartCounting.value.push({
             code: p.code,
             max: p.max_cart_count,
-            quantity: 0,
+            quantity: 1,
           })
         }
       }

@@ -11,6 +11,8 @@ class SmsLog extends Model
 {
     use HasCreatedRelationTrait;
 
+    public $timestamps = false;
+
     protected $hasUpdatedBy = false;
 
     protected $guarded = [
@@ -20,5 +22,6 @@ class SmsLog extends Model
     protected $casts = [
         'type' => SMSTypesEnum::class,
         'sender' => SMSSenderTypesEnum::class,
+        'created_at' => 'datetime',
     ];
 }

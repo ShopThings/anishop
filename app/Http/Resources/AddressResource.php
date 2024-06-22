@@ -23,7 +23,7 @@ class AddressResource extends JsonResource
             'full_name' => $this->full_name,
             'mobile' => $this->mobile,
             'address' => $this->address,
-            'postal_code' => $this->postal_code,
+            'postal_code' => $this->postal_code ?? '',
             'city' => new CityShowResource($this->whenLoaded('city')),
             'province' => new ProvinceShowResource($this->whenLoaded('province')),
             'user' => new UserShowResource($this->whenLoaded('user')),

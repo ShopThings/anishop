@@ -12,6 +12,7 @@ enum PaymentTypesEnum: string
     case IN_PLACE = 'in_place';
     case WALLET = 'wallet';
     case RECEIPT = 'receipt';
+    case TESTING = 'testing';
 
     /**
      * @return string[]
@@ -23,6 +24,7 @@ enum PaymentTypesEnum: string
             self::IN_PLACE->value => 'پرداخت درب منزل',
             self::WALLET->value => 'کیف پول',
             self::RECEIPT->value => 'فیش واریز',
+            self::TESTING->value => 'جهت تست',
         ];
     }
 }

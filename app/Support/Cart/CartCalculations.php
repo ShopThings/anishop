@@ -139,4 +139,86 @@ class CartCalculations
             return $total + ($quantity * ($price * $tax / 100));
         }, 0);
     }
+
+    /**
+     * @param string $code
+     * @return float
+     */
+    public function totalPriceFor(string $code): float
+    {
+        if ($this->cart->getContent()->isEmpty()) return 0;
+
+        $item = $this->cart->getContent()->firstWhere(function ($product) use ($code) {
+            return $product->code === $code;
+        });
+
+        if (is_null($item)) return 0;
+
+        $quantity = $item->qty;
+        $price = $item->actual_price;
+        $tax = $item->tax_rate;
+
+        return $quantity * ($price + ($price * $tax / 100));
+    }
+
+    /**
+     * @param string $code
+     * @return float
+     */
+    public function totalDiscountedPriceFor(string $code): float
+    {
+        if ($this->cart->getContent()->isEmpty()) return 0;
+
+        $item = $this->cart->getContent()->firstWhere(function ($product) use ($code) {
+            return $product->code === $code;
+        });
+
+        if (is_null($item)) return 0;
+
+        $quantity = $item->qty;
+        $price = $item->price;
+        $tax = $item->tax_rate;
+
+        return $quantity * ($price + ($price * $tax / 100));
+    }
+
+    /**
+     * @param string $code
+     * @return float
+     */
+    public function subtotalPriceFor(string $code): float
+    {
+        if ($this->cart->getContent()->isEmpty()) return 0;
+
+        $item = $this->cart->getContent()->firstWhere(function ($product) use ($code) {
+            return $product->code === $code;
+        });
+
+        if (is_null($item)) return 0;
+
+        $quantity = $item->qty;
+        $price = $item->actual_price;
+
+        return $quantity * $price;
+    }
+
+    /**
+     * @param string $code
+     * @return float
+     */
+    public function subtotalDiscountedPriceFor(string $code): float
+    {
+        if ($this->cart->getContent()->isEmpty()) return 0;
+
+        $item = $this->cart->getContent()->firstWhere(function ($product) use ($code) {
+            return $product->code === $code;
+        });
+
+        if (is_null($item)) return 0;
+
+        $quantity = $item->qty;
+        $price = $item->price;
+
+        return $quantity * $price;
+    }
 }

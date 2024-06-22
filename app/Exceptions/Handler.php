@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
-use Spatie\Permission\Exceptions\UnauthorizedException;
+use Spatie\Permission\Exceptions\UnauthorizedException as SpatieUnauthorizedException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException as SymphonyFileNotFoundException;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -87,7 +86,10 @@ class Handler extends ExceptionHandler
         });
 
         // custom unauthorized message for APIs
-        $this->renderable(function (AuthorizationException|UnauthorizedException|AccessDeniedHttpException $e, $request) {
+        $this->renderable(function (
+            AuthorizationException|SpatieUnauthorizedException|AccessDeniedHttpException $e,
+                                                                                         $request
+        ) {
             if ($request->is('api/*')) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,

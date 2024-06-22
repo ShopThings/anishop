@@ -23,11 +23,14 @@ class DatabaseSeeder extends Seeder
             //
             SettingSeeder::class,
             //
+            PaymentMethodSeeder::class,
             SendMethodSeeder::class,
             //
             BlogCommentBadgeSeeder::class,
             BlogSeeder::class,
             BlogCommentSeeder::class,
+            //
+            PageSeeder::class,
             //
             MenuAndPlaceSeeder::class,
             SliderSeeder::class,

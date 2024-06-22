@@ -15,7 +15,7 @@ return [
         PaymentStatusesEnum::SUCCESS->value => 'پرداخت شده',
         PaymentStatusesEnum::FAILED->value => 'پرداخت ناموفق',
         PaymentStatusesEnum::WAIT_VERIFY->value => 'در انتظار تایید',
-        PaymentStatusesEnum::WAIT->value => 'در انتظار پرداخت',
+        PaymentStatusesEnum::PENDING->value => 'در انتظار پرداخت',
         PaymentStatusesEnum::NOT_PAID->value => 'پرداخت نشده',
     ],
 

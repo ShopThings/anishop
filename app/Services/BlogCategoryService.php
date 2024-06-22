@@ -57,7 +57,13 @@ class BlogCategoryService extends Service implements BlogCategoryServiceInterfac
     public function getPublishedHighPriorityCategories(Filter $filter = null): Collection|LengthAwarePaginator
     {
         $where = new WhereBuilder('blog_categories');
-        $where->whereEqual('is_published', DatabaseEnum::DB_YES);
+        $where
+            ->whereEqual('is_published', DatabaseEnum::DB_YES)
+            ->when($filter?->getSearchText(), function (WhereBuilderInterface $where, $searchText) {
+                $where->group(function (WhereBuilderInterface $where) use ($searchText) {
+                    $where->orWhereLike(['escaped_name', 'name', 'keywords'], $searchText);
+                });
+            });
 
         return $this->repository->paginate(
             columns: ['id', 'name', 'escaped_name', 'slug', 'keywords'],

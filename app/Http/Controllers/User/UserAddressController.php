@@ -80,28 +80,28 @@ class UserAddressController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param AddressUser $addressUser
+     * @param AddressUser $address
      * @return UserUserAddressResource
      */
-    public function show(AddressUser $addressUser): UserUserAddressResource
+    public function show(AddressUser $address): UserUserAddressResource
     {
-        return new UserUserAddressResource($addressUser);
+        return new UserUserAddressResource($address);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UpdateAddressRequest $request
-     * @param AddressUser $addressUser
+     * @param AddressUser $address
      * @return UserUserAddressResource|JsonResponse
      */
     public function update(
         UpdateAddressRequest $request,
-        AddressUser          $addressUser
+        AddressUser $address
     ): UserUserAddressResource|JsonResponse
     {
         $validated = $request->validated();
-        $model = $this->service->updateUserAddressByUserIdAndId($request->user()->id, $addressUser->id, $validated);
+        $model = $this->service->updateUserAddressByUserIdAndId($request->user()->id, $address->id, $validated);
 
         if (!is_null($model)) {
             return new UserUserAddressResource($model);
@@ -116,12 +116,12 @@ class UserAddressController extends Controller
      * Remove the specified resource from storage.
      *
      * @param Request $request
-     * @param AddressUser $addressUser
+     * @param AddressUser $address
      * @return JsonResponse
      */
-    public function destroy(Request $request, AddressUser $addressUser): JsonResponse
+    public function destroy(Request $request, AddressUser $address): JsonResponse
     {
-        $res = $this->service->deleteAddressByUserIdAndId($request->user()->id, $addressUser->id);
+        $res = $this->service->deleteAddressByUserIdAndId($request->user()->id, $address->id);
         if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         }

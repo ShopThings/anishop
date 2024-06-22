@@ -39,13 +39,16 @@ class CartItem implements Arrayable
     public function __get(string $name)
     {
         $arr = $this->toArray();
-        if (array_keys($arr, $name)) {
+        if (array_key_exists($name, $arr)) {
             return $arr[$name];
         }
 
         throw new UnexpectedValueException('[' . $name . '] not found on class');
     }
 
+    /**
+     * @inheritDoc
+     */
     public function toArray()
     {
         $info = [

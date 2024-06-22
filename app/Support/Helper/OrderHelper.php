@@ -84,10 +84,10 @@ class OrderHelper
             SettingsEnum::MIN_FREE_POST_PRICE,
         ]);
 
-        $storeProvince = $neededSettings->firstWhere('name', SettingsEnum::STORE_PROVINCE->value);
-        $storeCity = $neededSettings->firstWhere('name', SettingsEnum::STORE_CITY->value);
-        $defaultPostPrice = $neededSettings->firstWhere('name', SettingsEnum::DEFAULT_POST_PRICE->value);
-        $minPriceForFreePostPrice = $neededSettings->firstWhere('name', SettingsEnum::MIN_FREE_POST_PRICE->value);
+        $storeProvince = $neededSettings->firstWhere('name', SettingsEnum::STORE_PROVINCE->value)['value'] ?: null;
+        $storeCity = $neededSettings->firstWhere('name', SettingsEnum::STORE_CITY->value)['value'] ?: null;
+        $defaultPostPrice = $neededSettings->firstWhere('name', SettingsEnum::DEFAULT_POST_PRICE->value)['value'] ?: null;
+        $minPriceForFreePostPrice = $neededSettings->firstWhere('name', SettingsEnum::MIN_FREE_POST_PRICE->value)['value'] ?: null;
 
         // check post price according to send method
         $sendMethod = $sendMethodService->getSpecificMethod($sendMethodId);

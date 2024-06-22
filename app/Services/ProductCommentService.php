@@ -62,7 +62,6 @@ class ProductCommentService extends Service implements ProductCommentServiceInte
         return $this->repository->getUserCommentsFilterPaginated(
             userId: $userId,
             filter: $filter,
-            columns: ['id', 'condition', 'status', 'up_vote_count', 'down_vote_count', 'created_at']
         );
     }
 

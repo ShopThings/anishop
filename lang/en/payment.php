@@ -15,7 +15,7 @@ return [
         PaymentStatusesEnum::SUCCESS->value => 'Paid',
         PaymentStatusesEnum::FAILED->value => 'Failed Payment',
         PaymentStatusesEnum::WAIT_VERIFY->value => 'Wait To Verify',
-        PaymentStatusesEnum::WAIT->value => 'Wait For Payment',
+        PaymentStatusesEnum::PENDING->value => 'Wait For Payment',
         PaymentStatusesEnum::NOT_PAID->value => 'Not Paid',
     ],
 

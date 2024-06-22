@@ -2,7 +2,7 @@
   <new-creation-guide-top route-name="user.address.add">
     <template #text>
       شما می‌توانید تا
-      <span class="rounded bg-violet-200 px-2 text-violet-800 shadow-lg mx-1">حداکثر ۳ آدرس</span>
+      <span class="inline-block rounded bg-violet-200 py-0.5 px-2 text-violet-800 mx-1">حداکثر ۳ آدرس</span>
       در پنل خود ذخیره نمایید.
     </template>
     <template #buttonText>
@@ -73,7 +73,7 @@
                 <div class="flex flex-col">
                   <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
                   <div class="text-sm tracking-widest">
-                    {{ address.postal_code }}
+                    {{ address.postal_code || '-' }}
                   </div>
                 </div>
               </template>
@@ -155,7 +155,7 @@ function removeAddressHandler(address) {
         countingStore.$reset()
       },
     })
-  }, 'حذف آدرس از پنل')
+  }, 'حذف آدرس از پنل؟')
 }
 
 onMounted(() => {

@@ -55,7 +55,10 @@
           <div class="p-2 w-full sm:w-1/2 xl:w-1/3">
             <base-input
               label-title="کدپستی"
+              :is-optional="true"
+              klass="no-spin-arrow"
               name="postal_code"
+              type="number"
               placeholder="وارد نمایید"
             >
               <template #icon>
@@ -158,7 +161,10 @@ function handleProvinceChange(selected) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     address: yup.string().required('آدرس خود را وارد نمایید.'),
-    postal_code: yup.number().required('کدپستی را وارد نمایید.'),
+    postal_code: yup.string()
+      .optional()
+      .transform(transformNumbersToEnglish)
+      .justNumber('کدپستی باید از نوع عددی باشد.'),
     full_name: yup.string()
       .persian('نام باید از حروف فارسی باشد.')
       .required('نام را وارد نمایید.'),
@@ -184,7 +190,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     full_name: values.full_name,
     mobile: values.mobile,
     address: values.address,
-    postal_code: values.postal_code,
+    postal_code: values?.postal_code,
     province: selectedProvince.value.id,
     city: selectedCity.value.id,
   }, {

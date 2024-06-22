@@ -667,6 +667,20 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function updateProductStockFor(int $productId, int $stockCount): bool
+    {
+        if ($stockCount === 0) return true;
+
+        return $this->productPropertyModel->newQuery()
+            ->where('product_id', $productId)
+            ->update([
+                'stock_count' => 'stock_count' . ($stockCount >= 0) ? '+' : '-' . $stockCount,
+            ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function updatePriceUsingPercentage(
         $id,
         int $percentage,

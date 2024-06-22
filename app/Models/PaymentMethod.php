@@ -18,12 +18,14 @@ class PaymentMethod extends Model
 
     protected $guarded = [
         'id',
+        'is_sealed',
     ];
 
     protected $casts = [
         'options' => 'encrypted:array',
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
+        'is_sealed' => 'boolean',
     ];
 
     /**

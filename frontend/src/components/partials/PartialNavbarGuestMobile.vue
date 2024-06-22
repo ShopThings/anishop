@@ -2,30 +2,30 @@
   <base-popover-side ref="sidebarContainer">
     <template #button>
       <button
-          class="relative w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center"
-          type="button"
+        class="relative w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center"
+        type="button"
       >
         <Bars3Icon class="h-6 w-6"/>
       </button>
     </template>
     <template #panel="{close}">
       <div
-          ref="sidebarContainerHeader"
-          class="mb-3 flex items-center"
+        ref="sidebarContainerHeader"
+        class="mb-3 flex items-center"
       >
         <span class="ml-auto text-sm text-gray-400">منو</span>
         <button
-            class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
-            type="button"
-            @click="close"
+          class="w-[40px] h-[40px] border-0 py-2 px-2 bg-transparent text-black rounded-lg hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all"
+          type="button"
+          @click="close"
         >
           <XMarkIcon class="h-6 w-6"/>
         </button>
       </div>
 
       <div
-          ref="sidebarExtraContainerTop"
-          class="flex mb-3 border-y py-3"
+        ref="sidebarExtraContainerTop"
+        class="flex mb-3 border-y py-3"
       >
         <template v-if="userStore.getUser">
           <router-link
@@ -63,31 +63,31 @@
       </div>
 
       <base-switcher-panel
-          v-model:active-back-text="mobileActiveBackText"
-          v-model:active-panel="mobileActivePanel"
-          v-model:back-history="mobilePanelsBackHistory"
-          v-model:fixed-height="calculateMobileMenuHeight"
-          v-model:panels="mobilePanels"
-          :use-fixed-height="true"
-          back-extra-class="rounded-md !bg-amber-200"
-          back-text-class=""
-          container-class=""
+        v-model:active-back-text="mobileActiveBackText"
+        v-model:active-panel="mobileActivePanel"
+        v-model:back-history="mobilePanelsBackHistory"
+        v-model:fixed-height="calculateMobileMenuHeight"
+        v-model:panels="mobilePanels"
+        :use-fixed-height="true"
+        back-extra-class="rounded-md !bg-amber-200"
+        back-text-class=""
+        container-class=""
       >
         <template
-            v-for="(name, idx) in Object.keys(mobilePanels)"
-            :key="idx"
-            #[name]="{data, goTo}"
+          v-for="(name, idx) in Object.keys(mobilePanels)"
+          :key="idx"
+          #[name]="{data, goTo}"
         >
           <base-loading-panel :loading="mobileMenuLoadings[name].loading">
             <template #loader>
               <div class="space-y-6 px-4 py-3">
                 <div
-                    v-for="index in 12"
-                    :key="index"
+                  v-for="index in 12"
+                  :key="index"
                 >
                   <div
-                      class="animate-pulse"
-                      role="status"
+                    class="animate-pulse"
+                    role="status"
                   >
                     <div class="h-5 bg-slate-200 rounded-md dark:bg-slate-700 w-full"></div>
                     <span class="sr-only">در حال بارگذاری...</span>
@@ -98,15 +98,15 @@
 
             <template #content>
               <div
-                  v-for="menu in data"
-                  :key="menu?.id"
-                  class="divide-y divide-slate-200"
+                v-for="menu in data"
+                :key="menu?.id"
+                class="divide-y divide-slate-200"
               >
                 <div class="flex items-center gap-2">
                   <router-link
-                      :to="menu?.link || ''"
-                      class="w-full px-3 py-3.5 text-sm cursor-pointer flex items-center gap-3 justify-between hover:bg-slate-100 transition rounded-md"
-                      @click="(e) => {
+                    :to="menu?.link || ''"
+                    class="w-full px-3 py-3.5 text-sm cursor-pointer flex items-center gap-3 justify-between hover:bg-slate-100 transition rounded-md"
+                    @click="(e) => {
                           if(menu?.children?.length)
                               mobilePanelChangeClickHandler(menu, goTo, e)
                           else
@@ -115,20 +115,20 @@
                   >
                     <span>{{ menu?.title }}</span>
                     <ChevronLeftIcon
-                        v-if="menu?.children?.length"
-                        class="w-5 h-5 shrink-0"
+                      v-if="menu?.children?.length"
+                      class="w-5 h-5 shrink-0"
                     />
                   </router-link>
 
                   <router-link
-                      v-if="menu?.children?.length && menu?.link"
-                      v-tooltip.bottom="'مشاهده'"
-                      :to="menu?.link || ''"
-                      class="shrink-0 h-full w-8 py-3.5 group"
-                      @click="close()"
+                    v-if="menu?.children?.length && menu?.link"
+                    v-tooltip.bottom="'مشاهده'"
+                    :to="menu?.link || ''"
+                    class="shrink-0 h-full w-8 py-3.5 group"
+                    @click="close()"
                   >
                     <ArrowTopRightOnSquareIcon
-                        class="w-5 h-5 text-amber-600 group-hover:text-amber-300 mx-auto transition"/>
+                      class="w-5 h-5 text-amber-600 group-hover:text-amber-300 mx-auto transition"/>
                   </router-link>
                 </div>
               </div>
@@ -150,12 +150,14 @@ import BasePopoverSide from "@/components/base/BasePopoverSide.vue";
 import {useSwitcherPanel} from "@/composables/switcher-panel.js";
 import {watchImmediate} from "@vueuse/core";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
+import {useRouter} from "vue-router";
 
 const props = defineProps({
   menu: Object,
   isLoading: Boolean,
 })
 
+const router = useRouter()
 const userStore = useUserAuthStore()
 
 //------------------------------------
@@ -224,6 +226,6 @@ const calculateMobileMenuHeight = computed(() => {
   if (!sidebarContainer.value || !sidebarExtraContainerTop.value) return 0
 
   return sidebarContainer.value.container.el.lastChild.offsetHeight
-      - sidebarContainerHeader.value.offsetHeight - sidebarExtraContainerTop.value.offsetHeight - 40
+    - sidebarContainerHeader.value.offsetHeight - sidebarExtraContainerTop.value.offsetHeight - 40
 })
 </script>
