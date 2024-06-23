@@ -20,6 +20,7 @@ class AuthController extends Controller
     /**
      * @param LoginRequest $request
      * @param AuthServiceInterface $service
+     * @param RoleServiceInterface $roleService
      * @return JsonResponse
      */
     public function login(
@@ -57,6 +58,7 @@ class AuthController extends Controller
     }
 
     /**
+     * @param AuthServiceInterface $service
      * @return JsonResponse
      */
     public function logout(AuthServiceInterface $service): JsonResponse
