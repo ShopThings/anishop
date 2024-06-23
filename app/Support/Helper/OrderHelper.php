@@ -210,7 +210,7 @@ class OrderHelper
         // first check if order time noe exceed max reservation time
         if ($maxReservationTime > 0 && $orderTimePassed > 0 && $orderTimePassed < $maxReservationTime) {
             $reservedRow = $detail->reservedOrders()->orderByDesc('expires_at')->first();
-            $expireTimePassed = $detail->expires_at
+            $expireTimePassed = $reservedRow->expires_at
                 ? now()->diffInSeconds($reservedRow->expires_at, false)
                 : 0;
 
