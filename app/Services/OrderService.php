@@ -218,7 +218,7 @@ class OrderService extends Service implements OrderServiceInterface
         $attrs = [
             'order_id' => $attributes['order_id'],
             'message' => $attributes['message'] ?? '',
-            'transaction' => $attributes['transaction'],
+            'transaction' => $attributes['transaction'] ?? null,
             'gateway_type' => $attributes['gateway_type'] ?? null,
             'meta' => $attributes['meta'] ?? null,
         ];
@@ -416,7 +416,11 @@ class OrderService extends Service implements OrderServiceInterface
 
         $provinceName = $this->provinceRepository->find($orderInfo['province'], ['name'])->name;
         $cityName = $this->cityRepository->find($orderInfo['city'], ['name'])->name;
-        $coupon = $couponRepository->checkCoupon($orderInfo['coupon'], $user);
+
+        $coupon = null;
+        if (!empty($orderInfo['coupon'])) {
+            $coupon = $couponRepository->checkCoupon($orderInfo['coupon'], $user);
+        }
 
         $shippingPrice = OrderHelper::shippingPriceCalculation(
             $orderInfo['province'],
