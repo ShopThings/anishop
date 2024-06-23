@@ -367,11 +367,16 @@ export const useCartStore = defineStore('userCart', () => {
     )
   }
 
-  function empty() {
-    useConfirmToast(async () => {
+  async function empty(force = false) {
+    if (force) {
       cartItems.value = []
       await saveToLocalStorage()
-    }, 'خالی نمودن سبد خرید')
+    } else {
+      useConfirmToast(async () => {
+        cartItems.value = []
+        await saveToLocalStorage()
+      }, 'خالی نمودن سبد خرید')
+    }
   }
 
   function fetchAll(callbacks = {}) {
