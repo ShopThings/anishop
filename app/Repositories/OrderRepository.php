@@ -354,8 +354,8 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
 
         $badgeQuery = $this->model->newQuery()
             ->select([
-                DB::raw('count(order_badges.id) as count'),
-                DB::raw('NULL as send_status_code'),
+                DB::raw('count(order_details.send_status_code) as count'),
+                DB::raw('order_badges.code as send_status_code'),
             ])
             ->rightJoin(
                 'order_badges',
@@ -364,11 +364,13 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                 }
             )
             ->whereNull('order_details.id')
-            ->groupBy('order_details.send_status_code');
+            ->groupBy('order_badges.code');
 
         $unionQuery = $orderQuery->unionAll($badgeQuery);
 
-        return $this->model->newQuery()
+        //
+
+        $mainQuery = $this->model->newQuery()
             ->select([
                 'subquery.count',
                 'order_details.send_status_code',
@@ -380,10 +382,32 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                 'subquery',
                 'order_details.send_status_code',
                 '=',
-                'subquery.send_status_code'
+                'subquery.send_status_code',
+                'right'
             )
-            ->orderByDesc('order_details.ordered_at')
-            ->get();
+            ->whereNotNull('order_details.id')
+            ->orderByDesc('order_details.ordered_at');
+
+        $secondQuery = $this->model->newQuery()
+            ->select([
+                'subquery.count',
+                'order_badges.code as send_status_code',
+                'order_badges.title as send_status_title',
+                'order_badges.color_hex as send_status_color_hex',
+            ])
+            ->rightJoin('order_badges', 'order_badges.code', '=', 'order_details.send_status_code')
+            ->joinSub(
+                $unionQuery,
+                'subquery',
+                'order_badges.code',
+                '=',
+                'subquery.send_status_code',
+                'right'
+            )
+            ->whereNull('order_details.id')
+            ->orderByDesc('order_details.ordered_at');
+
+        return $mainQuery->unionAll($secondQuery)->get();
     }
 
     /**

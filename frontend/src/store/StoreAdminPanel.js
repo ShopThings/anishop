@@ -176,10 +176,10 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
         return false
       },
       finally() {
+        loading.value = false
+
         countdown.reset()
         countdown.resume()
-
-        loading.value = false
       },
     })
   }

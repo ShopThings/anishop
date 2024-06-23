@@ -40,21 +40,19 @@
       </div>
 
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 p-2.5">
-        <div class="h-full">
-          <router-link
-            v-for="badge in countingOrderStore.getCounts"
-            :key="badge.code"
-            :style="[
+        <router-link
+          v-for="badge in countingOrderStore.getCounts"
+          :key="badge.code"
+          :style="[
                   'background-color:' + badge.color_hex,
                    'color:' + getTextColor(badge.color_hex),
               ]"
-            :to="{name: 'admin.orders', query: {badge_code: badge.code}}"
-            class="flex flex-col w-full h-full justify-center text-center group px-3 py-1 shadow transition rounded-lg hover:opacity-90"
-          >
-            <span class="rounded text-xl group-hover:scale-90 transition">{{ numberFormat(badge.count) }}</span>
-            <span class="text-xs group-hover:scale-90 transition">{{ badge.title }}</span>
-          </router-link>
-        </div>
+          :to="{name: 'admin.orders', query: {badge_code: badge.code}}"
+          class="flex flex-col w-full h-full justify-center text-center group px-3 py-1 shadow transition rounded-lg hover:opacity-90"
+        >
+          <span class="rounded text-xl group-hover:scale-90 transition">{{ numberFormat(badge.count) }}</span>
+          <span class="text-xs group-hover:scale-90 transition">{{ badge.title }}</span>
+        </router-link>
       </div>
     </template>
   </base-popover>
