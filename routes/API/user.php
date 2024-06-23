@@ -27,6 +27,7 @@ Route::prefix('user')
         /*
          * specification routes
          */
+        Route::get('info', [UserSpecificationController::class, 'showInfo'])->name('show.info');
         Route::put('info', [UserSpecificationController::class, 'updateInfo'])->name('update.info');
         Route::put('password', [UserSpecificationController::class, 'updatePassword'])->name('update.password');
 

@@ -29,9 +29,17 @@ export const UserPanelDashboardAPI = {
 }
 
 export const UserPanelInfoAPI = {
+  fetchInfo(callbacks) {
+    return useRequest(
+      apiRoutes.user.info.info.show,
+      null,
+      callbacks
+    )
+  },
+
   updateInfo(data, callbacks) {
     return useRequest(
-      apiRoutes.user.info.info,
+      apiRoutes.user.info.info.update,
       {
         method: 'PUT',
         data,

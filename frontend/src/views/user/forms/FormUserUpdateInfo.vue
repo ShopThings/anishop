@@ -1,111 +1,118 @@
 <template>
-  <form @submit.prevent="onSubmit">
-    <div class="flex flex-wrap">
-      <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-        <base-input
-          :in-edit-mode="false"
-          :is-editable="false"
-          :value="user?.username"
-          name="username"
-          placeholder="(معمولا شماره تلفن همراه می‌باشد)"
-        >
-          <template #icon>
-            <UserIcon class="h-6 w-6 text-gray-400"/>
-          </template>
+  <base-loading-panel
+    :loading="userLoading"
+    type="circle"
+  >
+    <template #content>
+      <form @submit.prevent="onSubmit">
+        <div class="flex flex-wrap">
+          <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+            <base-input
+              :in-edit-mode="false"
+              :is-editable="false"
+              :value="user?.username"
+              name="username"
+              placeholder="(معمولا شماره تلفن همراه می‌باشد)"
+            >
+              <template #icon>
+                <UserIcon class="h-6 w-6 text-gray-400"/>
+              </template>
 
-          <template #editModeLabel="{value}">
-            <div class="flex flex-wrap gap-3 items-center">
-              <span class="text-sm">نام کاربری</span>
-              <span class="tracking-widest text-slate-500 py-1 px-2.5 border-2 rounded-lg">{{ value }}</span>
-            </div>
-          </template>
-        </base-input>
-      </div>
-    </div>
+              <template #editModeLabel="{value}">
+                <div class="flex flex-wrap gap-3 items-center">
+                  <span class="text-sm">نام کاربری</span>
+                  <span class="tracking-widest text-slate-500 py-1 px-2.5 border-2 rounded-lg">{{ value }}</span>
+                </div>
+              </template>
+            </base-input>
+          </div>
+        </div>
 
-    <hr class="my-3">
+        <hr class="my-3">
 
-    <div class="flex flex-wrap">
-      <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-        <base-input
-          :in-edit-mode="false"
-          :is-editable="!(!!user?.first_name)"
-          :value="user?.first_name"
-          label-title="نام"
-          name="first_name"
-          placeholder="حروف فارسی"
-        >
-          <template #icon>
-            <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-          </template>
-        </base-input>
-      </div>
-      <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-        <base-input
-          :in-edit-mode="false"
-          :is-editable="!(!!user?.last_name)"
-          :value="user?.last_name"
-          label-title="نام خانوادگی"
-          name="last_name"
-          placeholder="حروف فارسی"
-        >
-          <template #icon>
-            <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-          </template>
-        </base-input>
-      </div>
-      <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-        <base-input
-          :in-edit-mode="false"
-          :is-editable="!(!!user?.national_code)"
-          :value="user?.national_code"
-          label-title="کد ملی"
-          name="national_code"
-          placeholder="فقط شامل اعداد"
-        >
-          <template #icon>
-            <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
-          </template>
-        </base-input>
-      </div>
-      <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
-        <base-input
-          :in-edit-mode="false"
-          :is-optional="true"
-          :value="user?.sheba_number"
-          label-title="شماره شبا"
-          name="sheba_number"
-          placeholder="xxxxxxxxxxxxxxxx"
-        >
-          <template #icon>
-            <HashtagIcon class="h-6 w-6 text-gray-400"/>
-          </template>
-        </base-input>
-      </div>
-    </div>
+        <div class="flex flex-wrap">
+          <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+            <base-input
+              :in-edit-mode="false"
+              :is-editable="!(!!user?.first_name)"
+              :value="user?.first_name"
+              label-title="نام"
+              name="first_name"
+              placeholder="حروف فارسی"
+            >
+              <template #icon>
+                <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+              </template>
+            </base-input>
+          </div>
+          <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+            <base-input
+              :in-edit-mode="false"
+              :is-editable="!(!!user?.last_name)"
+              :value="user?.last_name"
+              label-title="نام خانوادگی"
+              name="last_name"
+              placeholder="حروف فارسی"
+            >
+              <template #icon>
+                <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+              </template>
+            </base-input>
+          </div>
+          <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+            <base-input
+              :in-edit-mode="false"
+              :is-editable="!(!!user?.national_code)"
+              :value="user?.national_code"
+              label-title="کد ملی"
+              name="national_code"
+              placeholder="فقط شامل اعداد"
+            >
+              <template #icon>
+                <ArrowLeftCircleIcon class="h-6 w-6 text-gray-400"/>
+              </template>
+            </base-input>
+          </div>
+          <div class="w-full p-2 sm:w-1/2 xl:w-1/3">
+            <base-input
+              :in-edit-mode="false"
+              :is-optional="true"
+              :value="user?.sheba_number"
+              label-title="شماره شبا"
+              name="sheba_number"
+              placeholder="xxxxxxxxxxxxxxxx"
+            >
+              <template #icon>
+                <HashtagIcon class="h-6 w-6 text-gray-400"/>
+              </template>
+            </base-input>
+          </div>
+        </div>
 
-    <div class="px-2 py-3">
-      <base-animated-button
-        :disabled="!canSubmit"
-        class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
-        type="submit"
-      >
-        <VTransitionFade>
-          <loader-circle
-            v-if="!canSubmit"
-            big-circle-color="border-transparent"
-            main-container-klass="absolute w-full h-full top-0 left-0"
-          />
-        </VTransitionFade>
+        <div class="px-2 py-3">
+          <base-animated-button
+            :disabled="!canSubmit"
+            class="bg-emerald-500 text-white mr-auto px-6 w-full sm:w-auto"
+            type="submit"
+          >
+            <VTransitionFade>
+              <loader-circle
+                v-if="!canSubmit"
+                big-circle-color="border-transparent"
+                main-container-klass="absolute w-full h-full top-0 left-0"
+              />
+            </VTransitionFade>
 
-        <template #icon="{klass}">
-          <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
-        </template>
+            <template #icon="{klass}">
+              <CheckIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
+            </template>
 
-        <span class="ml-auto">ویرایش اطلاعات</span>
-      </base-animated-button>
-    </div>
-  </form>
+            <span class="ml-auto">ویرایش اطلاعات</span>
+          </base-animated-button>
+        </div>
+      </form>
+    </template>
+  </base-loading-panel>
 </template>
 
 <script setup>
@@ -118,9 +125,12 @@ import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {UserPanelInfoAPI} from "@/service/APIUserPanel.js";
+import {onMounted, ref} from "vue";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 
 const store = useUserAuthStore()
-const user = store.getUser
+const user = ref(null)
+const userLoading = ref(true)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
@@ -158,6 +168,17 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     },
     finally: function () {
       canSubmit.value = true
+    },
+  })
+})
+
+onMounted(() => {
+  UserPanelInfoAPI.fetchInfo({
+    success(response) {
+      user.value = response.data
+    },
+    finally() {
+      userLoading.value = false
     },
   })
 })

@@ -10,7 +10,10 @@ export default {
     },
 
     info: {
-      info: 'api/user/info',
+      info: {
+        show: 'api/user/info',
+        update: 'api/user/info',
+      },
       password: 'api/user/password',
       notification: {
         index: 'api/user/notifications',

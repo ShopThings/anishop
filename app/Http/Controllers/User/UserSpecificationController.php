@@ -6,9 +6,11 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserInfoRequest;
 use App\Http\Requests\UpdateUserPasswordRequest;
+use App\Http\Resources\Showing\UserShowInfoResource;
 use App\Http\Resources\UserResource;
 use App\Services\Contracts\UserServiceInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
 class UserSpecificationController extends Controller
@@ -20,6 +22,15 @@ class UserSpecificationController extends Controller
         protected UserServiceInterface $service
     )
     {
+    }
+
+    /**
+     * @param Request $request
+     * @return UserShowInfoResource
+     */
+    public function showInfo(Request $request): UserShowInfoResource
+    {
+        return new UserShowInfoResource($request->user());
     }
 
     /**

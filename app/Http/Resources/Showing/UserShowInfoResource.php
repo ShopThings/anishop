@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Http\Resources\Showing;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class UserShowInfoResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'national_code' => $this->national_code,
+            'sheba_number' => $this->sheba_number,
+        ];
+    }
+}
