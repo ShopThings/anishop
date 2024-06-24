@@ -963,8 +963,9 @@ const doSearchText = (text) => {
   let order = setting.order;
   let sort = setting.sort;
 
-  if (searchText.value.length)
+  if (searchText.value.length) {
     emit("do-search", offset, limit, order, sort, searchText.value);
+  }
 
   if (setting.isCheckAll) {
     setting.isCheckAll = false;
