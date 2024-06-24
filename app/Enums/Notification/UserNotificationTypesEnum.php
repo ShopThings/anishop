@@ -17,6 +17,7 @@ enum UserNotificationTypesEnum: string
     case ORDER_STATUS = 'order_status';
     case RETURN_ORDER = 'return_order';
     case RETURN_ORDER_STATUS = 'return_order_status';
+    case PAYMENT = 'payment';
     case OTHERS = 'others';
 
     // admin users notification types
@@ -39,6 +40,7 @@ enum UserNotificationTypesEnum: string
             self::ORDER_STATUS->value => 'وضعیت سفارش',
             self::RETURN_ORDER->value => 'مرجوع کالا',
             self::RETURN_ORDER_STATUS->value => 'وضعیت مرجوع سفارش',
+            self::PAYMENT->value => 'پرداخت',
             self::OTHERS->value => 'متفرقه',
             //
             self::EXPORT->value => 'خروجی گرفتن',
@@ -62,6 +64,7 @@ enum UserNotificationTypesEnum: string
             self::ORDER_STATUS,
             self::RETURN_ORDER,
             self::RETURN_ORDER_STATUS,
+            self::PAYMENT,
             self::OTHERS,
         ];
     }
