@@ -63,6 +63,7 @@ class UserOrderSingleResource extends JsonResource
             'ordered_at' => $this->ordered_at
                 ? vertaTz($this->ordered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
+            'has_completed_paid' => $completePayment,
             'payment_status' => $completePayment
                 ? [
                     'text' => PaymentStatusesEnum::getTranslations(PaymentStatusesEnum::SUCCESS, 'نامشخص'),
