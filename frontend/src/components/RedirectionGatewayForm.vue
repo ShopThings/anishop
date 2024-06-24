@@ -1,8 +1,8 @@
 <template>
   <form
     ref="redirectionForm"
-    :action="encodeURIComponent(action)"
-    :method="encodeURIComponent(method)"
+    :action="action"
+    :method="method"
     class="text-center my-6 h-80 flex flex-col items-center justify-center"
   >
     <p class="font-iranyekan-bold text-lg">
@@ -15,10 +15,10 @@
     </p>
 
     <input
-      v-for="(name, value, key) in inputs"
+      v-for="(value, name, key) in inputs"
       :key="key"
-      :name="encodeURIComponent(name)"
-      :value="encodeURIComponent(value)"
+      :name="name"
+      :value="value"
       type="hidden"
     >
 
@@ -36,7 +36,7 @@ import {onMounted, ref} from "vue";
 import {useCountdown} from "@/composables/countdown-timer.js";
 import BaseButton from "@/components/base/BaseButton.vue";
 
-defineProps({
+const props = defineProps({
   action: String,
   inputs: Object,
   method: String,
@@ -48,7 +48,7 @@ const countdown = useCountdown(10)
 onMounted(() => {
   countdown.start(() => {
     countdown.stop()
-    redirectionForm.submit()
+    redirectionForm.value.submit()
   })
 })
 </script>
