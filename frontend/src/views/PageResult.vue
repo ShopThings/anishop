@@ -104,14 +104,14 @@
               <img
                 alt="تصویر نتیجه پرداخت"
                 class="object-contain w-56 mx-auto"
-                src="/public/images/purchase.svg"
+                src="/images/purchase.svg"
               >
             </template>
             <template v-else>
               <img
                 alt="تصویر نتیجه پرداخت"
                 class="object-contain w-60 mx-auto"
-                src="/public/images/purchase-failed.svg"
+                src="/images/purchase-failed.svg"
               >
             </template>
           </div>
