@@ -17,10 +17,10 @@
 
     <template #item="{item}">
       <partial-card
-        :class="{
-          '!bg-indigo-100 border-indigo-400': !item.read_at
-        }"
-        class="border-0 p-3 text-sm"
+        :class="[
+          !item.read_at ? 'border !bg-violet-100 border-violet-400' : 'border-0',
+        ]"
+        class="p-3 text-sm"
       >
         <template #body>
           <div class="flex flex-wrap items-center gap-2.5 relative pr-2.5">
