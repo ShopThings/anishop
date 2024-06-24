@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\CleanHtmlCast;
+use App\Enums\DatabaseEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -130,14 +131,22 @@ class OrderDetail extends Model
      */
     public function scopeWithCompletePaidOrder(Builder $query, string $condition = 'and'): mixed
     {
-        $method = 'whereHas';
-        if ($condition == 'or') {
-            $method = 'orWhereHas';
-        }
+        return $query
+            ->where('is_product_returned_to_stock', DatabaseEnum::DB_NO)
+            ->where(function ($query) {
+                $query
+                    ->whereHas('orders', function ($query) {
+                        $query->where('payment_status', PaymentStatusesEnum::SUCCESS->value);
+                    }, '=', function ($subquery) {
+                        $subquery
+                            ->selectRaw('count(*)')->from('orders')
+                            ->whereColumn('order_details.id', 'orders.key_id');
+                    })
+                    ->whereHas('orders', function ($query) {
+                        $query->where('payment_status', PaymentStatusesEnum::SUCCESS->value);
+                    });
+            }, null, null, $condition);
 
-        return $query->{$method}('orders', function ($query) {
-            $query->where('payment_status', PaymentStatusesEnum::SUCCESS->value);
-        }, '=', $this->orders()->count());
     }
 
     /**
@@ -154,9 +163,11 @@ class OrderDetail extends Model
 
         return $query->{$method}('orders', function ($query) {
             $query->where(function ($q) {
-                $q
-                    ->where('payment_status', PaymentStatusesEnum::SUCCESS->value)
-                    ->orWhere('payment_status', PaymentStatusesEnum::PARTIAL_SUCCESS->value);
+                $q->whereIn('payment_status', [
+                    PaymentStatusesEnum::SUCCESS->value,
+                    PaymentStatusesEnum::PARTIAL_SUCCESS->value,
+                    PaymentStatusesEnum::UNWANTED_SUCCESS->value,
+                ]);
             });
         }, '=', 0);
     }
