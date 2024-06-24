@@ -37,20 +37,21 @@
                   </div>
                 </div>
 
-                <div class="mt-6 text-center sm:text-right">
+                <div
+                  class="mt-6 text-center sm:text-right flex flex-wrap flex-col sm:flex-row items-center justify-start">
                   <base-button
                     :to="{name: 'user.order.detail', params: {code: result.order_code}}"
-                    class="bg-cyan-500 px-6 m-1.5 w-full sm:w-auto"
+                    class="border-cyan-500 bg-cyan-500 px-6 m-1.5 w-full sm:grow lg:grow-0 sm:w-auto"
                     type="link"
                   >
                     مشاهده جزئیات سفارش
                   </base-button>
                   <base-button
                     :to="{name: 'home'}"
-                    class="!text-black border-2 px-6 m-1.5 w-full sm:w-auto"
+                    class="!text-black border-2 px-6 m-1.5 w-full sm:grow lg:grow-0 sm:w-auto"
                     type="link"
                   >
-                    بازگشت به سایت
+                    بازگشت به صفحه اصلی
                   </base-button>
                 </div>
               </template>
@@ -68,18 +69,18 @@
                 </p>
 
                 <div class="flex flex-col flex-wrap sm:flex-row gap-4 mt-3">
-                  <div class="flex gap-2 items-center">
+                  <div
+                    v-if="result.receipt"
+                    class="flex gap-2 items-center"
+                  >
                     <span class="text-sm text-slate-400">کد پیگیری</span>
-                    <div
-                      v-if="result.receipt"
-                      class="tracking-widest font-iranyekan-bold border-2 rounded-lg border-rose-400 py-1 px-3"
-                    >
+                    <div class="tracking-widest font-iranyekan-bold border-2 rounded-lg border-rose-400 py-1 px-3">
                       {{ result.receipt }}
                     </div>
                   </div>
 
                   <div
-                    v-if="resutl.order_code"
+                    v-if="result.order_code"
                     class="flex gap-2 items-center"
                   >
                     <span class="text-sm text-slate-400">کد سفارش</span>
@@ -87,13 +88,13 @@
                   </div>
                 </div>
 
-                <div class="mt-6 flex">
+                <div class="mt-6 flex flex-wrap flex-col sm:flex-row items-center justify-start">
                   <base-button
                     :to="{name: 'home'}"
-                    class="!text-black border-2 px-6 m-1.5 w-full sm:w-auto group flex items-center justify-center gap-3"
+                    class="!text-black border-2 px-6 m-1.5 w-full group flex items-center justify-center gap-3 sm:grow lg:grow-0 sm:w-auto"
                     type="link"
                   >
-                    <span>بازگشت به سایت</span>
+                    <span>بازگشت به صفحه اصلی</span>
                     <ArrowLongLeftIcon class="w-6 h-6 group-hover:-translate-x-1 transition"/>
                   </base-button>
                 </div>
@@ -160,7 +161,7 @@ const route = useRoute()
 const result = ref(null)
 const resultLoading = ref(true)
 const isSuccessful = computed(() => {
-  return !!result?.status
+  return !!result.value?.status
 })
 
 onMounted(() => {
@@ -169,7 +170,7 @@ onMounted(() => {
   if (payId) {
     HomeCheckoutAPI.payOrderResult(payId, {
       success(response) {
-        result.value = response
+        result.value = response.data
       },
       finally() {
         resultLoading.value = false
