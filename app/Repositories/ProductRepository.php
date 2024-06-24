@@ -671,11 +671,14 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     {
         if ($stockCount === 0) return true;
 
-        return $this->productPropertyModel->newQuery()
-            ->where('product_id', $productId)
-            ->update([
-                'stock_count' => 'stock_count' . ($stockCount >= 0) ? '+' : '-' . $stockCount,
-            ]);
+        $query = $this->productPropertyModel->newQuery()
+            ->where('product_id', $productId);
+
+        if ($stockCount >= 0) {
+            return (bool)$query->increment('stock_count', abs($stockCount));
+        } else {
+            return (bool)$query->decrement('stock_count', abs($stockCount));
+        }
     }
 
     /**
