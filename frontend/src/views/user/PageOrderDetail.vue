@@ -10,7 +10,7 @@
   <template v-else>
     <template v-if="!loadingInfo">
       <div
-        v-if="info?.remained_pay_time"
+        v-if="info?.remained_pay_time && !info?.has_completed_paid"
         class="mt-3"
       >
         <div class="flex justify-end">
@@ -35,7 +35,7 @@
         </div>
 
         <template
-          v-for="(item, idx) in info.value.orders"
+          v-for="(item, idx) in info.orders"
           v-if="info?.orders?.length"
           :key="item.id"
         >
