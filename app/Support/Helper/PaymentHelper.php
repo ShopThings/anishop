@@ -6,11 +6,15 @@ use App\Enums\Payments\GatewaysEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Events\OrderPaidEvent;
+use App\Events\PaymentUnverifiedEvent;
+use App\Events\PaymentVerifiedEvent;
 use App\Models\GatewayPayment;
 use App\Models\Order;
 use App\Models\PaymentMethod;
 use App\Services\Contracts\OrderServiceInterface;
 use Exception;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\Auth;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Shetabit\Multipay\Exceptions\InvalidPaymentException;
@@ -42,8 +46,9 @@ class PaymentHelper
             'gateway_type' => $method->bank_gatewat_type ?? null,
         ]);
 
-        // Payment should just work on production(not reasonable on development)
+        // Payment should just work on production(not reasonable on development and testing phase)
         if (!app()->isProduction()) {
+            // Make gateway payment to success payment
             $payment->setTransaction('987654321');
             $payment->setReceipt('123456789');
             $payment->setStatus(true);
@@ -52,14 +57,23 @@ class PaymentHelper
             $payment->save();
             $payment->refresh();
 
+            // Also make order chunk of this payment to successful status
+            $order = $payment->order;
+            $order->payment_status = PaymentStatusesEnum::SUCCESS->value;
+            $order->payment_status_changed_at = now();
+            $order->paid_at = now();
+            $order->save();
+
             $frontendUrl = config(
                 'market.order.gateway_proxy_callback_url',
                 config('market.frontend_url', 'http://localhost')
             );
 
             return json_encode([
-                'action' => $frontendUrl . '?g=' . $payment->id,
-                'inputs' => [],
+                'action' => $frontendUrl,
+                'inputs' => [
+                    'g' => $payment->id,
+                ],
                 'method' => 'get',
             ]);
         }
@@ -146,16 +160,24 @@ class PaymentHelper
             return compact('type', 'message', 'data', 'status');
         }
 
+        /**
+         * @var Order $order
+         */
+        $order = $payment->order;
+        $orderDetail = $order->detail;
+
+        $user = self::getLoggedInUser();
+
         // Payment should just work on production(not reasonable on development)
         if (!app()->isProduction()) {
+            if (!is_null($user)) {
+                PaymentVerifiedEvent::dispatch($user, $orderDetail);
+            }
+
             return compact('type', 'message', 'data', 'status');
         }
 
         try {
-            /**
-             * @var Order $order
-             */
-            $order = $payment->order;
 
             $amount = $order->must_pay_price;
             $transactionId = $payment->transaction;
@@ -178,9 +200,12 @@ class PaymentHelper
             $order->paid_at = now();
             $order->save();
 
-            $orderDetail = $order->detail;
             if ($orderDetail->hasCompletePaid()) {
                 OrderPaidEvent::dispatch($orderDetail);
+            }
+
+            if (!is_null($user)) {
+                PaymentVerifiedEvent::dispatch($user, $orderDetail);
             }
         } catch (InvalidPaymentException|InvoiceNotFoundException $e) {
             /**
@@ -195,8 +220,20 @@ class PaymentHelper
             // update result message of payment
             $payment->message = $message;
             $payment->save();
+
+            if (!is_null($user)) {
+                PaymentUnverifiedEvent::dispatch($user, $orderDetail, $message);
+            }
         }
 
         return compact('type', 'message', 'data', 'status');
+    }
+
+    /**
+     * @return Authenticatable|null
+     */
+    private static function getLoggedInUser(): ?Authenticatable
+    {
+        return Auth::user();
     }
 }
