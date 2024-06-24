@@ -42,7 +42,7 @@ class NotificationController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        $res = $this->service->makeAllAdminNotificationAsRead($request->user());
+        $res = $this->service->makeAllAdminNotificationsAsRead($request->user());
 
         if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
@@ -50,7 +50,7 @@ class NotificationController extends Controller
 
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
-            'message' => 'خطا در تغییر وضعیت اعلان',
+            'message' => 'خطا در تغییر وضعیت اعلانات',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 

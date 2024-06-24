@@ -220,11 +220,13 @@ class AdminDashboardController extends Controller
      * @param CouponServiceInterface $couponService
      * @param ProductServiceInterface $productService
      * @param ProductAttributeServiceInterface $productAttributeService
+     * @param ProductAttributeCategoryServiceInterface $productAttributeCategoryService
      * @param ProductCommentServiceInterface $productCommentService
      * @param OrderServiceInterface $orderService
      * @param OrderBadgeServiceInterface $orderBadgeService
      * @param ReturnOrderServiceInterface $returnOrderService
      * @param BlogServiceInterface $blogService
+     * @param BlogBadgeServiceInterface $blogBadgeService
      * @param BlogCategoryServiceInterface $blogCategoryService
      * @param BlogCommentServiceInterface $blogCommentService
      * @param StaticPageServiceInterface $staticPageService

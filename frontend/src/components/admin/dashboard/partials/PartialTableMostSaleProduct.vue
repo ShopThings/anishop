@@ -144,8 +144,8 @@ function getPeriodData(selected = null) {
 
   AdminPanelDashboardAPI.getMostSaleProducts(selectedPeriod.value.value, {
     success(response) {
-      table.rows = response.rows || []
-      table.total = response.rows?.length || 0
+      table.rows = response.data || []
+      table.total = response.data?.length || 0
 
       if (selected) {
         // Assign selected period again to prevent mistaken selecting

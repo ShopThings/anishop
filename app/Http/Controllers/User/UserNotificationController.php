@@ -42,7 +42,7 @@ class UserNotificationController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
-        $res = $this->service->makeAllNotificationAsRead($request->user());
+        $res = $this->service->makeAllNotificationsAsRead($request->user());
 
         if ($res) {
             return response()->json([], ResponseCodes::HTTP_NO_CONTENT);

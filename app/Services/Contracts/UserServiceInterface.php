@@ -125,13 +125,13 @@ interface UserServiceInterface extends ServiceInterface
      * @param User $user
      * @return bool
      */
-    public function makeAllAdminNotificationAsRead(User $user): bool;
+    public function makeAllAdminNotificationsAsRead(User $user): bool;
 
     /**
      * @param User $user
      * @return bool
      */
-    public function makeAllNotificationAsRead(User $user): bool;
+    public function makeAllNotificationsAsRead(User $user): bool;
 
     /**
      * @param $userId

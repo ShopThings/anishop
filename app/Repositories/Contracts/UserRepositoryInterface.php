@@ -134,7 +134,7 @@ interface UserRepositoryInterface extends RepositoryInterface
      * @param UserNotificationTypesEnum[] $notificationTypes
      * @return bool
      */
-    public function makeAllNotificationAsRead(User $user, array $notificationTypes = []): bool;
+    public function makeAllNotificationsAsRead(User $user, array $notificationTypes = []): bool;
 
     /**
      * @param array $data

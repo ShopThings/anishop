@@ -386,7 +386,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function makeAllNotificationAsRead(User $user, array $notificationTypes = []): bool
+    public function makeAllNotificationsAsRead(User $user, array $notificationTypes = []): bool
     {
         $types = [];
         foreach ($notificationTypes as $notificationType) {

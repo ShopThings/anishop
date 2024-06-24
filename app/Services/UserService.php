@@ -298,9 +298,9 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function makeAllAdminNotificationAsRead(User $user): bool
+    public function makeAllAdminNotificationsAsRead(User $user): bool
     {
-        return $this->repository->makeAllNotificationAsRead(
+        return $this->repository->makeAllNotificationsAsRead(
             $user,
             UserNotificationTypesEnum::getAdminTypes()
         );
@@ -309,9 +309,9 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function makeAllNotificationAsRead(User $user): bool
+    public function makeAllNotificationsAsRead(User $user): bool
     {
-        return $this->repository->makeAllNotificationAsRead(
+        return $this->repository->makeAllNotificationsAsRead(
             $user,
             UserNotificationTypesEnum::getUserTypes()
         );
