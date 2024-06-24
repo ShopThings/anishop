@@ -21,8 +21,8 @@ class PaymentShowResource extends JsonResource
             'message' => $this->message,
             'receipt' => $this->receipt,
             'gateway_type' => [
-                'text' => $this->gateway_type,
-                'value' => GatewaysEnum::getTranslations($this->gateway_type, 'نامشخص'),
+                'text' => $this->gateway_type ?? 'نامشخص',
+                'value' => GatewaysEnum::getTranslations($this->gateway_type ?? '', 'نامشخص'),
             ],
             'paid_at' => $this->paid_at
                 ? vertaTz($this->paid_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

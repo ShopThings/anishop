@@ -21,7 +21,7 @@ class GatewayPaymentResource extends JsonResource
             'status' => $this->status,
             'message' => $this->message,
             'receipt' => $this->receipt,
-            'gateway_type' => GatewaysEnum::getTranslations($this->gateway_type, 'نامشخص'),
+            'gateway_type' => GatewaysEnum::getTranslations($this->gateway_type ?? '', 'نامشخص'),
             'paid_at' => $this->paid_at
                 ? vertaTz($this->paid_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
