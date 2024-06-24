@@ -210,14 +210,13 @@ class OrderHelper
         // first check if order time noe exceed max reservation time
         if ($maxReservationTime > 0 && $orderTimePassed > 0 && $orderTimePassed < $maxReservationTime) {
             $reservedRow = $detail->reservedOrders()->orderByDesc('expires_at')->first();
-            $expireTimePassed = $reservedRow->expires_at
-                ? now()->diffInSeconds($reservedRow->expires_at, false)
+            $expireTimePassed = !empty($reservedRow?->expires_at)
+                ? now()->diffInSeconds($reservedRow?->expires_at, false)
                 : 0;
 
             // check for reservation expire time
             if (!is_null($reservedRow) && $expireTimePassed > 0) {
                 $remainedTime = $expireTimePassed;
-
             } else { // otherwise check for complete or partial payment, it any check passed order time
                 $completePayment = $detail->hasCompletePaid();
                 $partialPayment = $detail->hasAnyPaid();
