@@ -9,7 +9,7 @@ if (!app()->isProduction()) {
     });
 }
 
-Route::middleware('xss')->group(function () {
+Route::middleware(['xss', 'auth:sanctum'])->group(function () {
     /*
      * be careful with this route, because anyone can call it!
      */
