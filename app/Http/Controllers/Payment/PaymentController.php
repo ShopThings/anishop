@@ -28,7 +28,7 @@ class PaymentController extends Controller
             'market.order.gateway_proxy_callback_url',
             config('market.frontend_url', 'http://localhost')
         );
-        return redirect()->to($frontendUrl . '?g=' . $payment->id);
+        return redirect()->to($frontendUrl . '?' . urlencode('g=' . $payment->id));
     }
 
     /**
