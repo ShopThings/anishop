@@ -1,7 +1,5 @@
 <template>
-  <app-navigation-header title="بازنگری و پرداخت"/>
-
-  <div v-if="redirectInfo && Object.keys(redirectInfo).length">
+  <div v-if="redirectInfo && Object.keys(redirectInfo)?.length">
     <redirection-gateway-form
       :action="redirectInfo.action"
       :inputs="redirectInfo.inputs"
@@ -10,6 +8,8 @@
   </div>
 
   <template v-else>
+    <app-navigation-header title="بازنگری و پرداخت"/>
+
     <div
       v-if="!savedOrder"
       class="p-4 flex gap-2.5 mb-6 border-t border-b bg-white"
@@ -30,10 +30,7 @@
 
     <div class="px-3 mb-12">
       <template v-if="user">
-        <div
-          v-if="savedOrder"
-          class=""
-        >
+        <div v-if="savedOrder">
           <partial-card class="border-0 p-5">
             <template #body>
               <div class="flex flex-wrap items-center gap-1.5 leading-relaxed">
@@ -179,7 +176,7 @@
               <template #body>
                 <partial-pay-card
                   :card-number="idx + 1"
-                  :loading="paymentLoadings[id]"
+                  :loading="paymentLoadings[item.id]"
                   :method-title="item.payment_method"
                   :price="item.price"
                   @click="payLinkHandler(item.id)"
@@ -294,47 +291,55 @@
                   <h2 class="text-slate-400 mb-2">
                     مشخصات خریدار
                   </h2>
-                  <div class="flex flex-wrap">
-                    <div class="grow p-2 w-full sm:w-1/2">
-                      <div class="flex sm:flex-col gap-2">
-                        <partial-input-label title="نام:"/>
-                        <base-input
-                          :in-edit-mode="false"
-                          :is-editable="!(!!user?.first_name)"
-                          :value="user?.first_name"
-                          name="first_name"
-                          container-class="grow"
-                          placeholder="تنها حروف فارسی"
-                        />
+
+                  <base-loading-panel
+                    :loading="userMainInfoLoading"
+                    type="circle"
+                  >
+                    <template #content>
+                      <div class="flex flex-wrap">
+                        <div class="grow p-2 w-full sm:w-1/2">
+                          <div class="flex sm:flex-col gap-2">
+                            <partial-input-label title="نام:"/>
+                            <base-input
+                              :in-edit-mode="false"
+                              :is-editable="!(!!userMainInfo?.first_name)"
+                              :value="userMainInfo?.first_name"
+                              container-class="grow"
+                              name="first_name"
+                              placeholder="تنها حروف فارسی"
+                            />
+                          </div>
+                        </div>
+                        <div class="grow p-2 w-full sm:w-1/2">
+                          <div class="flex sm:flex-col gap-2">
+                            <partial-input-label title="نام خانوادگی:"/>
+                            <base-input
+                              :in-edit-mode="false"
+                              :is-editable="!(!!userMainInfo?.last_name)"
+                              :value="userMainInfo?.last_name"
+                              container-class="grow"
+                              name="last_name"
+                              placeholder="تنها حروف فارسی"
+                            />
+                          </div>
+                        </div>
+                        <div class="grow p-2 w-full sm:w-1/2">
+                          <div class="flex sm:flex-col gap-2">
+                            <partial-input-label title="کد ملی:"/>
+                            <base-input
+                              :in-edit-mode="false"
+                              :is-editable="!(!!userMainInfo?.national_code)"
+                              :value="userMainInfo?.national_code"
+                              container-class="grow"
+                              name="national_code"
+                              placeholder="از نوع عددی"
+                            />
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div class="grow p-2 w-full sm:w-1/2">
-                      <div class="flex sm:flex-col gap-2">
-                        <partial-input-label title="نام خانوادگی:"/>
-                        <base-input
-                          :in-edit-mode="false"
-                          :is-editable="!(!!user?.last_name)"
-                          :value="user?.last_name"
-                          name="last_name"
-                          container-class="grow"
-                          placeholder="تنها حروف فارسی"
-                        />
-                      </div>
-                    </div>
-                    <div class="grow p-2 w-full sm:w-1/2">
-                      <div class="flex sm:flex-col gap-2">
-                        <partial-input-label title="کد ملی:"/>
-                        <base-input
-                          :in-edit-mode="false"
-                          :is-editable="!(!!user?.national_code)"
-                          :value="user?.national_code"
-                          name="national_code"
-                          container-class="grow"
-                          placeholder="از نوع عددی"
-                        />
-                      </div>
-                    </div>
-                  </div>
+                    </template>
+                  </base-loading-panel>
                 </template>
               </partial-card>
 
@@ -991,7 +996,7 @@ import BaseDialog from "@/components/base/BaseDialog.vue";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
 import {ProvinceAPI} from "@/service/APIShop.js";
-import {UserPanelAddressAPI} from "@/service/APIUserPanel.js";
+import {UserPanelAddressAPI, UserPanelInfoAPI} from "@/service/APIUserPanel.js";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import isFunction from "lodash.isfunction";
 import {HomeCheckoutAPI, HomeCouponAPI, HomePaymentMethodAPI, HomeSendMethodAPI} from "@/service/APIHomePages.js";
@@ -1004,12 +1009,16 @@ import RedirectionGatewayForm from "@/components/RedirectionGatewayForm.vue";
 import {useCartStore} from "@/store/StoreUserCart.js";
 import {FileSizes} from "@/composables/file-list.js";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 
 const toast = useToast()
 
 const store = useUserAuthStore()
 const user = store.getUser
 const homeSettingStore = inject('homeSettingStore')
+
+const userMainInfo = ref(null)
+const userMainInfoLoading = ref(true)
 
 const cartStore = useCartStore()
 cartStore.loadFromLocalStorage()
@@ -1321,13 +1330,13 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }, {
     success(response) {
       savedOrder.value = response.data
-      countdown.value = useCountdown(response.data.reservation_time || 0, timerRef)
 
+      countdown.value = useCountdown(response.data.reservation_time || 0, timerRef)
       countdown.value.start(() => {
         countdown.value.stop()
       })
 
-      cartStore.empty()
+      cartStore.empty(true)
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {
@@ -1345,6 +1354,15 @@ onMounted(() => {
   cartStore.fetchAllLocal()
 
   loadUserAddresses()
+
+  UserPanelInfoAPI.fetchInfo({
+    success(response) {
+      userMainInfo.value = response.data
+    },
+    finally() {
+      userMainInfoLoading.value = false
+    },
+  })
 
   ProvinceAPI.fetchAll({
     success: (response) => {
