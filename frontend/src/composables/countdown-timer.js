@@ -3,7 +3,7 @@ import isFunction from "lodash.isfunction";
 
 export function useCountdown(duration = 0, elemRef = null, showFormat = 'm:s') {
   let refreshTimeSeconds = parseInt(duration, 10) || 0
-  const refreshTimeElem = elemRef
+  let refreshTimeElem = elemRef
   const refreshCallbackInterval = ref(null)
   const refreshInterval = ref(null)
   const refreshTimeEnd = ref(null)
@@ -158,6 +158,10 @@ export function useCountdown(duration = 0, elemRef = null, showFormat = 'm:s') {
     refreshTimeSeconds = parseInt(duration, 10) || 0
   }
 
+  function changeElemRef(elemRef) {
+    refreshTimeElem = elemRef
+  }
+
   function changeFormat(format) {
     try {
       timeFormat.value = format.toString()
@@ -180,6 +184,7 @@ export function useCountdown(duration = 0, elemRef = null, showFormat = 'm:s') {
     seconds, secondsWithoutPadding,
     //
     changeDuration,
+    changeElemRef,
     changeFormat,
   }
 }
