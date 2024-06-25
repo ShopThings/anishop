@@ -40,7 +40,7 @@
                    'flex w-full items-center rounded-md px-2 py-2 text-sm transition',
                 ]"
                 type="button"
-                @click="() => {close(); router.push({name: 'user.logout'})}"
+                @click="() => {close(); router.push({name: 'user.logout'});}"
               >
                 <PowerIcon
                   :active="active"

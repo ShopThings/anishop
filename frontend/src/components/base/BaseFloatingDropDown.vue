@@ -1,9 +1,10 @@
 <template>
-  <VDropdown :container="container"
-             :disabled="itemsLength <= 0"
-             :distance="6"
-             :placement="placement"
-             :shift="shift"
+  <VDropdown
+    :container="container"
+    :disabled="itemsLength <= 0"
+    :distance="6"
+    :placement="placement"
+    :shift="shift"
   >
     <slot name="button"></slot>
 

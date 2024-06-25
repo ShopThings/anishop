@@ -1,7 +1,7 @@
 <template>
   <div
-      :style="{backgroundColor: colorHex, color: getTextColor(colorHex)}"
-      class="rounded py-1 px-3 text-white inline-block text-center text-xs"
+    :style="{backgroundColor: colorHex, color: getTextColor(colorHex)}"
+    class="rounded py-1 px-3 text-white inline-block text-center text-xs"
   >
     {{ text }}
   </div>

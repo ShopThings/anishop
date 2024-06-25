@@ -19,7 +19,7 @@
       <div class="py-3 px-4 bg-white rounded-lg relative">
         <partial-builder-remove-btn
           v-tooltip.right="'حذف از علاقه‌مندی‌ها'"
-          @click="() => {handleRemoveFavProduct(item)}"
+          @click="handleRemoveFavProduct(item)"
         />
 
         <div class="flex flex-col sm:flex-row gap-3 items-center">

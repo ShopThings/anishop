@@ -8,7 +8,7 @@
   </div>
 
   <template v-if="rows.length || isLoading">
-    <div class="relative overflow-x-auto my-custom-scrollbar min-h-[38px]">
+    <div class="relative overflow-x-auto my-custom-scrollbar min-h-[38px] h-full">
       <table class="w-full">
         <thead>
         <tr class="text-white text-right text-opacity-80">

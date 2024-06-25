@@ -50,7 +50,7 @@
                 v-if="!value.answered_at"
                 class="text-rose-600 hover:text-opacity-80 text-sm"
                 type="button"
-                @click="() => {removeContactHandler(value)}"
+                @click="removeContactHandler(value)"
             >
               حذف پیام
             </button>

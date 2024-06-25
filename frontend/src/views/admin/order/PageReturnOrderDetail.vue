@@ -298,7 +298,7 @@ const table = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      label: "مبلغ نهایی(به تومان)",
+      label: "مبلغ نهایی (به تومان)",
       field: "discounted_price",
       columnClasses: 'whitespace-nowrap',
     },

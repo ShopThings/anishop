@@ -55,7 +55,7 @@
             <ul class="py-3 flex flex-col gap-2.5">
               <li
                 class="flex gap-2.5 items-center group cursor-pointer py-1"
-                @click="() => {fetchCarts('shopping')}"
+                @click="fetchCarts('shopping')"
               >
                 <ArrowDownOnSquareIcon
                   class="size-5 text-slate-500 group-hover:text-black transition"/>
@@ -117,7 +117,7 @@
           <ul class="py-3 flex flex-col gap-2.5">
             <li
               class="flex gap-2.5 items-center group cursor-pointer py-1"
-              @click="() => {fetchCarts('wishlist')}"
+              @click="fetchCarts('wishlist')"
             >
               <ArrowDownOnSquareIcon
                 class="size-5 text-slate-500 group-hover:text-black transition"/>

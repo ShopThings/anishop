@@ -38,7 +38,7 @@
           <button
             class="flex w-full items-center rounded-md px-2 py-2 text-sm text-gray-900 hover:bg-primary hover:text-white mr-2 transition"
             type="button"
-            @click="() => {close(); router.push({name: 'user.logout'})}"
+            @click="() => {close(); router.push({name: 'user.logout'});}"
           >
             <PowerIcon class="h-6 w-6 text-sky-400 ml-2"/>
             خروج

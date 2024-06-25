@@ -102,7 +102,7 @@
               <base-button
                 class="text-sm bg-rose-500 border-2 border-rose-500 px-4 flex gap-2 items-center !py-1"
                 type="button"
-                @click="() => {removeAddressHandler(address)}"
+                @click="removeAddressHandler(address)"
               >
                 <span class="mx-auto">حذف</span>
                 <TrashIcon class="h-5 w-5"/>

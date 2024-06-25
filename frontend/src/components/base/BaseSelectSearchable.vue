@@ -75,7 +75,7 @@
                     v-tooltip.right="'حذف از انتخاب‌ها'"
                     class="shrink-0 bg-rose-50 hover:bg-rose-100 transition py-1 px-1.5 rounded-lg"
                     type="button"
-                    @click="() => {removeSelectedItem(item)}"
+                    @click="removeSelectedItem(item)"
                   >
                     <BackspaceIcon class="w-6 h-6 rotate-180 text-rose-600"/>
                   </button>
@@ -94,7 +94,7 @@
                     v-tooltip.right="'حذف از موارد انتخاب شده'"
                     class="shrink-0 bg-rose-50 hover:bg-rose-100 transition py-1 px-1.5 rounded-lg"
                     type="button"
-                    @click="() => {removeSelectedItem(selectedItems)}"
+                    @click="removeSelectedItem(selectedItems)"
                   >
                     <BackspaceIcon class="w-6 h-6 rotate-180 text-rose-600"/>
                   </button>

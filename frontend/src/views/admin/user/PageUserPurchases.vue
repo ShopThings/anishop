@@ -26,7 +26,7 @@
               @do-search="doSearch"
           >
             <template #code="{value}">
-              <span class="tracking-widest text-lg">{{ value.code }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
             </template>
 
             <template v-slot:user="{value}">
@@ -57,8 +57,8 @@
 
             <template v-slot:send_status="{value}">
               <partial-badge-status-send
-                :color-hex="value.send_status_color_hex"
-                :text="value.send_status_title"
+                :color-hex="value.send_status.color_hex"
+                :text="value.send_status.title"
               />
             </template>
 
@@ -135,7 +135,7 @@ import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue
 import {UserAPI, UserPurchaseAPI} from "@/service/APIUser.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
-import {ROLES} from "@/store/StoreUserAuth.js";
+import {ROLES, useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
@@ -146,6 +146,8 @@ import {OrderAPI} from "@/service/APIOrder.js";
 const router = useRouter()
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
+
+const store = useAdminAuthStore()
 
 const user = ref(null)
 
@@ -165,17 +167,18 @@ const table = reactive({
     {
       label: "کد سفارش",
       field: "code",
+      columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
-      label: "اسلاعات گیرنده",
+      label: "اطلاعات گیرنده",
       field: "receiver_info",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
     {
       label: "وضعیت سفارش",
-      field: "order_status",
+      field: "payment_status",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -289,6 +292,7 @@ const receiverInfo = ref(null)
 const isDetailOpen = ref(false)
 
 function showReceiverDetails(value) {
+  isDetailOpen.value = true
   receiverInfo.value = value
 }
 
