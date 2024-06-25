@@ -339,22 +339,22 @@
                     </div>
                 @endif
 
-                @if(!empty($item->size))
+                    @if(!empty($item->guarantee))
                     <div>
                         {{ $item->guarantee }}
                     </div>
                 @endif
             </td>
             <td>
-                {{ $item->qunaitity }}
+                {{ $item->quanitity }}
                 {{ $item->unit_name }}
             </td>
             <td>
-                {{ NumberConverter::toPersian(number_format($detail->unit_price)) }}
+                {{ NumberConverter::toPersian(number_format($item->unit_price)) }}
                 تومان
             </td>
             <td>
-                {{ NumberConverter::toPersian(number_format($detail->price)) }}
+                {{ NumberConverter::toPersian(number_format($item->price)) }}
                 تومان
             </td>
             <td>
@@ -370,7 +370,7 @@
                 @endif
             </td>
             <td>
-                {{ NumberConverter::toPersian(number_format($detail->discounted_price)) }}
+                {{ NumberConverter::toPersian(number_format($item->discounted_price)) }}
                 تومان
             </td>
             <td class="bg-gray">
@@ -437,7 +437,7 @@
     <tr>
         <td colspan="6" class="text-left">
             <strong class="text-right">
-                مجموع مبالغ:
+                مجموع مبالغ(به همراه مالیات بر ارزش افزوده):
             </strong>
         </td>
         <td>

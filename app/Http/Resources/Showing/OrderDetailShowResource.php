@@ -38,6 +38,7 @@ class OrderDetailShowResource extends JsonResource
             'discount_price' => $this->discount_price,
             'final_price' => $this->final_price,
             'total_price' => $this->total_price,
+            'send_method_title' => $this->send_method_title,
             'send_status_title' => $this->send_status_title,
             'send_status_color_hex' => $this->send_status_color_hex,
             'is_needed_factor' => $this->is_needed_factor,

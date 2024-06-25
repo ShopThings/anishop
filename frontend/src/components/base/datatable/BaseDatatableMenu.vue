@@ -7,12 +7,14 @@
     placement="right-start"
   >
     <template #button>
-      <button
-        class="text-black bg-white p-1 rounded-md ring-1 ring-cyan-300 transition hover:ring-cyan-500"
-        type="button"
-      >
-        <outline.Bars3Icon class="h-5 w-5"/>
-      </button>
+      <slot name="button">
+        <button
+          class="text-black bg-white p-1 rounded-md ring-1 ring-cyan-300 transition hover:ring-cyan-500"
+          type="button"
+        >
+          <outline.Bars3Icon class="h-5 w-5"/>
+        </button>
+      </slot>
     </template>
 
     <template #item="{item, hide}">

@@ -35,6 +35,6 @@ class City extends Model
      */
     public function postPrice(): HasOne
     {
-        return $this->hasOne(CityPostPrice::class);
+        return $this->hasOne(CityPostPrice::class, 'city_id');
     }
 }

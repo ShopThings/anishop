@@ -465,6 +465,7 @@
                 :is-slot-mode="true"
                 :is-static-mode="true"
                 :rows="orderPaymentsTableSetting.rows"
+                :total="orderPaymentsTableSetting.total"
                 :messages="orderPaymentsTableSetting.messages"
               >
                 <template #id="{value, index}">
@@ -480,11 +481,15 @@
                 </template>
 
                 <template #receipt="{value}">
-                  <span class="text-black tracking-widest">{{ value.receipt }}</span>
+                  <span class="text-black tracking-widest">{{ value.receipt || '-' }}</span>
                 </template>
 
                 <template #gateway_type="{value}">
-                  {{ value.gateway_type.text }}
+                  {{ value.gateway_type || '-' }}
+                </template>
+
+                <template #message="{value}">
+                  {{ value.message || '-' }}
                 </template>
 
                 <template #paid_at="{value}">
@@ -841,8 +846,8 @@ const orderPaymentsTableSetting = reactive({
 })
 
 function showOrderPaymentDetail(item) {
-  orderPaymentsTableSetting.rows = item.orders?.payments || []
-  orderPaymentsTableSetting.total = item.orders?.payments?.length || 0
+  orderPaymentsTableSetting.rows = item?.payments || []
+  orderPaymentsTableSetting.total = item?.payments?.length || 0
   orderPaymentDetailOpen.value = true
 }
 
@@ -918,6 +923,8 @@ const timerRef = ref(null)
 const countdown = ref(null)
 const redirectInfo = ref(null)
 
+countdown.value = useCountdown(0, timerRef)
+
 const paymentLoadings = reactive({})
 
 function payLinkHandler(id) {
@@ -950,11 +957,13 @@ onMounted(() => {
       loadingInfo.value = false
       loadingItems.value = false
 
-      countdown.value = useCountdown(response.data.remained_pay_time || 0, timerRef)
+      if (response.data.remained_pay_time) {
+        countdown.value.changeDuration(response.data.remained_pay_time)
 
-      countdown.value.start(() => {
-        countdown.value.stop()
-      })
+        countdown.value.start(() => {
+          countdown.value.stop()
+        })
+      }
     },
   })
 })

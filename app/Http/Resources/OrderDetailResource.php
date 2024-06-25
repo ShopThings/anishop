@@ -39,6 +39,7 @@ class OrderDetailResource extends JsonResource
             'discount_price' => $this->discount_price,
             'final_price' => $this->final_price,
             'total_price' => $this->total_price,
+            'send_method_title' => $this->send_method_title,
             'send_status' => [
                 'title' => $this->send_status_title,
                 'color_hex' => $this->send_status_color_hex,
@@ -76,15 +77,6 @@ class OrderDetailResource extends JsonResource
                     ]
                 ),
             'orders' => OrderResource::collection($this->whenLoaded('orders')),
-            'order_payments' => $this->when(
-                $this->whenLoaded('orders') &&
-                $this->orders?->relationLoaded('payments'),
-                function () {
-                    return isset($this->orders->payments) && !empty($this->orders->payments)
-                        ? GatewayPaymentResource::collection($this->orders->payments)
-                        : null;
-                }
-            ),
             'items' => OrderItemShowResource::collection($this->whenLoaded('items')),
             'return_order' => new ReturnOrderShowResource($this->whenLoaded('return_order')),
         ];

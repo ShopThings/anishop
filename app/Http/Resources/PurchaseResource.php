@@ -35,6 +35,7 @@ class PurchaseResource extends JsonResource
             'discount_price' => $this->discount_price,
             'final_price' => $this->final_price,
             'total_price' => $this->total_price,
+            'send_method_title' => $this->send_method_title,
             'send_status' => [
                 'title' => $this->send_status_title,
                 'color_hex' => $this->send_status_color_hex,
@@ -70,15 +71,7 @@ class PurchaseResource extends JsonResource
                         'color_hex' => PaymentStatusesEnum::getStatusColor()[PaymentStatusesEnum::NOT_PAID->value] ?? '#000000',
                     ]
                 ),
-            'order_payments' => $this->when(
-                $this->whenLoaded('orders') &&
-                $this->orders?->relationLoaded('payments'),
-                function () {
-                    return isset($this->orders->payments) && !empty($this->orders->payments)
-                        ? GatewayPaymentResource::collection($this->orders->payments)
-                        : null;
-                }
-            ),
+            'orders' => OrderResource::collection($this->whenLoaded('orders')),
         ];
     }
 }

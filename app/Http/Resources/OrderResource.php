@@ -5,7 +5,6 @@ namespace App\Http\Resources;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Enums\Times\TimeFormatsEnum;
-use App\Http\Resources\Showing\PaymentShowResource;
 use App\Http\Resources\Showing\UserShowResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,7 +20,7 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'payments' => PaymentShowResource::collection($this->whenLoaded('payments')),
+            'payments' => GatewayPaymentResource::collection($this->whenLoaded('payments')),
             'must_pay_price' => $this->must_pay_price,
             'payment_method_title' => $this->payment_method_title,
             'payment_method_type' => [

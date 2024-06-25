@@ -10,7 +10,14 @@
         options-key="id"
         options-text="title"
         @change="sendStatusChange"
-      />
+      >
+        <template #item="{item}">
+          <partial-badge-color
+            :hex="item.color_hex"
+            :title="item.title"
+          />
+        </template>
+      </base-select>
       <partial-input-error-message :error-message="errors.send_status"/>
     </div>
 
@@ -45,16 +52,14 @@ import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {OrderAPI} from "@/service/APIOrder.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
+import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 
-const props = defineProps({
-  selected: Object,
-})
-const emit = defineEmits(['update:selected'])
+const emit = defineEmits(['changed'])
 
 const idParam = getRouteParamByKey('id', null, false)
 const loading = ref(true)
 
-const statuses = ref(null)
+const statuses = ref([])
 const selectedStatus = ref(null)
 
 function sendStatusChange(selected) {
@@ -65,7 +70,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
   if (
     !selectedStatus.value ||
     !statuses.value ||
-    statuses.value.findIndex((item) => (+item.id === selectedStatus.value.id)) === -1
+    statuses.value.findIndex((item) => (+item.id === +selectedStatus.value.id)) === -1
   ) {
     actions.setFieldError('send_status', 'وضعیت ارسال انتخاب شده نامعتبر است.')
     return
@@ -79,10 +84,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
     success() {
       toast.success('وضعیت ارسال تغییر یافت.')
 
-      emit('update:selected', {
-        title: selectedStatus.value.title,
-        color_hex: selectedStatus.value.color_hex,
-      })
+      emit('changed', selectedStatus.value)
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

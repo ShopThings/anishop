@@ -26,7 +26,7 @@ class CategoryResource extends JsonResource
             'slug' => $this->slug,
             'image' => $this->when(
                 $this->whenLoaded('categoryImage') &&
-                $this->categoryImage?->relationLoaded('image'),
+                $this->categoryImage?->image,
                 function () {
                     return $this->categoryImage->image?->id
                         ? new ImageShowInfoResource($this->categoryImage->image)

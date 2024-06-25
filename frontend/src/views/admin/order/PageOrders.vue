@@ -71,8 +71,8 @@
 
             <template v-slot:send_status="{value}">
               <partial-badge-status-send
-                :color-hex="value.send_status_color_hex"
-                :text="value.send_status_title"
+                :color-hex="value.send_status.color_hex"
+                :text="value.send_status.title"
               />
             </template>
 
@@ -97,7 +97,7 @@
             </template>
 
             <template #body>
-              <ul class="divide-y">
+              <ul class="divide-y text-sm">
                 <li class="flex items-center gap-2 py-1.5">
                   <span class="text-slate-400 text-sm shrink-0">نام گیرنده:</span>
                   <span class="grow">{{ receiverInfo?.receiver_name || '-' }}</span>
@@ -198,10 +198,12 @@ const table = reactive({
     {
       label: "وضعیت سفارش",
       field: "payment_status",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت ارسال",
       field: "send_status",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "تاریخ سفارش",
@@ -332,6 +334,7 @@ const receiverInfo = ref(null)
 const isDetailOpen = ref(false)
 
 function showReceiverDetails(value) {
+  isDetailOpen.value = true
   receiverInfo.value = value
 }
 </script>

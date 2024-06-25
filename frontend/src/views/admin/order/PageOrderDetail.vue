@@ -1,22 +1,22 @@
 <template>
   <base-loading-panel
-      :loading="loading"
-      type="content"
+    :loading="loading"
+    type="content"
   >
     <template #content>
       <div class="bg-white mb-3 rounded-lg border p-3">
         سفارش دهنده -
         <router-link
-            v-if="order?.user?.id"
-            :to="{name: 'admin.user.profile', params: {id: order?.user?.id}}"
-            class="text-blue-600 hover:text-opacity-90"
+          v-if="order?.user?.id"
+          :to="{name: 'admin.user.profile', params: {id: order?.user?.id}}"
+          class="text-blue-600 hover:text-opacity-90"
         >
           <partial-username-label v-if="order?.user" :user="order?.user"/>
         </router-link>
       </div>
 
-      <div class="md:flex md:gap-3">
-        <partial-card class="mb-3 md:max-w-xs">
+      <div class="flex flex-col lg:flex-row gap-3 mb-3">
+        <partial-card class="lg:max-w-xs">
           <template #body>
             <div class="p-3">
               <div class="text-gray-500">
@@ -25,7 +25,11 @@
 
               <div class="mt-2 text-sm divide-y w-full">
                 <div class="flex gap-2 items-center py-1">
-                  <partial-badge-status-send class="w-full"/>
+                  <partial-badge-status-send
+                    :color-hex="sendStatus.color_hex"
+                    :text="sendStatus.title"
+                    class="w-full"
+                  />
                 </div>
                 <div class="flex gap-2 items-center py-1">
                   <span class="text-xs text-gray-400 shrink-0">کد سفارش</span>
@@ -77,27 +81,31 @@
           </template>
         </partial-card>
 
-        <partial-card class="mb-3 md:grow">
+        <partial-card class="w-full lg:max-w-[calc(100%-20rem)]">
           <template #body>
-            <div class="p-3">
+            <div class="p-3 h-full">
               <div class="text-gray-500">
                 وضعیت پرداخت
               </div>
 
-              <div class="max-h-72 mt-2 my-custom-scrollbar">
-                <base-loading-panel :loading="loading" type="table">
+              <div class="max-h-72 mt-2 my-custom-scrollbar h-full">
+                <base-loading-panel
+                  :loading="loading"
+                  class="h-full"
+                  type="table"
+                >
                   <template #content>
                     <base-semi-datatable
-                        :columns="ordersTableSetting.columns"
-                        :is-loading="false"
-                        :rows="ordersTableSetting.rows"
-                        :total="ordersTableSetting.total"
-                        :sortable="ordersTableSetting.sortable"
+                      :columns="ordersTableSetting.columns"
+                      :is-loading="false"
+                      :rows="ordersTableSetting.rows"
+                      :sortable="ordersTableSetting.sortable"
+                      :total="ordersTableSetting.total"
                     >
                       <template #payment_status="{value}">
                         <partial-badge-status-payment
-                            :color-hex="value.payment_status.color_hex"
-                            :text="value.payment_status.text"
+                          :color-hex="value.payment_status.color_hex"
+                          :text="value.payment_status.text"
                         />
                       </template>
 
@@ -128,27 +136,45 @@
 
                       <template #payment_status_changed_by="{value}">
                         <partial-username-label
-                            v-if="value.payment_status_changed_by"
-                            :user="value.payment_status_changed_by"
+                          v-if="value.payment_status_changed_by"
+                          :user="value.payment_status_changed_by"
                         />
                         <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
                       </template>
 
                       <template #op_1="{value}">
-                        <base-select
-                            :options="paymentStatuses"
-                            :selected="value.payment_status"
-                            options-key="value"
-                            options-text="text"
-                            @change="(selected) => {changePaymentStatus(selected, value)}"
-                        />
+                        <base-floating-drop-down
+                          v-if="paymentStatuses?.length"
+                          :items="paymentStatuses"
+                          placement="bottom"
+                        >
+                          <template #button>
+                            <button
+                              class="text-sm flex gap-2.5 items-center border border-slate-200 rounded-md text-gray-500 p-2 transition hover:text-black hover:border-slate-400"
+                              type="button"
+                            >
+                              <span>تغییر وضعیت پرداخت</span>
+                              <ChevronDownIcon class="size-4"/>
+                            </button>
+                          </template>
+
+                          <template #item="{item, hide}">
+                            <button
+                              class="text-sm w-full text-right rounded-md py-1 px-2 hover:bg-slate-100 transition"
+                              type="button"
+                              @click="changePaymentStatus(value, item, hide)"
+                            >
+                              {{ item.text }}
+                            </button>
+                          </template>
+                        </base-floating-drop-down>
                       </template>
 
                       <template #op_2="{value}">
                         <a
-                            class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
-                            href="javascript:void(0)"
-                            @click="() => {showOrderPaymentDetail(value)}"
+                          class="border-0 text-blue-600 hover:text-opacity-80 text-sm p-2"
+                          href="javascript:void(0)"
+                          @click="showOrderPaymentDetail(value)"
                         >
                           مشاهده جزئیات پرداخت
                         </a>
@@ -159,21 +185,25 @@
               </div>
             </div>
 
-            <partial-dialog v-model:open="orderPaymentDetailOpen">
+            <partial-dialog
+              v-model:open="orderPaymentDetailOpen"
+              container-klass="max-w-7xl overflow-hidden"
+            >
               <template #title>
                 جزئیات پرداخت
               </template>
 
               <template #body>
                 <base-datatable
-                    :columns="orderPaymentsTableSetting.columns"
-                    :enable-multi-operation="false"
-                    :enable-search-box="false"
-                    :has-checkbox="false"
-                    :is-loading="false"
-                    :is-slot-mode="true"
-                    :is-static-mode="true"
-                    :rows="orderPaymentsTableSetting.rows"
+                  :columns="orderPaymentsTableSetting.columns"
+                  :enable-multi-operation="false"
+                  :enable-search-box="false"
+                  :has-checkbox="false"
+                  :is-loading="false"
+                  :is-slot-mode="true"
+                  :is-static-mode="true"
+                  :rows="orderPaymentsTableSetting.rows"
+                  :total="orderPaymentsTableSetting.total"
                 >
                   <template #id="{value, index}">
                     {{ index }}
@@ -182,8 +212,8 @@
                   <template #status="{value}">
                     <partial-badge-publish
                       :publish="!!value.status"
-                        publish-text="پرداخت شده"
-                        unpublish-text="پرداخت نشده"
+                      publish-text="پرداخت شده"
+                      unpublish-text="پرداخت نشده"
                     />
                   </template>
 
@@ -192,7 +222,11 @@
                   </template>
 
                   <template #gateway_type="{value}">
-                    {{ value.gateway_type.text }}
+                    {{ value.gateway_type || '-' }}
+                  </template>
+
+                  <template #message="{value}">
+                    {{ value.message || '-' }}
                   </template>
 
                   <template #paid_at="{value}">
@@ -218,8 +252,8 @@
         <template #body>
           <div class="p-3">
             <form-order-change-send-status
-                v-if="sendStatus"
-                v-model:selected="sendStatus"
+              v-if="sendStatus"
+              @changed="(selected) => {sendStatus = selected}"
             />
           </div>
         </template>
@@ -337,8 +371,8 @@
                     <span class="text-xs text-gray-400 mb-1">وضعیت سفارش:</span>
                     <div class="text-black">
                       <partial-badge-status-send
-                          :color-hex="order?.send_status.color_hex"
-                          :text="order?.send_status.title"
+                        :color-hex="order?.send_status.color_hex"
+                        :text="order?.send_status.title"
                       />
                     </div>
                   </div>
@@ -413,20 +447,20 @@
     </template>
     <template #body>
       <div
-          v-if="!loading"
-          class="p-3"
+        v-if="!loading"
+        class="p-3"
       >
         <base-button
-            :disabled="isDownloadFactor"
-            class="bg-orange-500 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
-            type="submit"
-            @click="factorDownloadHandler"
+          :disabled="isDownloadFactor"
+          class="bg-orange-500 text-white mr-auto px-6 w-full sm:w-auto flex items-center"
+          type="submit"
+          @click="factorDownloadHandler"
         >
           <VTransitionFade>
             <loader-circle
-                v-if="isDownloadFactor"
-                big-circle-color="border-transparent"
-                main-container-klass="absolute w-full h-full top-0 left-0"
+              v-if="isDownloadFactor"
+              big-circle-color="border-transparent"
+              main-container-klass="absolute w-full h-full top-0 left-0"
             />
           </VTransitionFade>
 
@@ -438,18 +472,25 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              :columns="table.columns"
-              :enable-multi-operation="false"
-              :enable-search-box="false"
-              :has-checkbox="false"
-              :is-loading="false"
-              :is-slot-mode="true"
-              :is-static-mode="true"
-              :rows="table.rows"
+            :columns="table.columns"
+            :enable-multi-operation="false"
+            :enable-search-box="false"
+            :has-checkbox="false"
+            :is-loading="loading"
+            :is-slot-mode="true"
+            :is-static-mode="true"
+            :rows="table.rows"
+            :total="table.total"
           >
             <template v-slot:product="{value}">
               <div class="flex flex-col gap-3">
-                <partial-show-image :item="value.image"/>
+                <base-lazy-image
+                  :alt="value.product_title"
+                  :is-local="false"
+                  :lazy-src="value.image.path"
+                  :size="FileSizes.SMALL"
+                  class="!w-20 !h-20"
+                />
                 <span>{{ value.product_title }}</span>
 
                 <ul class="flex flex-col gap-2.5">
@@ -490,7 +531,7 @@
 
             <template v-slot:discount="{value}">
               <div v-if="(+value.price) - (+value.discounted_price) > 0">
-                <div class="text-lg font-iranyekan-bold">
+                <div class="text-lg font-iranyekan-bold text-emerald-500">
                   {{ numberFormat((+value.price) - (+value.discounted_price)) }}
                   <span class="text-xs text-gray-400">تومان</span>
                 </div>
@@ -499,8 +540,9 @@
             </template>
 
             <template v-slot:discounted_price="{value}">
-              <div class="text-lg font-iranyekan-bold">
-                {{ numberFormat(value.discounted_price) }}
+              <div
+                class="flex items-center gap-1.5 text-lg font-iranyekan-bold border-2 border-amber-400 py-1 px-2 rounded-lg bg-amber-50">
+                <span class="text-amber-700">{{ numberFormat(value.discounted_price) }}</span>
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
             </template>
@@ -520,22 +562,24 @@ import BaseAccordion from "@/components/base/BaseAccordion.vue";
 import FormOrderChangeSendStatus from "./forms/FormOrderChangeSendStatus.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
-import {ArrowDownTrayIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowDownTrayIcon, ChevronDownIcon, MinusIcon,} from "@heroicons/vue/24/outline/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend.vue";
 import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialBadgeStatusPayment from "@/components/partials/PartialBadgeStatusPayment.vue";
-import BaseSelect from "@/components/base/BaseSelect.vue";
 import PartialDialog from "@/components/partials/PartialDialog.vue";
-import {getRouteParamByKey, numberFormat} from "@/composables/helper.js";
+import {downloadDataAsFile, getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {OrderAPI} from "@/service/APIOrder.js";
-import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 import PartialBadgeSize from "@/components/partials/PartialBadgeSize.vue";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
+import BaseFloatingDropDown from "@/components/base/BaseFloatingDropDown.vue";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import {FileSizes} from "@/composables/file-list.js";
+import isObject from "lodash.isobject";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
@@ -543,7 +587,7 @@ const idParam = getRouteParamByKey('id', null, false)
 const loading = ref(true)
 
 const order = ref(null)
-const paymentStatuses = ref(null)
+const paymentStatuses = ref([])
 const paymentStatus = ref(null)
 const sendStatus = ref(null)
 
@@ -658,12 +702,15 @@ const orderPaymentsTableSetting = reactive({
     },
   ],
   rows: [],
+  total: 0,
 })
 
-function changePaymentStatus(selected, item) {
+function changePaymentStatus(record, item, hide) {
+  hide()
+
   useConfirmToast(() => {
-    OrderAPI.updateOrderPayment(item.id, {
-      payment_status: selected.value.value
+    OrderAPI.updateOrderPayment(record.id, {
+      payment_status: item.value
     }, {
       success() {
         toast.success('تغییر وضعیت پرداخت انجام شد.')
@@ -674,6 +721,7 @@ function changePaymentStatus(selected, item) {
 
 function showOrderPaymentDetail(item) {
   orderPaymentsTableSetting.rows = item.payments || []
+  orderPaymentsTableSetting.total = item.payments?.length || 0
   orderPaymentDetailOpen.value = true
 }
 
@@ -683,11 +731,32 @@ function showOrderPaymentDetail(item) {
 const isDownloadFactor = ref(false)
 
 function factorDownloadHandler() {
-  if (!isDownloadFactor.value) return
+  if (isDownloadFactor.value) return
 
   isDownloadFactor.value = true
 
   OrderAPI.exportPdf(idParam.value, {
+    silent: true,
+    success(data, total, response) {
+      const today = new Date()
+      const day = today.toLocaleDateString('fa-IR', {day: 'numeric'})
+      const month = today.toLocaleDateString('fa-IR', {month: 'long'})
+      const year = today.toLocaleDateString('fa-IR', {year: 'numeric'})
+      const currentDate = `${year}-${month}-${day}`
+
+      let filename = `order-' + ${order.value.code}-${currentDate}`
+        + '(' +
+        'در ساعت ' +
+        today.getHours() +
+        ' و '
+        + today.getMinutes() +
+        ' دقیقه و ' +
+        +today.getSeconds() +
+        ' ثانیه' +
+        ')'
+
+      downloadDataAsFile(filename, data, response.headers['content-type'])
+    },
     finally() {
       isDownloadFactor.value = false
     },
@@ -721,22 +790,23 @@ const table = reactive({
       columnClasses: 'whitespace-nowrap',
     },
     {
-      label: "مبلغ بدون تخفیف(به تومان)",
+      label: "مبلغ بدون تخفیف (به تومان)",
       field: "total_price",
       columnClasses: 'whitespace-nowrap',
     },
     {
-      label: "مبلغ تخفیف(به تومان)",
+      label: "مبلغ تخفیف (به تومان)",
       field: "discount",
       columnClasses: 'whitespace-nowrap',
     },
     {
-      label: "مبلغ نهایی(به تومان)",
+      label: "مبلغ نهایی (به تومان)",
       field: "discounted_price",
       columnClasses: 'whitespace-nowrap',
     },
   ],
   rows: [],
+  total: 0,
   sortable: {
     order: "id",
     sort: "desc",
@@ -751,12 +821,13 @@ onMounted(() => {
       paymentStatus.value = response.data.payment_status
       sendStatus.value = response.data.send_status
 
-      // orders of order details (pay connections)
+      // orders of order detail (pay connections)
       ordersTableSetting.rows = response.data?.orders || []
       ordersTableSetting.total = response.data?.orders?.length || 0
 
       // order items
       table.rows = response.data?.items || []
+      table.total = response.data?.items?.length || 0
 
       loading.value = false
     },
@@ -765,11 +836,16 @@ onMounted(() => {
   OrderAPI.fetchPaymentStatuses({
     success: (response) => {
       paymentStatuses.value = []
-      for (let i = 0; i < response.data.length; i++) {
-        paymentStatuses.push({
-          text: response.data[i],
-          value: i,
-        })
+
+      if (isObject(response.data) && Object.keys(response.data).length) {
+        for (let s in response.data) {
+          if (response.data.hasOwnProperty(s)) {
+            paymentStatuses.value.push({
+              text: response.data[s],
+              value: s,
+            })
+          }
+        }
       }
     },
   })
