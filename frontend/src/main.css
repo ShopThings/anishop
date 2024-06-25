@@ -16,6 +16,11 @@
   }
 }
 
+.h-svh-full {
+  height: 100vh;
+  height: 100svh;
+}
+
 .layout-max-w {
   max-width: 96rem; /* "1536px" or "2xl" in tailwind */
 }

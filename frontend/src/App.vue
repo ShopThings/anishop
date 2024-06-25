@@ -3,7 +3,7 @@
 
   <template v-if="!loading">
     <template v-if="errorObject.has_error">
-      <div class="flex items-center justify-center h-svh text-rose-500">
+      <div class="flex items-center justify-center h-svh-full text-rose-500">
         <div class="flex flex-col gap-3 items-center">
           <ExclamationCircleIcon class="size-10"/>
           <span>{{ errorObject.message || 'خطای غیر منتظره' }}</span>
@@ -36,7 +36,7 @@
 
   <div
     v-else
-    class="flex items-center justify-center h-svh"
+    class="flex items-center justify-center h-svh-full"
   >
     <loader3-dot/>
   </div>
