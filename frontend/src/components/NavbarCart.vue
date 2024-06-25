@@ -123,7 +123,7 @@
             <MenuItem v-slot="{close}">
               <button
                 class="w-full flex items-center py-3 px-3 rounded-md bg-emerald-500 text-white text-center hover:bg-opacity-90 transition"
-                @click="() => {router.push({name: 'cart'}); close();}"
+                @click="() => {close(); router.push({name: 'cart'});}"
               >
                 <span class="mr-auto">ثبت سفارش</span>
                 <CheckCircleIcon class="h-7 w-7 mr-auto opacity-60"/>
