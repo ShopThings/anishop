@@ -27,7 +27,7 @@ class MostSaleProductResource extends JsonResource
             'brand' => new BrandShowResource($productModel->brand),
             'category' => new CategoryShowResource($productModel->category),
             'unit_name' => $this->unit_name,
-            'count' => $this->qunatity,
+            'count' => $this->quantity,
         ];
     }
 }
