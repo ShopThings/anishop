@@ -386,7 +386,13 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                 'right'
             )
             ->whereNotNull('order_details.id')
-            ->orderByDesc('order_details.ordered_at');
+            ->orderByDesc('order_details.ordered_at')
+            ->groupBy([
+                'subquery.count',
+                'order_details.send_status_code',
+                'order_details.send_status_title',
+                'order_details.send_status_color_hex'
+            ]);
 
         $secondQuery = $this->model->newQuery()
             ->select([
@@ -405,7 +411,13 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                 'right'
             )
             ->whereNull('order_details.id')
-            ->orderByDesc('order_details.ordered_at');
+            ->orderByDesc('order_details.ordered_at')
+            ->groupBy([
+                'subquery.count',
+                'order_badges.code',
+                'order_badges.title',
+                'order_badges.color_hex'
+            ]);
 
         return $mainQuery->unionAll($secondQuery)->get();
     }
@@ -532,23 +544,9 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
         if (is_null($detail)) return false;
 
         return DB::transaction(function () use ($detail, $reservedId) {
-            $isOK = true;
-
             // Phase1:
             // -restore items quantity to stock
-            $items = $detail->items();
-            $items->each(function ($item) use (&$isOK) {
-                $product = $item->product;
-
-                if (!is_null($product)) {
-                    $actualProduct = $product->items()->where('code', $item->product_code)->first();
-
-                    if (!is_null($actualProduct)) {
-                        $actualProduct->stock_count += $item->qunatity;
-                        $isOK = $isOK && $actualProduct->save();
-                    }
-                }
-            });
+            $isOK = $this->returnOrderProductsToStock($detail->id);
 
             // check if first phase is done
             if (!$isOK) {
@@ -643,11 +641,11 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     }
 
     /**
-     * @param array $items
+     * @param array|Collection $items
      * @param bool $increase
      * @return bool
      */
-    private function updateProductsStock(array $items, bool $increase = true): bool
+    private function updateProductsStock(array|Collection $items, bool $increase = true): bool
     {
         $res = true;
 
@@ -655,8 +653,10 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             foreach ($items as $item) {
                 $qty = abs(intval($item['quantity']));
 
-                $res = $res && $this->productRepository
-                        ->updateProductStockFor($item['product_id'], !$increase ? -$qty : $qty);
+                $res = $res && $this->productRepository->updateProductStockFor(
+                        $item['product_id'],
+                        !$increase ? -$qty : $qty
+                    );
 
                 if (!$res) break;
             }
