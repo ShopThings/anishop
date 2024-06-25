@@ -270,7 +270,7 @@ Route::prefix('admin')
                     ->name('orders.send-statuses');
                 Route::get('orders/all/{user?}', [OrderController::class, 'index'])
                     ->whereNumber('user')->name('orders.index');
-                Route::put('orders/export/{order}', [ExportOrderController::class, 'pdf'])
+                Route::get('orders/export/{order}', [ExportOrderController::class, 'pdf'])
                     ->where(['order' => $codeRegex])->name('orders.export.pdf');
                 Route::put('orders/{order}/payment', [OrderController::class, 'updatePayment'])
                     ->where(['order' => $codeRegex])->name('orders.update.payment');

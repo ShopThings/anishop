@@ -46,9 +46,7 @@ export const OrderAPI = Object.assign(
     exportPdf(orderId, callbacks) {
       return useRequest(
         apiReplaceParams(apiRoutes.admin.orders.exportPdf, {order: orderId}),
-        {
-          method: 'PUT',
-        },
+        null,
         callbacks
       )
     }
