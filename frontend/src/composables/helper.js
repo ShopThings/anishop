@@ -277,6 +277,23 @@ export const estimateReadTime = (content) => {
   return Math.ceil(readTimeMinutes);
 }
 
+export function downloadDataAsFile(filename, data, contentType) {
+  // Create a new Blob object using the response data
+  const blob = new Blob([data], {type: contentType});
+
+  // Create a link element
+  const link = document.createElement('a');
+  link.href = window.URL.createObjectURL(blob);
+  link.download = filename; // Set the file name
+  link.click(); // Trigger the download
+
+  // For Firefox it is necessary to delay revoking the ObjectURL
+  setTimeout(function () {
+    // Clean up the URL object
+    window.URL.revokeObjectURL(link.href)
+  }, 100)
+}
+
 /*********************************************************************
  * @function  : persianToCalendars(year, month, day, [options])
  *

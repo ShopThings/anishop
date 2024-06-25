@@ -115,7 +115,7 @@
             <template #name="{value}">
               <div v-if="value.is_dir"
                    class="cursor-pointer hover:text-black transition"
-                   @click="() => {changeHash(value.full_path)}">
+                   @click="changeHash(value.full_path)">
                 {{ value.full_name }}
               </div>
               <div v-else
@@ -235,7 +235,7 @@ import BaseLoadingToast from "./toast/BaseLoading.vue";
 import VueEasyLightbox from "vue-easy-lightbox";
 import {useLightbox} from "@/composables/lightbox-view.js";
 import {apiRoutes} from "@/router/api-routes.js";
-import {trimChar} from "@/composables/helper.js";
+import {downloadDataAsFile, trimChar} from "@/composables/helper.js";
 import {watchImmediate} from "@vueuse/core";
 import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
@@ -809,20 +809,7 @@ function downloadClicked(item) {
     disk: currentStorage.value.path,
   }, {
     success(data, total, response) {
-      // Create a new Blob object using the response data
-      const blob = new Blob([data], {type: response.headers['content-type']});
-
-      // Create a link element
-      const link = document.createElement('a');
-      link.href = window.URL.createObjectURL(blob);
-      link.download = item.name; // Set the file name
-      link.click(); // Trigger the download
-
-      // For Firefox it is necessary to delay revoking the ObjectURL
-      setTimeout(function () {
-        // Clean up the URL object
-        window.URL.revokeObjectURL(link.href)
-      }, 100)
+      downloadDataAsFile(item.name, data, response.headers['content-type'])
     },
   })
 }
