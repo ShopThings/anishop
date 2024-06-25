@@ -129,10 +129,10 @@ class PeriodicRepository implements PeriodicRepositoryInterface
 
         $query
             ->select([
+                'subquery.quantity',
                 'order_items.product_title',
                 'order_items.unit_name',
-                'subquery.quantity',
-                'order_items.product_id'
+                'order_items.product_id',
             ])
             ->distinct()
             ->join('order_items', 'order_items.order_key_id', '=', 'order_details.id')
@@ -140,15 +140,18 @@ class PeriodicRepository implements PeriodicRepositoryInterface
                 DB::table('order_items')
                     ->select([
                         'order_items.product_id',
+                        'order_items.order_key_id',
                         DB::raw('SUM(order_items.quantity) as quantity')
                     ])
-                    ->groupBy('order_items.product_id')
+                    ->groupBy(['order_items.product_id', 'order_items.order_key_id'])
                     ->orderByDesc('quantity'),
                 'subquery',
-                'order_items.product_id',
-                '=',
-                'subquery.product_id'
-            );
+                function ($join) {
+                    $join->on('order_items.product_id', '=', 'subquery.product_id')
+                        ->on('subquery.order_key_id', '=', 'order_details.id');
+                }
+            )
+            ->orderByDesc('subquery.quantity');
 
         match ($period->value) {
             ChartPeriodsEnum::MONTHLY->value => $query->thisMonth('ordered_at'),
