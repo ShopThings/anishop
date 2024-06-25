@@ -57,7 +57,6 @@ import {ChevronUpIcon} from '@heroicons/vue/24/outline'
 import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue"
 import {useSlots} from "vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
-import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 defineProps({
   open: {
@@ -66,7 +65,7 @@ defineProps({
   },
   btnClass: {
     type: String,
-    default: 'text-violet-900 bg-violet-100 hover:bg-violet-200 focus-visible:ring-violet-500',
+    default: 'text-slate-900 bg-white hover:bg-violet-100 focus-visible:ring-violet-500 border border-violet-300',
   },
   openBtnClass: String,
   btnIconClass: {
