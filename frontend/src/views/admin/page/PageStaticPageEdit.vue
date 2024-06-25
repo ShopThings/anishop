@@ -175,7 +175,7 @@ const {canSubmit, errors, onSubmit, values} = useFormSubmit({
     data.url = values.url
   }
 
-  StaticPageAPI.updateById(idParam.value, , {
+  StaticPageAPI.updateById(idParam.value, {
     success(response) {
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
 
