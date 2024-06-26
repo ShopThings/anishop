@@ -36,9 +36,9 @@ class BrandRepository extends Repository implements BrandRepositoryInterface
 
         $query = $this->model->newQuery();
         $query
+            ->with('image')
             ->published()
             ->where('is_deletable', DatabaseEnum::DB_YES)
-            ->with('image')
             ->when($search, function (Builder $query, string $search) use ($filter) {
                 $query
                     ->whereHas('products', function ($q) use ($search) {

@@ -24,6 +24,7 @@ trait RepositoryTrait
     )
     {
         $this->prepareWith($query);
+
         if (count($order)) {
             foreach ($order as $column => $sort) {
                 $query->orderBy($column, $sort);

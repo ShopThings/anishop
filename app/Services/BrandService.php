@@ -64,7 +64,7 @@ class BrandService extends Service implements BrandServiceInterface
     {
         return $this->repository->getPublishedFilteredBrands(
             filter: $filter,
-            columns: ['id', 'name', 'latin_name', 'slug']
+            columns: ['id', 'name', 'latin_name', 'slug', 'image_id']
         );
     }
 
