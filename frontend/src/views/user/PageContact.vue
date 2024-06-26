@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from "vue";
+import {inject, reactive, ref} from "vue";
 import BaseSemiDatatable from "@/components/base/BaseSemiDatatable.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
@@ -73,6 +73,8 @@ import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 
 const toast = useToast()
 
+const countingStore = inject('countingStore')
+
 function removeContactHandler(item) {
   if (!item.id) return
 
@@ -80,6 +82,7 @@ function removeContactHandler(item) {
     UserPanelContactAPI.deleteById(item.id, {
       success() {
         toast.success('پیام شما با موفقیت حذف شد.')
+        countingStore.$reset()
       },
     })
   }, 'حذف پیام شما')

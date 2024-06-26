@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {ArrowLongLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
@@ -68,6 +68,8 @@ import {useConfirmToast} from "@/composables/toast-helper.js";
 
 const toast = useToast()
 
+const countingStore = inject('countingStore')
+
 const getPath = apiRoutes.user.favoriteProducts.index
 const totalFavoriteProducts = ref(0)
 
@@ -76,6 +78,7 @@ function handleRemoveFavProduct(item) {
     UserPanelFavoriteProductAPI.deleteById(item.id, {
       success() {
         toast.success('محصول از لیست علاقه‌مندی‌ها حذف شد.')
+        countingStore.$reset()
       },
     })
   }, 'حذف محصول از لیست علاقه‌مندی‌ها')

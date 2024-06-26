@@ -188,7 +188,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {inject, onMounted, ref} from "vue";
 import {ArrowLongLeftIcon, CheckIcon, TrashIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -215,6 +215,8 @@ const router = useRouter()
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
 
+const countingStore = inject('countingStore')
+
 const loading = ref(true)
 const blog = ref(null)
 const comment = ref(null)
@@ -234,6 +236,8 @@ function deleteComment() {
       UserPanelBlogCommentAPI.deleteById(idParam.value, {
         success() {
           toast.success('دیدگاه با موفقیت حذف شد.')
+
+          countingStore.$reset()
           router.push({name: 'user.comments'})
         },
         finally() {
