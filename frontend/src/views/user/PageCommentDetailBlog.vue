@@ -137,7 +137,10 @@
 
                 <div v-if="comment?.children_count > 0">
                   <partial-input-label title="پاسخ به دیدگاه شما"/>
-                  <partial-comment-blog-nested :parent-id="comment?.id"/>
+                  <partial-comment-blog-nested
+                    :blog-slug="idParam"
+                    :parent-id="comment?.id"
+                  />
                 </div>
               </div>
 
