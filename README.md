@@ -20,8 +20,14 @@ composer install
 npm install
 ```
 
-- After setting needed variables in `.env` of `root` directory and `frontend` directory, in your terminal, go
-  to `frontend` directory and run below command
+- You need to run migrations with seeds to have some data to see by this command
+
+```
+php artisan migrate --seed
+```
+
+- **After setting needed variables in `.env` of `root` directory and `frontend` directory**, go
+  to `frontend` directory with your terminal and run below command
 
 ```
 npm run dev
