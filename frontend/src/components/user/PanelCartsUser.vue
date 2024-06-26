@@ -250,7 +250,7 @@ function emptyCart() {
 function fetchCarts(type) {
   if (cartStore.isLoading) return
 
-  if (!userStore.isLoading) {
+  if (!userStore.getUser) {
     toast.error('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
