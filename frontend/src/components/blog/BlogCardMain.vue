@@ -7,7 +7,7 @@
           :is-local="false"
           :lazy-src="blog.image.path"
           :size="FileSizes.LARGE"
-          class="absolute -z-[2] top-0 left-1/2 -translate-x-1/2 group-hover:scale-125 transition duration-1000 !w-full !h-auto lg:!w-auto lg:!h-full !max-w-none !max-h-none rounded-3xl"
+          class="absolute -z-[2] top-0 left-1/2 -translate-x-1/2 group-hover:scale-125 transition duration-1000 !w-full !h-full !object-cover rounded-3xl"
         />
 
         <div
