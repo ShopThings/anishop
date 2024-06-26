@@ -142,10 +142,14 @@ import {useToast} from "vue-toastification";
 const toast = useToast()
 const countingStore = inject('countingStore')
 
-const loading = ref(true)
+const loading = ref(false)
 const addresses = ref([])
 
 function getAddresses() {
+  if (loading.value) return
+
+  loading.value = true
+
   UserPanelAddressAPI.fetchAll({}, {
     success: (response) => {
       addresses.value = response.data
