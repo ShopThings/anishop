@@ -414,7 +414,7 @@ export const useCartStore = defineStore('userCart', () => {
     loading.value = true
     useRequestWrapper(
       apiReplaceParams(apiRoutes.cart.show, {cart: name}),
-      null,
+      {method: 'POST'},
       {
         success(response) {
           carts.value[name] = response.data
