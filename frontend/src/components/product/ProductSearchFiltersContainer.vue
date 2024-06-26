@@ -19,7 +19,9 @@
   </div>
 
   <div class="mt-3">
-    <product-search-filters/>
+    <product-search-filters
+      @filters-loaded="emit('filters-loaded')"
+    />
   </div>
 
   <div
@@ -42,7 +44,7 @@ import BaseButton from "@/components/base/BaseButton.vue";
 const props = defineProps({
   filterBtnClass: String,
 })
-const emit = defineEmits(['filter', 'clear'])
+const emit = defineEmits(['filter', 'clear', 'filters-loaded'])
 
 function filterHandler() {
   emit('filter')

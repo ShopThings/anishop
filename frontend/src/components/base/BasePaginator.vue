@@ -154,6 +154,10 @@ const props = defineProps({
   },
   // to control show loader from outside of component(local loading purposes)
   isLoading: Boolean,
+  loadOnAppearance: {
+    type: Boolean,
+    default: true,
+  },
   numberOfLoaders: Number,
   order: {
     type: Array,
@@ -422,7 +426,9 @@ function goToPage(page, scrollToTop) {
   }
 }
 
-goToPage(currentPage.value, props.scrollToElementOnAppearance)
+if (props.loadOnAppearance) {
+  goToPage(currentPage.value, props.scrollToElementOnAppearance)
+}
 
 function prevPage() {
   if (currentPage.value - 1 > 0) {

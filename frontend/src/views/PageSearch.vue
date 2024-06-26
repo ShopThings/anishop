@@ -6,16 +6,18 @@
       <div class="grow">
         <base-paginator
           ref="productPaginatorRef"
-          v-model:total="totalProducts"
-          :extra-search-params="extraSearchParams"
-          :order="productOrder"
-          :just-notice-order-changed="true"
-          :path="getSearchPath"
-          :per-page="productPerPage"
-          :scroll-to-element-on-appearance="true"
-          :scroll-margin-top="-160"
-          :show-pagination-detail="true"
-          :show-search="true"
+          v-model:total="paginatorSettings.totalProducts"
+          :extra-search-params="paginatorSettings.extraSearchParams"
+          :just-notice-order-changed="paginatorSettings.justNoticeOrderChanged"
+          :load-on-appearance="paginatorSettings.loadOnAppearance"
+          :number-of-loaders="paginatorSettings.numberOfLoaders"
+          :order="paginatorSettings.productOrder"
+          :path="paginatorSettings.searchPath"
+          :per-page="paginatorSettings.getProductPerPage()"
+          :scroll-margin-top="paginatorSettings.scrollMarginTop"
+          :scroll-to-element-on-appearance="paginatorSettings.scrollToElementOnAppearance"
+          :show-pagination-detail="paginatorSettings.showPaginationDetail"
+          :show-search="paginatorSettings.showSearch"
           :search-text="route.query?.q || ''"
           container-class="flex flex-wrap"
           item-container-class="w-full sm:w-1/2 md:w-1/3 lg:w-1/2 xl:w-1/3 2xl:w-1/4 ml-[-1px] mt-[-1px]"
@@ -59,6 +61,7 @@
                         <div>
                           <product-search-filters-container
                             filter-btn-class="sticky bottom-0 z-[1]"
+                            @filters-loaded="filtersLoadedHandler"
                             @filter="filterHandler"
                             @clear="clearHandler"
                           />
@@ -130,6 +133,7 @@
           <partial-card class="border-0 flex flex-col pb-3">
             <template #body>
               <product-search-filters-container
+                @filters-loaded="filtersLoadedHandler"
                 @filter="filterHandler"
                 @clear="clearHandler"
               />
@@ -144,7 +148,7 @@
 </template>
 
 <script setup>
-import {computed, inject, nextTick, ref, shallowRef} from "vue";
+import {inject, nextTick, reactive, ref, shallowRef, watch} from "vue";
 import {FunnelIcon} from "@heroicons/vue/24/outline/index.js";
 import Vue3StickySidebar from "vue3-sticky-sidebar";
 import BasePaginator from "@/components/base/BasePaginator.vue";
@@ -163,18 +167,9 @@ import {apiRoutes} from "@/router/api-routes.js";
 import {useRoute, useRouter} from "vue-router";
 import ProductSearchFestivals from "@/components/product/ProductSearchFestivals.vue";
 import PartialPaginatorPaginationInfo from "@/components/partials/PartialPaginatorPaginationInfo.vue";
-import {watchImmediate} from "@vueuse/core";
 import {useProductFilterParamStore} from "@/store/StoreProductFilter.js";
 
 const homeSettingStore = inject('homeSettingStore')
-
-const productPerPage = computed(() => {
-  let ppp = +homeSettingStore.getProductEachPage
-  return !isNaN(ppp) ? ppp : 12
-})
-const getSearchPath = computed(() => {
-  return apiRoutes.products.index
-})
 
 const productPaginatorRef = ref(null)
 const showFestivals = ref(true)
@@ -185,17 +180,31 @@ const showFestivals = ref(true)
 const router = useRouter()
 const route = useRoute()
 
-const totalProducts = ref(0)
-const productOrder = []
-
 const filterParamStore = useProductFilterParamStore()
-const extraSearchParams = filterParamStore.routeKeys
+
+const paginatorSettings = reactive({
+  searchPath: apiRoutes.products.index,
+  totalProducts: 0,
+  getProductPerPage: () => {
+    let ppp = +homeSettingStore.getProductEachPage
+    return !isNaN(ppp) ? ppp : 12
+  },
+  loadOnAppearance: false,
+  extraSearchParams: filterParamStore.routeKeys,
+  productOrder: [],
+  justNoticeOrderChanged: true,
+  scrollToElementOnAppearance: true,
+  scrollMarginTop: -160,
+  showPaginationDetail: true,
+  showSearch: true,
+  numberOfLoaders: 6,
+})
 
 // create orders
 let counter = 1
 for (const t in PRODUCT_ORDER_TYPES) {
   if (PRODUCT_ORDER_TYPES.hasOwnProperty(t)) {
-    productOrder.push({
+    paginatorSettings.productOrder.push({
       id: counter++,
       key: PRODUCT_ORDER_TYPES[t].value,
       text: PRODUCT_ORDER_TYPES[t].text,
@@ -214,18 +223,24 @@ function orderChangeHandler(selected) {
   router.push({query: Object.assign({}, route.query, filterParamStore.getRouteQueryObject())})
 }
 
-const isLocallyQueryChange = shallowRef(false)
-
-function triggerRouteOnSearchParams() {
-  isLocallyQueryChange.value = true
-
-  router.push({query: filterParamStore.getRouteQueryObject()})
-
+function goToFirstPage() {
   nextTick(() => {
     if (productPaginatorRef.value) {
       productPaginatorRef.value.goToPage(1)
     }
   })
+}
+
+const isLocallyQueryChange = shallowRef(false)
+
+function triggerRouteOnSearchParams() {
+  isLocallyQueryChange.value = true
+  router.push({query: filterParamStore.getRouteQueryObject()})
+  goToFirstPage()
+}
+
+function filtersLoadedHandler() {
+  goToFirstPage()
 }
 
 function filterHandler() {
@@ -237,15 +252,11 @@ function clearHandler() {
   triggerRouteOnSearchParams()
 }
 
-watchImmediate(() => route.query, () => {
+watch(() => route.query, () => {
   filterParamStore.readFiltersFromRoute()
 
   if (!isLocallyQueryChange.value) {
-    nextTick(() => {
-      if (productPaginatorRef.value) {
-        productPaginatorRef.value.goToPage(1)
-      }
-    })
+    goToFirstPage()
   } else {
     isLocallyQueryChange.value = false
   }

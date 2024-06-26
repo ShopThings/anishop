@@ -97,13 +97,17 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     })
   }
 
-  function fetchBrands() {
+  function fetchBrands(onSuccess = null) {
     return HomeProductAPI.fetchBrandsFilter({
       category: route.query?.category,
       festival: route.query?.festival,
     }, {
       success(response) {
         setBrands(response.data)
+
+        if (onSuccess && isFunction(onSuccess)) {
+          onSuccess()
+        }
       },
       error() {
         return false
@@ -125,13 +129,15 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
 
         if (data?.min && data?.max) {
           minmaxPrice = [data.min, data.max]
+        }
 
+        setPriceRange(minmaxPrice)
+
+        if (data?.min && data?.max) {
           if (onSuccess && isFunction(onSuccess)) {
             onSuccess(minmaxPrice)
           }
         }
-
-        setPriceRange(minmaxPrice)
       },
       error() {
         return false
@@ -176,10 +182,26 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     isAttributesLoading.value = true
   }
 
-  fetchColorsAndSizes()
-  fetchBrands()
-  fetchPriceRange()
-  fetchDynamicFilters()
+  function fetchAllFiltersAtOnce(callbacks) {
+    return Promise.all([
+      fetchColorsAndSizes(),
+      fetchBrands(),
+      fetchPriceRange(),
+      fetchDynamicFilters(),
+    ]).then(async (data) => {
+      if (callbacks.success && isFunction(callbacks.success)) {
+        callbacks.success(data)
+      }
+    }).catch((err) => {
+      if (callbacks.error && isFunction(callbacks.error)) {
+        callbacks.error(err)
+      }
+    }).finally(() => {
+      if (callbacks.finally && isFunction(callbacks.finally)) {
+        callbacks.finally()
+      }
+    })
+  }
 
   return {
     colors, getColors, setColors,
@@ -191,6 +213,8 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     colorAndSizeLoading, brandsLoading, priceRangeLoading, attributesLoading,
     //
     fetchColorsAndSizes, fetchBrands, fetchPriceRange, fetchDynamicFilters,
+    //
+    fetchAllFiltersAtOnce,
     //
     $reset,
   }
@@ -499,13 +523,13 @@ export const useProductFilterParamStore = defineStore('product_search_filter_par
             params.brands.forEach(brand => {
               let parsedBrand = parseInt(brand, 10);
               if (!isNaN(parsedBrand) && parsedId === parsedBrand) {
-                brands.value.push(item)
+                brands.value[item.id] = true
               }
             })
           } else {
             let parsedBrand = parseInt(params.brand, 10);
             if (!isNaN(parsedBrand) && parsedId === parsedBrand) {
-              brands.value.push(item)
+              brands.value[item.id] = true
             }
           }
         }

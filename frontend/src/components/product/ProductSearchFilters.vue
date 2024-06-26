@@ -283,7 +283,7 @@
 </template>
 
 <script setup>
-import {computed} from "vue";
+import {computed, onMounted} from "vue";
 import PartialFilterCard from "@/components/partials/pages/PartialFilterCard.vue";
 import BaseRangeSlider from "@/components/base/BaseRangeSlider.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
@@ -295,6 +295,8 @@ import Loader3Dot from "@/components/base/loader/Loader3Dot.vue";
 import {useRoute} from "vue-router";
 import {watchImmediate} from "@vueuse/core";
 import {useProductFilterParamStore, useProductFilterStore} from "@/store/StoreProductFilter.js";
+
+const emit = defineEmits(['filters-loaded'])
 
 const route = useRoute()
 
@@ -420,8 +422,8 @@ function getAttributeActualSelectedItems(attributeObj, attributeId) {
 
 //----------------------------
 function fetchFilters() {
-  filterStore.fetchBrands()
-  filterStore.fetchColorsAndSizes()
+  filterStore.fetchBrands(() => filterParamStore.readFiltersFromRoute())
+  filterStore.fetchColorsAndSizes(() => filterParamStore.readFiltersFromRoute())
   filterStore.fetchPriceRange(data => filterParamStore.priceRange = data)
   filterStore.fetchDynamicFilters(() => initializeAttributesObject())
 }
@@ -431,5 +433,14 @@ watchImmediate([
   () => route.query?.festival
 ], () => {
   fetchFilters()
+})
+
+//----------------------------
+onMounted(() => {
+  filterStore.fetchAllFiltersAtOnce({
+    finally() {
+      emit('filters-loaded')
+    },
+  })
 })
 </script>
