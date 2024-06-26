@@ -71,7 +71,8 @@ class StoreOrderRequest extends FormRequest
             'postal_code' => [
                 'sometimes',
                 'nullable',
-                'numeric',
+                'regex:/[0-9]*/',
+                'max:15',
             ],
             'address' => [
                 'required',
@@ -134,6 +135,13 @@ class StoreOrderRequest extends FormRequest
             'payment_method' => 'روش پرداخت',
             'coupon' => 'کد کوپن',
             'is_needed_factor' => 'درخواست فاکتور',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }

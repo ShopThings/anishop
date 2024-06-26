@@ -42,8 +42,8 @@ class UpdateAddressRequest extends FormRequest
             ],
             'postal_code' => [
                 'sometimes',
-                'numeric',
-                'min:1',
+                'nullable',
+                'regex:/[0-9]*/',
                 'max:15',
             ],
             'province' => [
@@ -64,6 +64,13 @@ class UpdateAddressRequest extends FormRequest
         return [
             'full_name' => 'نام گیرنده',
             'postal_code' => 'کد پستی',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }
