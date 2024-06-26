@@ -201,49 +201,6 @@
   transform: rotateY(180deg);
 }
 
-/* Vue3TagsInput */
-
-.v3ti .v3ti-tag .v3ti-remove-tag {
-  margin: 0 1px;
-  padding: 0 7px 0 5px !important;
-}
-
-.v3ti .v3ti-tag .v3ti-remove-tag::before {
-  content: "×" !important;
-}
-
-.v3ti {
-  --tw-ring-inset: inset;
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(209 213 219 / var(--tw-ring-opacity));
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-  color: rgb(17 24 39 / var(--tw-text-opacity));
-  padding: calc(0.75rem - 6px) 0.75rem;
-  border-radius: 0.5rem;
-  border: none !important;
-}
-
-.v3ti.v3ti--focus {
-  --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
-  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-  border-color: transparent;
-}
-
-.v3ti .v3ti-new-tag {
-  box-shadow: none;
-  font-size: 0.875rem;
-  line-height: 1.5rem;
-}
-
-.v3ti .v3ti-tag {
-  background: rgb(79 70 229 / var(--tw-bg-opacity)) !important;
-}
-
 /* Vue3PersianDatetimePicker */
 
 .vpd-input-group input {
@@ -302,3 +259,45 @@
   font-size: 1.25rem;
 }
 
+/* Vue3TagsInput */
+
+.v3ti .v3ti-tag .v3ti-remove-tag {
+  margin: 0 1px;
+  padding: 0 7px 0 5px !important;
+}
+
+.v3ti .v3ti-tag .v3ti-remove-tag::before {
+  content: "×" !important;
+}
+
+.v3ti {
+  --tw-ring-inset: inset;
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(209 213 219 / var(--tw-ring-opacity));
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  color: rgb(17 24 39 / var(--tw-text-opacity));
+  padding: calc(0.75rem - 6px) 0.75rem;
+  border-radius: 0.5rem;
+  border: none !important;
+}
+
+.v3ti.v3ti--focus {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: rgb(79 70 229 / var(--tw-ring-opacity));
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+  border-color: transparent;
+}
+
+.v3ti .v3ti-new-tag {
+  box-shadow: none;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+}
+
+.v3ti .v3ti-tag {
+  background: rgb(79 70 229 / var(--tw-bg-opacity)) !important;
+}
