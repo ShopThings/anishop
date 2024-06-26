@@ -22,6 +22,7 @@ class SignupController extends Controller
 {
     /**
      * @param AuthServiceInterface $service
+     * @param UserServiceInterface $userService
      */
     public function __construct(
         protected readonly AuthServiceInterface $service,
@@ -43,7 +44,7 @@ class SignupController extends Controller
         // username is either exists and not verified or not exists at all
         $user = $this->service->getUserByUsername($username);
         if (is_null($user)) {
-            $user = $this->userService->createTemporaryUser($username);
+            $this->userService->createTemporaryUser($username);
         } elseif ($user->isVerified()) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,

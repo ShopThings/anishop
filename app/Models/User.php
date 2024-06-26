@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Settings\SettingsEnum;
 use App\Enums\SMS\SMSTypesEnum;
 use App\Notifications\VerifyCodeNotification;
+use App\Services\Contracts\SettingServiceInterface;
 use App\Support\Model\AuthenticatableExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Shetabit\Visitor\Traits\Visitor;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -56,6 +59,22 @@ class User extends Model
         'is_deletable' => 'boolean',
     ];
 
+    /**
+     * @var SettingServiceInterface
+     */
+    protected SettingServiceInterface $settingService;
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $this->settingService = app()->get(SettingServiceInterface::class);
+    }
+
     protected static function newFactory()
     {
         return UserFactory::new();
@@ -95,7 +114,11 @@ class User extends Model
      */
     public function shouldSendActivationVerifyCode(): bool
     {
-        return $this->verified_at !== null && now()->gt($this->verify_wait_for_code);
+        return is_null($this->verify_wait_for_code) ||
+            (
+                !is_null($this->verify_wait_for_code) &&
+                now()->gt($this->verify_wait_for_code)
+            );
     }
 
     /**
@@ -119,7 +142,11 @@ class User extends Model
      */
     public function shouldSendForgotPasswordVerifyCode(): bool
     {
-        return now()->gt($this->forget_password_wait_for_code);
+        return is_null($this->forget_password_wait_for_code) ||
+            (
+                !is_null($this->forget_password_wait_for_code) &&
+                now()->gt($this->forget_password_wait_for_code)
+            );
     }
 
     /**

@@ -71,7 +71,7 @@ useSeoMeta({
 onMounted(() => {
   HomePageAPI.fetchById(urlParam.value, {
     success(response) {
-      page.value = response.value
+      page.value = response.data
       isPageExists.value = true
 
       localKeywords.value = settingStore.getKeywords

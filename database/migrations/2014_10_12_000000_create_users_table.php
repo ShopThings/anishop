@@ -14,9 +14,9 @@ return new class extends Migration {
             $table->id();
             $table->string('username');
             $table->string('password');
-            $table->string('first_name', 30);
-            $table->string('last_name', 30);
-            $table->string('national_code', 10);
+            $table->string('first_name', 30)->nullable();
+            $table->string('last_name', 30)->nullable();
+            $table->string('national_code', 10)->nullable();
             $table->string('sheba_number', 30)->nullable();
             $table->rememberToken();
             $table->boolean('is_admin')->default(false)

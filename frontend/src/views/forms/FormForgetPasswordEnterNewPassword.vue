@@ -71,7 +71,7 @@ const toast = useToast()
 
 const recoverStore = useRecoverPasswordStore()
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({
+const {canSubmit, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     password: yup.string()
       .transform(transformNumbersToEnglish)
@@ -86,7 +86,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 }, (values, actions) => {
   canSubmit.value = false
 
-  HomeRecoverPasswordAPI.assignNewPassword(values, {
+  HomeRecoverPasswordAPI.assignNewPassword({
+    password: values.password,
+    password_confirmation: values.password_confirmation,
+    username: recoverStore.getMobileStep?.mobile
+  }, {
     success() {
       recoverStore.$reset()
       actions.resetForm()

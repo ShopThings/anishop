@@ -200,7 +200,7 @@ class FestivalController extends Controller
             $validated['category'], $festival->id, $validated['discount_percentage']
         );
 
-        if (!is_null($model)) {
+        if ($model->isNotEmpty()) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'محصولات دسته‌بندی به جشنواره اضافه شد.',

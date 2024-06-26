@@ -21,33 +21,27 @@ export const userRoutes = {
         }
 
         // Logout the user
-        await new Promise((resolve, reject) => {
-          store.logout({
-            success() {
-              resolve()
-            },
-            error() {
-              reject(false)
-            },
-          })
-        }).then(() => {
-          // User is logged out, determine the redirect route
-          if (from.meta.requiresAuth) {
-            // If the original route requires authentication, redirect to log in
-            route = {name: 'user.login'}
+        await store.logout({
+          success() {
+            // User is logged out, determine the redirect route
+            if (from.meta.requiresAuth) {
+              // If the original route requires authentication, redirect to log in
+              route = {name: 'user.login'}
 
-            if (to.query.redirect && isValidInternalRedirectLink(to.query.redirect)) {
-              route.query = {redirect: to.query.redirect}
+              if (to.query.redirect && isValidInternalRedirectLink(to.query.redirect)) {
+                route.query = {redirect: to.query.redirect}
+              }
             }
-          }
+          },
         })
 
-        if (!route) {
-          // use this if needed later
-          // location.reload()
-          return next(from)
+        if (route) {
+          location.reload()
         }
-        return next(route)
+        return next(from)
+      },
+      meta: {
+        noNeedRouteWaiting: true,
       },
     },
     {

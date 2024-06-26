@@ -70,7 +70,7 @@ import LoaderCircle from "./base/loader/LoaderCircle.vue";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({
+const {canSubmit, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     mobile: yup.string()
         .transform(transformNumbersToEnglish)
@@ -83,6 +83,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   HomeMainPageAPI.addToNewsletter(values.mobile, {
     success() {
       actions.resetForm()
+    },
+    finally() {
+      canSubmit.value = true
     },
   })
 })

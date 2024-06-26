@@ -137,7 +137,7 @@ export const useUserAuthStore = defineStore('user_auth', () => {
   }
 
   function login(data, callbacks) {
-    useRequestWrapper(apiRoutes.user.login, {
+    return useRequestWrapper(apiRoutes.user.login, {
       method: 'POST',
       data,
     }, {
@@ -158,7 +158,7 @@ export const useUserAuthStore = defineStore('user_auth', () => {
   }
 
   function logout(callbacks) {
-    useRequestWrapper(apiRoutes.user.logout, {method: 'POST'}, {
+    return useRequestWrapper(apiRoutes.user.logout, {method: 'POST'}, {
       success() {
         $reset()
       },

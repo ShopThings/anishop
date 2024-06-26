@@ -7,6 +7,7 @@ use App\Events\RegisteredEvent;
 use App\Exceptions\PleaseWaitException;
 use App\Models\User;
 use App\Repositories\Contracts\AuthRepositoryInterface;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 
 class AuthRepository implements AuthRepositoryInterface
@@ -50,16 +51,20 @@ class AuthRepository implements AuthRepositoryInterface
     /**
      * @inheritDoc
      * @throws PleaseWaitException
+     * @throws Exception
      */
     public function sendActivationVerificationCode(User $user): bool
     {
         if ($user->shouldSendActivationVerifyCode()) {
-            $code = get_random_verification_code(config('market:sms.verify_code_length'));
+            $code = get_random_verification_code(config('market.sms.verify_code_length', 6));
             $user->notifyActivationVerificationCode($code);
             return true;
         }
 
         $diffTime = vertaTz($user->verify_wait_for_code)->diffSeconds(now());
+        if ($diffTime <= 0) {
+            throw new Exception('خطای غیر منتظره! لطفا دوباره تلاش نمایید.');
+        }
         throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
     }
 
@@ -70,12 +75,15 @@ class AuthRepository implements AuthRepositoryInterface
     public function sendForgetPasswordVerificationCode(User $user): bool
     {
         if ($user->shouldSendForgotPasswordVerifyCode()) {
-            $code = get_random_verification_code(config('market:sms.verify_code_length'));
+            $code = get_random_verification_code(config('market.sms.verify_code_length', 6));
             $user->notifyForgetPasswordVerificationCode($code);
             return true;
         }
 
         $diffTime = vertaTz($user->forget_password_wait_for_code)->diffSeconds(now());
+        if ($diffTime <= 0) {
+            throw new Exception('خطای غیر منتظره! لطفا دوباره تلاش نمایید.');
+        }
         throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
     }
 

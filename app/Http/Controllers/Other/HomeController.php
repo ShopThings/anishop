@@ -46,7 +46,7 @@ class HomeController extends Controller
         if (null !== $model) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'data' => 'پیام شما ثبت شد.',
+                'message' => 'پیام شما ثبت شد.',
             ]);
         } else {
             return response()->json([
@@ -71,7 +71,7 @@ class HomeController extends Controller
         if (null !== $model) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'data' => 'شکایت شما ثبت شد.',
+                'message' => 'شکایت شما ثبت شد.',
             ]);
         } else {
             return response()->json([
@@ -96,7 +96,7 @@ class HomeController extends Controller
         if (null !== $model) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'data' => 'شماره شما برای ارسال خبرنامه ثبت شد.',
+                'message' => 'شماره شما برای ارسال خبرنامه ثبت شد.',
             ]);
         } else {
             return response()->json([

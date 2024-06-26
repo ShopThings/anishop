@@ -39,7 +39,7 @@ if (!function_exists('get_random_verification_code')) {
      * @param int $length
      * @return string
      */
-    function get_random_verification_code($length = 6): string
+    function get_random_verification_code(int $length = 6): string
     {
         $pool = '0123456789';
         return substr(str_shuffle(str_repeat($pool, 5)), 0, $length);
@@ -92,7 +92,7 @@ if (!function_exists('replace_sms_variables')) {
      */
     function replace_sms_variables(string $body, SMSTypesEnum $type, array $replacements = []): string
     {
-        $allReplacements = config('market:sms.replacements', []);
+        $allReplacements = config('market.sms.replacements', []);
         if (!count($allReplacements)) return $body;
 
         $availableReplacements = SMSTypesEnum::replacementsArray($type);

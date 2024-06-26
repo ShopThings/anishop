@@ -9,6 +9,7 @@ use App\Http\Resources\ProductResource;
 use App\Services\Contracts\ReportServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerExportResponseTrait;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -62,6 +63,7 @@ class ReportProductController extends Controller
      * @param Request $request
      * @param Filter $filter
      * @return JsonResponse
+     * @throws BindingResolutionException
      */
     public function export(Request $request, Filter $filter): JsonResponse
     {

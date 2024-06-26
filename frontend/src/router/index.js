@@ -390,7 +390,9 @@ function checkLoginGuard(to) {
 //------------------------------------------------------------------------------
 // Page loading progress bar operations
 //------------------------------------------------------------------------------
-function startPageLoading() {
+function startPageLoading(to) {
+  if (to.meta?.noNeedRouteWaiting) return
+
   const loadingStore = usePageLoaderStore()
   loadingStore.setLoading(true)
 }
@@ -402,7 +404,7 @@ function endPageLoading() {
 
 //------------------------------------------------------------------------------
 index.beforeEach(async (to, from, next) => {
-  startPageLoading()
+  startPageLoading(to)
 
   let maintenance = await checkMaintenanceGuard(to)
 
