@@ -146,7 +146,7 @@ function handleNextClick(next) {
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({},
-  (values, actions) => {
+  () => {
     const definedImages = []
     for (let i of images.value) {
       if (i && i.image?.full_name) {
