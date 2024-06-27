@@ -76,13 +76,13 @@ class UpdateSettingRequest extends FormRequest
             SettingsEnum::STORE_CITY->value => [
                 'sometimes',
             ],
-            'latitude' => [
+            SettingsEnum::LAT_LNG->value => [
                 'sometimes',
-                'numeric',
+                'array',
+                'min:2',
+                'max:2',
             ],
-            'longitude' => [
-                'sometimes',
-                'required_if:latitude',
+            SettingsEnum::LAT_LNG->value . '.*' => [
                 'numeric',
             ],
             SettingsEnum::DIVIDE_PAYMENT_PRICE->value => [
@@ -164,8 +164,9 @@ class UpdateSettingRequest extends FormRequest
             SettingsEnum::SMS_ORDER_STATUS->value => 'متن پیامک تغییر وضعیت سفارش',
             SettingsEnum::SMS_RETURN_ORDER->value => 'متن پیامک مرجوع سفارش',
             SettingsEnum::SMS_RETURN_ORDER_STATUS->value => 'متن پیامک تغییر وضعیت سفارش مرجوعی',
-            'latitude' => 'عرض جغرافیایی',
-            'longitude' => 'طول جغرافیایی',
+            SettingsEnum::LAT_LNG->value => 'طول و عرض جغرافیایی',
+            SettingsEnum::LAT_LNG->value . '.0' => 'عرض جغرافیایی',
+            SettingsEnum::LAT_LNG->value . '.1' => 'طول جغرافیایی',
             SettingsEnum::DIVIDE_PAYMENT_PRICE->value => 'مبلغ تقسیم پرداخت‌ها',
             SettingsEnum::MIN_FREE_POST_PRICE->value => 'حداقل مبلغ خرید برای رایگان شدن هزینه ارسال',
             SettingsEnum::PRODUCT_EACH_PAGE->value => 'تعداد نمایش محصول در هر صفحه',
