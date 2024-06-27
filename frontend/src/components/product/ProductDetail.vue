@@ -15,7 +15,7 @@
         >
           <div class="flex items-center justify-center gap-4">
             <button
-              v-tooltip.left="'افزودن به علاقه‌مندی'"
+              v-tooltip.left="(currentMainProduct?.is_favorited ? 'حذف از' : 'افزودن به') + ' علاقه‌مندی'"
               :class="{
                 'shadow-md': currentMainProduct?.is_favorited
               }"
