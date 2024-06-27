@@ -359,7 +359,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
         }
 
         return $res instanceof Model
-            ? FavoriteProductResultEnum::REMOVED
+            ? FavoriteProductResultEnum::ADDED
             : FavoriteProductResultEnum::ERROR;
     }
 

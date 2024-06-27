@@ -55,19 +55,22 @@ class UserFavoriteProductController extends Controller
 
         if ($res !== FavoriteProductResultEnum::ERROR) {
             $msg = 'محصول به لیست علاقه‌مندی‌های شما اضافه گردید.';
+            $type = ResponseTypesEnum::SUCCESS->value;
             $opType = 1;
 
             if ($res === FavoriteProductResultEnum::REMOVED) {
                 $msg = 'محصول از لیست علاقه‌مندی‌های شما حذف گردید.';
+                $type = ResponseTypesEnum::INFO->value;
                 $opType = 2;
             }
 
             return response()->json([
-                'type' => ResponseTypesEnum::SUCCESS->value,
+                'type' => $type,
                 'operation' => $opType,
                 'message' => $msg,
             ], ResponseCodes::HTTP_OK);
         }
+
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در افزودن به لیست علاقه‌مندی‌ها',
