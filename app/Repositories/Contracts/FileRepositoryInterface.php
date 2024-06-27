@@ -47,6 +47,7 @@ interface FileRepositoryInterface extends RepositoryInterface
     /**
      * File operations
      */
+    public const OPERATION_RENAME = 'rename';
     public const OPERATION_MOVE = 'move';
     public const OPERATION_COPY = 'copy';
 

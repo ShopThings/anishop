@@ -351,7 +351,7 @@ class FileRepository extends Repository implements FileRepositoryInterface
         )
             throw new FileDuplicationException('فایل/پوشه مورد نظر در محل ذخیره‌سازی وجود دارد.');
 
-        return $this->moveOrCopy($path, $oldName, $newPath, $disk, self::OPERATION_MOVE);
+        return $this->moveOrCopy($path, $oldName, $newPath, $disk, self::OPERATION_RENAME);
     }
 
     /**
