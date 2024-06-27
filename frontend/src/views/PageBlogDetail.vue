@@ -292,7 +292,7 @@ import BlogComments from "@/components/blog/BlogComments.vue";
 import BlogSideArchives from "@/components/blog/BlogSideArchives.vue";
 import BlogSideMostViewed from "@/components/blog/BlogSideMostViewed.vue";
 import {BLOG_VOTING_TYPES, SOCIAL_NETWORKS} from "@/composables/constants.js";
-import {estimateReadTime, getRouteParamByKey, numberFormat} from "@/composables/helper.js";
+import {estimateReadTime, getRouteParamByKey, numberFormat, titleOperations} from "@/composables/helper.js";
 import {HomeBlogAPI} from "@/service/APIHomePages.js";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -426,7 +426,7 @@ const settingStore = useHomeSettingNoTimerStore()
 
 const localDescription = ref(settingStore.getDescription)
 const localKeywords = ref(settingStore.getKeywords)
-const title = ref(null)
+const title = ref('جزئیات بلاگ')
 const briefDescription = ref('')
 const keywords = ref([])
 
@@ -450,7 +450,7 @@ onMounted(() => {
       localDescription.value = settingStore.getDescription
       localKeywords.value = settingStore.getKeywords
 
-      title.value = blog.value.title
+      title.value = titleOperations.join(['بلاگ', blog.value.title])
       briefDescription.value = blog.value.brief_description
       keywords.value = blog.value.keywords
     },
