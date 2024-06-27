@@ -296,26 +296,30 @@ watch(() => props.setting, () => {
   let province = findItemByKey(props.setting, 'name', SETTING_KEYS.STORE_PROVINCE)?.value || null
   let city = findItemByKey(props.setting, 'name', SETTING_KEYS.STORE_CITY)?.value || null
 
-  provinceLoading.value = true
-  ProvinceAPI.fetchById(province, {
-    success(response) {
-      selectedProvince.value = response.data
-    },
-    finally() {
-      provinceLoading.value = false
-    },
-  })
+  if (province) {
+    provinceLoading.value = true
+    ProvinceAPI.fetchById(province, {
+      success(response) {
+        selectedProvince.value = response.data
+      },
+      finally() {
+        provinceLoading.value = false
+      },
+    })
 
-  cityLoading.value = true
-  ProvinceAPI.fetchCityByProvince(city, province, {
-    success(response) {
-      selectedCity.value = response.data
-      loadCities(false)
-    },
-    finally() {
-      cityLoading.value = false
-    },
-  })
+    if (city) {
+      cityLoading.value = true
+      ProvinceAPI.fetchCityByProvince(city, province, {
+        success(response) {
+          selectedCity.value = response.data
+          loadCities(false)
+        },
+        finally() {
+          cityLoading.value = false
+        },
+      })
+    }
+  }
 
   phones.value = findItemByKey(props.setting, 'name', SETTING_KEYS.PHONES)?.value || []
 
