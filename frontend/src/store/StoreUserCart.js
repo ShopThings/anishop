@@ -449,6 +449,7 @@ export const useCartStore = defineStore('userCart', () => {
       useRequestWrapper(
         apiRoutes.cart.store,
         {
+          method: 'POST',
           data: {
             cart_name: getActiveCart.value,
             items: getCartItems.value,
@@ -480,6 +481,7 @@ export const useCartStore = defineStore('userCart', () => {
       useRequestWrapper(
         apiRoutes.cart.destroy,
         {
+          method: 'DELETE',
           data: {
             cart_name: getActiveCart.value,
           },
@@ -539,6 +541,8 @@ export const useCartStore = defineStore('userCart', () => {
     addAllItems, addItem, removeItem,
     fetchAllLocal, empty,
     fetchShopping, fetchWishlist, fetchAll, save, remove,
+    //
+    saveToLocalStorage,
     //
     loadFromLocalStorage,
     loadToLocalShopping, loadToLocalWishlist,

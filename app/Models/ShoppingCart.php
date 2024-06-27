@@ -12,6 +12,14 @@ class ShoppingCart extends Model
 
     protected $hasUpdatedBy = false;
 
+    protected $primaryKey = 'identifier';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
+    protected $guarded = [];
+
     protected $casts = [
         'content' => 'encrypted:array',
     ];
