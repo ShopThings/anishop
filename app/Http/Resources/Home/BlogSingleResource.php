@@ -36,7 +36,7 @@ class BlogSingleResource extends JsonResource
             'view_counts' => $this->resource->uniqueIPViews(),
             'up_vote_counts' => $this->resource->upVoteCount(),
             'down_vote_counts' => $this->resource->downVoteCount(),
-            'vote_type' => $votingType->value,
+            'vote_type' => $votingType,
             'created_by' => $this->created_by ? new UserBlogShowResource($this->creator) : null,
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
@@ -62,6 +62,9 @@ class BlogSingleResource extends JsonResource
             ->where('user_id', $user->id)
             ->first(['is_voted']);
 
+        if (is_null($voteRecord)) {
+            return BlogVotingTypesEnum::NOT_SET;
+        }
         if ($voteRecord['is_voted']) {
             return BlogVotingTypesEnum::VOTED;
         }

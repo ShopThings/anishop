@@ -22,10 +22,17 @@ class StoreUserBlogCommentRequest extends FormRequest
      */
     public function rules(): array
     {
+        $model = $this->route('blog');
+
         return [
             'comment' => [
                 'sometimes',
                 'exists:' . BlogComment::class . ',id',
+                function ($attribute, $value, $fail) use ($model) {
+                    if ($value && is_null($model->comments()->where('id', $value)->first())) {
+                        $fail('دیدگاه انتخاب شده جهت پاسخ، نامعتبر می‌باشد.');
+                    }
+                },
             ],
             'description' => [
                 'required',

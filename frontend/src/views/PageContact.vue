@@ -241,9 +241,8 @@
                   <template v-if="getSiteFirstPhone">
                     <div class="flex items-center gap-2 mt-3 justify-end">
                       <span class="text-xs text-slate-400">شماره تماس</span>
-                      <span class="tracking-widest font-iranyekan-bold">{{
-                          obfuscateNumber(getSiteFirstPhone?.phone)
-                        }}</span>
+                      <span class="tracking-widest font-iranyekan-bold"
+                            v-html="obfuscateNumber(getSiteFirstPhone?.phone)"></span>
                     </div>
                     <div
                       v-if="getSiteFirstPhone?.name"

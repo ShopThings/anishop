@@ -59,7 +59,7 @@ class SettingController extends Controller
      * @param UpdateSettingRequest $request
      * @return JsonResponse
      */
-    public function update(UpdateSettingRequest $request)
+    public function update(UpdateSettingRequest $request): JsonResponse
     {
         Gate::authorize('update', Setting::class);
 
@@ -99,9 +99,9 @@ class SettingController extends Controller
         }
 
         // set lat_lng separately because we get values separately
-        if (isset($validated['latitude'], $validated['longitude'])) {
+        if (isset($validated['lat_lng'])) {
             if ($this->service->updateByName(SettingsEnum::LAT_LNG->value, [
-                'setting_value' => [$validated['latitude'], $validated['longitude']],
+                'setting_value' => $validated['lat_lng'],
             ])) $updatesCount++;
             else $failedCount++;
         }

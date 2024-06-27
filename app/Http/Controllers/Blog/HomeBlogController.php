@@ -13,6 +13,7 @@ use App\Http\Resources\Home\BlogCategoryResource as HomeBlogCategoryResource;
 use App\Http\Resources\Home\BlogResource as HomeBLogResource;
 use App\Http\Resources\Home\BlogSingleResource as HomeBlogSingleResource;
 use App\Models\Blog;
+use App\Models\BlogVote;
 use App\Services\Contracts\BlogCategoryServiceInterface;
 use App\Services\Contracts\BlogServiceInterface;
 use App\Support\WhereBuilder\WhereBuilder;
@@ -123,12 +124,40 @@ class HomeBlogController extends Controller
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
                 'message' => 'رأی شما با موفقیت ثبت شد.',
+                'data' => [
+                    'up_vote_counts' => $blog->upVoteCount(),
+                    'down_vote_counts' => $blog->downVoteCount(),
+                    'vote_type' => $this->getBlogVotingType($user, $blog->id),
+                ],
             ]);
         }
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ثبت رأی',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @param $user
+     * @param int $blogId
+     * @return BlogVotingTypesEnum
+     */
+    protected function getBlogVotingType($user, int $blogId): BlogVotingTypesEnum
+    {
+        if (!$user?->id) return BlogVotingTypesEnum::NOT_SET;
+
+        $voteRecord = BlogVote::query()
+            ->where('blog_id', $blogId)
+            ->where('user_id', $user->id)
+            ->first(['is_voted']);
+
+        if (is_null($voteRecord)) {
+            return BlogVotingTypesEnum::NOT_SET;
+        }
+        if ($voteRecord['is_voted']) {
+            return BlogVotingTypesEnum::VOTED;
+        }
+        return BlogVotingTypesEnum::NOT_VOTED;
     }
 
     /**

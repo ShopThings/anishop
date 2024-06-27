@@ -16,8 +16,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('product_id')->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('condition', array_map(fn($item) => $item->value, CommentConditionsEnum::cases()))
+                ->default(CommentConditionsEnum::UNSET->value)
                 ->comment('show comment condition like if it is accepted or not');
             $table->enum('status', array_map(fn($item) => $item->value, CommentStatusesEnum::cases()))
+                ->default(CommentStatusesEnum::UNREAD->value)
                 ->comment('show comment status like if it is read or not');
             $table->text('pros')->comment('positive sides');
             $table->text('cons')->comment('negative sides');
