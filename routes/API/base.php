@@ -29,6 +29,13 @@ use App\Http\Controllers\Shop\HomeSendMethodController;
 use Illuminate\Support\Facades\Route;
 use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 
+/**
+ * 📍[NOTE]
+ *  As you can see, there are multiple group that has "auth:sanctum" middleware in it in multiple places,
+ *  I know it may seem unappropriated but because route priorities are important, I let routes be there and
+ *  wrap each section that needs mentioned middleware with a separated group.
+ */
+
 Route::name('api.')
     ->group(function () {
         Route::post('maintenance', function () {
@@ -224,8 +231,11 @@ Route::name('api.')
             Route::get('blogs/sliders/side-slides', [HomeBlogController::class, 'mainSideSlides'])->name('blogs.sliders.side-slides');
             Route::get('blogs/popular-categories', [HomeBlogController::class, 'popularCategories'])->name('blogs.popular-categories');
             Route::get('blogs/most-viewed', [HomeBlogController::class, 'mostViewed'])->name('blogs.most-viewed');
-            Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
-                ->middleware('log_visit')->where(['blog' => $codeRegex]);
+            Route::middleware('auth:sanctum')
+                ->group(function () use ($codeRegex) {
+                    Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
+                        ->middleware('log_visit')->where(['blog' => $codeRegex]);
+                });
             Route::get('blogs/{blog}/minified', [HomeBlogController::class, 'minifiedShow'])
                 ->name('blogs.minified-show')->where(['blog' => $codeRegex]);
             Route::middleware('auth:sanctum')

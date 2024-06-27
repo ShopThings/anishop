@@ -72,7 +72,7 @@
                           <HandThumbDownIcon class="w-6 h-6"/>
                           <span class="flex items-center gap-0.5">
                               <span class="text-xs">(</span>
-                              <span>{{ numberFormat(blog.down_vote_counts) }}</span>
+                              <span>{{ blogDownVotingCount }}</span>
                               <span class="text-xs">)</span>
                           </span>
                         </button>
@@ -90,7 +90,7 @@
                           <HandThumbUpIcon class="w-6 h-6"/>
                           <span class="flex items-center gap-0.5">
                               <span class="text-xs">(</span>
-                              <span>{{ numberFormat(blog.up_vote_counts) }}</span>
+                              <span>{{ blogUpVotingCount }}</span>
                               <span class="text-xs">)</span>
                           </span>
                         </button>
@@ -330,6 +330,19 @@ function scrollToCommentSection() {
 //-----------------------------------------
 const isVoting = ref(false)
 
+const blogDownVotingCount = computed(() => {
+  return numberFormat(+blog.value?.down_vote_counts ?? 0)
+})
+const blogUpVotingCount = computed(() => {
+  return numberFormat(+blog.value?.up_vote_counts ?? 0)
+})
+
+function setVoteCounting(data) {
+  blog.value.down_vote_counts = data?.down_vote_counts || 0
+  blog.value.up_vote_counts = data?.up_vote_counts || 0
+  blog.value.vote_type = data?.vote_type || BLOG_VOTING_TYPES.NOT_SET
+}
+
 function unlikeHandler() {
   if (!userStore.getUser) {
     toast.error('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
@@ -340,9 +353,17 @@ function unlikeHandler() {
 
   isVoting.value = true
 
+  let type = BLOG_VOTING_TYPES.NOT_VOTED
+  if (blog.value.vote_type === BLOG_VOTING_TYPES.NOT_VOTED) {
+    type = BLOG_VOTING_TYPES.NOT_SET
+  }
+
   HomeBlogAPI.vote(blog.value.slug, {
-    vote: BLOG_VOTING_TYPES.NOT_VOTED,
+    vote: type,
   }, {
+    success(response) {
+      setVoteCounting(response.data)
+    },
     finally() {
       isVoting.value = false
     },
@@ -359,9 +380,17 @@ function likeHandler() {
 
   isVoting.value = true
 
+  let type = BLOG_VOTING_TYPES.VOTED
+  if (blog.value.vote_type === BLOG_VOTING_TYPES.VOTED) {
+    type = BLOG_VOTING_TYPES.NOT_SET
+  }
+
   HomeBlogAPI.vote(blog.value.slug, {
-    vote: BLOG_VOTING_TYPES.VOTED,
+    vote: type,
   }, {
+    success(response) {
+      setVoteCounting(response.data)
+    },
     finally() {
       isVoting.value = false
     },
