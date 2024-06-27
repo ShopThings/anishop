@@ -105,11 +105,11 @@
                           class="text-slate-400 hover:text-black transition flex items-center gap-2"
                           @click="scrollToCommentSection"
                         >
-                          <div class="flex items-center gap-0.5">
+                          <span class="flex items-center gap-0.5">
                             <span class="text-xs">(</span>
                             <span>{{ numberFormat(blog.comment_counts) }}</span>
                             <span class="text-xs">)</span>
-                          </div>
+                          </span>
                           <ChatBubbleLeftIcon class="w-6 h-6"/>
                         </button>
                       </li>
