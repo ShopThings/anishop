@@ -17,7 +17,7 @@
                   :is-local="false"
                   :lazy-src="blog?.image.full_path"
                   :size="FileSizes.SMALL"
-                  class="!w-28 !h-28 sm:!-w-20 sm:!h-20 rounded"
+                  class="!w-28 !h-28 sm:!w-20 sm:!h-20 rounded"
                 />
               </div>
               <div class="grow text-sm">
