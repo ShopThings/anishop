@@ -200,7 +200,10 @@ trait FileTrait
                     : $destinationPath,
             ];
 
-            if ($operation === FileRepositoryInterface::OPERATION_MOVE) {
+            if (
+                $operation === FileRepositoryInterface::OPERATION_MOVE ||
+                $operation === FileRepositoryInterface::OPERATION_RENAME
+            ) {
                 if (!empty($destinationPathInfo['extension'])) {
                     $attributes['name'] = $destinationPathInfo['filename'];
                     $attributes['extension'] = $destinationPathInfo['extension'];
@@ -247,7 +250,10 @@ trait FileTrait
                 if (empty($destinationPathInfo['extension']))
                     $to = $destinationPath . '/' . $newFile;
 
-                if ($operation === FileRepositoryInterface::OPERATION_MOVE) {
+                if (
+                    $operation === FileRepositoryInterface::OPERATION_MOVE ||
+                    $operation === FileRepositoryInterface::OPERATION_RENAME
+                ) {
                     $res = $res && $diskStorage->move($from, $to);
                 } elseif ($operation === FileRepositoryInterface::OPERATION_COPY) {
                     $res = $res && $diskStorage->copy($from, $to);
@@ -259,11 +265,17 @@ trait FileTrait
         } else { // if it is a directory
 
             // it is illegal to move/copy a parent directory into child directory
-            if (mb_strpos($destinationPath, $sourcePath) !== false)
+            if (
+                mb_strpos($destinationPath, $sourcePath) !== false &&
+                $operation !== FileRepositoryInterface::OPERATION_RENAME
+            ) {
                 throw new InvalidPathException('پوشه والد نمی‌تواند به پوشه فرزند انتقال پیدا کند.');
+            }
+
             // it is impossible to move a directory to a file!
-            if (!empty($destinationPathInfo['extension']))
+            if (!empty($destinationPathInfo['extension'])) {
                 throw new InvalidPathException('انتقال پوشه به فایل غیر ممکن است!');
+            }
 
             $where
                 ->reset()
@@ -282,7 +294,10 @@ trait FileTrait
                 return false;
             }
 
-            if ($operation === FileRepositoryInterface::OPERATION_MOVE) {
+            if (
+                $operation === FileRepositoryInterface::OPERATION_MOVE ||
+                $operation === FileRepositoryInterface::OPERATION_RENAME
+            ) {
                 $res = $res && $diskStorage->move($sourcePath, $destinationPath);
             } elseif ($operation === FileRepositoryInterface::OPERATION_COPY) {
                 $res = $res && $diskStorage->copy($sourcePath, $destinationPath);
@@ -294,7 +309,10 @@ trait FileTrait
 
             // rollback all move/copy files
             $files = $this->fileExists(filePath: $destinationPath, disk: $disk, getFiles: true, getAllVariants: true);
-            if ($operation === FileRepositoryInterface::OPERATION_MOVE) {
+            if (
+                $operation === FileRepositoryInterface::OPERATION_MOVE ||
+                $operation === FileRepositoryInterface::OPERATION_RENAME
+            ) {
                 foreach ($files as $file) {
                     $fileInfo = pathinfo($file);
                     $fileParts = explode('-', $fileInfo['basename']);
