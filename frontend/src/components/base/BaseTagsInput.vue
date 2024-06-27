@@ -1,16 +1,18 @@
 <template>
   <vue3-tags-input
-      :add-tag-on-keys="addTagOnKeys"
-      :placeholder="placeholder"
-      :read-only="readOnly"
-      :tags="tags"
-      @on-tags-changed="(t) => {emit('on-tags-changed', t)}"
+    ref="tagsInputRef"
+    :add-tag-on-keys="addTagOnKeys"
+    :placeholder="placeholder"
+    :read-only="readOnly"
+    :tags="tags"
+    @on-tags-changed="tagChangeHandler"
   />
 </template>
 
 <script setup>
 import Vue3TagsInput from "vue3-tags-input";
-import {computed} from "vue";
+import {computed, ref} from "vue";
+import {watchImmediate} from "@vueuse/core";
 
 const props = defineProps({
   tags: Array,
@@ -27,6 +29,8 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:tags', 'on-tags-changed'])
 
+const tagsInputRef = ref(null)
+
 const tags = computed({
   get() {
     return props.tags
@@ -34,5 +38,16 @@ const tags = computed({
   set(value) {
     emit('update:tags', value)
   },
+})
+
+function tagChangeHandler(t) {
+  emit('on-tags-changed', t)
+}
+
+watchImmediate(tagsInputRef, () => {
+  if (tagsInputRef.value) {
+    let inp = tagsInputRef.value.$el.querySelector('input')
+    inp.enterKeyHint = "done"
+  }
 })
 </script>

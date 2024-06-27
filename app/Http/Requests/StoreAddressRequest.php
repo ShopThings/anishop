@@ -43,8 +43,7 @@ class StoreAddressRequest extends FormRequest
             'postal_code' => [
                 'sometimes',
                 'nullable',
-                'numeric',
-                'min:1',
+                'regex:/[0-9]*/',
                 'max:15',
             ],
             'province' => [
@@ -65,6 +64,13 @@ class StoreAddressRequest extends FormRequest
         return [
             'full_name' => 'نام گیرنده',
             'postal_code' => 'کد پستی',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }

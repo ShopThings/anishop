@@ -80,7 +80,7 @@ class CartController extends Controller
 
         if ($res) {
             return response()->json([
-                'type' => ResponseTypesEnum::SUCCESS->value,
+                'type' => ResponseTypesEnum::INFO->value,
                 'message' => 'سبد خرید شما حذف شد.',
             ], ResponseCodes::HTTP_OK);
         }

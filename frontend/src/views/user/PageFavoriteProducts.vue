@@ -1,8 +1,10 @@
 <template>
   <base-paginator
+    ref="paginatorRef"
     v-model:total="totalFavoriteProducts"
     :path="getPath"
     :per-page="10"
+    :number-of-loaders="5"
     container-class="flex flex-col gap-4"
     item-container-class="px-3"
     pagination-theme="modern"
@@ -54,7 +56,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {ArrowLongLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
@@ -68,14 +70,22 @@ import {useConfirmToast} from "@/composables/toast-helper.js";
 
 const toast = useToast()
 
+const countingStore = inject('countingStore')
+
+const paginatorRef = ref(null)
 const getPath = apiRoutes.user.favoriteProducts.index
 const totalFavoriteProducts = ref(0)
 
 function handleRemoveFavProduct(item) {
   useConfirmToast(() => {
-    UserPanelFavoriteProductAPI.deleteById(item.id, {
+    UserPanelFavoriteProductAPI.deleteById(item.product.slug, {
       success() {
         toast.success('محصول از لیست علاقه‌مندی‌ها حذف شد.')
+        countingStore.$reset()
+
+        if (paginatorRef.value?.goToPage) {
+          paginatorRef.value.goToPage()
+        }
       },
     })
   }, 'حذف محصول از لیست علاقه‌مندی‌ها')

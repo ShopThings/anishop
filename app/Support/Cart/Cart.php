@@ -265,7 +265,7 @@ class Cart implements Arrayable, Jsonable
             return new Collection();
         }
 
-        $itemCodes = $items->pluckMultiple(['code', 'quantity'])->unique('code')->toArray();
+        $itemCodes = $items->pluckMultiple(['code', 'quantity', 'qty'])->unique('code')->toArray();
         $validatedItems = $this->getValidatedItems($itemCodes);
 
         if ($loadInCurrentInstance) {
@@ -304,9 +304,16 @@ class Cart implements Arrayable, Jsonable
         return $productVariants->filter(function ($item) use ($justCodes) {
             return $item->isAvailableForCart() && in_array($item->code, $justCodes);
         })->map(function ($item) use ($codes) {
-            return new CartItem($item, Arr::first($codes, function ($code) use ($item) {
+            $fst = Arr::first($codes, function ($code) use ($item) {
                 return $code['code'] === $item->code;
-            })['quantity']);
+            });
+            if (isset($fst['quantity'])) {
+                $quantity = $fst['quantity'];
+            } else {
+                $quantity = $fst['qty'] ?? 1;
+            }
+
+            return new CartItem($item, $quantity);
         });
     }
 
@@ -413,7 +420,7 @@ class Cart implements Arrayable, Jsonable
             $items = $this->cartService->getUserWishlistCart($this->user);
         }
 
-        $this->validate($items);
+        $items = $this->validate($items);
 
         if ($loadInCurrentInstance) {
             $this->items = $items;

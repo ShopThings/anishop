@@ -53,7 +53,7 @@ class ProductSingleResource extends JsonResource
             'related_products' => $this->related_products?->product
                 ? ProductResource::collection($this->related_products?->product)
                 : null,
-            'is_favorited' => $this->isFavoritedByUser($user),
+            'is_favorited' => $this->isFavoriteByUser($user),
             'is_available' => $this->is_available,
             'is_commenting_allowed' => $this->is_commenting_allowed,
             'updated_at' => $this->when(
@@ -67,14 +67,14 @@ class ProductSingleResource extends JsonResource
      * @param $user
      * @return bool
      */
-    protected function isFavoritedByUser($user): bool
+    protected function isFavoriteByUser($user): bool
     {
         // If user is not authenticated or the product does not have a favoriteProducts relation, return false
-        if (!$user || !method_exists($this, 'favoriteProducts')) {
+        if (!$user || !method_exists($this->resource, 'favoriteProducts')) {
             return false;
         }
 
         // Check if there is a favorite product record for the current user and this product
-        return $this->favoriteProducts()->where('user_id', $user->id)->isNotEmpty();
+        return $this->favoriteProducts()->where('user_id', $user->id)->get()->isNotEmpty();
     }
 }

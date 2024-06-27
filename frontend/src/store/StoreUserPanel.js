@@ -49,7 +49,7 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
 
     countdown.pause()
 
-    UserPanelDashboardAPI.getCountOfStuffs({
+    return UserPanelDashboardAPI.getCountOfStuffs({
       silent: true,
       success(response) {
         for (const key in response.data) {
@@ -68,12 +68,14 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
     })
   }
 
-  function $reset() {
+  async function $reset() {
     countdown.stop()
 
     Object.keys(counts).forEach((key) => {
       delete counts[key];
     });
+
+    await fetchCounting()
 
     countdown.start(fetchCounting)
   }
@@ -120,7 +122,7 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
 
     countdown.pause()
 
-    UserNotificationAPI.checkNotifications({
+    return UserNotificationAPI.checkNotifications({
       silent: true,
       success(response) {
         notifications.value = response.data
@@ -137,10 +139,12 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
     })
   }
 
-  function $reset() {
+  async function $reset() {
     countdown.stop()
 
     notifications.value = []
+
+    await checkNewNotifications()
 
     countdown.start(checkNewNotifications)
   }

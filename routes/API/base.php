@@ -189,8 +189,12 @@ Route::name('api.')
                 ->name('products.filter.dynamic-filters');
             Route::get('products/{product}/minified', [HomeProductController::class, 'minifiedShow'])
                 ->name('products.minified-show')->where(['product' => $codeRegex]);
-            Route::get('products/{product}', [HomeProductController::class, 'show'])->name('products.show')
-                ->middleware('log_visit')->where(['product' => $codeRegex]);
+
+            Route::middleware('auth:sanctum')
+                ->group(function () use ($codeRegex) {
+                    Route::get('products/{product}', [HomeProductController::class, 'show'])->name('products.show')
+                        ->middleware('log_visit')->where(['product' => $codeRegex]);
+                });
 
             /*
              * product comment routes

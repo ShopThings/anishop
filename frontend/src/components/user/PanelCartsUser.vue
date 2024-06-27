@@ -18,7 +18,7 @@
         class="absolute -top-1 -bottom-1 -right-1 -left-1 rounded-lg bg-primary/10 z-10"
       ></div>
 
-      <div class="flex flex-col border-b">
+      <div class="flex flex-col">
         <div
           :class="{
                 'border-emerald-500': cartStore.isShoppingCartActivated,
@@ -35,7 +35,10 @@
           <span :class="cartStore.isShoppingCartActivated ? 'text-black' : 'text-gray-500'">سبد خرید پیش فرض</span>
         </div>
 
-        <div class="relative">
+        <div
+          v-if="cartStore.isShoppingCartActivated"
+          class="relative border-b"
+        >
           <template v-if="!userStore.getUser">
             <div
               class="absolute w-5/6 h-0.5 bg-rose-300 -rotate-12 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[1]"
@@ -114,7 +117,10 @@
             <span :class="cartStore.isWishlistCartActivated ? 'text-black' : 'text-gray-500'">سبد خرید پشتیبان</span>
           </div>
 
-          <ul class="py-3 flex flex-col gap-2.5">
+          <ul
+            v-if="cartStore.isWishlistCartActivated"
+            class="py-3 flex flex-col gap-2.5"
+          >
             <li
               class="flex gap-2.5 items-center group cursor-pointer py-1"
               @click="fetchCarts('wishlist')"
@@ -250,7 +256,7 @@ function emptyCart() {
 function fetchCarts(type) {
   if (cartStore.isLoading) return
 
-  if (!userStore.isLoading) {
+  if (!userStore.getUser) {
     toast.error('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
@@ -259,13 +265,17 @@ function fetchCarts(type) {
     () => {
       if (type === 'shopping') {
         cartStore.fetchShopping({
-          success() {
+          success(response) {
+            cartStore.cartsLocal.shopping = response.data
+            cartStore.saveToLocalStorage()
             cartStore.loadToLocalShopping()
           },
         })
       } else if (type === 'wishlist') {
         cartStore.fetchWishlist({
-          success() {
+          success(response) {
+            cartStore.cartsLocal.wishlist = response.data
+            cartStore.saveToLocalStorage()
             cartStore.loadToLocalWishlist()
           },
         })

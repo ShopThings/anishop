@@ -142,8 +142,21 @@ import {useToast} from "vue-toastification";
 const toast = useToast()
 const countingStore = inject('countingStore')
 
-const loading = ref(true)
+const loading = ref(false)
 const addresses = ref([])
+
+function getAddresses() {
+  if (loading.value) return
+
+  loading.value = true
+
+  UserPanelAddressAPI.fetchAll({}, {
+    success: (response) => {
+      addresses.value = response.data
+      loading.value = false
+    },
+  })
+}
 
 function removeAddressHandler(address) {
   if (!address.id) return
@@ -152,6 +165,8 @@ function removeAddressHandler(address) {
     UserPanelAddressAPI.deleteById(address.id, {
       success() {
         toast.success('آدرس با موفقیت حذف شد.')
+
+        getAddresses()
         countingStore.$reset()
       },
     })
@@ -159,11 +174,6 @@ function removeAddressHandler(address) {
 }
 
 onMounted(() => {
-  UserPanelAddressAPI.fetchAll({}, {
-    success: (response) => {
-      addresses.value = response.data
-      loading.value = false
-    },
-  })
+  getAddresses()
 })
 </script>

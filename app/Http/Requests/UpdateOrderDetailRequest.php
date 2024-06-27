@@ -45,6 +45,8 @@ class UpdateOrderDetailRequest extends FormRequest
             ],
             'postal_code' => [
                 'sometimes',
+                'nullable',
+                'regex:/[0-9]*/',
                 'max:15',
             ],
             'receiver_name' => [
@@ -72,6 +74,13 @@ class UpdateOrderDetailRequest extends FormRequest
             'receiver_name' => 'نام گیرنده',
             'receiver_mobile' => 'شماره گیرنده',
             'send_status' => 'وضعیت ارسال',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }

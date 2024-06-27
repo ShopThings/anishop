@@ -51,7 +51,7 @@ return [
     'gte' => [
         'array' => ':attribute باید حداقل :value آیتم یا بیشتر باشد.',
         'file' => ':attribute باید بزرگتر یا مساوی با :value کیلوبایت باشد.',
-        'numeric' => ':attribute باید بزگتر یا مساوی با :value باشد',
+        'numeric' => ':attribute باید بزرگتر یا مساوی با :value باشد',
         'string' => ':attribute باید بیشتر یا مساوی با :value کاراکتر باشد.',
     ],
     'image' => ':attribute باید یک تصویر انتخاب شود.',
@@ -77,8 +77,8 @@ return [
     ],
     'mac_address' => 'فیلد :attribute باید یک مک آدرس معتبر باشد.',
     'max' => [
-        'numeric' => ':attribute نباید بزگتر از :max باشد',
-        'file' => ':attribute نباید بزگتر از :max کیلوبایت باشد.',
+        'numeric' => ':attribute نباید بزرگتر از :max باشد',
+        'file' => ':attribute نباید بزرگتر از :max کیلوبایت باشد.',
         'string' => ':attribute نباید بیشتر از :max کارکتر باشد.',
         'array' => ':attribute نباید بیشتر از :max آیتم باشد.',
     ],

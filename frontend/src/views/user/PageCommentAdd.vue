@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {inject, onMounted, ref} from "vue";
 import {ArrowLongLeftIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -127,8 +127,12 @@ import {HomeProductAPI} from "@/service/APIHomePages.js";
 import {UserPanelCommentAPI} from "@/service/APIUserPanel.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {FileSizes} from "@/composables/file-list.js";
+import {useRouter} from "vue-router";
 
+const router = useRouter()
 const slugParam = getRouteParamByKey('slug', null, false)
+
+const countingStore = inject('countingStore')
 
 const loading = ref(true)
 const product = ref(null)
@@ -151,6 +155,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     success() {
       actions.resetForm()
       router.push({name: 'product.detail', params: {slug: slugParam.value}})
+
+      countingStore.$reset()
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

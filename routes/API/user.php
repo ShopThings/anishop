@@ -96,7 +96,7 @@ Route::prefix('user')
         Route::post('favorite-products', [UserFavoriteProductController::class, 'store'])
             ->name('favorite-products.store');
         Route::delete('favorite-products/{product}', [UserFavoriteProductController::class, 'destroy'])
-            ->whereNumber('product')->name('favorite-products.destroy');
+            ->where(['product' => $codeRegex])->name('favorite-products.destroy');
 
         /*
          * address routes

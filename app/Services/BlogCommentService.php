@@ -99,7 +99,7 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
     {
         if (!isset($attributes['badge'])) {
             $where = new WhereBuilder();
-            $where->whereEqual('is_stating_badge', DatabaseEnum::DB_YES);
+            $where->whereEqual('is_starting_badge', DatabaseEnum::DB_YES);
             $attributes['badge'] = $this->blogBadgeRepository->findWhere($where->build(), ['id'])?->id;
         }
 

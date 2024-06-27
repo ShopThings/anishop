@@ -72,7 +72,7 @@ export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () 
       prevCounts = {...counts};
     }
 
-    AdminPanelDashboardAPI.getCountAlerts({
+    return AdminPanelDashboardAPI.getCountAlerts({
       silent: true,
       success(response) {
         for (const key in response.data) {
@@ -93,13 +93,15 @@ export const useCountingAlertsStore = defineStore('adminPanelAlertCounting', () 
 
   fetchCounting()
 
-  function $reset() {
+  async function $reset() {
     countdown.stop()
 
     prevCounts = {}
     Object.keys(counts).forEach((key) => {
       delete counts[key];
     });
+
+    await fetchCounting()
 
     countdown.start(fetchCounting)
   }
@@ -165,7 +167,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
 
     loading.value = true
 
-    AdminPanelDashboardAPI.getCountOrders({
+    return AdminPanelDashboardAPI.getCountOrders({
       silent: true,
       success(response) {
         counts.value = response.data
@@ -186,11 +188,13 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
 
   fetchCounting()
 
-  function $reset() {
+  async function $reset() {
     countdown.stop()
 
     prevCounts = []
     counts.value = []
+
+    await fetchCounting()
 
     countdown.start(fetchCounting)
   }
@@ -240,7 +244,7 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
     countdown.pause()
 
     loading.value = true
-    NotificationAPI.checkNotifications({
+    return NotificationAPI.checkNotifications({
       silent: true,
       success(response) {
         notifications.value = response.data
@@ -261,11 +265,13 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
 
   checkNewNotifications()
 
-  function $reset() {
+  async function $reset() {
     countdown.stop()
 
     loading.value = false
     notifications.value = []
+
+    await checkNewNotifications()
 
     countdown.start(checkNewNotifications)
   }

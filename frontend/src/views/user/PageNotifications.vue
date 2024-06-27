@@ -59,12 +59,14 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BasePaginator from "@/components/base/BasePaginator.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import {apiRoutes} from "@/router/api-routes.js";
 import {UserNotificationAPI} from "@/service/APINotification.js";
+
+const notificationsStore = inject('notificationStore')
 
 const getPath = apiRoutes.user.info.notification.index
 const totalNotifications = ref(0)
@@ -92,11 +94,9 @@ function getPriorityColor(item) {
 
 function itemsLoadedHandler() {
   UserNotificationAPI.markAllAsRead({
+    silent: true,
     success() {
-      return false
-    },
-    error() {
-      return false
+      notificationsStore.$reset()
     },
   })
 }

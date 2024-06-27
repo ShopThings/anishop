@@ -27,11 +27,9 @@
                         @click="handleRemoveImage(idx)"
                       />
 
-                      <partial-input-label
-                        title="انتخاب تصویر"
-                      />
+                      <partial-input-label title="انتخاب تصویر"/>
                       <base-media-placeholder
-                        :selected="image"
+                        v-model:selected="image.image"
                         type="image"
                       />
                     </div>
@@ -148,7 +146,7 @@ function handleNextClick(next) {
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({},
-  (values, actions) => {
+  () => {
     const definedImages = []
     for (let i of images.value) {
       if (i && i.image?.full_name) {
@@ -179,7 +177,18 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({},
 onMounted(() => {
   ProductAPI.fetchGallery(slugParam.value, {
     success: (response) => {
-      images.value = response.data
+      if (response.data) {
+        images.value = []
+
+        for (let i in response.data) {
+          if (response.data.hasOwnProperty(i)) {
+            images.value.push({
+              image: response.data[i],
+            })
+          }
+        }
+      }
+
       loading.value = false
     },
   })

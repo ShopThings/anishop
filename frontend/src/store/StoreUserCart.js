@@ -414,7 +414,7 @@ export const useCartStore = defineStore('userCart', () => {
     loading.value = true
     useRequestWrapper(
       apiReplaceParams(apiRoutes.cart.show, {cart: name}),
-      null,
+      {method: 'POST'},
       {
         success(response) {
           carts.value[name] = response.data
@@ -449,6 +449,7 @@ export const useCartStore = defineStore('userCart', () => {
       useRequestWrapper(
         apiRoutes.cart.store,
         {
+          method: 'POST',
           data: {
             cart_name: getActiveCart.value,
             items: getCartItems.value,
@@ -480,6 +481,7 @@ export const useCartStore = defineStore('userCart', () => {
       useRequestWrapper(
         apiRoutes.cart.destroy,
         {
+          method: 'DELETE',
           data: {
             cart_name: getActiveCart.value,
           },
@@ -539,6 +541,8 @@ export const useCartStore = defineStore('userCart', () => {
     addAllItems, addItem, removeItem,
     fetchAllLocal, empty,
     fetchShopping, fetchWishlist, fetchAll, save, remove,
+    //
+    saveToLocalStorage,
     //
     loadFromLocalStorage,
     loadToLocalShopping, loadToLocalWishlist,

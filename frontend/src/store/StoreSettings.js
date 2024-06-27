@@ -146,7 +146,7 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
 
     countdown.pause()
 
-    settingStore.fetchSettings({
+    return settingStore.fetchSettings({
       finally() {
         countdown.reset()
         countdown.resume()
@@ -154,10 +154,12 @@ export const useHomeSettingsStore = defineStore('homeSettings', () => {
     })
   }
 
-  function $reset() {
+  async function $reset() {
     countdown.stop()
 
     settingStore.$reset()
+
+    await fetchSettings()
 
     countdown.start(fetchSettings)
   }
