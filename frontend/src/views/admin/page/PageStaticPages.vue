@@ -21,34 +21,36 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:writer="{value}">
               <router-link
-                  :to="{name: 'admin.user.profile', params: {id: value.created_by.id}}"
-                  class="text-blue-600 hover:text-opacity-80"
+                v-if="value.created_by"
+                :to="{name: 'admin.user.profile', params: {id: value.created_by?.id}}"
+                class="text-blue-600 hover:text-opacity-80"
               >
                 <partial-username-label :user="value.created_by"/>
               </router-link>
+              <span v-else><MinusIcon class="h-5 w-5 text-rose-500"/></span>
             </template>
 
             <template v-slot:url="{value}">
               <div class="text-sm" dir="ltr">
                 <label
-                    class="mr-[1px] text-gray-500"
-                    dir="ltr"
+                  class="mr-[1px] text-gray-500"
+                  dir="ltr"
                 >{{ host }}</label>
                 <span>{{ value.url }}</span>
               </div>
@@ -69,10 +71,10 @@
 
             <template v-slot:op="{value}">
               <base-datatable-menu
-                  :container="getMenuContainer"
-                  :data="value"
-                  :items="operations"
-                  :removals="calcRemovals(value)"
+                :container="getMenuContainer"
+                :data="value"
+                :items="operations"
+                :removals="calcRemovals(value)"
               />
             </template>
           </base-datatable>
