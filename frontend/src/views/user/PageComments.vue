@@ -1,5 +1,5 @@
 <template>
-  <base-tab-panel :tabs="tabs" tab-panel-extra-class="border-0">
+  <base-tab-panel :tabs="tabs" tab-panel-extra-class="!border-0">
     <template #productComments>
       <base-loading-panel :loading="productCommentLoading" type="table">
         <template #content>
