@@ -32,7 +32,7 @@ use Symfony\Component\HttpFoundation\Response as ResponseCodes;
 /**
  * 📍[NOTE]
  *  As you can see, there are multiple group that has "auth:sanctum" middleware in it in multiple places,
- *  I know it may seem unappropriated but because route priorities are important, I let routes be there and
+ *  I know it may seem unappropriated but, because route priorities are important, I let routes be there and
  *  wrap each section that needs mentioned middleware with a separated group.
  */
 
@@ -196,25 +196,18 @@ Route::name('api.')
                 ->name('products.filter.dynamic-filters');
             Route::get('products/{product}/minified', [HomeProductController::class, 'minifiedShow'])
                 ->name('products.minified-show')->where(['product' => $codeRegex]);
-
-            Route::middleware('auth:sanctum')
-                ->group(function () use ($codeRegex) {
-                    Route::get('products/{product}', [HomeProductController::class, 'show'])->name('products.show')
-                        ->middleware('log_visit')->where(['product' => $codeRegex]);
-                });
+            Route::get('products/{product}', [HomeProductController::class, 'show'])->name('products.show')
+                ->middleware('log_visit')->where(['product' => $codeRegex]);
 
             /*
              * product comment routes
              */
             Route::get('products/{product}/comments', [HomeCommentController::class, 'index'])
                 ->name('products.comments.index')->where(['product' => $codeRegex]);
-            Route::middleware('auth:sanctum')
-                ->group(function () use ($codeRegex) {
-                    Route::put('products/{product}/comments/{comment}/report', [HomeCommentController::class, 'report'])
-                        ->name('products.comments.report')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
-                    Route::put('products/{product}/comments/{comment}/vote', [HomeCommentController::class, 'vote'])
-                        ->name('products.comments.vote')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
-                });
+            Route::put('products/{product}/comments/{comment}/report', [HomeCommentController::class, 'report'])
+                ->name('products.comments.report')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
+            Route::put('products/{product}/comments/{comment}/vote', [HomeCommentController::class, 'vote'])
+                ->name('products.comments.vote')->where(['product' => $codeRegex, 'comment' => '[0-9]+']);
 
             /*
              * festival routes
@@ -231,29 +224,20 @@ Route::name('api.')
             Route::get('blogs/sliders/side-slides', [HomeBlogController::class, 'mainSideSlides'])->name('blogs.sliders.side-slides');
             Route::get('blogs/popular-categories', [HomeBlogController::class, 'popularCategories'])->name('blogs.popular-categories');
             Route::get('blogs/most-viewed', [HomeBlogController::class, 'mostViewed'])->name('blogs.most-viewed');
-            Route::middleware('auth:sanctum')
-                ->group(function () use ($codeRegex) {
-                    Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
-                        ->middleware('log_visit')->where(['blog' => $codeRegex]);
-                });
+            Route::get('blogs/{blog}', [HomeBlogController::class, 'show'])->name('blogs.show')
+                ->middleware('log_visit')->where(['blog' => $codeRegex]);
             Route::get('blogs/{blog}/minified', [HomeBlogController::class, 'minifiedShow'])
                 ->name('blogs.minified-show')->where(['blog' => $codeRegex]);
-            Route::middleware('auth:sanctum')
-                ->group(function () use ($codeRegex) {
-                    Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
-                        ->where(['blog' => $codeRegex]);
-                });
+            Route::post('blogs/{blog}/vote', [HomeBlogController::class, 'vote'])->name('blogs.vote')
+                ->where(['blog' => $codeRegex]);
 
             /*
              * blog comment routes
              */
             Route::get('blogs/{blog}/comments', [HomeBlogCommentController::class, 'index'])->name('blogs.comments.index')
                 ->where(['blog' => $codeRegex]);
-            Route::middleware('auth:sanctum')
-                ->group(function () use ($codeRegex) {
-                    Route::put('blogs/{blog}/comments/{comment}/report', [HomeBlogCommentController::class, 'report'])->name('blogs.comments.report')
-                        ->where(['blog' => $codeRegex, 'comment' => '[0-9]+']);
-                });
+            Route::put('blogs/{blog}/comments/{comment}/report', [HomeBlogCommentController::class, 'report'])->name('blogs.comments.report')
+                ->where(['blog' => $codeRegex, 'comment' => '[0-9]+']);
 
             /*
              * static page routes
@@ -264,10 +248,7 @@ Route::name('api.')
             /*
              * other pages routes
              */
-            Route::middleware('auth:sanctum')
-                ->group(function () {
-                    Route::post('contact-us', [HomeController::class, 'storeContactUs'])->name('contacts.store');
-                });
+            Route::post('contact-us', [HomeController::class, 'storeContactUs'])->name('contacts.store');
             Route::post('complaints', [HomeController::class, 'storeComplaint'])->name('complaints.store');
             Route::post('newsletters', [HomeController::class, 'storeNewsletter'])->name('newsletters.store');
             Route::get('faqs', [HomeController::class, 'faqs'])->name('faqs.index');
