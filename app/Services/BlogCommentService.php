@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Comments\CommentConditionsEnum;
 use App\Enums\Comments\CommentStatusesEnum;
 use App\Enums\DatabaseEnum;
 use App\Models\BlogComment;
@@ -107,10 +108,15 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
             'blog_id' => $attributes['blog'],
             'badge_id' => $attributes['badge'],
             'comment_id' => $attributes['comment'] ?? null,
-            'condition' => $attributes['condition'],
-            'status' => $attributes['status'],
             'description' => $attributes['description'],
         ];
+
+        if (isset($attributes['condition']) && CommentConditionsEnum::tryFrom($attributes['condition'])) {
+            $attrs['condition'] = $attributes['condition'];
+        }
+        if (isset($attributes['status']) && CommentStatusesEnum::tryFrom($attributes['status'])) {
+            $attrs['status'] = $attributes['status'];
+        }
 
         return $this->repository->create($attrs);
     }

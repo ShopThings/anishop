@@ -56,16 +56,15 @@ class UserBlogCommentController extends Controller
         Gate::authorize('create', [BlogComment::class, $blog]);
 
         $validated = filter_validated_data($request->validated(), [
-            'blog',
             'comment',
             'description',
         ]);
-        $model = $this->service->create($validated);
+        $model = $this->service->create($validated + ['blog' => $blog->id]);
 
         if (!is_null($model)) {
             return response()->json([
                 'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'دیدگاه شما با موفقیت ثبت شد.',
+                'message' => 'دیدگاه شما با موفقیت ثبت شد. پس از بررسی و تایید در سایت نمایش داده می‌شود.',
                 'data' => $model,
             ]);
         }
