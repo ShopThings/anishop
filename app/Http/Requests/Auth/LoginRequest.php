@@ -40,9 +40,9 @@ class LoginRequest extends FormRequest
      * Attempt to authenticate the request's credentials.
      *
      * @param bool $isAdmin
+     * @param AuthServiceInterface $authService
      * @return void
      * @throws ValidationException
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function authenticate(bool $isAdmin, AuthServiceInterface $authService): void
     {
