@@ -71,7 +71,7 @@ class OrderExport extends ExcelExport implements WithEvents
         $receiverStr .= 'شماره تماس: ' . $row->receiver_mobile . "\n";
         $receiverStr .= 'استان: ' . $row->province . "\n";
         $receiverStr .= 'شهر: ' . $row->city . "\n";
-        $receiverStr .= 'کد پستی: ' . $row->postal_code . "\n";
+        $receiverStr .= 'کدپستی: ' . $row->postal_code . "\n";
         $receiverStr .= 'آدرس: ' . $row->address . "\n";
         $receiverStr .= ')' . "\n";
         $receiverStr .= "\r\n";

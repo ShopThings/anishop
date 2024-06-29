@@ -410,7 +410,7 @@ class ReportRepository implements ReportRepositoryInterface
                 'mobile' => 'شماره/نام کاربری خریدار',
                 'province' => 'استان',
                 'city' => 'شهرستان',
-                'postal_code' => 'کد پستی',
+                'postal_code' => 'کدپستی',
                 'receiver_name' => 'نام گیرنده',
                 'receiver_mobile' => 'شماره تماس گیرنده',
                 'coupon_code' => 'کد تخفیف',

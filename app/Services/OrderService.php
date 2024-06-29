@@ -622,8 +622,7 @@ class OrderService extends Service implements OrderServiceInterface
      */
     private function reserveOrder(int $orderId, int $paymentChunksCount): bool
     {
-        $time = OrderHelper::getReservationTime($paymentChunksCount);
-        $expireSeconds = $time;
+        $expireSeconds = OrderHelper::getReservationTime($paymentChunksCount);
         $model = $this->repository->createReserveOrder([
             'user_id' => Auth::user()?->id,
             'order_key_id' => $orderId,

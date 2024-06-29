@@ -238,7 +238,7 @@
         </td>
         <td>
             <small>
-                کد پستی:
+                کدپستی:
             </small>
             <strong>
                 @if(trim($detail?->postal_code) !== '')

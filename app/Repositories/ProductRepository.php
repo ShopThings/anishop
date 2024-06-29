@@ -480,6 +480,7 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
     public function getProductVariantsByCodes(array $codes): Collection
     {
         return $this->productPropertyModel->newQuery()
+            ->with('product')
             ->whereIn('code', $codes)
             ->get();
     }

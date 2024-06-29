@@ -297,7 +297,7 @@
               <partial-card class="border-0 p-3">
                 <template #body>
                   <div class="flex flex-col">
-                    <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
+                    <span class="text-xs text-gray-400 mb-1">کدپستی:</span>
                     <template v-if="info?.send_status?.is_starting_badge">
                       <base-input
                         :in-edit-mode="false"

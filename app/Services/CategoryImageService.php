@@ -8,8 +8,8 @@ use App\Support\Filter;
 use App\Support\Service;
 use App\Support\Traits\ImageFieldTrait;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class CategoryImageService extends Service implements CategoryImageServiceInterface
 {
@@ -27,7 +27,7 @@ class CategoryImageService extends Service implements CategoryImageServiceInterf
     public function getCategoryImages(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository
-            ->newWith('categoryImage.image')
+            ->newWith(['categoryImage', 'categoryImage.image'])
             ->getCategoryImagesSearchFilterPaginated(filter: $filter);
     }
 

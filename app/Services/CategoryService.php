@@ -30,7 +30,7 @@ class CategoryService extends Service implements CategoryServiceInterface
     public function getCategories(Filter $filter): Collection|LengthAwarePaginator
     {
         return $this->repository
-            ->newWith(['parent', 'creator', 'updater', 'deleter'])
+            ->newWith(['parent', 'creator', 'updater', 'deleter', 'categoryImage'])
             ->getCategoriesSearchFilterPaginated(filter: $filter);
     }
 

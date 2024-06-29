@@ -49,7 +49,8 @@ class UserReturnOrderSingleResource extends JsonResource
 
                 $item->load('brand');
                 $item->load('category');
-                $item->load('image');
+                $item->load('product');
+                $item->load('product.image');
 
                 return [
                     'id' => $this->id,

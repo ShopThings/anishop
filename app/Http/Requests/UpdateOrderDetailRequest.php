@@ -80,7 +80,7 @@ class UpdateOrderDetailRequest extends FormRequest
     public function messages()
     {
         return [
-            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
+            'postal_code.max' => 'کدپستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }

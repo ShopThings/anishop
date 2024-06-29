@@ -63,14 +63,14 @@ class UpdateAddressRequest extends FormRequest
     {
         return [
             'full_name' => 'نام گیرنده',
-            'postal_code' => 'کد پستی',
+            'postal_code' => 'کدپستی',
         ];
     }
 
     public function messages()
     {
         return [
-            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
+            'postal_code.max' => 'کدپستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }
