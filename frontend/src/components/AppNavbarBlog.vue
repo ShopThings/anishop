@@ -26,6 +26,9 @@
               <li class="px-1 sm:px-2">
                 <dialog-search-blog/>
               </li>
+              <li class="hidden relative px-1 lg:inline-block">
+                <navbar-user-action/>
+              </li>
 
               <li class="px-1 sm:px-2 block lg:hidden">
                 <partial-navbar-blog-mobile
@@ -48,6 +51,7 @@ import DialogSearchBlog from "./blog/global-search/DialogSearchBlog.vue";
 import PartialNavbarBlogMobile from "@/components/partials/PartialNavbarBlogMobile.vue";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import {MENU_PLACES} from "@/composables/constants.js";
+import NavbarUserAction from "@/components/NavbarUserAction.vue";
 
 const menuLoading = ref(true)
 const localMenu = ref(null)

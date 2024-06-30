@@ -5,33 +5,34 @@
     <div class="flex flex-col lg:flex-row-reverse gap-6 sticky-container">
       <div class="grow">
         <base-paginator
-            ref="blogPaginatorRef"
-            v-model:total="totalBlogs"
-            :path="getSearchPath"
-            :order="blogOrder"
-            :per-page="blogPerPage"
-            :extra-search-params="searchParams"
-            :show-pagination-detail="true"
-            :show-search="true"
-            :search-text="route.query?.q || ''"
-            :scroll-to-element-on-appearance="true"
-            :scroll-margin-top="-130"
-            container-class="grid grid-cols-1 xl:grid-cols-2 gap-3"
-            pagination-theme="modern"
-            @order-changed="orderChangeHandler"
+          ref="blogPaginatorRef"
+          v-model:total="totalBlogs"
+          :extra-search-params="searchParams"
+          :load-on-appearance="false"
+          :order="blogOrder"
+          :path="getSearchPath"
+          :per-page="blogPerPage"
+          :scroll-margin-top="-130"
+          :scroll-to-element-on-appearance="true"
+          :search-text="route.query?.q || ''"
+          :show-pagination-detail="true"
+          :show-search="true"
+          container-class="grid grid-cols-1 xl:grid-cols-2 gap-3"
+          pagination-theme="modern"
+          @order-changed="orderChangeHandler"
         >
           <template #empty>
             <partial-empty-rows
               image="/images/empty-statuses/empty-blog.svg"
-                image-class="w-60"
-                message="هیچ نوشته‌ای پیدا نشد!"
+              image-class="w-60"
+              message="هیچ نوشته‌ای پیدا نشد!"
             />
           </template>
 
           <template #item="{item}">
             <blog-card
-                :blog="item"
-                container-class="rounded-lg"
+              :blog="item"
+              container-class="rounded-lg"
             />
           </template>
 
@@ -44,23 +45,23 @@
       </div>
 
       <Vue3StickySidebar
-          v-if="hasPopularCategories || hasBlogArchives"
-          :bottom-spacing="20"
-          :min-width="1024"
-          :top-spacing="79"
-          class="shrink-0 lg:w-80"
-          containerSelector=".sticky-container"
-          innerWrapperSelector='.sidebar__inner'
+        v-if="hasPopularCategories || hasBlogArchives"
+        :bottom-spacing="20"
+        :min-width="1024"
+        :top-spacing="79"
+        class="shrink-0 lg:w-80"
+        containerSelector=".sticky-container"
+        innerWrapperSelector='.sidebar__inner'
       >
         <div class="flex flex-col gap-6">
           <partial-card
-              v-if="hasPopularCategories"
-              class="border-0 flex flex-col"
+            v-if="hasPopularCategories"
+            class="border-0 flex flex-col"
           >
             <template #body>
               <partial-general-title
-                  title="دسته‌بندی‌های پرطرفدار"
-                  type="side"
+                title="دسته‌بندی‌های پرطرفدار"
+                type="side"
               />
 
               <app-side-categories-blog @loaded="(hasData) => {hasPopularCategories = hasData}"/>
@@ -68,13 +69,13 @@
           </partial-card>
 
           <partial-card
-              v-if="hasBlogArchives"
-              class="border-0 flex flex-col"
+            v-if="hasBlogArchives"
+            class="border-0 flex flex-col"
           >
             <template #body>
               <partial-general-title
-                  title="آرشیو نوشته‌ها"
-                  type="side"
+                title="آرشیو نوشته‌ها"
+                type="side"
               />
 
               <blog-side-archives @loaded="(hasData) => {hasBlogArchives = hasData}"/>
@@ -151,5 +152,7 @@ onMounted(() => {
   searchParams.value.category = route.query?.category
   searchParams.value.archive = route.query?.archive
   searchParams.value.tag = route.query?.tag
+
+  blogPaginatorRef.value.goToPage(1)
 })
 </script>

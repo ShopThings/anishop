@@ -183,7 +183,7 @@ function saveToShoppingCart() {
   if (cartStore.isLoading) return
 
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
 
@@ -195,7 +195,7 @@ function removeFromShoppingCart() {
   if (cartStore.isLoading) return
 
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
 
@@ -210,7 +210,7 @@ function changeToWishlistCart() {
   if (cartStore.isLoading) return
 
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
 
@@ -221,7 +221,7 @@ function saveToWishlistCart() {
   if (cartStore.isLoading) return
 
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
 
@@ -234,7 +234,7 @@ function removeFromWishlistCart() {
   if (cartStore.isLoading) return
 
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
 
@@ -257,7 +257,7 @@ function fetchCarts(type) {
   if (cartStore.isLoading) return
 
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید.')
     return
   }
 
