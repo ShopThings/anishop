@@ -1,5 +1,5 @@
 <template>
-  <base-popover class="sm:relative" panel-klass="right-0 w-full sm:mt-3 sm:w-[25rem]">
+  <base-popover class="sm:relative" panel-klass="right-0 w-full mt-2 sm:mt-3 sm:w-[25rem] sm:mt-0">
     <template #button>
       <button
         class="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center"
