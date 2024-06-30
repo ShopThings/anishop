@@ -392,7 +392,10 @@ class OrderService extends Service implements OrderServiceInterface
             ) ||
             (
                 $paymentMethod->type === PaymentTypesEnum::TESTING->value &&
-                !Auth::user()?->hasRole(RolesEnum::DEVELOPER->value)
+                (
+                    !Auth::user()?->hasRole(RolesEnum::DEVELOPER->value) ||
+                    app()->isProduction()
+                )
             )
         ) {
             return null;

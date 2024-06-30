@@ -391,7 +391,7 @@ function upVoteHandler(comment) {
 
 function downVoteHandler(comment) {
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
     return
   }
 
