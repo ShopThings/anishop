@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
             'password' => Hash::make('m9516271'),
             'first_name' => 'محمد مهدی',
             'last_name' => 'دهقان منشادی',
-            'national_code' => '4420549033',
+            'national_code' => '1234567890',
             'is_admin' => true,
             'verified_at' => now(),
             'is_deletable' => false,

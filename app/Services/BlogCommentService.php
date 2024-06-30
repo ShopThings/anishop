@@ -31,7 +31,9 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
      */
     public function getComments(int $blogId, Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCommentsSearchFilterPaginated(blogId: $blogId, filter: $filter);
+        return $this->repository
+            ->newWith('creator')
+            ->getCommentsSearchFilterPaginated(blogId: $blogId, filter: $filter);
     }
 
     /**
@@ -47,7 +49,9 @@ class BlogCommentService extends Service implements BlogCommentServiceInterface
      */
     public function getAllComments(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getCommentsSearchFilterPaginated(filter: $filter);
+        return $this->repository
+            ->newWith('creator')
+            ->getCommentsSearchFilterPaginated(filter: $filter);
     }
 
     /**

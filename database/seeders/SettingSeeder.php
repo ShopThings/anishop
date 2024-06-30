@@ -53,6 +53,11 @@ class SettingSeeder extends Seeder
             'group_name' => SettingGroupsEnum::SMS->value,
         ]);
         Setting::create([
+            'name' => SettingsEnum::SMS_OTP->value,
+            'setting_value' => "{{shop}}" . "\n" . "رمز یکبار مصرف: {{code}}",
+            'group_name' => SettingGroupsEnum::SMS->value,
+        ]);
+        Setting::create([
             'name' => SettingsEnum::SMS_ACTIVATION->value,
             'setting_value' => "{{shop}}" . "\n" . "کد فعالسازی: {{code}}",
             'group_name' => SettingGroupsEnum::SMS->value,

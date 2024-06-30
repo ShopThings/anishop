@@ -9,6 +9,7 @@ enum SMSTypesEnum: string
     use EnumTranslateTrait;
 
     case SIGNUP = 'signup';
+    case OTP = 'otp';
     case ACTIVATION = 'activation';
     case RECOVER_PASS = 'recover_pass';
     case BUY = 'buy';
@@ -24,6 +25,7 @@ enum SMSTypesEnum: string
     {
         return [
             self::SIGNUP->value => 'ثبت نام',
+            self::OTP->value => 'ورود با رمز یکبار مصرف',
             self::ACTIVATION->value => 'فعالسازی حساب',
             self::RECOVER_PASS->value => 'بازگردانی کلمه عبور',
             self::BUY->value => 'خرید',
@@ -34,13 +36,17 @@ enum SMSTypesEnum: string
         ];
     }
 
+    /**
+     * @param SMSTypesEnum $type
+     * @return string[]
+     */
     public static function replacementsArray(SMSTypesEnum $type): array
     {
         return match ($type) {
             self::SIGNUP, self::OTHERS => [
                 'shop', 'username',
             ],
-            self::ACTIVATION => [
+            self::ACTIVATION, self::OTP => [
                 'shop', 'username', 'code',
             ],
             self::RECOVER_PASS => [

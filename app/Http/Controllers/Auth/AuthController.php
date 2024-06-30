@@ -9,7 +9,6 @@ use App\Http\Resources\Showing\UserAuthShowResource;
 use App\Models\User;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Services\Contracts\RoleServiceInterface;
-use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -30,16 +29,18 @@ class AuthController extends Controller
     ): JsonResponse
     {
         $isFromAdmin = Route::is('api.admin.login');
-        $service->login($request, $isFromAdmin);
-        $tokenName = $isFromAdmin ? config('market.token_name.admin') : config('market.token_name.main');
+        $token = $service->login(
+            $request,
+            $request->input('username'),
+            $request->input('password'),
+            $request->boolean('remember'),
+            $isFromAdmin
+        );
 
         /**
          * @var User $user
          */
         $user = Auth::user();
-
-        $expireAt = Carbon::now()->addDays(30);
-        $token = $user->createToken(name: $tokenName, expiresAt: $expireAt)->plainTextToken;
 
         $data = [
             'user' => new UserAuthShowResource($user),

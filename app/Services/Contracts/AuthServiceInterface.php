@@ -3,18 +3,27 @@
 namespace App\Services\Contracts;
 
 use App\Contracts\ServiceInterface;
-use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 interface AuthServiceInterface extends ServiceInterface
 {
     /**
-     * @param LoginRequest $request
+     * @param Request $request
+     * @param string $username
+     * @param string $password
+     * @param bool $remember
      * @param bool $isAdmin
-     * @return void
+     * @return string
      */
-    public function login(LoginRequest $request, bool $isAdmin): void;
+    public function login(
+        Request $request,
+        string  $username,
+        string  $password,
+        bool    $remember = false,
+        bool    $isAdmin = false
+    ): string;
 
     /**
      * @return void
@@ -39,6 +48,12 @@ interface AuthServiceInterface extends ServiceInterface
      * @param string $mobile
      * @return bool
      */
+    public function sendOTP(string $mobile): bool;
+
+    /**
+     * @param string $mobile
+     * @return bool
+     */
     public function sendActivationVerificationCode(string $mobile): bool;
 
     /**
@@ -46,6 +61,14 @@ interface AuthServiceInterface extends ServiceInterface
      * @return bool
      */
     public function sendForgetPasswordVerificationCode(string $mobile): bool;
+
+    /**
+     * @param Request $request
+     * @param string $username
+     * @param string $code
+     * @return string|null
+     */
+    public function verifyOTP(Request $request, string $username, string $code): ?string;
 
     /**
      * @param string $username

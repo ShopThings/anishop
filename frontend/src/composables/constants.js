@@ -234,6 +234,7 @@ export const SETTING_KEYS = {
   DESCRIPTION: 'description',
   KEYWORDS: 'keywords',
   SMS_SIGNUP: 'sms_signup',
+  SMS_OTP: 'sms_otp',
   SMS_ACTIVATION: 'sms_activation',
   SMS_RECOVER_PASS: 'sms_recover_pass',
   SMS_BUY: 'sms_buy',

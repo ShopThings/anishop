@@ -300,6 +300,7 @@ class SettingService extends Service implements SettingServiceInterface
         return match ($name) {
             SettingsEnum::DESCRIPTION->value,
             SettingsEnum::SMS_SIGNUP->value,
+            SettingsEnum::SMS_OTP->value,
             SettingsEnum::SMS_ACTIVATION->value,
             SettingsEnum::SMS_RECOVER_PASS->value,
             SettingsEnum::SMS_BUY->value,

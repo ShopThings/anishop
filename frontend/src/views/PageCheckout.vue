@@ -49,7 +49,7 @@
                 <span class="font-iranyekan-bold">{{ savedOrder.address }}</span>
 
                 <template v-if="savedOrder.postal_code?.toString()?.trim() !== ''">
-                  <span class="font-iranyekan-light">به کد پستی</span>
+                  <span class="font-iranyekan-light">به کدپستی</span>
                   <span class="font-iranyekan-bold">{{ savedOrder.postal_code }}</span>
                 </template>
 
@@ -445,7 +445,7 @@
                               <partial-card class="p-3 sm:col-span-2">
                                 <template #body>
                                   <div class="flex flex-col">
-                                    <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
+                                    <span class="text-xs text-gray-400 mb-1">کدپستی:</span>
                                     <div class="text-sm tracking-widest">
                                       {{ address.postal_code || '-' }}
                                     </div>
@@ -527,7 +527,7 @@
                         :value="selectedAddress?.postal_code"
                         :is-optional="true"
                         klass="no-spin-arrow"
-                        label-title="کد پستی"
+                        label-title="کدپستی"
                         name="postal_code"
                         type="number"
                         placeholder="وارد نمایید"

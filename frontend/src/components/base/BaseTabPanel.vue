@@ -1,6 +1,6 @@
 <template>
   <TabGroup :defaultIndex="defaultIdx" @change="changeTab">
-    <TabList class="flex flex-wrap space-x-1 rounded-md bg-blue-900/20 p-1">
+    <TabList class="flex flex-wrap gap-1 rounded-md bg-blue-900/20 p-1">
       <Tab
         v-for="[tabKey, tab] in Object.entries(tabs)"
         :key="tabKey"

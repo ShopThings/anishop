@@ -15,7 +15,7 @@
     </base-button>
 
     <div class="mt-6 mb-6">
-      <partial-input-label title="وارد نمودن کد ارسال شده"/>
+      <partial-input-label title="وارد نمودن رمز ارسال شده"/>
       <div class="flex gap-2 flex-row-reverse">
         <template v-for="index in 6" :key="index">
           <base-input
@@ -46,7 +46,7 @@
           href="javascript:void(0)"
           @click="sendAnotherCodeToUser"
         >
-          ارسال مجدد کد
+          ارسال مجدد رمز یکبار مصرف
         </a>
         <div
           v-if="!canSendCode"
@@ -56,33 +56,33 @@
       </div>
     </div>
 
-    <div class="mb-3">
-      <base-button
-        :disabled="!canSubmit"
-        class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-        type="submit"
-      >
-        <span class="mx-auto">تایید کد وارد شده</span>
-        <ArrowLeftIcon
-          class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
-      </base-button>
-    </div>
+    <base-button
+      :disabled="!canSubmit"
+      class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+      type="submit"
+    >
+      <span class="mx-auto">تایید رمز</span>
+      <ArrowLeftIcon
+        class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+    </base-button>
   </form>
 </template>
 
 <script setup>
 import {onMounted, ref} from "vue";
-import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
-import BaseInput from "@/components/base/BaseInput.vue";
-import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
-import BaseButton from "@/components/base/BaseButton.vue";
-import {ArrowLeftIcon, ArrowLongRightIcon} from "@heroicons/vue/24/solid/index.js";
-import isFunction from "lodash.isfunction";
-import {useFormSubmit} from "@/composables/form-submit.js";
-import {HomeRecoverPasswordAPI} from "@/service/APIHomePages.js";
 import {useCountdown} from "@/composables/countdown-timer.js";
+import {useFormSubmit} from "@/composables/form-submit.js";
+import {HomeLoginOTPAPI} from "@/service/APIHomePages.js";
+import {useLoginOTPStore} from "@/store/StoreUserHome.js";
+import BaseInput from "@/components/base/BaseInput.vue";
+import {ArrowLeftIcon, ArrowLongRightIcon} from "@heroicons/vue/24/solid/index.js";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
+import LoaderDotOrbit from "@/components/base/loader/LoaderDotOrbit.vue";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
-import {useRecoverPasswordStore} from "@/store/StoreUserHome.js";
+import BaseButton from "@/components/base/BaseButton.vue";
+import {useUserAuthStore} from "@/store/StoreUserAuth.js";
+import {isValidInternalRedirectLink} from "@/composables/helper.js";
+import {useRoute, useRouter} from "vue-router";
 
 const props = defineProps({
   options: {
@@ -91,7 +91,11 @@ const props = defineProps({
   },
 })
 
-const recoverStore = useRecoverPasswordStore()
+const router = useRouter()
+const route = useRoute()
+
+const userStore = useUserAuthStore()
+const loginStore = useLoginOTPStore()
 
 //----------------------------------------------
 // Handle dynamic input validation and focusing
@@ -159,40 +163,15 @@ const sendCodeTimerRef = ref(null)
 const sendCodeTimer = useCountdown(60, sendCodeTimerRef)
 const canSendCode = ref(true)
 
-function checkSendCodeTime() {
-  canSendCode.value = true
-  sendCodeTimer.stop()
-}
-
-
-function sendAnotherCodeToUser() {
-  if (!canSendCode.value) return
-  canSendCode.value = false
-
-  sendCodeTimer.start(checkSendCodeTime)
-
-  HomeRecoverPasswordAPI.resendVerifyCode({
-    username: recoverStore.getMobileStep?.mobile
-  }, {
-    success() {
-      sendCodeTimer.start(checkSendCodeTime)
-    },
-    error(error) {
-      actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
-      return false
-    },
-  })
-}
-
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
   let code = getCodeFromInputs()
 
   if (!/^\d{6}$/.test(code)) {
     let msg
     if (!code?.length) {
-      msg = 'کد تایید را وارد نمایید.'
+      msg = 'رمز را وارد نمایید.'
     } else {
-      msg = 'کد وارد شده نامعتبر می‌باشد!'
+      msg = 'رمز وارد شده نامعتبر می‌باشد!'
     }
     actions.setFieldError('code', msg)
     return
@@ -202,21 +181,23 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
 
   canSubmit.value = false
 
-  HomeRecoverPasswordAPI.verifyCode({
+  HomeLoginOTPAPI.verifyCode({
     code,
-    username: recoverStore.getMobileStep?.mobile
+    username: loginStore.getMobileStep?.mobile
   }, {
-    success() {
+    success(response) {
       actions.resetForm()
       resetFormInputs()
 
-      if (isFunction(props.options?.next)) {
-        recoverStore.setCodeStep({
-          code,
-        })
+      userStore.setUser(response.data.user)
+      userStore.setToken(response.data.token)
 
-        props.options.next()
-      }
+      if (
+        route.query.redirect &&
+        isValidInternalRedirectLink(route.query.redirect) &&
+        ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
+      ) router.push(route.query.redirect)
+      else router.push({name: 'user.home'})
     },
     error(error) {
       actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
@@ -227,6 +208,30 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
     },
   })
 })
+
+function checkSendCodeTime() {
+  canSendCode.value = true
+  sendCodeTimer.stop()
+}
+
+function sendAnotherCodeToUser() {
+  if (!canSendCode.value) return
+  canSendCode.value = false
+
+  sendCodeTimer.start(checkSendCodeTime)
+
+  HomeLoginOTPAPI.resendVerifyCode({
+    username: loginStore.getMobileStep?.mobile
+  }, {
+    success() {
+      sendCodeTimer.start(checkSendCodeTime)
+    },
+    error(error) {
+      errors.code = error.message || 'خطای غیر قابل پیش‌بینی'
+      return false
+    },
+  })
+}
 
 function getCodeFromInputs() {
   if (!codeInputs.value) return ''
@@ -252,10 +257,10 @@ function resetFormInputs() {
 }
 
 onMounted(() => {
-  if (!recoverStore.canGoToStepCode) {
+  if (!loginStore.canGoToStepCode) {
     props.options.prev()
   }
 
-  recoverStore.resetCodeStep()
+  loginStore.resetCodeStep()
 })
 </script>

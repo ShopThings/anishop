@@ -18,7 +18,9 @@ class MostSaleProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $productModel = Product::query()->where('id', $this->product_id)->first();
+        $productModel = Product::query()
+            ->with(['image', 'brand', 'category'])
+            ->where('id', $this->product_id)->first();
 
         return [
             'id' => $this->product_id,

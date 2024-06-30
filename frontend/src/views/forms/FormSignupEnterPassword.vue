@@ -1,4 +1,19 @@
 <template>
+  <base-button
+    :to="{name: 'login'}"
+    class="border-amber-300 hover:bg-amber-50 mt-3"
+    default-class="text-black rounded-md border-2 hover:text-opacity-80 w-full"
+    type="link"
+  >
+    استفاده از رمز یکبار مصرف
+  </base-button>
+
+  <div class="flex gap-3 items-center my-4">
+    <div class="h-0.5 grow bg-slate-100"></div>
+    <span class="text-slate-400">یا</span>
+    <div class="h-0.5 grow bg-slate-100"></div>
+  </div>
+
   <form class="relative" @submit.prevent="onSubmit">
     <loader-dot-orbit
       v-if="!canSubmit"
@@ -6,7 +21,7 @@
       main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
-    <div class="mb-3 mt-12">
+    <div class="mb-3">
       <base-input
         label-title="کلمه عبور جدید"
         name="password"
@@ -96,7 +111,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     success(response) {
       signupStore.$reset()
       actions.resetForm()
-      toast.success('تبریک، شما با موفقیت در سایت ثبت نام شدید، از خرید خود لذت ببرید.🤩')
+      toast.success('کلمه عبور با موفقیت ثبت شد.')
 
       if (response.data?.token) {
         store.setUser(response.data.user)

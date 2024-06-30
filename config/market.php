@@ -121,6 +121,16 @@ return [
         'verify_code_length' => 6,
 
         /**
+         * Number of minutes to expire an OTP code
+         */
+        'otp_code_expire_time' => 10,
+
+        /**
+         * Number of minutes to wait before user can request for another code
+         */
+        'verify_code_resend_wait' => 1,
+
+        /**
          * These variables are for customizing sms contents,
          * to show user specific information.
          *

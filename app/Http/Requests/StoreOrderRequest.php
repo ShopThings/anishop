@@ -100,7 +100,10 @@ class StoreOrderRequest extends FormRequest
                 Rule::exists(PaymentMethod::class, 'id')->where(function ($query) {
                     $query->where('is_published', DatabaseEnum::DB_YES);
 
-                    if (!Auth::user()?->hasRole(RolesEnum::DEVELOPER->value)) {
+                    if (
+                        !Auth::user()?->hasRole(RolesEnum::DEVELOPER->value) ||
+                        app()->isProduction()
+                    ) {
                         $query->where('is_sealed', DatabaseEnum::DB_NO);
                     }
                 }),
@@ -127,7 +130,7 @@ class StoreOrderRequest extends FormRequest
             'national_code' => 'کد ملی خریدار',
             'receiver_name' => 'نام گیرنده',
             'receiver_mobile' => 'شماره تماس گیرنده',
-            'postal_code' => 'کد پستی',
+            'postal_code' => 'کدپستی',
             'address' => 'آدرس',
             'province' => 'استان',
             'city' => 'شهر',
@@ -141,7 +144,7 @@ class StoreOrderRequest extends FormRequest
     public function messages()
     {
         return [
-            'postal_code.max' => 'کد پستی نباید بیشتر از ۱۵ رقم باشد.',
+            'postal_code.max' => 'کدپستی نباید بیشتر از ۱۵ رقم باشد.',
         ];
     }
 }

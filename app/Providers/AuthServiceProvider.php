@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Enums\Gates\RolesEnum;
+use App\Guards\CustomGuard;
 use App\Models\Blog;
 use App\Models\BlogCategory;
 use App\Models\BlogComment;
@@ -81,6 +82,7 @@ use App\Policies\UnitPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\WeightPostPricePolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -142,6 +144,18 @@ class AuthServiceProvider extends ServiceProvider
         // Implicitly grant "Developer" role all permission checks using can()
         Gate::before(function (User $user, $ability) {
             return $user->hasAnyRole([RolesEnum::DEVELOPER->value]) ? true : null;
+        });
+
+        // Add new auth guard to extend login and credential validation
+        Auth::extend('custom', function ($app, $name, array $config) {
+            return new CustomGuard(
+                'custom',
+                Auth::createUserProvider($config['provider']),
+                $app['session.store']
+            );
+        });
+        Auth::provider('custom', function ($app, array $config) {
+            return new CustomUserProvider($app['hash'], $config['model']);
         });
     }
 

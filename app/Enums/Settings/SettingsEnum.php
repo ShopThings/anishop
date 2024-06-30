@@ -18,6 +18,7 @@ enum SettingsEnum: string
     case KEYWORDS = 'keywords';
 
     case SMS_SIGNUP = 'sms_signup';
+    case SMS_OTP = 'sms_otp';
     case SMS_ACTIVATION = 'sms_activation';
     case SMS_RECOVER_PASS = 'sms_recover_pass';
     case SMS_BUY = 'sms_buy';
@@ -83,6 +84,7 @@ enum SettingsEnum: string
             self::DESCRIPTION->value => 'توضیحات سایت',
             self::KEYWORDS->value => 'کلمات کلیدی سایت',
             self::SMS_SIGNUP->value => 'پیامک ثبت نام',
+            self::SMS_OTP->value => 'پیامک رمز یکبار مصرف',
             self::SMS_ACTIVATION->value => 'پیامک فعالسازی اکانت',
             self::SMS_RECOVER_PASS->value => 'پیامک بازیابی کلمه عبور',
             self::SMS_BUY->value => 'پیامک ثبت سفارش',

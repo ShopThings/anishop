@@ -20,6 +20,14 @@ export default {
   provinces: 'api/provinces',
   cities: 'api/cities/{province}',
 
+  login: {
+    otp: {
+      stepMobile: 'api/login/otp/mobile',
+      stepCode: 'api/login/otp/code',
+      resendCode: 'api/login/otp/resend-code',
+    }
+  },
+
   signup: {
     stepMobile: 'api/signup/mobile',
     stepCode: 'api/signup/code',

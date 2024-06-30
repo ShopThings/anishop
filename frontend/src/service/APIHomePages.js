@@ -257,6 +257,41 @@ export const HomeBlogAPI = Object.assign(
   }
 )
 
+export const HomeLoginOTPAPI = {
+  storeMobile(data, callbacks) {
+    return useRequest(
+      apiRoutes.login.otp.stepMobile,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  verifyCode(data, callbacks) {
+    return useRequest(
+      apiRoutes.login.otp.stepCode,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  resendVerifyCode(data, callbacks) {
+    return useRequest(
+      apiRoutes.login.otp.resendCode,
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+}
+
 export const HomeSignupAPI = {
   storeMobile(data, callbacks) {
     return useRequest(
@@ -291,10 +326,13 @@ export const HomeSignupAPI = {
     )
   },
 
-  resendVerifyCode(callbacks) {
+  resendVerifyCode(data, callbacks) {
     return useRequest(
       apiRoutes.signup.resendCode,
-      {method: 'POST'},
+      {
+        method: 'POST',
+        data,
+      },
       callbacks
     )
   },
@@ -334,10 +372,13 @@ export const HomeRecoverPasswordAPI = {
     )
   },
 
-  resendVerifyCode(callbacks) {
+  resendVerifyCode(data, callbacks) {
     return useRequest(
       apiRoutes.recoverPass.resendCode,
-      {method: 'POST'},
+      {
+        method: 'POST',
+        data,
+      },
       callbacks
     )
   },

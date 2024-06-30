@@ -59,12 +59,14 @@ class StaticPageService extends Service implements StaticPageServiceInterface
             ], $search);
         });
 
-        return $this->repository->paginate(
-            where: $where->build(),
-            limit: $filter->getLimit(),
-            page: $filter->getPage(),
-            order: $filter->getOrder()
-        );
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->paginate(
+                where: $where->build(),
+                limit: $filter->getLimit(),
+                page: $filter->getPage(),
+                order: $filter->getOrder()
+            );
     }
 
     /**

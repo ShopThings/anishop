@@ -40,6 +40,10 @@ class UpdateSettingRequest extends FormRequest
                 'sometimes',
                 'max:400',
             ],
+            SettingsEnum::SMS_OTP->value => [
+                'sometimes',
+                'max:400',
+            ],
             SettingsEnum::SMS_ACTIVATION->value => [
                 'sometimes',
                 'max:400',
@@ -158,6 +162,7 @@ class UpdateSettingRequest extends FormRequest
             SettingsEnum::DESCRIPTION->value => 'توضیحات مختصر',
             SettingsEnum::KEYWORDS->value => 'کلمات کلیدی',
             SettingsEnum::SMS_SIGNUP->value => 'متن پیامک خوش‌آمدگویی ثبت نام',
+            SettingsEnum::SMS_OTP->value => 'متن پیامک رمز یکبار مصرف',
             SettingsEnum::SMS_ACTIVATION->value => 'متن پیامک فعالسازی حساب',
             SettingsEnum::SMS_RECOVER_PASS->value => 'متن پیامک بازگردانی کلمه عبور',
             SettingsEnum::SMS_BUY->value => 'متن پیامک ایجاد سفارش',

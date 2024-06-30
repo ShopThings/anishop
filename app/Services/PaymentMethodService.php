@@ -71,7 +71,10 @@ class PaymentMethodService extends Service implements PaymentMethodServiceInterf
         $where = new WhereBuilder('payment_methods');
         $where->whereEqual('is_published', DatabaseEnum::DB_YES);
 
-        if (!Auth::user()->hasRole(RolesEnum::DEVELOPER->value)) {
+        if (
+            !Auth::user()->hasRole(RolesEnum::DEVELOPER->value) ||
+            app()->isProduction()
+        ) {
             $where->whereEqual('is_sealed', DatabaseEnum::DB_NO);
         }
 

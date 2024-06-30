@@ -2,7 +2,7 @@
   <partial-card class="border-0">
     <template #body>
       <div class="p-3">
-        <base-tab-panel :tabs="tabs" tab-panel-extra-class="border-0">
+        <base-tab-panel :tabs="tabs" tab-panel-extra-class="!border-0">
           <template #info>
             <form-user-update-info/>
           </template>

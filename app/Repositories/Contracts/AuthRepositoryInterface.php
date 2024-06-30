@@ -24,6 +24,12 @@ interface AuthRepositoryInterface
      * @param User $user
      * @return bool
      */
+    public function sendOTP(User $user): bool;
+
+    /**
+     * @param User $user
+     * @return bool
+     */
     public function sendActivationVerificationCode(User $user): bool;
 
     /**

@@ -259,8 +259,8 @@ return [
         "comment" => "دیدگاه",
         "answer" => "پاسخ",
         "question" => "سؤال",
-        "zip_code" => "کد پستی",
-        "postal_code" => "کد پستی",
+        "zip_code" => "کدپستی",
+        "postal_code" => "کدپستی",
     ],
 
 ];

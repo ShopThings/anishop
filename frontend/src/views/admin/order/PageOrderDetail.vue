@@ -309,7 +309,7 @@
               <partial-card class="p-3">
                 <template #body>
                   <div class="flex flex-col">
-                    <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
+                    <span class="text-xs text-gray-400 mb-1">کدپستی:</span>
                     <div class="text-black tracking-widest">{{ order?.postal_code || '-' }}</div>
                   </div>
                 </template>

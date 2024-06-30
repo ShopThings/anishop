@@ -19,6 +19,8 @@ class ProductPropertyShowResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('product');
+
         $productFestival = $this->product()->withWhereHas('festivals.festival', function ($query) {
             $query->published()->activated();
         })->first();

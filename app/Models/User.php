@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -47,6 +48,7 @@ class User extends Model
 
     protected $hidden = [
         'password',
+        'otp_password',
         'remember_token',
     ];
 
@@ -56,6 +58,7 @@ class User extends Model
         'forget_password_at' => 'datetime',
         'verified_at' => 'datetime',
         'password' => 'hashed',
+        'otp_password' => 'hashed',
         'is_deletable' => 'boolean',
     ];
 
@@ -112,6 +115,46 @@ class User extends Model
     /**
      * @return bool
      */
+    public function shouldSendOTP(): bool
+    {
+        return is_null($this->otp_password_wait_for_code) ||
+            (
+                !is_null($this->otp_password_wait_for_code) &&
+                now()->gt($this->otp_password_wait_for_code)
+            );
+    }
+
+    /**
+     * @return bool
+     */
+    public function resetOTP(): bool
+    {
+        $this->otp_password = null;
+        $this->otp_password_wait_for_code = null;
+        $this->otp_password_expires_at = null;
+        return $this->save();
+    }
+
+    /**
+     * @param string $code
+     * @return void
+     */
+    public function notifyOTP(string $code): void
+    {
+        $this->otp_password = Hash::make($code);
+        $this->otp_password_wait_for_code = now()->addMinutes(config('market.sms.verify_code_resend_wait', 1));
+        $this->otp_password_expires_at = now()->addMinutes(config('market.sms.otp_code_expire_time', 10));
+        $this->save();
+
+        $model = $this->settingService->getSetting(SettingsEnum::SMS_OTP->value);
+        $this->notify(
+            (new VerifyCodeNotification($this, $code, $model, SMSTypesEnum::OTP))->afterCommit()
+        );
+    }
+
+    /**
+     * @return bool
+     */
     public function shouldSendActivationVerifyCode(): bool
     {
         return is_null($this->verify_wait_for_code) ||
@@ -128,7 +171,7 @@ class User extends Model
     public function notifyActivationVerificationCode(string $code): void
     {
         $this->verification_code = $code;
-        $this->verify_wait_for_code = now()->addMinute();
+        $this->verify_wait_for_code = now()->addMinutes(config('market.sms.verify_code_resend_wait', 1));
         $this->save();
 
         $model = $this->settingService->getSetting(SettingsEnum::SMS_ACTIVATION->value);
@@ -156,7 +199,7 @@ class User extends Model
     public function notifyForgetPasswordVerificationCode(string $code): void
     {
         $this->forget_password_code = $code;
-        $this->forget_password_wait_for_code = now()->addMinute();
+        $this->forget_password_wait_for_code = now()->addMinutes(config('market.sms.verify_code_resend_wait', 1));
         $this->save();
 
         $model = $this->settingService->getSetting(SettingsEnum::SMS_RECOVER_PASS->value);

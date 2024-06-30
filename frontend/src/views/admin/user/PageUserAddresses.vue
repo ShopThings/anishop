@@ -63,7 +63,7 @@
                   <span class="grow text-sm">{{ detailItem.mobile }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">
-                  <span class="text-slate-400 text-sm shrink-0">کد پستی:</span>
+                  <span class="text-slate-400 text-sm shrink-0">کدپستی:</span>
                   <span class="grow text-sm">{{ detailItem.postal_code || '-' }}</span>
                 </li>
                 <li class="flex items-center gap-2 py-1.5">

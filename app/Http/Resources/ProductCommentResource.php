@@ -19,6 +19,8 @@ class ProductCommentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $this->resource->load('product');
+
         return [
             'id' => $this->id,
             'product' => new ProductShowResource($this->product),

@@ -381,7 +381,7 @@ export const useCartStore = defineStore('userCart', () => {
 
   function fetchAll(callbacks = {}) {
     if (!userStore.getUser) {
-      toast.error('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
+      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
       return
     }
 
@@ -405,7 +405,7 @@ export const useCartStore = defineStore('userCart', () => {
 
   function fetchByName(name, callbacks = {}) {
     if (!userStore.getUser) {
-      toast.error('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
+      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
       return
     }
 
@@ -437,7 +437,7 @@ export const useCartStore = defineStore('userCart', () => {
 
   async function save(callbacks = {}) {
     if (!userStore.getUser) {
-      toast.error('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
+      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
       return
     }
 
@@ -470,7 +470,7 @@ export const useCartStore = defineStore('userCart', () => {
 
   function remove(callbacks = {}) {
     if (!userStore.getUser) {
-      toast.error('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
+      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
       return
     }
 

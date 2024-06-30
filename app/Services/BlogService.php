@@ -62,7 +62,9 @@ class BlogService extends Service implements BlogServiceInterface
      */
     public function getBlogs(Filter $filter): Collection|LengthAwarePaginator
     {
-        return $this->repository->getBlogsSearchFilterPaginated(filter: $filter);
+        return $this->repository
+            ->newWith(['creator', 'updater', 'deleter'])
+            ->getBlogsSearchFilterPaginated(filter: $filter);
     }
 
     /**

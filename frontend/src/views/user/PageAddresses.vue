@@ -71,7 +71,7 @@
             <partial-card class="border-0 p-3 sm:col-span-2">
               <template #body>
                 <div class="flex flex-col">
-                  <span class="text-xs text-gray-400 mb-1">کد پستی:</span>
+                  <span class="text-xs text-gray-400 mb-1">کدپستی:</span>
                   <div class="text-sm tracking-widest">
                     {{ address.postal_code || '-' }}
                   </div>

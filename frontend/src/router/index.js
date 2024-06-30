@@ -10,6 +10,7 @@ import {apiRoutes} from "@/router/api-routes.js";
 import {TransitionPresets} from "vue3-page-transition";
 import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 import {usePageLoaderStore} from "@/store/StorePageLoader.js";
+import {nextTick} from "vue";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 
@@ -394,7 +395,12 @@ function startPageLoading(to) {
   if (to.meta?.noNeedRouteWaiting) return
 
   const loadingStore = usePageLoaderStore()
-  loadingStore.setLoading(true)
+
+  endPageLoading()
+
+  return nextTick(() => {
+    loadingStore.setLoading(true)
+  })
 }
 
 function endPageLoading() {
@@ -404,7 +410,7 @@ function endPageLoading() {
 
 //------------------------------------------------------------------------------
 index.beforeEach(async (to, from, next) => {
-  startPageLoading(to)
+  await startPageLoading(to)
 
   let maintenance = await checkMaintenanceGuard(to)
 

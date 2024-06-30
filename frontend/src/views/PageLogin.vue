@@ -2,25 +2,25 @@
   <div class="min-h-screen relative flex flex-col items-center justify-center lg:px-10">
     <div class="h-full w-full max-w-5xl grid grid-cols-2">
       <div
-          class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-r-lg">
-        <div class="py-10 flex-col justify-center h-full mx-auto relative z-[2] hidden lg:flex">
+        class="h-full text-white px-12 absolute top-0 bg-pattern right-0 left-0 bottom-0 lg:static lg:rounded-r-lg">
+        <div class="py-20 flex-col justify-center h-full mx-auto relative z-[2] hidden lg:flex">
           <div class="flex flex-col items-center justify-center">
             <router-link
-                :to="{name: 'home'}"
-                class="mb-6"
+              :to="{name: 'home'}"
+              class="mb-6"
             >
               <img
-                  :alt="homeSettingStore.getTitle"
-                  class="h-16"
-                  src="/logo-light.png"
+                :alt="homeSettingStore.getTitle"
+                class="h-16"
+                src="/logo-light.png"
               />
             </router-link>
 
             <h1 class="text-2xl py-2 bg-white bg-opacity-30 rounded-full px-4 mb-16">ورود به پنل کاربری</h1>
 
             <router-link
-                :to="{name: 'forget_password'}"
-                class="text-white hover:text-opacity-80 transition flex items-center gap-3 group"
+              :to="{name: 'forget_password'}"
+              class="text-white hover:text-opacity-80 transition flex items-center gap-3 group"
             >
               <span>کلمه عبور خود را فراموش کرده‌ام</span>
               <ArrowLongLeftIcon class="w-7 h-7 group-hover:-translate-x-1 transition"/>
@@ -40,93 +40,28 @@
 
       <div class="h-full col-span-2 lg:col-span-1 z-[2]">
         <div
-            class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:items-start mx-auto lg:rounded-l-lg"
+          class="max-w-sm w-full lg:max-w-none lg:bg-white lg:shadow-lg flex flex-col justify-center h-full items-center lg:justify-start lg:items-start mx-auto lg:rounded-l-lg"
         >
           <router-link :to="{name: 'home'}">
             <img
-                :alt="homeSettingStore.getTitle"
-                class="h-12 my-4 lg:hidden"
-                src="/logo-with-type-light.png"
+              :alt="homeSettingStore.getTitle"
+              class="h-12 my-4 lg:hidden"
+              src="/logo-with-type-light.png"
             />
           </router-link>
 
           <div
-              class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
+            class="w-full overflow-hidden p-4 bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
           >
-            <VTransitionSlideFadeDownY>
-              <base-message v-if="err.message && err.type" :type="err.type" @close="closeAlert">
-                {{ err.message }}
-              </base-message>
-            </VTransitionSlideFadeDownY>
-            <form @submit.prevent="onSubmit">
-              <div class="mb-3">
-                <base-input
-                    label-title="نام کاربری:"
-                    name="username"
-                    placeholder="نام کاربری"
-                >
-                  <template #icon>
-                    <UserIcon class="w-6 h-6 text-gray-400"/>
-                  </template>
-                </base-input>
-              </div>
-              <div class="mb-3">
-                <base-input
-                    label-title="کلمه عبور:"
-                    name="password"
-                    placeholder="کلمه عبور"
-                    type="password"
-                >
-                  <template #icon>
-                    <KeyIcon class="w-6 h-6 text-gray-400"/>
-                  </template>
-                </base-input>
-              </div>
+            <base-tab-panel :tabs="tabs" tab-panel-extra-class="!border-0">
+              <template #loginWithOTP>
+                <form-login-with-o-t-p/>
+              </template>
 
-              <div class="mb-6 text-right lg:hidden">
-                <router-link
-                    :to="{name: 'forget_password'}"
-                    class="mr-1 text-blue-600 hover:text-opacity-80 transition"
-                >
-                  کلمه عبور خود را فراموش کرده‌ام!
-                </router-link>
-              </div>
-
-              <div class="mb-2">
-                <v-captcha ref="captchaCom" v-model="captchaKey"/>
-              </div>
-              <div class="mb-6">
-                <base-input
-                    label-title="کد تصویر:"
-                    name="captcha"
-                    placeholder="کد تصویر"
-                >
-                  <template #icon>
-                    <QrCodeIcon class="w-6 h-6 text-gray-400"/>
-                  </template>
-                </base-input>
-              </div>
-              <div class="mb-3">
-                <base-button
-                    :class="store.isLoading ? '!cursor-not-allowed !bg-opacity-70' : 'cursor-pointer'"
-                    :disabled="store.isLoading"
-                    class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-                    type="submit"
-                >
-                  <loader-circle
-                      v-if="store.isLoading"
-                      big-circle-color="border-transparent"
-                      container-bg-color=""
-                      main-container-klass="absolute h-6 w-6 right-3"
-                      small-circle-color="border-t-white"
-                  />
-
-                  <span class="mr-auto">وارد شوید</span>
-                  <ArrowLeftIcon
-                      class="h-6 w-6 text-white opacity-60 mr-auto group-hover:-translate-x-1.5 transition-all"/>
-                </base-button>
-              </div>
-            </form>
+              <template #loginWithPassword>
+                <form-login-with-password/>
+              </template>
+            </base-tab-panel>
           </div>
 
           <div class="my-4 lg:hidden">
@@ -142,85 +77,21 @@
 </template>
 
 <script setup>
-import {inject, reactive, ref} from "vue";
-import BaseInput from '@/components/base/BaseInput.vue';
-import BaseButton from "@/components/base/BaseButton.vue";
-import VCaptcha from "@/components/base/VCaptcha.vue";
-import {ArrowLeftIcon} from '@heroicons/vue/24/solid'
-import {ArrowLongLeftIcon, KeyIcon, QrCodeIcon, UserIcon} from '@heroicons/vue/24/outline'
-import {useUserAuthStore} from "@/store/StoreUserAuth.js";
-import {useFormSubmit} from "@/composables/form-submit.js";
-import yup from "@/validation/index.js";
-import {isValidInternalRedirectLink} from "@/composables/helper.js";
-import VTransitionSlideFadeDownY from "@/transitions/VTransitionSlideFadeDownY.vue";
-import BaseMessage from "@/components/base/BaseMessage.vue";
-import {useRoute, useRouter} from "vue-router";
-import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
+import {inject, ref} from "vue";
+import {ArrowLongLeftIcon} from '@heroicons/vue/24/outline'
+import BaseTabPanel from "@/components/base/BaseTabPanel.vue";
+import FormLoginWithPassword from "@/views/forms/FormLoginWithPassword.vue";
+import FormLoginWithOTP from "@/views/forms/FormLoginWithOTP.vue";
 
-const captchaKey = ref(null)
-const err = reactive({})
-const captchaCom = ref(null)
-
-const router = useRouter()
-const route = useRoute()
-
-const store = useUserAuthStore()
 const homeSettingStore = inject('homeSettingStore')
 
-function closeAlert() {
-  err.message = null
-  err.type = null
-}
-
-const {canSubmit, onSubmit} = useFormSubmit({
-  validationSchema: yup.object().shape({
-    username: yup.string().required('نام کاربری را وارد نمایید.'),
-    password: yup.string().required('کلمه عبور را وارد نمایید.'),
-    captcha: yup.string().required('کد تصویر را وارد نمایید.'),
-  }),
-}, (values, actions) => {
-  if (store.isLoading) return
-
-  closeAlert()
-
-  if (!captchaKey.value) {
-    err.message = 'تصویر را دوباره بارگذاری نمایید.'
-    err.type = 'error'
-    return
-  }
-
-  values.key = captchaKey.value
-
-  store.login(values, {
-    success() {
-      actions.resetForm();
-
-      if (
-          route.query.redirect &&
-          isValidInternalRedirectLink(route.query.redirect) &&
-          ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
-      ) router.push(route.query.redirect)
-      else router.push({name: 'user.home'})
-
-      return false
-    },
-    error(error) {
-      actions.resetField('password')
-      actions.resetField('captcha')
-
-      if (error?.errors && Object.keys(error.errors).length >= 1) {
-        actions.setErrors(error.errors)
-      }
-
-      err.message = error?.message || 'خطا در عملیات ورود!'
-      err.type = 'error'
-      return false
-    },
-    finally() {
-      if (captchaCom.value)
-        captchaCom.value.getCaptcha()
-    },
-  })
+const tabs = ref({
+  loginWithOTP: {
+    text: 'ورود با رمز یکبار مصرف',
+  },
+  loginWithPassword: {
+    text: 'ورود با کلمه عبور',
+  },
 })
 </script>
 
