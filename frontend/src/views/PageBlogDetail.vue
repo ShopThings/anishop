@@ -200,11 +200,14 @@
                     title="دیدگاه‌ها"
                   />
 
-                  <div class="mb-12 relative">
-                    <blog-comments :blog-slug="blog.slug"/>
-                  </div>
+                  <blog-comments :blog-slug="blog.slug"/>
 
-                  <form-blog-comment v-if="blog.is_commenting_allowed"/>
+                  <div
+                    v-if="blog.is_commenting_allowed"
+                    class="mt-12 relative"
+                  >
+                    <form-blog-comment/>
+                  </div>
                 </template>
               </partial-card>
             </div>
@@ -345,7 +348,7 @@ function setVoteCounting(data) {
 
 function unlikeHandler() {
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
     return
   }
 
@@ -372,7 +375,7 @@ function unlikeHandler() {
 
 function likeHandler() {
   if (!userStore.getUser) {
-    toast.error('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
+    toast.warning('ابتدا به پنل کاربری خود وارد شوید و سپس دوباره تلاش نمایید.')
     return
   }
 

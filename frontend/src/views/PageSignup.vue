@@ -13,7 +13,7 @@
           </router-link>
 
           <div
-              class="w-full overflow-hidden py-6 px-10 text-center bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
+            class="w-full overflow-hidden py-6 px-10 bg-white lg:bg-transparent shadow lg:shadow-none rounded-lg lg:rounded-none"
           >
             <base-stepy
                 v-model:current-step="currentStep"

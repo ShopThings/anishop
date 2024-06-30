@@ -1,14 +1,14 @@
 <template>
   <form class="relative text-right" @submit.prevent="onSubmit">
     <loader-dot-orbit
-        v-if="!canSubmit"
-        container-bg-color="bg-blue-50 opacity-40"
-        main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
+      v-if="!canSubmit"
+      container-bg-color="bg-blue-50 opacity-40"
+      main-container-klass="absolute w-full h-full top-0 left-0 z-[2]"
     />
 
     <base-button
-        class="mt-10 text-sm group flex gap-2 items-center border-2 !text-black !py-1"
-        @click="options.prev"
+      class="mt-10 text-sm group flex gap-2 items-center border-2 !text-black !py-1"
+      @click="options.prev"
     >
       <ArrowLongRightIcon class="w-6 h-6 group-hover:translate-x-1 transition"/>
       <span class="mx-auto">بازگشت</span>
@@ -19,16 +19,16 @@
       <div class="flex gap-2 flex-row-reverse">
         <template v-for="index in 6" :key="index">
           <base-input
-              :ref="(el) => (codeInputs[index] = el)"
-              :id="'codeInput' + index"
-              :has-clear-button="false"
-              :name="'number' + index"
-              klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
-              mask="#"
-              type="text"
-              @focus="handleNumberInputFocus"
-              @keydown="handleInputNumberKeyDown"
-              @keyup="handleInputNumberKeyUp"
+            :id="'codeInput' + index"
+            :ref="(el) => (codeInputs[index] = el)"
+            :has-clear-button="false"
+            :name="'number' + index"
+            klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
+            mask="#"
+            type="text"
+            @focus="handleNumberInputFocus"
+            @keydown="handleInputNumberKeyDown"
+            @keyup="handleInputNumberKeyUp"
           />
         </template>
       </div>
@@ -39,32 +39,32 @@
 
       <div class="flex flex-wrap gap-2 items-center justify-start mt-2">
         <a
-            href="javascript:void(0)"
-            class="text-orange-500 transition text-sm relative py-0.5"
-            :class="[
+          :class="[
               canSendCode ? 'hover:text-opacity-80' : 'cursor-not-allowed opacity-50',
             ]"
-            @click="sendAnotherCodeToUser"
+          class="text-orange-500 transition text-sm relative py-0.5"
+          href="javascript:void(0)"
+          @click="sendAnotherCodeToUser"
         >
           ارسال مجدد کد
         </a>
         <div
-            v-if="!canSendCode"
-            ref="sendCodeTimerRef"
-            class="text-black min-w-16 bg-slate-100 rounded text-center"
+          v-if="!canSendCode"
+          ref="sendCodeTimerRef"
+          class="text-black min-w-16 bg-slate-100 rounded text-center"
         ></div>
       </div>
     </div>
 
     <div class="mb-3">
       <base-button
-          :disabled="!canSubmit"
-          class="w-full flex justify-center items-center group bg-primary border-primary text-white"
-          type="submit"
+        :disabled="!canSubmit"
+        class="w-full flex justify-center items-center group bg-primary border-primary text-white"
+        type="submit"
       >
         <span class="mx-auto">تایید موبایل</span>
         <ArrowLeftIcon
-            class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
+          class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
       </base-button>
     </div>
   </form>
@@ -83,6 +83,7 @@ import {HomeSignupAPI} from "@/service/APIHomePages.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {useCountdown} from "@/composables/countdown-timer.js";
 import {useSignupStore} from "@/store/StoreUserHome.js";
+import {useToast} from "vue-toastification";
 
 const props = defineProps({
   options: {
@@ -91,6 +92,7 @@ const props = defineProps({
   },
 })
 
+const toast = useToast()
 const signupStore = useSignupStore()
 
 //----------------------------------------------
@@ -159,28 +161,6 @@ const sendCodeTimerRef = ref(null)
 const sendCodeTimer = useCountdown(60, sendCodeTimerRef)
 const canSendCode = ref(true)
 
-function checkSendCodeTime() {
-  canSendCode.value = true
-  sendCodeTimer.stop()
-}
-
-function sendAnotherCodeToUser() {
-  if (!canSendCode.value) return
-  canSendCode.value = false
-
-  sendCodeTimer.start(checkSendCodeTime)
-
-  HomeSignupAPI.resendVerifyCode({
-    success() {
-      sendCodeTimer.start(checkSendCodeTime)
-    },
-    error(error) {
-      actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
-      return false
-    },
-  })
-}
-
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
   let code = getCodeFromInputs()
 
@@ -204,6 +184,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
     username: signupStore.getMobileStep?.mobile
   }, {
     success() {
+      toast.success('تبریک، شما با موفقیت در سایت ثبت نام شدید، از خرید خود لذت ببرید.🤩')
+
       actions.resetForm()
       resetFormInputs()
 
@@ -224,6 +206,30 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
     },
   })
 })
+
+function checkSendCodeTime() {
+  canSendCode.value = true
+  sendCodeTimer.stop()
+}
+
+function sendAnotherCodeToUser() {
+  if (!canSendCode.value) return
+  canSendCode.value = false
+
+  sendCodeTimer.start(checkSendCodeTime)
+
+  HomeSignupAPI.resendVerifyCode({
+    username: signupStore.getMobileStep?.mobile
+  }, {
+    success() {
+      sendCodeTimer.start(checkSendCodeTime)
+    },
+    error(error) {
+      errors.code = error.message || 'خطای غیر قابل پیش‌بینی'
+      return false
+    },
+  })
+}
 
 function getCodeFromInputs() {
   if (!codeInputs.value) return ''
