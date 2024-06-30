@@ -104,7 +104,12 @@ export function useCountdown(duration = 0, elemRef = null, showFormat = 'm:s') {
     userCallback = callback
 
     reset()
-    resume()
+
+    // This timeout/delay is to show max time on screen and then start to counting down
+    // 📍[This is just a trick, I don't know about its consequences]
+    setTimeout(() => {
+      resume()
+    }, 100)
   }
 
   function stop() {
@@ -130,7 +135,7 @@ export function useCountdown(duration = 0, elemRef = null, showFormat = 'm:s') {
 
   function reset() {
     let now = new Date();
-    refreshTimeEnd.value = new Date(now.setSeconds(now.getSeconds() + refreshTimeSeconds));
+    refreshTimeEnd.value = new Date(now.setSeconds(now.getSeconds() + refreshTimeSeconds + 1));
   }
 
   function resume() {
