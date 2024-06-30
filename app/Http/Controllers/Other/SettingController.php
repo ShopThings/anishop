@@ -73,6 +73,7 @@ class SettingController extends Controller
                      SettingsEnum::DESCRIPTION,
                      SettingsEnum::KEYWORDS,
                      SettingsEnum::SMS_SIGNUP,
+                     SettingsEnum::SMS_OTP,
                      SettingsEnum::SMS_ACTIVATION,
                      SettingsEnum::SMS_RECOVER_PASS,
                      SettingsEnum::SMS_BUY,

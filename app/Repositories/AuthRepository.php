@@ -19,15 +19,8 @@ class AuthRepository implements AuthRepositoryInterface
     {
         $user->password = Hash::make($password);
         $user->verification_code = null;
-        $user->verified_at = now();
 
-        $status = $user->save();
-
-        if ($status) {
-            RegisteredEvent::dispatch($user);
-        }
-
-        return $status;
+        return $user->save();
     }
 
     /**
@@ -50,7 +43,30 @@ class AuthRepository implements AuthRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws PleaseWaitException
+     * @throws Exception
+     */
+    public function sendOTP(User $user): bool
+    {
+        if ($user->shouldSendOTP()) {
+            $code = get_random_verification_code(config('market.sms.verify_code_length', 6));
+
+            if (!app()->isProduction()) {
+                info("OTP Code For Login [For Testing Purposes]: $user->username - [$code]");
+            }
+
+            $user->notifyOTP($code);
+            return true;
+        }
+
+        $diffTime = vertaTz($user->otp_password_wait_for_code)->diffSeconds(now());
+        if ($diffTime <= 0) {
+            throw new Exception('خطای غیر منتظره! لطفا دوباره تلاش نمایید.');
+        }
+        throw new PleaseWaitException('امکان ارسال مجدد رمز یکبار مصرف پس از ' . $diffTime . ' ثانیه');
+    }
+
+    /**
+     * @inheritDoc
      * @throws Exception
      */
     public function sendActivationVerificationCode(User $user): bool
@@ -70,7 +86,7 @@ class AuthRepository implements AuthRepositoryInterface
 
     /**
      * @inheritDoc
-     * @throws PleaseWaitException
+     * @throws Exception
      */
     public function sendForgetPasswordVerificationCode(User $user): bool
     {
@@ -92,7 +108,18 @@ class AuthRepository implements AuthRepositoryInterface
      */
     public function verifyActivationCode(User $user, string $code): bool
     {
-        return $user->verification_code === $code;
+        $res = $user->verification_code === $code;
+
+        if ($res) {
+            $user->verified_at = now();
+            $status = $user->save();
+
+            if ($status) {
+                RegisteredEvent::dispatch($user);
+            }
+        }
+
+        return $res;
     }
 
     /**

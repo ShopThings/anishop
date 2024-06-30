@@ -47,6 +47,50 @@
 
     <div class="p-2">
       <base-textarea
+        :value="settingValues[SETTING_KEYS.SMS_OTP]"
+        label-title="پیامک رمز یکبار مصرف"
+        name="sms_otp"
+      >
+        <template #icon>
+          <InformationCircleIcon class="h-6 w-6 mt-3 text-gray-400"/>
+        </template>
+      </base-textarea>
+      <partial-input-lead klass="text-indigo-600 border border-r-4 rounded-none border-indigo-500 w-full">
+        <template #text>
+          می‌توانید از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{shop}}`"
+          ></button>
+          برای قرار دادن نام فروشگاه،
+          از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{username}}`"
+          ></button>
+          برای قرار دادن نام کاربری و از
+          <button
+            v-tooltip.top="'کپی کردن'"
+            class="rounded py-1 px-2 mx-1 shadow border text-rose-500 cursor-pointer"
+            type="button"
+            @click="copyHandler"
+            v-text="`{{code}}`"
+          ></button>
+          برای قرار دادن رمز یکبار مصرف استفاده نمایید.
+        </template>
+      </partial-input-lead>
+    </div>
+
+    <hr class="border-0 w-36 sm:w-48 h-1 rounded-full bg-slate-200 my-6 mx-auto">
+
+    <div class="p-2">
+      <base-textarea
         :value="settingValues[SETTING_KEYS.SMS_ACTIVATION]"
         label-title="پیامک فعالسازی حساب"
         name="sms_activation"
@@ -459,6 +503,7 @@ const settingValues = reactive({})
 
 watchImmediate(() => props.setting, () => {
   settingValues[SETTING_KEYS.SMS_SIGNUP] = findItemByKey(props.setting, 'name', SETTING_KEYS.SMS_SIGNUP)?.value || ''
+  settingValues[SETTING_KEYS.SMS_OTP] = findItemByKey(props.setting, 'name', SETTING_KEYS.SMS_OTP)?.value || ''
   settingValues[SETTING_KEYS.SMS_ACTIVATION] = findItemByKey(props.setting, 'name', SETTING_KEYS.SMS_ACTIVATION)?.value || ''
   settingValues[SETTING_KEYS.SMS_RECOVER_PASS] = findItemByKey(props.setting, 'name', SETTING_KEYS.SMS_RECOVER_PASS)?.value || ''
   settingValues[SETTING_KEYS.SMS_BUY] = findItemByKey(props.setting, 'name', SETTING_KEYS.SMS_BUY)?.value || ''
@@ -470,13 +515,14 @@ watchImmediate(() => props.setting, () => {
 //----------------------------
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    sms_signup: yup.string().required('متن پیامک را وار نمایید.'),
-    sms_activation: yup.string().required('متن پیامک را وار نمایید.'),
-    sms_recover_pass: yup.string().required('متن پیامک را وار نمایید.'),
-    sms_buy: yup.string().required('متن پیامک را وار نمایید.'),
-    sms_order_status: yup.string().required('متن پیامک را وار نمایید.'),
-    sms_return_order: yup.string().required('متن پیامک را وار نمایید.'),
-    sms_return_order_status: yup.string().required('متن پیامک را وار نمایید.'),
+    sms_signup: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_otp: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_activation: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_recover_pass: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_buy: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_order_status: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_return_order: yup.string().required('متن پیامک را وارد نمایید.'),
+    sms_return_order_status: yup.string().required('متن پیامک را وارد نمایید.'),
   }),
 }, (values, actions) => {
   if (props.isFetching) return
@@ -485,6 +531,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   const updateArr = {
     [SETTING_KEYS.SMS_SIGNUP]: values.sms_signup,
+    [SETTING_KEYS.SMS_OTP]: values.sms_otp,
     [SETTING_KEYS.SMS_ACTIVATION]: values.sms_activation,
     [SETTING_KEYS.SMS_RECOVER_PASS]: values.sms_recover_pass,
     [SETTING_KEYS.SMS_BUY]: values.sms_buy,

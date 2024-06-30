@@ -3,6 +3,7 @@
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Exceptions\RouteNotFoundException;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Auth\LoginOTPController;
 use App\Http\Controllers\Auth\RecoverPasswordController;
 use App\Http\Controllers\Auth\SignupController;
 use App\Http\Controllers\Blog\HomeBlogCommentController;
@@ -59,6 +60,16 @@ Route::name('api.')
 
             Route::post('login', [AuthController::class, 'login'])
                 ->name('login');
+
+            /*
+             * OTP login routes
+             */
+            Route::post('login/otp/mobile', [LoginOTPController::class, 'checkMobile'])
+                ->name('login.otp.check-mobile');
+            Route::post('login/otp/code', [LoginOTPController::class, 'verifyCode'])
+                ->name('login.otp.verify-code');
+            Route::post('login/otp/resend-code', [LoginOTPController::class, 'resendCode'])
+                ->name('login.otp.resend-code');
 
             Route::middleware('auth:sanctum')
                 ->group(function () {

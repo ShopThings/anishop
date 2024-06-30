@@ -100,7 +100,10 @@ class StoreOrderRequest extends FormRequest
                 Rule::exists(PaymentMethod::class, 'id')->where(function ($query) {
                     $query->where('is_published', DatabaseEnum::DB_YES);
 
-                    if (!Auth::user()?->hasRole(RolesEnum::DEVELOPER->value)) {
+                    if (
+                        !Auth::user()?->hasRole(RolesEnum::DEVELOPER->value) ||
+                        app()->isProduction()
+                    ) {
                         $query->where('is_sealed', DatabaseEnum::DB_NO);
                     }
                 }),

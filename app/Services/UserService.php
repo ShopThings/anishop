@@ -18,7 +18,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UserService extends Service implements UserServiceInterface
 {
@@ -199,13 +198,9 @@ class UserService extends Service implements UserServiceInterface
      */
     public function createTemporaryUser(string $username, ?string $password = null): ?Model
     {
-        if (empty($password)) {
-            $password = Str::random(12);
-        }
-
         $attrs = [
             'username' => $username,
-            'password' => Hash::make($password),
+            'password' => !empty($password) ? Hash::make($password) : null,
         ];
         $role = [RolesEnum::USER->value];
 
@@ -258,7 +253,7 @@ class UserService extends Service implements UserServiceInterface
             'last_name' => $attributes['last_name'],
             'national_code' => $attributes['national_code'],
             'sheba_number' => $attributes['sheba_number'] ?? null,
-            'password' => Hash::make($attributes['password']),
+            'password' => isset($attributes['password']) ? Hash::make($attributes['password']) : null,
             'is_admin' => $isAdmin,
             'verified_at' => now(),
         ];

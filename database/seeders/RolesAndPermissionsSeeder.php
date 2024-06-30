@@ -948,6 +948,7 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         Permission::create([
             'name' => $permission,
+            'guard_name' => 'web',
         ]);
     }
 
@@ -958,7 +959,10 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createRole(string $role, $permissions = null): void
     {
-        $roles = Role::create(['name' => $role]);
+        $roles = Role::create([
+            'name' => $role,
+            'guard_name' => 'web',
+        ]);
         if (!is_null($permissions)) {
             $roles->givePermissionTo($permissions);
         }

@@ -13,7 +13,14 @@ return new class extends Migration {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('username');
-            $table->string('password');
+            $table->string('password')->nullable()
+                ->comment('it can be empty just for users not admins, admins MUST login with password not OTP');
+            $table->string('otp_password')->nullable()
+                ->comment('this field is just for otp password');
+            $table->timestamp('otp_password_wait_for_code')->nullable()
+                ->comment('time to wait for OTP to send again');
+            $table->timestamp('otp_password_expires_at')->nullable()
+                ->comment('time to expire OTP code and make it unusable');
             $table->string('first_name', 30)->nullable();
             $table->string('last_name', 30)->nullable();
             $table->string('national_code', 10)->nullable();
@@ -27,12 +34,12 @@ return new class extends Migration {
             $table->timestamp('forget_password_at')->nullable()
                 ->comment('time that user forgets password and want to recover it');
             $table->timestamp('forget_password_wait_for_code')->nullable()
-                ->comment('time to wait for forget password code can send again');
+                ->comment('time to wait for forget password code to send again');
             $table->string('verification_code', 6)->nullable();
             $table->timestamp('verified_at')->nullable()
                 ->comment('check if user has been activated or not');
             $table->timestamp('verify_wait_for_code')->nullable()
-                ->comment('time to wait for verify code can send again');
+                ->comment('time to wait for verify code to send again');
             $table->boolean('is_deletable')->default(true);
             $table->softDeletes();
             $table->foreignId('deleted_by')->nullable()

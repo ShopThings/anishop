@@ -2,15 +2,20 @@
 
 namespace App\Services;
 
-use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Repositories\Contracts\AuthRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Services\Contracts\AuthServiceInterface;
 use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
+use Carbon\Carbon;
+use Illuminate\Auth\Events\Lockout;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class AuthService extends Service implements AuthServiceInterface
 {
@@ -23,11 +28,26 @@ class AuthService extends Service implements AuthServiceInterface
 
     /**
      * @inheritDoc
+     * @throws ValidationException
      */
-    public function login(LoginRequest $request, bool $isAdmin): void
+    public function login(
+        Request $request,
+        string  $username,
+        string  $password,
+        bool    $remember = false,
+        bool    $isAdmin = false
+    ): string
     {
-        $request->authenticate($isAdmin, $this);
-        $request->session()->regenerate();
+        $this->authenticate(
+            $request,
+            [
+                'username' => $username,
+                'password' => $password,
+            ],
+            $remember,
+            $isAdmin,
+        );
+        return $this->getUserLoginToken($isAdmin);
     }
 
     /**
@@ -59,6 +79,18 @@ class AuthService extends Service implements AuthServiceInterface
     /**
      * @inheritDoc
      */
+    public function sendOTP(string $mobile): bool
+    {
+        $user = $this->getUserByUsername($mobile);
+
+        if (!$user instanceof User) return false;
+
+        return $this->repository->sendOTP($user);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function sendActivationVerificationCode(string $mobile): bool
     {
         $user = $this->getUserByUsername($mobile);
@@ -78,6 +110,32 @@ class AuthService extends Service implements AuthServiceInterface
         if (!$user instanceof User) return false;
 
         return $this->repository->sendForgetPasswordVerificationCode($user);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ValidationException
+     */
+    public function verifyOTP(Request $request, string $username, string $code): ?string
+    {
+        $user = $this->getUserByUsername($username);
+
+        if (
+            !$user instanceof User ||
+            now()->gt($user->otp_password_expires_at)
+        ) {
+            $user->resetOTP();
+            return null;
+        }
+
+        $this->authenticate(
+            $request,
+            [
+                'username' => $username,
+                'otp_password' => $code,
+            ],
+        );
+        return $this->getUserLoginToken();
     }
 
     /**
@@ -115,5 +173,135 @@ class AuthService extends Service implements AuthServiceInterface
         $where->whereEqual('username', $username);
 
         return $this->userRepository->findWhere($where->build());
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Login Authentication Methods
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * @param bool $isAdmin
+     * @return string
+     * @throws ValidationException
+     */
+    private function getUserLoginToken(bool $isAdmin = false): string
+    {
+        $tokenName = $isAdmin ? config('market.token_name.admin') : config('market.token_name.main');
+
+        /**
+         * @var User $user
+         */
+        $user = Auth::user();
+
+        if (empty($user)) {
+            throw ValidationException::withMessages([
+                'username' => trans('auth.failed'),
+            ]);
+        }
+
+        $user->otp_password = null;
+        $user->save();
+
+        $expireAt = Carbon::now()->addDays(30);
+        return $user->createToken(name: $tokenName, expiresAt: $expireAt)->plainTextToken;
+    }
+
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @param Request $request
+     * @param array $credentials
+     * @param bool $remember
+     * @param bool $isAdmin
+     * @return void
+     * @throws ValidationException
+     */
+    private function authenticate(
+        Request $request,
+        array   $credentials,
+        bool    $remember = false,
+        bool    $isAdmin = false
+    ): void
+    {
+        $username = $credentials['username'];
+
+        if (empty($username)) return;
+
+        $this->ensureIsNotRateLimited($request, $username);
+
+        if (!Auth::guard('web')->attempt(
+            $credentials,
+            $remember
+        )) {
+            RateLimiter::hit($this->throttleKey($request, $username));
+
+            throw ValidationException::withMessages([
+                'username' => trans('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+        if ($isAdmin && !$user->is_admin) {
+            $this->logout();
+            throw ValidationException::withMessages([
+                'username' => 'این اکانت دسترسی لازم برای ورود به پنل ادمین را ندارد.',
+            ]);
+        }
+        if (!$user->verified_at) {
+            $this->logout();
+            throw ValidationException::withMessages([
+                'username' => 'اکانت شما فعال نمی‌باشد. لطفا ابتدا آن را فعال نمایید.',
+            ]);
+        }
+        if ($user->is_banned) {
+            $this->logout();
+            throw ValidationException::withMessages([
+                'username' => $user->ban_desc || 'اکانت شما بن شده است!',
+            ]);
+        }
+
+        RateLimiter::clear($this->throttleKey($request, $username));
+
+        $request->session()->regenerate();
+    }
+
+    /**
+     * Ensure the login request is not rate limited.
+     *
+     * @param Request $request
+     * @param string $username
+     * @return void
+     * @throws ValidationException
+     */
+    private function ensureIsNotRateLimited(Request $request, string $username): void
+    {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey($request, $username), 5)) {
+            return;
+        }
+
+        event(new Lockout($request));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey($request, $username));
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    /**
+     * Get the rate limiting throttle key for the request.
+     *
+     * @param Request $request
+     * @param string $username
+     * @return string
+     */
+    private function throttleKey(Request $request, string $username): string
+    {
+        return Str::lower($username) . '|' . $request->ip();
     }
 }
