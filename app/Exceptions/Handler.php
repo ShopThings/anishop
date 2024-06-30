@@ -57,32 +57,44 @@ class Handler extends ExceptionHandler
 
         // custom not found message for APIs
         $this->renderable(function (FileNotFoundException|SymphonyFileNotFoundException $e, $request) {
-            if ($request->is('api/*')) {
+            $msg = 'فایل/پوشه مورد نظر وجود ندارد!';
+
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
-                    'message' => 'فایل/پوشه مورد نظر وجود ندارد!',
+                    'message' => $msg,
                 ], ResponseCodes::HTTP_NOT_FOUND);
             }
+
+            return response($msg);
         });
 
         // custom not found message for APIs
         $this->renderable(function (NotFoundHttpException $e, $request) {
-            if ($request->is('api/*')) {
+            $msg = 'آیتم/API درخواست شده پیدا نشد!';
+
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
-                    'message' => 'آیتم/API درخواست شده پیدا نشد!',
+                    'message' => $msg,
                 ], ResponseCodes::HTTP_NOT_FOUND);
             }
+
+            return response($msg);
         });
 
         // custom un-authentication message for APIs
         $this->renderable(function (AuthenticationException $e, $request) {
-            if ($request->is('api/*')) {
+            $msg = 'ابتدا عملیات ورود را انجام داده و سپس درخواست را مجددا ارسال نمایید.';
+
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
-                    'message' => 'ابتدا عملیات ورود را انجام داده و سپس درخواست را مجددا ارسال نمایید.',
+                    'message' => $msg,
                 ], ResponseCodes::HTTP_FORBIDDEN);
             }
+
+            return response($msg);
         });
 
         // custom unauthorized message for APIs
@@ -90,22 +102,30 @@ class Handler extends ExceptionHandler
             AuthorizationException|SpatieUnauthorizedException|AccessDeniedHttpException $e,
                                                                                          $request
         ) {
-            if ($request->is('api/*')) {
+            $msg = 'شما اجازه انجام این عملیات را ندارید.';
+
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
-                    'message' => 'شما اجازه انجام این عملیات را ندارید.',
+                    'message' => $msg,
                 ], ResponseCodes::HTTP_UNAUTHORIZED);
             }
+
+            return response($msg);
         });
 
         // custom invalid argument message for APIs
         $this->renderable(function (InvalidArgumentException $e, $request) {
-            if ($request->is('api/*')) {
+            $msg = $e->getMessage() ?: 'پارامترهای ارسال شده نامعتبر می‌باشد.';
+
+            if ($request->is('api/*') || $request->expectsJson()) {
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
-                    'message' => $e->getMessage() ?: 'پارامترهای ارسال شده نامعتبر می‌باشد.',
+                    'message' => $msg,
                 ], ResponseCodes::HTTP_UNAUTHORIZED);
             }
+
+            return response($msg);
         });
 
         // handle lazy loading violation of models
