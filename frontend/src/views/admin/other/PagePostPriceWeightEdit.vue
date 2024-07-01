@@ -20,6 +20,7 @@
                     name="min_weight"
                     placeholder="وارد نمایید"
                     type="text"
+                    @input="revalidateHandler"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -40,6 +41,7 @@
                     name="max_weight"
                     placeholder="وارد نمایید"
                     type="text"
+                    @input="revalidateHandler"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -118,7 +120,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -138,17 +140,17 @@ const idParam = getRouteParamByKey('id')
 const loading = ref(true)
 const postPrice = ref(null)
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({
+const {canSubmit, errors, onSubmit, validate} = useFormSubmit({
   validationSchema: yup.object().shape({
     min_weight: yup.string()
       .transform(transformNumbersToEnglish)
       .positiveNumber('حداقل وزن مرسوله باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
-      .max(yup.ref('max_weight'), 'حداقل وزن باید از حداکثر وزن مرسوله کمتر باشد.')
+      .lessThanNumber('max_weight', 'حداقل وزن باید از حداکثر وزن مرسوله کمتر باشد.')
       .required('حداقل وزن مرسوله را وارد نمایید.'),
     max_weight: yup.string()
       .transform(transformNumbersToEnglish)
       .positiveNumber('حداکثر وزن مرسوله باید عددی مثبت و بیشتر از صفر باشد.', {gt: 0})
-      .min(yup.ref('min_weight'), 'حداکثر وزن باید از حداقل وزن مرسوله بیشتر باشد.')
+      .greaterThanNumber('min_weight', 'حداکثر وزن باید از حداقل وزن مرسوله بیشتر باشد.')
       .required('حداکثر وزن مرسوله را وارد نمایید.'),
     post_price: yup.string()
       .transform(transformNumbersToEnglish)
@@ -177,6 +179,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     },
   })
 })
+
+function revalidateHandler() {
+  nextTick(() => {
+    validate()
+  })
+}
 
 onMounted(() => {
   WeightPostPriceAPI.fetchById(idParam.value, {
