@@ -227,14 +227,16 @@ const operations = [
         hideAllPoppers()
         toast.clear()
 
-        WeightPostPriceAPI.deleteById(data.id, {
-          success: () => {
-            toast.success('عملیات با موفقیت انجام شد.')
-            datatable.value?.refresh()
-            datatable.value?.resetSelectionItem(data)
+        useConfirmToast(() => {
+          WeightPostPriceAPI.deleteById(data.id, {
+            success: () => {
+              toast.success('عملیات با موفقیت انجام شد.')
+              datatable.value?.refresh()
+              datatable.value?.resetSelectionItem(data)
 
-            return false
-          },
+              return false
+            },
+          })
         })
       },
     },
