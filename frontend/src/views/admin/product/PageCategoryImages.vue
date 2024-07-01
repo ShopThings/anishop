@@ -197,6 +197,8 @@ function handleImageClear(item, file) {
     CategoryImageAPI.deleteById(item.category_image_id, {
       success() {
         item.image = null
+        delete item.category_image_id
+
         toast.success('حذف تصویر با موفقیت انجام شد.')
       },
       finally() {
