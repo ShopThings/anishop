@@ -34,6 +34,14 @@ npm install
 
 - You need to run migrations with seeds to have some data to see by this command
 
+#### Before seeding data
+
+If you want to(and you need to) enter admin/user panel, you need a username and a password. You can create your own and
+seed it by doing it in `UserSeeder.php` class under `database/seeder` directory.
+
+**⚠️ It is better to seed a user as developer(or any other admin role) because there are using of Id number `1` in other
+seeders and by seeding your user as number `1`, you prevent unwanted behaviors. THANKS!**
+
 ```
 php artisan migrate --seed
 ```
@@ -43,7 +51,9 @@ php artisan migrate --seed
 To have a working frontend that show images of products and other parts, you need to create structure that mentioned
 in `FileManagerSeeder.php` under `database/seeders` directory with `filemanager` in **admin** panel.
 
-To enter **admin** panel, you need to create a user for yourself (Do it somehow✌️).
+To enter **admin** panel, you need to create a user for yourself by seeding `UserSeeder.php`.
+
+**Make sure that you DO NOT commit `UserSeeder.php` to prevent your data online**
 
 After create needed directory structure in filemanager, you need files to upload there. Go to `frontend/src/assets` then
 for each directory you created, there is an equivalent folder, add them by uploading them to each directory.
