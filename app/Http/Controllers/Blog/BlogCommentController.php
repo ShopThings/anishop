@@ -70,14 +70,13 @@ class BlogCommentController extends Controller
         Gate::authorize('create', [BlogComment::class, $blog]);
 
         $validated = filter_validated_data($request->validated(), [
-            'blog',
             'badge',
             'comment',
             'description',
         ]);
         $validated['condition'] = CommentConditionsEnum::ACCEPTED->value;
         $validated['status'] = CommentStatusesEnum::READ->value;
-        $model = $this->service->create($validated);
+        $model = $this->service->create($validated + ['blog' => $blog->id]);
 
         if (!is_null($model)) {
             return response()->json([
