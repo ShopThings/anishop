@@ -13,6 +13,7 @@
             '!rounded-none',
             comment.is_for_current_user ? '!bg-emerald-50' : '',
           ]"
+          :show-answer-button="canComment"
         />
       </div>
       <partial-comment-blog-nested
@@ -73,6 +74,7 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  canComment: Boolean,
 })
 
 const limit = 20

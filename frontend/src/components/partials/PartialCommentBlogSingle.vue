@@ -159,12 +159,12 @@ function handleAnswerClick() {
   showAnswerForm.value = true
 }
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({
+const {canSubmit, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     answer: yup.string().required('پاسخ خود به دیدگاه را وارد نمایید.'),
   }),
 }, (values, actions) => {
-  if (!props.api || !props.answerForId) return
+  if (!props.api || !props.answerForId || !props.showAnswerButton) return
 
   canSubmit.value = false
 

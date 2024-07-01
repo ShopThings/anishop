@@ -15,6 +15,7 @@
               '!rounded-none',
               comment.is_for_current_user ? '!bg-emerald-50' : '',
             ]"
+            :show-answer-button="canComment"
           />
         </template>
       </base-feed-list>
@@ -23,6 +24,7 @@
         v-if="comment.children_count > 0"
         :blog-slug="blogSlug"
         :parent-id="comment.id"
+        :can-comment="canComment"
       />
     </template>
 
@@ -82,6 +84,7 @@ const props = defineProps({
     type: [Number, String],
     required: true,
   },
+  canComment: Boolean,
 })
 
 const config = reactive({

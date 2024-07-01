@@ -200,7 +200,10 @@
                     title="دیدگاه‌ها"
                   />
 
-                  <blog-comments :blog-slug="blog.slug"/>
+                  <blog-comments
+                    :blog-slug="blog.slug"
+                    :can-comment="blog.is_commenting_allowed"
+                  />
 
                   <div
                     v-if="blog.is_commenting_allowed"
