@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-3">
+  <div class="mt-3">
     <template
       v-for="(comment, idx) in comments"
       :key="comment.id"
@@ -25,6 +25,7 @@
         :blog-slug="blogSlug"
         :parent-id="comment.id"
         :can-comment="canComment"
+        class="pr-12"
       />
     </template>
 
