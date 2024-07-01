@@ -100,7 +100,7 @@
                 :lazy-src="value.image.path"
                 :size="FileSizes.SMALL"
                 :is-local="false"
-                class="!h-28 sm:!h-20 w-auto rounded"
+                class="!h-20 min-w-20 rounded"
               />
             </template>
 
@@ -114,7 +114,7 @@
 
             <template v-slot:stock_count="{value}">
               <span>{{ value.stock_count }}</span>
-              <span class="text-xs text-slate-400">{{ value.unit.name }}</span>
+              <span class="text-xs text-slate-400">{{ value.unit_name }}</span>
             </template>
 
             <template v-slot:is_published="{value}">

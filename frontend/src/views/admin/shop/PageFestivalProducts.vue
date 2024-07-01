@@ -67,7 +67,7 @@
                 :is-local="false"
                 :lazy-src="value.product.image.path"
                 :size="FileSizes.SMALL"
-                class="!h-28 sm:!h-20 w-auto rounded"
+                class="!h-20 min-w-20 rounded"
               />
             </template>
 

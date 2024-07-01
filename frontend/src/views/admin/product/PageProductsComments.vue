@@ -27,7 +27,7 @@
                   :lazy-src="value.product.image.path"
                   :size="FileSizes.SMALL"
                   :is-local="false"
-                  class="!h-28 sm:!h-20 w-auto rounded"
+                  class="!h-20 min-w-20 rounded"
                 />
                 <router-link
                   :to="{name: 'admin.product.detail', params: {slug: value.product.slug}}"

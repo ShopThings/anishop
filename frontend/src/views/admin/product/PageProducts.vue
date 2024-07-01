@@ -41,7 +41,7 @@
                 :lazy-src="value.image.path"
                 :size="FileSizes.SMALL"
                 :is-local="false"
-                class="!h-28 sm:!h-20 w-auto min-w-20 rounded"
+                class="!h-20 min-w-20 rounded"
               />
             </template>
 

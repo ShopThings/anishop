@@ -32,7 +32,7 @@
                     :is-local="false"
                     :lazy-src="value.blog.image.path"
                     :size="FileSizes.SMALL"
-                    class="!h-28 sm:!h-20 w-auto min-w-20 object-cover rounded"
+                    class="!h-20 min-w-20 rounded object-cover"
                   />
                 </div>
 
