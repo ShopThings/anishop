@@ -53,7 +53,7 @@
                 {{ numberFormat(value.post_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
-              <MinusIcon v-else class="w-5 h-5 text-rose-500"/>
+              <span v-else class="font-iranyekan-bold">رایگان</span>
             </template>
 
             <template v-slot:created_at="{value}">

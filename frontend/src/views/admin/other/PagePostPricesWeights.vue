@@ -21,19 +21,19 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <base-datatable
-              ref="datatable"
-              :columns="table.columns"
-              :enable-multi-operation="true"
-              :enable-search-box="true"
-              :has-checkbox="true"
-              :is-loading="table.isLoading"
-              :is-slot-mode="true"
-              :rows="table.rows"
-              :selection-columns="table.selectionColumns"
-              :selection-operations="selectionOperations"
-              :sortable="table.sortable"
-              :total="table.totalRecordCount"
-              @do-search="doSearch"
+            ref="datatable"
+            :columns="table.columns"
+            :enable-multi-operation="true"
+            :enable-search-box="true"
+            :has-checkbox="true"
+            :is-loading="table.isLoading"
+            :is-slot-mode="true"
+            :rows="table.rows"
+            :selection-columns="table.selectionColumns"
+            :selection-operations="selectionOperations"
+            :sortable="table.sortable"
+            :total="table.totalRecordCount"
+            @do-search="doSearch"
           >
             <template v-slot:min_weight="{value}">
               <div class="font-iranyekan-bold">
@@ -51,13 +51,13 @@
 
             <template v-slot:post_price="{value}">
               <div
-                  v-if="value.post_price > 0"
-                  class="font-iranyekan-bold"
+                v-if="value.post_price > 0"
+                class="font-iranyekan-bold"
               >
                 {{ numberFormat(value.post_price) }}
                 <span class="text-xs text-gray-400">تومان</span>
               </div>
-              <MinusIcon v-else class="w-5 h-5 text-rose-500"/>
+              <span v-else class="font-iranyekan-bold">رایگان</span>
             </template>
 
             <template v-slot:created_at="{value}">
