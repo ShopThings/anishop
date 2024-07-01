@@ -10,7 +10,8 @@ export const useFormSubmit = (formOptions, submitAction) => {
     handleSubmit,
     errors,
     isSubmitting,
-    values
+    values,
+    validate
   } = useForm(formOptions)
 
   const onSubmit = handleSubmit((values, actions) => {
@@ -27,5 +28,6 @@ export const useFormSubmit = (formOptions, submitAction) => {
     errors,
     isSubmitting,
     values,
+    validate,
   }
 }
