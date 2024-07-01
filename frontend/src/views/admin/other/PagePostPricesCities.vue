@@ -38,11 +38,11 @@
             @do-search="doSearch"
           >
             <template v-slot:province="{value}">
-              {{ valu.city.province.name }}
+              {{ value.city.province.name }}
             </template>
 
             <template v-slot:city="{value}">
-              {{ valu.city.name }}
+              {{ value.city.name }}
             </template>
 
             <template v-slot:post_price="{value}">
@@ -174,7 +174,7 @@ const table = reactive({
     order: "id",
     sort: "desc",
   },
-  groupingKey: 'province_id',
+  groupingKey: 'province.name',
   hasGroupToggle: true,
 })
 
