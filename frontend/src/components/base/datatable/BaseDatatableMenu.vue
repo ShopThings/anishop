@@ -9,10 +9,10 @@
     <template #button>
       <slot name="button">
         <button
-          class="text-black bg-white p-1 rounded-md ring-1 ring-cyan-300 transition hover:ring-cyan-500"
+          class="text-black p-1 rounded-full ring-1 ring-slate-300 transition hover:ring-cyan-500"
           type="button"
         >
-          <outline.Bars3Icon class="h-5 w-5"/>
+          <outline.EllipsisHorizontalIcon class="size-6"/>
         </button>
       </slot>
     </template>
