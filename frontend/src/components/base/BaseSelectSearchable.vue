@@ -52,7 +52,9 @@
               v-if="showSelectedItemsPanel"
               class="absolute top-0 left-0 w-full h-full z-[2] bg-white rounded-lg"
             >
-              <div class="text-left p-2 mb-2 shadow sticky -top-1 z-[1] bg-white rounded-t-lg">
+              <div
+                class="flex items-center gap-3 justify-between p-2 mb-2 shadow sticky -top-1 z-[1] bg-white rounded-t-lg">
+                <span>موارد انتخاب شده</span>
                 <base-button-close @click="toggleSelectedItemsShowing"/>
               </div>
 
