@@ -1,7 +1,7 @@
 <template>
   <base-carousel
     v-slot="{slide, index}"
-    v-model="relatedProducts"
+    v-model="localProducts"
     v-model:current="currentSlide"
     :breakpoints="carouselSettings.breakpoints"
     :free-mode="carouselSettings.freeMode"
@@ -31,7 +31,7 @@ const props = defineProps({
   },
 })
 
-const relatedProducts = ref(props.products)
+const localProducts = ref(props.products)
 const currentSlide = ref(0)
 
 const carouselSettings = {
