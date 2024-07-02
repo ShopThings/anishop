@@ -44,6 +44,10 @@ const routes = [
   {
     path: '/login',
     name: 'login',
+    beforeEnter: async (to, from, next) => {
+      const store = useUserAuthStore()
+      return store.getUser ? next(from.fullPath) : next()
+    },
     component: () => import('@/views/PageLogin.vue'),
     meta: {
       title: 'ورود',
@@ -53,6 +57,10 @@ const routes = [
   {
     path: '/signup',
     name: 'signup',
+    beforeEnter: async (to, from, next) => {
+      const store = useUserAuthStore()
+      return store.getUser ? next(from.fullPath) : next()
+    },
     component: () => import('@/views/PageSignup.vue'),
     meta: {
       title: 'ثبت نام',
