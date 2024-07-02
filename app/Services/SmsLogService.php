@@ -11,8 +11,8 @@ use App\Support\Service;
 use App\Support\WhereBuilder\WhereBuilder;
 use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class SmsLogService extends Service implements SmsLogServiceInterface
 {
@@ -39,13 +39,13 @@ class SmsLogService extends Service implements SmsLogServiceInterface
                 ], $search);
             })
             ->when(
-                SMSTypesEnum::getSimilarValuesFromString($searchText),
+                SMSTypesEnum::getSimilarValuesFromString($searchText ?? ''),
                 function (WhereBuilderInterface $q, array $types) {
                     $q->whereIn('type', $types);
                 }
             )
             ->when(
-                SMSSenderTypesEnum::getSimilarValuesFromString($searchText),
+                SMSSenderTypesEnum::getSimilarValuesFromString($searchText ?? ''),
                 function (WhereBuilderInterface $q, array $types) {
                     $q->whereIn('sender', $types);
                 }

@@ -21,20 +21,20 @@
               :total="table.totalRecordCount"
               @do-search="doSearch"
           >
-            <template v-slot:mobile="{value}">
-              <span class="tracking-widest font-iranyekan-bold">{{ value.mobile }}</span>
-            </template>
-
-            <template v-slot:receiver_number="{value}">
-              <span class="tracking-widest">{{ value.receiver_number }}</span>
+            <template v-slot:receiver_numbers="{value}">
+              <span class="tracking-widest">{{ value.receiver_numbers }}</span>
             </template>
 
             <template v-slot:panel_number="{value}">
-              <span class="tracking-widest">{{ value.panel_number }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.panel_number || '-' }}</span>
+            </template>
+
+            <template v-slot:panel_name="{value}">
+              <span class="tracking-widest">{{ value.panel_name || '-' }}</span>
             </template>
 
             <template v-slot:body="{value}">
-              <div class="leading-relaxed">{{ value.body }}</div>
+              <div class="leading-relaxed" v-html="convertNl2Br(value.body)"></div>
             </template>
 
             <template v-slot:type="{value}">
@@ -70,7 +70,7 @@
 <script setup>
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
-import {computed, reactive, ref} from "vue";
+import {reactive, ref} from "vue";
 import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
@@ -96,7 +96,7 @@ const table = reactive({
     },
     {
       label: "شماره گیرنده",
-      field: "receiver_number",
+      field: "receiver_numbers",
       sortable: true,
       columnClasses: 'whitespace-nowrap',
     },
@@ -116,6 +116,7 @@ const table = reactive({
       label: "متن",
       field: "body",
       sortable: true,
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "نوع پیامک",
@@ -152,7 +153,7 @@ const table = reactive({
     },
     {
       label: "شماره گیرنده",
-      field: "receiver_number",
+      field: "receiver_numbers",
       sortable: true,
       columnClasses: 'whitespace-nowrap',
     },
@@ -172,6 +173,7 @@ const table = reactive({
       label: "متن",
       field: "body",
       sortable: true,
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "نوع پیامک",
@@ -206,9 +208,9 @@ const table = reactive({
   },
 })
 
-const getMenuContainer = computed(() => {
-  return datatable.value?.tableContainer ?? 'body'
-})
+function convertNl2Br(value) {
+  return value?.replace(/\r\n|\r|\n/g, '<br>')
+}
 
 const doSearch = (offset, limit, order, sort, text) => {
   table.isLoading = true

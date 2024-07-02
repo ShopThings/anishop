@@ -19,7 +19,7 @@ class SmsLogResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'receiver_number' => $this->receiver_number,
+            'receiver_numbers' => $this->receiver_numbers,
             'panel_number' => $this->panel_number,
             'panel_name' => $this->panel_name,
             'body' => $this->body,
