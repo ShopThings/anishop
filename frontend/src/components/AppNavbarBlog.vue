@@ -1,6 +1,6 @@
 <template>
   <div class="h-[64px]">
-    <nav class="fixed bg-white w-full shadow-md z-10">
+    <nav class="fixed right-0 left-0 top-0 bg-white w-full shadow-md z-10">
       <div class="layout-max-w mx-auto w-full">
         <div class="h-[64px] py-2 px-6 flex">
           <div class="h-full shrink-0">

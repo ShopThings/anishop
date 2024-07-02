@@ -1,6 +1,6 @@
 <template>
   <div class="h-[94px]">
-    <div class="flex flex-col fixed bg-white w-full shadow-md z-10">
+    <div class="flex flex-col fixed right-0 left-0 top-0 bg-white w-full shadow-md z-10">
       <div class="h-[64px] layout-max-w mx-auto w-full">
         <nav>
           <div class="h-[64px] py-2 px-6 flex">
