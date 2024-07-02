@@ -1,42 +1,50 @@
 <template>
   <div
-      v-if="slidersLoading || !sliders?.length"
-      class="px-3 mb-6 lg:mb-8"
+    v-if="slidersLoading || !sliders?.length"
+    class="px-3 mb-6 lg:mb-8"
   >
-    <div class="flex items-center gap-6 overflow-hidden mb-6 lg:mb-8">
-      <loader-card
-          v-for="i in 5"
-          :key="i"
-          class="!w-80 rounded-lg shadow-lg"
-      />
+    <div class="mb-6 lg:mb-8">
+      <base-carousel
+        v-model="loadingProducts"
+        v-model:current="currentSlide"
+        :breakpoints="carouselSettings.breakpoints"
+        :free-mode="carouselSettings.freeMode"
+        :has-navigation="carouselSettings.hasNavigation"
+        :has-pagination="carouselSettings.hasPagination"
+        :navigation-display="carouselSettings.navigationDisplay"
+        :slides-per-view="1"
+        slide-class="w-80"
+      >
+        <loader-card class="rounded-lg shadow-lg"/>
+      </base-carousel>
     </div>
     <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
       <div
-          v-for="i in 2"
-          :key="i"
-          class="flex items-center justify-center bg-slate-200 rounded-lg h-56 animate-pulse"
+        v-for="i in 2"
+        :key="i"
+        class="flex items-center justify-center bg-slate-200 rounded-lg h-56 animate-pulse"
       >
         <PhotoIcon class="text-slate-400 size-12 md:size-16"/>
       </div>
     </div>
   </div>
   <div
-      v-for="slider in sliders"
-      v-else
-      :key="slider.id"
-      class="px-3 mb-6 lg:mb-8"
+    v-for="slider in sliders"
+    v-else
+    :key="slider.id"
+    class="px-3 mb-6 lg:mb-8"
   >
     <template v-if="slider.place_in.value === SLIDER_PLACES.MAIN_SLIDERS.value">
       <partial-general-title
-          :title="slider.title"
-          title-size="text-lg"
+        :title="slider.title"
+        title-size="text-lg"
       >
         <template #extra>
           <router-link
-              v-if="slider?.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value] &&
+            v-if="slider?.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value] &&
                slider?.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value].trim() !== ''"
-              :to="slider.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value]"
-              class="text-sm transition border-2 border-black rounded py-1.5 px-2 bg-white flex gap-2 item-center hover:bg-slate-50"
+            :to="slider.options[SLIDER_OPTIONS.SHOW_ALL_LINK.value]"
+            class="text-sm transition border-2 border-black rounded py-1.5 px-2 bg-white flex gap-2 item-center hover:bg-slate-50"
           >
             <span>مشاهده همه</span>
             <ArrowLeftIcon class="h-5 w-5"/>
@@ -44,23 +52,23 @@
         </template>
       </partial-general-title>
       <product-carousel
-          v-if="slider.items?.length"
-          :products="slider.items"
+        v-if="slider.items?.length"
+        :products="slider.items"
       />
     </template>
 
     <template v-else-if="slider.place_in.value === SLIDER_PLACES.MAIN_SLIDER_IMAGES.value">
       <div
-          :class="gridImageClass[slider?.options[SLIDER_OPTIONS.BESIDE_IMAGES.value] ?? 1]"
-          class="grid gap-4"
+        :class="gridImageClass[slider?.options[SLIDER_OPTIONS.BESIDE_IMAGES.value] ?? 1]"
+        class="grid gap-4"
       >
         <div
-            v-for="(item, idx) in slider.items"
-            :key="idx"
+          v-for="(item, idx) in slider.items"
+          :key="idx"
         >
           <router-link
-              :to="item?.link"
-              class="block rounded-lg shadow"
+            :to="item?.link"
+            class="block rounded-lg shadow"
           >
             <base-lazy-image
               :alt="'تصویر ' + idx"
@@ -84,6 +92,7 @@ import {SLIDER_OPTIONS, SLIDER_PLACES} from "@/composables/constants.js";
 import {HomeMainPageAPI} from "@/service/APIHomePages.js";
 import LoaderCard from "@/components/base/loader/LoaderCard.vue";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import BaseCarousel from "@/components/base/BaseCarousel.vue";
 
 const emit = defineEmits(['loaded'])
 
@@ -95,6 +104,25 @@ const gridImageClass = {
 }
 const sliders = ref(null)
 const slidersLoading = ref(true)
+
+//---------------------------------
+// This is just for loading part
+//---------------------------------
+const loadingProducts = ref([{}, {}, {}, {}, {}, {}])
+const currentSlide = ref(0)
+const carouselSettings = {
+  hasNavigation: true,
+  navigationDisplay: 'floating-sides',
+  hasPagination: false,
+  freeMode: true,
+  breakpoints: {
+    360: {
+      slidesPerView: 'auto',
+    },
+  },
+}
+
+//---------------------------------
 
 onMounted(() => {
   HomeMainPageAPI.fetchSliders({
