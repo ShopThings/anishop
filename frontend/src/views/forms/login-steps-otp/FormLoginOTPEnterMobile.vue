@@ -39,7 +39,7 @@
       class="w-full flex justify-center items-center group bg-primary border-primary text-white"
       type="submit"
     >
-      <span class="mx-auto">ارسال کد</span>
+      <span class="mx-auto">ارسال رمز</span>
       <ArrowLeftIcon
         class="h-6 w-6 text-white opacity-60 group-hover:-translate-x-1.5 transition-all"/>
     </base-button>

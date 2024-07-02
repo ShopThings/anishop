@@ -33,7 +33,7 @@ const steps = reactive({
   },
   mobileConfirmation: {
     icon: 'CheckBadgeIcon',
-    text: 'کد تایید ورود',
+    text: 'وارد نمودن رمز',
   },
 })
 </script>
