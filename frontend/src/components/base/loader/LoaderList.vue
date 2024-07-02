@@ -4,38 +4,38 @@
       role="status">
     <div class="flex items-center justify-between">
       <div>
-        <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
+        <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
         <div class="w-32 h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
       </div>
-      <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-700 w-12"></div>
+      <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-12"></div>
     </div>
     <div class="flex items-center justify-between pt-4">
       <div>
-        <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
+        <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
         <div class="w-32 h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
       </div>
-      <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-700 w-12"></div>
+      <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-12"></div>
     </div>
     <div class="flex items-center justify-between pt-4">
       <div>
-        <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
+        <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
         <div class="w-32 h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
       </div>
-      <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-700 w-12"></div>
+      <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-12"></div>
     </div>
     <div class="flex items-center justify-between pt-4">
       <div>
-        <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
+        <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
         <div class="w-32 h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
       </div>
-      <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-700 w-12"></div>
+      <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-12"></div>
     </div>
     <div class="flex items-center justify-between pt-4">
       <div>
-        <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
+        <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
         <div class="w-32 h-2 bg-slate-300 rounded-full dark:bg-slate-700"></div>
       </div>
-      <div class="h-2.5 bg-slate-400 rounded-full dark:bg-slate-700 w-12"></div>
+      <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-12"></div>
     </div>
     <span class="sr-only">در حال بارگذاری...</span>
   </div>

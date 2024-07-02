@@ -3,7 +3,7 @@
       class="bg-white p-4 border border-slate-200 rounded-lg shadow animate-pulse md:p-6 dark:border-slate-700"
       role="status"
   >
-    <div class="flex items-center justify-center h-48 mb-6 bg-slate-400 rounded dark:bg-slate-700">
+    <div class="flex items-center justify-center h-48 mb-6 bg-slate-300 rounded dark:bg-slate-700">
       <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
            fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
         <path
