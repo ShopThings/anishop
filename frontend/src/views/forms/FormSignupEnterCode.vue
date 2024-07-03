@@ -15,7 +15,16 @@
     </base-button>
 
     <div class="mt-6 mb-6">
-      <partial-input-label title="وارد نمودن کد ارسال شده"/>
+      <partial-input-label>
+        <template #label>
+          <div class="flex flex-wrap gap-2 5 items-center">
+            <span>وارد نمودن کد ارسال شده</span>
+            <div class="text-xs text-pink-600">
+              (صفحه کلید باید انگلیسی باشد)
+            </div>
+          </div>
+        </template>
+      </partial-input-label>
       <div class="flex gap-2 flex-row-reverse">
         <template v-for="index in 6" :key="index">
           <base-input
