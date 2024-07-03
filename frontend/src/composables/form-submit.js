@@ -11,7 +11,9 @@ export const useFormSubmit = (formOptions, submitAction) => {
     errors,
     isSubmitting,
     values,
-    validate
+    validate,
+    setFieldError,
+    setErrors,
   } = useForm(formOptions)
 
   const onSubmit = handleSubmit((values, actions) => {
@@ -29,5 +31,7 @@ export const useFormSubmit = (formOptions, submitAction) => {
     isSubmitting,
     values,
     validate,
+    setFieldError,
+    setErrors,
   }
 }
