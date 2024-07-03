@@ -28,7 +28,13 @@
       <v-captcha ref="captchaCom" v-model="captchaKey"/>
     </div>
     <div class="mb-6">
-      <base-input label-title="کد تصویر" name="captcha" placeholder="کد تصویر">
+      <base-input
+        klass="no-spin-arrow"
+        label-title="کد تصویر"
+        name="captcha"
+        placeholder="کد تصویر"
+        type="number"
+      >
         <template #icon>
           <QrCodeIcon class="w-6 h-6 text-gray-400"/>
         </template>

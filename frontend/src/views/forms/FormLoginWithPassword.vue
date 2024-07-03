@@ -43,6 +43,8 @@
     </div>
     <div class="mb-6">
       <base-input
+        klass="no-spin-arrow"
+        type="number"
         label-title="کد تصویر:"
         name="captcha"
         placeholder="کد تصویر"

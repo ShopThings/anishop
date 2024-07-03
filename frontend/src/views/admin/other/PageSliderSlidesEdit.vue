@@ -407,7 +407,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
       setFormFields(response.data)
     },
     error(error) {
-      actions.setErrors(error.errors)
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
+        actions.setErrors(error.errors)
+      }
     },
     finally() {
       canSubmit.value = true

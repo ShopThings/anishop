@@ -62,7 +62,8 @@ class AuthRepository implements AuthRepositoryInterface
         if ($diffTime <= 0) {
             throw new Exception('خطای غیر منتظره! لطفا دوباره تلاش نمایید.');
         }
-        throw new PleaseWaitException('امکان ارسال مجدد رمز یکبار مصرف پس از ' . $diffTime . ' ثانیه');
+        // previous message: 'امکان ارسال مجدد رمز یکبار مصرف پس از ' . $diffTime . ' ثانیه'
+        throw new PleaseWaitException('امکان ارسال مجدد رمز یکبار مصرف پس از ۱ دقیقه');
     }
 
     /**
@@ -81,7 +82,8 @@ class AuthRepository implements AuthRepositoryInterface
         if ($diffTime <= 0) {
             throw new Exception('خطای غیر منتظره! لطفا دوباره تلاش نمایید.');
         }
-        throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
+        // previous message: 'امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه'
+        throw new PleaseWaitException('امکان ارسال مجدد رمز یکبار مصرف پس از ۱ دقیقه');
     }
 
     /**
@@ -100,7 +102,8 @@ class AuthRepository implements AuthRepositoryInterface
         if ($diffTime <= 0) {
             throw new Exception('خطای غیر منتظره! لطفا دوباره تلاش نمایید.');
         }
-        throw new PleaseWaitException('امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه');
+        // previous message: 'امکان ارسال مجدد کد تایید پس از ' . $diffTime . ' ثانیه'
+        throw new PleaseWaitException('امکان ارسال مجدد رمز یکبار مصرف پس از ۱ دقیقه');
     }
 
     /**

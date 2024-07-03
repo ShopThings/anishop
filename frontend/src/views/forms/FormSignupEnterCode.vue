@@ -161,7 +161,7 @@ const sendCodeTimerRef = ref(null)
 const sendCodeTimer = useCountdown(60, sendCodeTimerRef)
 const canSendCode = ref(true)
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
+const {canSubmit, errors, onSubmit, setFieldError} = useFormSubmit({}, (values, actions) => {
   let code = getCodeFromInputs()
 
   if (!/^\d{6}$/.test(code)) {
@@ -223,10 +223,6 @@ function sendAnotherCodeToUser() {
   }, {
     success() {
       sendCodeTimer.start(checkSendCodeTime)
-    },
-    error(error) {
-      errors.code = error.message || 'خطای غیر قابل پیش‌بینی'
-      return false
     },
   })
 }

@@ -25,7 +25,7 @@
             :name="'number' + index"
             klass="text-center !text-2xl text-slate-400 no-spin-arrow !py-2.5"
             mask="#"
-            type="text"
+            type="number"
             @focus="handleNumberInputFocus"
             @keydown="handleInputNumberKeyDown"
             @keyup="handleInputNumberKeyUp"
@@ -164,27 +164,7 @@ function checkSendCodeTime() {
   sendCodeTimer.stop()
 }
 
-
-function sendAnotherCodeToUser() {
-  if (!canSendCode.value) return
-  canSendCode.value = false
-
-  sendCodeTimer.start(checkSendCodeTime)
-
-  HomeRecoverPasswordAPI.resendVerifyCode({
-    username: recoverStore.getMobileStep?.mobile
-  }, {
-    success() {
-      sendCodeTimer.start(checkSendCodeTime)
-    },
-    error(error) {
-      actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
-      return false
-    },
-  })
-}
-
-const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
+const {canSubmit, errors, onSubmit, setFieldError} = useFormSubmit({}, (values, actions) => {
   let code = getCodeFromInputs()
 
   if (!/^\d{6}$/.test(code)) {
@@ -249,6 +229,21 @@ function resetFormInputs() {
       inp.input.value = ''
     }
   }
+}
+
+function sendAnotherCodeToUser() {
+  if (!canSendCode.value) return
+  canSendCode.value = false
+
+  sendCodeTimer.start(checkSendCodeTime)
+
+  HomeRecoverPasswordAPI.resendVerifyCode({
+    username: recoverStore.getMobileStep?.mobile
+  }, {
+    success() {
+      sendCodeTimer.start(checkSendCodeTime)
+    },
+  })
 }
 
 onMounted(() => {
