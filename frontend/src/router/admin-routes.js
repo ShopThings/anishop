@@ -14,6 +14,7 @@ export const adminRoutes = {
         const store = useAdminAuthStore()
 
         if (
+          store.getUser &&
           to.query.redirect &&
           isValidInternalRedirectLink(to.query.redirect) &&
           ['/admin/login', '/login'].indexOf(to.query.redirect) === -1

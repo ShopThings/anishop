@@ -47,6 +47,16 @@ const routes = [
     name: 'login',
     beforeEnter: async (to, from, next) => {
       const store = useUserAuthStore()
+
+      if (
+        store.getUser &&
+        to.query.redirect &&
+        isValidInternalRedirectLink(to.query.redirect) &&
+        ['/admin/login', '/login'].indexOf(to.query.redirect) === -1
+      ) {
+        return next(to.query.redirect)
+      }
+
       return store.getUser ? next(from.fullPath) : next()
     },
     component: () => import('@/views/PageLogin.vue'),
