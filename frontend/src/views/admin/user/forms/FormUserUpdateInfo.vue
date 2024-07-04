@@ -22,7 +22,7 @@
           :is-editable="hasEditPermission"
           :multiple="true"
           :options="roles"
-          :selected="initialRoles"
+          :selected="selectedRoles"
           name="roles"
           options-key="value"
           options-text="name"
@@ -146,7 +146,6 @@ import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {computed, onMounted, ref} from "vue";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
-import {useRoute} from "vue-router";
 import {useToast} from "vue-toastification";
 import {RoleAPI} from "@/service/APIRole.js";
 import {UserAPI} from "@/service/APIUser.js";
@@ -159,12 +158,8 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  initialRoles: {
-    type: Object,
-    required: true,
-  },
 })
-const emit = defineEmits(['update:user', 'update:initialRoles'])
+const emit = defineEmits(['update:user'])
 
 const user = computed({
   get() {
@@ -175,16 +170,6 @@ const user = computed({
   },
 })
 
-const initialRoles = computed({
-  get() {
-    return props.initialRoles
-  },
-  set(value) {
-    emit('update:initialRoles', value)
-  },
-})
-
-const route = useRoute()
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
 
@@ -194,11 +179,20 @@ const hasEditPermission = computed(() => {
     userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.UPDATE)
 })
 
-const selectedRole = ref(null)
+const selectedRoles = ref([])
 const roles = ref({})
 
+for (let o in props.user?.roles || {}) {
+  if (props.user.roles.hasOwnProperty(o)) {
+    selectedRoles.value.push({
+      name: props.user.roles[o],
+      value: o,
+    })
+  }
+}
+
 function roleChange(selected) {
-  selectedRole.value = selected
+  selectedRoles.value = selected
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
@@ -221,25 +215,25 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }
 
   // validate extra inputs
-  if (!selectedRole.value || selectedRole.value.length === 0) {
+  if (!selectedRoles.value || selectedRoles.value.length === 0) {
     actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
     return
   }
 
-  if (Array.isArray(selectedRole.value)) {
-    for (let i of selectedRole.value) {
+  if (Array.isArray(selectedRoles.value)) {
+    for (let i of selectedRoles.value) {
       if (roles.value.map(val => val.value).indexOf(i.value) === -1) {
         actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')
         return
       }
     }
-    values.roles = selectedRole.value
+    values.roles = selectedRoles.value
   } else {
-    if (roles.value.map(val => val.value).indexOf(selectedRole.value.value) === -1) {
+    if (roles.value.map(val => val.value).indexOf(selectedRoles.value.value) === -1) {
       actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')
       return
     }
-    values.roles = [selectedRole.value]
+    values.roles = [selectedRoles.value]
   }
   //
 
@@ -260,7 +254,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
           })
         }
       }
-      initialRoles.value = retrievedRoles
+      selectedRoles.value = retrievedRoles
 
       return false
     },

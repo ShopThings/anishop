@@ -5,8 +5,8 @@
       class="grow"
     >
       <partial-card-navigation
-          :to="{name: 'admin.user.addresses', params: {id: idParam}}"
-          bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
+        :to="{name: 'admin.user.addresses', params: {id: idParam}}"
+        bg-color="bg-gradient-to-r from-cyan-500 to-indigo-500"
       >
         <span class="text-white text-lg grow">آدرس‌ها</span>
         <BookOpenIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -17,8 +17,8 @@
       class="grow"
     >
       <partial-card-navigation
-          :to="{name: 'admin.user.purchases', params: {id: idParam}}"
-          bg-color="bg-gradient-to-r from-purple-500 to-cyan-500"
+        :to="{name: 'admin.user.purchases', params: {id: idParam}}"
+        bg-color="bg-gradient-to-r from-purple-500 to-cyan-500"
       >
         <span class="text-white text-lg grow">سفارشات</span>
         <ShoppingBagIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -29,8 +29,8 @@
       class="grow"
     >
       <partial-card-navigation
-          :to="{name: 'admin.user.carts', params: {id: idParam}}"
-          bg-color="bg-gradient-to-r from-pink-500 to-purple-500"
+        :to="{name: 'admin.user.carts', params: {id: idParam}}"
+        bg-color="bg-gradient-to-r from-pink-500 to-purple-500"
       >
         <span class="text-white text-lg grow">سبد خرید</span>
         <ShoppingCartIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -41,8 +41,8 @@
       class="grow"
     >
       <partial-card-navigation
-          :to="{name: 'admin.user.favorite_products', params: {id: idParam}}"
-          bg-color="bg-gradient-to-r from-fuchsia-500 to-pink-500"
+        :to="{name: 'admin.user.favorite_products', params: {id: idParam}}"
+        bg-color="bg-gradient-to-r from-fuchsia-500 to-pink-500"
       >
         <span class="text-white text-lg grow">محصولات مورد علاقه</span>
         <BookmarkSquareIcon class="h-12 w-12 text-white text-opacity-50 mr-3"/>
@@ -57,10 +57,7 @@
           <template #content>
             <base-tab-panel :tabs="tabs">
               <template #info>
-                <form-user-update-info
-                    v-model:initialRoles="initialRoles"
-                    v-model:user="user"
-                />
+                <form-user-update-info v-model:user="user"/>
               </template>
 
               <template #password>
@@ -70,9 +67,9 @@
               <template #status>
                 <div class="px-2 py-3">
                   <base-animated-button
-                      class="bg-red-500 text-white mr-auto w-full sm:w-auto !py-1 px-3"
-                      type="submit"
-                      @click="deleteUser"
+                    class="bg-red-500 text-white mr-auto w-full sm:w-auto !py-1 px-3"
+                    type="submit"
+                    @click="deleteUser"
                   >
                     <template #icon="{klass}">
                       <TrashIcon :class="klass" class="h-6 w-6 ml-auto sm:ml-2"/>
@@ -83,8 +80,8 @@
                 </div>
 
                 <form-user-update-status
-                    v-if="currentUser.id !== idParam.value"
-                    v-model:user="user"
+                  v-if="currentUser.id !== idParam.value"
+                  v-model:user="user"
                 />
               </template>
             </base-tab-panel>
@@ -133,7 +130,6 @@ const tabs = {
   },
 }
 const user = ref(null)
-const initialRoles = ref(null)
 
 if (userStore.hasPermission(PERMISSION_PLACES.USER, PERMISSIONS.UPDATE)) {
   tabs.password = {
@@ -148,17 +144,17 @@ if (currentUser.id !== idParam.value) {
 
 function deleteUser() {
   useConfirmToast(
-      () => {
-        UserAPI.deleteById(idParam.value, {
-          success: () => {
-            toast.success('عملیات با موفقیت انجام شد.')
-            router.push({name: 'admin.users'})
-            return false
-          }
-        })
-      },
-      'انتقال کاربر به سطل زباله؟'
-      , 'در صورت حذف، کاربر به سطل زباله انتقال پیدا می‌کند و می‌توانید آن را در صورت نیاز بازگردانی نمایید.'
+    () => {
+      UserAPI.deleteById(idParam.value, {
+        success: () => {
+          toast.success('عملیات با موفقیت انجام شد.')
+          router.push({name: 'admin.users'})
+          return false
+        }
+      })
+    },
+    'انتقال کاربر به سطل زباله؟'
+    , 'در صورت حذف، کاربر به سطل زباله انتقال پیدا می‌کند و می‌توانید آن را در صورت نیاز بازگردانی نمایید.'
   )
 }
 
@@ -166,18 +162,6 @@ onMounted(() => {
   UserAPI.fetchById(idParam.value, {
     success(response) {
       user.value = response.data
-
-      const retrievedRoles = []
-      for (let o in response.data.roles) {
-        if (response.data.roles.hasOwnProperty(o)) {
-          retrievedRoles.push({
-            name: response.data.roles[o],
-            value: o,
-          })
-        }
-      }
-      initialRoles.value = retrievedRoles
-
       loading.value = false
     },
   })
