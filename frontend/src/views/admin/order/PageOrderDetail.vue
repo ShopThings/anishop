@@ -16,7 +16,7 @@
       </div>
 
       <div class="flex flex-col lg:flex-row gap-3 mb-3">
-        <partial-card class="lg:max-w-xs">
+        <partial-card class="w-full">
           <template #body>
             <div class="p-3">
               <div class="text-gray-500">
@@ -81,7 +81,7 @@
           </template>
         </partial-card>
 
-        <partial-card class="w-full lg:max-w-[calc(100%-20rem)]">
+        <partial-card class="w-full lg:max-w-[calc(100%-22rem)]">
           <template #body>
             <div class="p-3 h-full">
               <div class="text-gray-500">
@@ -592,12 +592,13 @@ const paymentStatus = ref(null)
 const sendStatus = ref(null)
 
 const paymentUntilNow = computed(() => {
-  if (!order.orders) return 0;
+  if (!order.value.orders?.length) return 0;
 
-  return order.orders.reduce((total, item) => {
-    total += item.must_pay_price || 0
+  return order.value.orders.reduce((total, item) => {
+    console.log(item)
+    total += parseInt(item.must_pay_price, 10) || 0
     return total
-  })
+  }, 0)
 })
 
 //-----------------------------------
