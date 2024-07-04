@@ -493,14 +493,17 @@
                 />
                 <span>{{ value.product_title }}</span>
 
-                <ul class="flex flex-col gap-2.5">
-                  <li v-if="value.color_name">
+                <ul class="flex flex-col gap-2.5 text-xs rounded-lg p-2 border border-slate-200 text-black">
+                  <li v-if="value.color_name" class="flex items-center gap-1.5">
+                    <span class="text-gray-400">رنگ:</span>
                     <partial-badge-color :hex="value.color_hex" :title="value.color_name"/>
                   </li>
-                  <li v-if="value.size">
+                  <li v-if="value.size" class="flex items-center gap-1.5">
+                    <span class="text-gray-400">سایز:</span>
                     <partial-badge-size :title="value.size"/>
                   </li>
-                  <li v-if="value.guarantee">
+                  <li v-if="value.guarantee" class="flex items-center gap-1.5">
+                    <span class="text-gray-400 text-xs">گارانتی:</span>
                     {{ value.guarantee }}
                   </li>
                 </ul>

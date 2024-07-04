@@ -653,12 +653,7 @@
                       class="mb-2 flex items-center"
                     >
                       <span class="text-gray-600 ml-2 text-xs">رنگ:</span>
-                      {{ product.color_name }}
-                      <span
-                        v-tooltip.top="'' + product.color_name + ''"
-                        :style="'background-color:' + product.color_hex"
-                        class="inline-block w-5 h-5 rounded-full border mr-2"
-                      ></span>
+                      <partial-badge-color :hex="product.color_hex" :title="product.color_name"/>
                     </div>
                     <div
                       v-if="product.size"
@@ -719,6 +714,7 @@ import PartialPayCard from "@/components/partials/pages/PartialPayCard.vue";
 import {HomeCheckoutAPI} from "@/service/APIHomePages.js";
 import RedirectionGatewayForm from "@/components/RedirectionGatewayForm.vue";
 import {useCartStore} from "@/store/StoreUserCart.js";
+import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 
 const router = useRouter()
 const toast = useToast()
