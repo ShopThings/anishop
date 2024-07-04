@@ -707,7 +707,10 @@
                         </div>
                         <div class="shrink-0 mr-auto">
                           <template v-if="sendPrice === null">محاسبه پس از انتخاب آدرس</template>
-                          <template v-else-if="sendPrice">{{ numberFormat(sendPrice) }}</template>
+                          <template v-else-if="sendPrice">
+                            <span class="font-iranyekan-bold" dir="ltr">{{ numberFormat(sendPrice) }}</span>
+                            <span class="text-slate-400 text-xs mr-2">تومان</span>
+                          </template>
                           <template v-else-if="+sendPrice === 0">رایگان</template>
                         </div>
                       </li>
