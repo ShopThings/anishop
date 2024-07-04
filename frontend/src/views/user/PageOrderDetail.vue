@@ -468,7 +468,7 @@
                 :total="orderPaymentsTableSetting.total"
                 :messages="orderPaymentsTableSetting.messages"
               >
-                <template #id="{value, index}">
+                <template #id="{index}">
                   {{ index }}
                 </template>
 
@@ -618,17 +618,12 @@
 
                       <div class="flex flex-wrap items-center gap-3">
                         <div class="text-xl">
-                          <template v-if="product.discounted_price">
-                            {{ numberFormat(product.discounted_price) }}
-                          </template>
-                          <template v-else>
-                            {{ numberFormat(product.price) }}
-                          </template>
+                          {{ numberFormat(product.discounted_price) }}
                           <span class="text-xs text-gray-400">تومان</span>
                         </div>
 
                         <div
-                          v-if="product.discounted_price"
+                          v-if="product.discounted_price && getPercentageOfPortion(product.discounted_price, product.price, true) > 0"
                           class="relative text-center"
                         >
                         <span
