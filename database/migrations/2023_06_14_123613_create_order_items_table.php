@@ -18,10 +18,10 @@ return new class extends Migration {
                 ->constrained('products')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('product_code', 25);
             $table->string('product_title');
-            $table->string('color_name');
-            $table->string('color_hex', 12);
-            $table->string('size');
-            $table->text('guarantee');
+            $table->string('color_name')->nullable();
+            $table->string('color_hex', 12)->nullable();
+            $table->string('size')->nullable();
+            $table->text('guarantee')->nullable();
             $table->unsignedInteger('weight')
                 ->comment('it is in grams');
             $table->unsignedBigInteger('price');
