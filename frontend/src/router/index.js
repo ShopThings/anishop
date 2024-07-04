@@ -11,6 +11,7 @@ import {TransitionPresets} from "vue3-page-transition";
 import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 import {usePageLoaderStore} from "@/store/StorePageLoader.js";
 import {nextTick} from "vue";
+import {isValidInternalRedirectLink} from "@/composables/helper.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 
@@ -59,6 +60,15 @@ const routes = [
     name: 'signup',
     beforeEnter: async (to, from, next) => {
       const store = useUserAuthStore()
+
+      if (
+        to.query.redirect &&
+        isValidInternalRedirectLink(to.query.redirect) &&
+        ['/admin/login', '/login'].indexOf(to.query.redirect) === -1
+      ) {
+        return next(to.query.redirect)
+      }
+
       return store.getUser ? next(from.fullPath) : next()
     },
     component: () => import('@/views/PageSignup.vue'),

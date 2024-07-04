@@ -10,6 +10,19 @@ export const adminRoutes = {
     {
       path: 'login',
       name: 'admin.login',
+      beforeEnter: async (to, from, next) => {
+        const store = useAdminAuthStore()
+
+        if (
+          to.query.redirect &&
+          isValidInternalRedirectLink(to.query.redirect) &&
+          ['/admin/login', '/login'].indexOf(to.query.redirect) === -1
+        ) {
+          return next(to.query.redirect)
+        }
+
+        return store.getUser ? next(from.fullPath) : next()
+      },
       component: () => import('@/views/admin/PageLogin.vue'),
       meta: {
         layout: 'layout-empty',
