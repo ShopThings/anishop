@@ -1,52 +1,45 @@
 <template>
   <div
-      :class="containerClass"
-      class="text-sm flex items-center gap-3"
+    :class="containerClass"
+    class="text-sm flex items-center gap-3"
   >
     <label
-        v-if="labelTitle && showLabel"
-        :class="labelClass"
-        :for="id ? id : labelId"
-        class="cursor-pointer grow sm:grow-0"
+      v-if="labelTitle && showLabel"
+      :class="labelClass"
+      :for="id ? id : labelId"
+      class="cursor-pointer grow sm:grow-0"
     >
       <slot :title="labelTitle" name="text">
         {{ labelTitle }}
       </slot>
     </label>
     <input
-        :id="id ? id : labelId"
-        v-model="localValue"
-        :disabled="disabled"
-        :name="name"
-        :value="value"
-        class="radioInput"
-        type="radio"
-        @change="emit('change', localValue)"
+      :id="id ? id : labelId"
+      v-model="localValue"
+      :disabled="disabled"
+      :name="name"
+      :value="value"
+      class="radioInput"
+      type="radio"
+      @change="emit('change', localValue)"
     >
     <div
-        :class="[
+      :class="[
             sizeClass,
             disabled
             ? (
                 modelValue === value
-                ? disabledCheckedClass + ' ' + disabledCheckedHoverClass
-                : disabledClass + ' ' + disabledHoverClass
+                ? `${disabledCheckedClass} ${disabledCheckedHoverClass}`
+                : `${disabledClass} ${disabledHoverClass}`
             )
             : (
                 modelValue === value
-                ? checkedClass + ' ' + checkedHoverClass
-                : uncheckedClass + ' ' + uncheckedHoverClass
+                ? `${checkedClass} ${checkedHoverClass}`
+                : `${uncheckedClass} ${uncheckedHoverClass}`
             ),
         ]"
-        class="rounded-full cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
-        @click="() => {
-          if(!disabled) {
-              localValue = value
-              nextTick(() => {
-                  emit('change', localValue)
-              })
-          }
-      }"
+      class="rounded-full cursor-pointer transition flex items-center justify-center shadow border-8 shrink-0"
+      @click="clickHandler"
     >
     </div>
   </div>
@@ -129,6 +122,15 @@ const localValue = computed({
     emit('update:modelValue', value)
   },
 })
+
+function clickHandler() {
+  if (!props.disabled) {
+    localValue.value = props.value
+    nextTick(() => {
+      emit('change', localValue.value)
+    })
+  }
+}
 
 onMounted(() => {
   labelId.value = uniqueId(props.name)

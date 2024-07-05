@@ -24,24 +24,15 @@
       :class="[
           sizeClass,
           disabled
-          ? disabledClass + ' ' + disabledHoverClass
+          ? `${disabledClass} ${disabledHoverClass}`
           : (
               value
-              ? checkedClass + ' ' + checkedHoverClass
-              : uncheckedClass + ' ' + uncheckedHoverClass
+              ? `${checkedClass} ${checkedHoverClass}`
+              : `${uncheckedClass} ${uncheckedHoverClass}`
           ),
       ]"
       class="rounded border-2 cursor-pointer transition flex items-center justify-center shadow"
-      @click="(e) => {
-          if(!disabled) {
-              e.preventDefault()
-
-              value = !value
-              nextTick(() => {
-                  emit('change', value)
-              })
-          }
-      }"
+      @click="clickHandler"
     >
       <CheckIcon
         v-if="value"
@@ -133,6 +124,17 @@ const value = computed({
     emit('update:modelValue', value)
   }
 })
+
+function clickHandler(e) {
+  if (!props.disabled) {
+    e.preventDefault()
+
+    value.value = !value.value
+    nextTick(() => {
+      emit('change', value.value)
+    })
+  }
+}
 
 onMounted(() => {
   if (props.useDynamicLabelId) {
