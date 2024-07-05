@@ -25,6 +25,7 @@ class OrderDetailResource extends JsonResource
             'code' => $this->code,
             'first_name' => $this->first_name,
             'last_name' => $this->last_name,
+            'national_code' => $this->national_code,
             'mobile' => $this->mobile,
             'province' => $this->province,
             'city' => $this->city,

@@ -61,9 +61,12 @@ class OrderController extends Controller
      *
      * @param UpdateOrderDetailRequest $request
      * @param OrderDetail $order
-     * @return OrderDetailResource|JsonResponse
+     * @return OrderDetailSingleResource|JsonResponse
      */
-    public function update(UpdateOrderDetailRequest $request, OrderDetail $order): OrderDetailResource|JsonResponse
+    public function update(
+        UpdateOrderDetailRequest $request,
+        OrderDetail              $order
+    ): OrderDetailSingleResource|JsonResponse
     {
         Gate::authorize('update', $order);
 
@@ -71,7 +74,7 @@ class OrderController extends Controller
         $model = $this->service->updateByCode($order->code, $validated);
 
         if (!is_null($model)) {
-            return new OrderDetailResource($model);
+            return new OrderDetailSingleResource($model);
         }
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
