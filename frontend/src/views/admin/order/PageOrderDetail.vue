@@ -623,7 +623,6 @@ const paymentUntilNow = computed(() => {
   if (!order.value.orders?.length) return 0;
 
   return order.value.orders.reduce((total, item) => {
-    console.log(item)
     total += parseInt(item.must_pay_price, 10) || 0
     return total
   }, 0)
