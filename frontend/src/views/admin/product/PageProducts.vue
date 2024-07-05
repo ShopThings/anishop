@@ -391,7 +391,7 @@ const selectionOperations = [
           return
         }
 
-        router.push({name: 'admin.products.change.price', params: {ids}})
+        router.push({name: 'admin.products.change.price', params: {ids: ids.join('/')}})
       },
     },
   },
@@ -416,7 +416,7 @@ const selectionOperations = [
           return
         }
 
-        router.push({name: 'admin.products.change.info', params: {ids}})
+        router.push({name: 'admin.products.change.info', params: {ids: ids.join('/')}})
       },
     },
   },
