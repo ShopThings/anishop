@@ -117,7 +117,7 @@ const dynamicScript = ref(null)
 onMounted(() => {
   // Dynamically import your CSS file
   const link = document.createElement('link')
-  link.href = '/tinymce/skins/skin.min.css'
+  link.href = '/tinymce/skins/lightgray/skin.min.css'
   link.rel = 'stylesheet'
   document.head.appendChild(link)
 
