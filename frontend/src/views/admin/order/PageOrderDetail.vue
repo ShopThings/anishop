@@ -260,7 +260,28 @@
       </partial-card>
 
       <div class="mb-3">
-        <base-accordion :open="false">
+        <base-accordion
+          :open="false"
+          open-btn-class="!bg-violet-50 !border-violet-500"
+          panel-class="bg-white mt-2 rounded-lg"
+        >
+          <template #button>
+            توضیحات بیشتر برای کاربر
+          </template>
+          <template #panel>
+            <form-order-description
+              :description="order?.description"
+              @success="(description) => {order.description = description}"
+            />
+          </template>
+        </base-accordion>
+      </div>
+
+      <div class="mb-3">
+        <base-accordion
+          :open="false"
+          open-btn-class="!bg-violet-50 !border-violet-500"
+        >
           <template #button>
             اطلاعات گیرنده
           </template>
@@ -330,7 +351,10 @@
       </div>
 
       <div class="mb-3">
-        <base-accordion :open="false">
+        <base-accordion
+          :open="false"
+          open-btn-class="!bg-violet-50 !border-violet-500"
+        >
           <template #button>
             جزئیات سفارش
           </template>
@@ -583,6 +607,7 @@ import BaseFloatingDropDown from "@/components/base/BaseFloatingDropDown.vue";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import {FileSizes} from "@/composables/file-list.js";
 import isObject from "lodash.isobject";
+import FormOrderDescription from "@/views/admin/order/forms/FormOrderDescription.vue";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
