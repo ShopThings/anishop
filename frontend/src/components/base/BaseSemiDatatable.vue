@@ -28,7 +28,7 @@
                   'rounded-md w-full transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable,
                   'hover:bg-white/20 hover:bg-opacity-50': col.sortable
                 }"
-                class="py-2.5 px-2"
+                class="px-2"
                 @click.prevent="col.sortable ? doSort(col.field) : false"
             >
               <div
