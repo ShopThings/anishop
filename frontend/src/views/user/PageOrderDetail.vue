@@ -863,22 +863,35 @@ function handleOrderItemOperation(product, item, hide) {
 //--------------------------------
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    address: yup.string().required('آدرس خود را وارد نمایید.'),
+    address: yup.string().optional(),
     postal_code: yup.string()
       .transform(transformNumbersToEnglish)
       .justNumber('کدپستی باید از نوع عددی باشد.')
       .optional(),
     receiver_name: yup.string()
       .persian('نام گیرنده باید از حروف فارسی باشد.')
-      .required('نام گیرنده را وارد نمایید.'),
+      .optional(),
     receiver_mobile: yup.string()
       .transform(transformNumbersToEnglish)
       .persianMobile('شماره موبایل گیرنده نامعتبر است.')
-      .required('موبایل گیرنده را وارد نمایید.'),
+      .optional(),
   }),
 }, (values, actions) => {
   if (!info.value?.send_status?.is_starting_badge) {
     toast.info('امکان تغییر وجود ندارد.')
+    return
+  }
+
+  if (!values.address) {
+    actions.setFieldError('address', 'آدرس خود را وارد نمایید.')
+    return
+  }
+  if (!values.receiver_name) {
+    actions.setFieldError('receiver_name', 'نام گیرنده را وارد نمایید.')
+    return
+  }
+  if (!values.receiver_mobile) {
+    actions.setFieldError('receiver_mobile', 'موبایل گیرنده را وارد نمایید.')
     return
   }
 
