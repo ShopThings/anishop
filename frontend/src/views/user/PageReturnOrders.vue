@@ -24,9 +24,10 @@
         <base-select-searchable
           :is-loading="ordersLoading"
           :options="orders"
-          options-key="id"
+          :selected="selectedOrder"
           options-text="code"
-          @change="(selected) => {selectedOrder=selected}"
+          options-key="code"
+          @change="(selected) => {selectedOrder = selected}"
         >
           <template #item="{item}">
             <span class="tracking-widest">{{ item.code }}</span>
