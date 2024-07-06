@@ -148,6 +148,8 @@ function loadNotificationsHandler() {
 function itemsLoadedHandler() {
   NotificationAPI.markAllAsRead({
     success() {
+      notificationStore.$reset()
+
       return false
     },
     error() {
