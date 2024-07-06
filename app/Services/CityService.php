@@ -27,7 +27,10 @@ class CityService extends Service implements CityServiceInterface
             ->whereEqual('province_id', $provinceId)
             ->whereEqual('is_published', DatabaseEnum::DB_YES);
 
-        return $this->repository->all(where: $where->build());
+        return $this->repository->all(
+            where: $where->build(),
+            order: ['name' => 'asc', 'id' => 'asc']
+        );
     }
 
     /**

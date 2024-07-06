@@ -25,6 +25,9 @@ class ProvinceService extends Service implements ProvinceServiceInterface
         $where = new WhereBuilder('provinces');
         $where->whereEqual('is_published', DatabaseEnum::DB_YES);
 
-        return $this->repository->all(where: $where->build());
+        return $this->repository->all(
+            where: $where->build(),
+            order: ['name' => 'asc', 'id' => 'asc']
+        );
     }
 }
