@@ -53,9 +53,11 @@ import {OrderAPI} from "@/service/APIOrder.js";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
+import {useToast} from "vue-toastification";
 
 const emit = defineEmits(['changed'])
 
+const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
 const loading = ref(true)
 
@@ -68,7 +70,7 @@ function sendStatusChange(selected) {
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
   if (
-    !selectedStatus.value ||
+    !selectedStatus.value?.id ||
     !statuses.value ||
     statuses.value.findIndex((item) => (+item.id === +selectedStatus.value.id)) === -1
   ) {
@@ -79,7 +81,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({}, (values, actions) => {
   canSubmit.value = false
 
   OrderAPI.updateById(idParam.value, {
-    send_status: selectedStatus.value,
+    send_status: selectedStatus.value?.id,
   }, {
     success() {
       toast.success('وضعیت ارسال تغییر یافت.')
