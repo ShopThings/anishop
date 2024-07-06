@@ -33,6 +33,8 @@ class CityInProvinceRule implements DataAwareRule, ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        if (!isset($this->data['province'])) return;
+
         $province = Province::find($this->data['province']);
         $hasCity = false;
 
