@@ -269,6 +269,7 @@ class OrderService extends Service implements OrderServiceInterface
                 $updateAttributes['send_status_is_starting_badge'] = $status->is_starting_badge;
                 $updateAttributes['send_status_is_end_badge'] = $status->is_end_badge;
                 $updateAttributes['send_status_can_return_order'] = $status->can_return_order;
+                $updateAttributes['send_status_code'] = $status->code;
                 $updateAttributes['send_status_title'] = $status->title;
                 $updateAttributes['send_status_color_hex'] = $status->color_hex;
                 $updateAttributes['send_status_changed_at'] = now();
