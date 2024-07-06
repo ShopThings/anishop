@@ -741,8 +741,13 @@ function changePaymentStatus(record, item, hide) {
       OrderAPI.updateOrderPayment(record.id, {
         payment_status: item.value
       }, {
-        success() {
+        success(response) {
           toast.success('تغییر وضعیت پرداخت انجام شد.')
+
+          const idx = ordersTableSetting.rows.findIndex(order => order.id === record.id)
+          if (idx !== -1) {
+            ordersTableSetting.rows[idx] = response.data
+          }
         },
       })
     },
