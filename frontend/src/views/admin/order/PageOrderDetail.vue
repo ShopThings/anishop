@@ -545,7 +545,7 @@
             </template>
 
             <template v-slot:product_count="{value}">
-              <span class="py-1 px-1.5 rounded bg-violet-100">{{ numberFormat(value.quantity) }}</span>
+              <span class="py-1 px-2 rounded bg-violet-100">{{ numberFormat(value.quantity) }}</span>
               <span class="mr-2 text-sm">{{ value.unit_name }}</span>
             </template>
 

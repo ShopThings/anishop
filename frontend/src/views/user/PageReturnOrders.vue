@@ -9,7 +9,9 @@
     </h3>
     <ul class="leading-relaxed flex flex-col gap-3 list-inside list-disc">
       <li>
-        سفارشاتی قابلیت مرجوع شدن را دارند که پرداخت آن به صورت کامل انجام شده و تا حداکثر یک هفته از خرید آنها میگذرد.
+        سفارشاتی قابلیت مرجوع شدن را دارند که
+        <span class="underline underline-offset-8">به مشتری تحویل داده شده</span>
+        ، پرداخت آن به صورت کامل انجام شده باشد و تا حداکثر یک هفته از خرید آنها میگذرد.
       </li>
       <li>
         پس از ثبت درخواست، برای وارد نمودن علت مرجوع نمودن یا حذف درخواست، وارد مشاهده جزئیات شوید.
@@ -97,7 +99,7 @@
         <template #op="{value}">
           <router-link
             :to="{name: 'user.return_order.detail', params: {code: value.code}}"
-            class="text-blue-600 hover:text-opacity-80 text-sm"
+            class="text-blue-600 hover:text-opacity-80 text-sm whitespace-nowrap"
           >
             مشاهده جزئیات
           </router-link>

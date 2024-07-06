@@ -142,9 +142,9 @@ class OrderEventSubscriber extends AbstractListener
         $title = $titleSetting->setting_value ?: $titleSetting->default_value;
 
         $msg = 'درخواست مرجوع برای سفارش به کد ' .
-            '«' . $event->request->order->code . '»' .
+            '«' . $event->returnCode . '»' .
             ' با کد مرجوع ' .
-            '«' . $event->request->code . '»' .
+            '«' . $event->orderCode . '»' .
             'برای ' .
             trim($event->user->first_name . ' ' . $event->user->last_name) .
             'ثبت شده است. ' .

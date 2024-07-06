@@ -66,4 +66,15 @@ enum SMSTypesEnum: string
             ],
         };
     }
+
+    /**
+     * @return SMSTypesEnum[]
+     */
+    public static function getUserTypes(): array
+    {
+        return [
+            self::ORDER_STATUS,
+            self::RETURN_ORDER_STATUS,
+        ];
+    }
 }

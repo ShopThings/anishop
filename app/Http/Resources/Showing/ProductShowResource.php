@@ -19,9 +19,7 @@ class ProductShowResource extends JsonResource
         $this->resource->load('image');
 
         return [
-            'brand_id' => $this->brand_id,
             'brand' => new BrandShowResource($this->brand),
-            'category_id' => $this->category_id,
             'category' => new CategoryShowResource($this->category),
             'title' => $this->title,
             'slug' => $this->slug,

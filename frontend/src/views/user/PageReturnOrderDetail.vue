@@ -189,7 +189,7 @@
                     >
                       <base-lazy-image
                         :alt="product.product.title"
-                        :lazy-src="product.image.path"
+                        :lazy-src="product.product.image.path"
                         :size="FileSizes.SMALL"
                         :is-local="false"
                         class="!w-36 md:!w-24 h-auto hover:scale-95 transition"
@@ -244,7 +244,7 @@
                         </div>
 
                         <div
-                          v-if="product.discounted_price"
+                          v-if="product.discounted_price && getPercentageOfPortion(product.discounted_price, product.price, true) > 0"
                           class="relative text-center"
                         >
                         <span

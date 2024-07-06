@@ -144,7 +144,9 @@ return [
 
             'code' => '{{code}}',
 
-            'order_code' => '{{orderCode}}',
+            'order_code' => '{{order_code}}',
+
+            'return_code' => '{{return_code}}',
 
             'status' => '{{status}}',
 

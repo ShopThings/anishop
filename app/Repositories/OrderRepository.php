@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\DatabaseEnum;
 use App\Enums\Payments\PaymentStatusesEnum;
 use App\Enums\Payments\PaymentTypesEnum;
 use App\Http\Requests\Filters\OrderFilter;
@@ -439,6 +440,7 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
             ->withAnyPaidOrder()
             ->where('user_id', $userId)
             ->where('ordered_at', '>=', now()->subWeek())
+            ->where('send_status_can_return_order', DatabaseEnum::DB_YES)
             ->get($columns);
     }
 

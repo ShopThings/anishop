@@ -42,7 +42,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
     ): Collection|LengthAwarePaginator
     {
         return $this->repository
-            ->newWith(['user', 'statusChangedBy'])
+            ->newWith(['user', 'statusChanger'])
             ->getOrdersSearchFilterPaginated(userId: $userId, filter: $filter);
     }
 

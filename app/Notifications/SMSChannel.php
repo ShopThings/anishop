@@ -36,13 +36,21 @@ class SMSChannel
         $loggerService = app()->get(SmsLogServiceInterface::class);
 
         $panelName = config('sms.default', 'unknown');
-        $loggerService->create([
+        $creatingObject = [
             'receiver_numbers' => implode(', ', $numbers),
             'panel_number' => config('sms.drivers.' . $panelName . '.from'),
             'panel_name' => $panelName,
             'body' => $smsObject->getMessage(),
             'type' => $smsObject->getType()?->value ?? SMSTypesEnum::OTHERS->value,
-            'sender' => SMSSenderTypesEnum::SYSTEM->value,
-        ]);
+        ];
+
+        if (!in_array($creatingObject['type'], array_map(fn($item) => $item->value, SMSTypesEnum::getUserTypes()))) {
+            $creatingObject['created_by'] = null;
+            $creatingObject['sender'] = SMSSenderTypesEnum::SYSTEM->value;
+        } else {
+            $creatingObject['sender'] = SMSSenderTypesEnum::USER->value;
+        }
+
+        $loggerService->create($creatingObject);
     }
 }
