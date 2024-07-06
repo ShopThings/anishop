@@ -253,7 +253,7 @@
           <div class="p-3">
             <form-order-change-send-status
               v-if="sendStatus"
-              @changed="(selected) => {sendStatus = selected}"
+              @changed="sendStatusChangeHandler"
             />
           </div>
         </template>
@@ -581,7 +581,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref} from "vue";
+import {computed, inject, onMounted, reactive, ref} from "vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import {useToast} from "vue-toastification";
@@ -611,6 +611,8 @@ import FormOrderDescription from "@/views/admin/order/forms/FormOrderDescription
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
+
+const countingOrderStore = inject('countingOrderStore')
 
 const loading = ref(true)
 
@@ -849,6 +851,13 @@ const table = reactive({
     sort: "desc",
   },
 })
+
+//-----------------------------------
+function sendStatusChangeHandler(selected) {
+  sendStatus.value = selected
+
+  countingOrderStore.$reset()
+}
 
 //-----------------------------------
 onMounted(() => {
