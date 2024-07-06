@@ -343,7 +343,7 @@
             </div>
 
             <div
-              v-if="!info?.send_status?.is_starting_badge"
+              v-if="info?.send_status?.is_starting_badge"
               class="px-2 py-3"
             >
               <base-animated-button
