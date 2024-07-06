@@ -736,15 +736,19 @@ const orderPaymentsTableSetting = reactive({
 function changePaymentStatus(record, item, hide) {
   hide()
 
-  useConfirmToast(() => {
-    OrderAPI.updateOrderPayment(record.id, {
-      payment_status: item.value
-    }, {
-      success() {
-        toast.success('تغییر وضعیت پرداخت انجام شد.')
-      },
-    })
-  }, 'تغییر وضعیت پرداخت')
+  useConfirmToast(
+    () => {
+      OrderAPI.updateOrderPayment(record.id, {
+        payment_status: item.value
+      }, {
+        success() {
+          toast.success('تغییر وضعیت پرداخت انجام شد.')
+        },
+      })
+    },
+    'تغییر وضعیت پرداخت',
+    'توجه داشته باشید، پس از تغییر وضعیت، امکان بازگشت محصولات به انبار به صورت خودکار وجود دارد و سفارش از حالت ثبت شده خارج خواهد شد.'
+  )
 }
 
 function showOrderPaymentDetail(item) {
