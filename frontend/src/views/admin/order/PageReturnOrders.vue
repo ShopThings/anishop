@@ -21,13 +21,13 @@
               @do-search="doSearch"
           >
             <template #code="{value}">
-              <span class="tracking-widest text-lg">{{ value.code }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
             </template>
 
             <template #order_code="{value}">
               <router-link
                   :to="{name: 'admin.order.detail', params: {id: value.order.code}}"
-                  class="text-blue-600 hover:text-opacity-80 leading-relaxed tracking-widest text-lg"
+                  class="text-blue-600 hover:text-opacity-80 leading-relaxed tracking-widest font-iranyekan-bold"
               >
                 {{ value.order.code }}
               </router-link>

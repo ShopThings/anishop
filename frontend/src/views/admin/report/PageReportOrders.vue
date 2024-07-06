@@ -95,7 +95,7 @@
             @do-search="doSearch"
           >
             <template #code="{value}">
-              <span class="tracking-widest text-lg">{{ value.code }}</span>
+              <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
             </template>
 
             <template v-slot:user="{value}">
