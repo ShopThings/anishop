@@ -93,14 +93,9 @@ interface UserRepositoryInterface extends RepositoryInterface
     /**
      * @param User $user
      * @param UserNotificationTypesEnum[] $notificationTypes
-     * @param array $columns
-     * @return Collection
+     * @return int
      */
-    public function getUnreadNotifications(
-        User  $user,
-        array $notificationTypes = [],
-        array $columns = ['*']
-    ): Collection;
+    public function getUnreadNotificationsCount(User $user, array $notificationTypes = []): int;
 
     /**
      * @param GetterExpressionInterface $where

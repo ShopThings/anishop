@@ -56,12 +56,13 @@ class NotificationController extends Controller
 
     /**
      * @param Request $request
-     * @return AnonymousResourceCollection
+     * @return JsonResponse
      */
-    public function newNotifications(Request $request): AnonymousResourceCollection
+    public function newNotifications(Request $request): JsonResponse
     {
-        return UserNotificationResource::collection(
-            $this->service->getAdminUnreadNotifications($request->user())
-        );
+        return response()->json([
+            'type' => ResponseTypesEnum::SUCCESS->value,
+            'data' => $this->service->getAdminUnreadNotificationsCount($request->user()),
+        ]);
     }
 }

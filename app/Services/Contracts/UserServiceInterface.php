@@ -78,9 +78,9 @@ interface UserServiceInterface extends ServiceInterface
 
     /**
      * @param User $user
-     * @return Collection
+     * @return int
      */
-    public function getAdminUnreadNotifications(User $user): Collection;
+    public function getAdminUnreadNotificationsCount(User $user): int;
 
     /**
      * @param User $user
@@ -91,9 +91,9 @@ interface UserServiceInterface extends ServiceInterface
 
     /**
      * @param User $user
-     * @return Collection
+     * @return int
      */
-    public function getUnreadNotifications(User $user): Collection;
+    public function getUnreadNotificationsCount(User $user): int;
 
     /**
      * @param $userId

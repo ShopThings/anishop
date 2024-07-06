@@ -303,11 +303,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
     /**
      * @inheritDoc
      */
-    public function getUnreadNotifications(
-        User  $user,
-        array $notificationTypes = [],
-        array $columns = ['*']
-    ): Collection
+    public function getUnreadNotificationsCount(User $user, array $notificationTypes = []): int
     {
         $types = [];
         foreach ($notificationTypes as $notificationType) {
@@ -324,7 +320,7 @@ class UserRepository extends Repository implements UserRepositoryInterface
             ->orderByRaw("CAST(JSON_UNQUOTE(JSON_EXTRACT(data, '$.priority')) AS UNSIGNED) DESC")
             ->orderByDesc('created_at');
 
-        return $query->get($columns);
+        return $query->count();
     }
 
     /**

@@ -138,12 +138,11 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function getAdminUnreadNotifications(User $user): Collection
+    public function getAdminUnreadNotificationsCount(User $user): int
     {
-        return $this->repository->getUnreadNotifications(
+        return $this->repository->getUnreadNotificationsCount(
             user: $user,
             notificationTypes: [UserNotificationTypesEnum::getAdminTypes()],
-            columns: ['data', 'read_at', 'created_at']
         );
     }
 
@@ -164,12 +163,11 @@ class UserService extends Service implements UserServiceInterface
     /**
      * @inheritDoc
      */
-    public function getUnreadNotifications(User $user): Collection
+    public function getUnreadNotificationsCount(User $user): int
     {
-        return $this->repository->getUnreadNotifications(
+        return $this->repository->getUnreadNotificationsCount(
             user: $user,
             notificationTypes: [UserNotificationTypesEnum::getUserTypes()],
-            columns: ['data', 'read_at', 'created_at']
         );
     }
 
