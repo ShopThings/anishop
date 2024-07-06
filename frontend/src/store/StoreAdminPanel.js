@@ -147,7 +147,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
 
     for (let i of counts.value) {
       let item = findItemByKey(prevCounts, 'code', i.code)
-      if (item?.count || +i.count !== +item.count) {
+      if (item?.count && +i.count !== +item.count) {
         return true
       }
     }
@@ -221,7 +221,7 @@ export const useCountingOrdersStore = defineStore('adminPanelOrderCounting', () 
 })
 
 export const useNotificationStore = defineStore('adminPanelNotifications', () => {
-  let notifications = ref([])
+  let notifications = ref(0)
   let loading = ref(false)
   const countdown = useCountdown(300)
   const online = useOnline()
@@ -231,11 +231,11 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
   })
 
   const hasNewNotification = computed(() => {
-    return !!(notifications.value?.length)
+    return +notifications.value !== 0
   })
 
   const newNotificationsCount = computed(() => {
-    return notifications.value?.length ?? 0
+    return notifications.value ?? 0
   })
 
   function checkNewNotifications() {
@@ -269,7 +269,7 @@ export const useNotificationStore = defineStore('adminPanelNotifications', () =>
     countdown.stop()
 
     loading.value = false
-    notifications.value = []
+    notifications.value = 0
 
     await checkNewNotifications()
 
