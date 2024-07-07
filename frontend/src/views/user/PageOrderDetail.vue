@@ -30,7 +30,7 @@
             v-else
             class="rounded-lg flex items-center gap-3 py-2 px-4 !bg-rose-50 border-2 border-rose-500"
           >
-            <span class="text-sm">اتمام زمان رزور</span>
+            <span class="text-sm">اتمام زمان رزرو</span>
           </div>
         </div>
 
@@ -94,8 +94,11 @@
               <template #body>
                 <div class="flex flex-col">
                   <span class="text-xs text-gray-400 mb-1">شماره سفارش:</span>
-                  <div class="text-sm tracking-widest">
-                    {{ info?.code }}
+                  <div class="flex gap-2 items-center">
+                    <div class="text-sm tracking-widest">
+                      {{ info?.code }}
+                    </div>
+                    <partial-copy-button :text="info?.code"/>
                   </div>
                 </div>
               </template>
@@ -715,6 +718,7 @@ import {HomeCheckoutAPI} from "@/service/APIHomePages.js";
 import RedirectionGatewayForm from "@/components/RedirectionGatewayForm.vue";
 import {useCartStore} from "@/store/StoreUserCart.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
+import PartialCopyButton from "@/components/partials/PartialCopyButton.vue";
 
 const router = useRouter()
 const toast = useToast()

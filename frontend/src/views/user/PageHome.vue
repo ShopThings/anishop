@@ -198,7 +198,7 @@
                   v-else
                   class="rounded-lg flex items-center gap-3 py-2 px-4 !bg-rose-50 border-2 border-rose-500"
                 >
-                  <span class="text-sm">اتمام زمان رزور</span>
+                  <span class="text-sm">اتمام زمان رزرو</span>
                 </div>
               </div>
 

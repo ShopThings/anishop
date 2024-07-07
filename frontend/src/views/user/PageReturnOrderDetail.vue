@@ -65,10 +65,13 @@
           <partial-card class="border-0">
             <template #body>
               <div class="p-3">
-                <div class="flex flex-wrap items-center gap-2 5">
+                <div
+                  v-if="!returnOrder?.has_status_changed || returnOrder?.next_status?.value"
+                  class="flex flex-row-reverse flex-wrap items-center gap-2.5"
+                >
                   <div
                     v-if="!returnOrder?.has_status_changed"
-                    class="mb-4 text-left"
+                    class="flex justify-end mb-4"
                   >
                     <base-button
                       :disabled="cancelRequestLoading"
@@ -115,9 +118,10 @@
                   </div>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2 mb-3">
+                <div class="flex flex-wrap items-center gap-2 mb-6">
                   <span class="text-gray-400 text-xs">کد مرجوع:</span>
                   <span class="tracking-widest rounded bg-emerald-200 py-1 px-2.5">{{ returnOrder?.code }}</span>
+                  <partial-copy-button :text="returnOrder?.code"/>
                 </div>
                 <div class="mb-3">
                   <base-textarea
@@ -234,12 +238,7 @@
 
                       <div class="flex flex-wrap items-center gap-3">
                         <div class="text-xl">
-                          <template v-if="product.discounted_price">
-                            {{ numberFormat(product.discounted_price) }}
-                          </template>
-                          <template v-else>
-                            {{ numberFormat(product.price) }}
-                          </template>
+                          {{ numberFormat(product.discounted_price) }}
                           <span class="text-xs text-gray-400">تومان</span>
                         </div>
 
@@ -371,6 +370,7 @@ import {useRouter} from "vue-router";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import {FileSizes} from "@/composables/file-list.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
+import PartialCopyButton from "@/components/partials/PartialCopyButton.vue";
 
 const router = useRouter()
 const toast = useToast()
