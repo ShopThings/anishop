@@ -652,13 +652,15 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
             if (isset($product['id'])) {
                 $isUpdated = $this->productPropertyModel->findOrFail($product['id'])->update($product);
 
-                if ($isUpdated)
+                if ($isUpdated) {
                     $modified->add($this->productPropertyModel::query()->find($product['id']));
+                }
             } else {
                 $created = $this->productPropertyModel::create($product);
 
-                if ($created instanceof Model)
+                if ($created instanceof Model) {
                     $modified->add($created);
+                }
             }
         }
 

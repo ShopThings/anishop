@@ -94,8 +94,9 @@ class MenuRepository extends Repository implements MenuRepositoryInterface
     {
         if (isset($item['id'])) {
             $isUpdated = $this->menuItemModel->findOrFail($item['id'])->update($item);
-            if ($isUpdated)
+            if ($isUpdated) {
                 $createdOrUpdated = $this->menuItemModel::query()->find($item['id']);
+            }
         } else {
             $createdOrUpdated = $this->menuItemModel::create($item);
         }

@@ -48,6 +48,13 @@ interface ReturnOrderRepositoryInterface extends RepositoryInterface
     /**
      * @param GetterExpressionInterface $where
      * @param array $columns
+     * @return Collection
+     */
+    public function getItemsWhere(GetterExpressionInterface $where, array $columns = ['*']): Collection;
+
+    /**
+     * @param GetterExpressionInterface $where
+     * @param array $columns
      * @return Model|null
      */
     public function getItemWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model;

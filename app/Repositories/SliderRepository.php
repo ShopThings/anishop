@@ -41,13 +41,15 @@ class SliderRepository extends Repository implements SLiderRepositoryInterface
             ) {
                 $isUpdated = $founded->update($item);
 
-                if ($isUpdated)
+                if ($isUpdated) {
                     $modified->add($this->sliderItemModel::query()->find($item['id']));
+                }
             } else {
                 $created = $this->sliderItemModel::create($item);
 
-                if ($created instanceof Model)
+                if ($created instanceof Model) {
                     $modified->add($created);
+                }
             }
         }
 

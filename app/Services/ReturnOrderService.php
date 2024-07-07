@@ -10,7 +10,6 @@ use App\Events\ReturnOrderRequestedEvent;
 use App\Events\ReturnOrderStatusChangedEvent;
 use App\Models\OrderDetail;
 use App\Models\ReturnOrderRequest;
-use App\Models\ReturnOrderRequestItem;
 use App\Models\User;
 use App\Repositories\Contracts\OrderRepositoryInterface;
 use App\Repositories\Contracts\ReturnOrderRepositoryInterface;
@@ -392,29 +391,26 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         $refined = [];
         $where = new WhereBuilder();
 
-        foreach ($items as $k => $item) {
-            /**
-             * this is typehint to prevent show $orderItem other thing than a model
-             * @var ReturnOrderRequestItem|null $orderItem
-             */
+        $collectedItems = collect($items);
+        $orderItems = $this->repository->getItemsWhere(
+            where: $where
+                ->whereIn('id', $collectedItems->pluck('id')->toArray())
+                ->whereEqual('return_code', $model->code)
+                ->build(),
+            columns: ['id', 'order_item_id']
+        );
 
+        foreach ($items as $k => $item) {
             if (
                 isset($item['id']) &&
-                $orderItem = $this->repository->getItemWhere(
-                        where: $where
-                            ->whereEqual('id', $item['id'])
-                            ->whereEqual('return_code', $model->code)
-                            ->build(),
-                        columns: ['order_item_id']
-                    ) &&
-                    $item['quantity'] >= 0
+                ($orderItem = $orderItems->firstWhere('id', $item['id'])) &&
+                $item['quantity'] >= 0
             ) {
                 $refined[$k]['id'] = $item['id'];
                 $refined[$k]['return_code'] = $model->code;
-                $refined[$k]['order_item_id'] = $orderItem['order_item_id'];
+                $refined[$k]['order_item_id'] = $orderItem->order_item_id;
                 $refined[$k]['quantity'] = $item['quantity'];
             }
-
         }
 
         return $refined;

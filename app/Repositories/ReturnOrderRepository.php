@@ -101,16 +101,18 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
                 $isUpdated = false;
 
                 if ($model->return_code === $returnCode) {
-                    $model->update($item);
+                    $isUpdated = $model->update($item);
                 }
 
-                if ($isUpdated)
+                if ($isUpdated) {
                     $modified->add($this->returnOrderRequestItemModel::query()->find($item['id']));
+                }
             } else {
                 $created = $this->returnOrderRequestItemModel::create($item + ['return_code' => $returnCode]);
 
-                if ($created instanceof Model)
+                if ($created instanceof Model) {
                     $modified->add($created);
+                }
             }
         }
 
@@ -163,7 +165,17 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
      */
     public function modifyItem(int $itemId, array $attributes): bool|int
     {
-        return $this->returnOrderRequestItemModel->newQuery()->find($itemId)->update($attributes);
+        return $this->returnOrderRequestItemModel->newQuery()->findOrFail($itemId)->update($attributes);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getItemsWhere(GetterExpressionInterface $where, array $columns = ['*']): Collection
+    {
+        return $this->returnOrderRequestItemModel->newQuery()
+            ->whereRaw($where->getStatement(), $where->getBindings())
+            ->get($columns);
     }
 
     /**

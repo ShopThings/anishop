@@ -72,7 +72,10 @@ interface ReturnOrderServiceInterface extends ServiceInterface
     public function createUserRequest(User $user, int $orderDetailId): ?Model;
 
     /**
-     * @return Model|null
+     * @param int $userId
+     * @param ReturnOrderRequest $model
+     * @param array $attributes
+     * @return Model|bool|null
      */
     public function updateUserRequestByModel(
         int                $userId,
