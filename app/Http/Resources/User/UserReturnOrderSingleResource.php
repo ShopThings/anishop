@@ -34,7 +34,7 @@ class UserReturnOrderSingleResource extends JsonResource
                     'text' => 'در حال ارسال مرسولات',
                     'value' => ReturnOrderStatusesEnum::SENDING->value,
                 ];
-            }, $this->when($this->status === ReturnOrderStatusesEnum::RETURN_TO_USER->value, function () {
+            }, $this->when($this->status->value === ReturnOrderStatusesEnum::RETURN_TO_USER->value, function () {
                 return [
                     'text' => 'دریافت محصولات بازگشت داده شده',
                     'value' => ReturnOrderStatusesEnum::RECEIVED_BY_USER->value,
