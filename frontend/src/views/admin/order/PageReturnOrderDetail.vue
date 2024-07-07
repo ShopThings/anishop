@@ -40,25 +40,49 @@
 
       <partial-card
         v-if="returnOrder?.is_in_end_status"
-        class="mb-3 p-3 text-left"
+        class="mb-3 p-3"
       >
         <template #body>
-          <base-button
-            :disabled="returnOrdersItemsLoading"
-            class="bg-primary text-white mr-auto px-6 w-full sm:w-auto"
-            type="button"
-            @click="returnOrderItemsHandler"
-          >
-            <VTransitionFade>
-              <loader-circle
-                v-if="returnOrdersItemsLoading"
-                big-circle-color="border-transparent"
-                main-container-klass="absolute w-full h-full top-0 left-0"
-              />
-            </VTransitionFade>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="flex flex-col gap-2 text-sm">
+              <div>
+                لطفا وضعیت سفارش را در جزئیات سفارش در بالا، تغییر دهید.
+              </div>
+              <div class="text-amber-500">
+                در صورت تغییر وضعیت سفارش، نیازی به بازگردانی محصولات به انبار از طریق دکمه روبرو نمی‌باشد!
+              </div>
+            </div>
+            <base-button
+              :disabled="returnOrdersItemsLoading"
+              class="bg-primary text-white mr-auto px-4 !py-2 !text-sm w-full sm:w-auto"
+              type="button"
+              @click="returnOrderItemsHandler"
+            >
+              <VTransitionFade>
+                <loader-circle
+                  v-if="returnOrdersItemsLoading"
+                  big-circle-color="border-transparent"
+                  main-container-klass="absolute w-full h-full top-0 left-0"
+                />
+              </VTransitionFade>
 
-            <span>بازگردانی محصولات مرجوعی به انبار</span>
-          </base-button>
+              <span>بازگردانی محصولات مرجوعی به انبار</span>
+            </base-button>
+          </div>
+        </template>
+      </partial-card>
+
+      <partial-card
+        v-if="returnOrder?.wait_for_user || returnOrder?.is_in_end_status"
+        class="mb-3"
+      >
+        <template #body>
+          <div class="p-3">
+            <partial-input-label title="توضیحات تکمیلی برای کاربر"/>
+            <p class="text-slate-500 text-sm mt-2">
+              {{ returnOrder?.admin_description }}
+            </p>
+          </div>
         </template>
       </partial-card>
 
@@ -108,7 +132,7 @@
                       />
                     </div>
                     <div
-                      v-if="returnOrder?.wait_for_user"
+                      v-if="returnOrder?.wait_for_user && !returnOrder?.is_in_end_status"
                       class="mt-2 text-orange-500 text-sm"
                     >
                       در انتظار اقدام کاربر
@@ -293,6 +317,7 @@ import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 import {FileSizes} from "@/composables/file-list.js";
 import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
+import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
@@ -399,5 +424,11 @@ function fetchReturnOrder() {
 
 onMounted(() => {
   fetchReturnOrder()
+
+  ReturnOrderAPI.updateById(idParam.value, {
+    seen_status: true,
+  }, {
+    silent: true,
+  })
 })
 </script>
