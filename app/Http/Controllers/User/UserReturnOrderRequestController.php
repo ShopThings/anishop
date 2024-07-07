@@ -140,7 +140,7 @@ class UserReturnOrderRequestController extends Controller
 
         if (false === $model) {
             return response()->json([
-                'type' => ResponseTypesEnum::ERROR->value,
+                'type' => ResponseTypesEnum::WARNING->value,
                 'message' => 'انتخاب حداقل یک مورد برای مرجوع الزامی می‌باشد.',
             ], ResponseCodes::HTTP_UNPROCESSABLE_ENTITY);
         } elseif (!is_null($model)) {
