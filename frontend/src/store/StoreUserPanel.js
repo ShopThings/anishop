@@ -101,20 +101,16 @@ export const useCountingStuffsStore = defineStore('userPanelCounting', () => {
 })
 
 export const useNotificationStore = defineStore('userPanelNotifications', () => {
-  let notifications = ref([])
+  let notifications = ref(0)
   const countdown = useCountdown(300)
   const online = useOnline()
 
-  if (!online.value) return
-
-  checkNewNotifications()
-
   const hasNewNotification = computed(() => {
-    return !!(notifications.value?.length)
+    return +notifications.value !== 0
   })
 
   const newNotificationsCount = computed(() => {
-    return notifications.value?.length ?? 0
+    return notifications.value ?? 0
   })
 
   function checkNewNotifications() {
@@ -139,10 +135,12 @@ export const useNotificationStore = defineStore('userPanelNotifications', () => 
     })
   }
 
+  checkNewNotifications()
+
   async function $reset() {
     countdown.stop()
 
-    notifications.value = []
+    notifications.value = 0
 
     await checkNewNotifications()
 
