@@ -1,4 +1,19 @@
 <template>
+  <div class="px-3 py-5 flex gap-3 mb-6 bg-white rounded-lg shadow-sm text-sm">
+    <StarIcon class="w-5 h-5 text-orange-600 shrink-0"/>
+    <div class="text-orange-600">
+      لطفا قبل از مرجوع نمودن سفارش، صفحه
+      <router-link
+        :to="{name: 'pages', params: {url: 'how-to-return-order'}}"
+        class="mx-1.5 underline underline-offset-8 text-black hover:text-opacity-90 transition"
+        target="_blank"
+      >
+        نحوه مرجوع نمودن سفارش
+      </router-link>
+      را مطالعه نمایید.
+    </div>
+  </div>
+
   <base-message
     :has-close="false"
     class="rounded-lg"
@@ -111,7 +126,7 @@
 
 <script setup>
 import {onMounted, reactive, ref} from "vue";
-import {ArrowLeftIcon, MinusIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftIcon, MinusIcon, StarIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseMessage from "@/components/base/BaseMessage.vue";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";

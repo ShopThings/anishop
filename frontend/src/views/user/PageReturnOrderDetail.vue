@@ -98,7 +98,7 @@
                   >
                     <base-button
                       :disabled="nextRequestStatusLoading"
-                      class="!border-2 border-black !text-black px-4 text-sm !py-1"
+                      class="!border-2 border-black !text-black px-4 text-sm !py-1 flex items-center gap-2 hover:bg-slate-100"
                       type="button"
                       @click="handleNextStatus"
                     >
@@ -113,6 +113,7 @@
                         />
                       </VTransitionFade>
 
+                      <span class="text-slate-400">تغییر وضعیت به:</span>
                       <span>{{ returnOrder.next_status.text }}</span>
                     </base-button>
                   </div>
@@ -138,7 +139,9 @@
                   v-if="returnOrder?.admin_description && returnOrder?.admin_description?.trim() !== ''"
                 >
                   <partial-input-label title="پاسخ به درخواست"/>
-                  <div class="flex flex-col gap-3 shadow-md bg-indigo-50 p-6 mt-3 border border-slate-50 leading-loose">
+                  <div
+                    class="flex flex-col gap-3 shadow-md bg-indigo-50 p-4 mt-3 border border-slate-50 leading-loose text-sm"
+                  >
                     <div>
                       {{ returnOrder?.admin_description ?? '-' }}
                     </div>
@@ -306,7 +309,7 @@
     </div>
 
     <div
-      v-if="!loading"
+      v-if="!loading && !returnOrder?.has_status_changed"
       class="mt-3"
     >
       <base-animated-button
@@ -385,6 +388,10 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     description: yup.string().required('علت مرجوع نمودن کالا را وارد نمایید.'),
   }),
 }, (values, actions) => {
+  if (returnOrder.value?.has_status_changed) {
+    return
+  }
+
   let definedItems = getDefinedItems()
   if (!definedItems.length) {
     toast.warning('لطفا آیتم‌های مرجوع و تعداد آن‌ها را به درستی وارد نمایید.')

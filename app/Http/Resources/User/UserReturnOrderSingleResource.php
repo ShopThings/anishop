@@ -29,7 +29,7 @@ class UserReturnOrderSingleResource extends JsonResource
                 'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status->value] ?? '#000000',
             ],
             'has_status_changed' => !!$this->status_changed_at,
-            'next_status' => $this->when($this->status === ReturnOrderStatusesEnum::ACCEPT->value, function () {
+            'next_status' => $this->when($this->status->value === ReturnOrderStatusesEnum::ACCEPT->value, function () {
                 return [
                     'text' => 'در حال ارسال مرسولات',
                     'value' => ReturnOrderStatusesEnum::SENDING->value,

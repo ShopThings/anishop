@@ -45,5 +45,23 @@ class PageSeeder extends Seeder
             'is_deletable' => DatabaseEnum::DB_NO,
             'created_at' => now(),
         ]);
+
+        // how-to-return-order
+        StaticPage::create([
+            'title' => 'نحوه مرجوع نمودن سفارش',
+            'description' => 'لطفا وارد نمایید...',
+            'url' => 'how-to-return-order',
+            'keywords' => [
+                'نحوه مرجوع سفارش',
+                'طریقه مرجوع سفارش',
+                'مرجوع سفارش',
+                'نحوه مرجوع نمودن سفارش',
+                'طریقه مرجوع نمودن سفارش',
+                'مرجوع نمودن سفارش'
+            ],
+            'is_published' => DatabaseEnum::DB_YES,
+            'is_deletable' => DatabaseEnum::DB_NO,
+            'created_at' => now(),
+        ]);
     }
 }
