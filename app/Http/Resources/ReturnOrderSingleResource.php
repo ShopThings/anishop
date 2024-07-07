@@ -34,11 +34,11 @@ class ReturnOrderSingleResource extends JsonResource
             'admin_description' => $this->admin_description,
             'status' => [
                 'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
-                'value' => $this->status,
+                'value' => $this->status->value,
                 'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status->value] ?? '#000000',
             ],
-            'wait_for_user' => in_array($this->status, ReturnOrderStatusesEnum::getUserStatuses()),
-            'is_in_end_status' => in_array($this->status, ReturnOrderStatusesEnum::getEndingStatuses()),
+            'wait_for_user' => in_array($this->status->value, ReturnOrderStatusesEnum::getUserStatuses()),
+            'is_in_end_status' => in_array($this->status->value, ReturnOrderStatusesEnum::getEndingStatuses()),
             'seen_status' => $this->seen_status,
             'status_changed_at' => $this->status_changed_at
                 ? vertaTz($this->status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
