@@ -21,7 +21,7 @@ class SliderResource extends JsonResource
             'id' => $this->id,
             'place_in' => [
                 'text' => SliderPlacesEnum::getTranslations($this->place_in, 'نامشخص'),
-                'value' => $this->place_in,
+                'value' => $this->place_in->value,
             ],
             'title' => $this->title,
             'priority' => $this->priority,

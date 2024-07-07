@@ -30,7 +30,7 @@ class BlogCommentResource extends JsonResource
             'is_for_current_user' => $this->isCommentForCurrentUser($creator),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'description' => $this->description,
             'created_by' => $this->created_by ? new UserBlogShowResource($creator) : null,

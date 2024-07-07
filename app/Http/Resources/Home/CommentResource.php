@@ -27,7 +27,7 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'pros' => $this->pros,
             'cons' => $this->cons,

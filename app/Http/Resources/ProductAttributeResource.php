@@ -22,7 +22,7 @@ class ProductAttributeResource extends JsonResource
             'title' => $this->title,
             'type' => [
                 'text' => ProductAttributeTypesEnum::getTranslations($this->type, 'نامشخص'),
-                'value' => $this->type,
+                'value' => $this->type->value,
             ],
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),

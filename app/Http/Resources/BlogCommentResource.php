@@ -27,11 +27,11 @@ class BlogCommentResource extends JsonResource
             'has_children' => $this->resource->hasChildren(),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'status' => [
                 'text' => CommentStatusesEnum::getTranslations($this->status, 'نامشخص'),
-                'value' => $this->status,
+                'value' => $this->status->value,
             ],
             'flag_count' => $this->flag_count,
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,

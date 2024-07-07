@@ -20,7 +20,7 @@ class ProductAttributeShowResource extends JsonResource
             'title' => $this->title,
             'type' => [
                 'text' => ProductAttributeTypesEnum::getTranslations($this->type, 'نامشخص'),
-                'value' => $this->type,
+                'value' => $this->type->value,
             ],
             'values' => ProductAttributeValueShowResource::collection($this->whenLoaded('attrValues'))
         ];

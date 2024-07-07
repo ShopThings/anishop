@@ -24,7 +24,7 @@ class UserBlogCommentResource extends JsonResource
             'badge' => new BlogBadgeShowResource($this->badge),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

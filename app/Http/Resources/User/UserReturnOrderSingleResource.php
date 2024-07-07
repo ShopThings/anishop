@@ -25,7 +25,7 @@ class UserReturnOrderSingleResource extends JsonResource
             'admin_description' => $this->admin_description,
             'status' => [
                 'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
-                'value' => $this->status,
+                'value' => $this->status->value,
                 'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status->value] ?? '#000000',
             ],
             'has_status_changed' => !!$this->status_changed_at,

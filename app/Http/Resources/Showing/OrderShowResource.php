@@ -30,11 +30,11 @@ class OrderShowResource extends JsonResource
             'payment_method_title' => $this->payment_method_title,
             'payment_method_type' => [
                 'text' => PaymentTypesEnum::getTranslations($this->payment_method_type, 'نامشخص'),
-                'value' => $this->payment_method_type,
+                'value' => $this->payment_method_type->value,
             ],
             'payment_status' => [
                 'text' => PaymentStatusesEnum::getTranslations($this->payment_status, 'نامشخص'),
-                'value' => $this->payment_status,
+                'value' => $this->payment_status->value,
                 'color_hex' => PaymentStatusesEnum::getStatusColor()[$this->payment_status->value] ?? '#000000',
             ],
             'payment_status_changed_at' => $this->payment_status_changed_at

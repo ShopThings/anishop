@@ -26,11 +26,11 @@ class ProductCommentResource extends JsonResource
             'product' => new ProductShowResource($this->product),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'status' => [
                 'text' => CommentStatusesEnum::getTranslations($this->status, 'نامشخص'),
-                'value' => $this->status,
+                'value' => $this->status->value,
             ],
             'pros' => $this->pros,
             'cons' => $this->cons,

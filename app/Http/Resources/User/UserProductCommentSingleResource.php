@@ -24,7 +24,7 @@ class UserProductCommentSingleResource extends JsonResource
             'product' => new ProductShowResource($this->product),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'pros' => $this->pros,
             'cons' => $this->cons,

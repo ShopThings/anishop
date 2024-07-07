@@ -38,7 +38,7 @@ class UserBlogCommentSingleResource extends JsonResource
             'is_for_current_user' => $this->isCommentForCurrentUser($creator),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'description' => $this->description,
             'is_condition_changed' => $this->condition !== CommentConditionsEnum::UNSET->value,

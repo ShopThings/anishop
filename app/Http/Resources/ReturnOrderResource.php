@@ -24,7 +24,7 @@ class ReturnOrderResource extends JsonResource
             'code' => $this->code,
             'status' => [
                 'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
-                'value' => $this->status,
+                'value' => $this->status->value,
                 'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$this->status->value] ?? '#000000',
             ],
             'seen_status' => $this->seen_status,

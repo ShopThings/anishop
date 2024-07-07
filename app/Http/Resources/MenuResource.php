@@ -22,7 +22,7 @@ class MenuResource extends JsonResource
             'title' => $this->title,
             'place_in' => [
                 'text' => MenuPlacesEnum::getTranslations($this->place_in, 'نامشخص'),
-                'value' => $this->place_in,
+                'value' => $this->place_in->value,
             ],
             'is_published' => $this->is_published,
             'is_deletable' => $this->is_deletable,

@@ -19,7 +19,7 @@ class MenuShowResource extends JsonResource
             'id' => $this->id,
             'place_in' => [
                 'text' => MenuPlacesEnum::getTranslations($this->place_in, 'نامشخص'),
-                'value' => $this->place_in,
+                'value' => $this->place_in->value,
             ],
             'title' => $this->title,
             'is_published' => $this->is_published,

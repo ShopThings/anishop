@@ -24,7 +24,7 @@ class UserProductCommentResource extends JsonResource
             'down_vote_count' => $this->down_vote_count,
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'created_at' => $this->created_at
                 ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)

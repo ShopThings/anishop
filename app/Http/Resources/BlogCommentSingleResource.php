@@ -35,11 +35,11 @@ class BlogCommentSingleResource extends JsonResource
             'has_children' => $this->resource->hasChildren(),
             'condition' => [
                 'text' => CommentConditionsEnum::getTranslations($this->condition, 'نامشخص'),
-                'value' => $this->condition,
+                'value' => $this->condition->value,
             ],
             'status' => [
                 'text' => CommentStatusesEnum::getTranslations($this->status, 'نامشخص'),
-                'value' => $this->status,
+                'value' => $this->status->value,
             ],
             'description' => $this->description,
             'flag_count' => $this->flag_count,

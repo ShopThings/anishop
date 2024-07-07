@@ -19,7 +19,7 @@ class SliderShowResource extends JsonResource
             'id' => $this->id,
             'place_in' => [
                 'text' => SliderPlacesEnum::getTranslations($this->place_in, 'نامشخص'),
-                'value' => $this->place_in,
+                'value' => $this->place_in->value,
             ],
             'items' => SliderItemShowResource::collection($this->whenLoaded('items')),
             'title' => $this->title,
