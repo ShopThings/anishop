@@ -216,7 +216,7 @@ class OrderEventSubscriber extends AbstractListener
                     $event->orderCode,
                     $event->returnStatus,
                     $model,
-                    SMSTypesEnum::ORDER_STATUS,
+                    SMSTypesEnum::RETURN_ORDER_STATUS,
                 ))->afterCommit()
             );
         return true;
