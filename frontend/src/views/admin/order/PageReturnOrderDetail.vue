@@ -80,7 +80,10 @@
       </partial-card>
 
       <div class="mb-3">
-        <base-accordion :open="true">
+        <base-accordion
+          :open="true"
+          open-btn-class="!bg-violet-50 !border-violet-500"
+        >
           <template #button>
             جزئیات درخواست
           </template>
