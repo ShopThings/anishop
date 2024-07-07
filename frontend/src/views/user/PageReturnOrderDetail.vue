@@ -398,6 +398,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     items: definedItems,
   }, {
     success(response) {
+      toast.success('اطلاعات مرجوع با موفقیت ثبت شد.')
       setFormFields(response.data)
     },
     error(error) {
@@ -473,7 +474,7 @@ function setFormFields(item) {
 function getDefinedItems() {
   let defined = []
 
-  for (let i of items) {
+  for (let i of items.value) {
     let retQnt = +i.return_quantity
     if (i.id && i.return_quantity && !isNaN(retQnt) && retQnt > 0 && retQnt <= +i.quantity) {
       defined.push({
