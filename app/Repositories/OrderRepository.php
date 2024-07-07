@@ -483,6 +483,36 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
     /**
      * @inheritDoc
      */
+    public function canReduceItemsFromStockFor(int $orderId): bool
+    {
+        $detail = $this->model->newQuery()
+            ->with('items.product.items')
+            ->where('id', $orderId)
+            ->has('items.product.items')
+            ->first();
+
+        if (empty($detail)) return false;
+
+        $res = false;
+
+        $detail->items?->each(function ($item) use (&$res) {
+            $realItem = $item->product()->items()->where('code', $item->product_code)->first();
+
+            if (empty($realItem) || $realItem->stock_count - $item->quantity < 0) {
+                $res = false;
+                return false;
+            }
+
+            $res = true;
+            return true;
+        });
+
+        return $res;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function returnOrderProductsToStock(int $orderId): bool
     {
         $productItems = $this->orderItemModel->newQuery()

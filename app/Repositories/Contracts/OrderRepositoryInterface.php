@@ -77,6 +77,12 @@ interface OrderRepositoryInterface extends RepositoryInterface
      * @param int $orderId
      * @return bool
      */
+    public function canReduceItemsFromStockFor(int $orderId): bool;
+
+    /**
+     * @param int $orderId
+     * @return bool
+     */
     public function returnOrderProductsToStock(int $orderId): bool;
 
     /**

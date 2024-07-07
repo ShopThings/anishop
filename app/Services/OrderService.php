@@ -11,6 +11,7 @@ use App\Enums\Settings\SettingsEnum;
 use App\Events\OrderPlacedEvent;
 use App\Events\OrderStatusChangedEvent;
 use App\Exceptions\InvalidCartNameException;
+use App\Models\OrderDetail;
 use App\Models\User;
 use App\Repositories\Contracts\CityRepositoryInterface;
 use App\Repositories\Contracts\CouponRepositoryInterface;
@@ -289,9 +290,11 @@ class OrderService extends Service implements OrderServiceInterface
             $res = $this->repository->updateWhere($updateAttributes, $where->build());
 
             /**
-             * @var User $model
+             * @var OrderDetail $model
              */
-            $model = $this->repository->newWith('user')->findWhere($where->build());
+            $model = $this->repository
+                ->newWith(['user', 'items'])
+                ->findWhere($where->build());
 
             // send notification to user about send status changed
             if (!$silence && isset($status)) {
@@ -303,12 +306,19 @@ class OrderService extends Service implements OrderServiceInterface
             }
 
             // return order products to stock if needed
-            if (
-                isset($status) &&
-                $status['should_return_order_product'] &&
-                !$model->is_product_returned_to_stock
-            ) {
-                $res = $res && $this->repository->returnOrderProductsToStock($model->id);
+            if (isset($status)) {
+                if (
+                    !$model->is_product_returned_to_stock &&
+                    $status['should_return_order_product']
+                ) {
+                    $res = $res && $this->repository->returnOrderProductsToStock($model->id);
+                } elseif (
+                    $model->is_product_returned_to_stock &&
+                    !$status['should_return_order_product'] &&
+                    $this->repository->canReduceItemsFromStockFor($model->id)
+                ) {
+                    $res = $res && $this->repository->reduceOrderProductsFromStock($model->items);
+                }
             }
 
             if (!$res) {
