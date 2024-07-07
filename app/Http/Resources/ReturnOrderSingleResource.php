@@ -31,7 +31,7 @@ class ReturnOrderSingleResource extends JsonResource
             'user' => new UserShowResource($this->user),
             'code' => $this->code,
             'description' => $this->description,
-            'not_accepted_description' => $this->not_accepted_description,
+            'admin_description' => $this->admin_description,
             'status' => [
                 'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,
@@ -44,21 +44,16 @@ class ReturnOrderSingleResource extends JsonResource
                 ? vertaTz($this->status_changed_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
             'status_changed_by' => new UserShowResource($this->when(
-                $this->status_changed_by &&
-                $this->whenLoaded('statusChanger'),
+                $this->status_changed_by,
                 $this->resource->status_changer
             )),
             'order_detail' => new OrderDetailShowResource($this->order),
-            'items' => ReturnOrderItemShowResource::collection($this->return_order_items),
+            'items' => ReturnOrderItemShowResource::collection($this->returnOrderItems),
             'responded_at' => $this->when(
                 $this->responded_at,
                 vertaTz($this->responded_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'responded_by' => new UserShowResource($this->when(
-                $this->responded_by &&
-                $this->whenLoaded('responder'),
-                $this->resource->responder
-            )),
+            'responded_by' => new UserShowResource($this->when($this->responded_by, $this->resource->responder)),
             'requested_at' => $this->requested_at
                 ? vertaTz($this->requested_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,

@@ -19,7 +19,7 @@ return new class extends Migration {
                 ->constrained('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('code', 25)->unique();
             $table->text('description')->nullable();
-            $table->text('not_accepted_description')->nullable();
+            $table->text('admin_description')->nullable();
             $table->enum('status', array_map(fn($item) => $item->value, ReturnOrderStatusesEnum::cases()))
                 ->default(ReturnOrderStatusesEnum::CHECKING->value);
             $table->boolean('seen_status')->default(false);

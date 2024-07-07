@@ -21,7 +21,7 @@ class ReturnOrderItemShowResource extends JsonResource
             'item_id' => $this->order_item_id,
             'return_quantity' => $this->quantity,
             'is_accepted' => !!$this->accepted_at,
-            'order_item' => new OrderItemShowResource($this->order_item),
+            'order_item' => new OrderItemShowResource($this->orderItem),
         ];
     }
 }

@@ -508,16 +508,45 @@
           >
             <template v-slot:product="{value}">
               <div class="flex flex-col gap-3">
+                <router-link
+                  v-if="value?.product"
+                  :to="{name: 'product.detail', params: {slug: value.product.slug}}"
+                  class="inline-block"
+                  target="_blank"
+                >
+                  <base-lazy-image
+                    :alt="value.product.title"
+                    :is-local="false"
+                    :lazy-src="value.product.image.path"
+                    :size="FileSizes.SMALL"
+                    class="!w-20 !h-20"
+                  />
+                </router-link>
                 <base-lazy-image
+                  v-else
                   :alt="value.product_title"
-                  :is-local="false"
                   :lazy-src="value.image.path"
                   :size="FileSizes.SMALL"
+                  :is-local="false"
                   class="!w-20 !h-20"
                 />
-                <span>{{ value.product_title }}</span>
 
-                <ul class="flex flex-col gap-2.5 text-xs rounded-lg p-2 border border-slate-200 text-black">
+                <router-link
+                  v-if="value?.product"
+                  :to="{name: 'product.detail', params: {slug: value.product.slug}}"
+                  class="inline-block text-blue-600 hover:text-opacity-90 leading-relaxed"
+                  target="_blank"
+                >
+                  {{ value.product.title }}
+                </router-link>
+                <div
+                  v-else
+                  class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                >
+                  {{ value.product_title }}
+                </div>
+
+                <ul class="flex flex-col gap-2.5 text-xs rounded-lg p-2 border border-slate-200 text-black bg-white">
                   <li v-if="value.color_name" class="flex items-center gap-1.5">
                     <span class="text-gray-400">رنگ:</span>
                     <partial-badge-color :hex="value.color_hex" :title="value.color_name"/>

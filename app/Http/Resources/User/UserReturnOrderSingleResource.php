@@ -22,7 +22,7 @@ class UserReturnOrderSingleResource extends JsonResource
             'code' => $this->code,
             'order_code' => $this->order->code,
             'description' => $this->description,
-            'not_accepted_description' => $this->not_accepted_description,
+            'admin_description' => $this->admin_description,
             'status' => [
                 'text' => ReturnOrderStatusesEnum::getTranslations($this->status, 'نامشخص'),
                 'value' => $this->status,

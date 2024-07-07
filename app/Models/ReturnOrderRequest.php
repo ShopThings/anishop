@@ -30,7 +30,7 @@ class ReturnOrderRequest extends Model
     ];
 
     protected $casts = [
-        'not_accepted_description' => CleanHtmlCast::class,
+        'admin_description' => CleanHtmlCast::class,
         'status' => ReturnOrderStatusesEnum::class,
         'seen_status' => 'boolean',
         'status_changed_at' => 'datetime',

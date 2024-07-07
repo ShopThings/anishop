@@ -17,7 +17,7 @@ class XSS
         'password',
         'password_confirmation',
         'description',
-        'not_accepted_description',
+        'admin_description',
         'answer',
     ];
 

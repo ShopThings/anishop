@@ -72,9 +72,8 @@
         <template #body>
           <div class="p-3">
             <form-return-order-change-status
-              :description="returnOrder?.not_accepted_description"
-              :selected="returnStatus"
-              @updated="fetchReturnOrder"
+              :description="returnOrder?.admin_description"
+              @updated="statusChangeHandler"
             />
           </div>
         </template>
@@ -156,24 +155,60 @@
             :is-slot-mode="true"
             :is-static-mode="true"
             :rows="table.rows"
+            :total="table.total"
           >
             <template v-slot:product="{value}">
               <div class="flex flex-col gap-3">
-                <partial-show-image :item="value.order_item.image"/>
-                <span>{{ value.order_item.product_title }}</span>
+                <router-link
+                  v-if="value.order_item?.product"
+                  :to="{name: 'product.detail', params: {slug: value.order_item.product.slug}}"
+                  class="inline-block"
+                  target="_blank"
+                >
+                  <base-lazy-image
+                    :alt="value.order_item.product.title"
+                    :is-local="false"
+                    :lazy-src="value.order_item.product.image.path"
+                    :size="FileSizes.SMALL"
+                    class="!w-20 !h-20"
+                  />
+                </router-link>
+                <base-lazy-image
+                  v-else
+                  :alt="value.order_item.product_title"
+                  :is-local="false"
+                  :lazy-src="value.order_item.image.path"
+                  :size="FileSizes.SMALL"
+                  class="!w-20 !h-20"
+                />
 
-                <ul class="flex flex-col gap-2.5">
-                  <li v-if="value.order_item.color_name">
-                    <partial-badge-color
-                      :hex="value.order_item.color_hex"
-                      :title="value.order_item.color_name"
-                    />
+                <router-link
+                  v-if="value.order_item?.product"
+                  :to="{name: 'product.detail', params: {slug: value.order_item.product.slug}}"
+                  class="inline-block text-blue-600 hover:text-opacity-90 leading-relaxed"
+                  target="_blank"
+                >
+                  {{ value.order_item.product.title }}
+                </router-link>
+                <div
+                  v-else
+                  class="inline-block mb-2 text-blue-600 hover:text-opacity-90 leading-relaxed"
+                >
+                  {{ value.order_item.product_title }}
+                </div>
+
+                <ul class="flex flex-col gap-2.5 text-xs rounded-lg p-2 border border-slate-200 text-black bg-white">
+                  <li v-if="value.order_item.color_name" class="flex items-center gap-1.5">
+                    <span class="text-gray-400">رنگ:</span>
+                    <partial-badge-color :hex="value.order_item.color_hex" :title="value.order_item.color_name"/>
                   </li>
-                  <li v-if="value.order_item.size">
+                  <li v-if="value.order_item.size" class="flex items-center gap-1.5">
+                    <span class="text-gray-400">سایز:</span>
                     <partial-badge-size :title="value.order_item.size"/>
                   </li>
-                  <li v-if="value.order_item.guarantee">
-                    {{ value.guarantee }}
+                  <li v-if="value.order_item.guarantee" class="flex items-center gap-1.5">
+                    <span class="text-gray-400 text-xs">گارانتی:</span>
+                    {{ value.order_item.guarantee }}
                   </li>
                 </ul>
               </div>
@@ -247,13 +282,14 @@ import {getRouteParamByKey, numberFormat} from "@/composables/helper.js";
 import {ReturnOrderAPI} from "@/service/APIOrder.js";
 import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 import PartialBadgeSize from "@/components/partials/PartialBadgeSize.vue";
-import PartialShowImage from "@/components/partials/filemanager/PartialShowImage.vue";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 import BaseSwitchConfirmation from "@/components/base/BaseSwitchConfirmation.vue";
 import BaseButton from "@/components/base/BaseButton.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
+import {FileSizes} from "@/composables/file-list.js";
+import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id', null, false)
@@ -304,6 +340,7 @@ const table = reactive({
     },
   ],
   rows: [],
+  total: 0,
   sortable: {
     order: "id",
     sort: "desc",
@@ -334,6 +371,14 @@ function returnOrderItemsHandler() {
 }
 
 //-----------------------------------
+function statusChangeHandler(status, description) {
+  returnStatus.value.text = status.title
+  returnStatus.value.value = status.code
+  returnStatus.value.color_hex = status.color_hex
+
+  returnOrder.value.admin_description = description
+}
+
 function fetchReturnOrder() {
   ReturnOrderAPI.fetchById(idParam.value, {
     success: (response) => {
@@ -342,6 +387,7 @@ function fetchReturnOrder() {
       returnStatus.value = response.data.status
 
       table.rows = response.data.items
+      table.total = response.data.items?.length || 0
 
       loading.value = false
     },

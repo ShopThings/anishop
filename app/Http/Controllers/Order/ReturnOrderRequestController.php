@@ -71,7 +71,7 @@ class ReturnOrderRequestController extends Controller
         Gate::authorize('update', $returnOrder);
 
         $validated = filter_validated_data($request->validated(), [
-            'not_accepted_description',
+            'admin_description',
             'status',
             'seen_status',
         ]);

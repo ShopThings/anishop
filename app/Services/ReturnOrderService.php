@@ -173,8 +173,8 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         $hasStatusUpdate = isset($attributes['status']) &&
             !is_null(ReturnOrderStatusesEnum::tryFrom($attributes['status']));
 
-        if (isset($attributes['not_accepted_description'])) {
-            $updateAttributes['not_accepted_description'] = $attributes['not_accepted_description'];
+        if (isset($attributes['admin_description'])) {
+            $updateAttributes['admin_description'] = $attributes['admin_description'];
         }
         if ($hasStatusUpdate) {
             $updateAttributes['status'] = ReturnOrderStatusesEnum::tryFrom($attributes['status'])->value;
@@ -354,7 +354,7 @@ class ReturnOrderService extends Service implements ReturnOrderServiceInterface
         foreach ($statuses as $status) {
             $arrStatuses[] = [
                 'code' => $status,
-                'title' => ReturnOrderStatusesEnum::getSimilarValuesFromString($status),
+                'title' => ReturnOrderStatusesEnum::getTranslations($status),
                 'color_hex' => ReturnOrderStatusesEnum::getStatusColor()[$status],
             ];
         }

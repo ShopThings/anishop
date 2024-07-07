@@ -135,12 +135,12 @@
                 </div>
 
                 <template
-                  v-if="returnOrder?.not_accepted_description && returnOrder?.not_accepted_description?.trim() !== ''"
+                  v-if="returnOrder?.admin_description && returnOrder?.admin_description?.trim() !== ''"
                 >
                   <partial-input-label title="پاسخ به درخواست"/>
                   <div class="flex flex-col gap-3 shadow-md bg-indigo-50 p-6 mt-3 border border-slate-50 leading-loose">
                     <div>
-                      {{ returnOrder?.not_accepted_description ?? '-' }}
+                      {{ returnOrder?.admin_description ?? '-' }}
                     </div>
                   </div>
                 </template>
@@ -387,7 +387,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 }, (values, actions) => {
   let definedItems = getDefinedItems()
   if (!definedItems.length) {
-    toast.error('لطفا آیتم‌های مرجوع و تعداد آن‌ها را به درستی وارد نمایید.')
+    toast.warning('لطفا آیتم‌های مرجوع و تعداد آن‌ها را به درستی وارد نمایید.')
     return
   }
 

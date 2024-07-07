@@ -10,13 +10,20 @@
         options-key="code"
         options-text="title"
         @change="statusChange"
-      />
+      >
+        <template #item="{item}">
+          <partial-badge-color
+            :hex="item.color_hex"
+            :title="item.title"
+          />
+        </template>
+      </base-select>
       <partial-input-error-message :error-message="errors.status"/>
     </div>
     <div class="p-2">
       <base-textarea
-        :in-edit-mode="!(!!yourDescription)"
-        :value="yourDescription"
+        :in-edit-mode="!(!!description)"
+        :value="description"
         label-title="علت تغییر وضعیت جهت نمایش به کاربر"
         name="description"
         placeholder="توضیحات خود را وارد نمایید"
@@ -44,7 +51,7 @@
 </template>
 
 <script setup>
-import {computed, onMounted, ref, watch} from "vue";
+import {onMounted, ref} from "vue";
 import yup from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
@@ -57,6 +64,7 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {ReturnOrderAPI} from "@/service/APIOrder.js";
 import {getRouteParamByKey} from "@/composables/helper.js";
 import {useToast} from "vue-toastification";
+import PartialBadgeColor from "@/components/partials/PartialBadgeColor.vue";
 
 const props = defineProps({
   selected: Object,
@@ -69,14 +77,7 @@ const idParam = getRouteParamByKey('id', null, false)
 const loading = ref(true)
 
 const statuses = ref([])
-const selectedStatus = ref(props.selected)
-const yourDescription = computed(() => {
-  return props.not_accepted_description
-})
-
-watch(() => props.selected, () => {
-  selectedStatus.value = props.selected
-})
+const selectedStatus = ref(null)
 
 function statusChange(selected) {
   selectedStatus.value = selected
@@ -87,7 +88,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     description: yup.string().optional(),
   }),
 }, (values, actions) => {
-  if (!selectedStatus.value?.value) {
+  if (!selectedStatus.value?.code) {
     actions.setFieldError('status', 'وضعیت مرجوع را انتخاب کنید.')
     return
   }
@@ -95,8 +96,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   canSubmit.value = false
 
   ReturnOrderAPI.updateById(idParam.value, {
-    not_accepted_description: values.description,
-    status: selectedStatus.value.value,
+    admin_description: values.description,
+    status: selectedStatus.value.code,
   }, {
     success() {
       toast.success('وضعیت با موفقیت تغییر یافت.')

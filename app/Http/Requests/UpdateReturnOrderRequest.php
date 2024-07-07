@@ -24,7 +24,7 @@ class UpdateReturnOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'not_accepted_description' => [
+            'admin_description' => [
                 'sometimes',
                 'min:1',
             ],
@@ -41,7 +41,7 @@ class UpdateReturnOrderRequest extends FormRequest
     public function attributes()
     {
         return [
-            'not_accepted_description' => 'علت عدم تایید',
+            'admin_description' => 'توضیحات جهت نمایش به کاربر',
             'status' => 'وضعیت بررسی',
             'seen_status' => 'وضعیت بازدید',
         ];

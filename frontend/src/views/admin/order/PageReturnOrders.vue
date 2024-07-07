@@ -20,6 +20,10 @@
               :total="table.totalRecordCount"
               @do-search="doSearch"
           >
+            <template #id="{index}">
+              {{ index }}
+            </template>
+
             <template #code="{value}">
               <span class="tracking-widest font-iranyekan-bold">{{ value.code }}</span>
             </template>
@@ -138,11 +142,6 @@ const table = reactive({
       field: "user",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
-    },
-    {
-      label: "تعداد محصولات مرجوعی",
-      field: "items_count",
-      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت ارجاع",
