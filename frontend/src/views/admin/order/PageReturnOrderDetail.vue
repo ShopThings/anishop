@@ -184,6 +184,10 @@
             :rows="table.rows"
             :total="table.total"
           >
+            <template v-slot:id="{index}">
+              {{ index }}
+            </template>
+
             <template v-slot:product="{value}">
               <div class="flex flex-col gap-3">
                 <router-link
