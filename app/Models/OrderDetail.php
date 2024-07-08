@@ -35,6 +35,7 @@ class OrderDetail extends Model
     protected $casts = [
         'description' => CleanHtmlCast::class,
         'is_needed_factor' => 'boolean',
+        'send_status_changed_at' => 'datetime',
         'is_product_returned_to_stock' => 'boolean',
         'ordered_at' => 'datetime',
     ];

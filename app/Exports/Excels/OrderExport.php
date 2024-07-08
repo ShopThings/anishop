@@ -82,9 +82,9 @@ class OrderExport extends ExcelExport implements WithEvents
             $itemsStr .= '(' . "\n";
             $itemsStr .= 'کد: ' . $item->product_code . "\n";
             $itemsStr .= 'عنوان: ' . $item->product_title . "\n";
-            $itemsStr .= 'رنگ: ' . $item->color_name ?? '-' . "\n";
-            $itemsStr .= 'سایز: ' . $item->size ?? '-' . "\n";
-            $itemsStr .= 'گارانتی: ' . $item->guarantee ?? '-' . "\n";
+            $itemsStr .= ('رنگ: ' . $item->color_name ?? '-') . "\n";
+            $itemsStr .= ('سایز: ' . $item->size ?? '-') . "\n";
+            $itemsStr .= ('گارانتی: ' . $item->guarantee ?? '-') . "\n";
             $itemsStr .= 'وزن با بسته‌بندی (به گرم): ' . $this->formatNumber($item->weight, 0) . "\n";
             $itemsStr .= 'قیمت (به تومان): ' . $this->formatNumber($item->price) . "\n";
             $itemsStr .= 'قیمت با تخفیف (به تومان): ' . $this->formatNumber($item->discounted_price, '-') . "\n";
@@ -132,12 +132,13 @@ class OrderExport extends ExcelExport implements WithEvents
             $receiverStr,
             $row->description,
             $row->coupon_code ?? '-',
-            $row->coupon_price,
-            $row->shipping_price,
-            $row->disocunt_price,
-            $row->final_price,
+            $row->coupon_price ?: 0,
+            $row->shipping_price ?: 0,
+            $row->disocunt_price ?: 0,
+            $row->final_price ?: 0,
+            $row->total_price ?: 0,
             $row->send_method_title,
-            $row->sned_status_title,
+            $row->send_status_title,
             $row->send_status_changed_at
                 ? Date::dateTimeToExcel($row->send_status_changed_at)
                 : null,

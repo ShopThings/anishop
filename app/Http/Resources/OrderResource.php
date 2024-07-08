@@ -24,8 +24,8 @@ class OrderResource extends JsonResource
             'must_pay_price' => $this->must_pay_price,
             'payment_method_title' => $this->payment_method_title,
             'payment_method_type' => [
-                'text' => PaymentTypesEnum::getTranslations($this->payment_method_type, 'نامشخص'),
-                'value' => $this->payment_method_type->value,
+                'text' => PaymentTypesEnum::getTranslations($this->payment_method_type ?? '', 'نامشخص'),
+                'value' => $this->payment_method_type?->value,
             ],
             'payment_status' => [
                 'text' => PaymentStatusesEnum::getTranslations($this->payment_status, 'نامشخص'),

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Report;
 use App\Enums\Responses\ResponseTypesEnum;
 use App\Exports\Excels\OrderExport;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderResource;
+use App\Http\Resources\OrderDetailResource;
 use App\Services\Contracts\ReportServiceInterface;
 use App\Support\Filter;
 use App\Traits\ControllerExportResponseTrait;
@@ -43,7 +43,7 @@ class ReportOrderController extends Controller
             $reportQuery = null;
         }
 
-        return OrderResource::collection($this->service->getOrdersForReport($filter, $reportQuery));
+        return OrderDetailResource::collection($this->service->getOrdersForReport($filter, $reportQuery));
     }
 
     /**
@@ -69,6 +69,6 @@ class ReportOrderController extends Controller
     {
         Gate::authorize('canReport');
 
-        return $this->exportResponse($request, $filter, 'products', OrderExport::class);
+        return $this->exportResponse($request, $filter, 'orders', OrderExport::class);
     }
 }

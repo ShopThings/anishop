@@ -125,8 +125,8 @@
 
             <template v-slot:send_status="{value}">
               <partial-badge-status-send
-                :color-hex="value.send_status_color_hex"
-                :text="value.send_status_title"
+                :color-hex="value.send_status.color_hex"
+                :text="value.send_status.title"
               />
             </template>
 
@@ -182,7 +182,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {inject, onMounted, reactive, ref} from "vue";
 import BaseQueryBuilder from "@/components/base/BaseQueryBuilder.vue";
 import {MinusIcon, TableCellsIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
@@ -199,6 +199,8 @@ import PartialBadgeStatusSend from "@/components/partials/PartialBadgeStatusSend
 import PartialDialog from "@/components/partials/PartialDialog.vue";
 
 const toast = useToast()
+
+const notificationStore = inject('notificationStore')
 
 const builderLoading = ref(false)
 const filterApplyLoading = ref(false)
@@ -218,6 +220,11 @@ function excelDownloadHandler() {
   ReportAPI.exportOrders({
     query: query.value,
   }, {
+    success() {
+      setTimeout(() => {
+        notificationStore.$reset()
+      }, 2000)
+    },
     finally() {
       isDownloadExcel.value = false
     },
@@ -259,14 +266,16 @@ const table = reactive({
     {
       label: "وضعیت سفارش",
       field: "payment_status",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "وضعیت ارسال",
       field: "send_status",
+      columnClasses: 'whitespace-nowrap',
     },
     {
       label: "تاریخ سفارش",
-      field: "created_at",
+      field: "ordered_at",
       columnClasses: 'whitespace-nowrap',
       sortable: true,
     },
@@ -343,6 +352,7 @@ const isDetailOpen = ref(false)
 
 function showReceiverDetails(value) {
   receiverInfo.value = value
+  isDetailOpen.value = true
 }
 
 //---------------------------------------------

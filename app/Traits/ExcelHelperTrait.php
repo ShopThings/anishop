@@ -32,6 +32,17 @@ trait ExcelHelperTrait
     }
 
     /**
+     * @param $sheet
+     * @param string $cell
+     * @param array $data
+     * @return void
+     */
+    public function changeCellAlignment($sheet, string $cell, array $data): void
+    {
+        $sheet->getStyle($cell)->getAlignment()->applyFromArray($data);
+    }
+
+    /**
      * @param $number
      * @param $default
      * @param bool $toPersian
@@ -59,6 +70,10 @@ trait ExcelHelperTrait
      */
     protected function addStyleToTotalColumns($sheet, string $from, string $to, $totalRow): void
     {
+        $this->changeCellAlignment($sheet, $from . $totalRow . ':' . $to . $totalRow, [
+            'readOrder' => Alignment::READORDER_RTL,
+        ]);
+
         $sheet->getStyle($from . $totalRow . ':' . $to . $totalRow)->applyFromArray([
             'font' => ['bold' => true],
             'fill' => [
