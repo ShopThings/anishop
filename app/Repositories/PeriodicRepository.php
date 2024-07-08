@@ -43,7 +43,7 @@ class PeriodicRepository implements PeriodicRepositoryInterface
             };
         }
 
-        return $query->sum('total_price');
+        return $query->sum('final_price');
     }
 
     /**
