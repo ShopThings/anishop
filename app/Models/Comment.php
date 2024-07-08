@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\CleanHtmlCast;
 use App\Casts\StringToArray;
 use App\Enums\Comments\CommentConditionsEnum;
+use App\Enums\Comments\CommentStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -31,6 +32,8 @@ class Comment extends Model
     ];
 
     protected $casts = [
+        'condition' => CommentConditionsEnum::class,
+        'status' => CommentStatusesEnum::class,
         'pros' => StringToArray::class,
         'cons' => StringToArray::class,
         'answer' => CleanHtmlCast::class,

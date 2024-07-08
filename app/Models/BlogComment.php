@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Comments\CommentConditionsEnum;
+use App\Enums\Comments\CommentStatusesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -27,6 +28,11 @@ class BlogComment extends Model
 
     protected $guarded = [
         'id',
+    ];
+
+    protected $casts = [
+        'condition' => CommentConditionsEnum::class,
+        'status' => CommentStatusesEnum::class,
     ];
 
     protected static function newFactory()

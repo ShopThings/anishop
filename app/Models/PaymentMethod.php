@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\Payments\GatewaysEnum;
+use App\Enums\Payments\PaymentTypesEnum;
 use App\Support\Model\ExtendedModel as Model;
 use App\Support\Model\SoftDeletesTrait;
 use App\Traits\HasCreatedRelationTrait;
@@ -22,6 +24,8 @@ class PaymentMethod extends Model
     ];
 
     protected $casts = [
+        'type' => PaymentTypesEnum::class,
+        'bank_gateway_type' => GatewaysEnum::class,
         'options' => 'encrypted:array',
         'is_published' => 'boolean',
         'is_deletable' => 'boolean',
