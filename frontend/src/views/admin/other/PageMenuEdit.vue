@@ -135,7 +135,6 @@ function handleNewMenuClick() {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('عنوان منو را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار منو را مشخص کنید.'),
   }),
 }, (values, actions) => {
   canSubmit.value = false

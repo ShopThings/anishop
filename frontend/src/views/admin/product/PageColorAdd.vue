@@ -87,7 +87,7 @@ import {ref} from "vue";
 import yup, {isValidColorHex} from "@/validation/index.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {EyeDropperIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
+import {CheckIcon, EyeDropperIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -106,7 +106,6 @@ const pureColor = ref('#000000')
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     name: yup.string().required('نام رنگ را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (!isValidColorHex(pureColor.value)) {

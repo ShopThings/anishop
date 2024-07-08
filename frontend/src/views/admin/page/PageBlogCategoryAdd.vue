@@ -8,7 +8,7 @@
         <form @submit.prevent="onSubmit">
           <div class="p-2">
             <base-switch
-              :enabled="publishStatus"
+              :enabled="true"
               label="عدم نمایش بلاگ"
               name="is_published"
               on-label="نمایش بلاگ"
@@ -48,7 +48,7 @@
           <div class="flex flex-wrap">
             <div class="w-full p-2 sm:w-1/2">
               <base-switch
-                :enabled="showInMenuStatus"
+                :enabled="true"
                 label="نمایش در منوی اصلی"
                 name="show_in_menu"
                 sr-text="نمایش/عدم نمایش در منوی اصلی"
@@ -57,7 +57,7 @@
             </div>
             <div class="w-full p-2 sm:w-1/2">
               <base-switch
-                :enabled="showInSideMenuStatus"
+                :enabled="true"
                 label="نمایش در منوی کناری"
                 name="show_in_side_menu"
                 sr-text="نمایش/عدم نمایش در منوی کناری"
@@ -145,9 +145,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     priority: yup.number()
       .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
       .required('اولویت را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
-    show_in_menu: yup.boolean().required('وضعیت نمایش در منوی اصلی را مشخص کنید.'),
-    show_in_side_menu: yup.boolean().required('وضعیت نمایش در منوی کناری را مشخص کنید.'),
   }),
 }, (values, actions) => {
   canSubmit.value = false
@@ -162,6 +159,9 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }, {
     success() {
       actions.resetForm()
+      publishStatus.value = true
+      showInMenuStatus.value = true
+      showInSideMenuStatus.value = true
       router.push({name: 'admin.blogs.categories'})
     },
     error(error) {

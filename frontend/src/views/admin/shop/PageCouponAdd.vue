@@ -253,7 +253,6 @@ const endDate = ref(null)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     code: yup.string()
       .transform(transformNumbersToEnglish)
       .matches(/[a-zA-Z0-9_-]+/g, 'تنها از حروف و اعداد انگلیسی استفاده نمایید.')

@@ -158,7 +158,6 @@ const {canSubmit, errors, onSubmit, values} = useFormSubmit({
     url: yup.string()
       .required('آدرس صفحه را وارد نمایید.')
       .matches(/[a-z]+[a-z/-][a-z]+/g, 'آدرس صفحه نامعتبر می‌باشد.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     description: yup.string().required('نوشته بلاگ را وارد نمایید.'),
   }),
 }, (values, actions) => {

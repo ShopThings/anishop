@@ -225,8 +225,6 @@ const searchCategoryPrevPage = categorySelectConfig.searchPrevPage
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('عنوان را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
-    is_commenting_allowed: yup.boolean().required('وضعیت اجازه ارسال دیدگاه را مشخص کنید.'),
     brief_description: yup.string().required('خلاصه نوشته را وارد نمایید.'),
     description: yup.string().required('نوشته بلاگ را وارد نمایید.'),
   }),

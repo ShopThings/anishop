@@ -160,9 +160,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     priority: yup.number()
       .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
       .required('اولویت را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
-    show_in_menu: yup.boolean().required('وضعیت نمایش در منوی اصلی را مشخص کنید.'),
-    show_in_side_menu: yup.boolean().required('وضعیت نمایش در منوی کناری را مشخص کنید.'),
   }),
 }, (values, actions) => {
   canSubmit.value = false

@@ -160,10 +160,8 @@ const tags = ref([])
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     name: yup.string().required('نام برند را وارد نمایید.'),
     latin_name: yup.string().required('نام لاتین را وارد نمایید.'),
-    show_in_slider: yup.boolean().required('وضعیت نمایش در اسلایدر را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (!brandImage.value) {

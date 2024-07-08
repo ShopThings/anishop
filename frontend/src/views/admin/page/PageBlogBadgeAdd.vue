@@ -106,7 +106,6 @@ const pureColor = ref('#000000')
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('عنوان برچسب را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (!isValidColorHex(pureColor.value)) {

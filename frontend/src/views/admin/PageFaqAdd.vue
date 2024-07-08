@@ -114,7 +114,6 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     question: yup.string().required('سؤال را وارد نمایید.'),
     answer: yup.string().required('پاسخ به سؤال را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
   }),
 }, (values, actions) => {
   canSubmit.value = false

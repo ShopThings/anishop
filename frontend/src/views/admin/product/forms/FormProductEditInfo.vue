@@ -369,9 +369,6 @@ function handleNextClick(next) {
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('نام محصول را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
-    is_available: yup.boolean().required('وضعیت موجودی را مشخص کنید.'),
-    is_commenting_allowed: yup.boolean().required('وضعیت ارسال دیدگاه را مشخص کنید.'),
   }),
 }, (values, actions) => {
   let data = {

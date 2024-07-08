@@ -92,7 +92,6 @@ const publishStatus = ref(true)
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     name: yup.string().required('نام رنگ را وارد نمایید.'),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
   }),
 }, (values, actions) => {
   canSubmit.value = false

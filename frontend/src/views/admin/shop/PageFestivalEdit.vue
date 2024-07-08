@@ -132,7 +132,6 @@ const endDate = ref(null)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     title: yup.string().required('عنوان جشنواره را وارد نمایید.'),
   }),
 }, (values, actions) => {

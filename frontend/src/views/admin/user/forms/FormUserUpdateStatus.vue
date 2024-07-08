@@ -128,7 +128,6 @@ const deletableStatus = ref(!user.value?.is_deletable ?? false)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    is_banned: yup.boolean(),
     ban_desc: yup.string().when('is_banned', {
       is: false,
       then: (schema) => {
@@ -139,27 +138,28 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
       },
       otherwise: (schema) => schema.optional().nullable(),
     }),
-    is_deletable: yup.boolean(),
   }),
   keepValuesOnUnmount: true,
 }, (values, actions) => {
   canSubmit.value = false
 
-  if (banStatus.value)
+  if (banStatus.value) {
     delete values['ban_desc']
-
-  if (!userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN]))
+  }
+  if (!userStore.hasAnyRole([ROLES.DEVELOPER, ROLES.SUPER_ADMIN])) {
     delete values['is_deletable']
-
-  // is MUST inverse values for backend
-  values.is_banned = !values.is_banned
-  values.is_deletable = !values.is_deletable
+  }
 
   useRequest(apiReplaceParams(apiRoutes.admin.users.update, {
     user: idParam.value,
   }), {
     method: 'PUT',
-    data: values,
+    data: {
+      ban_desc: values.ban_desc,
+      // is MUST inverse values for backend
+      is_banned: !banStatus.value,
+      is_deletable: !deletableStatus.value,
+    },
   }, {
     success(response) {
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')

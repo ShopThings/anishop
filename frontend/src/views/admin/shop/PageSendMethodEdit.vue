@@ -205,16 +205,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('عنوان را وارد نمایید.'),
     description: yup.string().optional(),
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     price: yup.number()
       .min(0, 'هزینه ارسال باید بزرگتر از صفر باشد.')
       .required('هزینه ارسال را وارد نمایید.'),
     priority: yup.number()
       .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
       .required('اولویت را وارد نمایید.'),
-    determine_price_by_shop_location: yup.boolean().required('وضعیت در نظرگیری مکان فروشگاه برای قیمت ارسال را مشخص کنید.'),
-    only_for_shop_location: yup.boolean().required('وضعیت اعمال فقط برای محدوده مکان فروشگاه را مشخص کنید.'),
-    apply_number_of_shipments_on_price: yup.boolean().required('وضعیت اعمال هزینه ارسال به ازای هر مرسوله را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (!methodImage.value) {

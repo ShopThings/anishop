@@ -158,7 +158,7 @@ import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
-import {CheckIcon, ArrowLeftCircleIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLeftCircleIcon, CheckIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseAnimatedButton from "@/components/base/BaseAnimatedButton.vue";
 import BaseInput from "@/components/base/BaseInput.vue";
 import BaseSelectSearchable from "@/components/base/BaseSelectSearchable.vue";
@@ -209,14 +209,10 @@ const showInSliderStatus = ref(true)
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
-    is_published: yup.boolean().required('وضعیت انتشار را مشخص کنید.'),
     name: yup.string().required('نام دسته‌بندی را وارد نمایید.'),
     priority: yup.number()
         .min(0, 'مقدار اولویت باید بزرگتر از صفر باشد.')
         .required('اولویت را وارد نمایید.'),
-    show_in_menu: yup.boolean().required('وضعیت نمایش در منو را مشخص کنید.'),
-    show_in_search_side_menu: yup.boolean().required('وضعیت نمایش در منوی جستجو را مشخص کنید.'),
-    show_in_slider: yup.boolean().required('وضعیت نمایش در اسلایدر را مشخص کنید.'),
   }),
 }, (values, actions) => {
   if (selectedCategory.value && !selectedCategory.value.id) {
