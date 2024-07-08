@@ -117,7 +117,7 @@ watch(value, () => {
   }
 })
 
-async function localHandleChange(event) {
+async function localHandleChange() {
   if (props.loading) return false
 
   emit('change', value.value)
