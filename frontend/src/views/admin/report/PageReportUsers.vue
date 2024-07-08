@@ -123,7 +123,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {inject, onMounted, reactive, ref} from "vue";
 import BaseQueryBuilder from "@/components/base/BaseQueryBuilder.vue";
 import {MinusIcon, TableCellsIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
@@ -136,6 +136,8 @@ import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import {ReportAPI} from "@/service/APIReport.js";
 
 const toast = useToast()
+
+const notificationStore = inject('notificationStore')
 
 const builderLoading = ref(true)
 const filterApplyLoading = ref(false)
@@ -155,6 +157,11 @@ function excelDownloadHandler() {
   ReportAPI.exportUsers({
     query: query.value,
   }, {
+    success() {
+      setTimeout(() => {
+        notificationStore.$reset()
+      }, 2000)
+    },
     finally() {
       isDownloadExcel.value = false
     },

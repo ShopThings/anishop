@@ -146,7 +146,7 @@
 </template>
 
 <script setup>
-import {onMounted, reactive, ref} from "vue";
+import {inject, onMounted, reactive, ref} from "vue";
 import BaseQueryBuilder from "@/components/base/BaseQueryBuilder.vue";
 import {MinusIcon, TableCellsIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
@@ -162,6 +162,8 @@ import BaseLazyImage from "@/components/base/BaseLazyImage.vue";
 import PartialBadgePublish from "@/components/partials/PartialBadgePublish.vue";
 
 const toast = useToast()
+
+const notificationStore = inject('notificationStore')
 
 const builderLoading = ref(false)
 const filterApplyLoading = ref(false)
@@ -181,6 +183,11 @@ function excelDownloadHandler() {
   ReportAPI.exportProducts({
     query: query.value,
   }, {
+    success() {
+      setTimeout(() => {
+        notificationStore.$reset()
+      }, 2000)
+    },
     finally() {
       isDownloadExcel.value = false
     },
