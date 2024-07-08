@@ -128,7 +128,7 @@ async function localHandleChange(event) {
     value.value = !value.value
   }
 
-  nextTick(() => {
+  await nextTick(() => {
     isHandlingChange.value = false;
   })
 

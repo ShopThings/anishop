@@ -229,27 +229,28 @@ const fullTextOfSelectedItems = computed(() => {
 const isHandlingChange = ref(false)
 
 watch(selectedItems, async (newValue, oldValue) => {
-  if (!isHandlingChange.value) {
-    if (
+  if (
+    isHandlingChange.value ||
+    (
       newValue && oldValue &&
       newValue[props.optionsKey] === oldValue[props.optionsKey]
-    ) return
+    )
+  ) return
 
-    isHandlingChange.value = true;
+  isHandlingChange.value = true;
 
-    emit('change', newValue)
+  emit('change', newValue)
 
-    let res = await handleBeforeChange()
-    if (res === false) {
-      selectedItems.value = oldValue
-    }
-
-    setSelectedItemsText()
-
-    nextTick(() => {
-      isHandlingChange.value = false;
-    })
+  let res = await handleBeforeChange()
+  if (res === false) {
+    selectedItems.value = oldValue
   }
+
+  setSelectedItemsText()
+
+  await nextTick(() => {
+    isHandlingChange.value = false;
+  })
 })
 
 async function handleBeforeChange() {
@@ -260,7 +261,7 @@ async function handleBeforeChange() {
     try {
       res = await props.beforeChangeFn(selectedItems.value)
     } catch (error) {
-      res = error
+      res = false
     }
   }
 

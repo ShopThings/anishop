@@ -215,7 +215,7 @@ function changeUserCommentCondition() {
         }, {
           success(response) {
             comment.condition = response.data.condition
-            return false
+            resolve(true)
           },
           finally() {
             conditionUpdateLoading.value = false

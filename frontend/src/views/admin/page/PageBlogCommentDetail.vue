@@ -286,7 +286,7 @@ function changeUserCommentBadge() {
         }, {
           success(response) {
             comment.badge = response.data.badge
-            return false
+            resolve(true)
           },
           finally() {
             badgeUpdateLoading.value = false
@@ -332,7 +332,7 @@ function changeUserCommentCondition() {
         }, {
           success(response) {
             comment.condition = response.data.condition
-            return false
+            resolve(true)
           },
           finally() {
             conditionUpdateLoading.value = false
