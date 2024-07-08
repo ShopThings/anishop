@@ -115,8 +115,9 @@ trait RepositoryFilterableByDatesTrait
         for ($i = 0; $i < 4; $i++) {
             $tmpQuery = clone $query;
             $startDate = $startingPoint->copy()->addWeeks($i);
+            $startDate = $startDate?->startDay() ?? $startDate->startOfDay();
             $endDate = $startingPoint->copy()->addWeeks($i + 1)->subDay();
-            $endDate = $endDate?->startDay() ?? $endDate->startOfDay();
+            $endDate = $endDate?->endDay() ?? $endDate->endOfDay();
             $data[] = [
                 'label' => $this->getMonthlyLabel($startDate),
                 'data' => $tmpQuery->whereBetween($dateColumn, [
@@ -229,8 +230,7 @@ trait RepositoryFilterableByDatesTrait
         $data = [];
         $currentYear = $this->getLocaleDate();
         $currentYear = $currentYear?->startYear() ?? $currentYear->startOfYear();
-        for
-        ($i = 0; $i < 12; $i++) {
+        for ($i = 0; $i < 12; $i++) {
             $data = $this->filterDataForMonth($query, $currentYear, $i, $dateColumn, $data);
         }
         return $data;
