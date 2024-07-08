@@ -111,7 +111,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
     name: yup.string().required('عنوان واحد محصول را وارد نمایید.'),
   }),
-}, (values, actions) => {
+}, (values) => {
   canSubmit.value = false
 
   UnitAPI.updateById(idParam.value, {
