@@ -22,6 +22,7 @@ class OrderBadgeResource extends JsonResource
             'title' => $this->title,
             'color_hex' => $this->color_hex,
             'is_starting_badge' => $this->is_starting_badge,
+            'is_end_badge' => $this->is_end_badge,
             'should_return_order_product' => $this->should_return_order_product,
             'is_title_editable' => $this->is_title_editable,
             'is_published' => $this->is_published,
