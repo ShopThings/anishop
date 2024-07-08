@@ -36,12 +36,14 @@
             @do-search="doSearch"
           >
             <template v-slot:title="{value}">
-              <partial-badge-color :hex="value.color_hex" :title="value.title"/>
+              <div class="flex items-center gap-2">
+                <partial-badge-color :hex="value.color_hex" :title="value.title"/>
 
-              <span
-                v-if="value.is_starting_badge"
-                class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs"
-              >پیش فرض</span>
+                <span
+                  v-if="value.is_starting_badge"
+                  class="rounded bg-green-600 text-white px-2 py-0.5 text-xs"
+                >پیش فرض</span>
+              </div>
             </template>
 
             <template v-slot:is_published="{value}">
@@ -131,11 +133,6 @@ const table = reactive({
     {
       label: "عنوان",
       field: "title",
-      sortable: true,
-    },
-    {
-      label: "وضعیت پیش فرض",
-      field: "is_starting_badge",
       sortable: true,
     },
     {
