@@ -122,7 +122,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {inject, onMounted, ref} from "vue";
 import yup, {isValidColorHex} from "@/validation/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -141,6 +141,8 @@ import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMes
 
 const toast = useToast()
 const idParam = getRouteParamByKey('id')
+
+const countingOrderStore = inject('countingOrderStore')
 
 const loading = ref(true)
 const badge = ref(null)
@@ -172,6 +174,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     success(response) {
       setFormFields(response.data)
       toast.success('ویرایش اطلاعات با موفقیت انجام شد.')
+
+      countingOrderStore.$reset()
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

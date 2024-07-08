@@ -45,16 +45,16 @@
             @do-search="doSearch"
           >
             <template v-slot:title="{value}">
-              <div class="flex items-center">
+              <div class="flex items-center gap-2">
                 <partial-badge-color :hex="value.color_hex" :title="value.title"/>
 
                 <span
                   v-if="value.is_starting_badge"
-                  class="rounded mr-2 bg-green-600 text-white px-2 py-0.5 text-xs whitespace-nowrap"
-                >پیش فرض</span>
+                  class="rounded bg-green-600 text-white px-2 py-0.5 text-xs whitespace-nowrap"
+                >وضعیت شروع</span>
                 <span
                   v-if="value.is_end_badge"
-                  class="rounded mr-2 bg-orange-600 text-white px-2 py-0.5 text-xs whitespace-nowrap"
+                  class="rounded bg-orange-600 text-white px-2 py-0.5 text-xs whitespace-nowrap"
                 >وضعیت پایانی</span>
               </div>
             </template>
@@ -92,7 +92,7 @@
 </template>
 
 <script setup>
-import {computed, reactive, ref} from "vue";
+import {computed, inject, reactive, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useToast} from "vue-toastification";
 import {hideAllPoppers} from "floating-vue";
@@ -113,6 +113,7 @@ const router = useRouter()
 const toast = useToast()
 
 const userStore = useAdminAuthStore()
+const countingOrderStore = inject('countingOrderStore')
 
 const datatable = ref(null)
 const tableContainer = ref(null)
@@ -252,6 +253,8 @@ const operations = [
               datatable.value?.refresh()
               datatable.value?.resetSelectionItem(data)
 
+              countingOrderStore.$reset()
+
               return false
             },
           })
@@ -291,6 +294,8 @@ const selectionOperations = [
               toast.success('عملیات با موفقیت انجام شد.')
               datatable.value?.refresh()
               datatable.value?.resetSelection()
+
+              countingOrderStore.$reset()
 
               return false
             },

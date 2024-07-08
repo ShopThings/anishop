@@ -45,7 +45,7 @@
             </div>
             <div class="p-2 md:w-1/3">
               <base-switch
-                :enabled="true"
+                :enabled="false"
                 label="برچسب، وضعیت نهایی است"
                 name="is_end_badge"
                 sr-text="برچسب، وضعیت نهایی می‌باشد یا خیر"
@@ -54,7 +54,7 @@
             </div>
             <div class="p-2 md:w-1/3">
               <base-switch
-                :enabled="true"
+                :enabled="false"
                 label="بازگشت محصول به انبار"
                 name="should_return_order_product"
                 sr-text="بازگشت محصول به انبار/عدم بازگشت محصول به انبار"
@@ -105,7 +105,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {inject, ref} from "vue";
 import yup, {isValidColorHex} from "@/validation/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
@@ -122,9 +122,11 @@ import {useRouter} from "vue-router";
 
 const router = useRouter()
 
+const countingOrderStore = inject('countingOrderStore')
+
 const publishStatus = ref(true)
 const endBadgeStatus = ref(false)
-const shouldReturnToStockStatus = ref(true)
+const shouldReturnToStockStatus = ref(false)
 const pureColor = ref('#000000')
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
@@ -149,9 +151,11 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     success() {
       actions.resetForm()
       pureColor.value = '#000000'
-      shouldReturnToStockStatus.value = true
-      endBadgeStatus.value = false
       publishStatus.value = true
+      endBadgeStatus.value = false
+      shouldReturnToStockStatus.value = false
+
+      countingOrderStore.$reset()
 
       router.push({name: 'admin.orders.badges'})
     },
