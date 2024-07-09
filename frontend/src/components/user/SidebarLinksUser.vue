@@ -3,7 +3,7 @@
     <li>
       <router-link
           :to="{name: 'user.home'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <WindowIcon class="h-6 w-6 text-cyan-700"/>
@@ -16,7 +16,7 @@
     <li>
       <router-link
           :to="{name: 'user.orders'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ShoppingBagIcon class="h-6 w-6 text-cyan-700"/>
@@ -32,7 +32,7 @@
     <li>
       <router-link
           :to="{name: 'user.return_orders'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ArchiveBoxXMarkIcon class="h-6 w-6 text-cyan-700"/>
@@ -48,7 +48,7 @@
     <li>
       <router-link
           :to="{name: 'user.comments'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ChatBubbleLeftRightIcon class="h-6 w-6 text-cyan-700"/>
@@ -64,7 +64,7 @@
     <li>
       <router-link
           :to="{name: 'user.favorite_products'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <HeartIcon class="h-6 w-6 text-cyan-700"/>
@@ -80,7 +80,7 @@
     <li>
       <router-link
           :to="{name: 'user.addresses'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <BookOpenIcon class="h-6 w-6 text-cyan-700"/>
@@ -96,7 +96,7 @@
     <li>
       <router-link
           :to="{name: 'user.contacts'}"
-          class="rounded-2xl flex items-center gap-2 bg-white ring-rose-400 hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
+          class="rounded-2xl flex items-center gap-2 bg-white ring-black hover:bg-opacity-75 hover:ring-2 transition-all py-5 pl-3 pr-5 relative"
       >
         <div class="p-2 rounded-lg bg-cyan-200 shrink-0">
           <ChatBubbleLeftEllipsisIcon class="h-6 w-6 text-cyan-700"/>
@@ -114,13 +114,13 @@
 
 <script setup>
 import {
-  WindowIcon,
-  ShoppingBagIcon,
   ArchiveBoxXMarkIcon,
-  ChatBubbleLeftRightIcon,
-  HeartIcon,
   BookOpenIcon,
   ChatBubbleLeftEllipsisIcon,
+  ChatBubbleLeftRightIcon,
+  HeartIcon,
+  ShoppingBagIcon,
+  WindowIcon,
 } from "@heroicons/vue/24/outline/index.js"
 import {inject} from "vue";
 
