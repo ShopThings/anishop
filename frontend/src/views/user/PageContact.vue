@@ -2,19 +2,19 @@
   <base-loading-panel :loading="loading" type="table">
     <template #content>
       <base-semi-datatable
-          :columns="table.columns"
-          :is-loading="table.isLoading"
-          :rows="table.rows"
-          :total="table.total"
-          :sortable="table.sortable"
-          pagination-theme="modern"
-          @do-search="doSearch"
+        :columns="table.columns"
+        :is-loading="table.isLoading"
+        :rows="table.rows"
+        :sortable="table.sortable"
+        :total="table.total"
+        pagination-theme="modern"
+        @do-search="doSearch"
       >
         <template #emptyTableRows>
           <partial-empty-rows
             image="/images/empty-statuses/empty-contact.svg"
-              image-class="w-60"
-              message="شما هیچ پیامی ارسال نکرده‌اید"
+            image-class="w-60"
+            message="شما هیچ پیامی ارسال نکرده‌اید"
           />
         </template>
 
@@ -41,16 +41,16 @@
         <template #op="{value}">
           <div class="flex flex-wrap gap-3 items-center">
             <router-link
-                :to="{name: 'user.contact.detail', params: {id: value.id}}"
-                class="text-blue-600 hover:text-opacity-80 text-sm"
+              :to="{name: 'user.contact.detail', params: {id: value.id}}"
+              class="text-blue-600 hover:text-opacity-80 text-sm"
             >
               مشاهده جزئیات
             </router-link>
             <button
-                v-if="!value.answered_at"
-                class="text-rose-600 hover:text-opacity-80 text-sm"
-                type="button"
-                @click="removeContactHandler(value)"
+              v-if="!value.answered_at"
+              class="text-rose-600 hover:text-opacity-80 text-sm"
+              type="button"
+              @click="removeContactHandler(value)"
             >
               حذف پیام
             </button>
@@ -74,19 +74,6 @@ import {MinusIcon} from "@heroicons/vue/24/outline/index.js";
 const toast = useToast()
 
 const countingStore = inject('countingStore')
-
-function removeContactHandler(item) {
-  if (!item.id) return
-
-  useConfirmToast(() => {
-    UserPanelContactAPI.deleteById(item.id, {
-      success() {
-        toast.success('پیام شما با موفقیت حذف شد.')
-        countingStore.$reset()
-      },
-    })
-  }, 'حذف پیام شما')
-}
 
 const loading = ref(true)
 const table = reactive({
@@ -146,6 +133,21 @@ const doSearch = (offset, limit, order, sort, text) => {
       table.isLoading = false
     },
   })
+}
+
+function removeContactHandler(item) {
+  if (!item.id) return
+
+  useConfirmToast(() => {
+    UserPanelContactAPI.deleteById(item.id, {
+      success() {
+        toast.success('پیام شما با موفقیت حذف شد.')
+
+        doSearch(0, 15)
+        countingStore.$reset()
+      },
+    })
+  }, 'حذف پیام شما')
 }
 
 doSearch(0, 15)
