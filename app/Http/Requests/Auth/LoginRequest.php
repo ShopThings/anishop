@@ -2,12 +2,18 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Exceptions\AlreadyLoggedInException;
 use App\Rules\PersianMobileRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
 class LoginRequest extends FormRequest
 {
+    protected function failedAuthorization()
+    {
+        throw new AlreadyLoggedInException();
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
