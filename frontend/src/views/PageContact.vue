@@ -425,7 +425,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }
 
   if (user?.id) {
-    let name = user?.first_name + ' ' + user?.las_name
+    let name = user?.first_name + ' ' + user?.last_name
     data.name = (name.trim() !== '') ? name.trim() : 'کاربر سایت'
   } else {
     data.name = values.name
@@ -440,11 +440,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   if (selectedContactType.value.type === 'contact') {
     HomeMainPageAPI.createContactUs(data, {
-      success(response) {
-        toast.success(response.data)
+      success() {
         actions.resetForm()
-
-        return false
       },
       error(error) {
         if (error?.errors && Object.keys(error.errors).length >= 1) {
