@@ -31,8 +31,7 @@ class UpdateUserOrderDetailRequest extends FormRequest
             'postal_code' => [
                 'sometimes',
                 'nullable',
-                'regex:/[0-9]*/',
-                'max:15',
+                'regex:/[0-9]{10}/',
             ],
             'receiver_name' => [
                 'sometimes',
@@ -57,7 +56,7 @@ class UpdateUserOrderDetailRequest extends FormRequest
     public function messages()
     {
         return [
-            'postal_code.max' => 'کدپستی نباید بیشتر از ۱۵ رقم باشد.',
+            'postal_code.max' => 'کدپستی باید برابر ۱۰ رقم باشد.',
         ];
     }
 }
