@@ -25,7 +25,7 @@ class UserContactUsSingleResource extends JsonResource
                 ? vertaTz($this->answered_at)->format(TimeFormatsEnum::DEFAULT->value)
                 : null,
             'created_at' => $this->created_at
-                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT->value)
+                ? vertaTz($this->created_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
                 : null,
         ];
     }

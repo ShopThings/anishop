@@ -61,7 +61,7 @@ class UserContactUsController extends Controller
      */
     private function _checkAuthorization($user, ContactUs $contact): ?JsonResponse
     {
-        if ($user->id !== $contact->user_id) {
+        if ($user->id !== $contact->created_by) {
             return response()->json([
                 'type' => ResponseTypesEnum::ERROR->value,
                 'message' => 'دسترسی غیر مجاز به پیام',
