@@ -111,10 +111,14 @@ axiosClient.interceptors.request.use((config) => {
   const store = useUserAuthStore()
   const adminStore = useAdminAuthStore()
 
-  if (config.url.indexOf('/admin/') !== -1 && adminStore.getToken) {
-    config.headers.Authorization = `Bearer ${adminStore.getToken}`
-  } else if (store.getToken) {
-    config.headers.Authorization = `Bearer ${store.getToken}`
+  if (config.url.indexOf('/admin/') !== -1) {
+    if (adminStore.getToken) {
+      config.headers.Authorization = `Bearer ${adminStore.getToken}`
+    }
+  } else {
+    if (store.getToken) {
+      config.headers.Authorization = `Bearer ${store.getToken}`
+    }
   }
 
   return config
