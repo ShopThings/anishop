@@ -175,10 +175,10 @@ const roles = ref({})
 
 const router = useRouter()
 
-const selectedRole = ref(null)
+const selectedRoles = ref([])
 
 function roleChange(selected) {
-  selectedRole.value = selected
+  selectedRoles.value = selected
 }
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
@@ -207,25 +207,25 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }),
 }, (values, actions) => {
   // validate extra inputs
-  if (!selectedRole.value || selectedRole.value.length === 0) {
+  if (!selectedRoles.value?.length) {
     actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
     return
   }
 
-  if (Array.isArray(selectedRole.value)) {
-    for (let i of selectedRole.value) {
+  if (Array.isArray(selectedRoles.value)) {
+    for (let i of selectedRoles.value) {
       if (roles.value.map(val => val.value).indexOf(i.value) === -1) {
         actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')
         return
       }
     }
-    values.roles = selectedRole.value
+    values.roles = selectedRoles.value
   } else {
-    if (roles.value.map(val => val.value).indexOf(selectedRole.value.value) === -1) {
+    if (roles.value.map(val => val.value).indexOf(selectedRoles.value.value) === -1) {
       actions.setFieldError('roles', 'نقش انتخاب شده نامعتبر می‌باشد.')
       return
     }
-    values.roles = [selectedRole.value]
+    values.roles = [selectedRoles.value]
   }
   //
 
