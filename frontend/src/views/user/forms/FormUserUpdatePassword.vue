@@ -85,7 +85,14 @@ const {canSubmit, onSubmit} = useFormSubmit({
   UserPanelInfoAPI.updatePassword(values, {
     success: () => {
       toast.success('ویرایش کلمه عبور با موفقیت انجام شد، لطفا مجددا وارد شوید.')
-      router.push({name: 'user.logout', query: {redirect: route.path}})
+      if (user.getUser.id === idParam.value) {
+        user.logout({
+          success() {
+            router.push({name: 'login', query: {redirect: route.path}})
+            return false
+          },
+        })
+      }
 
       return false
     },
