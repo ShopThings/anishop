@@ -6,7 +6,6 @@ use App\Enums\Responses\ResponseTypesEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\AddressResource;
 use App\Http\Resources\FavoriteProductResource;
 use App\Http\Resources\Home\CartResource;
 use App\Http\Resources\PurchaseResource;
@@ -164,17 +163,6 @@ class UserController extends Controller
             'type' => ResponseTypesEnum::WARNING->value,
             'message' => 'عملیات مورد نظر قابل انجام نمی‌باشد.',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
-    }
-
-    /**
-     * @param Filter $filter
-     * @param User $user
-     * @return AnonymousResourceCollection
-     */
-    public function addresses(Filter $filter, User $user): AnonymousResourceCollection
-    {
-        Gate::authorize('view', $user);
-        return AddressResource::collection($this->service->getUserAddresses(user: $user, filter: $filter));
     }
 
     /**
