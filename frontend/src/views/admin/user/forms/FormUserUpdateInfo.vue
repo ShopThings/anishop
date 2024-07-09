@@ -215,7 +215,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }
 
   // validate extra inputs
-  if (!selectedRoles.value || selectedRoles.value.length === 0) {
+  if (!selectedRoles.value?.length) {
     actions.setFieldError('roles', 'انتخاب حداقل یک نقش اجباری می‌باشد.')
     return
   }
