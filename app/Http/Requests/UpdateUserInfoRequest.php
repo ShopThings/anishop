@@ -39,7 +39,7 @@ class UpdateUserInfoRequest extends FormRequest
             'sheba_number' => [
                 'sometimes',
                 'nullable',
-                'max:30'
+                'digits:24'
             ],
         ];
     }

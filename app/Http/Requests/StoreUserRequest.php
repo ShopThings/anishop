@@ -92,8 +92,9 @@ class StoreUserRequest extends FormRequest
                 new PersianNationalCodeRule(),
             ],
             'sheba_number' => [
+                'sometimes',
                 'nullable',
-                'max:30'
+                'digits:24'
             ],
         ];
     }
