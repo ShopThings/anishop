@@ -16,6 +16,7 @@ class AdminCheck
      * @param Request $request
      * @param \Closure(Request): (Response) $next
      * @return Response
+     * @throws AuthenticationException
      */
     public function handle(Request $request, Closure $next): Response
     {
