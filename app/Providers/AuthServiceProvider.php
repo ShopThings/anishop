@@ -159,6 +159,9 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * @return void
+     */
     protected function registerCustomPolicies(): void
     {
         // Ability to report admin stuffs
