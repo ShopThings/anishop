@@ -218,7 +218,7 @@ import isObject from "lodash.isobject";
 import LoaderProgress from "./loader/LoaderProgress.vue";
 import {PencilSquareIcon} from "@heroicons/vue/24/outline/index.js";
 import BaseButtonClose from "@/components/base/BaseButtonClose.vue";
-import {nestedArray} from "@/composables/helper.js";
+import {arraysEqual, nestedArray} from "@/composables/helper.js";
 import isFunction from "lodash.isfunction";
 import {useDebounceFn, useElementBounding} from "@vueuse/core";
 
@@ -349,8 +349,15 @@ watch(selectedItems, async (newValue, oldValue) => {
   if (
     isHandlingChange.value ||
     (
+      !Array.isArray(newValue) &&
+      !Array.isArray(oldValue) &&
       newValue && oldValue &&
       newValue[props.optionsKey] === oldValue[props.optionsKey]
+    ) ||
+    (
+      Array.isArray(newValue) &&
+      Array.isArray(oldValue) &&
+      arraysEqual(newValue.map(item => item[props.optionsKey]), oldValue.map(item => item[props.optionsKey]))
     )
   ) return
 
