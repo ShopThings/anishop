@@ -26,7 +26,7 @@ export const userRoutes = {
             // User is logged out, determine the redirect route
             if (from.meta.requiresAuth) {
               // If the original route requires authentication, redirect to log in
-              route = {name: 'user.login'}
+              route = {name: 'login'}
 
               if (to.query.redirect && isValidInternalRedirectLink(to.query.redirect)) {
                 route.query = {redirect: to.query.redirect}
