@@ -64,10 +64,11 @@
 
           <div class="p-2">
             <partial-input-label title="کلمات کلیدی"/>
-            <vue3-tags-input
-                :tags="tags"
-                placeholder="کلمات کلیدی خود را وارد نمایید"
-                @on-tags-changed="(t) => {tags = t}"
+            <base-tags-input
+              :add-tag-on-keys="[13, 190]"
+              :tags="tags"
+              placeholder="وارد نمایید"
+              @on-tags-changed="(t) => {tags = t}"
             />
           </div>
 
@@ -115,7 +116,6 @@
 <script setup>
 import {ref} from "vue";
 import yup from "@/validation/index.js";
-import Vue3TagsInput from 'vue3-tags-input';
 import PartialCard from "@/components/partials/PartialCard.vue";
 import PartialInputLabel from "@/components/partials/PartialInputLabel.vue";
 import BaseMediaPlaceholder from "@/components/base/BaseMediaPlaceholder.vue";
@@ -129,6 +129,7 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import PartialInputErrorMessage from "@/components/partials/PartialInputErrorMessage.vue";
 import {BrandAPI} from "@/service/APIProduct.js";
 import {useRouter} from "vue-router";
+import BaseTagsInput from "@/components/base/BaseTagsInput.vue";
 
 const router = useRouter()
 
