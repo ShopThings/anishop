@@ -69,7 +69,7 @@ class UpdateAddressRequest extends FormRequest
     public function messages()
     {
         return [
-            'postal_code.max' => 'کدپستی باید برابر ۱۰ رقم باشد.',
+            'postal_code.regex' => 'کدپستی باید برابر ۱۰ رقم باشد.',
         ];
     }
 }
