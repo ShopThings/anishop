@@ -12,8 +12,40 @@ export const UserAPI = Object.assign(
 export const UserAddressAPI = {
   fetchAll(userId, callbacks) {
     return useRequest(
-      apiReplaceParams(apiRoutes.admin.users.addresses, {user: userId}),
+      apiReplaceParams(apiRoutes.admin.userAddresses.index, {user: userId}),
       null,
+      callbacks
+    )
+  },
+
+  create(userId, data, callbacks) {
+    return useRequest(
+      apiReplaceParams(apiRoutes.admin.userAddresses.store, {user: userId}),
+      {
+        method: 'POST',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  updateById(userId, addressId, data, callbacks) {
+    return useRequest(
+      apiReplaceParams(apiRoutes.admin.userAddresses.update, {user: userId, address: addressId}),
+      {
+        method: 'PUT',
+        data,
+      },
+      callbacks
+    )
+  },
+
+  deleteById(userId, addressId, callbacks) {
+    return useRequest(
+      apiReplaceParams(apiRoutes.admin.userAddresses.destroy, {user: userId, address: addressId}),
+      {
+        method: 'DELETE',
+      },
       callbacks
     )
   },

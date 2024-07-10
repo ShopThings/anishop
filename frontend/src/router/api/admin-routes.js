@@ -41,10 +41,16 @@ export default {
       update: 'api/admin/users/{user}',
       destroy: 'api/admin/users/{user}',
       batchDestroy: 'api/admin/users/batch',
-      addresses: 'api/admin/users/{user}/addresses',
       favoriteProducts: 'api/admin/users/{user}/favorite-product',
       purchases: 'api/admin/users/{user}/purchases',
       carts: 'api/admin/users/{user}/carts',
+    },
+
+    userAddresses: {
+      index: 'api/admin/users/{user}/addresses',
+      store: 'api/admin/users/{user}/addresses',
+      update: 'api/admin/users/{user}/addresses/{address}',
+      destroy: 'api/admin/users/{user}/addresses/{address}',
     },
 
     paymentMethods: {

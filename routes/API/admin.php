@@ -45,6 +45,7 @@ use App\Http\Controllers\Shop\ProductAttributeValueController;
 use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\Shop\SendMethodController;
 use App\Http\Controllers\Shop\UnitController;
+use App\Http\Controllers\User\AddressController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -97,13 +98,17 @@ Route::prefix('admin')
                     ->name('dashboard.counting');
 
                 /*
+                 * user address routes
+                 */
+                Route::apiResource('users.addresses', AddressController::class)->except(['show'])
+                    ->whereNumber(['user', 'address']);
+
+                /*
                  * user routes
                  */
                 Route::delete('users/batch', [UserController::class, 'batchDestroy'])
                     ->name('users.destroy.batch');
                 Route::apiResource('users', UserController::class)->whereNumber('users');
-                Route::get('users/{user}/addresses', [UserController::class, 'addresses'])
-                    ->whereNumber('user')->name('users.addresses');
                 Route::get('users/{user}/favoriteProducts', [UserController::class, 'favoriteProducts'])
                     ->whereNumber('user')->name('users.addresses');
                 Route::get('users/{user}/purchases', [UserController::class, 'purchases'])
