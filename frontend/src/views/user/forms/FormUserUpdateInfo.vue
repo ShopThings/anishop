@@ -78,6 +78,7 @@
               :in-edit-mode="false"
               :is-optional="true"
               :value="user?.sheba_number"
+              mask="IR-########################"
               label-title="شماره شبا"
               name="sheba_number"
               placeholder="xxxxxxxxxxxxxxxx"

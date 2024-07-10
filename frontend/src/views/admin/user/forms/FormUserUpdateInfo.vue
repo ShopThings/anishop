@@ -82,10 +82,11 @@
           :in-edit-mode="false"
           :is-editable="hasEditPermission"
           :value="user?.sheba_number"
+          mask="IR-########################"
           is-optional
           label-title="شماره شبا"
           name="sheba_number"
-          placeholder="xxxxxxxxxxxxxxxx"
+          placeholder="IR-xxxxxxxxxxxxxxxxxxxxxxxx"
         >
           <template #icon>
             <HashtagIcon class="h-6 w-6 text-gray-400"/>

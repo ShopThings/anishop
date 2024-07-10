@@ -100,6 +100,7 @@
                     is-optional
                     label-title="شماره شبا"
                     name="sheba_number"
+                    mask="IR-########################"
                     placeholder="xxxxxxxxxxxxxxxx"
                   >
                     <template #icon>
