@@ -24,12 +24,12 @@ class PaymentMethodResource extends JsonResource
             'title' => $this->title,
             'image' => new ImageShowInfoResource($this->image),
             'type' => [
-                'text' => PaymentTypesEnum::getTranslations($this->type, 'نامشخص'),
-                'value' => $this->type->value,
+                'text' => PaymentTypesEnum::getTranslations($this->type ?? '', 'نامشخص'),
+                'value' => $this->type?->value,
             ],
             'bank_gateway_type' => [
                 'text' => GatewaysEnum::getTranslations($this->bank_gateway_type ?? '', 'نامشخص'),
-                'value' => $this->bank_gateway_type->value,
+                'value' => $this->bank_gateway_type?->value,
             ],
             'options' => $this->options,
             'is_published' => $this->is_published,
