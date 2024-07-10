@@ -216,7 +216,8 @@ export const useRequest = async (url, config, resultConfig) => {
         if ((isObject(data) && !Object.keys(data).length) ||
           (Array.isArray(data) && !data.length) ||
           error?.response.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR ||
-          error?.request.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR
+          error?.request.status >= responseStatuses.HTTP_INTERNAL_SERVER_ERROR ||
+          +error?.request.status === responseStatuses.HTTP_METHOD_NOT_ALLOWED
         ) {
           if (msg.toLowerCase() !== "canceled") {
             if (import.meta.env.DEV) {
