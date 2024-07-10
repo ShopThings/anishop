@@ -8,7 +8,7 @@
       <base-loading-panel :loading="loading" type="table">
         <template #content>
           <div class="p-3">
-            <base-dialog :open="openAddDialog">
+            <base-dialog v-model:open="openAddDialog">
               <template #button="{open}">
                 <base-animated-button
                   class="w-full mr-auto bg-emerald-500 sm:w-auto"
@@ -41,7 +41,7 @@
                   <div class="py-3">
                     <base-button
                       :disabled="!canSubmit"
-                      class="w-full sm:w-auto shrink-0 rounded bg-purple-500 text-white py-2 px-6 mx-auto mr-auto sm:ml-0 flex items-center justify-center hover:bg-opacity-90 transition group text-sm"
+                      class="w-full sm:w-auto shrink-0 rounded bg-primary text-white py-2 px-6 mx-auto mr-auto sm:ml-0 flex items-center justify-center hover:bg-opacity-90 transition group text-sm"
                       type="submit"
                     >
                       <VTransitionFade>
