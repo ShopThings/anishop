@@ -70,11 +70,16 @@
                     :min="0"
                     :money-mask="true"
                     :value="sendMethod?.price?.toString()"
-                    label-title="هزینه ارسال"
                     name="price"
                     placeholder="وارد نمایید"
                     type="text"
                   >
+                    <template #label>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <span>هزینه ارسال</span>
+                        <span class="text-xs text-pink-600">(بر حسب تومان)</span>
+                      </div>
+                    </template>
                     <template #icon>
                       <CurrencyDollarIcon class="h-6 w-6 text-gray-400"/>
                     </template>
