@@ -79,7 +79,7 @@ class UpdateUserRequest extends FormRequest
             'sheba_number' => [
                 'sometimes',
                 'nullable',
-                'digits:24'
+                'regex:/IR\-[0-9]{24}/',
             ],
             'is_banned' => [
                 'boolean',
@@ -100,6 +100,13 @@ class UpdateUserRequest extends FormRequest
             'sheba_number' => 'شماره شبا',
             'is_banned' => 'وضعیت عدم فعالیت',
             'ban_desc' => 'علت عدم فعالیت',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'sheba_number.regex' => 'شماره شبا باید ۲۴ رقم باشد.',
         ];
     }
 }

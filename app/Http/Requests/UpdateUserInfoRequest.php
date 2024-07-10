@@ -39,7 +39,7 @@ class UpdateUserInfoRequest extends FormRequest
             'sheba_number' => [
                 'sometimes',
                 'nullable',
-                'digits:24'
+                'regex:/IR\-[0-9]{24}/',
             ],
         ];
     }
@@ -48,6 +48,13 @@ class UpdateUserInfoRequest extends FormRequest
     {
         return [
             'sheba_number' => 'شماره شبا',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'sheba_number.regex' => 'شماره شبا باید ۲۴ رقم باشد.',
         ];
     }
 }
