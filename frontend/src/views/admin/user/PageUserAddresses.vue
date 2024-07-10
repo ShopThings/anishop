@@ -341,7 +341,7 @@ const table = reactive({
   },
 })
 
-function calcRemovals(row) {
+function calcRemovals() {
   let removals = []
 
   if (
