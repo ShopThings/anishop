@@ -1,6 +1,6 @@
 <template>
   <base-dialog
-    :open="open"
+    v-model:open="isDialogOpen"
     container-klass="max-w-lg overflow-hidden"
     dialog-container-class="items-start"
     @close="() => emit('close')"
@@ -68,7 +68,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {computed, ref} from "vue";
 import {ArrowLongLeftIcon, MagnifyingGlassCircleIcon, MagnifyingGlassIcon} from '@heroicons/vue/24/outline';
 import BaseDialog from "../../base/BaseDialog.vue";
 import BaseInput from "../../base/BaseInput.vue";
@@ -78,15 +78,24 @@ import {SearchAPI} from "@/service/APISearch.js";
 import {useDebounceFn} from "@vueuse/core";
 import {useBlogSearchStore} from "@/store/StoreBlogSearch.js";
 
-defineProps({
+const props = defineProps({
   open: {
     type: Boolean,
     default: false,
   }
 })
-const emit = defineEmits(['open', 'close'])
+const emit = defineEmits(['update:open', 'open', 'close'])
 
 const searchStore = useBlogSearchStore()
+
+const isDialogOpen = computed({
+  get() {
+    return props.open
+  },
+  set(value) {
+    emit('update:open', value)
+  },
+})
 
 function focusOnInput(input) {
   input.focus()

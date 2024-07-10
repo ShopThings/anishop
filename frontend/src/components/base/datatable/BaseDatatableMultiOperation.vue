@@ -16,7 +16,7 @@
         <outline.BackspaceIcon class="h-6 w-6"/>
       </base-button>
 
-      <base-dialog container-klass="layout-max-w overflow-hidden">
+      <base-dialog v-model:open="isDialogOpen" container-klass="layout-max-w overflow-hidden">
         <template #button="{open}">
           <base-button
             v-tooltip.top="'مشاهده موارد انتخاب شده'"
@@ -88,7 +88,7 @@
 <script setup>
 import * as outline from "@heroicons/vue/24/outline/index.js";
 import BaseButton from "../BaseButton.vue";
-import {isProxy, toRaw} from "vue";
+import {isProxy, ref, toRaw} from "vue";
 import BaseDialog from "../BaseDialog.vue";
 import BaseFloatingDropDown from "../BaseFloatingDropDown.vue";
 
@@ -108,6 +108,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['clear-selected-items'])
+
+const isDialogOpen = ref(false)
 
 function clearSelectedItems() {
   emit('clear-selected-items')

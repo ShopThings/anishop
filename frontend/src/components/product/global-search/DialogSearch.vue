@@ -1,6 +1,6 @@
 <template>
   <base-dialog
-    :open="open"
+    v-model:open="isDialogOpen"
     container-klass="max-w-lg overflow-hidden"
     dialog-container-class="items-start"
     @close="() => emit('close')"
@@ -83,8 +83,8 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
-import {MagnifyingGlassIcon, MagnifyingGlassCircleIcon} from '@heroicons/vue/24/outline';
+import {computed, ref} from "vue";
+import {MagnifyingGlassCircleIcon, MagnifyingGlassIcon} from '@heroicons/vue/24/outline';
 import BaseDialog from "../../base/BaseDialog.vue";
 import BaseInput from "../../base/BaseInput.vue";
 import PartialSearchResultBrands from "@/components/product/global-search/PartialSearchResultBrands.vue";
@@ -97,15 +97,24 @@ import {useProductSearchStore} from "@/store/StoreProductSearch.js";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 
-defineProps({
+const props = defineProps({
   open: {
     type: Boolean,
     default: false,
   }
 })
-const emit = defineEmits(['open', 'close'])
+const emit = defineEmits(['update:open', 'open', 'close'])
 
 const searchStore = useProductSearchStore()
+
+const isDialogOpen = computed({
+  get() {
+    return props.open
+  },
+  set(value) {
+    emit('update:open', value)
+  },
+})
 
 function focusOnInput(input) {
   input.focus()

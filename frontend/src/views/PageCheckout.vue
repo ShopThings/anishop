@@ -350,7 +350,7 @@
                       مشخصات گیرنده
                     </h2>
 
-                    <base-dialog container-klass="max-w-4xl w-full">
+                    <base-dialog v-model:open="isDialogOpen" container-klass="max-w-4xl w-full">
                       <template #button="{open}">
                         <base-button
                           class="bg-secondary px-6"
@@ -1025,6 +1025,8 @@ const userMainInfoLoading = ref(true)
 
 const cartStore = useCartStore()
 cartStore.loadFromLocalStorage()
+
+const isDialogOpen = ref(false)
 
 const isNeededFactorStatus = ref(false)
 const provinces = ref([])

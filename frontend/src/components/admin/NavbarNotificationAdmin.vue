@@ -1,5 +1,5 @@
 <template>
-  <base-dialog container-klass="max-w-4xl">
+  <base-dialog v-model:open="isDialogOpen" container-klass="max-w-4xl">
     <template #button="{open}">
       <button
         v-tooltip.bottom-start="'اعلانات'"
@@ -122,6 +122,8 @@ import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 
 const notificationStore = inject('notificationStore')
+
+const isDialogOpen = ref(false)
 
 const notificationPaginatorRef = ref(null)
 const notificationOperationLoading = ref(false)

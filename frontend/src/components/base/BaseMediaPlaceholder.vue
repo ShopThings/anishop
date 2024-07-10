@@ -1,5 +1,5 @@
 <template>
-  <base-dialog container-klass="layout-max-w w-full">
+  <base-dialog v-model:open="isDialogOpen" container-klass="layout-max-w w-full">
     <template #button="{open}">
       <div
           v-if="!selectedFile"
@@ -155,6 +155,8 @@ const props = defineProps({
 const emit = defineEmits(['update:selected', 'file-changed', 'file-selected', 'clear-selected-file'])
 
 const toast = useToast()
+
+const isDialogOpen = ref(false)
 
 const extensions = ref([])
 const tmpSelectedFile = ref(null)

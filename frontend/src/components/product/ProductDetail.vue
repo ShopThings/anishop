@@ -42,7 +42,7 @@
             <!-- these style needed when adding another options like compare option -->
             <div class="flex items-center gap-4 mr-auto">
               <div>
-                <base-dialog>
+                <base-dialog v-model:open="isDialogOpen">
                   <template #button="{open}">
                     <button
                       v-tooltip.right="'به اشتراک گذاری'"
@@ -776,6 +776,8 @@ const emit = defineEmits(['product-loaded'])
 
 const toast = useToast()
 const slugParam = getRouteParamByKey('slug', null, false)
+
+const isDialogOpen = ref(false)
 
 const productCartCounting = ref([])
 const currentProductCartCounting = computed({
