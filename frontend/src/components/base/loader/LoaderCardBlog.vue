@@ -2,7 +2,7 @@
   <div
       class="bg-white w-full p-4 mx-auto border border-slate-200 rounded-lg shadow animate-pulse md:p-6 dark:border-slate-700"
       role="status">
-    <div class="flex items-center justify-center h-48 mb-6 bg-slate-300 rounded dark:bg-slate-700">
+    <div class="flex items-center justify-center h-48 mb-6 bg-slate-200 rounded dark:bg-slate-700">
       <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
            fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -10,15 +10,15 @@
         <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
       </svg>
     </div>
-    <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-48 mb-6"></div>
-    <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700 mb-3"></div>
-    <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700 mb-3"></div>
+    <div class="h-2.5 bg-slate-200 rounded-full dark:bg-slate-700 w-48 mb-6"></div>
+    <div class="h-2 bg-slate-200 rounded-full dark:bg-slate-700 mb-3"></div>
+    <div class="h-2 bg-slate-200 rounded-full dark:bg-slate-700 mb-3"></div>
     <div class="flex items-center justify-between mt-6 space-x-3 space-x-reverse">
       <div>
-        <UserCircleIcon class="w-10 h-10 text-slate-300"/>
+        <UserCircleIcon class="w-10 h-10 text-slate-200"/>
       </div>
       <div class="grow">
-        <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-700 w-28"></div>
+        <div class="h-2.5 bg-slate-200 rounded-full dark:bg-slate-700 w-28"></div>
       </div>
     </div>
     <span class="sr-only">در حال بارگذاری...</span>

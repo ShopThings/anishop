@@ -1,7 +1,7 @@
 <template>
   <div class="bg-white border border-slate-200 rounded-lg shadow animate-pulse dark:border-slate-700"
        role="status">
-    <div class="flex items-center justify-center h-32 bg-slate-300 rounded dark:bg-slate-700">
+    <div class="flex items-center justify-center h-32 bg-slate-200 rounded dark:bg-slate-700">
       <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
            fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
         <path
@@ -10,8 +10,8 @@
       </svg>
     </div>
     <div class="p-6">
-      <div class="h-2 bg-slate-300 rounded-full dark:bg-slate-700 mb-3"></div>
-      <div class="h-2 bg-slate-300 rounded-full w-1/2 dark:bg-slate-700 mb-3"></div>
+      <div class="h-2 bg-slate-200 rounded-full dark:bg-slate-700 mb-3"></div>
+      <div class="h-2 bg-slate-200 rounded-full w-1/2 dark:bg-slate-700 mb-3"></div>
     </div>
     <span class="sr-only">در حال بارگذاری...</span>
   </div>

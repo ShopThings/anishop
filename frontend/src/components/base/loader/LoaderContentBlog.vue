@@ -2,13 +2,13 @@
   <div class="p-4 w-full mx-auto">
     <div class="animate-pulse flex flex-col">
       <div class="bg-white p-4 rounded-lg mb-6 flex gap-6 items-center">
-        <div class="h-3 bg-slate-300 rounded w-48"></div>
+        <div class="h-3 bg-slate-200 rounded w-48"></div>
         <div class="h-2 bg-slate-200 rounded w-36"></div>
         <div class="h-2 bg-slate-200 rounded w-36 mr-auto"></div>
       </div>
 
       <div class="bg-white p-4 rounded-lg mb-3 flex flex-col gap-6">
-        <div class="flex items-center justify-center h-72 bg-slate-300 rounded">
+        <div class="flex items-center justify-center h-72 bg-slate-200 rounded">
           <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
                fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -32,7 +32,7 @@
           <div class="h-2 bg-slate-200 rounded w-1/2"></div>
         </div>
 
-        <div class="flex items-center justify-center h-72 w-full sm:w-2/3 bg-slate-300 rounded mx-auto">
+        <div class="flex items-center justify-center h-72 w-full sm:w-2/3 bg-slate-200 rounded mx-auto">
           <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
                fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
             <path

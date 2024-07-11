@@ -9,7 +9,7 @@
         class="flex items-center gap-6"
     >
       <template v-if="size === 'small'">
-        <div class="flex items-center justify-center h-20 w-20 bg-slate-300 rounded">
+        <div class="flex items-center justify-center h-20 w-20 bg-slate-200 rounded">
           <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
                fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -18,12 +18,12 @@
           </svg>
         </div>
         <div>
-          <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
+          <div class="h-2.5 bg-slate-200 rounded-full dark:bg-slate-600 w-24 mb-2.5"></div>
           <div class="w-32 h-2 bg-slate-200 rounded-full dark:bg-slate-700"></div>
         </div>
       </template>
       <template v-else-if="size === 'large'">
-        <div class="flex items-center justify-center w-full h-36 sm:w-40 bg-slate-300 rounded">
+        <div class="flex items-center justify-center w-full h-36 sm:w-40 bg-slate-200 rounded">
           <svg aria-hidden="true" class="w-10 h-10 text-slate-200 dark:text-slate-600"
                fill="currentColor" viewBox="0 0 16 20" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -37,12 +37,12 @@
             <div class="w-32 h-2 bg-slate-200 rounded-full dark:bg-slate-700"></div>
           </div>
 
-          <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-1/2 mb-3"></div>
-          <div class="h-2.5 bg-slate-300 rounded-full dark:bg-slate-600 w-3/4 mb-8"></div>
+          <div class="h-2.5 bg-slate-200 rounded-full dark:bg-slate-600 w-1/2 mb-3"></div>
+          <div class="h-2.5 bg-slate-200 rounded-full dark:bg-slate-600 w-3/4 mb-8"></div>
 
           <div class="flex items-center gap-3">
             <div>
-              <UserCircleIcon class="w-8 h-8 text-slate-300"/>
+              <UserCircleIcon class="w-8 h-8 text-slate-200"/>
             </div>
             <div class="w-32 h-2 bg-slate-200 rounded-full dark:bg-slate-700"></div>
           </div>
