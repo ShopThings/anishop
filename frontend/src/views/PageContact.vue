@@ -458,11 +458,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     })
   } else if (selectedContactType.value.type === 'complaint') {
     HomeMainPageAPI.createComplaint(data, {
-      success(response) {
-        toast.success(response.data)
+      success() {
         actions.resetForm()
-
-        return false
       },
       error(error) {
         if (error?.errors && Object.keys(error.errors).length >= 1) {
