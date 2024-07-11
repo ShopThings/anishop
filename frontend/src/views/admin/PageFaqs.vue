@@ -109,6 +109,7 @@ const table = reactive({
     {
       label: "سؤال",
       field: "question",
+      columnClasses: 'min-w-60',
       sortable: true,
     },
     {
@@ -138,6 +139,7 @@ const table = reactive({
     {
       label: "سؤال",
       field: "question",
+      columnClasses: 'min-w-60',
       sortable: true,
     },
     {
