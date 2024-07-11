@@ -76,7 +76,7 @@ function handleSwitchChange(status) {
                 : []
             )
 
-          props.api[props.apiMethod](...parameters, Object.assign(props.data, {
+          props.api[props.apiMethod](...parameters, Object.assign(props.data ?? {}, {
             [props.updateKey]: status,
           }), {
             success() {
