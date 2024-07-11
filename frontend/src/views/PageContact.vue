@@ -438,42 +438,28 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }
   //
 
+  const callbacks = {
+    success() {
+      actions.resetForm()
+    },
+    error(error) {
+      if (error?.errors && Object.keys(error.errors).length >= 1) {
+        actions.setErrors(error.errors)
+      }
+    },
+    finally() {
+      canSubmit.value = true
+
+      if (captchaCom.value) {
+        captchaCom.value.getCaptcha()
+      }
+    },
+  }
+
   if (selectedContactType.value.type === 'contact') {
-    HomeMainPageAPI.createContactUs(data, {
-      success() {
-        actions.resetForm()
-      },
-      error(error) {
-        if (error?.errors && Object.keys(error.errors).length >= 1) {
-          actions.setErrors(error.errors)
-        }
-      },
-      finally() {
-        canSubmit.value = true
-
-        if (captchaCom.value) {
-          captchaCom.value.getCaptcha()
-        }
-      },
-    })
+    HomeMainPageAPI.createContactUs(data, callbacks)
   } else if (selectedContactType.value.type === 'complaint') {
-    HomeMainPageAPI.createComplaint(data, {
-      success() {
-        actions.resetForm()
-      },
-      error(error) {
-        if (error?.errors && Object.keys(error.errors).length >= 1) {
-          actions.setErrors(error.errors)
-        }
-      },
-      finally() {
-        canSubmit.value = true
-
-        if (captchaCom.value) {
-          captchaCom.value.getCaptcha()
-        }
-      },
-    })
+    HomeMainPageAPI.createComplaint(data, callbacks)
   }
 })
 </script>
