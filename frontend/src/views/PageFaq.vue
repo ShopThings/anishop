@@ -53,6 +53,8 @@
       :is-loading="loadingFaqs"
       :local-search-filter-handler="searchFilterHandler"
       :per-page="10"
+      :number-of-loaders="4"
+      :scroll-margin-top="-90"
       container-class="flex flex-col gap-3"
       pagination-theme="modern"
     >
@@ -104,7 +106,7 @@ const loadingFaqs = ref(true)
 const paginatorCom = ref(null)
 
 const searchFilterHandler = (item, text) => {
-  if (text.trim() === '') return true
+  if (!text || text.trim() === '') return true
   return (
     item.question.indexOf(text) !== -1 ||
     item.keywords.filter(k => k.indexOf(text) !== -1).length
