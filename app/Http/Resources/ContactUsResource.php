@@ -28,12 +28,12 @@ class ContactUsResource extends JsonResource
                 $this->answered_at,
                 vertaTz($this->answered_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'answered_by' => new UserShowResource($this->when($this->answered_by, $this->answered_by)),
+            'answered_by' => $this->when($this->answered_by, new UserShowResource($this->answeredBy)),
             'changed_status_at' => $this->when(
                 $this->changed_status_at,
                 vertaTz($this->changed_status_at)->format(TimeFormatsEnum::DEFAULT_WITH_TIME->value)
             ),
-            'changed_status_by' => new UserShowResource($this->when($this->changed_status_by, $this->status_changer)),
+//            'changed_status_by' => $this->when($this->changed_status_by, new UserShowResource($this->statusChanger)),
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
             'created_at' => $this->created_at
