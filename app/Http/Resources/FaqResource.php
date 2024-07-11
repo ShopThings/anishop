@@ -22,6 +22,7 @@ class FaqResource extends JsonResource
             'answer' => $this->answer,
             'keywords' => $this->keywords,
             'is_published' => $this->is_published,
+            'is_deletable' => $this->is_deletable,
             'created_by' => $this->created_by ? new UserShowResource($this->creator) : null,
             'updated_by' => $this->when($this->updated_by, new UserShowResource($this->updater)),
             'deleted_by' => $this->when($this->deleted_by, new UserShowResource($this->deleter)),
