@@ -14,8 +14,8 @@
           <div class="relative">
             <VTransitionFade>
               <loader-circle
-                v-if="isLoading"
-                main-container-klass="absolute w-[calc(100%+1rem)] h-[calc(100%+1rem)] -top-2 -left-2"
+                v-if="cartStore.isLoading"
+                main-container-klass="absolute w-[calc(100%+1rem)] h-[calc(100%+1rem)] -top-2 -left-2 z-10"
               />
             </VTransitionFade>
 
@@ -229,14 +229,14 @@
             </ul>
 
             <base-button
-              :disabled="isLoading"
+              :disabled="cartStore.isLoading"
               :to="{name: 'checkout'}"
               class="bg-primary w-full mt-6"
               type="link"
             >
               <VTransitionFade>
                 <loader-circle
-                  v-if="isLoading"
+                  v-if="cartStore.isLoading"
                   big-circle-color="border-transparent"
                   main-container-klass="absolute w-full h-full top-0 left-0"
                 />
@@ -256,7 +256,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted} from "vue";
 import {ShoppingCartIcon, XMarkIcon,} from "@heroicons/vue/24/outline/index.js";
 import AppNavigationHeader from "@/components/AppNavigationHeader.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -276,35 +276,20 @@ import BaseMessage from "@/components/base/BaseMessage.vue";
 const cartStore = useCartStore()
 cartStore.loadFromLocalStorage()
 
-const isLoading = ref(false)
-
 function removeItemHandler(code) {
-  if (isLoading.value) return
-
   useConfirmToast(() => {
-    isLoading.value = true
-
     cartStore.removeItem(code)
-
-    setTimeout(() => {
-      isLoading.value = false
-    }, 800)
   }, 'حذف محصول از سبد خرید؟')
 }
 
 function updateItemsHandler() {
-  if (!cartStore.getCartItems?.length || isLoading.value) return
+  if (!cartStore.getCartItems?.length) return
 
-  isLoading.value = true
-  cartStore.fetchAllLocal({
-    finally() {
-      isLoading.value = false
-    },
-  })
+  cartStore.fetchAllLocal()
 }
 
 function cancelItemsUpdateHandler() {
-  if (!cartStore.getCartItems?.length || isLoading.value) return
+  if (!cartStore.getCartItems?.length) return
 
   cartStore.loadFromLocalStorage()
 

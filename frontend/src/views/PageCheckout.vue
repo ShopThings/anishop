@@ -1341,7 +1341,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
         countdown.value.stop()
       })
 
-      cartStore.empty(true)
+      cartStore.empty({}, true)
     },
     error(error) {
       if (error?.errors && Object.keys(error.errors).length >= 1) {

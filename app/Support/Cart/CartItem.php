@@ -47,6 +47,14 @@ class CartItem implements Arrayable
     }
 
     /**
+     * @return Model
+     */
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
+
+    /**
      * @inheritDoc
      */
     public function toArray()

@@ -36,81 +36,101 @@ class CartController extends Controller
     }
 
     /**
-     * @return User
+     * @param bool $throwException
+     * @return User|null
      * @throws LoginNeededException
      */
-    protected function getCurrentUserWithAuthentication(): User
+    protected function getCurrentUserWithAuthentication(bool $throwException = true): ?User
     {
         $user = request()->user();
 
         if (is_null($user)) {
-            throw new LoginNeededException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
+            if ($throwException) {
+                throw new LoginNeededException('ابتدا به سایت وارد شوید سپس دوباره تلاش نمایید.');
+            }
+            return null;
         }
 
         return $user;
     }
 
     /**
+     * @param Request $request
      * @param string $cart
      * @return JsonResponse
      * @throws BindingResolutionException
      * @throws LoginNeededException
      */
-    public function show(string $cart): JsonResponse
+    public function show(Request $request, string $cart): JsonResponse
     {
         $user = $this->getCurrentUserWithAuthentication();
 
+        $items = $request->input('items', []);
+
+        if (!is_array($items)) {
+            return response()->json([
+                'type' => ResponseTypesEnum::SUCCESS->value,
+                'data' => [],
+            ], ResponseCodes::HTTP_OK);
+        }
+
+        $cart = Cart::instance($cart)->ownedBy($user);
+        $cart->restore(true)->mergeWith($items);
+
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
-            'data' => CartResource::collection(Cart::instance($cart)->ownedBy($user)->restore()),
+            'data' => CartResource::collection($cart->getContent()),
         ], ResponseCodes::HTTP_OK);
     }
 
     /**
      * @param Request $request
-     * @return JsonResponse|bool
+     * @return JsonResponse
      * @throws BindingResolutionException
      * @throws LoginNeededException
      */
-    public function destroy(Request $request): JsonResponse|bool
+    public function destroy(Request $request): JsonResponse
     {
         $user = $this->getCurrentUserWithAuthentication();
 
         $res = Cart::instance($request->string('cart_name'))->ownedBy($user)->destroy();
 
         if ($res) {
-            return response()->json([
-                'type' => ResponseTypesEnum::INFO->value,
-                'message' => 'سبد خرید شما حذف شد.',
-            ], ResponseCodes::HTTP_OK);
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
         }
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
-            'message' => 'خطا در حذف سبد خرید!',
+            'message' => 'خطا در خالی نمودن سبد خرید!',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     /**
      * @param Request $request
-     * @return JsonResponse|bool
+     * @return JsonResponse
      * @throws BindingResolutionException
      * @throws LoginNeededException
      */
-    public function store(Request $request): JsonResponse|bool
+    public function store(Request $request): JsonResponse
     {
         $user = $this->getCurrentUserWithAuthentication();
 
-        $items = $request->input('items');
-        $res = Cart::instance($request->string('cart_name'))->ownedBy($user)
-            ->validate($items, true)
-            ->store();
+        $items = $request->input('items', []);
 
-        if ($res) {
-            return response()->json([
-                'type' => ResponseTypesEnum::SUCCESS->value,
-                'message' => 'سبد خرید شما ذخیره شد.',
-            ], ResponseCodes::HTTP_OK);
+        if (is_array($items)) {
+            $cart = Cart::instance($request->string('cart_name'))->ownedBy($user)
+                ->validate($items, true);
+
+            if ($cart->getContent()->isNotEmpty()) {
+                $res = $cart->store();
+            } else {
+                $res = $cart->destroy();
+            }
+
+            if ($res) {
+                return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+            }
         }
+
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ذخیره سبد خرید!',
@@ -121,17 +141,11 @@ class CartController extends Controller
      * @param Request $request
      * @return JsonResponse
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
     public function sessionCarts(Request $request): JsonResponse
     {
         $carts = $request->input('carts');
-
-        if (empty($carts)) {
-            return response()->json([
-                'type' => ResponseTypesEnum::SUCCESS->value,
-                'data' => [],
-            ]);
-        }
 
         $cartNameDefault = config('market.cart_name.default');
         $cartNameWishlist = config('market.cart_name.wishlist');
@@ -143,14 +157,29 @@ class CartController extends Controller
             ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $cartDefault = Cart::instance($cartNameDefault)->validate($carts[$cartNameDefault] ?? []);
-        $cartWishlist = Cart::instance($cartNameWishlist)->validate($carts[$cartNameWishlist] ?? []);
+        $cartDefault = Cart::instance($cartNameDefault);
+        $cartWishlist = Cart::instance($cartNameWishlist);
+
+        $cartDefaultItems = $cartDefault->validate($carts[$cartNameDefault] ?? []);
+        $cartWishlistItems = $cartWishlist->validate($carts[$cartNameWishlist] ?? []);
+
+        $user = $this->getCurrentUserWithAuthentication(false);
+        if (!is_null($user)) {
+            $cartDefaultItems = $cartDefault->ownedBy($user)
+                ->restore(true)
+                ->mergeWith($cartDefaultItems)
+                ->getContent();
+            $cartWishlistItems = $cartWishlist->ownedBy($user)
+                ->restore(true)
+                ->mergeWith($cartWishlistItems)
+                ->getContent();
+        }
 
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
             'data' => [
-                $cartNameDefault => CartResource::collection($cartDefault),
-                $cartNameWishlist => CartResource::collection($cartWishlist),
+                $cartNameDefault => CartResource::collection($cartDefaultItems),
+                $cartNameWishlist => CartResource::collection($cartWishlistItems),
             ],
         ]);
     }
@@ -158,10 +187,11 @@ class CartController extends Controller
     /**
      * @param Request $request
      * @param $code
-     * @return JsonResponse|bool
+     * @return JsonResponse
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
-    public function addToCart(Request $request, $code): JsonResponse|bool
+    public function addToCart(Request $request, $code): JsonResponse
     {
         $cartName = $request->string('cart_name', '');
         $items = $request->input('items');
@@ -171,6 +201,12 @@ class CartController extends Controller
         $res = $cart
             ->validate($items, true)
             ->add($code, $request->integer('quantity', 1));
+
+        $user = $this->getCurrentUserWithAuthentication(false);
+        if (!is_null($user)) {
+            $items = $cart->getContent();
+            $cart->ownedBy($user)->restore(true)->mergeWith($items)->store();
+        }
 
         if ($res) {
             return response()->json([
@@ -187,10 +223,11 @@ class CartController extends Controller
 
     /**
      * @param Request $request
-     * @return JsonResponse|bool
+     * @return JsonResponse
      * @throws BindingResolutionException
+     * @throws LoginNeededException
      */
-    public function addAllToCart(Request $request): JsonResponse|bool
+    public function addAllToCart(Request $request): JsonResponse
     {
         $codesQuantities = $request->input('codes_quantities', []);
 
@@ -206,6 +243,12 @@ class CartController extends Controller
         $cart = Cart::instance($cartName)
             ->validate($items, true)
             ->addAll($codesQuantities);
+
+        $user = $this->getCurrentUserWithAuthentication(false);
+        if (!is_null($user)) {
+            $items = $cart->getContent();
+            $cart->ownedBy($user)->restore(true)->mergeWith($items)->store();
+        }
 
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,

@@ -50,12 +50,20 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const isShoppingCartActivated = computed(() => {
-    return getActiveCart.value === 'shopping'
+    return getActiveCart.value === getShoppingCartName()
   })
 
   const isWishlistCartActivated = computed(() => {
-    return getActiveCart.value === 'wishlist'
+    return getActiveCart.value === getWishlistCartName()
   })
+
+  function getShoppingCartName() {
+    return 'shopping'
+  }
+
+  function getWishlistCartName() {
+    return 'wishlist'
+  }
 
   async function saveToLocalStorage() {
     if (isShoppingCartActivated.value) {
@@ -63,10 +71,24 @@ export const useCartStore = defineStore('userCart', () => {
         shopping: cartItems.value,
         wishlist: getLocalCarts.value.wishlist,
       }
+
+      if (userStore.getUser) {
+        carts.value = {
+          shopping: cartItems.value,
+          wishlist: getLocalCarts.value.wishlist,
+        }
+      }
     } else if (isWishlistCartActivated.value) {
       cartsLocal.value = {
         shopping: getLocalCarts.value.shopping,
         wishlist: cartItems.value,
+      }
+
+      if (userStore.getUser) {
+        carts.value = {
+          shopping: getLocalCarts.value.shopping,
+          wishlist: cartItems.value,
+        }
       }
     }
 
@@ -242,9 +264,14 @@ export const useCartStore = defineStore('userCart', () => {
     activeCart.value = 'shopping'
 
     await loadFromLocalStorage()
-    await nextTick(() => {
-      cartItems.value = getLocalCarts.value[getActiveCart.value] || []
-    })
+
+    if (userStore.getUser) {
+      fetchShopping()
+    } else {
+      await nextTick(() => {
+        cartItems.value = getLocalCarts.value[getActiveCart.value] || []
+      })
+    }
   }
 
   async function changeToWishlistCart() {
@@ -252,9 +279,14 @@ export const useCartStore = defineStore('userCart', () => {
     activeCart.value = 'wishlist'
 
     await loadFromLocalStorage()
-    await nextTick(() => {
-      cartItems.value = getLocalCarts.value[getActiveCart.value] || []
-    })
+
+    if (userStore.getUser) {
+      fetchWishlist()
+    } else {
+      await nextTick(() => {
+        cartItems.value = getLocalCarts.value[getActiveCart.value] || []
+      })
+    }
   }
 
   function loadToLocalShopping() {
@@ -266,6 +298,8 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   async function addAllItems(codesQuantities = {}, callbacks = {}) {
+    if (isLoading.value) return
+
     loading.value = true
 
     await loadFromLocalStorage()
@@ -285,6 +319,10 @@ export const useCartStore = defineStore('userCart', () => {
           cartItems.value = response.data
           cartsLocal.value[getActiveCart.value] = response.data
 
+          if (userStore.getUser) {
+            carts.value[getActiveCart.value] = response.data
+          }
+
           saveToLocalStorage()
         },
         finally() {
@@ -296,6 +334,8 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   async function addItem(code, quantity = 1, callbacks = {}) {
+    if (isLoading.value) return
+
     loading.value = true
 
     await loadFromLocalStorage()
@@ -315,6 +355,10 @@ export const useCartStore = defineStore('userCart', () => {
           cartItems.value = response.data
           cartsLocal.value[getActiveCart.value] = response.data
 
+          if (userStore.getUser) {
+            carts.value[getActiveCart.value] = response.data
+          }
+
           saveToLocalStorage()
         },
         finally() {
@@ -325,18 +369,22 @@ export const useCartStore = defineStore('userCart', () => {
     )
   }
 
-  function removeItem(code) {
+  async function removeItem(code, callbacks = {}) {
     cartItems.value = getCartItems.value.filter(item => {
       return item?.code !== code
     })
 
-    saveToLocalStorage()
+    await saveToLocalStorage()
+
+    if (userStore.getUser) {
+      save()
+    }
   }
 
   async function fetchAllLocal(callbacks = {}) {
     if (isLoading.value) return
-
     loading.value = true
+
     await loadFromLocalStorage()
 
     useRequestWrapper(
@@ -350,6 +398,10 @@ export const useCartStore = defineStore('userCart', () => {
       {
         success(response) {
           cartsLocal.value = response.data
+
+          if (userStore.getUser) {
+            carts.value = response.data
+          }
 
           if (isShoppingCartActivated.value) {
             cartItems.value = cartsLocal.value.shopping
@@ -367,25 +419,30 @@ export const useCartStore = defineStore('userCart', () => {
     )
   }
 
-  async function empty(force = false) {
+  async function empty(callbacks = {}, force = false) {
     if (force) {
       cartItems.value = []
+
       await saveToLocalStorage()
+
+      if (userStore.getUser) {
+        remove(callbacks)
+      }
     } else {
       useConfirmToast(async () => {
         cartItems.value = []
+
         await saveToLocalStorage()
+
+        if (userStore.getUser) {
+          remove(callbacks)
+        }
       }, 'خالی نمودن سبد خرید')
     }
   }
 
   function fetchAll(callbacks = {}) {
-    if (!userStore.getUser) {
-      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
-      return
-    }
-
-    if (isLoading.value) return
+    if (!userStore.getUser || isLoading.value) return
 
     loading.value = true
     useRequestWrapper(
@@ -393,6 +450,7 @@ export const useCartStore = defineStore('userCart', () => {
       null,
       {
         success(response) {
+          cartsLocal.value = response.data
           carts.value = response.data
         },
         finally() {
@@ -403,21 +461,24 @@ export const useCartStore = defineStore('userCart', () => {
     )
   }
 
-  function fetchByName(name, callbacks = {}) {
-    if (!userStore.getUser) {
-      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
-      return
-    }
-
-    if (isLoading.value) return
+  function fetchByName(cartName, callbacks = {}) {
+    if (!userStore.getUser || isLoading.value) return
 
     loading.value = true
     useRequestWrapper(
-      apiReplaceParams(apiRoutes.cart.show, {cart: name}),
-      {method: 'POST'},
+      apiReplaceParams(apiRoutes.cart.show, {cart: cartName}),
       {
-        success(response) {
-          carts.value[name] = response.data
+        method: 'POST',
+        data: {
+          items: cartsLocal.value[getActiveCart.value],
+        },
+      },
+      {
+        async success(response) {
+          carts.value[cartName] = response.data
+          cartItems.value = response.data
+
+          await saveToLocalStorage()
         },
         finally() {
           loading.value = false
@@ -428,75 +489,61 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   function fetchShopping(callbacks = {}) {
-    fetchByName('shopping', callbacks)
+    fetchByName(getShoppingCartName(), callbacks)
   }
 
   function fetchWishlist(callbacks = {}) {
-    fetchByName('wishlist', callbacks)
+    fetchByName(getWishlistCartName(), callbacks)
   }
 
-  async function save(callbacks = {}) {
-    if (!userStore.getUser) {
-      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
-      return
-    }
+  async function save(callbacks = {}, cartName = null) {
+    if (!userStore.getUser || isLoading.value) return
 
-    if (isLoading.value) return
     await loadFromLocalStorage()
 
-    useConfirmToast(() => {
-      loading.value = true
-      useRequestWrapper(
-        apiRoutes.cart.store,
-        {
-          method: 'POST',
-          data: {
-            cart_name: getActiveCart.value,
-            items: getCartItems.value,
-          },
+    cartName = cartName ?? getActiveCart.value
+
+    loading.value = true
+    useRequestWrapper(
+      apiRoutes.cart.store,
+      {
+        method: 'POST',
+        data: {
+          cart_name: cartName,
+          items: getCartItems.value,
         },
-        {
-          success() {
-            carts.value[getActiveCart.value] = getCartItems.value
-          },
-          finally() {
-            loading.value = false
-          },
+      },
+      {
+        finally() {
+          loading.value = false
         },
-        callbacks
-      )
-    }, 'ذخیره سبد خرید')
+      },
+      callbacks
+    )
   }
 
   function remove(callbacks = {}) {
-    if (!userStore.getUser) {
-      toast.warning('برای انجام این عمل، ابتدا به پنل کاربری خود وارد شوید.')
-      return
-    }
+    if (!userStore.getUser || isLoading.value) return
 
-    if (isLoading.value) return
-
-    useConfirmToast(() => {
-      loading.value = true
-      useRequestWrapper(
-        apiRoutes.cart.destroy,
-        {
-          method: 'DELETE',
-          data: {
-            cart_name: getActiveCart.value,
-          },
+    loading.value = true
+    useRequestWrapper(
+      apiRoutes.cart.destroy,
+      {
+        method: 'DELETE',
+        data: {
+          cart_name: getActiveCart.value,
         },
-        {
-          success() {
-            carts.value[getActiveCart.value] = []
-          },
-          finally() {
-            loading.value = false
-          },
+      },
+      {
+        success() {
+          carts.value[getActiveCart.value] = []
         },
-        callbacks
-      )
-    }, 'حذف سبد خرید')
+        finally() {
+          loading.value = false
+        },
+      },
+      callbacks
+    )
   }
 
   function $reset() {
@@ -511,8 +558,11 @@ export const useCartStore = defineStore('userCart', () => {
     }
     cartItems.value = []
 
-    changeToShoppingCart()
-    fetchAllLocal()
+    fetchAllLocal({
+      success() {
+        changeToShoppingCart()
+      },
+    })
   }
 
   fetchAllLocal()
@@ -546,6 +596,8 @@ export const useCartStore = defineStore('userCart', () => {
     //
     loadFromLocalStorage,
     loadToLocalShopping, loadToLocalWishlist,
+    //
+    getShoppingCartName, getWishlistCartName,
     //
     $reset,
   }

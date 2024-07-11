@@ -323,12 +323,31 @@ class Cart implements Arrayable, Jsonable
      */
     public function addAll(array $mappedCodeQuantity): static
     {
-        $codes = array_keys($mappedCodeQuantity);
-        $items = $this->getValidatedItems($codes);
+        $items = $this->getValidatedItems($mappedCodeQuantity);
         $items->each(function ($item) use ($mappedCodeQuantity) {
             $qty = intval($mappedCodeQuantity[$item->code] ?? 1);
-            $this->addItem($item, $qty);
+
+            $sendingItem = $item instanceof CartItem ? $item->getModel() : ($item instanceof Model ? $item : null);
+            if (!is_null($sendingItem)) {
+                $this->addItem($sendingItem, $qty);
+            }
         });
+
+        return $this;
+    }
+
+    /**
+     * @param array|Collection $items
+     * @return static
+     */
+    public function mergeWith(array|Collection $items): static
+    {
+        $validated = $this->validate($items);
+
+        $plucked = $validated->pluckMultiple(['code', 'qty']);
+        if ($plucked->isNotEmpty()) {
+            $this->addAll($plucked->toArray());
+        }
 
         return $this;
     }
@@ -339,8 +358,7 @@ class Cart implements Arrayable, Jsonable
      */
     public function remove(int $id): static
     {
-        $this->items = $this->items->reject(fn($item) => $item->id === $id);
-        return $this;
+        return $this->removeByKey('id', $id);
     }
 
     /**

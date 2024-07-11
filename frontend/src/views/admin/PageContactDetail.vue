@@ -60,6 +60,7 @@
 
             <form
               v-if="contact?.created_by"
+              class="mt-3"
               @submit.prevent="onSubmit"
             >
               <div class="p-2">
@@ -140,7 +141,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
   }, {
     success(response) {
       toast.success('پاسخ شما ثبت شد.')
-      tinyMCE.activeEditor.setContent(response.data.description)
+      tinyMCE.activeEditor.setContent(response.data.answer)
 
       setFormFields(response.data)
     },
