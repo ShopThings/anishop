@@ -115,7 +115,9 @@ import BaseEditor from "@/components/base/BaseEditor.vue";
 import {useFormSubmit} from "@/composables/form-submit.js";
 import yup from "@/validation/index.js";
 import PartialUsernameLabel from "@/components/partials/PartialUsernameLabel.vue";
+import {useToast} from "vue-toastification";
 
+const toast = useToast()
 const idParam = getRouteParamByKey('id')
 
 const loading = ref(true)
