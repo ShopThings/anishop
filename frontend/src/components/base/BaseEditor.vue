@@ -51,6 +51,7 @@ if (props.value && props.value.length) {
 
 watch(() => props.value, () => {
   value.value = props.value
+  tinyMCE.activeEditor.setContent(value.value)
 })
 
 //-----------------------------------------------------
