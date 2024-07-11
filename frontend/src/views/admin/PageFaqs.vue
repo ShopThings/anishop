@@ -136,7 +136,7 @@ const table = reactive({
     {
       label: '',
       field: 'is_deletable',
-      columnClasses: 'w-8',
+      columnClasses: 'max-w-8',
     },
     {
       label: "#",
