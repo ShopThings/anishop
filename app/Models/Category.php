@@ -66,6 +66,6 @@ class Category extends Model
      */
     public function getRouteKeyName()
     {
-        return parent::getRouteKeyName();
+        return 'slug';
     }
 }
