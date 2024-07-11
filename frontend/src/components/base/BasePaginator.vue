@@ -355,7 +355,29 @@ function goToPage(page, scrollToTop) {
 
   loading.value = true
 
-  if (items.value?.length) {
+  if (props.path && props.path.trim() !== '') {
+    let remotePath;
+    if (isObject(props.pathReplacementParams)) {
+      remotePath = apiReplaceParams(props.path, props.pathReplacementParams)
+    } else {
+      remotePath = props.path
+    }
+
+    useRequest(remotePath, {params}, {
+      success: (response) => {
+        actualItems.value = response.data || []
+        total.value = response.meta.total || 0
+
+        loading.value = false
+
+        if (scrollToTop !== false) {
+          goToTop()
+        }
+
+        emit('items-loaded')
+      },
+    })
+  } else {
     clearTimeout(localLoadingTimeout)
 
     new Promise((resolve) => {
@@ -397,32 +419,6 @@ function goToPage(page, scrollToTop) {
         resolve()
       }, 1000)
     })
-  } else if (props.path && props.path.trim() !== '') {
-    let remotePath;
-    if (isObject(props.pathReplacementParams)) {
-      remotePath = apiReplaceParams(props.path, props.pathReplacementParams)
-    } else {
-      remotePath = props.path
-    }
-
-    useRequest(remotePath, {params}, {
-      success: (response) => {
-        actualItems.value = response.data || []
-        total.value = response.meta.total || 0
-
-        loading.value = false
-
-        if (scrollToTop !== false) {
-          goToTop()
-        }
-
-        emit('items-loaded')
-      },
-    })
-  } else {
-    actualItems.value = []
-    total.value = 0
-    loading.value = false
   }
 }
 
