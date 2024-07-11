@@ -4,7 +4,6 @@ import {useSafeLocalStorage} from "@/composables/safe-local-storage.js";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {useRequestWrapper} from "@/composables/api-request.js";
 import {apiReplaceParams, apiRoutes} from "@/router/api-routes.js";
-import {useToast} from "vue-toastification";
 import {useConfirmToast} from "@/composables/toast-helper.js";
 
 const safeStorage = useSafeLocalStorage
@@ -26,7 +25,6 @@ export const useCartStore = defineStore('userCart', () => {
   })
   const cartItems = ref([])
 
-  const toast = useToast()
   const userStore = useUserAuthStore()
 
   const isLoading = computed(() => {
@@ -369,7 +367,7 @@ export const useCartStore = defineStore('userCart', () => {
     )
   }
 
-  async function removeItem(code, callbacks = {}) {
+  async function removeItem(code) {
     cartItems.value = getCartItems.value.filter(item => {
       return item?.code !== code
     })
