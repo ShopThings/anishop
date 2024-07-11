@@ -117,8 +117,9 @@ class CartController extends Controller
         $items = $request->input('items', []);
 
         if (is_array($items)) {
-            $cart = Cart::instance($request->string('cart_name'))->ownedBy($user)
-                ->validate($items, true);
+            $cart = Cart::instance($request->string('cart_name'))->ownedBy($user);
+            $tmpItems = $cart->validate($items);
+            $cart->mergeWith($tmpItems);
 
             if ($cart->getContent()->isNotEmpty()) {
                 $res = $cart->store();
