@@ -1230,39 +1230,21 @@ function removeFromSelectedItem(row) {
 }
 
 function getParent(el, tagName) {
-  tagName = tagName.toLowerCase();
-  while (el && el.parentNode) {
-    el = el.parentNode;
-    if (el.tagName && el.tagName.toLowerCase() === tagName) {
-      return el;
-    }
-  }
-  return null;
+  return el.closest(tagName);
 }
 
 function getColumn(tab, col) {
-  if (!tab) return [];
+  if (!tab || col < 0) return [];
 
-  var n = tab.rows.length;
-  var i, cols = [];
-
-  if (col < 0) {
-    return [];
-  }
-  for (i = 0; i < n; i++) {
-    if (tab.rows[i].cells.length > col) {
-      cols.push(tab.rows[i].cells[col]);
-    }
-  }
-
-  return cols;
+  return Array.from(tab.rows)
+    .filter(row => row.cells.length > col)
+    .map(row => row.cells[col]);
 }
 
 function getChild(element, tagName) {
   tagName = tagName.toLowerCase();
-  for (const child of element.children) {
-    if (child.tagName.toLowerCase() === tagName) return child;
-  }
+  return Array.from(element.children)
+    .find(child => child.tagName.toLowerCase() === tagName) || null;
 }
 
 /**
