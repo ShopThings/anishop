@@ -35,6 +35,10 @@
             :total="table.totalRecordCount"
             @do-search="doSearch"
           >
+            <template v-slot:is_deletable="{value}">
+              <LockClosedIcon v-if="!value.is_deletable" class="size-6 text-slate-400"/>
+            </template>
+
             <template v-slot:is_published="{value}">
               <base-switch-confirmation
                 :id="value.id"
@@ -77,7 +81,7 @@ import {useToast} from "vue-toastification";
 import {computed, reactive, ref} from "vue";
 import {hideAllPoppers} from "floating-vue";
 import {useConfirmToast} from "@/composables/toast-helper.js";
-import {MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
+import {LockClosedIcon, MinusIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
 import BaseDatatable from "@/components/base/BaseDatatable.vue";
@@ -129,6 +133,11 @@ const table = reactive({
     },
   ],
   columns: [
+    {
+      label: '',
+      field: 'is_deletable',
+      columnClasses: 'w-8',
+    },
     {
       label: "#",
       field: "id",

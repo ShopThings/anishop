@@ -50,6 +50,10 @@
             :total="table.totalRecordCount"
             @do-search="doSearch"
           >
+            <template v-slot:is_deletable="{value}">
+              <LockClosedIcon v-if="!value.is_deletable" class="size-6 text-slate-400"/>
+            </template>
+
             <template v-slot:name="{value}">
               <span>{{ value.name }}</span>
               <div class="mr-2 rounded-lg py-1 px-2 text-sm bg-blue-100 inline-block">
@@ -108,7 +112,7 @@
 
 <script setup>
 import {computed, reactive, ref} from "vue"
-import {PhotoIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
+import {LockClosedIcon, PhotoIcon, PlusIcon} from "@heroicons/vue/24/outline/index.js"
 import BaseDatatable from "@/components/base/BaseDatatable.vue"
 import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue"
 import BaseDatatableMenu from "@/components/base/datatable/BaseDatatableMenu.vue";
@@ -175,6 +179,11 @@ const table = reactive({
     },
   ],
   columns: [
+    {
+      label: '',
+      field: 'is_deletable',
+      columnClasses: 'w-8',
+    },
     {
       label: "#",
       field: "id",

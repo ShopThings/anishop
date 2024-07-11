@@ -28,6 +28,10 @@
               :total="table.totalRecordCount"
               @do-search="doSearch"
           >
+            <template v-slot:is_deletable="{value}">
+              <LockClosedIcon v-if="!value.is_deletable" class="size-6 text-slate-400"/>
+            </template>
+
             <template v-slot:place_in="{value}">
               {{ value.place_in.text }}
             </template>
@@ -72,6 +76,7 @@ import NewCreationGuideTop from "@/components/admin/NewCreationGuideTop.vue";
 import {MenuAPI} from "@/service/APIConfig.js";
 import BaseSwitchConfirmation from "@/components/base/BaseSwitchConfirmation.vue";
 import {PERMISSION_PLACES, PERMISSIONS, useAdminAuthStore} from "@/store/StoreUserAuth.js";
+import {LockClosedIcon} from "@heroicons/vue/24/outline/index.js";
 
 const router = useRouter()
 const toast = useToast()
@@ -107,6 +112,11 @@ const table = reactive({
     },
   ],
   columns: [
+    {
+      label: '',
+      field: 'is_deletable',
+      columnClasses: 'w-8',
+    },
     {
       label: "#",
       field: "id",
