@@ -90,11 +90,13 @@ import yup from "@/validation/index.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 import {reactive, ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const router = useRouter()
 const route = useRoute()
 
 const store = useUserAuthStore()
+const cartStore = useCartStore()
 
 const captchaKey = ref(null)
 const err = reactive({})
@@ -134,6 +136,9 @@ const {canSubmit, onSubmit} = useFormSubmit({
         ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
       ) router.push(route.query.redirect)
       else router.push({name: 'user.home'})
+
+      cartStore.save({}, cartStore.getShoppingCartName())
+      cartStore.save({}, cartStore.getWishlistCartName())
 
       return false
     },

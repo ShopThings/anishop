@@ -92,6 +92,7 @@ import BaseButton from "@/components/base/BaseButton.vue";
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
 import {useRoute, useRouter} from "vue-router";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const props = defineProps({
   options: {
@@ -105,6 +106,7 @@ const route = useRoute()
 
 const userStore = useUserAuthStore()
 const loginStore = useLoginOTPStore()
+const cartStore = useCartStore()
 
 //----------------------------------------------
 // Handle dynamic input validation and focusing
@@ -207,6 +209,9 @@ const {canSubmit, errors, onSubmit, setFieldError} = useFormSubmit({}, (values, 
         ['/admin/login', '/login'].indexOf(route.query.redirect) === -1
       ) router.push(route.query.redirect)
       else router.push({name: 'user.home'})
+
+      cartStore.save({}, cartStore.getShoppingCartName())
+      cartStore.save({}, cartStore.getWishlistCartName())
     },
     error(error) {
       actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')
