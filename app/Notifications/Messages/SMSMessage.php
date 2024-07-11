@@ -9,7 +9,8 @@ class SMSMessage
     public function __construct(
         protected string|array  $number,
         protected string        $message,
-        protected ?SMSTypesEnum $type = null
+        protected ?SMSTypesEnum $type = null,
+        protected ?string       $securedMessage = null
     )
     {
     }
@@ -47,6 +48,24 @@ class SMSMessage
     public function setMessage(string $message): static
     {
         $this->message = $message;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSecuredMessage(): ?string
+    {
+        return $this->securedMessage;
+    }
+
+    /**
+     * @param string|null $securedMessage
+     * @return static
+     */
+    public function setSecuredMessage(?string $securedMessage): static
+    {
+        $this->securedMessage = $securedMessage;
         return $this;
     }
 

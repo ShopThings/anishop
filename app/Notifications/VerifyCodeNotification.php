@@ -11,6 +11,7 @@ use App\Services\Contracts\SettingServiceInterface;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Str;
 
 class VerifyCodeNotification extends Notification implements ShouldQueue
 {
@@ -56,13 +57,17 @@ class VerifyCodeNotification extends Notification implements ShouldQueue
             'username' => $mobile,
             'first_name' => $this->user->first_name ?: 'کاربر',
             'shop' => $title,
-            'code' => $this->code,
         ];
 
         return new SMSMessage(
             $mobile,
-            replace_sms_variables($msg, $this->smsType, $replacements),
-            $this->smsType
+            replace_sms_variables($msg, $this->smsType, $replacements + ['code' => $this->code]),
+            $this->smsType,
+            replace_sms_variables(
+                $msg,
+                $this->smsType,
+                $replacements + ['code' => Str::repeat('X', mb_strlen($this->code))]
+            ),
         );
     }
 }

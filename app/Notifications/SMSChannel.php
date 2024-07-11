@@ -40,7 +40,7 @@ class SMSChannel
             'receiver_numbers' => implode(', ', $numbers),
             'panel_number' => config('sms.drivers.' . $panelName . '.from'),
             'panel_name' => $panelName,
-            'body' => $smsObject->getMessage(),
+            'body' => $smsObject->getSecuredMessage() ?: $smsObject->getMessage(),
             'type' => $smsObject->getType()?->value ?? SMSTypesEnum::OTHERS->value,
         ];
 
