@@ -139,7 +139,7 @@
         <template #loader>
           <div
             class="px-3 py-6 h-96 flex justify-center items-center flex-col gap-3 animate-pulse">
-            <MapIcon class="h-16 w-16 text-slate-400"/>
+            <MapIcon class="h-16 w-16 text-slate-300"/>
             <span class="text-orange-300">در حال بارگذاری نقشه</span>
           </div>
         </template>

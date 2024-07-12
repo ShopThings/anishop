@@ -61,7 +61,7 @@
               class="w-full px-4 sm:w-1/2 lg:w-2/12 animate-pulse"
           >
             <div class="mb-8 w-full">
-              <h4 class="w-2/3 h-3.5 bg-slate-300 rounded-md mb-8"></h4>
+              <h4 class="w-2/3 h-3.5 bg-slate-200 rounded-md mb-8"></h4>
               <ul>
                 <li
                     v-for="idx2 in 4"

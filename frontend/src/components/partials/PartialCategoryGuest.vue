@@ -66,7 +66,7 @@
               class="flex flex-col gap-10 w-full"
           >
             <div class="flex flex-row-reverse gap-3 w-full animate-pulse pt-6">
-              <div class="h-4 rounded-md w-40 bg-slate-300"></div>
+              <div class="h-4 rounded-md w-40 bg-slate-200"></div>
               <div class="h-4 rounded-md w-16 bg-orange-200"></div>
             </div>
             <div class="flex gap-6 w-full">
@@ -133,8 +133,7 @@ import VTransitionSlideFadeLeftX from "@/transitions/VTransitionSlideFadeLeftX.v
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import {Bars4Icon} from "@heroicons/vue/24/outline/index.js";
 import {computed, ref, watch} from "vue";
-import {useWindowSize} from "@vueuse/core";
-import {watchImmediate} from "@vueuse/core";
+import {useWindowSize, watchImmediate} from "@vueuse/core";
 import {findItemByKey} from "@/composables/helper.js";
 
 const props = defineProps({

@@ -77,7 +77,7 @@
     v-else
     class="flex gap-2 items-center justify-center bg-slate-200 animate-pulse w-full h-8 rounded my-3"
   >
-    <div class="w-36 h-3 rounded bg-blue-300"></div>
+    <div class="w-36 h-3 rounded bg-blue-200"></div>
   </div>
 
   <div>

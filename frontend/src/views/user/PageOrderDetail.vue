@@ -73,10 +73,10 @@
     </template>
     <div
       v-else
-      class="flex gap-2 items-center justify-center bg-slate-300 animate-pulse w-full h-8 rounded my-3"
+      class="flex gap-2 items-center justify-center bg-slate-200 animate-pulse w-full h-8 rounded my-3"
     >
-      <div class="w-36 h-3 rounded bg-orange-300"></div>
-      <div class="w-8 h-3 rounded bg-orange-300"></div>
+      <div class="w-36 h-3 rounded bg-slate-400"></div>
+      <div class="w-8 h-3 rounded bg-slate-400"></div>
     </div>
 
     <div>

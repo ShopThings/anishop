@@ -41,13 +41,13 @@
   <template v-else>
     <div
       class="flex gap-2 items-center justify-between bg-white animate-pulse w-full h-8 rounded my-3 border-2 border-teal-500 mb-3 px-3">
-      <div class="w-40 h-3 rounded bg-slate-300"></div>
-      <div class="w-16 h-3 rounded bg-blue-300"></div>
+      <div class="w-40 h-3 rounded bg-slate-200"></div>
+      <div class="w-16 h-3 rounded bg-blue-200"></div>
     </div>
 
-    <div class="flex gap-2 items-center justify-center bg-slate-300 animate-pulse w-full h-8 rounded my-3 px-3">
-      <div class="w-36 h-3 rounded bg-orange-300"></div>
-      <div class="w-8 h-3 rounded bg-orange-300"></div>
+    <div class="flex gap-2 items-center justify-center bg-slate-200 animate-pulse w-full h-8 rounded my-3 px-3">
+      <div class="w-36 h-3 rounded bg-slate-400"></div>
+      <div class="w-8 h-3 rounded bg-slate-400"></div>
     </div>
   </template>
 

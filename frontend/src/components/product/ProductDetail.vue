@@ -198,7 +198,7 @@
           <div class="animate-pulse">
             <div class="rounded h-5 w-3/4 bg-slate-200"></div>
 
-            <div class="rounded h-4 w-28 bg-slate-400 mt-3"></div>
+            <div class="rounded h-4 w-28 bg-slate-200 mt-3"></div>
 
             <div class="mt-5 flex flex-wrap items-center gap-4 bg-blue-50 py-3 px-2">
               <div class="rounded h-3 w-20 bg-blue-200"></div>
@@ -207,20 +207,20 @@
 
             <hr class="h-0.5 mx-auto my-5 bg-slate-100 border-0 rounded">
 
-            <div class="mb-6 h-4 rounded bg-slate-400 w-28"></div>
+            <div class="mb-6 h-4 rounded bg-slate-200 w-28"></div>
 
             <ul class="flex flex-col gap-4">
               <li class="flex items-center gap-3">
                 <span class="bg-slate-200 h-3 w-28 rounded"></span>
-                <span class="bg-slate-300 h-3 w-12 rounded"></span>
+                <span class="bg-slate-200 h-3 w-12 rounded"></span>
               </li>
               <li class="flex items-center gap-3">
                 <span class="bg-slate-200 h-3 w-20 rounded"></span>
-                <span class="bg-slate-300 h-3 w-28 rounded"></span>
+                <span class="bg-slate-200 h-3 w-28 rounded"></span>
               </li>
               <li class="flex items-center gap-3">
                 <span class="bg-slate-200 h-3 w-36 rounded"></span>
-                <span class="bg-slate-300 h-3 w-16 rounded"></span>
+                <span class="bg-slate-200 h-3 w-16 rounded"></span>
               </li>
             </ul>
 
@@ -232,7 +232,7 @@
                 :key="i"
               >
                 <div class="rounded-full flex items-center justify-center p-1 size-8 border-2 border-slate-200">
-                  <div class="rounded-full bg-slate-300 size-full"></div>
+                  <div class="rounded-full bg-slate-200 size-full"></div>
                 </div>
                 <div class="rounded bg-slate-200 w-12 h-3"></div>
               </template>
@@ -251,7 +251,7 @@
 
             <div class="mt-5">
               <div class="rounded border-2 border-slate-300 bg-slate-100 h-8 w-40 flex items-center justify-end p-2">
-                <ChevronDownIcon class="size-5 text-slate-400"/>
+                <ChevronDownIcon class="size-5 text-slate-300"/>
               </div>
             </div>
 
@@ -264,13 +264,13 @@
 
               <div class="flex items-center justify-center border-2 border-slate-200 rounded divide-x divide-x-reverse">
                 <div class="h-10 flex items-center justify-center px-3">
-                  <PlusIcon class="size-5 text-slate-300"/>
+                  <PlusIcon class="size-5 text-slate-200"/>
                 </div>
                 <div class="h-10 flex items-center justify-center px-3">
                   <div class="rounded bg-slate-200 w-7 h-2"></div>
                 </div>
                 <div class="h-10 flex items-center justify-center px-3">
-                  <MinusIcon class="size-5 text-slate-300"/>
+                  <MinusIcon class="size-5 text-slate-200"/>
                 </div>
               </div>
             </div>

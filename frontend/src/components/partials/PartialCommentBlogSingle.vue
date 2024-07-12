@@ -8,10 +8,10 @@
       class="animate-pulse"
     >
       <ul class="flex flex-wrap gap-4 items-center">
-        <li class="bg-slate-300 w-20 h-4"></li>
-        <li class="bg-slate-300 w-20 h-4"></li>
-        <li class="bg-slate-300 w-20 h-4"></li>
-        <li class="rounded bg-cyan-300 w-24 h-6 inline-block"></li>
+        <li class="bg-slate-200 w-20 h-4"></li>
+        <li class="bg-slate-200 w-20 h-4"></li>
+        <li class="bg-slate-200 w-20 h-4"></li>
+        <li class="rounded bg-cyan-200 w-24 h-6 inline-block"></li>
       </ul>
       <p class="rounded-full h-2.5 bg-slate-200 w-5/6 my-4"></p>
       <p class="rounded-full h-2.5 bg-slate-200 w-3/6 my-4"></p>

@@ -6,7 +6,7 @@
           :key="idx"
           class="animate-pulse"
       >
-        <div class="w-20 rounded bg-slate-300 h-3 mt-3"></div>
+        <div class="w-20 rounded bg-slate-200 h-3 mt-3"></div>
       </div>
     </template>
     <template v-else-if="menu">
@@ -73,7 +73,7 @@
                           class="animate-pulse"
                           role="status"
                       >
-                        <div class="w-20 h-3 mt-3 bg-slate-300 rounded-md dark:bg-slate-700"></div>
+                        <div class="w-20 h-3 mt-3 bg-slate-200 rounded-md dark:bg-slate-700"></div>
                         <span class="sr-only">در حال بارگذاری...</span>
                       </div>
                     </div>

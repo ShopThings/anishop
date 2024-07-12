@@ -67,12 +67,12 @@
         <template #loading>
           <div class="animate-pulse">
             <ul class="flex flex-wrap gap-4 items-center">
-              <li class="bg-slate-300 w-20 h-4"></li>
-              <li class="bg-slate-300 w-20 h-4"></li>
-              <li class="bg-slate-300 w-20 h-4"></li>
+              <li class="bg-slate-200 w-20 h-4"></li>
+              <li class="bg-slate-200 w-20 h-4"></li>
+              <li class="bg-slate-200 w-20 h-4"></li>
               <li class="flex items-center">
                 <FlagIcon class="w-5 h-5 text-rose-500 ml-2"/>
-                <span class="bg-rose-300 w-8 h-1"></span>
+                <span class="bg-rose-200 w-8 h-1"></span>
               </li>
             </ul>
 
