@@ -15,6 +15,7 @@ use App\Support\WhereBuilder\WhereBuilderInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class CategoryService extends Service implements CategoryServiceInterface
 {
@@ -145,14 +146,31 @@ class CategoryService extends Service implements CategoryServiceInterface
     /**
      * @inheritDoc
      */
-    public function updateById($id, array $attributes): ?Model
+    public function updateById($id, array $attributes, ?Model $model = null): ?Model
     {
         $updateAttributes = [];
 
+        DB::beginTransaction();
+
+        $res2 = true;
+
+        if (is_null($model)) {
+            $model = $this->getById($id);
+        }
+
         if (isset($attributes['parent'])) {
+            $newLevel = $this->getLevel($updateAttributes['parent_id']);
+            $prevLevel = $model->level;
+
             $updateAttributes['parent_id'] = $attributes['parent'] ?: null;
             $updateAttributes['ancestry'] = $this->getAncestry($attributes['parent']);
-            $updateAttributes['level'] = $this->getLevel($updateAttributes['parent_id']);
+            $updateAttributes['level'] = $newLevel;
+
+            $changeFreq = $newLevel - $prevLevel;
+
+            if ($changeFreq !== 0) {
+                $res2 = $this->repository->updateChildrenLevel($id, $changeFreq);
+            }
         }
         if (isset($attributes['name'])) {
             $updateAttributes['name'] = $attributes['name'];
@@ -179,7 +197,10 @@ class CategoryService extends Service implements CategoryServiceInterface
 
         $res = $this->repository->update($id, $updateAttributes);
 
-        if (!$res) return null;
+        if (!$res || !$res2) {
+            DB::rollBack();
+            return null;
+        }
 
         return $this->getById($id);
     }

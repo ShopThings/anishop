@@ -95,7 +95,7 @@ class CategoryController extends Controller
 
         $validated = $request->validated();
         unset($validated['is_deletable']);
-        $model = $this->service->updateById($category->id, $validated);
+        $model = $this->service->updateById($category->id, $validated, $category);
 
         if (!is_null($model)) {
             return new CategoryResource($model);

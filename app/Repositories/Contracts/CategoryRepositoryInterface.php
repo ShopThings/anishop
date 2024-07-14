@@ -23,4 +23,11 @@ interface CategoryRepositoryInterface extends RepositoryInterface
      * @return Collection
      */
     public function getSliderCategories(): Collection;
+
+    /**
+     * @param int $parentId
+     * @param int $changeFreq
+     * @return bool
+     */
+    public function updateChildrenLevel(int $parentId, int $changeFreq): bool;
 }

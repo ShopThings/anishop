@@ -74,4 +74,20 @@ class CategoryRepository extends Repository implements CategoryRepositoryInterfa
                 'file_manager.full_path',
             ]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function updateChildrenLevel(int $parentId, int $changeFreq): bool
+    {
+        $query = $this->model->newQuery()
+            ->where('parent_id', $parentId)
+            ->orWhereRegex('ancestry', get_db_ancestry_regex_string($parentId));
+
+        if ($changeFreq >= 0) {
+            return (bool)$query->increment('stock_count', abs($changeFreq));
+        } else {
+            return (bool)$query->decrement('stock_count', abs($changeFreq));
+        }
+    }
 }
