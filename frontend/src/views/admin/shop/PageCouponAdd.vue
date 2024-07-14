@@ -91,6 +91,7 @@
                 name="apply_min_price"
                 placeholder="وارد نمایید"
                 type="text"
+                @input="revalidateHandler"
               >
                 <template #label>
                   <div class="flex items-center gap-1.5 text-sm">
@@ -111,6 +112,7 @@
                 name="apply_max_price"
                 placeholder="وارد نمایید"
                 type="text"
+                @input="revalidateHandler"
               >
                 <template #label>
                   <div class="flex items-center gap-1.5 text-sm">
@@ -228,7 +230,7 @@
 </template>
 
 <script setup>
-import {ref} from "vue";
+import {nextTick, ref} from "vue";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import PartialCard from "@/components/partials/PartialCard.vue";
 import BaseSwitch from "@/components/base/BaseSwitch.vue";
@@ -251,7 +253,7 @@ const publishStatus = ref(true)
 const startDate = ref(null)
 const endDate = ref(null)
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({
+const {canSubmit, errors, onSubmit, validate} = useFormSubmit({
   validationSchema: yup.object().shape({
     code: yup.string()
       .transform(transformNumbersToEnglish)
@@ -315,4 +317,10 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     },
   })
 })
+
+function revalidateHandler() {
+  nextTick(() => {
+    validate()
+  })
+}
 </script>

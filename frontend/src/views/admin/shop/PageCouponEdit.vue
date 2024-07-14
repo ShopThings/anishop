@@ -92,6 +92,7 @@
                     name="apply_min_price"
                     placeholder="وارد نمایید"
                     type="text"
+                    @input="revalidateHandler"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -113,6 +114,7 @@
                     name="apply_max_price"
                     placeholder="وارد نمایید"
                     type="text"
+                    @input="revalidateHandler"
                   >
                     <template #label>
                       <div class="flex items-center gap-1.5 text-sm">
@@ -235,7 +237,7 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {nextTick, onMounted, ref} from "vue";
 import yup, {transformNumbersToEnglish} from "@/validation/index.js";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
 import PartialCard from "@/components/partials/PartialCard.vue";
@@ -264,7 +266,7 @@ const publishStatus = ref(true)
 const startDate = ref(null)
 const endDate = ref(null)
 
-const {canSubmit, errors, onSubmit} = useFormSubmit({
+const {canSubmit, errors, onSubmit, validate} = useFormSubmit({
   validationSchema: yup.object().shape({
     title: yup.string().required('عنوان را وارد نمایید.'),
     price: yup.string()
@@ -322,6 +324,12 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     },
   })
 })
+
+function revalidateHandler() {
+  nextTick(() => {
+    validate()
+  })
+}
 
 onMounted(() => {
   CouponAPI.fetchById(idParam.value, {
