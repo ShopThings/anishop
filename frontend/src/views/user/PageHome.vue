@@ -1,5 +1,5 @@
 <template>
-  <div v-if="redirectInfo && Object.keys(redirectInfo).length">
+  <div v-if="redirectInfo && Object.keys(redirectInfo)?.length">
     <redirection-gateway-form
       :action="redirectInfo.action"
       :inputs="redirectInfo.inputs"
@@ -564,7 +564,7 @@ onMounted(() => {
 
       if (response.data) {
         for (let o of response.data) {
-          countdowns[o.code] = useCountdown(response.data.remained_pay_time || 0)
+          countdowns[o.code] = useCountdown(o.remained_pay_time || 0)
 
           countdowns[o.code].start(() => {
             countdowns[o.code].stop()
