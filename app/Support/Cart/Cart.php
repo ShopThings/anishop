@@ -473,8 +473,8 @@ class Cart implements Arrayable, Jsonable
     public function destroy(): bool
     {
         $this->checkUser();
-
-        return $this->cartService->deleteCart($this->currentInstance(), $this->user);
+        $this->cartService->deleteCart($this->currentInstance(), $this->user);
+        return true;
     }
 
     /**
