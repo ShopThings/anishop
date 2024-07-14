@@ -86,7 +86,7 @@
               :style="[maxHeight !== 'auto' ? 'max-height: ' + maxHeight + 'px;' : '']"
               class="text-sm text-left text-gray-500 rtl:text-right w-full"
             >
-              <thead class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
+              <thead class="text-xs text-gray-800 uppercase border-b-2 border-t-2 bg-slate-50">
               <tr>
                 <th
                   v-if="hasCheckbox"
@@ -96,7 +96,7 @@
                   <div class="flex items-center">
                     <input
                       v-model="setting.isCheckAll"
-                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      class="size-5 text-blue-600 bg-white bg-opacity-40 border-slate-300 rounded focus:ring-blue-600 focus:ring-2"
                       type="checkbox"
                       @change="changeCheckAll"
                     >
@@ -115,7 +115,7 @@
                   >
                     <div
                       :class="{
-                        'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
+                        'rounded-md w-full hover:bg-slate-200 hover:bg-opacity-50 transition text-cyan-600': (col.label && col.label.trim() !== '') || !!col.sortable
                       }"
                       class="py-2.5 px-2"
                       @click.prevent="col.sortable ? doSort(col.field) : false"
@@ -359,7 +359,7 @@
                 <td :colspan="setting.columnsLength">
                   <slot name="emptyTable">
                     <div class="p-3">
-                      <div class="p-3 text-center text-rose-600 border rounded-md bg-gray-50 text-sm">
+                      <div class="text-center text-slate-400 text-sm">
                         {{ messages.noDataAvailable }}
                       </div>
                     </div>
@@ -368,7 +368,7 @@
               </tr>
               </tbody>
 
-              <tfoot class="text-xs text-gray-800 uppercase border-b-2 bg-cyan-400">
+              <tfoot class="text-xs text-gray-800 uppercase border-b-2 bg-slate-50">
               <tr>
                 <th
                   v-if="hasCheckbox"
@@ -378,7 +378,7 @@
                   <div class="flex items-center">
                     <input
                       v-model="setting.isCheckAll"
-                      class="w-4 h-4 text-blue-600 bg-white bg-opacity-40 border-white rounded focus:ring-blue-600 focus:ring-2"
+                      class="size-5 text-blue-600 bg-white bg-opacity-40 border-slate-300 rounded focus:ring-blue-600 focus:ring-2"
                       type="checkbox"
                       @change="changeCheckAll"
                     >
@@ -397,7 +397,7 @@
                   >
                     <div
                       :class="{
-                        'rounded-md bg-cyan-400 w-full hover:bg-cyan-300 hover:bg-opacity-50 transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable
+                        'rounded-md w-full hover:bg-slate-200 hover:bg-opacity-50 transition text-cyan-600': (col.label && col.label.trim() !== '') || !!col.sortable
                     }"
                       class="py-2.5 px-2"
                       @click.prevent="col.sortable ? doSort(col.field) : false"

@@ -43,15 +43,17 @@
         <router-link
           v-for="badge in countingOrderStore.getCounts"
           :key="badge.code"
-          :style="[
-                  'background-color:' + badge.color_hex,
-                   'color:' + getTextColor(badge.color_hex),
-              ]"
           :to="{name: 'admin.orders', query: {badge_code: badge.code}}"
-          class="flex flex-col w-full h-full justify-center text-center group px-3 py-1 shadow transition rounded-lg hover:opacity-90"
+          :style="`border-color: ${badge.color_hex}`"
+          class="relative flex flex-col gap-1 w-full h-full items-center justify-center text-center text-black border p-1 pb-4 shadow-sm group transition rounded-lg hover:opacity-90"
         >
-          <span class="rounded text-xl group-hover:scale-90 transition">{{ numberFormat(badge.count) }}</span>
-          <span class="text-xs group-hover:scale-90 transition">{{ badge.title }}</span>
+          <div
+            :style="`background-color: ${badge.color_hex}`"
+            class="absolute h-1 w-1/2 left-1/2 -translate-x-1/2 bottom-1 rounded-full transition-all group-hover:w-2/3"
+          ></div>
+
+          <span class="min-w-6 bg-slate-100 rounded text-xl">{{ numberFormat(badge.count) }}</span>
+          <span class="text-xs">{{ badge.title }}</span>
         </router-link>
       </div>
     </template>
@@ -63,7 +65,7 @@ import {inject} from "vue";
 import {ChevronDownIcon} from "@heroicons/vue/24/solid/index.js";
 import {ArrowPathIcon, ShoppingBagIcon} from "@heroicons/vue/24/outline/index.js";
 import BasePopover from "@/components/base/BasePopover.vue";
-import {getTextColor, numberFormat} from "@/composables/helper.js";
+import {numberFormat} from "@/composables/helper.js";
 import LoaderCircle from "@/components/base/loader/LoaderCircle.vue";
 import VTransitionFade from "@/transitions/VTransitionFade.vue";
 import BaseButton from "@/components/base/BaseButton.vue";

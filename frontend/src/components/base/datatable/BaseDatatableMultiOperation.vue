@@ -2,7 +2,7 @@
   <div class="px-3 pb-3 flex flex-wrap items-center content-stretch justify-between">
     <div class="mt-3 ml-3">
       تعداد موارد انتخاب شده:
-      <span class="bg-sky-200 text-sky-700 rounded-md py-1 px-2 inline-block my-1">
+      <span class="border-2 border-sky-300 text-sky-600 rounded-md py-1 px-2 inline-block my-1">
           <span class="mr-2 inline-block">{{ props.items.length }}</span>
           مورد
       </span>
@@ -10,7 +10,7 @@
     <div class="flex">
       <base-button
         v-tooltip.top="'حذف انتخاب‌ها'"
-        class="cursor-pointer rounded-md border py-2 px-3 rounded-r-lg rounded-l-none transition hover:bg-slate-200 bg-slate-100 border-slate-400 !text-black text-sm mt-3"
+        class="cursor-pointer rounded-md border py-2 px-3 rounded-r-lg rounded-l-none transition hover:bg-slate-100 bg-white border-slate-300 !text-black text-sm mt-3"
         @click="clearSelectedItems"
       >
         <outline.BackspaceIcon class="h-6 w-6"/>
@@ -21,7 +21,7 @@
           <base-button
             v-tooltip.top="'مشاهده موارد انتخاب شده'"
             :class="props.operations.length ? 'rounded-none' : 'rounded-l-lg'"
-            class="cursor-pointer rounded-md border py-2 px-3 transition hover:bg-slate-200 bg-slate-100 border-slate-400 !text-black text-sm mt-3"
+            class="cursor-pointer rounded-md border py-2 px-3 transition hover:bg-slate-100 bg-white border-slate-300 !text-black text-sm mt-3"
             @click="open"
           >
             <outline.QueueListIcon class="h-6 w-6"/>

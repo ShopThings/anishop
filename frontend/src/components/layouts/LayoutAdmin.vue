@@ -8,9 +8,9 @@
       <app-navbar-admin ref="navbarCom"/>
 
       <div v-if="title" ref="extra" class="p-3 layout-max-w mx-auto w-full">
-        <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-emerald-300">
+        <div class="rounded-t-lg bg-white px-3 py-2 border border-b border-b-indigo-300">
           <h1 class="flex items-center font-iranyekan-bold">
-            <ArrowLeftCircleIcon class="h-5 w-5 ml-2 text-emerald-500"/>
+            <ArrowLeftCircleIcon class="h-5 w-5 ml-2 text-indigo-500"/>
             {{ title }}
           </h1>
         </div>

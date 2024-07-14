@@ -32,7 +32,7 @@
               :class="[
                 showRemoveFilterButtonOnInput ? 'rounded-lg' : 'rounded-r-lg rounded-l-none',
             ]"
-              class="grow bg-primary border-blue-200 text-sm"
+              class="grow !text-primary border-primary/40 hover:bg-primary/10 hover:border-primary text-sm"
               type="submit"
           >
             <div class="flex items-center justify-center gap-2 sm:py-[3px]">

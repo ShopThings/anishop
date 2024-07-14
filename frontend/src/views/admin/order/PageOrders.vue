@@ -7,14 +7,16 @@
       v-for="badge in countingOrdersStore.getCounts"
       :key="badge.code"
       :style="[
-            'background-color:' + badge.color_hex,
-            'color:' + getTextColor(badge.color_hex),
+            'border-color:' + badge.color_hex,
         ]"
       :to="route.path + '?badge_code=' + badge.code"
-      class="flex items-center gap-2 rounded-lg py-1 px-3 text-sm"
+      class="flex items-center gap-2.5 rounded-lg py-1 px-2 text-sm border-2 text-black bg-white shadow-sm"
     >
       <span>{{ badge.title }}</span>
-      <span class="font-iranyekan-bold">{{ numberFormat(badge.count) }}</span>
+      <span :style="`background-color: ${badge.color_hex}; color: ${getTextColor(badge.color_hex)}`"
+            class="font-iranyekan-bold rounded inline-block py-0.5 px-2 min-w-6 text-center shadow-sm">{{
+          numberFormat(badge.count)
+        }}</span>
     </router-link>
   </div>
 

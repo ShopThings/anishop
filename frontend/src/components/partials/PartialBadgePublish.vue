@@ -1,8 +1,8 @@
 <template>
   <span v-if="publish" :class="containerClass"
-        class="text-sm bg-emerald-200 text-emerald-700 whitespace-nowrap">{{ publishText }}</span>
+        class="text-sm bg-emerald-100 text-emerald-600 whitespace-nowrap">{{ publishText }}</span>
   <span v-else :class="containerClass"
-        class="text-sm bg-rose-200 text-rose-700 whitespace-nowrap">{{ unpublishText }}</span>
+        class="text-sm bg-rose-100 text-rose-600 whitespace-nowrap">{{ unpublishText }}</span>
 </template>
 
 <script setup>
