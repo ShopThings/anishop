@@ -232,8 +232,13 @@ export const useRequest = async (url, config, resultConfig) => {
               onCriticalError(msg)
             }
 
+            const defaultMsg = 'خطا در ارتباط با سرور و دریافت اطلاعات!';
             if (!silent) {
-              toast.error('خطا در ارتباط با سرور و دریافت اطلاعات!')
+              if (type && toast[type] && msg) {
+                toast[type](msg || defaultMsg)
+              } else {
+                toast.error(defaultMsg)
+              }
             }
           }
 
