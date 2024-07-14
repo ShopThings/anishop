@@ -371,7 +371,11 @@ class ProductRepository extends Repository implements ProductRepositoryInterface
                     $query->whereIn('brand_id', $brands);
                 })
                 ->when($category, function (Builder $query, int $category) {
-                    $query->where('category_id', $category);
+                    $query
+                        ->where('category_id', $category)
+                        ->orWhereHas('category', function ($q) use ($category) {
+                            $q->whereRegex('ancestry', get_db_ancestry_regex_string($category));
+                        });
                 })
                 ->when($isSpecial, function (Builder $query) {
                     $query->whereHas('items', function ($q) {
