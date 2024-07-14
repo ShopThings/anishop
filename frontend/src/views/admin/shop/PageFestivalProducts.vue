@@ -1,38 +1,36 @@
 <template>
-  <base-accordion
-    :open="false"
-    btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
-    open-btn-class="!bg-teal-500 !text-white"
-    open-btn-icon-class="!text-white"
-    panel-class="bg-white rounded-lg border mb-3"
-  >
-    <template #button>
-      <span class="font-iranyekan-bold">افزودن محصول به جشنواره</span>
-    </template>
+  <div class="flex flex-col gap-3 mb-3">
+    <base-accordion
+      :open="false"
+      open-btn-class="!bg-violet-50 !border-violet-500"
+      panel-class="bg-white rounded-lg border mb-3"
+    >
+      <template #button>
+        <span class="font-iranyekan-bold">افزودن محصول به جشنواره</span>
+      </template>
 
-    <template #panel>
-      <form-festival-add-product @added="datatable.reload()"/>
-    </template>
-  </base-accordion>
+      <template #panel>
+        <form-festival-add-product @added="datatable.reload()"/>
+      </template>
+    </base-accordion>
 
-  <base-accordion
-    :open="false"
-    btn-class="mb-3 bg-white border-2 border-teal-300 hover:bg-teal-100 focus-visible:ring-slate-500 shadow"
-    open-btn-class="!bg-teal-500 !text-white"
-    open-btn-icon-class="!text-white"
-    panel-class="bg-white rounded-lg border mb-3"
-  >
-    <template #button>
-      <span class="font-iranyekan-bold">افزودن/حذف محصولات دسته‌بندی به/از جشنواره</span>
-    </template>
+    <base-accordion
+      :open="false"
+      open-btn-class="!bg-violet-50 !border-violet-500"
+      panel-class="bg-white rounded-lg border mb-3"
+    >
+      <template #button>
+        <span class="font-iranyekan-bold">افزودن/حذف محصولات دسته‌بندی به/از جشنواره</span>
+      </template>
 
-    <template #panel>
-      <form-festival-add-category-products
-        @added="datatable.reload()"
-        @removed="datatable.reload()"
-      />
-    </template>
-  </base-accordion>
+      <template #panel>
+        <form-festival-add-category-products
+          @added="datatable.reload()"
+          @removed="datatable.reload()"
+        />
+      </template>
+    </base-accordion>
+  </div>
 
   <partial-card ref="tableContainer">
     <template #header>
