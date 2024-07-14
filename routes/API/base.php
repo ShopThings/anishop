@@ -161,7 +161,7 @@ Route::name('api.')
                      * coupon page routes
                      */
                     Route::post('coupons/{code}/check', [HomeCouponController::class, 'check'])
-                        ->where(['code' => '[a-zA-Z\-_]+'])->name('coupon.check');
+                        ->where(['code' => '[a-zA-Z0-9\-_]+'])->name('coupon.check');
 
                     /*
                      * checkout page routes
