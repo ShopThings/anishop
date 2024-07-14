@@ -302,7 +302,7 @@ const table = reactive({
 function calcRemovals(row) {
   let removals = []
 
-  if (!row.is_deletable || !userStore.hasPermission(PERMISSION_PLACES.COUPON, PERMISSIONS.DELETE)) {
+  if (!userStore.hasPermission(PERMISSION_PLACES.COUPON, PERMISSIONS.DELETE)) {
     removals.push('delete')
   }
   if (!userStore.hasPermission(PERMISSION_PLACES.COUPON, PERMISSIONS.UPDATE)) {
