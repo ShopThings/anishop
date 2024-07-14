@@ -193,9 +193,12 @@ class FestivalService extends Service implements FestivalServiceInterface
     /**
      * @inheritDoc
      */
-    public function addCategoryToFestival($categoryId, $festivalId, $discountPercentage): Collection
+    public function addCategoryToFestival($categoryId, $festivalId, $discountPercentage): ?Collection
     {
         $productIds = $this->_getCategoryProductsIds($categoryId);
+
+        if (empty($productIds)) return null;
+
         $products = collect();
 
         foreach ($productIds as $id) {
