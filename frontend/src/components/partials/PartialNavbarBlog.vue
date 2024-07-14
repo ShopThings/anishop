@@ -73,7 +73,7 @@
                           class="animate-pulse"
                           role="status"
                       >
-                        <div class="w-20 h-3 mt-3 bg-slate-200 rounded-md dark:bg-slate-700"></div>
+                        <div class="w-20 h-3 mt-3 bg-slate-200 rounded-md"></div>
                         <span class="sr-only">در حال بارگذاری...</span>
                       </div>
                     </div>

@@ -111,7 +111,7 @@
 
             <hr
               v-if="idx !== (addresses.length - 1)"
-              class="w-48 h-1 mx-auto my-4 bg-slate-200 border-0 rounded md:my-10 dark:bg-gray-700 col-span-4"
+              class="w-48 h-1 mx-auto my-4 bg-slate-200 border-0 rounded md:my-10 col-span-4"
             >
           </div>
 

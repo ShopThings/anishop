@@ -93,12 +93,12 @@
 
         <template #loading>
           <div
-            class="bg-white py-6 px-6 md:py-4 space-y-4 border border-slate-200 divide-y divide-slate-200 rounded-lg shadow animate-pulse dark:divide-slate-700 dark:border-slate-700"
+            class="bg-white py-6 px-6 md:py-4 space-y-4 border border-slate-200 divide-y divide-slate-200 rounded-lg shadow animate-pulse"
             role="status"
           >
             <div class="flex items-center justify-between gap-2.5">
-              <div class="h-2.5 bg-slate-200 rounded-full dark:bg-slate-600 w-24"></div>
-              <div class="w-32 h-2 bg-slate-200 rounded-full dark:bg-slate-700"></div>
+              <div class="h-2.5 bg-slate-200 rounded-full w-24"></div>
+              <div class="w-32 h-2 bg-slate-200 rounded-full"></div>
             </div>
             <span class="sr-only">در حال بارگذاری...</span>
           </div>

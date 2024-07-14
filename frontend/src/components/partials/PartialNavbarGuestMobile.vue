@@ -89,7 +89,7 @@
                     class="animate-pulse"
                     role="status"
                   >
-                    <div class="h-5 bg-slate-200 rounded-md dark:bg-slate-700 w-full"></div>
+                    <div class="h-5 bg-slate-200 rounded-md w-full"></div>
                     <span class="sr-only">در حال بارگذاری...</span>
                   </div>
                 </div>

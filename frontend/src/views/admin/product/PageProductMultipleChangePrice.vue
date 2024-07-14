@@ -102,7 +102,7 @@
                     value="increase"
                   />
                   <label
-                    class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                    class="mr-2 text-sm font-medium text-gray-900 cursor-pointer"
                     for="increaseDecreaseRadio1">
                     افزایش قیمت
                   </label>
@@ -119,7 +119,7 @@
                     value="decrease"
                   />
                   <label
-                    class="mr-2 text-sm font-medium text-gray-900 dark:text-gray-300 cursor-pointer"
+                    class="mr-2 text-sm font-medium text-gray-900 cursor-pointer"
                     for="increaseDecreaseRadio2">
                     کاهش قیمت
                   </label>
