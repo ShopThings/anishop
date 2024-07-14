@@ -146,10 +146,6 @@ const {canSubmit, onSubmit} = useFormSubmit({
       actions.resetField('password')
       actions.resetField('captcha')
 
-      if (error?.errors && Object.keys(error.errors).length >= 1) {
-        actions.setErrors(error.errors)
-      }
-
       err.message = error?.message || 'خطا در عملیات ورود!'
       err.type = 'error'
       return false
