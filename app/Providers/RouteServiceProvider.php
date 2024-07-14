@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Enums\Gates\RolesEnum;
 use App\Enums\Responses\ResponseTypesEnum;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -38,7 +39,12 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip())
+            $user = $request->user();
+            $rpm = !empty($user) && $user->hasRole(RolesEnum::DEVELOPER->value)
+                ? 300
+                : 100;
+
+            return Limit::perMinute($rpm)->by($user?->id ?: $request->ip())
                 ->response(function (Request $request, array $headers) {
                     return response()->json([
                         'type' => ResponseTypesEnum::ERROR->value,
