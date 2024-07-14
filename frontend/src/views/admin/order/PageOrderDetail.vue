@@ -438,7 +438,7 @@
                     <span class="text-xs text-gray-400 mb-1">کد تخفیف:</span>
                     <div class="text-black">
                       <span v-if="order?.coupon_code"
-                            class="rounded border-2 py-1 px-2 bg-slate-50">{{ order?.coupon_code }}</span>
+                            class="rounded border-2 py-0.5 px-2 bg-slate-50 mt-1">{{ order?.coupon_code }}</span>
                       <span v-else>-</span>
                     </div>
                   </div>
