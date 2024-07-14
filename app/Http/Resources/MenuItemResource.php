@@ -21,7 +21,7 @@ class MenuItemResource extends JsonResource
             'tmp_id' => $this->id,
             'id' => $this->id,
             'parent_id' => $this->parent_id,
-            'children' => $this->children ? (new MenuItemResource($this->children)) : [],
+            'children' => $this->children ? MenuItemResource::collection($this->children) : [],
             'title' => $this->title,
             'link' => $this->link,
             'can_have_children' => $this->can_have_children,
