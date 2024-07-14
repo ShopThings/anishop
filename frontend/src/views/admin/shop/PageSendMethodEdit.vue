@@ -227,7 +227,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   SendMethodAPI.updateById(idParam.value, {
     title: values.title,
-    description: values.descirption || '',
+    description: values.description || '',
     image: methodImage.value.full_path,
     price: values.price,
     priority: values.priority,
