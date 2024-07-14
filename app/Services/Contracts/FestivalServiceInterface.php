@@ -5,8 +5,8 @@ namespace App\Services\Contracts;
 use App\Contracts\ServiceInterface;
 use App\Support\Filter;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 interface FestivalServiceInterface extends ServiceInterface
 {
@@ -62,9 +62,9 @@ interface FestivalServiceInterface extends ServiceInterface
      * @param $categoryId
      * @param $festivalId
      * @param $discountPercentage
-     * @return Collection
+     * @return Collection|null
      */
-    public function addCategoryToFestival($categoryId, $festivalId, $discountPercentage): Collection;
+    public function addCategoryToFestival($categoryId, $festivalId, $discountPercentage): ?Collection;
 
     /**
      * @param $categoryId
