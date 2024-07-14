@@ -89,27 +89,6 @@ class CartController extends Controller
      * @throws BindingResolutionException
      * @throws LoginNeededException
      */
-    public function destroy(Request $request): JsonResponse
-    {
-        $user = $this->getCurrentUserWithAuthentication();
-
-        $res = Cart::instance($request->string('cart_name'))->ownedBy($user)->destroy();
-
-        if ($res) {
-            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
-        }
-        return response()->json([
-            'type' => ResponseTypesEnum::ERROR->value,
-            'message' => 'خطا در خالی نمودن سبد خرید!',
-        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
-    }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     * @throws BindingResolutionException
-     * @throws LoginNeededException
-     */
     public function store(Request $request): JsonResponse
     {
         $user = $this->getCurrentUserWithAuthentication();
@@ -135,6 +114,27 @@ class CartController extends Controller
         return response()->json([
             'type' => ResponseTypesEnum::ERROR->value,
             'message' => 'خطا در ذخیره سبد خرید!',
+        ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     * @throws BindingResolutionException
+     * @throws LoginNeededException
+     */
+    public function destroy(Request $request): JsonResponse
+    {
+        $user = $this->getCurrentUserWithAuthentication();
+
+        $res = Cart::instance($request->string('cart_name'))->ownedBy($user)->destroy();
+
+        if ($res) {
+            return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
+        }
+        return response()->json([
+            'type' => ResponseTypesEnum::ERROR->value,
+            'message' => 'خطا در خالی نمودن سبد خرید!',
         ], ResponseCodes::HTTP_INTERNAL_SERVER_ERROR);
     }
 
