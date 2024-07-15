@@ -154,11 +154,11 @@ class CategoryService extends Service implements CategoryServiceInterface
 
         $res2 = true;
 
-        if (is_null($model)) {
-            $model = $this->getById($id);
-        }
-
         if (isset($attributes['parent'])) {
+            if (is_null($model)) {
+                $model = $this->getById($id);
+            }
+
             $newLevel = $this->getLevel($updateAttributes['parent_id']);
             $prevLevel = $model->level;
 
