@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\BlogCommentBadge;
-use App\Support\Model\CodeGeneratorHelper;
 use Illuminate\Database\Seeder;
 
 class BlogCommentBadgeSeeder extends Seeder
@@ -19,13 +18,16 @@ class BlogCommentBadgeSeeder extends Seeder
             'is_starting_badge' => true,
             'is_deletable' => false,
         ]);
-        BlogCommentBadge::create([
-            'title' => 'توضیحات تکمیلی',
-            'color_hex' => '#6DFFC9',
-        ]);
-        BlogCommentBadge::create([
-            'title' => 'انتقادی',
-            'color_hex' => '#FF6DA2',
-        ]);
+
+        if (!app()->isProduction()) {
+            BlogCommentBadge::create([
+                'title' => 'توضیحات تکمیلی',
+                'color_hex' => '#6DFFC9',
+            ]);
+            BlogCommentBadge::create([
+                'title' => 'انتقادی',
+                'color_hex' => '#FF6DA2',
+            ]);
+        }
     }
 }
