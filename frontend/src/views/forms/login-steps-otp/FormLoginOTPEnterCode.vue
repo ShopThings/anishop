@@ -210,8 +210,12 @@ const {canSubmit, errors, onSubmit, setFieldError} = useFormSubmit({}, (values, 
       ) router.push(route.query.redirect)
       else router.push({name: 'user.home'})
 
-      cartStore.save({}, cartStore.getShoppingCartName())
-      cartStore.save({}, cartStore.getWishlistCartName())
+      Promise.all([
+        cartStore.save({}, cartStore.getShoppingCartName()),
+        cartStore.save({}, cartStore.getWishlistCartName()),
+      ]).then(() => {
+        cartStore.fetchAllLocal()
+      })
     },
     error(error) {
       actions.setFieldError('code', error.message || 'خطای غیر قابل پیش‌بینی')

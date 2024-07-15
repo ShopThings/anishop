@@ -19,11 +19,7 @@ export const useCartStore = defineStore('userCart', () => {
     shopping: [],
     wishlist: [],
   })
-  const cartsLocal = ref({
-    shopping: [],
-    wishlist: [],
-  })
-  const cartItems = ref([])
+  const activeCartItems = ref([])
 
   const userStore = useUserAuthStore()
 
@@ -31,20 +27,16 @@ export const useCartStore = defineStore('userCart', () => {
     return loading.value
   })
 
-  const getSavedCarts = computed(() => {
+  const getCarts = computed(() => {
     return carts.value
-  })
-
-  const getLocalCarts = computed(() => {
-    return cartsLocal.value
   })
 
   const getActiveCart = computed(() => {
     return activeCart.value
   })
 
-  const getCartItems = computed(() => {
-    return cartItems.value
+  const getActiveCartItems = computed(() => {
+    return activeCartItems.value
   })
 
   const isShoppingCartActivated = computed(() => {
@@ -64,51 +56,43 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   async function saveToLocalStorage() {
-    if (isShoppingCartActivated.value) {
-      cartsLocal.value = {
-        shopping: cartItems.value,
-        wishlist: getLocalCarts.value.wishlist,
-      }
+    if (userStore.getUser) return
 
-      if (userStore.getUser) {
-        carts.value = {
-          shopping: cartItems.value,
-          wishlist: getLocalCarts.value.wishlist,
-        }
+    if (isShoppingCartActivated.value) {
+      carts.value = {
+        shopping: activeCartItems.value,
+        wishlist: getCarts.value.wishlist,
       }
     } else if (isWishlistCartActivated.value) {
-      cartsLocal.value = {
-        shopping: getLocalCarts.value.shopping,
-        wishlist: cartItems.value,
-      }
-
-      if (userStore.getUser) {
-        carts.value = {
-          shopping: getLocalCarts.value.shopping,
-          wishlist: cartItems.value,
-        }
+      carts.value = {
+        shopping: getCarts.value.shopping,
+        wishlist: activeCartItems.value,
       }
     }
 
     await nextTick(() => {
-      safeStorage.setItem(cartStorageKey, getLocalCarts.value)
+      safeStorage.setItem(cartStorageKey, getCarts.value)
       loadFromLocalStorage()
     })
+  }
+
+  function emptyLocalStorage() {
+    safeStorage.removeItem(cartStorageKey)
   }
 
   async function loadFromLocalStorage() {
     const saved = safeStorage.getItem(cartStorageKey)
 
-    cartsLocal.value = {
-      shopping: saved?.shopping || getLocalCarts.value.shopping,
-      wishlist: saved?.wishlist || getLocalCarts.value.wishlist,
+    carts.value = {
+      shopping: saved?.shopping || getCarts.value.shopping,
+      wishlist: saved?.wishlist || getCarts.value.wishlist,
     }
 
     await nextTick(() => {
       if (isShoppingCartActivated.value) {
-        cartItems.value = getLocalCarts.value?.shopping || []
+        activeCartItems.value = getCarts.value?.shopping || []
       } else if (isWishlistCartActivated.value) {
-        cartItems.value = getLocalCarts.value?.wishlist || []
+        activeCartItems.value = getCarts.value?.wishlist || []
       }
     })
   }
@@ -116,17 +100,21 @@ export const useCartStore = defineStore('userCart', () => {
   function findItemFromLocalCart(code) {
     if (code?.toString() === '') return null
 
-    let product = getCartItems.value.filter(item => {
+    let product = getActiveCartItems.value.filter(item => {
       return item?.code === code
     })
 
     return product.length && product[0] ? product[0] : null
   }
 
-  const count = computed(() => {
-    if (!getCartItems.value?.length) return 0
+  //-----------------------------------------------------------------
+  // Counting Functions
+  //-----------------------------------------------------------------
 
-    return getCartItems.value.reduce((sum, item) => {
+  const count = computed(() => {
+    if (!getActiveCartItems.value?.length) return 0
+
+    return getActiveCartItems.value.reduce((sum, item) => {
       const quantity = parseInt(item.quantity, 10) || 0
 
       return sum + quantity
@@ -134,11 +122,11 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const shipmentCount = computed(() => {
-    if (!getCartItems.value?.length) return 0
+    if (!getActiveCartItems.value?.length) return 0
 
     let totalShipment = 0
     let hasAnySimpleProduct = false
-    getCartItems.value.forEach(item => {
+    getActiveCartItems.value.forEach(item => {
       const quantity = parseInt(item.quantity, 10) || 0
 
       if (item?.has_separate_shipment) {
@@ -154,9 +142,9 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const totalPrice = computed(() => {
-    if (!getCartItems.value?.length) return 0
+    if (!getActiveCartItems.value?.length) return 0
 
-    return getCartItems.value.reduce((total, item) => {
+    return getActiveCartItems.value.reduce((total, item) => {
       const quantity = parseInt(item.quantity, 10) || 0
       const price = parseInt(item.actual_price, 10) || 0
       const tax = parseInt(item.tax_rate, 10) || 0
@@ -166,9 +154,9 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const totalDiscountedPrice = computed(() => {
-    if (!getCartItems.value?.length) return 0
+    if (!getActiveCartItems.value?.length) return 0
 
-    return getCartItems.value.reduce((total, item) => {
+    return getActiveCartItems.value.reduce((total, item) => {
       const quantity = parseInt(item.quantity, 10) || 0
       const price = parseInt(item.price, 10) || 0
       const tax = parseInt(item.tax_rate, 10) || 0
@@ -178,9 +166,9 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const subtotalPrice = computed(() => {
-    if (!getCartItems.value?.length) return 0
+    if (!getActiveCartItems.value?.length) return 0
 
-    return getCartItems.value.reduce((total, item) => {
+    return getActiveCartItems.value.reduce((total, item) => {
       const quantity = parseInt(item.quantity, 10) || 0
       const price = parseInt(item.actual_price, 10) || 0
 
@@ -189,9 +177,9 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const subtotalDiscountedPrice = computed(() => {
-    if (!getCartItems.value?.length) return 0
+    if (!getActiveCartItems.value?.length) return 0
 
-    return getCartItems.value.reduce((total, item) => {
+    return getActiveCartItems.value.reduce((total, item) => {
       const quantity = parseInt(item.quantity, 10) || 0
       const price = parseInt(item.price, 10) || 0
 
@@ -200,9 +188,9 @@ export const useCartStore = defineStore('userCart', () => {
   })
 
   const totalTaxPrice = computed(() => {
-    if (!getCartItems.value?.length) return 0
+    if (!getActiveCartItems.value?.length) return 0
 
-    return getCartItems.value.reduce((total, item) => {
+    return getActiveCartItems.value.reduce((total, item) => {
       const quantity = parseInt(item.quantity, 10) || 0
       const price = parseInt(item.price, 10) || 0
       const tax = parseInt(item.tax_rate, 10) || 0
@@ -257,6 +245,8 @@ export const useCartStore = defineStore('userCart', () => {
     return quantity * price
   }
 
+  //-----------------------------------------------------------------
+
   async function changeToShoppingCart() {
     safeStorage.setItem(cartNameStorageKey, 'shopping')
     activeCart.value = 'shopping'
@@ -267,7 +257,7 @@ export const useCartStore = defineStore('userCart', () => {
       fetchShopping()
     } else {
       await nextTick(() => {
-        cartItems.value = getLocalCarts.value[getActiveCart.value] || []
+        activeCartItems.value = getCarts.value[getActiveCart.value] || []
       })
     }
   }
@@ -282,17 +272,9 @@ export const useCartStore = defineStore('userCart', () => {
       fetchWishlist()
     } else {
       await nextTick(() => {
-        cartItems.value = getLocalCarts.value[getActiveCart.value] || []
+        activeCartItems.value = getCarts.value[getActiveCart.value] || []
       })
     }
-  }
-
-  function loadToLocalShopping() {
-    cartsLocal.value.shopping = getSavedCarts.value.shopping || []
-  }
-
-  function loadToLocalWishlist() {
-    cartsLocal.value.wishlist = getSavedCarts.value.wishlist || []
   }
 
   async function addAllItems(codesQuantities = {}, callbacks = {}) {
@@ -309,19 +291,17 @@ export const useCartStore = defineStore('userCart', () => {
         data: {
           cart_name: getActiveCart.value,
           codes_quantities: codesQuantities,
-          items: getCartItems.value,
+          items: getActiveCartItems.value,
         },
       },
       {
         success(response) {
-          cartItems.value = response.data
-          cartsLocal.value[getActiveCart.value] = response.data
+          activeCartItems.value = response.data
+          carts.value[getActiveCart.value] = response.data
 
-          if (userStore.getUser) {
-            carts.value[getActiveCart.value] = response.data
+          if (!userStore.getUser) {
+            saveToLocalStorage()
           }
-
-          saveToLocalStorage()
         },
         finally() {
           loading.value = false
@@ -345,19 +325,17 @@ export const useCartStore = defineStore('userCart', () => {
         data: {
           cart_name: getActiveCart.value,
           quantity,
-          items: getCartItems.value,
+          items: getActiveCartItems.value,
         },
       },
       {
         success(response) {
-          cartItems.value = response.data
-          cartsLocal.value[getActiveCart.value] = response.data
+          activeCartItems.value = response.data
+          carts.value[getActiveCart.value] = response.data
 
-          if (userStore.getUser) {
-            carts.value[getActiveCart.value] = response.data
+          if (!userStore.getUser) {
+            saveToLocalStorage()
           }
-
-          saveToLocalStorage()
         },
         finally() {
           loading.value = false
@@ -368,14 +346,18 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   async function removeItem(code) {
-    cartItems.value = getCartItems.value.filter(item => {
+    activeCartItems.value = getActiveCartItems.value.filter(item => {
       return item?.code !== code
     })
 
-    await saveToLocalStorage()
+    await nextTick(() => {
+      carts.value[getActiveCart.value] = getActiveCartItems.value
+    })
 
     if (userStore.getUser) {
       save()
+    } else {
+      await saveToLocalStorage()
     }
   }
 
@@ -390,24 +372,24 @@ export const useCartStore = defineStore('userCart', () => {
       {
         method: 'POST',
         data: {
-          carts: cartsLocal.value,
+          carts: carts.value,
         },
       },
       {
         success(response) {
-          cartsLocal.value = response.data
+          carts.value = response.data
 
           if (userStore.getUser) {
-            carts.value = response.data
+            emptyLocalStorage()
+          } else {
+            saveToLocalStorage()
           }
 
           if (isShoppingCartActivated.value) {
-            cartItems.value = cartsLocal.value.shopping
+            activeCartItems.value = carts.value.shopping
           } else if (isWishlistCartActivated.value) {
-            cartItems.value = cartsLocal.value.wishlist
+            activeCartItems.value = carts.value.wishlist
           }
-
-          saveToLocalStorage()
         },
         finally() {
           loading.value = false
@@ -419,21 +401,21 @@ export const useCartStore = defineStore('userCart', () => {
 
   async function empty(callbacks = {}, force = false) {
     if (force) {
-      cartItems.value = []
-
-      await saveToLocalStorage()
+      activeCartItems.value = []
 
       if (userStore.getUser) {
         remove(callbacks)
+      } else {
+        emptyLocalStorage()
       }
     } else {
       useConfirmToast(async () => {
-        cartItems.value = []
-
-        await saveToLocalStorage()
+        activeCartItems.value = []
 
         if (userStore.getUser) {
           remove(callbacks)
+        } else {
+          emptyLocalStorage()
         }
       }, 'خالی نمودن سبد خرید')
     }
@@ -448,7 +430,6 @@ export const useCartStore = defineStore('userCart', () => {
       null,
       {
         success(response) {
-          cartsLocal.value = response.data
           carts.value = response.data
         },
         finally() {
@@ -463,20 +444,18 @@ export const useCartStore = defineStore('userCart', () => {
     if (!userStore.getUser || isLoading.value) return
 
     loading.value = true
-    useRequestWrapper(
+    return useRequestWrapper(
       apiReplaceParams(apiRoutes.cart.show, {cart: cartName}),
       {
         method: 'POST',
         data: {
-          items: cartsLocal.value[getActiveCart.value],
+          items: carts.value[getActiveCart.value],
         },
       },
       {
         async success(response) {
           carts.value[cartName] = response.data
-          cartItems.value = response.data
-
-          await saveToLocalStorage()
+          activeCartItems.value = response.data
         },
         finally() {
           loading.value = false
@@ -487,11 +466,11 @@ export const useCartStore = defineStore('userCart', () => {
   }
 
   function fetchShopping(callbacks = {}) {
-    fetchByName(getShoppingCartName(), callbacks)
+    return fetchByName(getShoppingCartName(), callbacks)
   }
 
   function fetchWishlist(callbacks = {}) {
-    fetchByName(getWishlistCartName(), callbacks)
+    return fetchByName(getWishlistCartName(), callbacks)
   }
 
   async function save(callbacks = {}, cartName = null) {
@@ -502,13 +481,13 @@ export const useCartStore = defineStore('userCart', () => {
     cartName = cartName ?? getActiveCart.value
 
     loading.value = true
-    useRequestWrapper(
+    return useRequestWrapper(
       apiRoutes.cart.store,
       {
         method: 'POST',
         data: {
           cart_name: cartName,
-          items: getCartItems.value,
+          items: getCarts.value[cartName],
         },
       },
       {
@@ -550,11 +529,11 @@ export const useCartStore = defineStore('userCart', () => {
       shopping: [],
       wishlist: [],
     }
-    cartsLocal.value = {
+    carts.value = {
       shopping: [],
       wishlist: [],
     }
-    cartItems.value = []
+    activeCartItems.value = []
 
     fetchAllLocal({
       success() {
@@ -568,12 +547,12 @@ export const useCartStore = defineStore('userCart', () => {
   return {
     isLoading,
     //
-    carts, cartsLocal, cartItems,
+    carts, activeCartItems,
     activeCart,
     //
     findItemFromLocalCart,
-    getSavedCarts, getLocalCarts,
-    getCartItems, getActiveCart,
+    getCarts,
+    getActiveCartItems, getActiveCart,
     isShoppingCartActivated, isWishlistCartActivated,
     //
     count, shipmentCount,
@@ -590,10 +569,7 @@ export const useCartStore = defineStore('userCart', () => {
     fetchAllLocal, empty,
     fetchShopping, fetchWishlist, fetchAll, save, remove,
     //
-    saveToLocalStorage,
-    //
-    loadFromLocalStorage,
-    loadToLocalShopping, loadToLocalWishlist,
+    saveToLocalStorage, emptyLocalStorage, loadFromLocalStorage,
     //
     getShoppingCartName, getWishlistCartName,
     //

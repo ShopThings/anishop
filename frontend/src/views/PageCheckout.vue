@@ -187,7 +187,7 @@
         </div>
 
         <form
-          v-else-if="cartStore.getCartItems?.length"
+          v-else-if="cartStore.getActiveCartItems?.length"
           class="relative"
           @submit.prevent="onSubmit"
         >
@@ -553,7 +553,7 @@
                     class="flex flex-col divide-y divide-slate-200 max-h-[32rem] my-custom-scrollbar border border-slate-200 bg-slate-50 rounded-lg"
                   >
                     <li
-                      v-for="item in cartStore.getCartItems"
+                      v-for="item in cartStore.getActiveCartItems"
                       :key="item.id"
                       class="relative flex flex-col gap-3 py-6 pr-3 pl-10"
                     >
@@ -1112,7 +1112,7 @@ watch([selectedCity, sendMethod], () => {
   sendPriceLoading.value = true
   HomeCheckoutAPI.calculateSendPrice({
     cart_name: cartStore.getActiveCart,
-    items: cartStore.getCartItems,
+    items: cartStore.getActiveCartItems,
     province: selectedProvince.value.id,
     city: selectedCity.value.id,
     send_method: sendMethod.value,
@@ -1149,7 +1149,7 @@ function checkCouponHandler() {
 
   HomeCouponAPI.checkCoupon(couponCode.value, {
     cart_name: cartStore.getActiveCart,
-    items: cartStore.getCartItems,
+    items: cartStore.getActiveCartItems,
   }, {
     success(response) {
       couponDetail.value = response?.data
@@ -1315,7 +1315,7 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
 
   HomeCheckoutAPI.placeOrder({
     cart_name: cartStore.getActiveCart,
-    items: cartStore.getCartItems,
+    items: cartStore.getActiveCartItems,
     //
     first_name: values.first_name,
     last_name: values.last_name,

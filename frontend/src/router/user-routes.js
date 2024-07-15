@@ -1,5 +1,6 @@
 import {useUserAuthStore} from "@/store/StoreUserAuth.js";
 import {isValidInternalRedirectLink} from "@/composables/helper.js";
+import {useCartStore} from "@/store/StoreUserCart.js";
 
 const slugRouteRegex = '([^\\\/\.]+)'
 const codeRegex = '([\\d\\w\-\_]+)'
@@ -12,6 +13,8 @@ export const userRoutes = {
       name: 'user.logout',
       beforeEnter: async (to, from, next) => {
         const store = useUserAuthStore()
+        const cartStore = useCartStore()
+
         let route = null
 
         // Check if the user is authenticated
@@ -32,6 +35,8 @@ export const userRoutes = {
                 route.query = {redirect: to.query.redirect}
               }
             }
+
+            cartStore.saveToLocalStorage()
           },
         })
 

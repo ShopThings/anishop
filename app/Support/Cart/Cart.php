@@ -398,6 +398,14 @@ class Cart implements Arrayable, Jsonable
     }
 
     /**
+     * @return bool
+     */
+    public function storeOrDestroy(): bool
+    {
+        return $this->getContent()->isNotEmpty() ? $this->store() : $this->destroy();
+    }
+
+    /**
      * @return void
      */
     protected function checkUser(): void

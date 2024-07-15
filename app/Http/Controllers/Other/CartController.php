@@ -75,7 +75,7 @@ class CartController extends Controller
         }
 
         $cart = Cart::instance($cart)->ownedBy($user);
-        $cart->restore(true)->mergeWith($items);
+        $cart->restore(true)->mergeWith($items)->storeOrDestroy();
 
         return response()->json([
             'type' => ResponseTypesEnum::SUCCESS->value,
@@ -98,13 +98,7 @@ class CartController extends Controller
         if (is_array($items)) {
             $cart = Cart::instance($request->string('cart_name'))->ownedBy($user);
             $tmpItems = $cart->validate($items);
-            $cart->mergeWith($tmpItems);
-
-            if ($cart->getContent()->isNotEmpty()) {
-                $res = $cart->store();
-            } else {
-                $res = $cart->destroy();
-            }
+            $res = $cart->mergeWith($tmpItems)->storeOrDestroy();
 
             if ($res) {
                 return response()->json([], ResponseCodes::HTTP_NO_CONTENT);
@@ -206,7 +200,7 @@ class CartController extends Controller
         $user = $this->getCurrentUserWithAuthentication(false);
         if (!is_null($user)) {
             $items = $cart->getContent();
-            $cart->ownedBy($user)->restore(true)->mergeWith($items)->store();
+            $cart->ownedBy($user)->restore(true)->mergeWith($items)->storeOrDestroy();
         }
 
         if ($res) {
@@ -248,7 +242,7 @@ class CartController extends Controller
         $user = $this->getCurrentUserWithAuthentication(false);
         if (!is_null($user)) {
             $items = $cart->getContent();
-            $cart->ownedBy($user)->restore(true)->mergeWith($items)->store();
+            $cart->ownedBy($user)->restore(true)->mergeWith($items)->storeOrDestroy();
         }
 
         return response()->json([

@@ -10,7 +10,7 @@
         class="relative h-[40px] rounded-lg border-0 py-2 px-2 bg-transparent text-black hover:bg-slate-200 active:bg-slate-300 focus:bg-sky-200 transition-all flex justify-between items-center">
         <span
           class="ml-2 text-black border-b-2 border-black px-1 min-w-[20px] h-5 z-[1] -top-1 -right-1.5 text-sm">{{
-            numberFormat(cartStore.getCartItems?.length || 0)
+            numberFormat(cartStore.getActiveCartItems?.length || 0)
           }}</span>
 
         <ShoppingBagIconOutline class="h-6 w-6 text-slate-400"/>
@@ -60,7 +60,7 @@
             </div>
 
             <div
-              v-if="cartStore.isShoppingCartActivated && cartStore.getCartItems?.length"
+              v-if="cartStore.isShoppingCartActivated && cartStore.getActiveCartItems?.length"
               class="relative border-b"
             >
               <template v-if="!userStore.getUser">
@@ -127,7 +127,7 @@
               </div>
 
               <ul
-                v-if="cartStore.isWishlistCartActivated && cartStore.getCartItems?.length"
+                v-if="cartStore.isWishlistCartActivated && cartStore.getActiveCartItems?.length"
                 class="py-3 flex flex-col gap-2.5"
               >
                 <li
@@ -143,12 +143,12 @@
           </div>
 
           <div
-            v-if="cartStore.getCartItems?.length"
+            v-if="cartStore.getActiveCartItems?.length"
             class="flex flex-col mt-6"
           >
-            <div class="flex flex-col divide-y divide-gray-100 text-center">
+            <div class="flex flex-col divide-y text-center">
               <div
-                v-for="item in cartStore.getCartItems"
+                v-for="item in cartStore.getActiveCartItems"
                 :key="item.id"
                 class="flex flex-col gap-3 p-3 pl-8 relative"
               >
@@ -236,9 +236,6 @@
                 />
               </div>
             </div>
-
-            <div class="p-3 border-t">
-            </div>
           </div>
           <div v-else class="flex flex-col text-center mt-3 p-3">
             <ShoppingCartIcon class="w-16 h-16 text-gray-300 mx-auto"/>
@@ -247,8 +244,8 @@
             </h6>
           </div>
 
-          <div class="flex flex-col gap-2.5 mt-auto sticky bottom-0 py-2.5 bg-white">
-            <template v-if="cartStore.getCartItems?.length">
+          <div class="flex flex-col gap-2.5 mt-auto sticky bottom-0 py-3 bg-white border-t">
+            <template v-if="cartStore.getActiveCartItems?.length">
               <base-button
                 class="flex items-center bg-emerald-500 border-2 border-emerald-500 hover:bg-opacity-90"
                 @click="() => {close(); router.push({name: 'cart'});}"
@@ -317,7 +314,6 @@ const router = useRouter()
 const toast = useToast()
 
 const userStore = useUserAuthStore()
-
 const cartStore = useCartStore()
 
 function removeItemHandler(item) {

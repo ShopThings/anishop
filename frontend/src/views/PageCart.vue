@@ -2,7 +2,7 @@
   <app-navigation-header title="سبد خرید"/>
 
   <div class="px-3 mb-12">
-    <div v-if="cartStore.getCartItems?.length" class="flex flex-col lg:flex-row gap-6 cart-info-sticky-container">
+    <div v-if="cartStore.getActiveCartItems?.length" class="flex flex-col lg:flex-row gap-6 cart-info-sticky-container">
       <partial-card class="border-0 p-4 w-full">
         <template #body>
           <base-message :has-close="false" type="info">
@@ -21,7 +21,7 @@
 
             <ul class="flex flex-col divide-y divide-slate-200">
               <li
-                v-for="item in cartStore.getCartItems"
+                v-for="item in cartStore.getActiveCartItems"
                 :key="item.id"
                 class="relative flex flex-col gap-3 py-6 pr-3 pl-10"
               >
@@ -283,13 +283,13 @@ function removeItemHandler(code) {
 }
 
 function updateItemsHandler() {
-  if (!cartStore.getCartItems?.length) return
+  if (!cartStore.getActiveCartItems?.length) return
 
   cartStore.fetchAllLocal()
 }
 
 function cancelItemsUpdateHandler() {
-  if (!cartStore.getCartItems?.length) return
+  if (!cartStore.getActiveCartItems?.length) return
 
   cartStore.loadFromLocalStorage()
 

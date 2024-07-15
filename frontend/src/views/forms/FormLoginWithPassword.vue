@@ -137,8 +137,12 @@ const {canSubmit, onSubmit} = useFormSubmit({
       ) router.push(route.query.redirect)
       else router.push({name: 'user.home'})
 
-      cartStore.save({}, cartStore.getShoppingCartName())
-      cartStore.save({}, cartStore.getWishlistCartName())
+      Promise.all([
+        cartStore.save({}, cartStore.getShoppingCartName()),
+        cartStore.save({}, cartStore.getWishlistCartName()),
+      ]).then(() => {
+        cartStore.fetchAllLocal()
+      })
 
       return false
     },
