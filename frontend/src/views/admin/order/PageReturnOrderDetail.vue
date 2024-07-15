@@ -192,7 +192,7 @@
               <div class="flex flex-col gap-3">
                 <router-link
                   v-if="value.order_item?.product"
-                  :to="{name: 'product.detail', params: {slug: value.order_item.product.slug}}"
+                  :to="{name: 'admin.product.detail', params: {slug: value.order_item.product.slug}}"
                   class="inline-block"
                   target="_blank"
                 >
