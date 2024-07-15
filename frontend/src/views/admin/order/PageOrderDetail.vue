@@ -537,7 +537,7 @@
 
                 <router-link
                   v-if="value?.product"
-                  :to="{name: 'product.detail', params: {slug: value.product.slug}}"
+                  :to="{name: 'admin.product.detail', params: {slug: value.product.slug}}"
                   class="inline-block text-blue-600 hover:text-opacity-90 leading-relaxed"
                   target="_blank"
                 >
