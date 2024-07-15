@@ -7,22 +7,22 @@ use App\Enums\Times\TimeFormatsEnum;
 use App\Http\Controllers\Controller;
 use App\Models\OrderDetail;
 use App\Services\Contracts\SettingServiceInterface;
+use Illuminate\Http\Response;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Mpdf\MpdfException;
-use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class ExportOrderController extends Controller
 {
     /**
      * @param OrderDetail $order
      * @param SettingServiceInterface $settingService
-     * @return SymfonyResponse
+     * @return Response
      * @throws MpdfException
      */
     public function pdf(
         OrderDetail             $order,
         SettingServiceInterface $settingService
-    ): SymfonyResponse
+    ): Response
     {
         $titleSetting = $settingService->getSetting(SettingsEnum::TITLE->value);
         $title = $titleSetting->setting_value ?: $titleSetting->default_value;
@@ -37,6 +37,14 @@ class ExportOrderController extends Controller
         ]);
         $pdf->getMpdf()->SetDirectionality('rtl');
 
-        return $pdf->download($filename);
+        // Manually create the response with headers
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '.pdf"',
+            'Access-Control-Allow-Origin' => '*', // Replace '*' with your frontend URL if needed
+            'Access-Control-Allow-Headers' => 'Content-Type, Authorization',
+            'Access-Control-Allow-Methods' => 'GET',
+            'Access-Control-Allow-Credentials' => 'true',
+        ]);
     }
 }
