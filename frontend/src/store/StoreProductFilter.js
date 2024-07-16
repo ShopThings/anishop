@@ -30,6 +30,8 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
 
   const route = useRoute()
 
+  const isFiltersLoadedCorrectly = ref(false)
+
   function setColors(items) {
     colors.value = items
   }
@@ -182,13 +184,17 @@ export const useProductFilterStore = defineStore('product_search_filter', () => 
     isAttributesLoading.value = true
   }
 
-  function fetchAllFiltersAtOnce(callbacks) {
+  function fetchAllFiltersAtOnce(callbacks, once = false) {
+    if (once && isFiltersLoadedCorrectly.value) return
+
     return Promise.all([
       fetchColorsAndSizes(),
       fetchBrands(),
       fetchPriceRange(),
       fetchDynamicFilters(),
     ]).then(async (data) => {
+      isFiltersLoadedCorrectly.value = true
+
       if (callbacks.success && isFunction(callbacks.success)) {
         callbacks.success(data)
       }

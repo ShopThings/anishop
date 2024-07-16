@@ -30,7 +30,7 @@
                 <base-popover-side panel-class="">
                   <template #button>
                     <base-button
-                      class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black hover:bg-white/40"
+                      class="!py-1 flex items-center gap-2 border-2 border-blue-600 !text-black bg-white/40 hover:bg-white/70"
                       type="button"
                     >
                       <FunnelIcon class="w-6 h-6"/>

@@ -32,17 +32,16 @@
         @click="toggleColorSelection(item)"
       >
         <div
-          :class="{
-                'border-indigo-500': filterParamStore.colors[item.id],
-            }"
-          class="p-1 flex items-center justify-center border-2 rounded-lg"
+          :class="filterParamStore.colors[item.id] ? 'bg-indigo-200/15 border-indigo-500 p-1.5' : 'p-1'"
+          class="size-12 flex items-center justify-center border-2 rounded transition-all"
         >
           <div
             :style="'background-color:' + item.hex + ';'"
-            class="w-8 h-8 rounded-md shadow-md"
+            :class="filterParamStore.colors[item.id] ? 'shadow' : 'shadow-md'"
+            class="w-full h-full rounded-sm"
           ></div>
         </div>
-        <span class="text-xs">{{ item.name }}</span>
+        <span class="text-xs whitespace-nowrap line-clamp">{{ item.name }}</span>
       </div>
     </template>
   </partial-filter-card>
@@ -441,6 +440,6 @@ onMounted(() => {
     finally() {
       emit('filters-loaded')
     },
-  })
+  }, true)
 })
 </script>
