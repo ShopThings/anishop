@@ -75,7 +75,7 @@ php artisan serve
 
 ### If You Need (Optional)
 
-If you want to run scheduler an queue, you need to run laravel schedule worker and queue worker by following commands
+If you want to run scheduler a queue, you need to run laravel schedule worker and queue worker by following commands
 
 ```
 php artisan queue:listen [your_queue_driver]
