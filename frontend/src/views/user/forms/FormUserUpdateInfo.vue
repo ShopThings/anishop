@@ -128,10 +128,12 @@ import {useFormSubmit} from "@/composables/form-submit.js";
 import {UserPanelInfoAPI} from "@/service/APIUserPanel.js";
 import {onMounted, ref} from "vue";
 import BaseLoadingPanel from "@/components/base/BaseLoadingPanel.vue";
+import {useToast} from "vue-toastification";
 
 const store = useUserAuthStore()
 const user = ref(null)
 const userLoading = ref(true)
+const toast = useToast()
 
 const {canSubmit, errors, onSubmit} = useFormSubmit({
   validationSchema: yup.object().shape({
