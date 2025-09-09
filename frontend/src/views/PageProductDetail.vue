@@ -13,10 +13,10 @@
 import ProductDetail from "@/components/product/ProductDetail.vue";
 import AppNewsletter from "@/components/AppNewsletter.vue";
 import {useHomeSettingNoTimerStore} from "@/store/StoreSettings.js";
-import {useHead, useSeoMeta} from "@unhead/vue";
 import {apiRoutes} from "@/router/api-routes.js";
 import {FileSizes} from "@/composables/file-list.js";
 import {reactive, ref} from "vue";
+import {useHead} from "@unhead/vue";
 
 const settingStore = useHomeSettingNoTimerStore()
 

@@ -40,8 +40,8 @@
 
         <template #send_status="{value}">
           <partial-badge-status-send
-              :color-hex="value.send_status_color_hex"
-              :text="value.send_status_title"
+              :color-hex="value.send_status.color_hex"
+              :text="value.send_status.title"
           />
         </template>
 

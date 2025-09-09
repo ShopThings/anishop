@@ -71,8 +71,8 @@ import {PageTransition} from "vue3-page-transition";
 import {useCountingAlertsStore, useCountingOrdersStore, useNotificationStore} from "@/store/StoreAdminPanel.js";
 import {useAdminAuthStore} from "@/store/StoreUserAuth.js";
 import {usePageTransition} from "@/composables/page-transition.js";
-import {useHead, useSeoMeta} from "@unhead/vue";
 import {titleOperations} from "@/composables/helper.js";
+import {useHead} from "@unhead/vue";
 
 const route = useRoute()
 const router = useRouter()

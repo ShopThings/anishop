@@ -41,8 +41,8 @@ import {PageTransition} from "vue3-page-transition";
 import {useCountingStuffsStore, useNotificationStore} from "@/store/StoreUserPanel.js";
 import {useHomeSettingsStore} from "@/store/StoreSettings.js";
 import {usePageTransition} from "@/composables/page-transition.js";
-import {useHead, useSeoMeta} from "@unhead/vue";
 import {titleOperations} from "@/composables/helper.js";
+import {useHead} from "@unhead/vue";
 
 const route = useRoute()
 const transitionProps = usePageTransition()

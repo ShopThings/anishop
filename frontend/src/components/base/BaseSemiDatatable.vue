@@ -1,9 +1,9 @@
 <template>
   <div v-if="setting.enableSearchBox">
     <base-datatable-search
-        @refresh="refresh"
-        @search="doSearchText"
-        @clear-filter="clearSearchFilter"
+      @refresh="refresh"
+      @search="doSearchText"
+      @clear-filter="clearSearchFilter"
     />
   </div>
 
@@ -24,27 +24,27 @@
               scope="col"
           >
             <div
-                :class="{
+              :class="{
                   'rounded-md w-full transition text-white': (col.label && col.label.trim() !== '') || !!col.sortable,
                   'hover:bg-white/20 hover:bg-opacity-50': col.sortable
                 }"
-                class="px-2"
-                @click.prevent="col.sortable ? doSort(col.field) : false"
+              class="px-2"
+              @click.prevent="col.sortable ? doSort(col.field) : false"
             >
               <div
-                  class="flex items-center justify-between gap-2">
+                class="flex items-center justify-between gap-2">
                 <span class="leading-relaxed">{{ col.label }}</span>
                 <ArrowUpIcon
-                    v-if="setting.order === col.field && setting.sort === 'desc'"
-                    class="w-4 h-4 shrink-0"
+                  v-if="setting.order === col.field && setting.sort === 'desc'"
+                  class="w-4 h-4 shrink-0"
                 />
                 <ArrowDownIcon
-                    v-else-if="setting.order === col.field && setting.sort === 'asc'"
-                    class="w-4 h-4 shrink-0"
+                  v-else-if="setting.order === col.field && setting.sort === 'asc'"
+                  class="w-4 h-4 shrink-0"
                 />
                 <ArrowsUpDownIcon
-                    v-else-if="col.sortable"
-                    class="text-white text-opacity-40 w-4 h-4 shrink-0"
+                  v-else-if="col.sortable"
+                  class="text-white text-opacity-40 w-4 h-4 shrink-0"
                 />
               </div>
             </div>
@@ -56,25 +56,25 @@
         </thead>
         <tbody>
         <template
-            v-for="(row, i) in rows"
-            v-if="!isLoading"
-            :key="i"
+          v-for="(row, i) in rows"
+          v-if="!isLoading"
+          :key="i"
         >
           <tr
-              :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
-              class="text-black"
+            :class="typeof rowClasses === 'function' ? rowClasses(row) : rowClasses"
+            class="text-black"
           >
             <td
-                v-for="(col, j) in columns"
-                :key="j"
-                :class="[
+              v-for="(col, j) in columns"
+              :key="j"
+              :class="[
                   col.cellClasses,
                   col.columnClasses,
                   j === 0 ? 'rounded-r-xl' : '',
                   j === columns.length - 1 ? 'rounded-l-xl' : '',
               ]"
-                :style="[col?.cellStyles, col?.columnStyles]"
-                class="py-3 px-4 bg-white"
+              :style="[col?.cellStyles, col?.columnStyles]"
+              class="py-3 px-4 bg-white"
             >
               <div v-if="slots[col.field]">
                 <slot :index="i + setting.offset" :name="col.field" :value="row"></slot>
@@ -90,7 +90,7 @@
         <tr v-else>
           <td :colspan="columns.length">
             <div
-                class="absolute z-[3] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur flex flex-col transition"
+              class="absolute z-[3] top-0 left-0 w-full h-full bg-black/30 supports-[backdrop-filter]:bg-black/25 supports-[backdrop-filter]:backdrop-blur flex flex-col transition"
             >
               <slot name="loadingBlock">
                 <div class="flex items-center justify-center flex-1">
@@ -98,9 +98,9 @@
                       {{ loadingMessage }}
                   </span>
                   <loader-circle
-                      container-bg-color=""
-                      main-container-klass="h-6 w-6 relative mr-2"
-                      small-circle-color="border-t-rose-700"
+                    container-bg-color=""
+                    main-container-klass="h-6 w-6 relative mr-2"
+                    small-circle-color="border-t-rose-700"
                   ></loader-circle>
                 </div>
               </slot>
@@ -113,13 +113,13 @@
 
     <div v-if="setting.maxPage > 1" class="mt-3">
       <base-pagination
-          v-model:current-page="setting.page"
-          v-model:max-page="setting.maxPage"
-          v-model:paging="setting.paging"
-          :move-page="movePage"
-          :next-page="nextPage"
-          :prev-page="prevPage"
-          :theme="paginationTheme"
+        v-model:current-page="setting.page"
+        v-model:max-page="setting.maxPage"
+        v-model:paging="setting.paging"
+        :move-page="movePage"
+        :next-page="nextPage"
+        :prev-page="prevPage"
+        :theme="paginationTheme"
       />
     </div>
   </template>
@@ -131,15 +131,15 @@
       </div>
     </template>
     <partial-empty-rows
-        v-else
-        :message="emptyMessage"
-        image="/images/empty-statuses/empty-data.svg"
+      v-else
+      :message="emptyMessage"
+      image="/images/empty-statuses/empty-data.svg"
     />
   </template>
 </template>
 
 <script setup>
-import {computed, reactive, useSlots, watch} from "vue";
+import {computed, reactive, ref, useSlots, watch} from "vue";
 import LoaderCircle from "./loader/LoaderCircle.vue";
 import PartialEmptyRows from "@/components/partials/PartialEmptyRows.vue";
 import BasePagination from "./BasePagination.vue";
@@ -249,6 +249,8 @@ const setting = reactive({
   sort: props.sortable.sort,
 })
 
+const searchText = ref('')
+
 const changePage = (page, prevPage) => {
   let order = setting.order;
   let sort = setting.sort;
@@ -264,16 +266,16 @@ const changePage = (page, prevPage) => {
 watch(() => setting.page, changePage);
 // Monitor manual page switching
 watch(
-    () => props.page,
-    (val) => {
-      if (val <= 1) {
-        setting.page = 1;
-      } else if (val >= setting.maxPage) {
-        setting.page = setting.maxPage;
-      } else {
-        setting.page = val;
-      }
+  () => props.page,
+  (val) => {
+    if (val <= 1) {
+      setting.page = 1;
+    } else if (val >= setting.maxPage) {
+      setting.page = setting.maxPage;
+    } else {
+      setting.page = val;
     }
+  }
 );
 
 const changePageSize = () => {
@@ -290,10 +292,10 @@ const changePageSize = () => {
 watch(() => setting.pageSize, changePageSize);
 // Monitor display number switch from prop
 watch(
-    () => props.pageSize,
-    (newPageSize) => {
-      setting.pageSize = newPageSize;
-    }
+  () => props.pageSize,
+  (newPageSize) => {
+    setting.pageSize = newPageSize;
+  }
 );
 
 const prevPage = () => {

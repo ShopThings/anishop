@@ -52,37 +52,39 @@ class ReturnOrderRepository extends Repository implements ReturnOrderRepositoryI
                 $query->where('user_id', $uId);
             })
             ->when($search, function (Builder $query, string $search) use ($filter) {
-                $query
-                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
-                        $q
-                            ->orWhereHas('user', function ($q) use ($search) {
-                                $q->where(function ($q) use ($search) {
-                                    $q->orWhereLike([
-                                        'username',
-                                        'first_name',
-                                        'last_name',
-                                        'national_code',
-                                    ], $search);
+                $query->where(function ($query) use ($search, $filter) {
+                    $query
+                        ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                            $q
+                                ->orWhereHas('user', function ($q) use ($search) {
+                                    $q->where(function ($q) use ($search) {
+                                        $q->orWhereLike([
+                                            'username',
+                                            'first_name',
+                                            'last_name',
+                                            'national_code',
+                                        ], $search);
+                                    });
+                                })
+                                ->orWhereHas('order', function ($q) use ($search) {
+                                    $q->where(function ($q) use ($search) {
+                                        $q->orWhereLike([
+                                            'first_name',
+                                            'last_name',
+                                            'mobile',
+                                            'province',
+                                            'city',
+                                            'receiver_name',
+                                            'receiver_mobile',
+                                            'send_status_title',
+                                        ], $search);
+                                    });
                                 });
-                            })
-                            ->orWhereHas('order', function ($q) use ($search) {
-                                $q->where(function ($q) use ($search) {
-                                    $q->orWhereLike([
-                                        'first_name',
-                                        'last_name',
-                                        'mobile',
-                                        'province',
-                                        'city',
-                                        'receiver_name',
-                                        'receiver_mobile',
-                                        'send_status_title',
-                                    ], $search);
-                                });
-                            });
-                    })
-                    ->when(ReturnOrderStatusesEnum::getSimilarValuesFromString($search), function ($q, $statuses) {
-                        $q->whereIn('status', $statuses);
-                    });
+                        })
+                        ->when(ReturnOrderStatusesEnum::getSimilarValuesFromString($search), function ($q, $statuses) {
+                            $q->whereIn('status', $statuses);
+                        });
+                });
             });
 
         return $this->_paginateWithOrder($query, $columns, $limit, $page, $order);

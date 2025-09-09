@@ -10,11 +10,10 @@
     <title>فاکتور سفارش</title>
 
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 
     @vite(['resources/css/invoice.css'])
 </head>
-<body class="invoice-body" dir="rtl">
+<body class="invoice-body">
 <table class="table table-bordered">
     <thead>
     <tr>
@@ -339,7 +338,7 @@
                     </div>
                 @endif
 
-                    @if(!empty($item->guarantee))
+                @if(!empty($item->guarantee))
                     <div>
                         {{ $item->guarantee }}
                     </div>

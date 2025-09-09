@@ -256,44 +256,47 @@ class OrderRepository extends Repository implements OrderRepositoryInterface
                     ->where('user_id', $uId);
             })
             ->when($search, function (Builder $query, string $search) use ($filter) {
-                $query
-                    ->when($filter->getRelationSearch(), function ($q) use ($search) {
-                        $q
-                            ->orWhereHas('user', function ($q) use ($search) {
-                                $q->where(function ($q) use ($search) {
-                                    $q->orWhereLike([
-                                        'username',
-                                        'first_name',
-                                        'last_name',
-                                        'national_code',
-                                    ], $search);
-                                });
-                            })
-                            ->orWhereHas('orders', function ($q) use ($search) {
-                                $q->where(function ($q) use ($search) {
-                                    $q
-                                        ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
-                                            $q2->orWhereIn('payment_method_type', $types);
-                                        })
-                                        ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function ($q2, $statuses) {
-                                            $q2->orWhereIn('payment_status', $statuses);
-                                        })
-                                        ->orWhereLike([
-                                            'payment_method_title',
+                $query->where(function ($query) use ($search, $filter) {
+                    $query
+                        ->when($filter->getRelationSearch(), function ($q) use ($search) {
+                            $q
+                                ->orWhereHas('user', function ($q) use ($search) {
+                                    $q->where(function ($q) use ($search) {
+                                        $q->orWhereLike([
+                                            'username',
+                                            'first_name',
+                                            'last_name',
+                                            'national_code',
                                         ], $search);
+                                    });
+                                })
+                                ->orWhereHas('orders', function ($q) use ($search) {
+                                    $q->where(function ($q) use ($search) {
+                                        $q
+                                            ->when(PaymentTypesEnum::getSimilarValuesFromString($search), function ($q2, $types) {
+                                                $q2->orWhereIn('payment_method_type', $types);
+                                            })
+                                            ->when(PaymentStatusesEnum::getSimilarValuesFromString($search), function ($q2, $statuses) {
+                                                $q2->orWhereIn('payment_status', $statuses);
+                                            })
+                                            ->orWhereLike([
+                                                'payment_method_title',
+                                            ], $search);
+                                    });
                                 });
-                            });
-                    })
-                    ->orWhereLike([
-                        'first_name',
-                        'last_name',
-                        'mobile',
-                        'province',
-                        'city',
-                        'receiver_name',
-                        'receiver_mobile',
-                        'send_status_title',
-                    ], $search);
+                        })
+                        ->orWhereLike([
+                            'code',
+                            'first_name',
+                            'last_name',
+                            'mobile',
+                            'province',
+                            'city',
+                            'receiver_name',
+                            'receiver_mobile',
+                            'send_status_title',
+                        ], $search);
+                });
             });
 
         //

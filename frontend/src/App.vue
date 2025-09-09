@@ -48,9 +48,9 @@ import {useRoute} from "vue-router";
 import {ExclamationCircleIcon} from "@heroicons/vue/24/outline/index.js"
 import BasePageProgressBar from "./components/base/BasePageProgressBar.vue";
 import {useHomeSettingNoTimerStore} from "@/store/StoreSettings.js";
-import {useHead, useSeoMeta} from "@unhead/vue";
 import {titleOperations} from "@/composables/helper.js";
 import Loader3Dot from "@/components/base/loader/Loader3Dot.vue";
+import {useHead} from "@unhead/vue";
 
 const route = useRoute()
 const loading = ref(true)
