@@ -32,7 +32,7 @@ class SliderSeeder extends Seeder
             $banners[] = new SliderItem([
                 'slider_id' => $mainSlider->getKey(),
                 'options' => [
-                    SliderItemOptionsEnum::IMAGE->value => $bannerImage->full_path,
+                    SliderItemOptionsEnum::IMAGE->value => $bannerImage->getKey(),
                     SliderItemOptionsEnum::LINK->value => 'http://localhost:3000',
                 ],
             ]);
