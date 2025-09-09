@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
 
         $seeders = app()->isProduction()
             ? $productionSeeders
-            : $productionSeeders + $otherSeeders;
+            : array_merge($productionSeeders, $otherSeeders);
         $this->call($seeders);
     }
 }
