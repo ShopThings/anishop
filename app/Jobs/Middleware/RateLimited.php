@@ -22,7 +22,12 @@ class RateLimited
         // We need some identifier for a group of jobs
         // In case we want to apply the same cache lock for all jobs,
         // set the same group to all jobs
-        $jobGroup = $job->getJobGroup();
+
+        $jobGroup = 'default';
+
+        if (method_exists($job, 'getJobGroup')) {
+            $jobGroup = $job->getJobGroup();
+        }
 
         // Create a cache lock for 5 seconds
         $lock = Cache::lock($jobGroup, 5);

@@ -12,6 +12,7 @@ use App\Support\WhereBuilder\WhereBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class SettingService extends Service implements SettingServiceInterface
 {

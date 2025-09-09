@@ -69,7 +69,7 @@ class Concat
     protected function escapeColumns(array $columns): array
     {
         return array_map(function ($column) {
-            if (preg_match('#[\d\w\-_]+#i', $column)) {
+            if (preg_match('#[\w\-]+#i', $column)) {
                 return DB::getQueryGrammar()->wrap($column);
             }
             return DB::escape($column);

@@ -72,6 +72,7 @@ interface UserRepositoryInterface extends RepositoryInterface
 
     /**
      * @param GetterExpressionInterface $where
+     * @param array $columns
      * @return Model|null
      */
     public function getUserAddressWhere(GetterExpressionInterface $where, array $columns = ['*']): ?Model;

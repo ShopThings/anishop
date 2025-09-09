@@ -38,7 +38,7 @@ class SMSChannel
         $panelName = config('sms.default', 'unknown');
         $creatingObject = [
             'receiver_numbers' => implode(', ', $numbers),
-            'panel_number' => config('sms.drivers.' . $panelName . '.from'),
+            'panel_number' => config('sms.drivers.' . $panelName . '.from', 'unknown'),
             'panel_name' => $panelName,
             'body' => app()->isProduction()
                 ? ($smsObject->getSecuredMessage() ?: $smsObject->getMessage())

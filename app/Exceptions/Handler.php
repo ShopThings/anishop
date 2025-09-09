@@ -122,7 +122,7 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'type' => ResponseTypesEnum::ERROR->value,
                     'message' => $msg,
-                ], ResponseCodes::HTTP_UNAUTHORIZED);
+                ], ResponseCodes::HTTP_BAD_REQUEST);
             }
 
             return response($msg);

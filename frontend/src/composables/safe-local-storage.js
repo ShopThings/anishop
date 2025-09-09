@@ -8,7 +8,8 @@ const cookieName = 'ensureSafeDataLocal'
 const encryptionToken = Cookie.get(cookieName) || v4()
 
 // Store the encryption token in a secure cookie.
-Cookie.set(cookieName, encryptionToken, {secure: true, expires: 180, sameSite: 'lax'})
+// Cookie.set(cookieName, encryptionToken, {secure: true, expires: 180, sameSite: 'lax'})
+Cookie.set(cookieName, encryptionToken, {secure: false, expires: 180, sameSite: 'lax'})
 
 export const useSafeLocalStorage = {
   getItem: (key) => {

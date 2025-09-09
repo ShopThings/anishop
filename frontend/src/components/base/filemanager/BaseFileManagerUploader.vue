@@ -63,6 +63,7 @@
         <span class="text-gray-400 block sm:inline-block my-3 sm:mx-3 sm:my-0">یا</span>
         <div class="block sm:inline-block">
           <input
+            ref="uploadInputRef"
             id="fileUpload"
             class="hidden"
             multiple
@@ -111,7 +112,7 @@
         <base-button-close
           v-tooltip.right="'حذف فایل'"
           class="shrink-0 px-1 h-full"
-          @click="removeFile(file)"
+          @click="handleRemoveFile(file)"
         ></base-button-close>
 
         <div
@@ -217,10 +218,16 @@ const emit = defineEmits(['upload-complete'])
 const toast = useToast()
 const {files, addFiles, removeFile, isImageExt, isAudioExt, isVideoExt} = useFileList()
 
+const uploadInputRef = ref(null)
 const active = ref(false)
 let inActiveTimeout = null
 
 const canUpload = ref(true)
+
+function handleRemoveFile(file) {
+  uploadInputRef.value.value = '';
+  removeFile(file)
+}
 
 function startUploadFiles() {
   if (!canUpload.value) {
