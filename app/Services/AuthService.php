@@ -202,6 +202,8 @@ class AuthService extends Service implements AuthServiceInterface
         }
 
         $user->otp_password = null;
+        $user->otp_password_wait_for_code = null;
+        $user->otp_password_expires_at = null;
         $user->save();
 
         $expireAt = Carbon::now()->addDays(30);
