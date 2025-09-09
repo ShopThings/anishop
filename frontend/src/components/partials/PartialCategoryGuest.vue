@@ -14,7 +14,7 @@
     >
       <ul
           ref="mainCategoriesItems"
-          class="my-custom-scrollbar my-custom-scrollbar-light w-44 md:w-52 rounded-br-xl flex flex-col shrink-0 py-5 pr-1 bg-primary text-right text-white"
+          class="my-custom-scrollbar my-custom-scrollbar-light w-44 md:w-52 rounded-br-xl flex flex-col shrink-0 py-5 pr-1 bg-secondary text-right text-white"
           dir="ltr"
       >
         <li
