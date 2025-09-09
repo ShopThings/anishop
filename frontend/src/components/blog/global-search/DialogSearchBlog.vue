@@ -78,24 +78,11 @@ import {SearchAPI} from "@/service/APISearch.js";
 import {useDebounceFn} from "@vueuse/core";
 import {useBlogSearchStore} from "@/store/StoreBlogSearch.js";
 
-const props = defineProps({
-  open: {
-    type: Boolean,
-    default: false,
-  }
-})
-const emit = defineEmits(['update:open', 'open', 'close'])
+const emit = defineEmits(['open', 'close'])
 
 const searchStore = useBlogSearchStore()
 
-const isDialogOpen = computed({
-  get() {
-    return props.open
-  },
-  set(value) {
-    emit('update:open', value)
-  },
-})
+const isDialogOpen = ref(false)
 
 function focusOnInput(input) {
   input.focus()
