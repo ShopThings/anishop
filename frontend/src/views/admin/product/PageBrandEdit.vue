@@ -170,6 +170,8 @@ const {canSubmit, errors, onSubmit} = useFormSubmit({
     return
   }
 
+  canSubmit.value = false
+
   BrandAPI.updateById(idParam.value, {
     name: values.name,
     latin_name: values.latin_name,
