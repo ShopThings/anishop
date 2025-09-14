@@ -11,7 +11,8 @@
 
     <meta charset="UTF-8">
 
-    @vite(['resources/css/invoice.css'])
+    {{-- Each time you build assets, please copy invoice to css directory --}}
+    <link rel="stylesheet" href="{{ public_path('css/invoice.css') }}">
 </head>
 <body class="invoice-body">
 <table class="table table-bordered">
@@ -241,7 +242,7 @@
             </small>
             <strong>
                 @if(trim($detail?->postal_code) !== '')
-                    {{ $detail->posta_code }}
+                    {{ $detail->postal_code }}
                 @else
                     -
                 @endif
